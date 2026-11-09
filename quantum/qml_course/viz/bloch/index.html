@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bloch sphere</title>
+<style>
+  body { padding: .5rem .6rem .7rem; }
+  .wrap { display: grid; grid-template-columns: minmax(0, 1fr); gap: .7rem; }
+  @media (min-width: 680px) { .wrap { grid-template-columns: minmax(0, 22rem) minmax(0, 1fr); align-items: start; } }
+  .stage { position: relative; width: 100%; max-width: 26rem; margin: 0 auto; aspect-ratio: 1; touch-action: none; }
+  canvas { width: 100%; height: 100%; display: block; cursor: grab; border-radius: .6rem; }
+  canvas:active { cursor: grabbing; }
+  canvas:focus-visible { outline: 3px solid var(--viz-accent); outline-offset: 2px; }
+  .sub { font-size: .76rem; color: var(--viz-muted); margin: .25rem 0 0; text-align: center; }
+  h3 { font-size: .78rem; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: var(--viz-muted); margin: .7rem 0 .3rem; }
+  h3:first-child { margin-top: 0; }
+  .gates { display: flex; flex-wrap: wrap; gap: .35rem; }
+  .gates button { min-width: 2.6rem; font-weight: 600; }
+  .rot { display: flex; flex-wrap: wrap; gap: .4rem .7rem; align-items: center; }
+  .rot input[type=range] { flex: 1 1 8rem; min-width: 7rem; width: auto; }
+  .rot output { min-width: 3.4rem; font-variant-numeric: tabular-nums; text-align: right; }
+  .ro { display: grid; grid-template-columns: auto 1fr; gap: .15rem .7rem; font-size: .88rem; }
+  .ro dt { color: var(--viz-muted); }
+  .ro dd { margin: 0; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+  .ket { font-size: .95rem; padding: .45rem .6rem; border: 1px solid var(--viz-line); border-radius: .5rem; background: var(--viz-surface); overflow-wrap: anywhere; line-height: 1.55; }
+  .bars { display: grid; gap: .25rem; margin: .5rem 0 0; }
+  .bar { display: grid; grid-template-columns: 2.4rem 1fr 3.2rem; align-items: center; gap: .4rem; font-size: .82rem; font-variant-numeric: tabular-nums; }
+  .bar i { display: block; height: .7rem; border-radius: .35rem; background: var(--viz-line); overflow: hidden; position: relative; }
+  .bar i b { position: absolute; left: 0; top: 0; bottom: 0; background: var(--c); border-radius: .35rem; transition: width .25s; }
+  .hist { font-family: ui-monospace, Consolas, Menlo, monospace; font-size: .85rem; min-height: 1.5em; overflow-wrap: anywhere; }
+  .hist .g { padding: 0 .25rem; border-radius: .25rem; background: var(--viz-surface); border: 1px solid var(--viz-line); margin-right: .15rem; }
+  .row { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; margin-top: .4rem; }
+  .row button { min-height: 2rem; font-size: .85rem; }
+  .seg button { min-width: 2.2rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div>
+    <div class="stage"><canvas id="cv" tabindex="0" role="img" aria-label="Bloch sphere"></canvas></div>
+    <p class="sub">Drag the sphere to turn it, or use the arrow keys when it has focus.</p>
+    <div class="row" style="justify-content:center"><button type="button" id="rv">Reset view</button></div>
+  </div>
+  <div>
+    <h3 id="h1">Gates</h3>
+    <div class="gates" id="gates" role="group" aria-labelledby="h1"></div>
+    <h3 id="h2">Rotation by an angle</h3>
+    <div class="rot" role="group" aria-labelledby="h2">
+      <span class="vk-seg seg" id="axis" role="radiogroup" aria-label="Rotation axis"></span>
+      <input type="range" id="ang" min="-180" max="180" step="5" value="90" aria-label="Angle in degrees">
+      <output id="angv" for="ang">90&deg;</output>
+      <button type="button" id="apply">Apply</button>
+    </div>
+    <h3 id="h3">Set the state</h3>
+    <div class="gates" id="states" role="group" aria-labelledby="h3"></div>
+    <h3>Circuit so far</h3>
+    <div class="hist" id="hist" aria-live="polite"></div>
+    <div class="row"><button type="button" id="undo">Undo</button><button type="button" id="reset">Back to |0&#x27e9;</button></div>
+    <h3>State</h3>
+    <div class="ket" id="ket"></div>
+    <div class="bars" id="bars"></div>
+    <dl class="ro" id="ro"></dl>
+  </div>
+</div>
+<script src="viz-kit.js"></script>
+<script>
+(function () {
+  var K = VizKit, el = K.el, cv = document.getElementById('cv'), ctx = cv.getContext('2d');
+  var R2 = Math.SQRT1_2, deg = Math.PI / 180;
+  var v = [0, 0, 1], hist = [], hv = [[0, 0, 1]];
+  var view = { az: 38 * deg, el: 18 * deg };
+  var anim = null, trail = [];
+
+  var GATES = [
+    ['X', [1, 0, 0], Math.PI], ['Y', [0, 1, 0], Math.PI], ['Z', [0, 0, 1], Math.PI],
+    ['H', [R2, 0, R2], Math.PI], ['S', [0, 0, 1], Math.PI / 2], ['T', [0, 0, 1], Math.PI / 4],
+    ['S†', [0, 0, 1], -Math.PI / 2], ['T†', [0, 0, 1], -Math.PI / 4], ['√X', [1, 0, 0], Math.PI / 2]
+  ];
+  var AXES = { X: [1, 0, 0], Y: [0, 1, 0], Z: [0, 0, 1] };
+  var axisSel = 'Y';
+
+  function rot(p, n, a) {            // Rodrigues: rotate p about unit axis n by angle a
+    var c = Math.cos(a), s = Math.sin(a), d = n[0] * p[0] + n[1] * p[1] + n[2] * p[2];
+    var cr = [n[1] * p[2] - n[2] * p[1], n[2] * p[0] - n[0] * p[2], n[0] * p[1] - n[1] * p[0]];
+    return [0, 1, 2].map(function (i) { return p[i] * c + cr[i] * s + n[i] * d * (1 - c); });
+  }
+  function clean(p) { var l = Math.hypot(p[0], p[1], p[2]) || 1; return p.map(function (x) { x /= l; return Math.abs(x) < 1e-12 ? 0 : x; }); }
+  function reduced() { return window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches; }
+
+  function apply(label, n, a) {
+    if (anim) finishAnim();
+    var from = v.slice(), steps = reduced() ? 1 : Math.max(8, Math.round(Math.abs(a) / (Math.PI) * 34)), k = 0;
+    trail = [];
+    anim = { from: from, n: n, a: a, label: label, t0: performance.now(), dur: reduced() ? 1 : 150 + 450 * Math.abs(a) / Math.PI };
+    requestAnimationFrame(tick);
+  }
+  function tick(now) {
+    if (!anim) return;
+    var f = Math.min(1, (now - anim.t0) / anim.dur), e = f < .5 ? 2 * f * f : 1 - Math.pow(-2 * f + 2, 2) / 2;
+    v = rot(anim.from, anim.n, anim.a * e);
+    trail.push(v.slice());
+    draw();
+    if (f < 1) requestAnimationFrame(tick); else finishAnim();
+  }
+  function finishAnim() {
+    if (!anim) return;
+    v = clean(rot(anim.from, anim.n, anim.a));
+    hist.push(anim.label); hv.push(v.slice());
+    anim = null;
+    update(true);
+  }
+
+  // ---- drawing
+  function proj(q) {
+    var ca = Math.cos(view.az), sa = Math.sin(view.az), ce = Math.cos(view.el), se = Math.sin(view.el);
+    var r = [-sa, ca, 0], u = [-se * ca, -se * sa, ce], p = [ce * ca, ce * sa, se];
+    return [q[0] * r[0] + q[1] * r[1] + q[2] * r[2], q[0] * u[0] + q[1] * u[1] + q[2] * u[2], q[0] * p[0] + q[1] * p[1] + q[2] * p[2]];
+  }
+  var W = 0, H = 0, cx = 0, cy = 0, R = 0, dpr = 1;
+  function size() {
+    var b = cv.getBoundingClientRect();
+    dpr = window.devicePixelRatio || 1;
+    W = Math.max(200, Math.round(b.width)); H = Math.max(200, Math.round(b.height));
+    cv.width = W * dpr; cv.height = H * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    cx = W / 2; cy = H / 2; R = Math.min(W, H) * 0.335;
+  }
+  function S(q) { var p = proj(q); return [cx + p[0] * R, cy - p[1] * R, p[2]]; }
+  function line(a, b, col, w, dash, alpha) {
+    var A = S(a), B = S(b);
+    ctx.save(); ctx.globalAlpha = alpha == null ? 1 : alpha; ctx.strokeStyle = col; ctx.lineWidth = w || 1;
+    if (dash) ctx.setLineDash(dash);
+    ctx.beginPath(); ctx.moveTo(A[0], A[1]); ctx.lineTo(B[0], B[1]); ctx.stroke(); ctx.restore();
+  }
+  function circle(fn, col) {
+    for (var pass = 0; pass < 2; pass++) {
+      ctx.save(); ctx.strokeStyle = col; ctx.lineWidth = pass ? 1.4 : 1; ctx.globalAlpha = pass ? .85 : .35;
+      if (!pass) ctx.setLineDash([3, 4]);
+      var prev = null;
+      for (var i = 0; i <= 120; i++) {
+        var s = S(fn(i / 120 * 2 * Math.PI)), front = s[2] >= 0;
+        if (prev && (front === !!pass) && (prev[2] >= 0) === front) { ctx.beginPath(); ctx.moveTo(prev[0], prev[1]); ctx.lineTo(s[0], s[1]); ctx.stroke(); }
+        prev = s;
+      }
+      ctx.restore();
+    }
+  }
+  function label(t, q, col, dx, dy, bold) {
+    var s = S(q);
+    ctx.save(); ctx.fillStyle = col; ctx.font = (bold ? '600 ' : '') + Math.max(12, R * .1) + 'px system-ui, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.globalAlpha = s[2] >= -0.05 ? 1 : .55;
+    ctx.fillText(t, s[0] + dx, s[1] + dy); ctx.restore();
+  }
+  function draw() {
+    var P = K.palette;
+    ctx.clearRect(0, 0, W, H);
+    // the sphere
+    var g = ctx.createRadialGradient(cx - R * .35, cy - R * .4, R * .1, cx, cy, R);
+    g.addColorStop(0, K.theme === 'dark' ? 'rgba(255,255,255,.10)' : 'rgba(31,95,168,.10)');
+    g.addColorStop(1, K.theme === 'dark' ? 'rgba(255,255,255,.02)' : 'rgba(31,95,168,.02)');
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(cx, cy, R, 0, 7); ctx.fill();
+    ctx.strokeStyle = P.line; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(cx, cy, R, 0, 7); ctx.stroke();
+    circle(function (t) { return [Math.cos(t), Math.sin(t), 0]; }, P.muted);          // equator
+    circle(function (t) { return [Math.cos(t), 0, Math.sin(t)]; }, P.line);           // x-z meridian
+    circle(function (t) { return [0, Math.cos(t), Math.sin(t)]; }, P.line);           // y-z meridian
+    // axes: the back halves faint, the front halves firm
+    var AX = [[[1, 0, 0], 'x'], [[0, 1, 0], 'y'], [[0, 0, 1], 'z']];
+    AX.forEach(function (a) {
+      var q = a[0], m = q.map(function (x) { return -x; });
+      line([0, 0, 0], m, P.muted, 1, [4, 3], .5);
+      line([0, 0, 0], q.map(function (x) { return x * 1.18; }), P.muted, 1.4, null, .9);
+    });
+    label('|0⟩', [0, 0, 1.42], P.fg, 0, 0, true); label('|1⟩', [0, 0, -1.42], P.fg, 0, 0, true);
+    label('|+⟩', [1.5, 0, 0], P.muted, 0, 0); label('|−⟩', [-1.5, 0, 0], P.muted, 0, 0);
+    label('|+i⟩', [0, 1.5, 0], P.muted, 0, 0); label('|−i⟩', [0, -1.5, 0], P.muted, 0, 0);
+    label('x', [1.24, 0, 0], P.accent2, 0, 0, true); label('y', [0, 1.24, 0], P.accent2, 0, 0, true); label('z', [0, 0, 1.22], P.accent2, 9, 0, true);
+    // the trail of the last gate
+    if (trail.length > 1) {
+      ctx.save(); ctx.strokeStyle = P.accent2; ctx.lineWidth = 2.5; ctx.globalAlpha = .55; ctx.setLineDash([2, 4]); ctx.beginPath();
+      trail.forEach(function (q, i) { var s = S(q); if (i) ctx.lineTo(s[0], s[1]); else ctx.moveTo(s[0], s[1]); });
+      ctx.stroke(); ctx.restore();
+    }
+    // the shadow on the equator plane and the state vector
+    var sh = [v[0], v[1], 0], T = S(v), O = S([0, 0, 0]), Sh = S(sh);
+    ctx.save(); ctx.strokeStyle = P.accent; ctx.globalAlpha = .45; ctx.setLineDash([3, 3]); ctx.lineWidth = 1.2;
+    ctx.beginPath(); ctx.moveTo(T[0], T[1]); ctx.lineTo(Sh[0], Sh[1]); ctx.lineTo(O[0], O[1]); ctx.stroke(); ctx.restore();
+    ctx.save(); ctx.strokeStyle = P.accent; ctx.fillStyle = P.accent; ctx.lineWidth = 3.2; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(O[0], O[1]); ctx.lineTo(T[0], T[1]); ctx.stroke();
+    var ang = Math.atan2(T[1] - O[1], T[0] - O[0]), hl = 11;
+    ctx.beginPath(); ctx.moveTo(T[0], T[1]); ctx.lineTo(T[0] - hl * Math.cos(ang - .4), T[1] - hl * Math.sin(ang - .4)); ctx.lineTo(T[0] - hl * Math.cos(ang + .4), T[1] - hl * Math.sin(ang + .4)); ctx.closePath(); ctx.fill();
+    ctx.restore();
+    ctx.save(); ctx.fillStyle = P.accent; ctx.strokeStyle = P.bg; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(T[0], T[1], 5.5, 0, 7); ctx.fill(); ctx.stroke(); ctx.restore();
+  }
+
+  // ---- numbers
+  function f(x, d) { var s = x.toFixed(d == null ? 3 : d); return s === '-0.000' ? '0.000' : s; }
+  function amps() {
+    var th = Math.acos(Math.max(-1, Math.min(1, v[2]))), ph = Math.atan2(v[1], v[0]);
+    var a = Math.cos(th / 2), b = Math.sin(th / 2);
+    return { th: th, ph: ph, a: a, br: b * Math.cos(ph), bi: b * Math.sin(ph) };
+  }
+  function cplx(re, im) {
+    if (Math.abs(im) < 5e-4) return f(re);
+    if (Math.abs(re) < 5e-4) return f(im) + 'i';
+    return '(' + f(re) + (im < 0 ? ' − ' : ' + ') + f(Math.abs(im)) + 'i)';
+  }
+  function update(announce) {
+    var A = amps(), p0 = (1 + v[2]) / 2, p1 = (1 - v[2]) / 2;
+    var thd = A.th / deg, phd = ((A.ph / deg) + 360) % 360;
+    if (A.th < 1e-6 || Math.PI - A.th < 1e-6) phd = 0;
+    document.getElementById('ket').innerHTML = '<span class="vk-muted">cos(θ/2)|0⟩ + e<sup>iφ</sup> sin(θ/2)|1⟩</span><br>= ' + f(A.a) + ' |0⟩ + ' + cplx(A.br, A.bi) + ' |1⟩';
+    document.getElementById('bars').innerHTML =
+      '<div class="bar"><span>P(0)</span><i><b style="--c:' + K.series(0) + ';width:' + (p0 * 100) + '%"></b></i><span>' + f(p0) + '</span></div>' +
+      '<div class="bar"><span>P(1)</span><i><b style="--c:' + K.series(1) + ';width:' + (p1 * 100) + '%"></b></i><span>' + f(p1) + '</span></div>';
+    document.getElementById('ro').innerHTML =
+      '<dt>Angles</dt><dd>θ = ' + thd.toFixed(1) + '°, φ = ' + phd.toFixed(1) + '°</dd>' +
+      '<dt>Bloch vector</dt><dd>(' + f(v[0], 2) + ', ' + f(v[1], 2) + ', ' + f(v[2], 2) + ')</dd>' +
+      '<dt>⟨X⟩, ⟨Y⟩, ⟨Z⟩</dt><dd>' + f(v[0], 2) + ', ' + f(v[1], 2) + ', ' + f(v[2], 2) + '</dd>';
+    document.getElementById('hist').innerHTML = hist.length ? hist.map(function (g) { return '<span class="g">' + g + '</span>'; }).join('→') : '<span class="vk-muted">(nothing applied: the qubit is in its starting state)</span>';
+    document.getElementById('undo').disabled = !hist.length;
+    document.getElementById('reset').disabled = !hist.length && v[2] === 1;
+    cv.setAttribute('aria-label', 'Bloch sphere. State vector at theta ' + thd.toFixed(0) + ' degrees, phi ' + phd.toFixed(0) + ' degrees. Probability of 0 is ' + f(p0, 2) + '.');
+    draw();
+  }
+
+  // ---- controls
+  var gh = document.getElementById('gates');
+  GATES.forEach(function (g) {
+    gh.appendChild(el('button', { type: 'button', text: g[0], 'aria-label': 'Gate ' + g[0], onclick: function () { apply(g[0], g[1], g[2]); } }));
+  });
+  var sh = document.getElementById('states');
+  [['|0⟩', [0, 0, 1]], ['|1⟩', [0, 0, -1]], ['|+⟩', [1, 0, 0]], ['|−⟩', [-1, 0, 0]], ['|+i⟩', [0, 1, 0]], ['|−i⟩', [0, -1, 0]]].forEach(function (s) {
+    sh.appendChild(el('button', { type: 'button', text: s[0], onclick: function () { if (anim) finishAnim(); v = s[1].slice(); hist = []; hv = [v.slice()]; trail = []; update(); } }));
+  });
+  var ax = document.getElementById('axis');
+  ['X', 'Y', 'Z'].forEach(function (a) {
+    ax.appendChild(el('button', { type: 'button', role: 'radio', 'aria-checked': String(a === axisSel), 'class': a === axisSel ? 'on' : '', text: 'R' + a.toLowerCase(), 'data-a': a, onclick: function () {
+      axisSel = a; [].forEach.call(ax.children, function (b) { var on = b.getAttribute('data-a') === a; b.setAttribute('aria-checked', String(on)); b.classList.toggle('on', on); });
+    } }));
+  });
+  var ang = document.getElementById('ang');
+  ang.addEventListener('input', function () { document.getElementById('angv').textContent = ang.value + '°'; });
+  document.getElementById('apply').addEventListener('click', function () { apply('R' + axisSel.toLowerCase() + '(' + ang.value + '°)', AXES[axisSel], ang.value * deg); });
+  document.getElementById('undo').addEventListener('click', function () { if (anim) finishAnim(); if (!hist.length) return; hist.pop(); hv.pop(); v = hv[hv.length - 1].slice(); trail = []; update(); });
+  document.getElementById('reset').addEventListener('click', function () { if (anim) finishAnim(); v = [0, 0, 1]; hist = []; hv = [[0, 0, 1]]; trail = []; update(); });
+  document.getElementById('rv').addEventListener('click', function () { view.az = 38 * deg; view.el = 18 * deg; draw(); });
+
+  // turning the view with the pointer or the arrow keys
+  var drag = null;
+  cv.addEventListener('pointerdown', function (e) { drag = { x: e.clientX, y: e.clientY, az: view.az, el: view.el }; cv.setPointerCapture(e.pointerId); });
+  cv.addEventListener('pointermove', function (e) {
+    if (!drag) return;
+    view.az = drag.az - (e.clientX - drag.x) * .008;
+    view.el = Math.max(-1.4, Math.min(1.4, drag.el + (e.clientY - drag.y) * .008));
+    draw();
+  });
+  cv.addEventListener('pointerup', function () { drag = null; });
+  cv.addEventListener('pointercancel', function () { drag = null; });
+  cv.addEventListener('keydown', function (e) {
+    var d = 7 * deg, k = e.key, used = true;
+    if (k === 'ArrowLeft') view.az += d; else if (k === 'ArrowRight') view.az -= d;
+    else if (k === 'ArrowUp') view.el = Math.min(1.4, view.el + d); else if (k === 'ArrowDown') view.el = Math.max(-1.4, view.el - d);
+    else used = false;
+    if (used) { e.preventDefault(); draw(); }
+  });
+
+  K.onTheme(function () { if (W) draw(); });
+  size(); update();
+  if (window.ResizeObserver) new ResizeObserver(function () { size(); draw(); }).observe(cv);
+  K.autoHeight();
+})();
+</script>
+</body>
+</html>

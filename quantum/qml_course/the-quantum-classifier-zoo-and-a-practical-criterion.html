@@ -1,0 +1,1302 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#ffffff">
+  
+    <meta name="description" content="The Open Book Project: books on computer science, quantum computing, cyber security, science, university courses and the English language, read page by page like an e-book, online or offline.">
+  
+  
+    <meta name="author" content="Nikhil Kumar Rajput, Ramanujan College, University of Delhi">
+  
+  
+    <link rel="canonical" href="https://open-book-project.github.io/quantum/qml_course/the-quantum-classifier-zoo-and-a-practical-criterion.html">
+  
+  
+    <link rel="prev" href="trainability-noise-and-generalisation.html">
+  
+  
+    <link rel="next" href="glossary.html">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&family=Noto+Serif+Devanagari:wght@400;600;700&display=swap" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&family=Noto+Serif+Devanagari:wght@400;600;700&display=swap"></noscript>
+  <link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+  <link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Open Book">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="application-name" content="Open Book"><script id="bjp-books" type="application/json">[{"id": "hardware_security", "lang": "en", "path": "science/hardware_security"}, {"id": "drones_missiles", "lang": "en", "path": "science/drones_missiles"}, {"id": "code_to_electrons", "lang": "en", "path": "science/code_to_electrons"}, {"id": "dpi_ndr", "lang": "en", "path": "science/dpi_ndr"}, {"id": "quantum", "lang": "en", "path": "quantum/quantum"}, {"id": "qml", "lang": "en", "path": "quantum/qml"}, {"id": "qml_course", "lang": "en", "path": "quantum/qml_course"}, {"id": "asic", "lang": "en", "path": "computing/asic"}, {"id": "compute", "lang": "en", "path": "computing/compute"}, {"id": "memory", "lang": "en", "path": "computing/memory"}, {"id": "os", "lang": "en", "path": "computing/os"}, {"id": "databases", "lang": "en", "path": "computing/databases"}, {"id": "datacenters", "lang": "en", "path": "computing/datacenters"}, {"id": "networks", "lang": "en", "path": "computing/networks"}, {"id": "cellular", "lang": "en", "path": "computing/cellular"}, {"id": "ml", "lang": "en", "path": "computing/ml"}, {"id": "microarchitecture", "lang": "en", "path": "computing/microarchitecture"}, {"id": "rtl_hdl", "lang": "en", "path": "computing/rtl_hdl"}, {"id": "rtl_to_gdsii", "lang": "en", "path": "computing/rtl_to_gdsii"}, {"id": "ram_ddr5", "lang": "en", "path": "computing/ram_ddr5"}, {"id": "security", "lang": "en", "path": "cyber/security"}, {"id": "trust", "lang": "en", "path": "cyber/trust"}, {"id": "attack_taxonomy", "lang": "en", "path": "cyber/attack_taxonomy"}, {"id": "datacentre_security_ip", "lang": "en", "path": "cyber/datacentre_security_ip"}, {"id": "randomness_testing", "lang": "en", "path": "cyber/randomness_testing"}, {"id": "optimization_methods", "lang": "en", "path": "courses/optimization_methods"}, {"id": "quantum_computing_applications", "lang": "en", "path": "courses/quantum_computing_applications"}, {"id": "dbms_course", "lang": "en", "path": "courses/dbms_course"}, {"id": "csa_course", "lang": "en", "path": "courses/csa_course"}, {"id": "web_programming", "lang": "en", "path": "courses/web_programming"}, {"id": "ml_course", "lang": "en", "path": "courses/ml_course"}, {"id": "english_book", "lang": "en", "path": "language/english_book"}, {"id": "english_book_hinglish", "lang": "en", "path": "language/english_book_hinglish"}, {"id": "english_book_hi", "lang": "hi", "path": "language/english_book_hi"}]</script><script>
+    (function () {
+      var X = window.XMLHttpRequest, open, gate = new Promise(function (r) { open = r; });
+      if (!X) return;
+      var open0 = X.prototype.open, send0 = X.prototype.send;
+      X.prototype.open = function (method, url) {
+        this.__pkIndex = /\/search\/search_index\.json(\?|#|$)/.test(String(url));
+        return open0.apply(this, arguments);
+      };
+      X.prototype.send = function () {
+        if (!this.__pkIndex) return send0.apply(this, arguments);
+        var xhr = this, args = arguments;
+        gate.then(function () { send0.apply(xhr, args); });
+      };
+      function wake() { open(); }
+      document.addEventListener("focusin", function (e) { if (e.target && e.target.closest && e.target.closest(".md-search")) wake(); });
+      document.addEventListener("click", function (e) { if (e.target && e.target.closest && e.target.closest('label[for="__search"], .md-search')) wake(); }, true);
+      document.addEventListener("keydown", function (e) {
+        var k = e.key;
+        if ((k === "/" || k === "s" || k === "f" || k === "S" || k === "F") && !(e.target && e.target.closest && e.target.closest("input, textarea, [contenteditable]"))) wake();
+      }, true);
+      if (/[?&]q=/.test(location.search)) wake();
+    })();
+  </script><script>
+    try {
+      if ((window.matchMedia && (matchMedia("(display-mode: standalone)").matches || matchMedia("(display-mode: fullscreen)").matches)) || navigator.standalone === true) {
+        document.documentElement.className += " bjp-standalone";
+      }
+    } catch (e) { /* not an installed app */ }
+  </script>
+  <script>
+    /* a book opened from its cover on the shelf: the page stays blank, in the cover's colour, until the reader is up */
+    try {
+      var cv = sessionStorage.getItem("bjp.reader.cover");
+      if (cv && sessionStorage.getItem("bjp.reader.open") === "1") {
+        var c = JSON.parse(cv), de = document.documentElement;
+        de.className += " bjp-booting";
+        if (c && /^#[0-9a-f]{3,8}$/i.test(c.bg || "")) de.style.background = c.bg;
+        setTimeout(function () { de.classList.remove("bjp-booting"); de.style.background = ""; }, 3000);
+      }
+    } catch (e) { /* no session storage: the page simply opens as usual */ }
+  </script>
+
+    
+      
+        <title>13. The Quantum Classifier Zoo and a Practical Criterion - The Open Book Project</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/extra.css">
+    
+      <link rel="stylesheet" href="../../assets/reader.css">
+    
+      <link rel="stylesheet" href="../../assets/viz.css">
+    
+      <link rel="stylesheet" href="../../assets/app.css">
+    
+      <link rel="stylesheet" href="../../assets/theme.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#131-distance-based-and-nearest-centroid-classifiers" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../index.html" title="The Open Book Project" class="md-header__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+      
+  <img src="../../assets/icons/logo.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            The Open Book Project
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              13. The Quantum Classifier Zoo and a Practical Criterion
+            
+          </span>
+        </div>
+      </div>
+    </div><a href="../../index.html" class="bjp-libbtn" aria-label="Library: all books" title="Library: all books">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V5h4v15M8 20V9h4v11M14 20L12.6 6l3.8-.8 3 14.2M3 20h18"/></svg><span>Library</span>
+    </a>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary bjp-nav bjp-nav--book" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../index.html" title="The Open Book Project" class="md-nav__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+      
+  <img src="../../assets/icons/logo.svg" alt="logo">
+
+    </a>
+    The Open Book Project
+  </label>
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      <li class="md-nav__item bjp-nav-all">
+        <a href="../../index.html" class="md-nav__link" aria-label="All books: back to the library">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+          <span class="md-ellipsis">All books</span>
+        </a>
+      </li>
+      <li class="md-nav__item bjp-nav-book" role="presentation"><span class="bjp-nav-head">Quantum Machine Learning</span></li>
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview and preface
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="preface.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Preface
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="what-quantum-machine-learning-is.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. What Quantum Machine Learning Is
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="the-hilbert-space-picture.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. The Hilbert-Space Picture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="gates-circuits-and-expectation-values.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. Gates, Circuits and Expectation Values
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="learning-from-data-risk-features-and-kernels.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. Learning from Data: Risk, Features and Kernels
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="encoding-data-into-quantum-states.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Encoding Data into Quantum States
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="quantum-feature-maps-and-the-fidelity-kernel.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. Quantum Feature Maps and the Fidelity Kernel
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="measuring-overlaps-inversion-test-and-swap-test.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    7. Measuring Overlaps: the Inversion Test and the SWAP Test
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="quantum-kernel-support-vector-machines.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    8. Quantum-Kernel Support Vector Machines
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="variational-quantum-classifiers.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    9. Variational Quantum Classifiers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="gradients-and-training-the-parameter-shift-rule.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    10. Gradients and Training: the Parameter-Shift Rule
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="case-study-learning-xor-with-an-entangling-circuit.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    11. Case Study: Learning XOR with an Entangling Circuit
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="trainability-noise-and-generalisation.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    12. Trainability, Noise and Generalisation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    13. The Quantum Classifier Zoo and a Practical Criterion
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="the-quantum-classifier-zoo-and-a-practical-criterion.html" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    13. The Quantum Classifier Zoo and a Practical Criterion
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#131-distance-based-and-nearest-centroid-classifiers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.1 Distance-based and nearest-centroid classifiers
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#132-quantum-neural-networks-and-qcnns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.2 Quantum neural networks and QCNNs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#133-putting-it-together" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.3 Putting it together
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#134-the-practical-criterion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.4 The practical criterion
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#135-what-to-take-away" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.5 What to take away
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#136-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.6 Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#137-exercises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.7 Exercises
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="glossary.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="further-reading-and-sources.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Further Reading and Sources
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#131-distance-based-and-nearest-centroid-classifiers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.1 Distance-based and nearest-centroid classifiers
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#132-quantum-neural-networks-and-qcnns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.2 Quantum neural networks and QCNNs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#133-putting-it-together" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.3 Putting it together
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#134-the-practical-criterion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.4 The practical criterion
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#135-what-to-take-away" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.5 What to take away
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#136-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.6 Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#137-exercises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.7 Exercises
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="chapter-13-the-quantum-classifier-zoo-and-a-practical-criterion">Chapter 13: The Quantum Classifier Zoo and a Practical Criterion<a class="headerlink" href="#chapter-13-the-quantum-classifier-zoo-and-a-practical-criterion" title="Permanent link">&para;</a></h1>
+<p>We have covered the two main families in depth: quantum kernels and variational circuits. This chapter finishes with a short tour of the other architectures you will meet, because they teach something that the main two do not, and then pulls the whole book together into one practical criterion: when, if ever, should a quantum classifier be used rather than a classical one? The chapter ends with the six statements that summarise the course.</p>
+<h2 id="131-distance-based-and-nearest-centroid-classifiers">13.1 Distance-based and nearest-centroid classifiers<a class="headerlink" href="#131-distance-based-and-nearest-centroid-classifiers" title="Permanent link">&para;</a></h2>
+<p>Here is a classifier with no training at all. With amplitude encoding, a single interference circuit implements a kernelised nearest-neighbour rule. An ancilla qubit is put through a Hadamard and entangled with the registers that hold the training points and the test point, then a second Hadamard is applied and the ancilla is <strong>post-selected</strong> on one outcome (Schuld and co-authors, 2017). Let <span class="arithmatex">\(\tilde x\)</span> be the test point and <span class="arithmatex">\(x_i\)</span> the <span class="arithmatex">\(N\)</span> unit-normalised training points. The acceptance probability of the post-selection is</p>
+<div class="arithmatex">\[
+p_{\text{acc}}=\frac1{4N}\sum_{i=1}^N\lVert\tilde x+x_i\rVert^2 ,
+\]</div>
+<p>and, conditioned on acceptance, the probability of the label <span class="arithmatex">\(\tilde y=0\)</span> is</p>
+<div class="arithmatex">\[
+p(\tilde y=0)=\frac{1}{4N\,p_{\text{acc}}}\sum_{i:\,y_i=0}\lVert\tilde x+x_i\rVert^2 .
+\]</div>
+<p>The larger conditional probability gives the label. The interference sums classical distances in one circuit: there is no optimisation, hence no plateaus.</p>
+<p><strong>It is a nearest-centroid rule.</strong> For unit vectors, <span class="arithmatex">\(\lVert\tilde x+x_i\rVert^2=2+2\,\tilde x\cdot x_i\)</span>. Substituting,</p>
+<div class="arithmatex">\[
+p_{\text{acc}}=\frac{1}{2N}\sum_i\big(1+\tilde x\cdot x_i\big),\qquad
+p(\tilde y=0)=\frac{\sum_{i:\,y_i=0}\big(1+\tilde x\cdot x_i\big)}{\sum_i\big(1+\tilde x\cdot x_i\big)} .
+\]</div>
+<p>The numerator for class <span class="arithmatex">\(0\)</span> is <span class="arithmatex">\(N_0\big(1+\tilde x\cdot c_0\big)\)</span>, where <span class="arithmatex">\(N_0\)</span> is the number of class-<span class="arithmatex">\(0\)</span> points and <span class="arithmatex">\(c_0\)</span> is their mean vector (the centroid). So the circuit votes for the class whose points, on average, have the largest overlap with the test point: for balanced classes, whichever centroid has the larger inner product with <span class="arithmatex">\(\tilde x\)</span>. This is also why <span class="arithmatex">\(p_{\text{acc}}\approx\tfrac12\)</span> for standardised data, independently of <span class="arithmatex">\(N\)</span>: the average overlap <span class="arithmatex">\(\tilde x\cdot x_i\)</span> is then near zero.</p>
+<div class="admonition example">
+<p class="admonition-title">Example 13.1: the interference vote on four points</p>
+<p>Take unit vectors in <span class="arithmatex">\(\mathbb{R}^2\)</span>: class <span class="arithmatex">\(0\)</span>: <span class="arithmatex">\(x_1=(1,0)\)</span>, <span class="arithmatex">\(x_2=(0.8,0.6)\)</span>; class <span class="arithmatex">\(1\)</span>: <span class="arithmatex">\(x_3=(0,1)\)</span>, <span class="arithmatex">\(x_4=(0.6,0.8)\)</span>. The test point is <span class="arithmatex">\(\tilde x=(0.96,0.28)\)</span>, which is a unit vector.</p>
+<p><strong>Step 1, overlaps.</strong> <span class="arithmatex">\(\tilde x\cdot x_1=0.96\)</span>; <span class="arithmatex">\(\tilde x\cdot x_2=0.768+0.168=0.936\)</span>; <span class="arithmatex">\(\tilde x\cdot x_3=0.28\)</span>; <span class="arithmatex">\(\tilde x\cdot x_4=0.576+0.224=0.800\)</span>.</p>
+<p><strong>Step 2, sums of <span class="arithmatex">\(1+\tilde x\cdot x_i\)</span>.</strong> Class <span class="arithmatex">\(0\)</span>: <span class="arithmatex">\(1.96+1.936=3.896\)</span>. Class <span class="arithmatex">\(1\)</span>: <span class="arithmatex">\(1.28+1.800=3.080\)</span>. Total <span class="arithmatex">\(6.976\)</span>.</p>
+<p><strong>Step 3, acceptance.</strong> <span class="arithmatex">\(p_{\text{acc}}=\frac{1}{2N}\cdot6.976=\frac{6.976}{8}=0.872\)</span>. (The data are not standardised, so this is not <span class="arithmatex">\(\tfrac12\)</span>.)</p>
+<p><strong>Step 4, label probability.</strong> <span class="arithmatex">\(p(\tilde y=0)=3.896/6.976=0.558\)</span> and <span class="arithmatex">\(p(\tilde y=1)=0.442\)</span>, so the predicted label is <span class="arithmatex">\(0\)</span>. The test point lies close to the class-<span class="arithmatex">\(0\)</span> vectors and far from <span class="arithmatex">\(x_3\)</span>.</p>
+</div>
+<p>Be honest about the costs. Preparing the superposed training state is expensive, and for amplitude encoding it usually dominates and erases any advantage. Post-selection discards about half the shots, and post-selection failure is the practical obstacle to scaling. Its value is pedagogical: it is a minimal example of <em>measurement itself performing the inference</em>, with classification emerging directly from interference and measurement statistics.</p>
+<h2 id="132-quantum-neural-networks-and-qcnns">13.2 Quantum neural networks and QCNNs<a class="headerlink" href="#132-quantum-neural-networks-and-qcnns" title="Permanent link">&para;</a></h2>
+<p>A <strong>quantum neural network</strong> is a layered parameterised circuit trained end to end. Structurally it is a VQC with a regular layer pattern. The <strong>quantum convolutional neural network</strong> (QCNN) gives that pattern a particular structure.</p>
+<ul>
+<li><strong>Convolution:</strong> one two-qubit unitary <span class="arithmatex">\(W(\theta)\)</span> applied translation-invariantly across neighbouring qubits, so the weights are <em>shared</em>.</li>
+<li><strong>Pooling:</strong> measure half the qubits mid-circuit, using each outcome as a classical control on the qubits retained. This halves the register each round.</li>
+</ul>
+<p>The result is a tree. With <span class="arithmatex">\(n\)</span> qubits it has only <span class="arithmatex">\(\log_2n\)</span> rounds, so the circuit has <span class="arithmatex">\(O(\log n)\)</span> layers and parameters (for <span class="arithmatex">\(n=16\)</span>: <span class="arithmatex">\(16\to8\to4\to2\to1\)</span>, four rounds), and the gradient variance decays at worst <em>polynomially</em> in <span class="arithmatex">\(n\)</span>. QCNNs are <strong>provably free of barren plateaus</strong> (Pesah and co-authors, 2021). They meet the trainability and generalisation prescriptions of Chapter 12 at once: shallow, few parameters, local measurements. They are a natural fit for translationally structured tasks, notably <strong>quantum phase recognition</strong>, and their most convincing demonstrations are on quantum data, which foreshadows the criterion at the end of this chapter.</p>
+<p>The QCNN is the standout architecture because its trainability guarantee is a theorem rather than a heuristic: weight sharing plus logarithmic depth is exactly what defeats the concentration argument.</p>
+<h2 id="133-putting-it-together">13.3 Putting it together<a class="headerlink" href="#133-putting-it-together" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Family</th>
+<th>How it learns</th>
+<th>Main strength</th>
+<th>Main limitation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Quantum kernel SVM</td>
+<td>Convex dual on an estimated Gram matrix</td>
+<td>Global optimum; proven separation on a structured task</td>
+<td><span class="arithmatex">\(O(N^2)\)</span> circuits; kernel concentration</td>
+</tr>
+<tr>
+<td>VQC / QNN</td>
+<td>Gradient descent via parameter shift</td>
+<td>Flexible; shot cost linear in <span class="arithmatex">\(N\)</span></td>
+<td>Non-convex; barren plateaus; noise-sensitive</td>
+</tr>
+<tr>
+<td>QCNN</td>
+<td>Gradient descent with shared weights and pooling</td>
+<td>No barren plateaus; <span class="arithmatex">\(O(\log n)\)</span> parameters</td>
+<td>Needs structured, often quantum, data</td>
+</tr>
+<tr>
+<td>Distance-based</td>
+<td>No training; interference and post-selection</td>
+<td>One circuit; no optimisation</td>
+<td>Costly state preparation; post-selection loss</td>
+</tr>
+</tbody>
+</table>
+<p>The two main families compare as follows.</p>
+<table>
+<thead>
+<tr>
+<th>Aspect</th>
+<th>Quantum kernel SVM</th>
+<th>Variational classifier</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Training</td>
+<td>Convex dual; unique global optimum</td>
+<td>Non-convex; local minima and plateaus</td>
+</tr>
+<tr>
+<td>Shot cost</td>
+<td><span class="arithmatex">\(O(N^2M)\)</span>, grows with dataset size</td>
+<td><span class="arithmatex">\(O(\text{epochs}\cdot NpM)\)</span>, grows with parameters</td>
+</tr>
+<tr>
+<td>Circuit depth</td>
+<td>Twice the encoding depth (inversion test)</td>
+<td>Encoding plus ansatz depth <span class="arithmatex">\(L\)</span></td>
+</tr>
+<tr>
+<td>Trainability</td>
+<td>No barren plateaus; kernel values can still concentrate</td>
+<td>Barren plateaus for deep or global-cost models</td>
+</tr>
+<tr>
+<td>Evidence</td>
+<td>Provable separation on a discrete-log task</td>
+<td>Empirically competitive at small scale; no proven advantage</td>
+</tr>
+</tbody>
+</table>
+<p>Read this as a decision table rather than a contest: kernels win on training reliability, variational models on scaling with dataset size. Both suffer an exponential-concentration pathology when the circuit is too expressive; it simply appears in different places. Neither currently has an empirical advantage on real-world data.</p>
+<h2 id="134-the-practical-criterion">13.4 The practical criterion<a class="headerlink" href="#134-the-practical-criterion" title="Permanent link">&para;</a></h2>
+<div class="admonition warning">
+<p class="admonition-title">The practical criterion</p>
+<p>Use a quantum classifier when the data itself has quantum structure, or when the feature map has a proven separation. Otherwise a tuned classical model is the correct answer.</p>
+</div>
+<p>Quantum data is where the field's clearest successes sit, because there no classical description of the input exists to begin with. For ordinary tabular data the safe workflow, assembled from the previous chapters, is:</p>
+<ol>
+<li><strong>Start from a tuned classical baseline</strong> (RBF-kernel SVM, gradient boosting, a small neural network) on the same data and splits, and keep its score in view throughout.</li>
+<li><strong>Choose the encoding deliberately</strong> (Chapter 5): angle encoding as the default, scaled into a window of length at most <span class="arithmatex">\(\pi\)</span>; entangling or re-uploading maps only for a reason, such as a symmetry or a frequency content you can name.</li>
+<li><strong>Check the kernel before training</strong> (Chapter 8): estimate the Gram matrix and compute its alignment with the labels; if it is near the identity, the encoding is too expressive or the noise too high.</li>
+<li><strong>Keep the cost local and the circuit shallow</strong> (Chapter 12): local observables, depth <span class="arithmatex">\(O(\log n)\)</span>, few trainable gates.</li>
+<li><strong>Count the shots</strong> (Chapters 7, 8, 10): <span class="arithmatex">\(\tfrac12N^2M\)</span> for kernels, <span class="arithmatex">\(\text{epochs}\times N\times(1+2p)\times M\)</span> for variational training.</li>
+<li><strong>Report honestly:</strong> accuracy, shot counts, the classical baseline, and negative results. A negative result reported honestly is a contribution.</li>
+</ol>
+<h2 id="135-what-to-take-away">13.5 What to take away<a class="headerlink" href="#135-what-to-take-away" title="Permanent link">&para;</a></h2>
+<p>The six statements below are the spine of the course; everything else is detail supporting them.</p>
+<ol>
+<li><strong>A quantum model is a linear functional in an exponentially large Hilbert space.</strong> The encoding fixes which functions are reachable, so it is part of the model, not preprocessing (Chapters 2 and 5).</li>
+<li><strong>A quantum kernel is a fidelity</strong> <span class="arithmatex">\(k(x,x')=\lvert\langle\varphi(x)\vert\varphi(x')\rangle\rvert^2\)</span>. The device supplies similarities and the learning problem stays convex (Chapters 6 to 8).</li>
+<li><strong>A variational classifier trains a parameterised circuit.</strong> Gradients are exact through the parameter-shift rule, at two circuit evaluations per parameter (Chapters 9 to 11).</li>
+<li><strong>Expressivity is not free.</strong> Over-expressive maps concentrate kernel values and flatten gradients into barren plateaus, <span class="arithmatex">\(\operatorname{Var}[\partial_\theta C]\sim2^{-n}\)</span> (Chapters 8 and 12).</li>
+<li><strong>Generalisation improves with few trainable gates,</strong> roughly <span class="arithmatex">\(O\big(\sqrt{T\log T/N}\big)\)</span> for <span class="arithmatex">\(T\)</span> trainable gates and <span class="arithmatex">\(N\)</span> training samples (Chapter 12).</li>
+<li><strong>Claims of advantage need data with quantum structure and an honest classical baseline on the same task</strong> (Chapter 12 and this chapter).</li>
+</ol>
+<h2 id="136-summary">13.6 Summary<a class="headerlink" href="#136-summary" title="Permanent link">&para;</a></h2>
+<div class="admonition abstract">
+<p class="admonition-title">Chapter Summary</p>
+<ul>
+<li>A <strong>distance-based</strong> classifier uses one interference circuit and post-selection; for unit vectors it is a nearest-centroid vote, <span class="arithmatex">\(p(\tilde y=0)=\sum_{y_i=0}(1+\tilde x\cdot x_i)/\sum_i(1+\tilde x\cdot x_i)\)</span>. It has no training, but state preparation and post-selection costs usually erase any advantage.</li>
+<li>A <strong>QCNN</strong> has convolution with shared weights and pooling by mid-circuit measurement, <span class="arithmatex">\(O(\log n)\)</span> layers and parameters, and is provably free of barren plateaus; it suits structured, often quantum, data.</li>
+<li>Kernels win on training reliability; variational models on scaling with dataset size; both concentrate when over-expressive; neither has an empirical advantage on real-world data.</li>
+<li><strong>Practical criterion:</strong> use a quantum classifier when the data has quantum structure or the feature map has a proven separation; otherwise use a tuned classical model.</li>
+</ul>
+</div>
+<h2 id="137-exercises">13.7 Exercises<a class="headerlink" href="#137-exercises" title="Permanent link">&para;</a></h2>
+<div class="admonition example">
+<p class="admonition-title">Exercise 13.1</p>
+<p>For each situation say whether you would reach for a quantum classifier first, and why: (a) 200 labelled flowers with four features; (b) states produced by an experiment on a quantum many-body system, to be sorted by phase; (c) a feature map with a proven separation for your data's structure.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>(a) No: classical tabular data with no known structure that a feature map could exploit; use a tuned classical baseline. (b) Yes, a QCNN is a natural candidate: the data is quantum, the task is translationally structured (phase recognition) and no classical description of the input exists to begin with. (c) Yes, this is the second half of the practical criterion, but still compare with the best classical method and count the shots.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 13.2</p>
+<p>Compare the shot costs of a quantum-kernel SVM with <span class="arithmatex">\(N=1000\)</span>, <span class="arithmatex">\(M=10^4\)</span> and a variational classifier trained for <span class="arithmatex">\(20\)</span> epochs on <span class="arithmatex">\(N=1000\)</span> points with <span class="arithmatex">\(p=10\)</span> parameters and <span class="arithmatex">\(M=10^4\)</span> shots. Then repeat with <span class="arithmatex">\(p=100\)</span> and <span class="arithmatex">\(50\)</span> epochs.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>Kernel: <span class="arithmatex">\(\tfrac12N^2M=\tfrac12\cdot10^6\cdot10^4=5\times10^9\)</span>. Variational with <span class="arithmatex">\(p=10\)</span>, <span class="arithmatex">\(20\)</span> epochs: <span class="arithmatex">\(20\times1000\times21\times10^4=4.2\times10^9\)</span>, comparable. With <span class="arithmatex">\(p=100\)</span>, <span class="arithmatex">\(50\)</span> epochs: <span class="arithmatex">\(50\times1000\times201\times10^4\approx1.0\times10^{11}\)</span>, twenty times more. Neither family dominates: kernels scale with <span class="arithmatex">\(N^2\)</span>, variational training with <span class="arithmatex">\(\text{epochs}\times N\times p\)</span>.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 13.3</p>
+<p>Repeat Example 13.1 with the test point <span class="arithmatex">\(\tilde x=(0.28,0.96)\)</span>. What label is predicted?</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>Overlaps with <span class="arithmatex">\(x_1,\dots,x_4\)</span>: <span class="arithmatex">\(0.28\)</span>, <span class="arithmatex">\(0.168+0.576=0.744\)</span>, <span class="arithmatex">\(0.96\)</span>, <span class="arithmatex">\(0.168+0.768=0.936\)</span>. Class <span class="arithmatex">\(0\)</span>: <span class="arithmatex">\((1.28)+(1.744)=3.024\)</span>; class <span class="arithmatex">\(1\)</span>: <span class="arithmatex">\((1.96)+(1.936)=3.896\)</span>; total <span class="arithmatex">\(6.92\)</span>. <span class="arithmatex">\(p(\tilde y=0)=3.024/6.92=0.437\)</span>, so the predicted label is <span class="arithmatex">\(1\)</span>.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 13.4</p>
+<p>How many pooling rounds does a QCNN need on <span class="arithmatex">\(n=32\)</span> qubits to reduce the register to one qubit, and what does this say about the parameter count?</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>Each round halves the register: <span class="arithmatex">\(32\to16\to8\to4\to2\to1\)</span>, which is <span class="arithmatex">\(\log_232=5\)</span> rounds. With shared weights the parameter count is a few parameters per round, so <span class="arithmatex">\(O(\log n)\)</span> in total, in contrast with the <span class="arithmatex">\(2nL\)</span> of a hardware-efficient ansatz.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 13.5</p>
+<p>True or false, with a reason: "the quantum-kernel SVM has barren plateaus because its encoding is a deep circuit."</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>False. The SVM dual is convex with a unique optimum, so there is no plateau in the <em>optimisation</em>. The analogous failure appears elsewhere: an over-expressive feature map makes the kernel values concentrate exponentially, so the estimated Gram matrix tends to the identity and needs exponentially many shots to resolve.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 13.6</p>
+<p>Which of the six statements of Section 13.5 is each of these experimental observations evidence for? (i) A ZZ feature map with two repetitions scores <span class="arithmatex">\(30\%\)</span> on the iris data where the angle map scores <span class="arithmatex">\(100\%\)</span>. (ii) The XOR classifier fails without the CNOT. (iii) At <span class="arithmatex">\(n=30\)</span> qubits a global-cost gradient needs <span class="arithmatex">\(10^9\)</span> shots.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>(i) Statement 4 (expressivity is not free; the kernel is the model's idea of similarity) and, through the encoding, statement 1. (ii) Statement 1: the model's structure fixes what is reachable (the entangling gate is part of the hypothesis class), and statement 3 for the variational circuit it concerns. (iii) Statement 4, the barren plateau.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 13.7</p>
+<p>A paper reports that a variational classifier reaches <span class="arithmatex">\(88\%\)</span> on a dataset where a default (untuned) logistic regression reaches <span class="arithmatex">\(80\%\)</span>. List three things you would require before concluding that the quantum model is better.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>(1) A tuned classical baseline of a stronger kind (RBF-kernel SVM, gradient boosting, a small MLP) with the same hyperparameter budget, on identical splits. (2) The shot count and circuit evaluations used, reported alongside accuracy. (3) Whether the result survives repeated splits or seeds, and whether noise was included. Optionally: whether a classical surrogate or random-Fourier-feature model reproduces the quantum model's outputs.</p>
+</details>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="trainability-noise-and-generalisation.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: 12. Trainability, Noise and Generalisation">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                12. Trainability, Noise and Generalisation
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="glossary.html" class="md-footer__link md-footer__link--next" aria-label="Next: Glossary">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Glossary
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      The Open Book Project &middot;
+      <a href="../../about.html">About this library</a> &middot;
+      <a href="../../publish.html">Publish your book</a> &middot;
+      © The authors of the books
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "navigation.prune", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "toc.follow", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+  
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../../assets/mathjax.js"></script>
+      
+        <script src="../../assets/viz.js"></script>
+      
+        <script src="../../assets/reader.js"></script>
+      
+        <script src="../../assets/app.js"></script>
+      
+    
+  <script>
+    /* offline reading: the service worker at the site root (its scope is the whole site) */
+    if ("serviceWorker" in navigator && window.isSecureContext) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register(new URL("../../sw.js", location.href).href).catch(function () {});
+      });
+    }
+  </script>
+
+  </body>
+</html>

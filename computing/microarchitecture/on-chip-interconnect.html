@@ -1,0 +1,1583 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#ffffff">
+  
+    <meta name="description" content="The Open Book Project: books on computer science, quantum computing, cyber security, science, university courses and the English language, read page by page like an e-book, online or offline.">
+  
+  
+    <meta name="author" content="Nikhil Kumar Rajput, Ramanujan College, University of Delhi">
+  
+  
+    <link rel="canonical" href="https://open-book-project.github.io/computing/microarchitecture/on-chip-interconnect.html">
+  
+  
+    <link rel="prev" href="coherence-consistency-and-scaling.html">
+  
+  
+    <link rel="next" href="peripheral-interfaces.html">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&family=Noto+Serif+Devanagari:wght@400;600;700&display=swap" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&family=Noto+Serif+Devanagari:wght@400;600;700&display=swap"></noscript>
+  <link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+  <link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Open Book">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="application-name" content="Open Book"><script id="bjp-books" type="application/json">[{"id": "hardware_security", "lang": "en", "path": "science/hardware_security"}, {"id": "drones_missiles", "lang": "en", "path": "science/drones_missiles"}, {"id": "code_to_electrons", "lang": "en", "path": "science/code_to_electrons"}, {"id": "dpi_ndr", "lang": "en", "path": "science/dpi_ndr"}, {"id": "quantum", "lang": "en", "path": "quantum/quantum"}, {"id": "qml", "lang": "en", "path": "quantum/qml"}, {"id": "qml_course", "lang": "en", "path": "quantum/qml_course"}, {"id": "asic", "lang": "en", "path": "computing/asic"}, {"id": "compute", "lang": "en", "path": "computing/compute"}, {"id": "memory", "lang": "en", "path": "computing/memory"}, {"id": "os", "lang": "en", "path": "computing/os"}, {"id": "databases", "lang": "en", "path": "computing/databases"}, {"id": "datacenters", "lang": "en", "path": "computing/datacenters"}, {"id": "networks", "lang": "en", "path": "computing/networks"}, {"id": "cellular", "lang": "en", "path": "computing/cellular"}, {"id": "ml", "lang": "en", "path": "computing/ml"}, {"id": "microarchitecture", "lang": "en", "path": "computing/microarchitecture"}, {"id": "rtl_hdl", "lang": "en", "path": "computing/rtl_hdl"}, {"id": "rtl_to_gdsii", "lang": "en", "path": "computing/rtl_to_gdsii"}, {"id": "ram_ddr5", "lang": "en", "path": "computing/ram_ddr5"}, {"id": "security", "lang": "en", "path": "cyber/security"}, {"id": "trust", "lang": "en", "path": "cyber/trust"}, {"id": "attack_taxonomy", "lang": "en", "path": "cyber/attack_taxonomy"}, {"id": "datacentre_security_ip", "lang": "en", "path": "cyber/datacentre_security_ip"}, {"id": "randomness_testing", "lang": "en", "path": "cyber/randomness_testing"}, {"id": "optimization_methods", "lang": "en", "path": "courses/optimization_methods"}, {"id": "quantum_computing_applications", "lang": "en", "path": "courses/quantum_computing_applications"}, {"id": "dbms_course", "lang": "en", "path": "courses/dbms_course"}, {"id": "csa_course", "lang": "en", "path": "courses/csa_course"}, {"id": "web_programming", "lang": "en", "path": "courses/web_programming"}, {"id": "ml_course", "lang": "en", "path": "courses/ml_course"}, {"id": "english_book", "lang": "en", "path": "language/english_book"}, {"id": "english_book_hinglish", "lang": "en", "path": "language/english_book_hinglish"}, {"id": "english_book_hi", "lang": "hi", "path": "language/english_book_hi"}]</script><script>
+    (function () {
+      var X = window.XMLHttpRequest, open, gate = new Promise(function (r) { open = r; });
+      if (!X) return;
+      var open0 = X.prototype.open, send0 = X.prototype.send;
+      X.prototype.open = function (method, url) {
+        this.__pkIndex = /\/search\/search_index\.json(\?|#|$)/.test(String(url));
+        return open0.apply(this, arguments);
+      };
+      X.prototype.send = function () {
+        if (!this.__pkIndex) return send0.apply(this, arguments);
+        var xhr = this, args = arguments;
+        gate.then(function () { send0.apply(xhr, args); });
+      };
+      function wake() { open(); }
+      document.addEventListener("focusin", function (e) { if (e.target && e.target.closest && e.target.closest(".md-search")) wake(); });
+      document.addEventListener("click", function (e) { if (e.target && e.target.closest && e.target.closest('label[for="__search"], .md-search')) wake(); }, true);
+      document.addEventListener("keydown", function (e) {
+        var k = e.key;
+        if ((k === "/" || k === "s" || k === "f" || k === "S" || k === "F") && !(e.target && e.target.closest && e.target.closest("input, textarea, [contenteditable]"))) wake();
+      }, true);
+      if (/[?&]q=/.test(location.search)) wake();
+    })();
+  </script><script>
+    try {
+      if ((window.matchMedia && (matchMedia("(display-mode: standalone)").matches || matchMedia("(display-mode: fullscreen)").matches)) || navigator.standalone === true) {
+        document.documentElement.className += " bjp-standalone";
+      }
+    } catch (e) { /* not an installed app */ }
+  </script>
+  <script>
+    /* a book opened from its cover on the shelf: the page stays blank, in the cover's colour, until the reader is up */
+    try {
+      var cv = sessionStorage.getItem("bjp.reader.cover");
+      if (cv && sessionStorage.getItem("bjp.reader.open") === "1") {
+        var c = JSON.parse(cv), de = document.documentElement;
+        de.className += " bjp-booting";
+        if (c && /^#[0-9a-f]{3,8}$/i.test(c.bg || "")) de.style.background = c.bg;
+        setTimeout(function () { de.classList.remove("bjp-booting"); de.style.background = ""; }, 3000);
+      }
+    } catch (e) { /* no session storage: the page simply opens as usual */ }
+  </script>
+
+    
+      
+        <title>6. On-Chip Interconnect - The Open Book Project</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/extra.css">
+    
+      <link rel="stylesheet" href="../../assets/reader.css">
+    
+      <link rel="stylesheet" href="../../assets/viz.css">
+    
+      <link rel="stylesheet" href="../../assets/app.css">
+    
+      <link rel="stylesheet" href="../../assets/theme.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#61-why-a-chip-needs-roads" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../index.html" title="The Open Book Project" class="md-header__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+      
+  <img src="../../assets/icons/logo.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            The Open Book Project
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              6. On-Chip Interconnect
+            
+          </span>
+        </div>
+      </div>
+    </div><a href="../../index.html" class="bjp-libbtn" aria-label="Library: all books" title="Library: all books">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V5h4v15M8 20V9h4v11M14 20L12.6 6l3.8-.8 3 14.2M3 20h18"/></svg><span>Library</span>
+    </a>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary bjp-nav bjp-nav--book" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../index.html" title="The Open Book Project" class="md-nav__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+      
+  <img src="../../assets/icons/logo.svg" alt="logo">
+
+    </a>
+    The Open Book Project
+  </label>
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      <li class="md-nav__item bjp-nav-all">
+        <a href="../../index.html" class="md-nav__link" aria-label="All books: back to the library">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+          <span class="md-ellipsis">All books</span>
+        </a>
+      </li>
+      <li class="md-nav__item bjp-nav-book" role="presentation"><span class="bjp-nav-head">Microarchitecture and SoC Design</span></li>
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview and preface
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="preface.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Preface
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="the-layer-under-the-isa.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. The Layer Under the Instruction Set
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="pipelining-and-hazards.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Pipelining and Hazards
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="out-of-order-and-superscalar.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. Out-of-Order and Superscalar Execution
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="caches-and-virtual-memory.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. Caches and Virtual Memory
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="coherence-consistency-and-scaling.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Coherence, Consistency and Scaling
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. On-Chip Interconnect
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="on-chip-interconnect.html" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. On-Chip Interconnect
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#61-why-a-chip-needs-roads" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 Why a chip needs roads
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6.1 Why a chip needs roads">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#who-asks-and-who-answers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Who asks, and who answers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#every-subordinate-owns-an-address-range" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Every subordinate owns an address range
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-interconnects-three-jobs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The interconnect's three jobs
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#62-bus-crossbar-network" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 Bus, crossbar, network
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#63-the-validready-handshake" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.3 The VALID/READY handshake
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#64-the-amba-family-apb-ahb-and-axi" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.4 The AMBA family: APB, AHB and AXI
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6.4 The AMBA family: APB, AHB and AXI">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-five-axi-channels" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The five AXI channels
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bursts-one-address-many-beats" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bursts: one address, many beats
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#outstanding-transactions-and-ids" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Outstanding transactions and IDs
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#65-two-models-of-performance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.5 Two models of performance
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#66-tilelink-wishbone-and-chi" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.6 TileLink, Wishbone and CHI
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#67-inside-a-network-on-chip" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.7 Inside a network-on-chip
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#68-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.8 Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#69-exercises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.9 Exercises
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="peripheral-interfaces.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    7. Peripheral Interfaces
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="real-risc-v-cores.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    8. Real RISC-V Cores
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="benchmarks-and-metrics.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    9. Benchmarks and Metrics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="side-channels-and-hardware-security.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    10. Side Channels and Hardware Security
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="labs-and-a-design-study.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    11. Labs and a Design Study
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="glossary-and-further-reading.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary and Further Reading
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#61-why-a-chip-needs-roads" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 Why a chip needs roads
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6.1 Why a chip needs roads">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#who-asks-and-who-answers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Who asks, and who answers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#every-subordinate-owns-an-address-range" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Every subordinate owns an address range
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-interconnects-three-jobs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The interconnect's three jobs
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#62-bus-crossbar-network" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 Bus, crossbar, network
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#63-the-validready-handshake" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.3 The VALID/READY handshake
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#64-the-amba-family-apb-ahb-and-axi" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.4 The AMBA family: APB, AHB and AXI
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6.4 The AMBA family: APB, AHB and AXI">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-five-axi-channels" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The five AXI channels
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bursts-one-address-many-beats" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bursts: one address, many beats
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#outstanding-transactions-and-ids" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Outstanding transactions and IDs
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#65-two-models-of-performance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.5 Two models of performance
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#66-tilelink-wishbone-and-chi" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.6 TileLink, Wishbone and CHI
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#67-inside-a-network-on-chip" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.7 Inside a network-on-chip
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#68-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.8 Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#69-exercises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.9 Exercises
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="chapter-6-on-chip-interconnect">Chapter 6: On-Chip Interconnect<a class="headerlink" href="#chapter-6-on-chip-interconnect" title="Permanent link">&para;</a></h1>
+<p>A modern system-on-chip is a city of dozens of blocks: CPU clusters, DMA engines, memory controllers, accelerators and a swarm of peripherals, all of which must reach memory and each other. The interconnect is the road network that lets them share access without gridlock. This chapter builds up from the golden rule of on-chip protocols, the VALID/READY handshake, through the AMBA family (APB, AHB and AXI), TileLink, Wishbone and CHI, to full networks-on-chip, and ends with two small models that show where the performance of a bus really comes from.</p>
+<p>You need the idea of a memory-mapped address from Chapters 1 and 4 and the notion of coherence from Chapter 5 for the remarks on TileLink and CHI.</p>
+<h2 id="61-why-a-chip-needs-roads">6.1 Why a chip needs roads<a class="headerlink" href="#61-why-a-chip-needs-roads" title="Permanent link">&para;</a></h2>
+<p>A single core wired directly to a single memory needs no interconnect. A real chip has many blocks that start transactions and many that answer them, and wiring each directly to every other would need about <span class="arithmatex">\(n^2/2\)</span> connections for <span class="arithmatex">\(n\)</span> blocks, which would cover the die. Instead the blocks attach to a shared fabric that routes, arbitrates and decodes on their behalf. A city does not build a private road from every house to every shop; it builds a road network with junctions and traffic lights.</p>
+<h3 id="who-asks-and-who-answers">Who asks, and who answers<a class="headerlink" href="#who-asks-and-who-answers" title="Permanent link">&para;</a></h3>
+<p>A <strong>manager</strong> starts transactions: "read address A", "write this to B". CPU cores, GPUs and DMA engines (hardware that copies blocks of data by itself) are managers. Older documents say <em>master</em>. A <strong>subordinate</strong> responds: a memory, a block of control registers, a FIFO, a serial port. Older documents say <em>slave</em>. One block can be both: a DMA engine moves data as a manager, but its settings are written by the CPU, so to the CPU it is a subordinate.</p>
+<h3 id="every-subordinate-owns-an-address-range">Every subordinate owns an address range<a class="headerlink" href="#every-subordinate-owns-an-address-range" title="Permanent link">&para;</a></h3>
+<div class="language-text highlight"><pre><span></span><code>0x0000_0000 - 0x0000_FFFF   boot ROM
+0x1000_0000 - 0x1000_0FFF   interrupt controller
+0x1001_0000 - 0x1001_0FFF   UART0
+0x1001_1000 - 0x1001_1FFF   SPI0
+0x2000_0000 - 0x2FFF_FFFF   PCIe / accelerator
+0x8000_0000 - 0xFFFF_FFFF   DRAM (via the memory controller)
+</code></pre></div>
+<p>This table is the chip's <strong>memory map</strong>. A store to <code>0x1001_0000</code> does not touch RAM at all: it lands in a register of the serial port, UART0. (The underscore only groups hex digits for reading, like the commas in 1,000,000.)</p>
+<h3 id="the-interconnects-three-jobs">The interconnect's three jobs<a class="headerlink" href="#the-interconnects-three-jobs" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Address decoding.</strong> Look at each request's address and send it to the one subordinate that owns it: in hardware, just a comparator for each address range.</li>
+<li><strong>Arbitration.</strong> When two managers want the same subordinate in the same cycle, pick a winner (in turn, by priority, or weighted by quality of service) and make the other wait. Fairness and the avoidance of starvation live here.</li>
+<li><strong>Bridging.</strong> Join parts that differ: a 32-bit slow device hanging off a 128-bit fast backbone needs data-width conversion, a clock-domain crossing, and often protocol translation.</li>
+</ol>
+<h2 id="62-bus-crossbar-network">6.2 Bus, crossbar, network<a class="headerlink" href="#62-bus-crossbar-network" title="Permanent link">&para;</a></h2>
+<p>There are three ways to lay the roads, from cheap and simple to big and scalable.</p>
+<ul>
+<li>A <strong>shared bus</strong> is one set of wires that everyone time-shares. It is cheap and simple, but only one transfer can occur at a time, and contention rises fast. (Classic AHB and shared Wishbone.)</li>
+<li>A <strong>crossbar</strong> is a full switch: any manager can reach any subordinate, and non-conflicting pairs proceed in parallel. It gives great bandwidth, but its area and wiring grow as managers × subordinates. Most AXI interconnects are full or partial crossbars.</li>
+<li>A <strong>network-on-chip (NoC)</strong> sends packets through routers, like a tiny internet on the die. It scales to hundreds of endpoints and is the standard choice for many-core CPUs and large SoCs.</li>
+</ul>
+<figure class="fig fig-diagram">
+<img src="img/ch06_structures.svg" alt="A shared bus (one transfer at a time), a crossbar (non-clashing transfers in parallel) and a network on chip (routers with a block at each)." loading="lazy" width="1036" height="336">
+<figcaption><strong>Figure 6.1.</strong> A shared bus (one transfer at a time), a crossbar (non-clashing transfers in parallel) and a network on chip (routers with a block at each).</figcaption>
+</figure>
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Shared bus</th>
+<th>Crossbar</th>
+<th>Network-on-chip</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Scales to</td>
+<td>A few managers</td>
+<td>About 16 × 16</td>
+<td>Hundreds of nodes</td>
+</tr>
+<tr>
+<td>Wiring cost</td>
+<td>Low</td>
+<td>Grows as managers × subordinates</td>
+<td>Grows about linearly</td>
+</tr>
+<tr>
+<td>Delay</td>
+<td>Low when quiet; bad when busy</td>
+<td>Low and steady</td>
+<td>A few cycles per hop, predictable</td>
+</tr>
+<tr>
+<td>At once</td>
+<td>1 transfer</td>
+<td>Many, if there is no clash</td>
+<td>Many flows</td>
+</tr>
+<tr>
+<td>Typical use</td>
+<td>Slow peripherals</td>
+<td>The main backbone of most chips</td>
+<td>Many-core CPUs, GPUs</td>
+</tr>
+</tbody>
+</table>
+<p>Real chips mix them: a fast crossbar or network in the middle connects the CPU clusters, memory and high-bandwidth accelerators, and slow devices hang off a cheap bus behind a single bridge. Spend wires where the traffic is.</p>
+<h2 id="63-the-validready-handshake">6.3 The VALID/READY handshake<a class="headerlink" href="#63-the-validready-handshake" title="Permanent link">&para;</a></h2>
+<p>Nearly every modern on-chip protocol is built on one tiny rule.</p>
+<ul>
+<li>The sender drives <strong>VALID</strong>: "there is something on the wires this cycle".</li>
+<li>The receiver drives <strong>READY</strong>: "I can take it this cycle".</li>
+<li>A transfer happens on a rising clock edge <strong>if and only if both are high</strong> on that edge.</li>
+<li>Once VALID is raised, the sender must hold it, and keep the data steady, until the transfer happens.</li>
+</ul>
+<p>It is like handing over a parcel. The courier holds it out (VALID); you hold out your hands (READY). It changes hands only when both are out, and the courier must not snatch it back while waiting.</p>
+<figure class="fig fig-diagram">
+<img src="img/ch06_valid_ready.svg" alt="A VALID/READY handshake: VALID is high for cycles 1 to 4 and READY for cycles 3 and 4, so the two transfers happen at the clock edges that end cycles 3 and 4." loading="lazy" width="652" height="288">
+<figcaption><strong>Figure 6.2.</strong> A VALID/READY handshake: VALID is high for cycles 1 to 4 and READY for cycles 3 and 4, so the two transfers happen at the clock edges that end cycles 3 and 4.</figcaption>
+</figure>
+
+<div class="admonition example">
+<p class="admonition-title">Example 6.1: counting transfers</p>
+<p>VALID is high in cycles 1 to 4; READY is high only in cycles 3 and 4. Which cycles transfer data?</p>
+<p>In cycles 1 and 2 VALID is high but READY is low: no transfer, and the sender holds D0 steady. In cycle 3 both are high: D0 is transferred at the edge that ends cycle 3. In cycle 4 both are still high: D1 is transferred at the edge that ends cycle 4. After that VALID falls. There are <strong>two</strong> transfers.</p>
+</div>
+<p>Two gifts come from this one rule.</p>
+<p><strong>Back-pressure.</strong> A busy receiver simply keeps READY low. The sender waits with its data; nothing is lost and nothing overflows. Flow control comes free, with no explicit credit accounting on the wire. Symmetrically, a sender with nothing to send holds VALID low and the receiver idles.</p>
+<p><strong>Easy composition.</strong> Because each handshake is self-contained and stateless per beat, a register (a <em>skid buffer</em>) can be dropped into any channel to break a long timing path, and channels can be forked and joined in a crossbar, and everything still works, just a cycle later. This is <em>latency-insensitive design</em>: pipeline stages can be inserted freely without breaking function.</p>
+<h2 id="64-the-amba-family-apb-ahb-and-axi">6.4 The AMBA family: APB, AHB and AXI<a class="headerlink" href="#64-the-amba-family-apb-ahb-and-axi" title="Permanent link">&para;</a></h2>
+<p>Arm's AMBA (Advanced Microcontroller Bus Architecture) standards are free to use and are the most widely used on-chip protocols in the world, far beyond Arm cores. They are three protocols for three tiers of the SoC.</p>
+<ul>
+<li><strong>APB</strong>, the Advanced Peripheral Bus. Simple, low-power and unpipelined: one access at a time in two phases (setup, then access), no bursts, no outstanding transactions. It suits slow registers: timers, GPIO and the configuration of serial ports.</li>
+<li><strong>AHB</strong>, the Advanced High-performance Bus. Pipelined: the address phase of the next transfer overlaps the data phase of the current one. One shared bus with a central arbiter; supports bursts. It was the classic higher-bandwidth backbone before AXI.</li>
+<li><strong>AXI</strong>, the Advanced eXtensible Interface. Today's high-performance choice: five independent channels, separate reads and writes, bursts, and many outstanding, out-of-order transactions through IDs.</li>
+</ul>
+<p>AXI comes in three sizes. <strong>AXI4</strong> is the full burst protocol (up to 256 beats per burst). <strong>AXI4-Lite</strong> is a stripped-down subset with single beats, no bursts and no IDs, ideal for simple register interfaces on accelerators. <strong>AXI4-Stream</strong> drops addressing entirely: a pure point-to-point flow of data (TVALID, TREADY, TDATA, TLAST) for video, audio and DSP pipelines.</p>
+<h3 id="the-five-axi-channels">The five AXI channels<a class="headerlink" href="#the-five-axi-channels" title="Permanent link">&para;</a></h3>
+<p>AXI's power comes from splitting reads and writes into fully independent channels, each its own VALID/READY handshake. Writes use three channels, reads two, and they run concurrently and out of lock-step.</p>
+<table>
+<thead>
+<tr>
+<th>Channel</th>
+<th>Short</th>
+<th>Driven by</th>
+<th>Carries</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Write address</td>
+<td>AW</td>
+<td>manager</td>
+<td><code>AWADDR</code>, <code>AWID</code>, <code>AWLEN</code> (burst length), <code>AWSIZE</code>, <code>AWBURST</code></td>
+</tr>
+<tr>
+<td>Write data</td>
+<td>W</td>
+<td>manager</td>
+<td><code>WDATA</code>, <code>WSTRB</code> (byte-lane enables), <code>WLAST</code></td>
+</tr>
+<tr>
+<td>Write response</td>
+<td>B</td>
+<td>subordinate</td>
+<td><code>BRESP</code> (OKAY, EXOKAY, SLVERR, DECERR), <code>BID</code></td>
+</tr>
+<tr>
+<td>Read address</td>
+<td>AR</td>
+<td>manager</td>
+<td><code>ARADDR</code>, <code>ARID</code>, <code>ARLEN</code>, <code>ARSIZE</code>, <code>ARBURST</code></td>
+</tr>
+<tr>
+<td>Read data</td>
+<td>R</td>
+<td>subordinate</td>
+<td><code>RDATA</code>, <code>RRESP</code>, <code>RID</code>, <code>RLAST</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="bursts-one-address-many-beats">Bursts: one address, many beats<a class="headerlink" href="#bursts-one-address-many-beats" title="Permanent link">&para;</a></h3>
+<p>In a <strong>burst</strong>, one address beat describes a whole run of data beats. <code>AWLEN</code> (or <code>ARLEN</code>) gives the number of beats minus one, <code>AWSIZE</code> gives the bytes per beat as a power of two, and <code>AWBURST</code> gives the mode.</p>
+<table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>Address on each beat</th>
+<th>Used for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>INCR</td>
+<td>goes up</td>
+<td>Copying a contiguous block of memory</td>
+</tr>
+<tr>
+<td>WRAP</td>
+<td>goes up, then wraps inside an aligned block</td>
+<td>Cache-line fills, "the word you are waiting for first" (critical word first)</td>
+</tr>
+<tr>
+<td>FIXED</td>
+<td>stays the same</td>
+<td>Pouring data into one FIFO register</td>
+</tr>
+</tbody>
+</table>
+<div class="language-text highlight"><pre><span></span><code>AXI write burst: 4 beats of 4 bytes to 0x8000_1000
+  AW:  AWADDR=0x80001000  AWLEN=3 (4 beats)  AWSIZE=2 (4 bytes)  AWBURST=INCR  AWID=5
+  W :  WDATA=D0  WSTRB=1111  WLAST=0
+  W :  WDATA=D1  WSTRB=1111  WLAST=0
+  W :  WDATA=D2  WSTRB=1111  WLAST=0
+  W :  WDATA=D3  WSTRB=1111  WLAST=1      &lt;- the last beat
+  B :  BRESP=OKAY  BID=5                  &lt;- one reply for the whole burst
+</code></pre></div>
+<figure class="fig fig-diagram">
+<img src="img/ch06_axi_write.svg" alt="A four-beat AXI write burst on three independent channels: one address beat on AW, four data beats on W with WLAST on the last, and one response on B." loading="lazy" width="689" height="285">
+<figcaption><strong>Figure 6.3.</strong> A four-beat AXI write burst on three independent channels: one address beat on AW, four data beats on W with WLAST on the last, and one response on B.</figcaption>
+</figure>
+
+<h3 id="outstanding-transactions-and-ids">Outstanding transactions and IDs<a class="headerlink" href="#outstanding-transactions-and-ids" title="Permanent link">&para;</a></h3>
+<p>A manager may send a new address before earlier requests have been answered. Requests still waiting for their answer are <strong>outstanding transactions</strong>. Each carries an ID (<code>AxID</code>). Answers with <em>different</em> IDs may come back in any order, so a fast on-chip memory can overtake a slow DRAM read; answers with the <em>same</em> ID stay in order. The fabric matches each R or B beat to its request by ID.</p>
+<h2 id="65-two-models-of-performance">6.5 Two models of performance<a class="headerlink" href="#65-two-models-of-performance" title="Permanent link">&para;</a></h2>
+<p>Interconnect performance rests on two levers: amortising the per-transaction overhead with bursts, and hiding latency with outstanding transactions.</p>
+<div class="admonition example">
+<p class="admonition-title">Example 6.2: why bursts pay</p>
+<p>Suppose issuing an address costs a fixed 5 cycles of overhead and each 8-byte beat costs 1 cycle. Move 64 bytes.</p>
+<ul>
+<li>As eight single beats: <span class="arithmatex">\(8 \times (5 + 1) = 48\)</span> cycles, a rate of <span class="arithmatex">\(64/48 = 1.33\)</span> bytes per cycle.</li>
+<li>As one 8-beat burst: <span class="arithmatex">\(5 + 8 = 13\)</span> cycles, a rate of <span class="arithmatex">\(64/13 = 4.9\)</span> bytes per cycle.</li>
+</ul>
+<p>The same data moves at <span class="arithmatex">\(48/13 \approx 3.7\)</span> times the throughput, because the address overhead is paid once. This is exactly why cache-line fills and DMA copies use long INCR or WRAP bursts.</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title">Example 6.3: hiding a 20-cycle delay</p>
+<p>A memory takes 20 cycles to answer but accepts a new request every cycle. One request at a time, you get one answer per 20 cycles. Keep 20 requests in flight (pipeline the AR channel, with distinct IDs) and, once the pipe is full, you get one answer every cycle: 20 times the throughput. <strong>Little's law</strong> says it in general:</p>
+<div class="arithmatex">\[\text{throughput} = \frac{\text{requests in flight}}{\text{delay}}\]</div>
+<p>With 4 requests in flight the throughput is <span class="arithmatex">\(4/20 = 0.2\)</span> answers per cycle; to reach 1 per cycle you need <span class="arithmatex">\(1 \times 20 = 20\)</span> in flight.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">AXI is not faster than APB because of its clock</p>
+<p>Both can run at the same frequency. AXI wins through concurrency: separate read and write channels, bursts that amortise addressing, and many outstanding, reorderable transactions that hide memory latency. APB moves one register at a time with per-access overhead and no overlap. A "faster" bus that allows only one outstanding transaction can still be slower than a modest one that keeps 16 in flight.</p>
+</div>
+<h2 id="66-tilelink-wishbone-and-chi">6.6 TileLink, Wishbone and CHI<a class="headerlink" href="#66-tilelink-wishbone-and-chi" title="Permanent link">&para;</a></h2>
+<p><strong>TileLink</strong> is an open interconnect standard from SiFive, native to the Rocket and BOOM cores and to the rocket-chip and Chipyard generators (Chapter 8). One protocol scales from a trivial register bus to full cache coherence, through three conformance levels.</p>
+<table>
+<thead>
+<tr>
+<th>Level</th>
+<th>Name</th>
+<th>Capability</th>
+<th>Channels used</th>
+<th>Rough AXI analogue</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TL-UL</td>
+<td>Uncached lightweight</td>
+<td>Single-beat reads and writes: simple memory-mapped registers</td>
+<td>A, D</td>
+<td>AXI4-Lite</td>
+</tr>
+<tr>
+<td>TL-UH</td>
+<td>Uncached heavyweight</td>
+<td>Adds bursts, atomics and hints such as prefetch, but no caching</td>
+<td>A, D</td>
+<td>AXI4 (full)</td>
+</tr>
+<tr>
+<td>TL-C</td>
+<td>Cached (coherent)</td>
+<td>Full cache coherence: permission acquire and release, probes</td>
+<td>A, B, C, D, E</td>
+<td>Arm's coherent buses</td>
+</tr>
+</tbody>
+</table>
+<p>The five channels A to E have a strict priority order that provably prevents deadlock.</p>
+<table>
+<thead>
+<tr>
+<th>Channel</th>
+<th>Direction</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>manager to subordinate</td>
+<td>Request: read (Get), write (Put), atomic, or acquire-permission</td>
+</tr>
+<tr>
+<td>B</td>
+<td>subordinate to manager</td>
+<td>Probe: ask a caching manager to give up or downgrade a block (TL-C only)</td>
+</tr>
+<tr>
+<td>C</td>
+<td>manager to subordinate</td>
+<td>Release or probe response: write back dirty data, acknowledge a probe (TL-C only)</td>
+</tr>
+<tr>
+<td>D</td>
+<td>subordinate to manager</td>
+<td>Response or grant: read data, write acknowledgement, permission grant</td>
+</tr>
+<tr>
+<td>E</td>
+<td>manager to subordinate</td>
+<td>Grant acknowledgement: the final handshake that closes a coherence transaction (TL-C only)</td>
+</tr>
+</tbody>
+</table>
+<p>Both TileLink and AXI use VALID/READY, support bursts and outstanding transactions. The key differences are that TileLink builds coherence into the protocol itself (TL-C) instead of needing a separate coherent variant, that it enforces the channel priority to prove deadlock freedom formally, and that it is open and RISC-V-native. AXI is more widespread in commercial IP and has the vast AMBA ecosystem behind it. Chipyard SoCs typically use TileLink inside and bridge to AXI at the memory-controller and PCIe edges.</p>
+<p><strong>Wishbone</strong> is the other end of the scale: a public-domain, deliberately minimal bus from OpenCores, common in open-source IP and in the LiteX ecosystem. Classic Wishbone is a simple synchronous handshake (<code>STB</code>, <code>ACK</code> and <code>CYC</code>) supporting single and (in its pipelined B4 form) burst cycles. Its charm is simplicity, at the cost of deep outstanding transactions, reordering and coherence.</p>
+<p><strong>CHI</strong>, Arm's Coherent Hub Interface, is the top of the AMBA stack, aimed at large, many-core, cache-coherent systems. Unlike AXI's channel-and-address model, CHI is packet-based with credit flow control, designed to scale across a coherent mesh, carrying snoops and coherence messages between many caches and home nodes. It is overkill for a microcontroller and essential for a 64-core server chip.</p>
+<h2 id="67-inside-a-network-on-chip">6.7 Inside a network-on-chip<a class="headerlink" href="#67-inside-a-network-on-chip" title="Permanent link">&para;</a></h2>
+<p>Once there are too many endpoints for a crossbar, a packet-switched NoC takes over, and its vocabulary mirrors computer networking, shrunk onto silicon.</p>
+<ul>
+<li>Each block attaches to a <strong>router</strong>; routers connect to their neighbours by point-to-point links.</li>
+<li>A message is chopped into <strong>packets</strong>, and each packet into fixed-size <strong>flits</strong> (flow-control units): a head flit carries the routing information, body flits carry the payload and a tail flit closes the packet. Flits stream through the routers, often in <em>wormhole</em> fashion, so that one packet spans several routers at once.</li>
+<li><strong>Topologies.</strong> A <em>ring</em> is cheap (two links per node) but its latency grows linearly with size. A <em>mesh</em> is a two-dimensional grid with good bisection bandwidth and simple routing, and is the many-core favourite. A <em>torus</em> is a mesh with wrap-around links, halving the worst-case hop count at the cost of longer wires.</li>
+<li><strong>Routing</strong> picks the path. <em>XY routing</em>, which goes along X first and then along Y, is simple and cannot deadlock on a mesh. Adaptive routing dodges congestion but must avoid routing deadlock, for example with virtual channels.</li>
+<li><strong>Flow control</strong> decides when a flit may advance. Credit-based schemes track the free buffer slots downstream. <strong>Virtual channels</strong> share one physical link between several queues, so that one blocked packet does not hold up all the others (head-of-line blocking).</li>
+</ul>
+<figure class="fig fig-diagram">
+<img src="img/ch06_mesh_xy.svg" alt="XY routing on a four-by-four mesh: a packet from router (0,0) to router (3,2) travels along X first, then along Y." loading="lazy" width="503" height="337">
+<figcaption><strong>Figure 6.4.</strong> XY routing on a four-by-four mesh: a packet from router (0,0) to router (3,2) travels along X first, then along Y.</figcaption>
+</figure>
+
+<h2 id="68-summary">6.8 Summary<a class="headerlink" href="#68-summary" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Managers start transactions, subordinates answer. The interconnect decodes addresses, arbitrates and bridges.</li>
+<li>Shared bus, crossbar and network-on-chip run from cheap and serial to parallel and scalable; big chips use all three.</li>
+<li>VALID/READY: a transfer happens only when both are high. Back-pressure and easy composition come free.</li>
+<li>AMBA: APB for slow registers, AHB the older backbone, AXI with five channels, bursts and outstanding, reorderable transactions.</li>
+<li>TileLink scales from registers to coherence for RISC-V; Wishbone is the simple open bus; CHI is the large coherent one.</li>
+<li>Performance comes from concurrency, not clock rate: bursts amortise addressing, and outstanding transactions hide latency (Little's law).</li>
+</ul>
+<h2 id="69-exercises">6.9 Exercises<a class="headerlink" href="#69-exercises" title="Permanent link">&para;</a></h2>
+<p><strong>Exercise 6.1.</strong> VALID is high in cycles 1 to 4 and READY is high only in cycles 3 and 4. How many transfers happen, and in which cycles?</p>
+<details class="note">
+<summary>Answer</summary>
+<p>Two: at the clock edges that end cycles 3 and 4. In cycles 1 and 2 the sender holds its data and waits.</p>
+</details>
+<p><strong>Exercise 6.2.</strong> VALID is high in cycles 1 to 6, and READY is 0, 1, 0, 1, 1, 0 in cycles 1 to 6. In which cycles do transfers occur?</p>
+<details class="note">
+<summary>Answer</summary>
+<p>A transfer needs both high: cycles 2, 4 and 5, so three transfers. In cycles 1, 3 and 6 the sender holds its current data.</p>
+</details>
+<p><strong>Exercise 6.3.</strong> "AXI is faster than APB because it runs at a higher clock." Is that true?</p>
+<details class="note">
+<summary>Answer</summary>
+<p>Not really. Both can run at the same clock. AXI wins through concurrency: separate read and write channels, bursts that pay the address cost once, and many requests in flight.</p>
+</details>
+<p><strong>Exercise 6.4.</strong> Why must an AXI burst of 16 beats of 8 bytes be described by <code>AWLEN</code> = 15 and <code>AWSIZE</code> = 3?</p>
+<details class="note">
+<summary>Answer</summary>
+<p><code>AWLEN</code> holds the number of beats minus one: <span class="arithmatex">\(16 - 1 = 15\)</span>. <code>AWSIZE</code> holds the base-2 logarithm of the bytes per beat: <span class="arithmatex">\(2^3 = 8\)</span> bytes. The burst moves <span class="arithmatex">\(16 \times 8 = 128\)</span> bytes from one address beat.</p>
+</details>
+<p><strong>Exercise 6.5.</strong> Address overhead is 4 cycles and each beat costs 1 cycle. Compare the cycles needed to move 16 beats as 16 single transfers and as one burst, and the ratio of throughputs.</p>
+<details class="note">
+<summary>Answer</summary>
+<p>One at a time: <span class="arithmatex">\(16 \times (4 + 1) = 80\)</span> cycles. One burst: <span class="arithmatex">\(4 + 16 = 20\)</span> cycles. The burst has <span class="arithmatex">\(80/20 = 4\)</span> times the throughput.</p>
+</details>
+<p><strong>Exercise 6.6.</strong> A memory answers 24 cycles after a request and accepts a new request every cycle. A manager can have 6 requests outstanding. What is its throughput, and how many must be outstanding to reach one answer per cycle?</p>
+<details class="note">
+<summary>Answer</summary>
+<p>By Little's law, throughput <span class="arithmatex">\(= 6/24 = 0.25\)</span> answers per cycle. To reach 1 per cycle it needs <span class="arithmatex">\(1 \times 24 = 24\)</span> requests in flight.</p>
+</details>
+<p><strong>Exercise 6.7.</strong> Using the memory map in Section 6.1, which subordinate receives a store to <code>0x1000_0800</code>? To <code>0x1001_1008</code>? To <code>0x8000_1000</code>? What should the fabric do with an access to <code>0x1002_0000</code>?</p>
+<details class="note">
+<summary>Answer</summary>
+<p><code>0x1000_0800</code> lies in <code>0x1000_0000</code> to <code>0x1000_0FFF</code>: the interrupt controller. <code>0x1001_1008</code> lies in <code>0x1001_1000</code> to <code>0x1001_1FFF</code>: SPI0. <code>0x8000_1000</code> lies in the DRAM range. <code>0x1002_0000</code> lies in no range, so no subordinate claims it; the fabric should answer with an error response (in AXI, a decode error, <code>DECERR</code>) rather than hang.</p>
+</details>
+<p><strong>Exercise 6.8.</strong> In a 4 × 4 mesh with XY routing, list the routers a packet visits from router (1,3) to router (3,0), writing routers as (x,y).</p>
+<details class="note">
+<summary>Answer</summary>
+<p>Along X first: (1,3), (2,3), (3,3). Then along Y: (3,2), (3,1), (3,0). That is five hops between six routers.</p>
+</details>
+<p><strong>Exercise 6.9.</strong> Give one reason a large SoC uses an APB bus for its UART and SPI controllers while using a crossbar or NoC for CPU, memory and accelerators.</p>
+<details class="note">
+<summary>Answer</summary>
+<p>Peripheral registers are accessed rarely and slowly, so the cheap, simple, low-power APB with its two-phase access suffices, and a single bridge connects it to the backbone. The CPU, memory and accelerators exchange large volumes of traffic that needs the parallelism of a crossbar or NoC, and spending wires and gates there is where the bandwidth is.</p>
+</details>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="coherence-consistency-and-scaling.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: 5. Coherence, Consistency and Scaling">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                5. Coherence, Consistency and Scaling
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="peripheral-interfaces.html" class="md-footer__link md-footer__link--next" aria-label="Next: 7. Peripheral Interfaces">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                7. Peripheral Interfaces
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      The Open Book Project &middot;
+      <a href="../../about.html">About this library</a> &middot;
+      <a href="../../publish.html">Publish your book</a> &middot;
+      © The authors of the books
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "navigation.prune", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "toc.follow", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+  
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../../assets/mathjax.js"></script>
+      
+        <script src="../../assets/viz.js"></script>
+      
+        <script src="../../assets/reader.js"></script>
+      
+        <script src="../../assets/app.js"></script>
+      
+    
+  <script>
+    /* offline reading: the service worker at the site root (its scope is the whole site) */
+    if ("serviceWorker" in navigator && window.isSecureContext) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register(new URL("../../sw.js", location.href).href).catch(function () {});
+      });
+    }
+  </script>
+
+  </body>
+</html>
