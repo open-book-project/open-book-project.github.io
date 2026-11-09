@@ -13,11 +13,14 @@
  *   volumes kept for offline reading   the "bjp-offline" cache, filled by assets/app.js; kept across deploys
  *   videos (.mp4, .webm, ...)          from the kept volume when there is one (answering range requests, which players make),
  *                                      otherwise straight from the network
+ *   linked books (assets/remote.js)    the text of a chapter from the source's API: network first; the copy kept for
+ *                                      offline reading ("pk-remote-kept", kept across deploys) or read lately when
+ *                                      offline or slow. Their pictures: the kept copy first, otherwise the network
  */
 "use strict";
 
-var VERSION = "e7038b6b8c7e";
-var SHELL = ["index.html", "about.html", "install.html", "publish.html", "offline.html", "sitemap.xml", "manifest.webmanifest", "library.json", "assets/app.css", "assets/app.js", "assets/extra.css", "assets/icons/apple-touch-icon.png", "assets/icons/favicon-32.png", "assets/icons/favicon.svg", "assets/icons/icon-192.png", "assets/icons/icon-512.png", "assets/icons/logo.svg", "assets/icons/maskable-512.png", "assets/images/favicon.png", "assets/javascripts/bundle.d7400e89.min.js", "assets/javascripts/workers/search.2c215733.min.js", "assets/mathjax.js", "assets/reader.css", "assets/reader.js", "assets/stylesheets/main.ec1eaa64.min.css", "assets/stylesheets/palette.ab4e12ef.min.css", "assets/theme.css", "assets/viz-kit.js", "assets/viz.css", "assets/viz.js"];
+var VERSION = "32afcaef0a88";
+var SHELL = ["index.html", "books.html", "about.html", "install.html", "publish.html", "offline.html", "sitemap.xml", "manifest.webmanifest", "library.json", "lists/ai-machine-learning.html", "lists/architecture-to-silicon.html", "lists/cyber-security-foundations.html", "lists/networks-systems.html", "lists/quantum-computing.html", "subjects/aerospace-defence.html", "subjects/algorithms.html", "subjects/artificial-intelligence.html", "subjects/chip-design.html", "subjects/cloud-data-centres.html", "subjects/computer-architecture.html", "subjects/computer-science.html", "subjects/cryptography.html", "subjects/cyber-security.html", "subjects/databases.html", "subjects/electronics.html", "subjects/engineering.html", "subjects/english.html", "subjects/hardware-security.html", "subjects/index.html", "subjects/languages.html", "subjects/mathematics.html", "subjects/memory-storage.html", "subjects/networks.html", "subjects/operating-systems.html", "subjects/optimization.html", "subjects/programming.html", "subjects/quantum-machine-learning.html", "subjects/quantum.html", "subjects/security-operations.html", "subjects/statistics.html", "subjects/telecommunications.html", "subjects/web-development.html", "assets/app.css", "assets/app.js", "assets/extra.css", "assets/icons/apple-touch-icon.png", "assets/icons/favicon-32.png", "assets/icons/favicon.svg", "assets/icons/icon-192.png", "assets/icons/icon-512.png", "assets/icons/logo.svg", "assets/icons/maskable-512.png", "assets/images/favicon.png", "assets/javascripts/bundle.d7400e89.min.js", "assets/javascripts/workers/search.2c215733.min.js", "assets/mathjax.js", "assets/reader.css", "assets/reader.js", "assets/remote.css", "assets/remote.js", "assets/slides-deck.js", "assets/slides.css", "assets/slides.js", "assets/stylesheets/main.ec1eaa64.min.css", "assets/stylesheets/palette.ab4e12ef.min.css", "assets/theme.css", "assets/viz-kit.js", "assets/viz.css", "assets/viz.js"];
 var BOOKS = [];                           // the books' folders, longest first
 
 var SCOPE = self.registration.scope;               // the site root, ending in "/"
@@ -32,6 +35,10 @@ var MAX_PAGES = 160, MAX_STATIC = 400, MAX_EXT = 160;
 var SLOW_MS = 3500;                                  // after this, a cached page is shown while the network catches up
 var STATIC_RE = /\.(css|js|mjs|json|png|jpe?g|gif|webp|avif|svg|ico|woff2?|ttf|otf|webmanifest|xml|txt)$/i;
 var MATHJAX = "https://cdn.jsdelivr.net/npm/mathjax@";
+var REMOTE_KEPT = "pk-remote-kept";                  // linked books kept for offline reading (written by assets/remote.js)
+var REMOTE_CACHE = "pk-remote-recent", MAX_REMOTE = 80;   // the chapters of linked books read lately
+var REMOTE_API = /^https:\/\/[a-z-]+\.(?:wikibooks|wikisource)\.org\/w\/api\.php\?/;
+var REMOTE_IMG = /^https:\/\/(?:upload|thumb)\.wikimedia\.org\//;
 
 /* ------------------------------------------------------------------ install and activate */
 self.addEventListener("install", function (event) {
@@ -212,6 +219,30 @@ function mediaResponse(event, req) {
   }, function () { return fetch(req); });
 }
 
+/* the text of a chapter of a linked book: from the source when it answers in time, else the copy on this device */
+function remoteText(event, req) {
+  var cached = function () { return matchIn(req.url, [REMOTE_KEPT, REMOTE_CACHE], { ignoreVary: true }); };
+  var net = fetch(req);
+  event.waitUntil(net.then(function (res) {
+    if (!(res && res.ok && res.type !== "opaque")) return null;
+    var copy = res.clone();
+    return caches.open(REMOTE_CACHE).then(function (c) { return c.put(req.url, copy); }).then(function () { return trim(REMOTE_CACHE, MAX_REMOTE); });
+  }).catch(function () { /* offline or storage full */ }));
+  return new Promise(function (resolve) {
+    var done = false;
+    function finish(r) { if (!done) { done = true; resolve(r); } }
+    var timer = setTimeout(function () { cached().then(function (r) { if (r) finish(r); }); }, SLOW_MS);
+    net.then(function (res) { clearTimeout(timer); finish(res); }, function () {
+      clearTimeout(timer);
+      cached().then(function (r) { finish(r || Response.error()); });
+    });
+  });
+}
+
+function remoteImage(event, req) {
+  return matchIn(req.url, [REMOTE_KEPT], { ignoreVary: true }).then(function (hit) { return hit || fetch(req); }, function () { return fetch(req); });
+}
+
 /* ------------------------------------------------------------------ routing */
 self.addEventListener("fetch", function (event) {
   var req = event.request;
@@ -234,6 +265,8 @@ self.addEventListener("fetch", function (event) {
     if (STATIC_RE.test(rel)) event.respondWith(cacheFirst(event, req, STATIC_CACHE, MAX_STATIC));
     return;
   }
+  if (REMOTE_API.test(req.url)) { event.respondWith(remoteText(event, req)); return; }
+  if (REMOTE_IMG.test(req.url)) { event.respondWith(remoteImage(event, req)); return; }
   if (url.hostname === "fonts.googleapis.com") event.respondWith(staleWhileRevalidate(event, req, EXT_CACHE));
   else if (url.hostname === "fonts.gstatic.com" || req.url.indexOf(MATHJAX) === 0) event.respondWith(cacheFirst(event, req, EXT_CACHE, MAX_EXT));
 });
