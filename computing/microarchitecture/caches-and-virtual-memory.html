@@ -1,0 +1,1575 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#ffffff">
+  
+    <meta name="description" content="The Open Book Project: books on computer science, quantum computing, cyber security, science, university courses and the English language, read page by page like an e-book, online or offline.">
+  
+  
+    <meta name="author" content="Nikhil Kumar Rajput, Ramanujan College, University of Delhi">
+  
+  
+    <link rel="canonical" href="https://open-book-project.github.io/computing/microarchitecture/caches-and-virtual-memory.html">
+  
+  
+    <link rel="prev" href="out-of-order-and-superscalar.html">
+  
+  
+    <link rel="next" href="coherence-consistency-and-scaling.html">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&family=Noto+Serif+Devanagari:wght@400;600;700&display=swap" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&family=Noto+Serif+Devanagari:wght@400;600;700&display=swap"></noscript>
+  <link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+  <link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Open Book">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="application-name" content="Open Book"><script id="bjp-books" type="application/json">[{"id": "hardware_security", "lang": "en", "path": "science/hardware_security"}, {"id": "drones_missiles", "lang": "en", "path": "science/drones_missiles"}, {"id": "code_to_electrons", "lang": "en", "path": "science/code_to_electrons"}, {"id": "dpi_ndr", "lang": "en", "path": "science/dpi_ndr"}, {"id": "quantum", "lang": "en", "path": "quantum/quantum"}, {"id": "qml", "lang": "en", "path": "quantum/qml"}, {"id": "qml_course", "lang": "en", "path": "quantum/qml_course"}, {"id": "asic", "lang": "en", "path": "computing/asic"}, {"id": "compute", "lang": "en", "path": "computing/compute"}, {"id": "memory", "lang": "en", "path": "computing/memory"}, {"id": "os", "lang": "en", "path": "computing/os"}, {"id": "databases", "lang": "en", "path": "computing/databases"}, {"id": "datacenters", "lang": "en", "path": "computing/datacenters"}, {"id": "networks", "lang": "en", "path": "computing/networks"}, {"id": "cellular", "lang": "en", "path": "computing/cellular"}, {"id": "ml", "lang": "en", "path": "computing/ml"}, {"id": "microarchitecture", "lang": "en", "path": "computing/microarchitecture"}, {"id": "rtl_hdl", "lang": "en", "path": "computing/rtl_hdl"}, {"id": "rtl_to_gdsii", "lang": "en", "path": "computing/rtl_to_gdsii"}, {"id": "ram_ddr5", "lang": "en", "path": "computing/ram_ddr5"}, {"id": "security", "lang": "en", "path": "cyber/security"}, {"id": "trust", "lang": "en", "path": "cyber/trust"}, {"id": "attack_taxonomy", "lang": "en", "path": "cyber/attack_taxonomy"}, {"id": "datacentre_security_ip", "lang": "en", "path": "cyber/datacentre_security_ip"}, {"id": "randomness_testing", "lang": "en", "path": "cyber/randomness_testing"}, {"id": "optimization_methods", "lang": "en", "path": "courses/optimization_methods"}, {"id": "quantum_computing_applications", "lang": "en", "path": "courses/quantum_computing_applications"}, {"id": "dbms_course", "lang": "en", "path": "courses/dbms_course"}, {"id": "csa_course", "lang": "en", "path": "courses/csa_course"}, {"id": "web_programming", "lang": "en", "path": "courses/web_programming"}, {"id": "ml_course", "lang": "en", "path": "courses/ml_course"}, {"id": "english_book", "lang": "en", "path": "language/english_book"}, {"id": "english_book_hinglish", "lang": "en", "path": "language/english_book_hinglish"}, {"id": "english_book_hi", "lang": "hi", "path": "language/english_book_hi"}]</script><script>
+    (function () {
+      var X = window.XMLHttpRequest, open, gate = new Promise(function (r) { open = r; });
+      if (!X) return;
+      var open0 = X.prototype.open, send0 = X.prototype.send;
+      X.prototype.open = function (method, url) {
+        this.__pkIndex = /\/search\/search_index\.json(\?|#|$)/.test(String(url));
+        return open0.apply(this, arguments);
+      };
+      X.prototype.send = function () {
+        if (!this.__pkIndex) return send0.apply(this, arguments);
+        var xhr = this, args = arguments;
+        gate.then(function () { send0.apply(xhr, args); });
+      };
+      function wake() { open(); }
+      document.addEventListener("focusin", function (e) { if (e.target && e.target.closest && e.target.closest(".md-search")) wake(); });
+      document.addEventListener("click", function (e) { if (e.target && e.target.closest && e.target.closest('label[for="__search"], .md-search')) wake(); }, true);
+      document.addEventListener("keydown", function (e) {
+        var k = e.key;
+        if ((k === "/" || k === "s" || k === "f" || k === "S" || k === "F") && !(e.target && e.target.closest && e.target.closest("input, textarea, [contenteditable]"))) wake();
+      }, true);
+      if (/[?&]q=/.test(location.search)) wake();
+    })();
+  </script><script>
+    try {
+      if ((window.matchMedia && (matchMedia("(display-mode: standalone)").matches || matchMedia("(display-mode: fullscreen)").matches)) || navigator.standalone === true) {
+        document.documentElement.className += " bjp-standalone";
+      }
+    } catch (e) { /* not an installed app */ }
+  </script>
+  <script>
+    /* a book opened from its cover on the shelf: the page stays blank, in the cover's colour, until the reader is up */
+    try {
+      var cv = sessionStorage.getItem("bjp.reader.cover");
+      if (cv && sessionStorage.getItem("bjp.reader.open") === "1") {
+        var c = JSON.parse(cv), de = document.documentElement;
+        de.className += " bjp-booting";
+        if (c && /^#[0-9a-f]{3,8}$/i.test(c.bg || "")) de.style.background = c.bg;
+        setTimeout(function () { de.classList.remove("bjp-booting"); de.style.background = ""; }, 3000);
+      }
+    } catch (e) { /* no session storage: the page simply opens as usual */ }
+  </script>
+
+    
+      
+        <title>4. Caches and Virtual Memory - The Open Book Project</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/extra.css">
+    
+      <link rel="stylesheet" href="../../assets/reader.css">
+    
+      <link rel="stylesheet" href="../../assets/viz.css">
+    
+      <link rel="stylesheet" href="../../assets/app.css">
+    
+      <link rel="stylesheet" href="../../assets/theme.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#41-why-caches-work" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../index.html" title="The Open Book Project" class="md-header__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+      
+  <img src="../../assets/icons/logo.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            The Open Book Project
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              4. Caches and Virtual Memory
+            
+          </span>
+        </div>
+      </div>
+    </div><a href="../../index.html" class="bjp-libbtn" aria-label="Library: all books" title="Library: all books">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V5h4v15M8 20V9h4v11M14 20L12.6 6l3.8-.8 3 14.2M3 20h18"/></svg><span>Library</span>
+    </a>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary bjp-nav bjp-nav--book" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../index.html" title="The Open Book Project" class="md-nav__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+      
+  <img src="../../assets/icons/logo.svg" alt="logo">
+
+    </a>
+    The Open Book Project
+  </label>
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      <li class="md-nav__item bjp-nav-all">
+        <a href="../../index.html" class="md-nav__link" aria-label="All books: back to the library">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+          <span class="md-ellipsis">All books</span>
+        </a>
+      </li>
+      <li class="md-nav__item bjp-nav-book" role="presentation"><span class="bjp-nav-head">Microarchitecture and SoC Design</span></li>
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview and preface
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="preface.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Preface
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="the-layer-under-the-isa.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. The Layer Under the Instruction Set
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="pipelining-and-hazards.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Pipelining and Hazards
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="out-of-order-and-superscalar.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. Out-of-Order and Superscalar Execution
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. Caches and Virtual Memory
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="caches-and-virtual-memory.html" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. Caches and Virtual Memory
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#41-why-caches-work" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 Why caches work
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#42-how-a-cache-finds-things" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 How a cache finds things
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4.2 How a cache finds things">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#where-may-a-block-live" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Where may a block live?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spatial-locality-in-action" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Spatial locality in action
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#43-why-misses-happen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 Why misses happen
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#44-average-memory-access-time" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.4 Average memory access time
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4.4 Average memory access time">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#how-the-levels-are-arranged" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How the levels are arranged
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#45-writes-and-other-tricks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.5 Writes, and other tricks
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#46-virtual-memory-and-the-tlb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.6 Virtual memory and the TLB
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4.6 Virtual memory and the TLB">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-vipt-trick" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The VIPT trick
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#47-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.7 Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#48-exercises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.8 Exercises
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="coherence-consistency-and-scaling.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Coherence, Consistency and Scaling
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="on-chip-interconnect.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. On-Chip Interconnect
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="peripheral-interfaces.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    7. Peripheral Interfaces
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="real-risc-v-cores.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    8. Real RISC-V Cores
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="benchmarks-and-metrics.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    9. Benchmarks and Metrics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="side-channels-and-hardware-security.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    10. Side Channels and Hardware Security
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="labs-and-a-design-study.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    11. Labs and a Design Study
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="glossary-and-further-reading.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary and Further Reading
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#41-why-caches-work" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 Why caches work
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#42-how-a-cache-finds-things" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 How a cache finds things
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4.2 How a cache finds things">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#where-may-a-block-live" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Where may a block live?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spatial-locality-in-action" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Spatial locality in action
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#43-why-misses-happen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 Why misses happen
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#44-average-memory-access-time" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.4 Average memory access time
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4.4 Average memory access time">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#how-the-levels-are-arranged" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How the levels are arranged
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#45-writes-and-other-tricks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.5 Writes, and other tricks
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#46-virtual-memory-and-the-tlb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.6 Virtual memory and the TLB
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4.6 Virtual memory and the TLB">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-vipt-trick" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The VIPT trick
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#47-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.7 Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#48-exercises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.8 Exercises
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="chapter-4-caches-and-virtual-memory">Chapter 4: Caches and Virtual Memory<a class="headerlink" href="#chapter-4-caches-and-virtual-memory" title="Permanent link">&para;</a></h1>
+<p>A processor core can retire several instructions per cycle, but a trip to DRAM costs hundreds of cycles. The entire memory hierarchy exists to hide that gap. This chapter takes the microarchitect's view of a single core's memory system: how a cache finds a block and where it may put one, why caches miss and what cures each kind of miss, how to judge a design with one formula (average memory access time), what happens on stores, which helpers keep an out-of-order core fed, and how virtual memory and the TLB fit in front of the cache. The next chapter takes up the problem that arises when many cores each have a cache: coherence and consistency.</p>
+<p>You should already know the memory wall of Chapter 1; Chapter 3 helps for the sections on non-blocking caches.</p>
+<h2 id="41-why-caches-work">4.1 Why caches work<a class="headerlink" href="#41-why-caches-work" title="Permanent link">&para;</a></h2>
+<p>A student writing an essay keeps the three books in use open on the desk, a dozen on the shelf behind, the city library across town, and the national warehouse for anything else. Nearly every look-up hits the desk.</p>
+<p>A <strong>cache</strong> is a small, fast memory that keeps copies of recently used data close to the processor. If the data is there, it is a <strong>cache hit</strong>; if not, a <strong>cache miss</strong>, and the request goes one level down. Caches are invisible to programs: they never change an answer, only how long it takes.</p>
+<p>Fast memory is small and costly, and big memory is slow and cheap, so memories are stacked: the top is fast, the bottom is big.</p>
+<table>
+<thead>
+<tr>
+<th>Level</th>
+<th>Typical size</th>
+<th>Typical access time</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Registers</td>
+<td>about 100 B</td>
+<td>under 1 cycle</td>
+</tr>
+<tr>
+<td>L1 cache</td>
+<td>32 to 64 KB</td>
+<td>about 4 cycles</td>
+</tr>
+<tr>
+<td>L2 cache</td>
+<td>about 1 MB</td>
+<td>about 12 cycles</td>
+</tr>
+<tr>
+<td>L3 cache</td>
+<td>8 to 64 MB</td>
+<td>about 40 cycles</td>
+</tr>
+<tr>
+<td>DRAM</td>
+<td>gigabytes</td>
+<td>about 200 or more cycles</td>
+</tr>
+<tr>
+<td>SSD</td>
+<td>terabytes</td>
+<td>about 100 000 cycles</td>
+</tr>
+</tbody>
+</table>
+<figure class="fig fig-diagram">
+<img src="img/ch04_hierarchy.svg" alt="Typical access times of the levels of the memory hierarchy, on a logarithmic scale. The figures are orders of magnitude for orientation." loading="lazy" width="691" height="329">
+<figcaption><strong>Figure 4.1.</strong> Typical access times of the levels of the memory hierarchy, on a logarithmic scale. The figures are orders of magnitude for orientation.</figcaption>
+</figure>
+
+<p>It works because real programs show <strong>locality</strong>.</p>
+<ul>
+<li><strong>Temporal locality:</strong> something used now will probably be used again soon (a loop counter, the top of the stack, a popular variable). So keep recently used data.</li>
+<li><strong>Spatial locality:</strong> if address <span class="arithmatex">\(A\)</span> is used, addresses near <span class="arithmatex">\(A\)</span> probably will be too (walking through an array, running instructions in sequence). So fetch a whole neighbourhood at once.</li>
+</ul>
+<p>That neighbourhood is a <strong>cache line</strong> or <strong>block</strong>, the unit a cache moves and stores. Today it is typically 64 bytes.</p>
+<h2 id="42-how-a-cache-finds-things">4.2 How a cache finds things<a class="headerlink" href="#42-how-a-cache-finds-things" title="Permanent link">&para;</a></h2>
+<p>Every address is cut into three pieces that tell the cache where to look and what to check.</p>
+<ul>
+<li>The <strong>offset</strong> picks the byte within a block. A 64-byte block needs 6 offset bits.</li>
+<li>The <strong>index</strong> picks which set of the cache to look in.</li>
+<li>The <strong>tag</strong> is the rest of the address. It is stored with the block and compared, to tell which of the many possible blocks is actually there.</li>
+</ul>
+<figure class="fig fig-diagram">
+<img src="img/ch04_address_fields.svg" alt="An address split for a 32 KiB, 8-way cache with 64-byte lines: 6 offset bits, 6 index bits and a 20-bit tag in a 32-bit address." loading="lazy" width="744" height="226">
+<figcaption><strong>Figure 4.2.</strong> An address split for a 32 KiB, 8-way cache with 64-byte lines: 6 offset bits, 6 index bits and a 20-bit tag in a 32-bit address.</figcaption>
+</figure>
+
+<h3 id="where-may-a-block-live">Where may a block live?<a class="headerlink" href="#where-may-a-block-live" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Direct-mapped:</strong> each block has exactly one possible place. It is simple and fast, but two blocks wanting the same place keep evicting each other.</li>
+<li><strong>Set-associative:</strong> each block may go in any of <span class="arithmatex">\(N\)</span> places in its set (2-way, 4-way, 8-way, ...). It is a good compromise and the usual choice.</li>
+<li><strong>Fully associative:</strong> a block may go anywhere. There are no collisions, but every tag must be checked on every access, so it is used only for tiny caches.</li>
+</ul>
+<p>Car parking is the picture: an assigned bay (direct-mapped), any bay on your floor (set-associative), any bay in the building (fully associative). The number of sets is capacity divided by (block size × associativity). When a set is full, one block must be evicted; the usual rule is <strong>LRU</strong>, least recently used: evict the block that has been untouched the longest.</p>
+<div class="admonition example">
+<p class="admonition-title">Example 4.1: simulating a tiny cache</p>
+<p>A cache has 4 blocks of 4 bytes each. The byte addresses referenced are 0, 4, 16, 0, 20, 4, 32, 0. With 4-byte blocks, the <em>block number</em> of an address is the address divided by 4: 0, 1, 4, 0, 5, 1, 8, 0. The offset has 2 bits.</p>
+<p><strong>Direct-mapped</strong> (4 sets, so the index is the block number mod 4):</p>
+<table>
+<thead>
+<tr>
+<th>Access</th>
+<th style="text-align: right;">Address</th>
+<th style="text-align: right;">Block</th>
+<th style="text-align: right;">Set</th>
+<th>Result</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td>miss</td>
+<td>compulsory</td>
+</tr>
+<tr>
+<td>2</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td>miss</td>
+<td>compulsory</td>
+</tr>
+<tr>
+<td>3</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">0</td>
+<td>miss</td>
+<td>compulsory; evicts block 0</td>
+</tr>
+<tr>
+<td>4</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td>miss</td>
+<td>conflict: block 4 evicted it</td>
+</tr>
+<tr>
+<td>5</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">1</td>
+<td>miss</td>
+<td>compulsory; evicts block 1</td>
+</tr>
+<tr>
+<td>6</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td>miss</td>
+<td>conflict: block 5 evicted it</td>
+</tr>
+<tr>
+<td>7</td>
+<td style="text-align: right;">32</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">0</td>
+<td>miss</td>
+<td>compulsory; evicts block 0</td>
+</tr>
+<tr>
+<td>8</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td>miss</td>
+<td>conflict</td>
+</tr>
+</tbody>
+</table>
+<p>Zero hits: 5 compulsory misses and 3 conflict misses (0 and 16 fight over set 0; 4 and 20 fight over set 1).</p>
+<p><strong>2-way set-associative</strong> (2 sets of 2 ways, LRU; the set is the block number mod 2). Set 0 sees blocks 0, 4, 0, 8, 0: miss, miss, hit, miss (it evicts block 4, the least recently used), hit. Set 1 sees blocks 1, 5, 1: miss, miss, hit. That is <strong>3 hits</strong> (the second 0, the second 4, the last 0) and 5 compulsory misses.</p>
+<p><strong>Fully associative</strong> (one set of 4 ways, LRU). The five distinct blocks 0, 1, 4, 5, 8 each miss once, compulsory. When block 8 arrives the cache holds 0, 1, 4 and 5, and block 4 is the least recently used, so it is evicted. The result is again <strong>3 hits</strong> and 5 misses, all compulsory.</p>
+<p>A <em>conflict miss</em> is exactly a miss that a fully associative cache of the same size would have avoided: here, the three extra misses of the direct-mapped cache.</p>
+</div>
+<h3 id="spatial-locality-in-action">Spatial locality in action<a class="headerlink" href="#spatial-locality-in-action" title="Permanent link">&para;</a></h3>
+<p>Take an array of four 4-byte words at addresses 0, 4, 8, 12, read twice in a cache of 16 bytes. With 4-byte blocks (4 blocks) the first pass misses on every word and the second pass hits every time: 4 misses in 8 accesses. With 8-byte blocks (2 blocks) the first access to each block brings in its neighbour: access 0 misses, 4 hits, 8 misses, 12 hits, and the second pass hits entirely: 2 misses in 8 accesses. Spatial locality halves the misses.</p>
+<h2 id="43-why-misses-happen">4.3 Why misses happen<a class="headerlink" href="#43-why-misses-happen" title="Permanent link">&para;</a></h2>
+<p>Every miss has one of three causes, and each has its own cure. (The classification is due to Mark Hill.)</p>
+<table>
+<thead>
+<tr>
+<th>Kind</th>
+<th>Cause</th>
+<th>Cure</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Compulsory</strong> (cold)</td>
+<td>The first touch of a block: it was never in the cache</td>
+<td>Bigger blocks; fetching ahead (prefetching)</td>
+</tr>
+<tr>
+<td><strong>Capacity</strong></td>
+<td>The program's working data simply does not fit</td>
+<td>A bigger cache</td>
+</tr>
+<tr>
+<td><strong>Conflict</strong></td>
+<td>Too many busy blocks map to the same set, though the cache has room elsewhere</td>
+<td>More associativity</td>
+</tr>
+</tbody>
+</table>
+<p>Multicore adds a fourth C, <strong>coherence</strong>, treated in Chapter 5: a block is invalidated because another core wrote it.</p>
+<p>Two experiments make the difference concrete. In a direct-mapped cache of 4 blocks of 4 bytes, addresses 0 and 16 fall into the same set (blocks 0 and 4, both set 0), so alternating between them misses on every access. Switch to 2-way and, after the first two misses, every access hits. Now cycle through five blocks (addresses 0, 4, 8, 12, 16, repeatedly) in a four-block cache with LRU. Even a fully associative cache misses every time, because each block is evicted just before it is needed again; only a bigger cache helps. That is a capacity problem, not a conflict problem.</p>
+<p>Every knob has a price.</p>
+<table>
+<thead>
+<tr>
+<th>Turn up...</th>
+<th>Compulsory</th>
+<th>Capacity</th>
+<th>Conflict</th>
+<th>Price</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cache size</td>
+<td>none</td>
+<td>fewer</td>
+<td>fewer</td>
+<td>Slower hits, more area and power</td>
+</tr>
+<tr>
+<td>Associativity</td>
+<td>none</td>
+<td>none</td>
+<td>many fewer</td>
+<td>Slower hits (more tags to compare)</td>
+</tr>
+<tr>
+<td>Block size</td>
+<td>fewer</td>
+<td>can rise</td>
+<td>can rise</td>
+<td>Each miss fetches more bytes (higher miss penalty and bandwidth)</td>
+</tr>
+</tbody>
+</table>
+<p>Block size has a sweet spot: too small wastes spatial locality, too big drags in bytes nobody uses and evicts useful ones. Sixty-four bytes is the near-universal choice. Associativity has diminishing returns, summarised in a rule of thumb: a direct-mapped cache of size <span class="arithmatex">\(N\)</span> misses about as often as a 2-way cache of size <span class="arithmatex">\(N/2\)</span>.</p>
+<h2 id="44-average-memory-access-time">4.4 Average memory access time<a class="headerlink" href="#44-average-memory-access-time" title="Permanent link">&para;</a></h2>
+<p>One formula judges any cache design:</p>
+<div class="arithmatex">\[\text{AMAT} = \text{hit time} + \text{miss rate} \times \text{miss penalty}\]</div>
+<p>Every term is a design knob. Lowering the hit time favours small, simple, low-associativity L1 caches; lowering the miss rate favours big, associative caches; lowering the miss penalty is what the deeper levels are for. The terms trade against one another, so no one can be optimised alone.</p>
+<div class="admonition example">
+<p class="admonition-title">Example 4.2: one level</p>
+<p>An L1 hit takes 1 cycle, the miss rate is 4%, and going to DRAM costs 200 cycles.
+$<span class="arithmatex">\(\text{AMAT} = 1 + 0.04 \times 200 = 1 + 8 = 9 \text{ cycles}\)</span>$
+The 4% of accesses that miss cost eight times more than the 96% that hit. Shrinking the penalty is what further levels are for.</p>
+</div>
+<p>With several levels the miss penalty of one level is the AMAT of the next:</p>
+<div class="arithmatex">\[\text{AMAT} = h_{L1} + m_{L1}\bigl(h_{L2} + m_{L2}(h_{L3} + m_{L3} \cdot t_{\text{DRAM}})\bigr)\]</div>
+<div class="admonition example">
+<p class="admonition-title">Example 4.3: three levels</p>
+<p>L1: hit 1 cycle, miss rate 5%. L2: hit 12 cycles, miss rate 40%. L3: hit 40 cycles, miss rate 50%. DRAM: 200 cycles. Work from the inside out.</p>
+<ul>
+<li>L3 level: <span class="arithmatex">\(40 + 0.50 \times 200 = 140\)</span></li>
+<li>L2 level: <span class="arithmatex">\(12 + 0.40 \times 140 = 68\)</span></li>
+<li>L1 level: <span class="arithmatex">\(1 + 0.05 \times 68 = 4.4\)</span> cycles</li>
+</ul>
+<p>That is 4.4 cycles instead of 9. The miss rates here are <strong>local</strong>: the misses at that level divided by the accesses <em>reaching</em> that level. A <strong>global</strong> miss rate divides by all accesses made by the CPU. Mixing the two is a classic mistake.</p>
+</div>
+<h3 id="how-the-levels-are-arranged">How the levels are arranged<a class="headerlink" href="#how-the-levels-are-arranged" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Contents.</strong> L1 is almost always split into an instruction cache and a data cache, so that the fetch engine and the load/store unit never contend; L2 and L3 are unified, one pool shared by instructions and data.</li>
+<li><strong>Placement.</strong> Each core usually has private L1 and L2 caches, for low latency; all cores share the last-level cache, which is the capacity and coherence backstop for the whole socket.</li>
+<li><strong>Inclusion.</strong> An <em>inclusive</em> cache keeps a copy of everything in the level above (simpler bookkeeping: to know what any core caches, snoop only the last level), at the price of duplicated capacity. An <em>exclusive</em> cache keeps each block in one level only (more total capacity, at the price of more careful handling when blocks move between levels). A <em>non-inclusive, non-exclusive</em> (NINE) design makes no promise either way.</li>
+</ul>
+<h2 id="45-writes-and-other-tricks">4.5 Writes, and other tricks<a class="headerlink" href="#45-writes-and-other-tricks" title="Permanent link">&para;</a></h2>
+<p>Stores need rules of their own.</p>
+<ul>
+<li><strong>Write-through:</strong> every store updates the cache and the next level. It is simple and always up to date, but generates a lot of traffic, and needs a write buffer so that the core does not stall.</li>
+<li><strong>Write-back:</strong> a store updates only the cache and marks the block <em>dirty</em>. It is written down only when evicted. There is far less traffic, and it is the norm for L1 data caches and below. It needs a dirty bit and a write-back path.</li>
+<li><strong>Write-allocate:</strong> on a store miss, fetch the block first (the usual partner of write-back).</li>
+<li><strong>No-write-allocate:</strong> on a store miss, write straight to the next level without caching (the usual partner of write-through; good for streaming stores).</li>
+</ul>
+<p>Several helpers keep an out-of-order core fed.</p>
+<ul>
+<li><strong>The write (store) buffer</strong> is a small FIFO that holds retired stores, so the core need not wait for them to reach memory. Loads must look inside it (store-to-load forwarding), and its draining behaviour is central to the memory-consistency model of Chapter 5.</li>
+<li><strong>A victim cache</strong> is a tiny fully associative buffer for recently evicted blocks. It catches conflict misses in a low-associativity L1 cheaply, adding a bit of associativity for the hot sets.</li>
+<li><strong>Prefetching</strong> brings blocks in before they are demanded, attacking compulsory misses. Hardware prefetchers (next-line, stride and stream) detect patterns such as "every 64 bytes" and run ahead; software prefetch hints (for example x86 <code>PREFETCHT0</code> or the RISC-V Zicbop instructions) are precise but need their distance tuned. Too eager a prefetcher pollutes the cache and wastes bandwidth.</li>
+<li><strong>Non-blocking (lock-up-free) caches</strong> keep serving hits while a miss is pending ("hit under miss") and track several outstanding misses ("miss under miss") with <strong>MSHRs</strong>, the miss status handling registers. Each MSHR records the pending block's address and which loads are waiting; when the fill returns, it wakes them. The number of MSHRs caps the memory-level parallelism, the essential partner of an out-of-order core's ability to have many loads in flight.</li>
+</ul>
+<h2 id="46-virtual-memory-and-the-tlb">4.6 Virtual memory and the TLB<a class="headerlink" href="#46-virtual-memory-and-the-tlb" title="Permanent link">&para;</a></h2>
+<p>Every program believes it has the whole memory to itself. A translation step makes that true. With <strong>virtual memory</strong>, programs use <em>virtual addresses</em> and the hardware translates each one to a <em>physical address</em> in real memory. Translation works in chunks called <strong>pages</strong>, commonly 4 KiB. A <strong>page table</strong> in memory lists where each virtual page really lives. This gives isolation (programs cannot see each other), freedom of placement, and the ability to keep rarely used pages on disk. It is like flat numbers in two buildings: "Flat 1" exists in both, and the postal service knows which street each building is on.</p>
+<p>A flat page table would be enormous, so architectures use a multi-level (radix) table: the virtual address is split into fields that index successive levels. RISC-V Sv39, for example, uses three 9-bit levels above a 12-bit page offset.</p>
+<figure class="fig fig-diagram">
+<img src="img/ch04_sv39.svg" alt="Sv39 translation: three 9-bit virtual page number fields index three levels of page table; the 12-bit page offset passes through unchanged." loading="lazy" width="726" height="285">
+<figcaption><strong>Figure 4.3.</strong> Sv39 translation: three 9-bit virtual page number fields index three levels of page table; the 12-bit page offset passes through unchanged.</figcaption>
+</figure>
+
+<p>A full walk is one memory read per level, three extra reads for every access, which is far too slow to do each time. The <strong>TLB</strong> (translation lookaside buffer) is a small, fast, highly associative cache of recent translations (virtual page number to physical page number, plus permission bits). A TLB hit translates in about a cycle; a miss triggers a page-table walk, by a hardware walker or on some ISAs by software. TLBs are split for instructions and data, often have two levels, and are tagged with an address-space identifier (ASID) so that a context switch need not flush them.</p>
+<h3 id="the-vipt-trick">The VIPT trick<a class="headerlink" href="#the-vipt-trick" title="Permanent link">&para;</a></h3>
+<p>If the L1 cache must be looked up <em>after</em> translation (physically indexed, physically tagged, PIPT), the TLB sits on the critical path and slows every access. If it is indexed by the virtual address (VIVT) there are aliasing problems. The compromise is <strong>VIPT</strong>: virtually indexed, physically tagged. Use the untranslated page-offset bits to index the cache set in parallel with the TLB look-up, then compare the physical tag once translation completes. The overlap is free, provided that</p>
+<div class="arithmatex">\[\text{number of sets} \times \text{block size} \le \text{page size}\]</div>
+<p>so that the index and offset bits come entirely from the page offset, which translation does not change. This constraint is one reason so many L1 caches are 32 KiB, 8-way, with 64-byte lines: <span class="arithmatex">\(32\ \text{KiB}/8 = 4\ \text{KiB}\)</span>, exactly one page, and the 6 index bits plus 6 offset bits of Figure 4.2 make exactly the 12-bit page offset.</p>
+<h2 id="47-summary">4.7 Summary<a class="headerlink" href="#47-summary" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Caches exploit temporal and spatial locality; data moves in cache lines, typically 64 bytes.</li>
+<li>An address splits into tag, index and offset. Direct-mapped, set-associative and fully associative caches trade speed against collisions; LRU picks the victim.</li>
+<li>Misses are compulsory, capacity or conflict (and, with several cores, coherence). Size cuts capacity misses, associativity cuts conflict misses, bigger blocks cut compulsory misses up to a point.</li>
+<li><span class="arithmatex">\(\text{AMAT} = \text{hit time} + \text{miss rate} \times \text{miss penalty}\)</span>, applied level by level with local miss rates.</li>
+<li>Write-back with write-allocate is the norm; write buffers, victim caches, prefetching and non-blocking caches with MSHRs keep an out-of-order core fed.</li>
+<li>Virtual memory translates pages through multi-level tables; the TLB caches translations; VIPT overlaps translation with the cache index.</li>
+</ul>
+<h2 id="48-exercises">4.8 Exercises<a class="headerlink" href="#48-exercises" title="Permanent link">&para;</a></h2>
+<p><strong>Exercise 4.1.</strong> An L1 cache has a hit time of 2 cycles, a miss rate of 10% and a miss penalty of 100 cycles. What is the AMAT?</p>
+<details class="note">
+<summary>Answer</summary>
+<p><span class="arithmatex">\(2 + 0.10 \times 100 = 12\)</span> cycles.</p>
+</details>
+<p><strong>Exercise 4.2.</strong> Two blocks keep evicting each other in a direct-mapped cache that is mostly empty. Which kind of miss is this, and what fixes it?</p>
+<details class="note">
+<summary>Answer</summary>
+<p>Conflict misses. More associativity fixes them (2-way would do here).</p>
+</details>
+<p><strong>Exercise 4.3.</strong> Take the addresses 0, 4, 16, 0, 20, 4, 32, 0 for a cache of 4 blocks of 4 bytes, but now with 8-byte blocks (the cache is then 2 blocks of 8 bytes: direct-mapped means 2 sets). Simulate the direct-mapped cache and count hits.</p>
+<details class="note">
+<summary>Answer</summary>
+<p>With 8-byte blocks, the block number is the address divided by 8: 0, 0, 2, 0, 2, 0, 4, 0. The index is the block number mod 2: 0, 0, 0, 0, 0, 0, 0, 0, so every access falls in set 0.</p>
+<table>
+<thead>
+<tr>
+<th>Access</th>
+<th style="text-align: right;">Address</th>
+<th style="text-align: right;">Block</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td>miss</td>
+</tr>
+<tr>
+<td>2</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">0</td>
+<td>hit (same 8-byte block)</td>
+</tr>
+<tr>
+<td>3</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">2</td>
+<td>miss, evicts block 0</td>
+</tr>
+<tr>
+<td>4</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td>miss, evicts block 2</td>
+</tr>
+<tr>
+<td>5</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">2</td>
+<td>miss, evicts block 0</td>
+</tr>
+<tr>
+<td>6</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">0</td>
+<td>miss, evicts block 2</td>
+</tr>
+<tr>
+<td>7</td>
+<td style="text-align: right;">32</td>
+<td style="text-align: right;">4</td>
+<td>miss, evicts block 0</td>
+</tr>
+<tr>
+<td>8</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td>miss</td>
+</tr>
+</tbody>
+</table>
+<p>One hit in eight accesses. The larger block gave one spatial-locality hit but the cache has only two sets, so conflicts dominate; compare the zero hits of Example 4.1.</p>
+</details>
+<p><strong>Exercise 4.4.</strong> A two-level cache has: L1 hit 1 cycle, miss rate 8%; L2 hit 10 cycles, local miss rate 25%; memory 150 cycles. Find the AMAT with and without the L2.</p>
+<details class="note">
+<summary>Answer</summary>
+<p>With the L2: <span class="arithmatex">\(1 + 0.08 \times (10 + 0.25 \times 150) = 1 + 0.08 \times 47.5 = 4.8\)</span> cycles. Without it: <span class="arithmatex">\(1 + 0.08 \times 150 = 13\)</span> cycles.</p>
+</details>
+<p><strong>Exercise 4.5.</strong> A cache is 32 KiB, 8-way set-associative, with 64-byte blocks, and addresses are 32 bits. (a) How many sets does it have? (b) Split the address <code>0x00012345</code> into tag, index and offset. (c) Is the cache usable as VIPT with 4 KiB pages?</p>
+<details class="note">
+<summary>Answer</summary>
+<p>(a) <span class="arithmatex">\(32\,768/(64 \times 8) = 64\)</span> sets, so 6 index bits; the offset has 6 bits and the tag has <span class="arithmatex">\(32 - 12 = 20\)</span> bits.</p>
+<p>(b) The offset is the low 6 bits. <span class="arithmatex">\(0x345 = 837\)</span> and <span class="arithmatex">\(837 \bmod 64 = 5\)</span>, so the offset is 5. The index is the next 6 bits: <span class="arithmatex">\(\lfloor 837/64 \rfloor = 13\)</span>, so the index is 13. The tag is the address shifted right by 12: <span class="arithmatex">\(0x00012345 \gg 12 = 0x12\)</span>.</p>
+<p>(c) Sets × block size <span class="arithmatex">\(= 64 \times 64 = 4096\)</span> bytes = 4 KiB, which equals the page size, so the index and offset bits come entirely from the page offset: yes, it can be VIPT.</p>
+</details>
+<p><strong>Exercise 4.6.</strong> Why is a 16 KiB, 4-way cache with 64-byte blocks also VIPT-friendly with 4 KiB pages, but a 64 KiB, 4-way cache with 64-byte blocks is not?</p>
+<details class="note">
+<summary>Answer</summary>
+<p>The number of sets times the block size is the cache size divided by the associativity. For 16 KiB, 4-way this is <span class="arithmatex">\(16/4 = 4\)</span> KiB, which fits in one page. For 64 KiB, 4-way it is <span class="arithmatex">\(64/4 = 16\)</span> KiB, so 2 index bits would lie above the page offset and would be changed by translation: the cache cannot be indexed before the TLB answers without aliasing problems.</p>
+</details>
+<p><strong>Exercise 4.7.</strong> A cache is direct-mapped with 4 blocks of 4 bytes. Addresses 0 and 16 are accessed alternately: 0, 16, 0, 16, 0, 16. How many hits? How many with a 2-way cache of the same size?</p>
+<details class="note">
+<summary>Answer</summary>
+<p>Direct-mapped: blocks 0 and 4 both map to set 0, so each access evicts the other: 0 hits in 6 accesses. 2-way: the two blocks sit in the two ways of the same set; after the first two compulsory misses all four remaining accesses hit: 4 hits in 6.</p>
+</details>
+<p><strong>Exercise 4.8.</strong> With Sv39 paging and no TLB hit, how many memory reads does one load need in total, assuming the page-table reads and the data read all go to memory? Why does the TLB matter?</p>
+<details class="note">
+<summary>Answer</summary>
+<p>Three reads to walk the three table levels plus one read for the data itself: four. With a TLB hit the translation takes about a cycle and the load needs only the data access (and perhaps a cache hit), so the TLB removes the three extra reads from nearly every access.</p>
+</details>
+<p><strong>Exercise 4.9.</strong> State one benefit and one cost of doubling the block size of a cache.</p>
+<details class="note">
+<summary>Answer</summary>
+<p>Benefit: fewer compulsory misses on code and data with spatial locality, since each miss brings in more neighbouring bytes. Cost: each miss fetches more bytes (a higher miss penalty and more bandwidth), fewer blocks fit so conflict and capacity misses can rise, and false sharing between cores becomes more likely.</p>
+</details>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="out-of-order-and-superscalar.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: 3. Out-of-Order and Superscalar Execution">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                3. Out-of-Order and Superscalar Execution
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="coherence-consistency-and-scaling.html" class="md-footer__link md-footer__link--next" aria-label="Next: 5. Coherence, Consistency and Scaling">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                5. Coherence, Consistency and Scaling
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      The Open Book Project &middot;
+      <a href="../../about.html">About this library</a> &middot;
+      © The authors of the books
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "navigation.prune", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "toc.follow", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+  
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../../assets/mathjax.js"></script>
+      
+        <script src="../../assets/viz.js"></script>
+      
+        <script src="../../assets/reader.js"></script>
+      
+        <script src="../../assets/app.js"></script>
+      
+    
+  <script>
+    /* offline reading: the service worker at the site root (its scope is the whole site) */
+    if ("serviceWorker" in navigator && window.isSecureContext) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register(new URL("../../sw.js", location.href).href).catch(function () {});
+      });
+    }
+  </script>
+
+  </body>
+</html>

@@ -1,0 +1,1669 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#ffffff">
+  
+    <meta name="description" content="The Open Book Project: books on computer science, quantum computing, cyber security, science, university courses and the English language, read page by page like an e-book, online or offline.">
+  
+  
+    <meta name="author" content="Nikhil Kumar Rajput, Ramanujan College, University of Delhi">
+  
+  
+    <link rel="canonical" href="https://open-book-project.github.io/computing/microarchitecture/out-of-order-and-superscalar.html">
+  
+  
+    <link rel="prev" href="pipelining-and-hazards.html">
+  
+  
+    <link rel="next" href="caches-and-virtual-memory.html">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&family=Noto+Serif+Devanagari:wght@400;600;700&display=swap" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&family=Noto+Serif+Devanagari:wght@400;600;700&display=swap"></noscript>
+  <link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+  <link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Open Book">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="application-name" content="Open Book"><script id="bjp-books" type="application/json">[{"id": "hardware_security", "lang": "en", "path": "science/hardware_security"}, {"id": "drones_missiles", "lang": "en", "path": "science/drones_missiles"}, {"id": "code_to_electrons", "lang": "en", "path": "science/code_to_electrons"}, {"id": "dpi_ndr", "lang": "en", "path": "science/dpi_ndr"}, {"id": "quantum", "lang": "en", "path": "quantum/quantum"}, {"id": "qml", "lang": "en", "path": "quantum/qml"}, {"id": "qml_course", "lang": "en", "path": "quantum/qml_course"}, {"id": "asic", "lang": "en", "path": "computing/asic"}, {"id": "compute", "lang": "en", "path": "computing/compute"}, {"id": "memory", "lang": "en", "path": "computing/memory"}, {"id": "os", "lang": "en", "path": "computing/os"}, {"id": "databases", "lang": "en", "path": "computing/databases"}, {"id": "datacenters", "lang": "en", "path": "computing/datacenters"}, {"id": "networks", "lang": "en", "path": "computing/networks"}, {"id": "cellular", "lang": "en", "path": "computing/cellular"}, {"id": "ml", "lang": "en", "path": "computing/ml"}, {"id": "microarchitecture", "lang": "en", "path": "computing/microarchitecture"}, {"id": "rtl_hdl", "lang": "en", "path": "computing/rtl_hdl"}, {"id": "rtl_to_gdsii", "lang": "en", "path": "computing/rtl_to_gdsii"}, {"id": "ram_ddr5", "lang": "en", "path": "computing/ram_ddr5"}, {"id": "security", "lang": "en", "path": "cyber/security"}, {"id": "trust", "lang": "en", "path": "cyber/trust"}, {"id": "attack_taxonomy", "lang": "en", "path": "cyber/attack_taxonomy"}, {"id": "datacentre_security_ip", "lang": "en", "path": "cyber/datacentre_security_ip"}, {"id": "randomness_testing", "lang": "en", "path": "cyber/randomness_testing"}, {"id": "optimization_methods", "lang": "en", "path": "courses/optimization_methods"}, {"id": "quantum_computing_applications", "lang": "en", "path": "courses/quantum_computing_applications"}, {"id": "dbms_course", "lang": "en", "path": "courses/dbms_course"}, {"id": "csa_course", "lang": "en", "path": "courses/csa_course"}, {"id": "web_programming", "lang": "en", "path": "courses/web_programming"}, {"id": "ml_course", "lang": "en", "path": "courses/ml_course"}, {"id": "english_book", "lang": "en", "path": "language/english_book"}, {"id": "english_book_hinglish", "lang": "en", "path": "language/english_book_hinglish"}, {"id": "english_book_hi", "lang": "hi", "path": "language/english_book_hi"}]</script><script>
+    (function () {
+      var X = window.XMLHttpRequest, open, gate = new Promise(function (r) { open = r; });
+      if (!X) return;
+      var open0 = X.prototype.open, send0 = X.prototype.send;
+      X.prototype.open = function (method, url) {
+        this.__pkIndex = /\/search\/search_index\.json(\?|#|$)/.test(String(url));
+        return open0.apply(this, arguments);
+      };
+      X.prototype.send = function () {
+        if (!this.__pkIndex) return send0.apply(this, arguments);
+        var xhr = this, args = arguments;
+        gate.then(function () { send0.apply(xhr, args); });
+      };
+      function wake() { open(); }
+      document.addEventListener("focusin", function (e) { if (e.target && e.target.closest && e.target.closest(".md-search")) wake(); });
+      document.addEventListener("click", function (e) { if (e.target && e.target.closest && e.target.closest('label[for="__search"], .md-search')) wake(); }, true);
+      document.addEventListener("keydown", function (e) {
+        var k = e.key;
+        if ((k === "/" || k === "s" || k === "f" || k === "S" || k === "F") && !(e.target && e.target.closest && e.target.closest("input, textarea, [contenteditable]"))) wake();
+      }, true);
+      if (/[?&]q=/.test(location.search)) wake();
+    })();
+  </script><script>
+    try {
+      if ((window.matchMedia && (matchMedia("(display-mode: standalone)").matches || matchMedia("(display-mode: fullscreen)").matches)) || navigator.standalone === true) {
+        document.documentElement.className += " bjp-standalone";
+      }
+    } catch (e) { /* not an installed app */ }
+  </script>
+  <script>
+    /* a book opened from its cover on the shelf: the page stays blank, in the cover's colour, until the reader is up */
+    try {
+      var cv = sessionStorage.getItem("bjp.reader.cover");
+      if (cv && sessionStorage.getItem("bjp.reader.open") === "1") {
+        var c = JSON.parse(cv), de = document.documentElement;
+        de.className += " bjp-booting";
+        if (c && /^#[0-9a-f]{3,8}$/i.test(c.bg || "")) de.style.background = c.bg;
+        setTimeout(function () { de.classList.remove("bjp-booting"); de.style.background = ""; }, 3000);
+      }
+    } catch (e) { /* no session storage: the page simply opens as usual */ }
+  </script>
+
+    
+      
+        <title>3. Out-of-Order and Superscalar Execution - The Open Book Project</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/extra.css">
+    
+      <link rel="stylesheet" href="../../assets/reader.css">
+    
+      <link rel="stylesheet" href="../../assets/viz.css">
+    
+      <link rel="stylesheet" href="../../assets/app.css">
+    
+      <link rel="stylesheet" href="../../assets/theme.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#31-the-cost-of-a-single-stall" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../index.html" title="The Open Book Project" class="md-header__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+      
+  <img src="../../assets/icons/logo.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            The Open Book Project
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              3. Out-of-Order and Superscalar Execution
+            
+          </span>
+        </div>
+      </div>
+    </div><a href="../../index.html" class="bjp-libbtn" aria-label="Library: all books" title="Library: all books">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V5h4v15M8 20V9h4v11M14 20L12.6 6l3.8-.8 3 14.2M3 20h18"/></svg><span>Library</span>
+    </a>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary bjp-nav bjp-nav--book" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../index.html" title="The Open Book Project" class="md-nav__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+      
+  <img src="../../assets/icons/logo.svg" alt="logo">
+
+    </a>
+    The Open Book Project
+  </label>
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      <li class="md-nav__item bjp-nav-all">
+        <a href="../../index.html" class="md-nav__link" aria-label="All books: back to the library">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+          <span class="md-ellipsis">All books</span>
+        </a>
+      </li>
+      <li class="md-nav__item bjp-nav-book" role="presentation"><span class="bjp-nav-head">Microarchitecture and SoC Design</span></li>
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview and preface
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="preface.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Preface
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="the-layer-under-the-isa.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. The Layer Under the Instruction Set
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="pipelining-and-hazards.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Pipelining and Hazards
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. Out-of-Order and Superscalar Execution
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="out-of-order-and-superscalar.html" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. Out-of-Order and Superscalar Execution
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#31-the-cost-of-a-single-stall" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 The cost of a single stall
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#32-true-and-false-dependences" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 True and false dependences
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#33-register-renaming" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 Register renaming
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#34-dynamic-scheduling-the-scoreboard-and-tomasulos-algorithm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4 Dynamic scheduling: the scoreboard and Tomasulo's algorithm
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.4 Dynamic scheduling: the scoreboard and Tomasulo&#39;s algorithm">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-scoreboard-cdc-6600-1964" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The scoreboard (CDC 6600, 1964)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tomasulos-algorithm-ibm-36091-1967" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tomasulo's algorithm (IBM 360/91, 1967)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#35-putting-results-back-in-order" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.5 Putting results back in order
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#36-speculation-running-ahead-of-branches" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.6 Speculation: running ahead of branches
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.6 Speculation: running ahead of branches">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-hard-case-loads-and-stores" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The hard case: loads and stores
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#37-wider-several-instructions-per-cycle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.7 Wider: several instructions per cycle
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.7 Wider: several instructions per cycle">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#vliw-let-the-compiler-do-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        VLIW: let the compiler do it
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#smt-fill-the-gaps-with-another-thread" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SMT: fill the gaps with another thread
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#38-the-whole-family" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.8 The whole family
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#39-what-caps-a-real-cores-ipc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.9 What caps a real core's IPC?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#310-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.10 Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#311-exercises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.11 Exercises
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="caches-and-virtual-memory.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. Caches and Virtual Memory
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="coherence-consistency-and-scaling.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Coherence, Consistency and Scaling
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="on-chip-interconnect.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. On-Chip Interconnect
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="peripheral-interfaces.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    7. Peripheral Interfaces
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="real-risc-v-cores.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    8. Real RISC-V Cores
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="benchmarks-and-metrics.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    9. Benchmarks and Metrics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="side-channels-and-hardware-security.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    10. Side Channels and Hardware Security
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="labs-and-a-design-study.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    11. Labs and a Design Study
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="glossary-and-further-reading.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary and Further Reading
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#31-the-cost-of-a-single-stall" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 The cost of a single stall
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#32-true-and-false-dependences" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 True and false dependences
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#33-register-renaming" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 Register renaming
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#34-dynamic-scheduling-the-scoreboard-and-tomasulos-algorithm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4 Dynamic scheduling: the scoreboard and Tomasulo's algorithm
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.4 Dynamic scheduling: the scoreboard and Tomasulo&#39;s algorithm">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-scoreboard-cdc-6600-1964" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The scoreboard (CDC 6600, 1964)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tomasulos-algorithm-ibm-36091-1967" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tomasulo's algorithm (IBM 360/91, 1967)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#35-putting-results-back-in-order" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.5 Putting results back in order
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#36-speculation-running-ahead-of-branches" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.6 Speculation: running ahead of branches
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.6 Speculation: running ahead of branches">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-hard-case-loads-and-stores" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The hard case: loads and stores
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#37-wider-several-instructions-per-cycle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.7 Wider: several instructions per cycle
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.7 Wider: several instructions per cycle">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#vliw-let-the-compiler-do-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        VLIW: let the compiler do it
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#smt-fill-the-gaps-with-another-thread" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SMT: fill the gaps with another thread
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#38-the-whole-family" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.8 The whole family
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#39-what-caps-a-real-cores-ipc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.9 What caps a real core's IPC?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#310-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.10 Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#311-exercises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.11 Exercises
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="chapter-3-out-of-order-and-superscalar-execution">Chapter 3: Out-of-Order and Superscalar Execution<a class="headerlink" href="#chapter-3-out-of-order-and-superscalar-execution" title="Permanent link">&para;</a></h1>
+<p>Pipelining overlaps instructions but still issues them in program order, so one slow instruction, such as a cache miss or a long divide, freezes everyone behind it. The high-performance core's answer is to look ahead in the instruction stream, find work that does not depend on the stalled instruction, run it early, and put the results back in order at the end. This chapter builds that machine from the ground up: why in-order execution stalls, what a false dependence is, how register renaming removes it, the two classic dynamic-scheduling algorithms (the scoreboard and Tomasulo's algorithm), the reorder buffer that keeps exceptions precise, speculation past branches, and finally the ways real cores widen and fill the machine: superscalar issue, VLIW and simultaneous multithreading.</p>
+<p>You should already know the material of Chapter 2: hazards, the three kinds of register dependence, forwarding and branch prediction.</p>
+<h2 id="31-the-cost-of-a-single-stall">3.1 The cost of a single stall<a class="headerlink" href="#31-the-cost-of-a-single-stall" title="Permanent link">&para;</a></h2>
+<p>An in-order pipeline obeys one iron rule: instruction <span class="arithmatex">\(i+1\)</span> may not overtake instruction <span class="arithmatex">\(i\)</span>. That keeps the hardware simple, but it couples latency to throughput. The moment an instruction cannot make progress, most often because it is waiting for a value from memory, every younger instruction is held behind it, even if their operands are ready and their execution units are idle.</p>
+<div class="language-asm highlight"><pre><span></span><code><span class="nf">lw</span><span class="w">   </span><span class="no">x1</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">(</span><span class="no">x2</span><span class="p">)</span><span class="w">      </span><span class="c1"># the load misses in L1: about 12 cycles to L2, or about 200 to DRAM</span>
+<span class="nf">add</span><span class="w">  </span><span class="no">x3</span><span class="p">,</span><span class="w"> </span><span class="no">x1</span><span class="p">,</span><span class="w"> </span><span class="no">x4</span><span class="w">     </span><span class="c1"># TRUE dependence on x1: it really must wait</span>
+<span class="nf">sub</span><span class="w">  </span><span class="no">x6</span><span class="p">,</span><span class="w"> </span><span class="no">x7</span><span class="p">,</span><span class="w"> </span><span class="no">x8</span><span class="w">     </span><span class="c1"># independent! could run now, but in-order forbids it</span>
+<span class="nf">or</span><span class="w">   </span><span class="no">x9</span><span class="p">,</span><span class="w"> </span><span class="no">x10</span><span class="p">,</span><span class="w"> </span><span class="no">x11</span><span class="w">   </span><span class="c1"># independent! also stuck behind the miss</span>
+<span class="nf">mul</span><span class="w">  </span><span class="no">x12</span><span class="p">,</span><span class="w"> </span><span class="no">x13</span><span class="p">,</span><span class="w"> </span><span class="no">x14</span><span class="w">  </span><span class="c1"># independent! also stuck</span>
+</code></pre></div>
+<p>The <code>add</code> genuinely depends on the load. But <code>sub</code>, <code>or</code> and <code>mul</code> have nothing to do with <code>x1</code>. In an in-order core they stall anyway and burn the whole miss latency doing nothing. Think of a supermarket queue where the first customer's card is declined: everyone behind waits, even the person holding only a bottle of water and exact change.</p>
+<p><strong>Out-of-order (OoO) execution</strong>, also called <em>dynamic scheduling</em>, breaks the coupling. The core keeps a pool of decoded instructions, the <strong>instruction window</strong> (tens to hundreds of entries in modern cores), and each cycle starts any instruction whose operands are available and whose execution unit is free, whatever its position in the program. While the load misses, <code>sub</code>, <code>or</code> and <code>mul</code> execute, and their latency is hidden beneath the miss. This ability to keep busy during a long wait is called <strong>latency tolerance</strong>, and it is the single biggest reason a modern OoO core outruns an in-order one on real code.</p>
+<p>The bigger the window, the more independent work the core can find. But a bigger window costs chip area and power, since every entry must be watched every cycle.</p>
+<h2 id="32-true-and-false-dependences">3.2 True and false dependences<a class="headerlink" href="#32-true-and-false-dependences" title="Permanent link">&para;</a></h2>
+<p>Before running anything early the core must know which reorderings are legal. Three kinds of dependence constrain two instructions that touch the same register.</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Also called</th>
+<th>Pattern</th>
+<th>Kind</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RAW</td>
+<td>true or flow dependence</td>
+<td>write <code>x1</code> ... read <code>x1</code></td>
+<td>True: data really flows; nothing can remove it</td>
+</tr>
+<tr>
+<td>WAR</td>
+<td>anti-dependence</td>
+<td>read <code>x1</code> ... write <code>x1</code></td>
+<td>False: only the register <em>name</em> is shared</td>
+</tr>
+<tr>
+<td>WAW</td>
+<td>output dependence</td>
+<td>write <code>x1</code> ... write <code>x1</code></td>
+<td>False: only the register <em>name</em> is shared</td>
+</tr>
+</tbody>
+</table>
+<p>A RAW dependence is the fundamental limit on instruction-level parallelism: the second instruction genuinely needs the value the first produces, so no cleverness lets it run first. WAR and WAW are <strong>name dependences</strong>. They exist only because two instructions happen to reuse the same architectural register name, an artefact of an ISA that has only 32 names (in RISC-V), which compilers reuse as scratch space.</p>
+<div class="language-asm highlight"><pre><span></span><code><span class="err">(</span><span class="nf">i1</span><span class="p">)</span><span class="w"> </span><span class="no">add</span><span class="w"> </span><span class="no">x1</span><span class="p">,</span><span class="w"> </span><span class="no">x2</span><span class="p">,</span><span class="w"> </span><span class="no">x3</span><span class="w">     </span><span class="c1"># writes x1</span>
+<span class="err">(</span><span class="nf">i2</span><span class="p">)</span><span class="w"> </span><span class="no">sub</span><span class="w"> </span><span class="no">x4</span><span class="p">,</span><span class="w"> </span><span class="no">x1</span><span class="p">,</span><span class="w"> </span><span class="no">x5</span><span class="w">     </span><span class="c1"># reads x1         -&gt; RAW with i1 (true: keep the order i1, i2)</span>
+<span class="err">(</span><span class="nf">i3</span><span class="p">)</span><span class="w"> </span><span class="no">mul</span><span class="w"> </span><span class="no">x1</span><span class="p">,</span><span class="w"> </span><span class="no">x6</span><span class="p">,</span><span class="w"> </span><span class="no">x7</span><span class="w">     </span><span class="c1"># writes x1 again  -&gt; WAW with i1, WAR with i2 (false!)</span>
+<span class="err">(</span><span class="nf">i4</span><span class="p">)</span><span class="w"> </span><span class="no">div</span><span class="w"> </span><span class="no">x8</span><span class="p">,</span><span class="w"> </span><span class="no">x1</span><span class="p">,</span><span class="w"> </span><span class="no">x9</span><span class="w">     </span><span class="c1"># reads the new x1 -&gt; RAW with i3 (true)</span>
+</code></pre></div>
+<p>The result of <code>i3</code> has nothing to do with that of <code>i1</code>. Only the shared name <code>x1</code> stops <code>i3</code> from running early: if it ran first it would overwrite the <code>x1</code> that <code>i2</code> still needs (WAR), and it could be overwritten by <code>i1</code> later (WAW). Give <code>i3</code>'s result a different home and both problems disappear.</p>
+<h2 id="33-register-renaming">3.3 Register renaming<a class="headerlink" href="#33-register-renaming" title="Permanent link">&para;</a></h2>
+<p>The ISA exposes a small set of <strong>architectural registers</strong> (32 integer registers in RISC-V). Inside, the core has a much larger <strong>physical register file</strong>, often 128 to 300 entries. A <strong>rename table</strong>, also called the register alias table (RAT), records which physical register currently holds each architectural one. Every instruction that writes a register is handed a fresh physical register from a <strong>free list</strong>; readers consult the table to find where their input lives. Since every write lands in a brand-new register, two writes never collide. WAW and WAR simply cannot occur, and only RAW, the real data flow, remains.</p>
+<p>A cloakroom is a good model: your coat is not stored "on hook 3 because you are guest 3"; you get a fresh ticket each time, so two guests called Sam never mix up their coats.</p>
+<div class="admonition example">
+<p class="admonition-title">Example 3.1: renaming the four instructions</p>
+<p>The free physical registers are p10, p11, p12, p13, and so on. The RAT starts with x1 mapped to p1, x2 to p2, ..., x9 to p9.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Architectural</th>
+<th>Rename action</th>
+<th>Renamed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>i1</td>
+<td><code>add x1,x2,x3</code></td>
+<td>sources x2 to p2, x3 to p3; destination x1 takes new p10</td>
+<td><code>add p10,p2,p3</code></td>
+</tr>
+<tr>
+<td>i2</td>
+<td><code>sub x4,x1,x5</code></td>
+<td>source x1 is now p10; x5 to p5; destination x4 takes p11</td>
+<td><code>sub p11,p10,p5</code></td>
+</tr>
+<tr>
+<td>i3</td>
+<td><code>mul x1,x6,x7</code></td>
+<td>sources p6, p7; destination x1 takes a <em>new</em> home, p12</td>
+<td><code>mul p12,p6,p7</code></td>
+</tr>
+<tr>
+<td>i4</td>
+<td><code>div x8,x1,x9</code></td>
+<td>source x1 is now p12; x9 to p9; destination x8 takes p13</td>
+<td><code>div p13,p12,p9</code></td>
+</tr>
+</tbody>
+</table>
+<p>After renaming, i1 writes p10 and i3 writes p12: different registers. The WAW (i1 and i3) and the WAR (i2 and i3) are gone. i3 and its dependent i4 can run the instant x6 and x7 are ready, completely independent of the i1-to-i2 chain. The two chains proceed in parallel.</p>
+</div>
+<p><strong>When does a physical register come back?</strong> When an instruction that wrote x1 is finally confirmed (<em>committed</em>), the previous home of x1 can no longer be needed by anyone, so that old physical register returns to the free list. As long as instructions commit in order, the core does not run out of homes for long. How "committed in order" works is the subject of Section 3.5.</p>
+<h2 id="34-dynamic-scheduling-the-scoreboard-and-tomasulos-algorithm">3.4 Dynamic scheduling: the scoreboard and Tomasulo's algorithm<a class="headerlink" href="#34-dynamic-scheduling-the-scoreboard-and-tomasulos-algorithm" title="Permanent link">&para;</a></h2>
+<p>Renaming tells us which reorderings are legal. A <strong>dynamic scheduler</strong> is the hardware that tracks readiness and dispatches instructions out of order. Two classic designs define the field.</p>
+<h3 id="the-scoreboard-cdc-6600-1964">The scoreboard (CDC 6600, 1964)<a class="headerlink" href="#the-scoreboard-cdc-6600-1964" title="Permanent link">&para;</a></h3>
+<p>The CDC 6600 had a central bookkeeper, the <strong>scoreboard</strong>, which tracked every functional unit and every register. It splits the old single "issue" step into four: issue, read operands, execute and write result. Instructions could execute out of order, a first in computing history. But the scoreboard does not rename: on a WAW hazard it stalls at issue, and on a WAR hazard it stalls at write-back until earlier readers have read the old value. It also did not forward results between instructions.</p>
+<h3 id="tomasulos-algorithm-ibm-36091-1967">Tomasulo's algorithm (IBM 360/91, 1967)<a class="headerlink" href="#tomasulos-algorithm-ibm-36091-1967" title="Permanent link">&para;</a></h3>
+<p>Robert Tomasulo's design for the IBM 360/91 is the ancestor of nearly every out-of-order core today. It adds three ideas.</p>
+<ul>
+<li><strong>Reservation stations.</strong> Waiting areas in front of each functional unit. An instruction waits there holding the operands it already has. There are more stations than units, so instructions can wait for operands without blocking issue. The structure is distributed rather than central.</li>
+<li><strong>Tags, not names.</strong> When an instruction issues, each operand is either the value (if ready) or the <em>tag</em> of the station that will produce it. This renames registers implicitly and removes WAR and WAW hazards, exactly as a physical register file does.</li>
+<li><strong>The common data bus (CDB).</strong> When a unit finishes, it broadcasts (tag, value). Every station and register waiting for that tag grabs the value in the same cycle. This tag-based wakeup provides forwarding for free.</li>
+</ul>
+<p>A deli counter is the picture: you do not wait for "the person before you", you wait for your ticket number to be called, and anyone holding that number steps forward.</p>
+<div class="admonition example">
+<p class="admonition-title">Example 3.2: a Tomasulo timeline</p>
+<p>Assume one instruction issues per cycle, MUL takes 4 execution cycles, ADD and SUB take 2, DIV takes 8, there are enough reservation stations, and there is one CDB (one broadcast per cycle).</p>
+<div class="language-asm highlight"><pre><span></span><code><span class="nl">i1:</span><span class="w"> </span><span class="nf">mul</span><span class="w"> </span><span class="no">x1</span><span class="p">,</span><span class="w"> </span><span class="no">x2</span><span class="p">,</span><span class="w"> </span><span class="no">x3</span>
+<span class="nl">i2:</span><span class="w"> </span><span class="nf">add</span><span class="w"> </span><span class="no">x4</span><span class="p">,</span><span class="w"> </span><span class="no">x1</span><span class="p">,</span><span class="w"> </span><span class="no">x5</span><span class="w">     </span><span class="c1"># needs i1</span>
+<span class="nl">i3:</span><span class="w"> </span><span class="nf">sub</span><span class="w"> </span><span class="no">x6</span><span class="p">,</span><span class="w"> </span><span class="no">x7</span><span class="p">,</span><span class="w"> </span><span class="no">x8</span><span class="w">     </span><span class="c1"># independent</span>
+<span class="nl">i4:</span><span class="w"> </span><span class="nf">div</span><span class="w"> </span><span class="no">x9</span><span class="p">,</span><span class="w"> </span><span class="no">x4</span><span class="p">,</span><span class="w"> </span><span class="no">x6</span><span class="w">     </span><span class="c1"># needs i2 and i3</span>
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Instruction</th>
+<th style="text-align: right;">Issue</th>
+<th style="text-align: right;">Execute</th>
+<th style="text-align: right;">Broadcast</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>i1 mul</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2 to 5</td>
+<td style="text-align: right;">6</td>
+<td>Operands are ready at issue; 4 execution cycles</td>
+</tr>
+<tr>
+<td>i3 sub</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">4 to 5</td>
+<td style="text-align: right;">7</td>
+<td>Independent, so it runs before i2. The bus is busy in cycle 6 with i1's result, so it broadcasts in 7</td>
+</tr>
+<tr>
+<td>i2 add</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">7 to 8</td>
+<td style="text-align: right;">9</td>
+<td>Woken by i1's broadcast in cycle 6, executes next cycle, 2 cycles</td>
+</tr>
+<tr>
+<td>i4 div</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">10 to 17</td>
+<td style="text-align: right;">18</td>
+<td>Needs i2 (cycle 9) and i3 (cycle 7); starts after the later of the two</td>
+</tr>
+</tbody>
+</table>
+<p>The table is sorted by when each instruction executes: i3 overtakes the older i2, which is still waiting for the multiply. Each result appears on the CDB and instantly wakes its consumers by tag: i1 wakes i2, and i2 together with i3 wake i4. The single CDB is a real structural limit: it delays i3's broadcast by one cycle.</p>
+</div>
+<figure class="fig fig-diagram">
+<img src="img/ch03_tomasulo.svg" alt="The Tomasulo timeline of Example 3.2: issue, wait, execute and broadcast for each instruction. i3 executes ahead of the older i2." loading="lazy" width="689" height="280">
+<figcaption><strong>Figure 3.1.</strong> The Tomasulo timeline of Example 3.2: issue, wait, execute and broadcast for each instruction. i3 executes ahead of the older i2.</figcaption>
+</figure>
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Scoreboard (CDC 6600)</th>
+<th>Tomasulo (IBM 360/91)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Structure</td>
+<td>One central table</td>
+<td>Reservation stations spread across the units</td>
+</tr>
+<tr>
+<td>Renaming</td>
+<td>No: stalls on WAR and WAW</td>
+<td>Yes: tags remove them</td>
+</tr>
+<tr>
+<td>Passing results</td>
+<td>Through the register file</td>
+<td>Broadcast on the common data bus</td>
+</tr>
+<tr>
+<td>Wakeup</td>
+<td>Poll register status bits</td>
+<td>Tag match on the CDB</td>
+</tr>
+<tr>
+<td>Legacy</td>
+<td>Historical</td>
+<td>The basis of modern out-of-order cores</td>
+</tr>
+</tbody>
+</table>
+<p>An operand that a station waits for is named by the tag of its producer, not by an architectural register. Matching on the <em>tag</em>, not on the register name, is what makes renaming and wakeup a single mechanism.</p>
+<p>Neither original design could stop cleanly at an error. Results were written the moment they were ready, in any order. That is the missing piece.</p>
+<h2 id="35-putting-results-back-in-order">3.5 Putting results back in order<a class="headerlink" href="#35-putting-results-back-in-order" title="Permanent link">&para;</a></h2>
+<p>Suppose an old instruction divides by zero, but a younger one has already overwritten a register. The program's state is now a mixture of "before" and "after". An operating system or debugger needs a <strong>precise exception</strong>: every instruction before the faulting one has finished, none after it has changed anything, and the PC points exactly at the culprit.</p>
+<p>The remedy, due to Smith and Pleszkun (1988), is the <strong>reorder buffer (ROB)</strong>: a FIFO queue holding every in-flight instruction in program order. Instructions execute out of order and park their results in the ROB (or in the physical registers), not yet in architectural state. But only the instruction at the head of the ROB may <em>commit</em>: make its result official and leave. Commit is strictly in order. If the head faulted, or was a wrongly guessed branch, everything younger is thrown away. The result is precise, every time. A kitchen may cook dishes in whatever order is quickest, but the waiter serves each table's courses strictly in order.</p>
+<div class="admonition warning">
+<p class="admonition-title">Out of order does not mean scrambled results</p>
+<p>Instructions <em>execute</em> out of order, but they <em>commit</em> strictly in program order from the reorder buffer. The architectural state the programmer sees always advances in order, which is what keeps exceptions precise and lets the core recover from mispredictions. Reordering is an internal performance trick, invisible to correct single-threaded programs. (It becomes visible across threads, which is why memory-consistency models exist: see Chapter 5.)</p>
+</div>
+<p>The complete pipeline of a modern out-of-order core therefore has three zones: an in-order front end that fetches, decodes, renames and dispatches; an out-of-order core that issues, executes and writes back; and an in-order back end that commits.</p>
+<figure class="fig fig-diagram">
+<img src="img/ch03_ooo_pipeline.svg" alt="The modern out-of-order pipeline: an in-order front end, an out-of-order core and in-order commit, supported by the rename table, the issue queue and the reorder buffer." loading="lazy" width="763" height="293">
+<figcaption><strong>Figure 3.2.</strong> The modern out-of-order pipeline: an in-order front end, an out-of-order core and in-order commit, supported by the rename table, the issue queue and the reorder buffer.</figcaption>
+</figure>
+
+<p>Order is preserved where it matters (renaming and commit) and relaxed where it pays (issue and execute).</p>
+<h2 id="36-speculation-running-ahead-of-branches">3.6 Speculation: running ahead of branches<a class="headerlink" href="#36-speculation-running-ahead-of-branches" title="Permanent link">&para;</a></h2>
+<p>A branch occurs about every five instructions, so a big window would be useless if it stopped filling at each one. An OoO core therefore <strong>speculates</strong>: the branch predictor of Chapter 2 guesses each branch's direction and target, and the front end keeps fetching, renaming and executing down the guessed path before the branch resolves. Speculative instructions execute normally, but they cannot commit until the branch ahead of them is confirmed.</p>
+<ul>
+<li><strong>A correct guess:</strong> the work behind the branch is already done. The mispredict penalty was zero and the window stayed full.</li>
+<li><strong>A wrong guess:</strong> every ROB entry younger than the branch is squashed, the rename table is restored from a copy saved at the branch, and fetch restarts on the correct path. Because modern cores checkpoint the RAT at each branch, recovery costs only a few cycles, not a full drain.</li>
+</ul>
+<p>Wrong-path work leaves no trace in registers or memory. It can leave traces elsewhere, and that is the basis of the Spectre attacks of Chapter 10.</p>
+<h3 id="the-hard-case-loads-and-stores">The hard case: loads and stores<a class="headerlink" href="#the-hard-case-loads-and-stores" title="Permanent link">&para;</a></h3>
+<p>A load may be ready to execute while an older store's address is still unknown. Do they touch the same memory? Nobody knows yet. The <strong>load/store queue (LSQ)</strong> holds in-flight memory operations in program order. If a load reads an address that an older store is about to write, the queue hands over the store's data directly: <strong>store-to-load forwarding</strong>. Deciding whether a load may bypass older stores whose addresses are unknown is <strong>memory disambiguation</strong>. Aggressive cores let loads go early on a guess, using a <em>memory dependence predictor</em>; if a store's address later turns out to overlap, the load and everything after it are squashed and replayed.</p>
+<h2 id="37-wider-several-instructions-per-cycle">3.7 Wider: several instructions per cycle<a class="headerlink" href="#37-wider-several-instructions-per-cycle" title="Permanent link">&para;</a></h2>
+<p>Everything so far starts at most one instruction per cycle, so the best-case IPC is 1. <strong>Superscalar</strong> cores fetch, decode, issue and commit several instructions per cycle, 2, 4, 6 or more wide.</p>
+<ul>
+<li><strong>In-order superscalar</strong> cores fetch <span class="arithmatex">\(N\)</span> instructions per cycle but issue them in order: if instruction <span class="arithmatex">\(k\)</span> stalls, those behind it stall too. They are cheap, frugal and predictable: the Arm Cortex-A53 is dual-issue in-order.</li>
+<li><strong>Out-of-order superscalar</strong> cores issue any ready instructions from a large window. They reach far higher IPC on real, branchy, memory-bound code, at a large cost in area and power: the Arm Cortex-A76 is 4-wide out of order. This is the "big" core in every high-performance chip.</li>
+</ul>
+<p>Widening is not free. To issue <span class="arithmatex">\(N\)</span> instructions together, the hardware must cross-check them against each other for dependences, and rename them in the same cycle. The number of comparisons grows roughly as <span class="arithmatex">\(N^2\)</span>; for <span class="arithmatex">\(N = 2, 4, 8\)</span> the number of pairs of instructions in a group is 1, 6 and 28. The wakeup and select logic, the register-file ports and the forwarding wires grow just as fast. Past about 4 to 8 wide the area and delay of the scheduling logic eat the gains.</p>
+<h3 id="vliw-let-the-compiler-do-it">VLIW: let the compiler do it<a class="headerlink" href="#vliw-let-the-compiler-do-it" title="Permanent link">&para;</a></h3>
+<p>A <strong>very long instruction word (VLIW)</strong> machine moves the scheduling from hardware to the compiler. Each long instruction bundles several operations that the compiler has proved independent, and the hardware simply runs every slot together, with no dependence checking, no reservation stations and no ROB. The silicon is simple and wide.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>For</th>
+<th>Against</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Hardware</td>
+<td>Simple, wide, low power</td>
+<td>none</td>
+</tr>
+<tr>
+<td>Scheduling</td>
+<td>The compiler can study the whole program</td>
+<td>It cannot see run-time surprises such as a slow load</td>
+</tr>
+<tr>
+<td>Code</td>
+<td>none</td>
+<td>Tied to one machine width (recompile per chip); empty slots waste space</td>
+</tr>
+</tbody>
+</table>
+<p>VLIW thrives where code is regular: signal processing and AI accelerators, for example the TI C6000 DSPs. It struggled on general code full of surprises (Intel's Itanium). That is why CPUs went out of order and DSPs went VLIW.</p>
+<h3 id="smt-fill-the-gaps-with-another-thread">SMT: fill the gaps with another thread<a class="headerlink" href="#smt-fill-the-gaps-with-another-thread" title="Permanent link">&para;</a></h3>
+<p>Even a wide out-of-order core rarely finds enough ready work in one thread to fill every issue slot every cycle. <strong>Simultaneous multithreading (SMT)</strong>, which Intel calls Hyper-Threading, keeps the registers and PC of two or more threads and issues from all of them into the same execution units each cycle. When one thread stalls on a miss, the other's ready instructions keep the units busy: thread-level parallelism plugs the holes that ILP could not fill. The cost is modest (duplicate architectural state, a larger ROB and rename tables) and the throughput gain is typically 20 to 40%. The catch is that the threads now share caches and units, and that sharing is a known route for leaks between them (Chapter 10).</p>
+<h2 id="38-the-whole-family">3.8 The whole family<a class="headerlink" href="#38-the-whole-family" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Design</th>
+<th>Issue width</th>
+<th>Scheduling</th>
+<th>Reorders?</th>
+<th>Hardware cost</th>
+<th>Examples</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Scalar in-order</td>
+<td>1 per cycle</td>
+<td>none</td>
+<td>No</td>
+<td>Tiny</td>
+<td>PicoRV32, SERV, classic RISC</td>
+</tr>
+<tr>
+<td>Superscalar in-order</td>
+<td>2 to 3</td>
+<td>Hardware, in order</td>
+<td>No</td>
+<td>Low</td>
+<td>Arm Cortex-A53, RISC-V Rocket</td>
+</tr>
+<tr>
+<td>OoO superscalar</td>
+<td>3 to 8</td>
+<td>Rename, stations, ROB</td>
+<td>Yes</td>
+<td>High</td>
+<td>Arm Cortex-A76 and X-series, Intel and AMD big cores, RISC-V BOOM</td>
+</tr>
+<tr>
+<td>VLIW</td>
+<td>N (the bundle)</td>
+<td>The compiler</td>
+<td>No (in hardware)</td>
+<td>Low hardware, smart compiler</td>
+<td>Intel Itanium, TI C6x DSPs</td>
+</tr>
+</tbody>
+</table>
+<p>Phones pair both kinds in the same chip, small in-order cores for battery life and big out-of-order cores for speed (the Arm big.LITTLE arrangement). The open RISC-V world mirrors it: Rocket is a five-stage in-order scalar core, BOOM a superscalar OoO core with renaming, issue queues and a ROB, both built from the same generators (Chapter 8).</p>
+<h2 id="39-what-caps-a-real-cores-ipc">3.9 What caps a real core's IPC?<a class="headerlink" href="#39-what-caps-a-real-cores-ipc" title="Permanent link">&para;</a></h2>
+<p>If renaming already removes WAR and WAW, and a large enough window with perfect branch prediction could expose enormous parallelism, what actually limits a core's IPC? Several things: the true RAW chains (the critical path cannot be shortened); the <span class="arithmatex">\(N^2\)</span> cost of wider wakeup and select and of more register ports; the finite size of the ROB, the physical register file and the LSQ; branch-misprediction flushes; and the limited bandwidth of the memory system. Widening beyond about 4 to 8 gives diminishing returns, which is precisely why the industry turned to multicore and SMT rather than to ever-wider single cores. Where would you spend the next transistor budget?</p>
+<h2 id="310-summary">3.10 Summary<a class="headerlink" href="#310-summary" title="Permanent link">&para;</a></h2>
+<ul>
+<li>In order, one slow instruction freezes everyone behind it. Out-of-order execution runs ready work from a window and hides the delay (latency tolerance).</li>
+<li>RAW is a true dependence. WAR and WAW are false: they are just reused names, and register renaming removes them by giving every write a fresh physical register.</li>
+<li>Tomasulo's algorithm (reservation stations, tags and a common data bus that wakes waiting instructions) improved on the scoreboard, which stalled on false dependences, and underlies every modern out-of-order core.</li>
+<li>The reorder buffer lets instructions execute out of order but commit in order, which gives precise exceptions and clean recovery from wrong guesses. Speculation fills the window past branches; the load/store queue handles memory.</li>
+<li>Superscalar cores issue several instructions per cycle (the dependence checks grow as <span class="arithmatex">\(N^2\)</span>); VLIW hands scheduling to the compiler; SMT fills idle slots with a second thread.</li>
+</ul>
+<h2 id="311-exercises">3.11 Exercises<a class="headerlink" href="#311-exercises" title="Permanent link">&para;</a></h2>
+<p><strong>Exercise 3.1.</strong> In <code>add x1,x2,x3</code> followed by <code>sub x2,x4,x5</code>, what kind of dependence is there, and can renaming remove it?</p>
+<details class="note">
+<summary>Answer</summary>
+<p>A WAR dependence on <code>x2</code>: <code>add</code> reads <code>x2</code> and <code>sub</code> later writes it. It is a false (name) dependence. Renaming gives <code>sub</code>'s <code>x2</code> a new physical home, so yes, renaming removes it.</p>
+</details>
+<p><strong>Exercise 3.2.</strong> If instructions execute out of order, why does the program never see a scrambled result?</p>
+<details class="note">
+<summary>Answer</summary>
+<p>Instructions commit in program order from the reorder buffer. Only committed results are official, so the visible architectural state always moves forward in program order, and an exception or misprediction can discard everything younger than the offender.</p>
+</details>
+<p><strong>Exercise 3.3.</strong> Rename the following code. The RAT starts with xk mapped to pk for k = 1 to 9, and the free list is p10, p11, p12, ... in order. List the true and false dependences before renaming and say which remain afterwards. When can p10 be returned to the free list?</p>
+<div class="language-asm highlight"><pre><span></span><code><span class="nl">j1:</span><span class="w"> </span><span class="nf">lw</span><span class="w">  </span><span class="no">x5</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">(</span><span class="no">x2</span><span class="p">)</span>
+<span class="nl">j2:</span><span class="w"> </span><span class="nf">add</span><span class="w"> </span><span class="no">x6</span><span class="p">,</span><span class="w"> </span><span class="no">x5</span><span class="p">,</span><span class="w"> </span><span class="no">x1</span>
+<span class="nl">j3:</span><span class="w"> </span><span class="nf">lw</span><span class="w">  </span><span class="no">x5</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span><span class="p">(</span><span class="no">x2</span><span class="p">)</span>
+<span class="nl">j4:</span><span class="w"> </span><span class="nf">sub</span><span class="w"> </span><span class="no">x7</span><span class="p">,</span><span class="w"> </span><span class="no">x5</span><span class="p">,</span><span class="w"> </span><span class="no">x6</span>
+<span class="nl">j5:</span><span class="w"> </span><span class="nf">add</span><span class="w"> </span><span class="no">x5</span><span class="p">,</span><span class="w"> </span><span class="no">x7</span><span class="p">,</span><span class="w"> </span><span class="no">x7</span>
+</code></pre></div>
+<details class="note">
+<summary>Answer</summary>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Architectural</th>
+<th>Renamed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>j1</td>
+<td><code>lw x5,0(x2)</code></td>
+<td><code>lw p10,0(p2)</code></td>
+</tr>
+<tr>
+<td>j2</td>
+<td><code>add x6,x5,x1</code></td>
+<td><code>add p11,p10,p1</code></td>
+</tr>
+<tr>
+<td>j3</td>
+<td><code>lw x5,8(x2)</code></td>
+<td><code>lw p12,8(p2)</code></td>
+</tr>
+<tr>
+<td>j4</td>
+<td><code>sub x7,x5,x6</code></td>
+<td><code>sub p13,p12,p11</code></td>
+</tr>
+<tr>
+<td>j5</td>
+<td><code>add x5,x7,x7</code></td>
+<td><code>add p14,p13,p13</code></td>
+</tr>
+</tbody>
+</table>
+<p>Before renaming. True (RAW): j1 to j2 on x5; j3 to j4 on x5; j2 to j4 on x6; j4 to j5 on x7. False: WAR between j2 (reads x5) and j3 (writes x5), between j4 (reads x5) and j5 (writes x5), and between j2 and j5; WAW between j1 and j3, j3 and j5, and j1 and j5, all on x5.</p>
+<p>After renaming only the four RAW dependences remain. j1 and j3 now write p10 and p12, so j3 can start as soon as x2 is ready, in parallel with j1 and j2.</p>
+<p>p10 held x5 before j3 renamed it. It can be returned to the free list when j3 commits, because from then on no older instruction that could still read it remains in flight.</p>
+</details>
+<p><strong>Exercise 3.4.</strong> Using the rules of Example 3.2 (one issue per cycle, MUL 4, ADD and SUB 2, DIV 8 execution cycles, one CDB), find the issue, execute and broadcast cycles of</p>
+<div class="language-asm highlight"><pre><span></span><code><span class="nl">i1:</span><span class="w"> </span><span class="nf">div</span><span class="w"> </span><span class="no">x1</span><span class="p">,</span><span class="w"> </span><span class="no">x2</span><span class="p">,</span><span class="w"> </span><span class="no">x3</span>
+<span class="nl">i2:</span><span class="w"> </span><span class="nf">add</span><span class="w"> </span><span class="no">x4</span><span class="p">,</span><span class="w"> </span><span class="no">x5</span><span class="p">,</span><span class="w"> </span><span class="no">x6</span>
+<span class="nl">i3:</span><span class="w"> </span><span class="nf">sub</span><span class="w"> </span><span class="no">x7</span><span class="p">,</span><span class="w"> </span><span class="no">x1</span><span class="p">,</span><span class="w"> </span><span class="no">x4</span>
+</code></pre></div>
+<details class="note">
+<summary>Answer</summary>
+<p>i1: issue 1, execute 2 to 9 (8 cycles), broadcast 10. i2: issue 2, operands ready, execute 3 to 4, broadcast 5. i3: issue 3; it waits for <code>x4</code> (broadcast in cycle 5) and for <code>x1</code> (broadcast in cycle 10), so it executes in cycles 11 to 12 and broadcasts in 13.</p>
+<p>The younger i2 finishes long before the older i1. The reorder buffer still commits them in the order i1, i2, i3.</p>
+</details>
+<p><strong>Exercise 3.5.</strong> A load misses and takes 200 cycles. Four independent instructions follow it and one instruction uses the loaded value. In an in-order single-issue core how many cycles does the miss delay the independent instructions? What happens in an out-of-order core?</p>
+<details class="note">
+<summary>Answer</summary>
+<p>In the in-order core the dependent instruction sits directly behind the load and stalls for roughly the full miss time (about 200 cycles); the four independent instructions behind it stall too, so each is delayed by about 200 cycles, even though their operands were ready. In the out-of-order core the dependent instruction waits in its reservation station, and the four independent instructions issue and execute at once. Their latency is hidden beneath the miss, and only the dependent chain waits.</p>
+</details>
+<p><strong>Exercise 3.6.</strong> For issue widths <span class="arithmatex">\(N = 2, 4\)</span> and 8, how many pairs of instructions in one issue group must be checked against each other for dependences? What does this suggest about very wide cores?</p>
+<details class="note">
+<summary>Answer</summary>
+<p>The number of pairs is <span class="arithmatex">\(N(N-1)/2\)</span>: 1, 6 and 28. It grows roughly as <span class="arithmatex">\(N^2\)</span>, as do the wakeup and select logic, the register-file ports and the forwarding wires, so beyond about 4 to 8 wide the added logic costs more in area and delay than it returns in IPC.</p>
+</details>
+<p><strong>Exercise 3.7.</strong> Why does VLIW suit digital-signal-processing kernels better than a web server?</p>
+<details class="note">
+<summary>Answer</summary>
+<p>The compiler schedules statically and cannot see run-time events such as cache misses or unpredictable branches. DSP kernels are regular, with predictable latencies, so the compiler can fill the slots well. A web server's code is full of data-dependent branches and cache misses, which a dynamic out-of-order core handles by reordering at run time and a static VLIW schedule cannot.</p>
+</details>
+<p><strong>Exercise 3.8.</strong> SMT typically adds 20 to 40% throughput at modest cost. Give one benefit and one risk of letting two threads share a core.</p>
+<details class="note">
+<summary>Answer</summary>
+<p>Benefit: when one thread stalls on a miss, the other thread's ready instructions keep the execution units busy, so throughput rises. Risk: the threads share caches, predictors and execution ports, so one thread can observe the other's use of them. That sharing is a side-channel surface (Chapter 10).</p>
+</details>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="pipelining-and-hazards.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: 2. Pipelining and Hazards">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                2. Pipelining and Hazards
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="caches-and-virtual-memory.html" class="md-footer__link md-footer__link--next" aria-label="Next: 4. Caches and Virtual Memory">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                4. Caches and Virtual Memory
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      The Open Book Project &middot;
+      <a href="../../about.html">About this library</a> &middot;
+      © The authors of the books
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "navigation.prune", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "toc.follow", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+  
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../../assets/mathjax.js"></script>
+      
+        <script src="../../assets/viz.js"></script>
+      
+        <script src="../../assets/reader.js"></script>
+      
+        <script src="../../assets/app.js"></script>
+      
+    
+  <script>
+    /* offline reading: the service worker at the site root (its scope is the whole site) */
+    if ("serviceWorker" in navigator && window.isSecureContext) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register(new URL("../../sw.js", location.href).href).catch(function () {});
+      });
+    }
+  </script>
+
+  </body>
+</html>

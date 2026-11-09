@@ -1,0 +1,2046 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#ffffff">
+  
+    <meta name="description" content="The Open Book Project: books on computer science, quantum computing, cyber security, science, university courses and the English language, read page by page like an e-book, online or offline.">
+  
+  
+    <meta name="author" content="Nikhil Kumar Rajput, Ramanujan College, University of Delhi">
+  
+  
+    <link rel="canonical" href="https://open-book-project.github.io/courses/ml_course/preparing-the-data.html">
+  
+  
+    <link rel="prev" href="introduction-learning-from-data.html">
+  
+  
+    <link rel="next" href="feature-selection-and-pca.html">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&family=Noto+Serif+Devanagari:wght@400;600;700&display=swap" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&family=Noto+Serif+Devanagari:wght@400;600;700&display=swap"></noscript>
+  <link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+  <link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Open Book">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="application-name" content="Open Book"><script id="bjp-books" type="application/json">[{"id": "hardware_security", "lang": "en", "path": "science/hardware_security"}, {"id": "drones_missiles", "lang": "en", "path": "science/drones_missiles"}, {"id": "code_to_electrons", "lang": "en", "path": "science/code_to_electrons"}, {"id": "dpi_ndr", "lang": "en", "path": "science/dpi_ndr"}, {"id": "quantum", "lang": "en", "path": "quantum/quantum"}, {"id": "qml", "lang": "en", "path": "quantum/qml"}, {"id": "qml_course", "lang": "en", "path": "quantum/qml_course"}, {"id": "asic", "lang": "en", "path": "computing/asic"}, {"id": "compute", "lang": "en", "path": "computing/compute"}, {"id": "memory", "lang": "en", "path": "computing/memory"}, {"id": "os", "lang": "en", "path": "computing/os"}, {"id": "databases", "lang": "en", "path": "computing/databases"}, {"id": "datacenters", "lang": "en", "path": "computing/datacenters"}, {"id": "networks", "lang": "en", "path": "computing/networks"}, {"id": "cellular", "lang": "en", "path": "computing/cellular"}, {"id": "ml", "lang": "en", "path": "computing/ml"}, {"id": "microarchitecture", "lang": "en", "path": "computing/microarchitecture"}, {"id": "rtl_hdl", "lang": "en", "path": "computing/rtl_hdl"}, {"id": "rtl_to_gdsii", "lang": "en", "path": "computing/rtl_to_gdsii"}, {"id": "ram_ddr5", "lang": "en", "path": "computing/ram_ddr5"}, {"id": "security", "lang": "en", "path": "cyber/security"}, {"id": "trust", "lang": "en", "path": "cyber/trust"}, {"id": "attack_taxonomy", "lang": "en", "path": "cyber/attack_taxonomy"}, {"id": "datacentre_security_ip", "lang": "en", "path": "cyber/datacentre_security_ip"}, {"id": "randomness_testing", "lang": "en", "path": "cyber/randomness_testing"}, {"id": "optimization_methods", "lang": "en", "path": "courses/optimization_methods"}, {"id": "quantum_computing_applications", "lang": "en", "path": "courses/quantum_computing_applications"}, {"id": "dbms_course", "lang": "en", "path": "courses/dbms_course"}, {"id": "csa_course", "lang": "en", "path": "courses/csa_course"}, {"id": "web_programming", "lang": "en", "path": "courses/web_programming"}, {"id": "ml_course", "lang": "en", "path": "courses/ml_course"}, {"id": "english_book", "lang": "en", "path": "language/english_book"}, {"id": "english_book_hinglish", "lang": "en", "path": "language/english_book_hinglish"}, {"id": "english_book_hi", "lang": "hi", "path": "language/english_book_hi"}]</script><script>
+    (function () {
+      var X = window.XMLHttpRequest, open, gate = new Promise(function (r) { open = r; });
+      if (!X) return;
+      var open0 = X.prototype.open, send0 = X.prototype.send;
+      X.prototype.open = function (method, url) {
+        this.__pkIndex = /\/search\/search_index\.json(\?|#|$)/.test(String(url));
+        return open0.apply(this, arguments);
+      };
+      X.prototype.send = function () {
+        if (!this.__pkIndex) return send0.apply(this, arguments);
+        var xhr = this, args = arguments;
+        gate.then(function () { send0.apply(xhr, args); });
+      };
+      function wake() { open(); }
+      document.addEventListener("focusin", function (e) { if (e.target && e.target.closest && e.target.closest(".md-search")) wake(); });
+      document.addEventListener("click", function (e) { if (e.target && e.target.closest && e.target.closest('label[for="__search"], .md-search')) wake(); }, true);
+      document.addEventListener("keydown", function (e) {
+        var k = e.key;
+        if ((k === "/" || k === "s" || k === "f" || k === "S" || k === "F") && !(e.target && e.target.closest && e.target.closest("input, textarea, [contenteditable]"))) wake();
+      }, true);
+      if (/[?&]q=/.test(location.search)) wake();
+    })();
+  </script><script>
+    try {
+      if ((window.matchMedia && (matchMedia("(display-mode: standalone)").matches || matchMedia("(display-mode: fullscreen)").matches)) || navigator.standalone === true) {
+        document.documentElement.className += " bjp-standalone";
+      }
+    } catch (e) { /* not an installed app */ }
+  </script>
+  <script>
+    /* a book opened from its cover on the shelf: the page stays blank, in the cover's colour, until the reader is up */
+    try {
+      var cv = sessionStorage.getItem("bjp.reader.cover");
+      if (cv && sessionStorage.getItem("bjp.reader.open") === "1") {
+        var c = JSON.parse(cv), de = document.documentElement;
+        de.className += " bjp-booting";
+        if (c && /^#[0-9a-f]{3,8}$/i.test(c.bg || "")) de.style.background = c.bg;
+        setTimeout(function () { de.classList.remove("bjp-booting"); de.style.background = ""; }, 3000);
+      }
+    } catch (e) { /* no session storage: the page simply opens as usual */ }
+  </script>
+
+    
+      
+        <title>2. Preparing the Data: Scaling, Encoding, Outliers and Balance - The Open Book Project</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/extra.css">
+    
+      <link rel="stylesheet" href="../../assets/reader.css">
+    
+      <link rel="stylesheet" href="../../assets/viz.css">
+    
+      <link rel="stylesheet" href="../../assets/app.css">
+    
+      <link rel="stylesheet" href="../../assets/theme.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#21-why-raw-data-is-rarely-usable" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../index.html" title="The Open Book Project" class="md-header__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+      
+  <img src="../../assets/icons/logo.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            The Open Book Project
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              2. Preparing the Data: Scaling, Encoding, Outliers and Balance
+            
+          </span>
+        </div>
+      </div>
+    </div><a href="../../index.html" class="bjp-libbtn" aria-label="Library: all books" title="Library: all books">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V5h4v15M8 20V9h4v11M14 20L12.6 6l3.8-.8 3 14.2M3 20h18"/></svg><span>Library</span>
+    </a>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary bjp-nav bjp-nav--book" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../index.html" title="The Open Book Project" class="md-nav__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+      
+  <img src="../../assets/icons/logo.svg" alt="logo">
+
+    </a>
+    The Open Book Project
+  </label>
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      <li class="md-nav__item bjp-nav-all">
+        <a href="../../index.html" class="md-nav__link" aria-label="All books: back to the library">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+          <span class="md-ellipsis">All books</span>
+        </a>
+      </li>
+      <li class="md-nav__item bjp-nav-book" role="presentation"><span class="bjp-nav-head">Machine Learning</span></li>
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview and preface
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="preface.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Preface
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="introduction-learning-from-data.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. Introduction: Learning from Data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Preparing the Data: Scaling, Encoding, Outliers and Balance
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="preparing-the-data.html" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Preparing the Data: Scaling, Encoding, Outliers and Balance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#21-why-raw-data-is-rarely-usable" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 Why raw data is rarely usable
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#22-feature-scaling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 Feature scaling
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.2 Feature scaling">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#which-algorithms-care-and-why" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Which algorithms care, and why
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#23-missing-values-and-categorical-columns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 Missing values and categorical columns
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.3 Missing values and categorical columns">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#missing-values" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Missing values
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#encoding-categories" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Encoding categories
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#24-outliers-finding-them-and-deciding-what-they-are" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.4 Outliers: finding them, and deciding what they are
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#25-class-balancing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.5 Class balancing
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#26-further-topics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.6 Further topics
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.6 Further topics">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#scaling-to-any-interval" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scaling to any interval
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#target-encoding-and-the-leak-it-invites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Target encoding, and the leak it invites
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#27-worked-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.7 Worked examples
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#28-common-mistakes-to-avoid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.8 Common mistakes to avoid
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#29-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.9 Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#210-exercises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.10 Exercises
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="feature-selection-and-pca.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. Feature Selection and Principal Component Analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="linear-regression-and-gradient-descent.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. Linear Regression and Gradient Descent
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="overfitting-regularisation-and-regression-metrics.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Overfitting, Regularisation and Regression Metrics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="decision-trees.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. Decision Trees
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="naive-bayes.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    7. Naive Bayes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="logistic-regression-and-multi-class-classification.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    8. Logistic Regression and Multi-class Classification
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="k-nearest-neighbours.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    9. k-Nearest Neighbours
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="perceptrons-and-neural-networks.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    10. Perceptrons, Multilayer Networks and Back-propagation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="support-vector-machines.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    11. Support Vector Machines
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="evaluating-classifiers.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    12. Evaluating Classifiers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="clustering-and-k-means.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    13. Clustering and K-means
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="hierarchical-clustering-and-evaluating-clusters.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    14. Hierarchical Clustering and Evaluating Clusters
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="formula-sheet.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Formula Sheet and Notation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="glossary.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="further-reading.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Further Reading and Syllabus Map
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#21-why-raw-data-is-rarely-usable" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 Why raw data is rarely usable
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#22-feature-scaling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 Feature scaling
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.2 Feature scaling">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#which-algorithms-care-and-why" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Which algorithms care, and why
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#23-missing-values-and-categorical-columns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 Missing values and categorical columns
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.3 Missing values and categorical columns">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#missing-values" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Missing values
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#encoding-categories" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Encoding categories
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#24-outliers-finding-them-and-deciding-what-they-are" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.4 Outliers: finding them, and deciding what they are
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#25-class-balancing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.5 Class balancing
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#26-further-topics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.6 Further topics
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.6 Further topics">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#scaling-to-any-interval" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scaling to any interval
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#target-encoding-and-the-leak-it-invites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Target encoding, and the leak it invites
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#27-worked-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.7 Worked examples
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#28-common-mistakes-to-avoid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.8 Common mistakes to avoid
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#29-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.9 Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#210-exercises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.10 Exercises
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="chapter-2-preparing-the-data-scaling-encoding-outliers-and-balance">Chapter 2: Preparing the Data: Scaling, Encoding, Outliers and Balance<a class="headerlink" href="#chapter-2-preparing-the-data-scaling-encoding-outliers-and-balance" title="Permanent link">&para;</a></h1>
+<p>Suppose you are asked which two of three people are most alike, given their height in centimetres and their annual income in rupees. Person A is 170 cm earning ₹500 000; B is 195 cm earning ₹501 000; <span class="arithmatex">\(C\)</span> is 171 cm earning ₹900 000. Any distance you compute is going to be dominated by the income difference, because income is measured in numbers that are thousands of times larger. The algorithm will report that A and B are practically identical and that <span class="arithmatex">\(C\)</span> is far away — entirely because of the units somebody happened to choose. Change income to lakhs and the answer changes.</p>
+<p>That is the whole motivation for feature scaling, and it generalises. Learning algorithms do arithmetic on the numbers you hand them. They cannot see that one column is a length and another is money. They cannot see that a 999 in the age column means “not recorded”, that three of your forty features are copies of each other, or that 99% of your rows belong to one class. Preprocessing is the work of making the numbers mean what you think they mean.</p>
+<p>One more thing, which is the axis this whole unit turns on. Every step here <em>learns something from the data</em> — a minimum, a mean, a set of eigenvectors, a list of columns to keep. Anything learned must be learned from the training set alone. Break that and your reported accuracy becomes a number about your notebook rather than about the world.</p>
+<div class="admonition abstract">
+<p class="admonition-title">Learning outcomes of Unit 2</p>
+<ul>
+<li>Apply <strong>min–max normalisation</strong>, <strong>z-score standardisation</strong> and <strong>robust scaling</strong> by hand, and say which one a given situation calls for — including the situations that call for none.</li>
+<li>State exactly which algorithms are sensitive to feature scale and <strong>why</strong>, rather than remembering a list.</li>
+<li>Detect outliers with the <strong><span class="arithmatex">\(1.5 \times\)</span> IQR</strong> rule and the <strong>z-score</strong> rule, explain why the two disagree, and decide what to do with what you find.</li>
+<li>Distinguish <strong>filter</strong>, <strong>wrapper</strong> and <strong>embedded</strong> feature selection, and choose between selection and extraction.</li>
+<li>Carry out <strong>PCA</strong> on a small covariance matrix: eigenvalues, eigenvectors, proportion of variance explained, and how many components to keep.</li>
+<li>Recognise class imbalance, explain the <strong>accuracy paradox</strong>, and compare undersampling, oversampling, SMOTE and class weights.</li>
+<li>Order a pipeline so that <strong>no information leaks</strong> from the test set into the training process.</li>
+</ul>
+</div>
+<h2 id="21-why-raw-data-is-rarely-usable">2.1 Why raw data is rarely usable<a class="headerlink" href="#21-why-raw-data-is-rarely-usable" title="Permanent link">&para;</a></h2>
+<p>Real datasets arrive with several distinct problems, and each has its own remedy. It is worth being able to name them separately, because the fixes are not interchangeable.</p>
+<table>
+<thead>
+<tr>
+<th>Problem</th>
+<th>What it looks like</th>
+<th>Remedy</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Incomparable scales</td>
+<td>age in years next to income in rupees</td>
+<td>scaling — this unit's first topic</td>
+</tr>
+<tr>
+<td>Missing values</td>
+<td>blanks, <code>NaN</code>, or a sentinel like −1 or 999</td>
+<td>drop, impute, or flag as missing</td>
+</tr>
+<tr>
+<td>Categorical text</td>
+<td>“Mumbai”, “Delhi”, “Chennai”</td>
+<td>one-hot, ordinal or target encoding</td>
+</tr>
+<tr>
+<td>Outliers</td>
+<td>one value ten times everything else</td>
+<td>investigate; then keep, cap, or remove</td>
+</tr>
+<tr>
+<td>Too many features</td>
+<td>200 columns, 300 rows</td>
+<td>selection, or extraction with PCA</td>
+</tr>
+<tr>
+<td>Redundant features</td>
+<td>“height in cm” and “height in inches”</td>
+<td>correlation filter, PCA, or a regulariser</td>
+</tr>
+<tr>
+<td>Class imbalance</td>
+<td>99.7% negative</td>
+<td>resampling, class weights, and a better metric</td>
+</tr>
+<tr>
+<td>Skew</td>
+<td>income, city population, word counts</td>
+<td>log or Box–Cox transform</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition tip">
+<p class="admonition-title">Key idea</p>
+<p>Preprocessing is not tidying-up done before the real work. It is part of the model. A scaler is fitted, has parameters, and must be shipped and versioned with the model — if the values used at prediction time differ from those used at training time, the model receives inputs in a coordinate system it has never seen, and its output is meaningless rather than merely inaccurate.</p>
+</div>
+<h2 id="22-feature-scaling">2.2 Feature scaling<a class="headerlink" href="#22-feature-scaling" title="Permanent link">&para;</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Definition: The two workhorses</p>
+<p><strong>Min–max normalisation</strong> maps a feature onto a fixed interval, usually [0, 1]:</p>
+<p>x′ <span class="arithmatex">\(= (x -\)</span> min) / (max <span class="arithmatex">\(-\)</span> min)</p>
+<p><strong>Z-score standardisation</strong> re-centres to mean 0 and rescales to standard deviation 1:</p>
+<p><span class="arithmatex">\(z = (x - \mu ) / \sigma\)</span></p>
+<p><strong>Mean normalisation</strong> is min–max recentred on the mean, so the values land in [−0.5, 0.5] with an average of zero:</p>
+<p>x′ <span class="arithmatex">\(= (x - \mu ) /\)</span> (max <span class="arithmatex">\(-\)</span> min)</p>
+</div>
+<p>Min–max preserves the shape of the distribution exactly and guarantees the range; it is completely at the mercy of the extreme values, because they <em>are</em> the parameters. Standardisation is far more robust to a single large value: an outlier moves <span class="arithmatex">\(\mu\)</span> a little and <span class="arithmatex">\(\sigma\)</span> a little, rather than redefining the whole scale. But it bounds nothing, so a standardised feature can perfectly well take the value 12.</p>
+<figure class="fig fig-diagram">
+<img src="img/three-scales.png" alt="The same eight salaries on three scales: raw, min-max and z-score. The pattern of the points is unchanged, only the axis differs. One extreme value would squeeze the other seven into a huddle under min-max scaling, whereas z-scores merely stretch." loading="lazy" width="1481" height="510">
+<figcaption><strong>Figure 2.1.</strong> The same eight salaries on three scales: raw, min-max and z-score. The pattern of the points is unchanged, only the axis differs. One extreme value would squeeze the other seven into a huddle under min-max scaling, whereas z-scores merely stretch.</figcaption>
+</figure>
+
+<h3 id="which-algorithms-care-and-why">Which algorithms care, and why<a class="headerlink" href="#which-algorithms-care-and-why" title="Permanent link">&para;</a></h3>
+<p>Do not memorise a list — the reason predicts the list.</p>
+<div class="admonition warning">
+<p class="admonition-title">Scale-sensitive</p>
+<p>Anything that computes a <strong>distance</strong> or a <strong>dot product</strong>, or descends a gradient. <strong>k-NN, k-means, SVM, PCA</strong> — because a distance is a sum over features and the biggest-numbered feature dominates the sum. <strong>Linear and logistic regression trained by gradient descent, and neural networks</strong> — because unequal scales make the cost surface a long thin ravine that gradient descent zig-zags down instead of walking straight to the bottom. <strong>Ridge and lasso</strong> — because the penalty <span class="arithmatex">\(\lambda \sum \theta ^{2}\)</span> punishes a coefficient for being large, and a coefficient is large partly because its feature is measured in small units.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Scale-indifferent</p>
+<p>Anything that considers one feature at a time and only compares values <em>within</em> that feature. <strong>Decision trees, random forests, gradient boosting</strong> — a split asks “is <span class="arithmatex">\(x &lt;\)</span> t?”, and any increasing transformation of <span class="arithmatex">\(x\)</span> leaves the ordering, and hence every possible split, unchanged. Also <strong>naïve Bayes</strong> on categorical features, and linear regression solved by the normal equation, which finds the exact optimum regardless of conditioning.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Definition: Robust scaling and the log transform</p>
+<p><strong>Robust scaling</strong> replaces <span class="arithmatex">\(\mu\)</span> and <span class="arithmatex">\(\sigma\)</span> with the median and the IQR: x′ <span class="arithmatex">\(= (x -\)</span> median) / IQR. Both are rank statistics, so an extreme value cannot drag them. Use it whenever the feature is heavy-tailed.</p>
+<p><strong>Log transform</strong> <span class="arithmatex">\(x \to \log(1 + x)\)</span> is not scaling but reshaping: it pulls in a long right tail so that a variable like income or city population becomes roughly symmetric. Apply it before standardising, and only to positive quantities.</p>
+</div>
+<figure class="fig fig-diagram">
+<img src="img/preprocessing-order.png" alt="The only correct order for a learned transformation: split first, fit on the training rows only, then apply the same stored numbers to both parts. Any arrow from the test side back to the training side would be a leak." loading="lazy" width="1223" height="493">
+<figcaption><strong>Figure 2.2.</strong> The only correct order for a learned transformation: split first, fit on the training rows only, then apply the same stored numbers to both parts. Any arrow from the test side back to the training side would be a leak.</figcaption>
+</figure>
+
+<ol>
+<li><strong>Raw dataset.</strong> Everything you have. Nothing has been computed from it yet.</li>
+<li><strong>1 Split.</strong> FIRST. Before any statistic is computed from any row. Everything that follows depends on this ordering.</li>
+<li><strong>2 Fit on train (μ, σ, min, max, PCs).</strong> Every number the transformation needs is computed from the training rows only. scaler.fit(X_train).</li>
+<li><strong>3 Apply to both.</strong> scaler.transform(X_train) and scaler.transform(X_test) — the same stored numbers for both. The test set is transformed, never consulted.</li>
+<li><strong>4 Train the model.</strong> On the transformed training set.</li>
+<li><strong>5 Evaluate once.</strong> On the transformed test set, at the very end. This number is now an honest estimate.</li>
+</ol>
+<div class="admonition warning">
+<p class="admonition-title">Why fitting the scaler on everything is wrong, concretely</p>
+<p>Suppose the test set happens to contain the largest salary in the dataset. If min and max were computed over all rows, that value defines the top of the scale, and the model has been trained in a coordinate system that only exists because of a row it was not supposed to see. The effect is usually small and always in the same direction: your reported score is better than the truth. It costs nothing to do it correctly — in scikit-learn, put the scaler and the model in a <code>Pipeline</code> and the correct order becomes automatic.</p>
+</div>
+<div class="language-python highlight"><pre><span></span><code><span class="c1"># scaling, done the only correct way: inside a pipeline</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.preprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">StandardScaler</span><span class="p">,</span> <span class="n">MinMaxScaler</span><span class="p">,</span> <span class="n">RobustScaler</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_pipeline</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">train_test_split</span><span class="p">,</span> <span class="n">cross_val_score</span>
+
+<span class="c1"># WRONG — the scaler has seen every row, the test rows included</span>
+<span class="n">X_all</span> <span class="o">=</span> <span class="n">StandardScaler</span><span class="p">()</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+<span class="n">X_tr</span><span class="p">,</span> <span class="n">X_te</span><span class="p">,</span> <span class="n">y_tr</span><span class="p">,</span> <span class="n">y_te</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">X_all</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+
+<span class="c1"># RIGHT — split first; the pipeline refits the scaler inside every fold</span>
+<span class="n">X_tr</span><span class="p">,</span> <span class="n">X_te</span><span class="p">,</span> <span class="n">y_tr</span><span class="p">,</span> <span class="n">y_te</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">pipe</span> <span class="o">=</span> <span class="n">make_pipeline</span><span class="p">(</span><span class="n">StandardScaler</span><span class="p">(),</span> <span class="n">model</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">cross_val_score</span><span class="p">(</span><span class="n">pipe</span><span class="p">,</span> <span class="n">X_tr</span><span class="p">,</span> <span class="n">y_tr</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span>
+
+<span class="c1"># the stored statistics — these must travel with the model to production</span>
+<span class="n">sc</span> <span class="o">=</span> <span class="n">StandardScaler</span><span class="p">()</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_tr</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">sc</span><span class="o">.</span><span class="n">mean_</span><span class="p">,</span> <span class="n">sc</span><span class="o">.</span><span class="n">scale_</span><span class="p">)</span>      <span class="c1"># mu and sigma, learned from training data alone</span>
+</code></pre></div>
+<p>The first version is not slower or uglier — it is wrong, and it will report a slightly better score than the model deserves. That is the whole reason <code>Pipeline</code> exists.</p>
+<h2 id="23-missing-values-and-categorical-columns">2.3 Missing values and categorical columns<a class="headerlink" href="#23-missing-values-and-categorical-columns" title="Permanent link">&para;</a></h2>
+<h3 id="missing-values">Missing values<a class="headerlink" href="#missing-values" title="Permanent link">&para;</a></h3>
+<p>First find them, including the ones in disguise: a coded 999, a −1, an empty string, a zero in a column where zero is impossible. Then choose.</p>
+<ul>
+<li><strong>Drop the rows</strong> — fine when few rows are affected and the missingness is unrelated to the target. Dangerous otherwise: if income is missing mainly for the unemployed, dropping those rows removes exactly the group you care about.</li>
+<li><strong>Drop the column</strong> — when most of it is missing and the rest is not clearly informative.</li>
+<li><strong>Impute</strong> — fill with the mean (symmetric numeric data), the median (skewed or with outliers), the mode (categorical), or a model-based value (k-NN imputation). Every one of these is a statistic, so <strong>compute it on the training fold and reuse it</strong>.</li>
+<li><strong>Flag it</strong> — add a binary <code>was_missing</code> column. Often the fact of absence carries real information, and this keeps it while still letting you fill the value.</li>
+</ul>
+<h3 id="encoding-categories">Encoding categories<a class="headerlink" href="#encoding-categories" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>What it does</th>
+<th>Use when</th>
+<th>Risk</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>One-hot</td>
+<td>one binary column per value</td>
+<td>unordered categories, few values</td>
+<td>column explosion with high-cardinality features</td>
+</tr>
+<tr>
+<td>Dummy (drop one)</td>
+<td><span class="arithmatex">\(c - 1\)</span> columns</td>
+<td>linear and logistic regression</td>
+<td>none; avoids the dummy-variable trap</td>
+</tr>
+<tr>
+<td>Ordinal</td>
+<td>map to 0, 1, 2 … in order</td>
+<td>genuinely ordered: low <span class="arithmatex">\(&lt;\)</span> medium <span class="arithmatex">\(&lt;\)</span> high</td>
+<td>invents an order where there is none</td>
+</tr>
+<tr>
+<td>Label</td>
+<td>arbitrary integers</td>
+<td>the <em>target</em> of a classifier</td>
+<td>never use on an unordered <em>input</em> feature</td>
+</tr>
+</tbody>
+</table>
+<p>The mistake worth naming: encoding city as Mumbai <span class="arithmatex">\(= 0\)</span>, Delhi <span class="arithmatex">\(= 1\)</span>, Chennai <span class="arithmatex">\(= 2\)</span>, Kolkata <span class="arithmatex">\(= 3\)</span> tells a linear model that Kolkata is three times Delhi and that Delhi sits between Mumbai and Chennai. The model will happily act on that fiction. A decision tree suffers less, because it can carve the integers into arbitrary groups, but it still has to spend splits doing so.</p>
+<h2 id="24-outliers-finding-them-and-deciding-what-they-are">2.4 Outliers: finding them, and deciding what they are<a class="headerlink" href="#24-outliers-finding-them-and-deciding-what-they-are" title="Permanent link">&para;</a></h2>
+<p>An outlier is a value far from the rest. That is a statement about the data, not about the truth. It might be a typo — a weight of 700 kg. It might be a real, rare case — a genuine ₹5-crore transaction. Or it might be the very thing you are trying to detect, as in fraud or fault detection, where the outliers are the signal and everything else is background. <strong>Detection is arithmetic; deciding what to do is judgement.</strong></p>
+<div class="admonition note">
+<p class="admonition-title">Definition: IQR and z-score</p>
+<p><strong>Tukey's rule.</strong> With quartiles Q1 and Q3 and IQR <span class="arithmatex">\(= Q3 - Q1\)</span>, flag any value outside [<span class="arithmatex">\(Q1 -\)</span> 1.5·IQR, <span class="arithmatex">\(Q3 +\)</span> 1.5·IQR]. Values beyond 3·IQR are “far out”.</p>
+<p><strong>Z-score rule.</strong> Flag any value with |z| <span class="arithmatex">\(=\)</span> |x <span class="arithmatex">\(- \mu |/\sigma &gt; 3\)</span>.</p>
+</div>
+<p>The two disagree, and the disagreement is instructive. Quartiles are computed from ranks, so no single monstrous value can move them. But <span class="arithmatex">\(\mu\)</span> and <span class="arithmatex">\(\sigma\)</span> are computed from the values themselves, so a large outlier <em>inflates <span class="arithmatex">\(\sigma\)</span></em> — and then hides inside the wider band it created. This is called masking, and it is why the IQR rule catches things the z-rule misses.</p>
+<figure class="fig fig-diagram">
+<img src="img/outlier-rules.png" alt="A box plot of twelve values with the interquartile-range fences (dashed). The point beyond the upper fence is flagged; removing it would change every statistic and move the fences." loading="lazy" width="1146" height="491">
+<figcaption><strong>Figure 2.3.</strong> A box plot of twelve values with the interquartile-range fences (dashed). The point beyond the upper fence is flagged; removing it would change every statistic and move the fences.</figcaption>
+</figure>
+
+<div class="admonition note">
+<p class="admonition-title">What to do with one you have found</p>
+<p><strong>Investigate first</strong> — a negative age is an error, a ₹5-crore transaction may be real. <strong>Correct</strong> if it is an error you can fix. <strong>Cap (winsorise)</strong> at the 1st and 99th percentile to limit its influence without discarding the row. <strong>Remove</strong> only when you are confident it is not a real case. <strong>Or keep it and use a robust method</strong> — median instead of mean, MAE instead of MSE, a tree instead of a linear model. Removing points because they are inconvenient is how you end up with a model that fails precisely on the cases that matter.</p>
+</div>
+<h2 id="25-class-balancing">2.5 Class balancing<a class="headerlink" href="#25-class-balancing" title="Permanent link">&para;</a></h2>
+<figure class="fig fig-diagram">
+<img src="img/imbalance.png" alt="An imbalanced dataset: 95 majority-class points against 8 minority-class points." loading="lazy" width="1575" height="879">
+<figcaption><strong>Figure 2.4.</strong> An imbalanced dataset: 95 majority-class points against 8 minority-class points.</figcaption>
+</figure>
+
+<div class="admonition warning">
+<p class="admonition-title">The accuracy paradox</p>
+<p>With 99.7% negatives, the model that answers “negative” for every input scores 99.7% accuracy and detects nothing. Any real classifier that finds some positives at the cost of a few false alarms will score <em>lower</em> on accuracy — so optimising accuracy actively pushes you towards the useless model. Report precision, recall, F1 and the confusion matrix instead, and always quote the majority-class baseline next to whatever number you claim.</p>
+</div>
+<table>
+<thead>
+<tr>
+<th>Remedy</th>
+<th>What it does</th>
+<th>Cost</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Random undersampling</td>
+<td>discard majority examples until balanced</td>
+<td>throws away real information; only viable when the majority class is huge</td>
+</tr>
+<tr>
+<td>Random oversampling</td>
+<td>duplicate minority examples</td>
+<td>no new information; a flexible model memorises the repeats</td>
+</tr>
+<tr>
+<td>SMOTE</td>
+<td>synthesise new minority points along lines joining nearest neighbours</td>
+<td>plausible but invented; can blur the boundary if the classes overlap</td>
+</tr>
+<tr>
+<td>Class weights</td>
+<td>tell the loss function that a minority mistake costs more</td>
+<td>none — usually the first thing to try, and it changes no data at all</td>
+</tr>
+<tr>
+<td>Move the threshold</td>
+<td>keep the model, lower the cut-off for “positive”</td>
+<td>none; often the whole solution, since the model already ranks correctly</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition warning">
+<p class="admonition-title">Resample the training fold only</p>
+<p>SMOTE applied before the split puts synthetic points built from training data into the test set, so the model is graded on near-copies of what it studied. Recall will look wonderful and will collapse in production. Test sets keep the real, imbalanced distribution — that is what the world looks like.</p>
+</div>
+<div class="language-python highlight"><pre><span></span><code><span class="c1"># class imbalance: try the cheapest remedy first</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">LogisticRegression</span>
+
+<span class="c1"># 1. costs nothing and changes no data: tell the loss a rare mistake costs more</span>
+<span class="n">clf</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">(</span><span class="n">class_weight</span><span class="o">=</span><span class="s2">"balanced"</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_tr</span><span class="p">,</span> <span class="n">y_tr</span><span class="p">)</span>
+
+<span class="c1"># 2. resampling — inside the training fold only, never before the split</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">imblearn.over_sampling</span><span class="w"> </span><span class="kn">import</span> <span class="n">SMOTE</span>          <span class="c1"># pip install imbalanced-learn</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">imblearn.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_pipeline</span> <span class="k">as</span> <span class="n">imb_pipeline</span>
+
+<span class="n">pipe</span> <span class="o">=</span> <span class="n">imb_pipeline</span><span class="p">(</span><span class="n">StandardScaler</span><span class="p">(),</span> <span class="n">SMOTE</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">),</span> <span class="n">LogisticRegression</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">cross_val_score</span><span class="p">(</span><span class="n">pipe</span><span class="p">,</span> <span class="n">X_tr</span><span class="p">,</span> <span class="n">y_tr</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="s2">"f1"</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span>
+</code></pre></div>
+<div class="admonition warning">
+<p class="admonition-title">Note the import</p>
+<p><code>imblearn</code>'s pipeline, not sklearn's — because a resampler must act on the training fold and be skipped when the fold is scored, and only imblearn's version knows that. Using sklearn's pipeline with SMOTE resamples the validation fold too, which is the same leak in a different costume. And <code>scoring="f1"</code>, not accuracy: that is the whole reason you are resampling.</p>
+</div>
+<h2 id="26-further-topics">2.6 Further topics<a class="headerlink" href="#26-further-topics" title="Permanent link">&para;</a></h2>
+<h3 id="scaling-to-any-interval">Scaling to any interval<a class="headerlink" href="#scaling-to-any-interval" title="Permanent link">&para;</a></h3>
+<p>Min–max normalisation is usually quoted for the interval <span class="arithmatex">\([0, 1]\)</span>, but the same idea maps a feature onto any chosen interval <span class="arithmatex">\([a, b]\)</span>:</p>
+<div class="arithmatex">\[
+x' = a + \frac{(x - \min)(b - a)}{\max - \min}.
+\]</div>
+<p>For <span class="arithmatex">\(a = 0\)</span> and <span class="arithmatex">\(b = 1\)</span> this is the formula already given. Many neural networks work best with inputs centred on zero, so <span class="arithmatex">\([-1, 1]\)</span> is a common choice: for the column <span class="arithmatex">\(10, 20, 30, 40, 50\)</span> the formula gives <span class="arithmatex">\(x' = -1 + (x - 10)(2)/40\)</span>, that is <span class="arithmatex">\(-1, -0.5, 0, 0.5, 1\)</span>. Image pixels, which lie between 0 and 255, are the standard case: dividing by 255 gives <span class="arithmatex">\([0, 1]\)</span>, and <span class="arithmatex">\(2x/255 - 1\)</span> gives <span class="arithmatex">\([-1, 1]\)</span>. As always, <span class="arithmatex">\(\min\)</span> and <span class="arithmatex">\(\max\)</span> are the training-set values (or, for pixels, the known limits of the measurement), and a later value outside them simply lands outside the interval.</p>
+<h3 id="target-encoding-and-the-leak-it-invites">Target encoding, and the leak it invites<a class="headerlink" href="#target-encoding-and-the-leak-it-invites" title="Permanent link">&para;</a></h3>
+<p>One-hot encoding fails when a feature has hundreds or thousands of values (a postcode, a shop identifier): the number of columns explodes. <strong>Target</strong> (or <em>count</em>) encoding replaces each category by a summary of the target for that category, most simply the mean of <span class="arithmatex">\(y\)</span> over the training rows that have it. It turns one high-cardinality column into one numeric column, at a price: the encoding is computed <em>from the labels</em>, so it is the one preprocessing step in which the answer itself is used.</p>
+<table>
+<thead>
+<tr>
+<th>city</th>
+<th>rows in training</th>
+<th>defaults (<span class="arithmatex">\(y = 1\)</span>)</th>
+<th>mean of <span class="arithmatex">\(y\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Delhi</td>
+<td>4</td>
+<td>3</td>
+<td><span class="arithmatex">\(0.75\)</span></td>
+</tr>
+<tr>
+<td>Mumbai</td>
+<td>3</td>
+<td>1</td>
+<td><span class="arithmatex">\(0.33\)</span></td>
+</tr>
+<tr>
+<td>Chennai</td>
+<td>1</td>
+<td>1</td>
+<td><span class="arithmatex">\(1.00\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>The overall default rate is <span class="arithmatex">\(5/8 = 0.625\)</span>. Notice Chennai: one row, one default, so the encoded value is <span class="arithmatex">\(1.00\)</span> and the feature reproduces that row's label exactly. For a rare category the mean is mostly noise, yet it looks like a strong predictor, and a flexible model will use it to memorise the training set. Two safeguards are standard. <strong>Smooth</strong> towards the overall rate: with a weight <span class="arithmatex">\(m\)</span> (here <span class="arithmatex">\(m = 2\)</span>),</p>
+<div class="arithmatex">\[
+\text{encoded} = \frac{n\cdot \bar{y}_{\text{category}} + m\cdot \bar{y}_{\text{all}}}{n + m},
+\]</div>
+<p>which gives Delhi <span class="arithmatex">\(0.708\)</span>, Mumbai <span class="arithmatex">\(0.45\)</span> and Chennai <span class="arithmatex">\(0.75\)</span>; the single-row category is pulled most strongly towards the overall rate. And <strong>compute the encoding out of fold</strong>: each training row is encoded using only the other folds, so that its own label never feeds into its own feature. Like every learned transformation, the encoding must be fitted on the training part only and applied unchanged to the test part, with a category unseen in training given the overall rate.</p>
+<h2 id="27-worked-examples">2.7 Worked examples<a class="headerlink" href="#27-worked-examples" title="Permanent link">&para;</a></h2>
+<p>The examples below work through the calculations of this chapter in full. Try each one on paper before reading the steps.</p>
+<div class="admonition example">
+<p class="admonition-title">Example 2.1: Scale a feature, then scale a new value</p>
+<p><strong>Problem.</strong> Training salaries (₹ thousand) are 20, 35, 40, 55, 100. Standardise them using the population <span class="arithmatex">\(\sigma\)</span>. A test example arrives with salary 70 — give its z-score. Then give the min–max value of the same test example.</p>
+<p><strong>Step 1 — training statistics, from training data only</strong></p>
+<p><span class="arithmatex">\(\mu = (20 + 35 + 40 + 55 + 100)/5 = 250/5 = 50\)</span></p>
+<p>deviations: −30, −15, −10, 5, 50; squares: 900, 225, 100, 25, 2500; sum 3750</p>
+<p><span class="arithmatex">\(\sigma = \sqrt{3750/5} = \sqrt{750} = 27.386\)</span></p>
+<p><strong>Step 2 — the training set, transformed</strong></p>
+<p><span class="arithmatex">\(z = (-30, -15, -10, 5, 50)/27.386 = (-1.095, -0.548, -0.365, 0.183, 1.826)\)</span></p>
+<p>Check: these sum to 0, as standardised values must.</p>
+<p><strong>Step 3 — the test example</strong></p>
+<p><span class="arithmatex">\(z = (70 - 50)/27.386 = 0.730\)</span>. The stored <span class="arithmatex">\(\mu\)</span> and <span class="arithmatex">\(\sigma\)</span> are used; the test value takes no part in computing them.</p>
+<p><strong>Step 4 — min–max, for contrast</strong></p>
+<p>min <span class="arithmatex">\(= 20\)</span>, max <span class="arithmatex">\(= 100\)</span> from the training set, so x′ <span class="arithmatex">\(= (70 - 20)/(100 - 20) = 50/80 = 0.625\)</span>.</p>
+<p>Now notice what happens with a test salary of 120: x′ <span class="arithmatex">\(= (120 - 20)/80 = 1.25\)</span>, outside [0, 1]. That is not a mistake — it is min–max being honest about a value beyond the training range, and it is exactly why min–max is fragile when the future is larger than the past.</p>
+<p><strong>Answer.</strong> <span class="arithmatex">\(z = 0.730\)</span>; min–max <span class="arithmatex">\(= 0.625\)</span></p>
+</div>
+<div class="admonition example">
+<p class="admonition-title">Example 2.2: The two outlier rules disagree</p>
+<p><strong>Problem.</strong> Values: 10, 12, 13, 14, 15, 16, 18, 95. Apply the <span class="arithmatex">\(1.5 \times\)</span> IQR rule and the |z| <span class="arithmatex">\(&gt; 3\)</span> rule, and explain the disagreement.</p>
+<p><strong>Step 1 — the IQR rule</strong></p>
+<p>Sorted, <span class="arithmatex">\(n = 8\)</span>. With linear interpolation, <span class="arithmatex">\(Q1 = 12.75, Q3 = 16.5\)</span>, IQR <span class="arithmatex">\(= 3.75\)</span>.</p>
+<p>Fences: <span class="arithmatex">\(12.75 - 1.5(3.75) = 7.125\)</span> and <span class="arithmatex">\(16.5 + 1.5(3.75) = 22.125\)</span>.</p>
+<p><span class="arithmatex">\(95 &gt; 22.125\)</span>, so the IQR rule <strong>flags 95</strong>.</p>
+<p><strong>Step 2 — the z-score rule</strong></p>
+<p><span class="arithmatex">\(\mu = (10+12+13+14+15+16+18+95)/8 = 193/8 = 24.125\)</span></p>
+<p>Squared deviations sum to <span class="arithmatex">\(5782.9\)</span>, so <span class="arithmatex">\(\sigma = \sqrt{5782.9/8} = \sqrt{722.9} \approx 26.89\)</span>.</p>
+<p><span class="arithmatex">\(z\)</span> for <span class="arithmatex">\(95 = (95 - 24.125)/26.89 = 2.64\)</span>, which is <em>less than 3</em>. The z-rule <strong>does not flag it</strong>.</p>
+<p><strong>Step 3 — why</strong></p>
+<p>The outlier is inside both statistics it is being tested against. It pulled <span class="arithmatex">\(\mu\)</span> up from about 14 to 24, and it inflated <span class="arithmatex">\(\sigma\)</span> from about 2.4 to 27 — more than ten times. Having widened its own goalposts, it now sits comfortably inside them. This is <strong>masking</strong>.</p>
+<p>The quartiles cannot be moved this way, because they depend on the ranks of the values, not their sizes. Replace 95 by 950 and Q1, Q3 and the fences do not change at all.</p>
+<p><strong>Answer.</strong> IQR flags 95; the z-rule does not, because 95 inflated <span class="arithmatex">\(\sigma\)</span> to 26.9 and so hid inside its own band. Prefer the IQR rule, or use a robust <span class="arithmatex">\(z\)</span> built on the median and MAD.</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title">Example 2.3: Order a pipeline correctly</p>
+<p><strong>Problem.</strong> You have 1 000 rows, 30 features, 4% positives, some missing values and features on wildly different scales. Write the correct order of operations and say what would go wrong if the split came last.</p>
+<p><strong>The order</strong></p>
+<ol>
+<li>
+<p><strong>Split</strong> — stratified, so both parts keep the 4% positive rate. Nothing has been computed from any row yet.</p>
+</li>
+<li>
+<p><strong>Impute</strong> — medians computed on the training fold, then applied to both.</p>
+</li>
+<li>
+<p><strong>Encode</strong> categories — the category list comes from the training fold; an unseen category in the test set maps to all zeros.</p>
+</li>
+<li>
+<p><strong>Scale</strong> — <span class="arithmatex">\(\mu\)</span> and <span class="arithmatex">\(\sigma\)</span> from the training fold.</p>
+</li>
+<li>
+<p><strong>Select or reduce</strong> — correlation filter or PCA fitted on the training fold.</p>
+</li>
+<li>
+<p><strong>Balance</strong> — SMOTE or class weights, applied to the <strong>training fold only</strong>. The test set keeps the real 4%.</p>
+</li>
+<li>
+<p><strong>Train</strong>, tuning hyper-parameters by cross-validation inside the training fold.</p>
+</li>
+<li>
+<p><strong>Evaluate once</strong> on the test set, using precision, recall and F1 rather than accuracy.</p>
+</li>
+</ol>
+<p><strong>What goes wrong if the split comes last</strong></p>
+<p>Every statistic — medians, <span class="arithmatex">\(\mu , \sigma\)</span>, the correlation ranking, the principal components — has then been computed with the test rows included, so the test set has influenced the model without being used to train it. The reported score is optimistic and there is no way to say by how much.</p>
+<p>With SMOTE the damage is worse and easy to see: synthetic points are built by interpolating between real minority points. If that happens before the split, a synthetic point in the test set may be a near-copy of a real training point. Recall on the test set can approach 1.0 and mean nothing at all.</p>
+<p><strong>Answer.</strong> Split <span class="arithmatex">\(\to\)</span> impute <span class="arithmatex">\(\to\)</span> encode <span class="arithmatex">\(\to\)</span> scale <span class="arithmatex">\(\to\)</span> select/reduce <span class="arithmatex">\(\to\)</span> balance (train only) <span class="arithmatex">\(\to\)</span> train <span class="arithmatex">\(\to\)</span> evaluate once.</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title">Example 2.4: Scaling can change which point is nearest</p>
+<p><strong>Problem.</strong> A model uses salary (range ₹20 000 to ₹200 000 in the data) and age (range 20 to 60 years). A query person has salary ₹50 000 and age 30. Candidate P has salary ₹50 100 and age 55; candidate Q has salary ₹60 000 and age 30. Which candidate is nearer to the query by Euclidean distance (i) on the raw numbers, and (ii) after min–max scaling each feature to <span class="arithmatex">\([0, 1]\)</span> using the stated ranges?</p>
+<p><strong>Step 1 — the raw differences</strong></p>
+<p>P: <span class="arithmatex">\(\Delta \text{salary} = 100\)</span>, <span class="arithmatex">\(\Delta \text{age} = 25\)</span>. Q: <span class="arithmatex">\(\Delta \text{salary} = 10\,000\)</span>, <span class="arithmatex">\(\Delta \text{age} = 0\)</span>.</p>
+<p><strong>Step 2 — raw distances</strong></p>
+<p><span class="arithmatex">\(d(P) = \sqrt{100^{2} + 25^{2}} = \sqrt{10\,625} = 103.1\)</span></p>
+<p><span class="arithmatex">\(d(Q) = \sqrt{10\,000^{2} + 0^{2}} = 10\,000\)</span></p>
+<p>On the raw numbers P is nearer by a factor of about 100. The 25-year age gap is invisible because it is added to a salary gap measured in the tens of thousands.</p>
+<p><strong>Step 3 — scale each difference by the feature's range</strong></p>
+<p>A min–max-scaled difference is the raw difference divided by the range. The salary range is <span class="arithmatex">\(200\,000 - 20\,000 = 180\,000\)</span> and the age range is <span class="arithmatex">\(60 - 20 = 40\)</span>.</p>
+<p>P: <span class="arithmatex">\(\Delta \text{salary}' = 100/180\,000 = 0.00056\)</span>, <span class="arithmatex">\(\Delta \text{age}' = 25/40 = 0.625\)</span></p>
+<p>Q: <span class="arithmatex">\(\Delta \text{salary}' = 10\,000/180\,000 = 0.0556\)</span>, <span class="arithmatex">\(\Delta \text{age}' = 0/40 = 0\)</span></p>
+<p><strong>Step 4 — scaled distances</strong></p>
+<p><span class="arithmatex">\(d(P) = \sqrt{0.00056^{2} + 0.625^{2}} = 0.625\)</span></p>
+<p><span class="arithmatex">\(d(Q) = \sqrt{0.0556^{2} + 0} = 0.0556\)</span></p>
+<p>After scaling Q is nearer, by a factor of more than 11.</p>
+<p><strong>Answer.</strong> Raw: P is nearer (<span class="arithmatex">\(103.1\)</span> against <span class="arithmatex">\(10\,000\)</span>). Scaled: Q is nearer (<span class="arithmatex">\(0.0556\)</span> against <span class="arithmatex">\(0.625\)</span>). The nearest neighbour reverses.</p>
+<p><strong>Comment.</strong> Neither answer is "true" in the abstract; the point is that the raw answer is decided by the units. Someone 25 years older is a large difference in age terms, someone ₹10 000 richer is a small difference in salary terms, and scaling lets the distance reflect that. A k-NN classifier would have used different neighbours, and so made different predictions, with and without scaling.</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title">Example 2.5: Four ways to rescale one skewed column</p>
+<p><strong>Problem.</strong> Household wealth (₹ lakh) in a small sample is <span class="arithmatex">\(8, 10, 12, 15, 18, 400\)</span>. Rescale the column by (i) min–max, (ii) z-score with the population <span class="arithmatex">\(\sigma\)</span>, (iii) robust scaling <span class="arithmatex">\((x - \text{median})/\text{IQR}\)</span>, and (iv) the transform <span class="arithmatex">\(\ln (1 + x)\)</span>. Compare how well each one separates the five ordinary values.</p>
+<p><strong>Step 1 — min–max</strong></p>
+<p><span class="arithmatex">\(\min = 8\)</span>, <span class="arithmatex">\(\max = 400\)</span>, range <span class="arithmatex">\(= 392\)</span>, so <span class="arithmatex">\(x' = (x - 8)/392\)</span>:</p>
+<p><span class="arithmatex">\(0,\ 0.0051,\ 0.0102,\ 0.0179,\ 0.0255,\ 1\)</span></p>
+<p>The five ordinary households are squeezed into an interval of width <span class="arithmatex">\(0.0255\)</span>, a fortieth of the scale.</p>
+<p><strong>Step 2 — z-score</strong></p>
+<p><span class="arithmatex">\(\mu = (8 + 10 + 12 + 15 + 18 + 400)/6 = 463/6 = 77.17\)</span></p>
+<p>The squared deviations are <span class="arithmatex">\(4784.0, 4511.4, 4246.7, 3864.7, 3500.7, 104\,221.4\)</span>, which sum to <span class="arithmatex">\(125\,128.8\)</span>.</p>
+<p><span class="arithmatex">\(\sigma = \sqrt{125\,128.8/6} = \sqrt{20\,854.8} = 144.41\)</span></p>
+<p><span class="arithmatex">\(z = (-0.479,\ -0.465,\ -0.451,\ -0.431,\ -0.410,\ 2.236)\)</span></p>
+<p>The outlier has inflated both <span class="arithmatex">\(\mu\)</span> and <span class="arithmatex">\(\sigma\)</span>; the five ordinary values now sit within <span class="arithmatex">\(0.07\)</span> of each other.</p>
+<p><strong>Step 3 — robust scaling</strong></p>
+<p>Sorted, with linear interpolation: the median is <span class="arithmatex">\((12 + 15)/2 = 13.5\)</span>; <span class="arithmatex">\(Q1\)</span> is at position <span class="arithmatex">\(0.25 \times 5 = 1.25\)</span>, so <span class="arithmatex">\(Q1 = 10 + 0.25(12 - 10) = 10.5\)</span>; <span class="arithmatex">\(Q3\)</span> is at position <span class="arithmatex">\(3.75\)</span>, so <span class="arithmatex">\(Q3 = 15 + 0.75(18 - 15) = 17.25\)</span>. <span class="arithmatex">\(\text{IQR} = 17.25 - 10.5 = 6.75\)</span>.</p>
+<p><span class="arithmatex">\(x' = (x - 13.5)/6.75 = (-0.815,\ -0.519,\ -0.222,\ 0.222,\ 0.667,\ 57.26)\)</span></p>
+<p>The ordinary values now cover a range of <span class="arithmatex">\(1.48\)</span> and are easy to tell apart. The outlier is still extreme, which is honest: it is.</p>
+<p><strong>Step 4 — the log transform</strong></p>
+<p><span class="arithmatex">\(\ln (1 + x) = (2.197,\ 2.398,\ 2.565,\ 2.773,\ 2.944,\ 5.994)\)</span></p>
+<p>The ordinary values span <span class="arithmatex">\(0.75\)</span>, and the outlier is now only <span class="arithmatex">\(3.05\)</span> above the largest of them instead of <span class="arithmatex">\(382\)</span>. The ratio of one household to another has become a difference, which is what a long right tail needs.</p>
+<p><strong>Answer.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Width covered by the five ordinary values</th>
+<th>Outlier</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>min–max</td>
+<td><span class="arithmatex">\(0.026\)</span></td>
+<td><span class="arithmatex">\(1.00\)</span></td>
+</tr>
+<tr>
+<td>z-score</td>
+<td><span class="arithmatex">\(0.07\)</span></td>
+<td><span class="arithmatex">\(2.24\)</span></td>
+</tr>
+<tr>
+<td>robust</td>
+<td><span class="arithmatex">\(1.48\)</span></td>
+<td><span class="arithmatex">\(57.3\)</span></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(\ln (1 + x)\)</span></td>
+<td><span class="arithmatex">\(0.75\)</span></td>
+<td><span class="arithmatex">\(5.99\)</span></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Comment.</strong> Min–max and z-score are both linear maps, so neither can change the shape of the data: a skewed column is still skewed after both. Only robust scaling, which takes its centre and its scale from rank statistics, and the log transform, which is nonlinear, deal with the outlier. In practice take the log first and then standardise. Note also a general fact about the z-score: with the population <span class="arithmatex">\(\sigma\)</span>, no value in a sample of <span class="arithmatex">\(n\)</span> can have <span class="arithmatex">\(|z|\)</span> larger than <span class="arithmatex">\(\sqrt{n - 1}\)</span> (here <span class="arithmatex">\(\sqrt{5} = 2.236\)</span>, and the outlier reaches <span class="arithmatex">\(2.2355\)</span>). For <span class="arithmatex">\(n \le 10\)</span> the rule "<span class="arithmatex">\(|z| &gt; 3\)</span>" can therefore never flag anything.</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title">Example 2.6: Impute, then scale, using training statistics only</p>
+<p><strong>Problem.</strong> A numeric training column has the observed values <span class="arithmatex">\(4, 6, 8, 10, 12\)</span> and one missing entry. Two test examples arrive: one with the value missing, and one with the value <span class="arithmatex">\(14\)</span>. Fill the missing entries by the mean, standardise with the population <span class="arithmatex">\(\sigma\)</span>, and give the processed values of both test examples.</p>
+<p><strong>Step 1 — the imputation value, from the training column only</strong></p>
+<p>Mean of the observed training values: <span class="arithmatex">\((4 + 6 + 8 + 10 + 12)/5 = 40/5 = 8\)</span>. The missing training entry becomes <span class="arithmatex">\(8\)</span>, and so will every missing entry in the test data. The test examples take no part in computing it, and the target <span class="arithmatex">\(y\)</span> is not used.</p>
+<p><strong>Step 2 — the training column after imputation</strong></p>
+<p><span class="arithmatex">\(4, 6, 8, 10, 12, 8\)</span>. Its mean is <span class="arithmatex">\(48/6 = 8\)</span>, unchanged, because we filled with the mean.</p>
+<p><strong>Step 3 — the scaler, fitted on this filled training column</strong></p>
+<p>Squared deviations from 8: <span class="arithmatex">\(16, 4, 0, 4, 16, 0\)</span>; sum <span class="arithmatex">\(= 40\)</span>.</p>
+<p><span class="arithmatex">\(\sigma = \sqrt{40/6} = \sqrt{6.667} = 2.582\)</span></p>
+<p>The training column becomes <span class="arithmatex">\((-1.549,\ -0.775,\ 0,\ 0.775,\ 1.549,\ 0)\)</span>.</p>
+<p><strong>Step 4 — transform the two test examples with the stored numbers</strong></p>
+<p>Test example with the value missing: filled with <span class="arithmatex">\(8\)</span>, then <span class="arithmatex">\(z = (8 - 8)/2.582 = 0\)</span>.</p>
+<p>Test example with the value <span class="arithmatex">\(14\)</span>: <span class="arithmatex">\(z = (14 - 8)/2.582 = 2.324\)</span>.</p>
+<p><strong>Answer.</strong> The imputation value is <span class="arithmatex">\(8\)</span>; <span class="arithmatex">\(\mu = 8\)</span> and <span class="arithmatex">\(\sigma = 2.582\)</span>. The processed test values are <span class="arithmatex">\(0\)</span> (the missing entry) and <span class="arithmatex">\(2.324\)</span> (the value 14).</p>
+<p><strong>Comment.</strong> Two things to notice. First, mean imputation followed by standardisation maps every filled entry to exactly <span class="arithmatex">\(0\)</span>, the centre of the scale: the model sees "average" for every unknown, which is why a separate was-missing indicator is worth adding when missingness may mean something. Second, imputation shrinks the spread: the five observed values alone have <span class="arithmatex">\(\sigma = \sqrt{40/5} = 2.828\)</span>, against <span class="arithmatex">\(2.582\)</span> after filling. The order impute-then-scale, both on the training fold, is the order of the pipeline set out earlier in this chapter.</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title">Example 2.7: Why integer codes for a city mislead, in numbers</p>
+<p><strong>Problem.</strong> A feature <em>city</em> takes the values Delhi, Mumbai and Chennai, and is fed to a distance-based model. Compare the distances between the cities when they are coded <span class="arithmatex">\(\text{Delhi} = 0\)</span>, <span class="arithmatex">\(\text{Mumbai} = 1\)</span>, <span class="arithmatex">\(\text{Chennai} = 2\)</span> and when they are one-hot encoded.</p>
+<p><strong>Step 1 — the integer code</strong></p>
+<p>The distance between two cities is the absolute difference of the codes:</p>
+<table>
+<thead>
+<tr>
+<th>Pair</th>
+<th><span class="arithmatex">\(\lvert \text{difference} \rvert\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Delhi, Mumbai</td>
+<td><span class="arithmatex">\(\lvert 0 - 1 \rvert = 1\)</span></td>
+</tr>
+<tr>
+<td>Mumbai, Chennai</td>
+<td><span class="arithmatex">\(\lvert 1 - 2 \rvert = 1\)</span></td>
+</tr>
+<tr>
+<td>Delhi, Chennai</td>
+<td><span class="arithmatex">\(\lvert 0 - 2 \rvert = 2\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>The code says Delhi and Chennai are twice as far apart as any other pair, and that Mumbai lies between them. None of this is a fact about cities; it came from the order in which someone wrote the names.</p>
+<p><strong>Step 2 — the one-hot code</strong></p>
+<p>Delhi <span class="arithmatex">\(= (1, 0, 0)\)</span>, Mumbai <span class="arithmatex">\(= (0, 1, 0)\)</span>, Chennai <span class="arithmatex">\(= (0, 0, 1)\)</span>. Any two different cities differ in exactly two positions, by <span class="arithmatex">\(1\)</span> in each:</p>
+<p><span class="arithmatex">\(d = \sqrt{1^{2} + 1^{2}} = \sqrt{2} = 1.414\)</span></p>
+<p>for every pair.</p>
+<p><strong>Step 3 — count the columns</strong></p>
+<p>One-hot encoding turns one column into <span class="arithmatex">\(c = 3\)</span> columns. A linear model with an intercept needs only <span class="arithmatex">\(c - 1 = 2\)</span> of them (Delhi is then the case where both are zero), otherwise the three indicator columns add up to the intercept column and the design matrix is singular.</p>
+<p><strong>Answer.</strong> Integer code: distances <span class="arithmatex">\(1, 1, 2\)</span>, a made-up order and spacing. One-hot: all three distances equal <span class="arithmatex">\(\sqrt{2}\)</span>, so no city is closer to another. A linear model needs <span class="arithmatex">\(c - 1 = 2\)</span> indicator columns.</p>
+<p><strong>Comment.</strong> Label coding is correct for a <em>genuinely ordered</em> feature (low <span class="arithmatex">\(&lt;\)</span> medium <span class="arithmatex">\(&lt;\)</span> high), and for the target of a classifier. It is wrong for an unordered input of a distance-based or linear model.</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title">Example 2.8: The accuracy paradox, class weights and one SMOTE point</p>
+<p><strong>Problem.</strong> A data set has 1 000 rows, of which 40 (4%) are positive. (i) A model that always answers "negative" is compared with one whose confusion counts are <span class="arithmatex">\(TP = 30, FN = 10, FP = 60, TN = 900\)</span>. Compute accuracy, precision, recall and <span class="arithmatex">\(F_{1}\)</span> for each. (ii) Compute the "balanced" class weights <span class="arithmatex">\(w_{c} = n/(k\, n_{c})\)</span> for <span class="arithmatex">\(k = 2\)</span> classes. (iii) Generate one synthetic minority point by SMOTE from the minority points <span class="arithmatex">\(a = (2, 4)\)</span> and <span class="arithmatex">\(b = (5, 8)\)</span> with the interpolation fraction <span class="arithmatex">\(\lambda = 0.25\)</span>.</p>
+<p><strong>Step 1 — the always-negative model</strong></p>
+<p>It is right on all 960 negatives and wrong on all 40 positives: <span class="arithmatex">\(TP = 0, FN = 40, FP = 0, TN = 960\)</span>.</p>
+<p>Accuracy <span class="arithmatex">\(= 960/1000 = 96\%\)</span>. Recall <span class="arithmatex">\(= 0/40 = 0\)</span>. Precision <span class="arithmatex">\(= 0/0\)</span>, undefined. <span class="arithmatex">\(F_{1} = 0\)</span>.</p>
+<p><strong>Step 2 — the real classifier</strong></p>
+<p>Check the counts: positives <span class="arithmatex">\(= 30 + 10 = 40\)</span>, negatives <span class="arithmatex">\(= 60 + 900 = 960\)</span>.</p>
+<p>Accuracy <span class="arithmatex">\(= (30 + 900)/1000 = 93\%\)</span></p>
+<p>Precision <span class="arithmatex">\(= 30/(30 + 60) = 0.333\)</span></p>
+<p>Recall <span class="arithmatex">\(= 30/(30 + 10) = 0.75\)</span></p>
+<p><span class="arithmatex">\(F_{1} = 2 \times 0.333 \times 0.75/(0.333 + 0.75) = 0.462\)</span></p>
+<p>The useless model beats the useful one on accuracy (<span class="arithmatex">\(96\%\)</span> against <span class="arithmatex">\(93\%\)</span>). That is the accuracy paradox: optimising accuracy pushes you towards doing nothing.</p>
+<p><strong>Step 3 — class weights</strong></p>
+<p><span class="arithmatex">\(w_{\text{positive}} = 1000/(2 \times 40) = 12.5\)</span></p>
+<p><span class="arithmatex">\(w_{\text{negative}} = 1000/(2 \times 960) = 0.521\)</span></p>
+<p>Total weight on the positives is <span class="arithmatex">\(40 \times 12.5 = 500\)</span> and on the negatives <span class="arithmatex">\(960 \times 0.521 = 500\)</span>: the two classes now carry equal total weight in the loss, so a missed positive costs <span class="arithmatex">\(12.5/0.521 = 24\)</span> times as much as a false alarm.</p>
+<p><strong>Step 4 — one SMOTE point</strong></p>
+<p>SMOTE places a new point on the line segment between a minority point and one of its minority neighbours:</p>
+<p><span class="arithmatex">\(\text{new} = a + \lambda (b - a) = (2, 4) + 0.25\,(3, 4) = (2.75,\ 5)\)</span></p>
+<p>With <span class="arithmatex">\(\lambda = 0.5\)</span> the point would be the midpoint <span class="arithmatex">\((3.5, 6)\)</span>. It is a plausible but invented example; it is built only from training-fold points, which is why SMOTE must be applied after the split.</p>
+<p><strong>Answer.</strong> Always-negative: accuracy <span class="arithmatex">\(96\%\)</span>, recall <span class="arithmatex">\(0\)</span>, precision undefined. Real classifier: accuracy <span class="arithmatex">\(93\%\)</span>, precision <span class="arithmatex">\(0.333\)</span>, recall <span class="arithmatex">\(0.75\)</span>, <span class="arithmatex">\(F_{1} = 0.462\)</span>. Weights: <span class="arithmatex">\(12.5\)</span> and <span class="arithmatex">\(0.521\)</span>. SMOTE point: <span class="arithmatex">\((2.75, 5)\)</span>.</p>
+<p><strong>Comment.</strong> The real classifier still raises two false alarms for every true positive found (precision <span class="arithmatex">\(1/3\)</span>); whether that is acceptable depends on the cost of a miss, which is a question about the application and not about the statistics. Moving the decision threshold changes the balance between precision and recall without changing the model (Chapter 12).</p>
+</div>
+<h2 id="28-common-mistakes-to-avoid">2.8 Common mistakes to avoid<a class="headerlink" href="#28-common-mistakes-to-avoid" title="Permanent link">&para;</a></h2>
+<p>Each of the following is a mistake that costs marks in an examination or accuracy in practice.</p>
+<ul>
+<li>Do not fit a scaler, imputer, encoder, selector or PCA on the whole dataset. Fit on the training fold; apply the stored numbers everywhere else.</li>
+<li>Do not use the sample standard deviation when the question says population, or the other way round. With <span class="arithmatex">\(n = 5\)</span> the difference is over 10%, and examiners choose small <span class="arithmatex">\(n\)</span> deliberately.</li>
+<li>Do not scale a decision tree's inputs and expect anything to change. It cannot, because splits depend only on order.</li>
+<li>Do not label-encode an unordered category for a linear model. It manufactures an order and a spacing, and the model will use both.</li>
+<li>Do not keep all <span class="arithmatex">\(c\)</span> one-hot columns alongside an intercept in a linear model — the design matrix becomes singular. Drop one.</li>
+<li>Do not apply SMOTE, or any resampling, before splitting.</li>
+<li>Do not delete outliers because they are inconvenient. Investigate first; sometimes they are the only rows that matter.</li>
+<li>Do not report accuracy on imbalanced data without the majority-class baseline beside it.</li>
+</ul>
+<h2 id="29-summary">2.9 Summary<a class="headerlink" href="#29-summary" title="Permanent link">&para;</a></h2>
+<p>After working through this chapter you should be able to do the following.</p>
+<ul>
+<li>Scale a feature three ways, and justify the choice from the shape of the data and the algorithm downstream. Min–max when a bounded range is needed and the tails are tame. Z-score as the default for anything distance- or gradient-based. Robust scaling when a few extreme values would otherwise define the scale. And nothing at all for trees.</li>
+<li>Say <em>why</em> each algorithm is or is not scale-sensitive — distances and dot products sum over features, so the largest-numbered feature dominates; splits compare values within a single feature, so any monotone rescaling is invisible to them.</li>
+<li>Find outliers with both standard rules, explain masking — an outlier inflating <span class="arithmatex">\(\sigma\)</span> until it hides inside its own band — and choose sensibly between investigating, capping, removing, and switching to a robust method.</li>
+<li>Recognise the accuracy paradox on sight, compare the four remedies for imbalance, and explain why resampling belongs inside the training fold.</li>
+<li>Above all, order a pipeline so that nothing the model saw during training was computed with help from the test set — which is the difference between a score that predicts production and a score that does not.</li>
+</ul>
+<h2 id="210-exercises">2.10 Exercises<a class="headerlink" href="#210-exercises" title="Permanent link">&para;</a></h2>
+<ol>
+<li>
+<p>Values 4, 8, 15, 16, 23, 42. Give the min–max and z-score transforms of 15, using the population <span class="arithmatex">\(\sigma\)</span>.</p>
+<details class="note">
+<summary>Answer</summary>
+<p>Min–max: <span class="arithmatex">\(\min = 4\)</span>, <span class="arithmatex">\(\max = 42\)</span>, so <span class="arithmatex">\(x' = (15 - 4)/(42 - 4) = 11/38 = 0.2895\)</span>.</p>
+<p>Z-score: <span class="arithmatex">\(\mu = (4 + 8 + 15 + 16 + 23 + 42)/6 = 108/6 = 18\)</span>. The deviations are <span class="arithmatex">\(-14, -10, -3, -2, 5, 24\)</span>, with squares <span class="arithmatex">\(196, 100, 9, 4, 25, 576\)</span> summing to <span class="arithmatex">\(910\)</span>. So <span class="arithmatex">\(\sigma = \sqrt{910/6} = \sqrt{151.67} = 12.315\)</span> and <span class="arithmatex">\(z = (15 - 18)/12.315 = -0.2436\)</span>.</p>
+<p>(With the sample <span class="arithmatex">\(\sigma\)</span>, which divides by <span class="arithmatex">\(5\)</span>, one gets <span class="arithmatex">\(\sigma = 13.49\)</span> and <span class="arithmatex">\(z = -0.222\)</span>, so say which you use.)</p>
+</details>
+</li>
+<li>
+<p>A feature has <span class="arithmatex">\(\mu = 60, \sigma = 12\)</span> in training. A test example has value 96. Give its z-score, and say whether the <span class="arithmatex">\(|z| &gt; 3\)</span> rule flags it.</p>
+<details class="note">
+<summary>Answer</summary>
+<p><span class="arithmatex">\(z = (96 - 60)/12 = 36/12 = 3.0\)</span>. The rule flags values with <span class="arithmatex">\(|z|\)</span> <em>strictly greater</em> than 3, and <span class="arithmatex">\(3.0\)</span> is not greater than <span class="arithmatex">\(3\)</span>, so the example is not flagged: it sits exactly on the boundary. The threshold is a convention rather than a law, so a value on it deserves a look at the raw record before being kept or removed. Note also that <span class="arithmatex">\(\mu\)</span> and <span class="arithmatex">\(\sigma\)</span> are the stored training values; the test example takes no part in computing them.</p>
+</details>
+</li>
+<li>
+<p>A dataset has 6 numeric columns and categorical columns with 4, 3 and 10 values. Give the column count after plain one-hot and after dropping one level per block.</p>
+<details class="note">
+<summary>Answer</summary>
+<p>Plain one-hot: <span class="arithmatex">\(6 + 4 + 3 + 10 = 23\)</span> columns. Dropping one level from each of the three blocks (dummy encoding) removes three columns: <span class="arithmatex">\(6 + 3 + 2 + 9 = 20\)</span>. Dropping one level is needed for a linear model with an intercept, because the indicators of one feature add up to a column of ones, and so duplicate the intercept; tree-based and distance-based models do not need it.</p>
+</details>
+</li>
+<li>
+<p>Explain in three sentences why k-NN needs scaling and a decision tree does not.</p>
+<details class="note">
+<summary>Answer</summary>
+<p>k-NN ranks examples by a distance that is a sum over all features, so a feature measured in large numbers (salary in rupees) dominates the sum and a feature measured in small numbers (age in years) is ignored, purely because of the units; scaling puts the features on a common footing. A decision tree considers one feature at a time and only asks whether its value is below a threshold, a question that depends on the <em>order</em> of the values within that feature. Any increasing rescaling leaves that order unchanged, so every possible split, and therefore the tree, is the same whatever the units.</p>
+</details>
+</li>
+<li>
+<p>A colleague reports 99.2% accuracy on a fraud dataset with 0.8% fraud. What is the first question you ask, and what should they report instead?</p>
+<details class="note">
+<summary>Answer</summary>
+<p>First question: <em>what accuracy does a model that always answers "not fraud" get?</em> The answer is <span class="arithmatex">\(100\% - 0.8\% = 99.2\%\)</span>, exactly the figure reported, so the model may have learned nothing. Ask for the confusion matrix on a test set that keeps the real class proportions. They should report precision (of the transactions flagged, how many were fraud), recall (of the frauds, how many were caught) and <span class="arithmatex">\(F_{1}\)</span> or the area under the ROC or precision–recall curve, always quoting the majority-class baseline beside any accuracy.</p>
+</details>
+</li>
+<li>
+<p>Values 5, 7, 8, 8, 9, 10, 11, 40. Apply both outlier rules and explain any disagreement.</p>
+<details class="note">
+<summary>Answer</summary>
+<p><strong>IQR rule</strong> (linear interpolation, <span class="arithmatex">\(n = 8\)</span>): <span class="arithmatex">\(Q1 = 7.75\)</span>, <span class="arithmatex">\(Q3 = 10.25\)</span>, <span class="arithmatex">\(\text{IQR} = 2.5\)</span>. The fences are <span class="arithmatex">\(7.75 - 1.5(2.5) = 4.0\)</span> and <span class="arithmatex">\(10.25 + 1.5(2.5) = 14.0\)</span>. The value <span class="arithmatex">\(40\)</span> lies above <span class="arithmatex">\(14.0\)</span> and is <strong>flagged</strong>; <span class="arithmatex">\(5\)</span> is inside the fences.</p>
+<p><strong>z-score rule:</strong> <span class="arithmatex">\(\mu = 98/8 = 12.25\)</span>. The squared deviations sum to <span class="arithmatex">\(903.5\)</span>, so <span class="arithmatex">\(\sigma = \sqrt{903.5/8} = 10.627\)</span>, and for the value <span class="arithmatex">\(40\)</span>, <span class="arithmatex">\(z = (40 - 12.25)/10.627 = 2.61\)</span>. That is below <span class="arithmatex">\(3\)</span>, so the z-rule <strong>does not flag it</strong>.</p>
+<p>The rules disagree because <span class="arithmatex">\(40\)</span> is part of the data used to compute <span class="arithmatex">\(\mu\)</span> and <span class="arithmatex">\(\sigma\)</span>: it pulled the mean from <span class="arithmatex">\(8.3\)</span> up to <span class="arithmatex">\(12.25\)</span> and inflated the standard deviation from about <span class="arithmatex">\(1.8\)</span> to <span class="arithmatex">\(10.6\)</span>, so it hides inside the band it created (masking). Quartiles depend on ranks, not sizes, so they are unmoved. In fact, with the population <span class="arithmatex">\(\sigma\)</span> no value in a sample of 8 can have <span class="arithmatex">\(|z|\)</span> above <span class="arithmatex">\(\sqrt{7} = 2.65\)</span>, so the z-rule with threshold 3 could never flag anything here.</p>
+</details>
+</li>
+<li>
+<p>Why is applying SMOTE before the train/test split worse than applying plain oversampling before the split? (Both are wrong; say why one is more deceptive.)</p>
+<details class="note">
+<summary>Answer</summary>
+<p>Both leak training information into the test set, but in different ways. Plain oversampling duplicates existing minority rows, so after a random split some test rows are exact copies of training rows; the leak is large but can be found, because a check for duplicate rows across the two sets reveals it. SMOTE manufactures <em>new</em> points by interpolating between real minority points, so a synthetic point in the test set lies between, and very close to, real training points while being an exact copy of none of them. No duplicate-row check finds it, yet the model is being graded on near-copies of what it studied, and recall looks excellent. Both must be done on the training part alone, after the split, with the test set left at its real class balance.</p>
+</details>
+</li>
+<li>
+<p>Standardise the data <span class="arithmatex">\(2, 4, 11, 23, 27, 29\)</span> (use the population standard deviation).</p>
+<details class="note">
+<summary>Answer</summary>
+<p><span class="arithmatex">\(\mu = (2 + 4 + 11 + 23 + 27 + 29)/6 = 96/6 = 16\)</span>. The deviations are <span class="arithmatex">\(-14, -12, -5, 7, 11, 13\)</span>, with squares <span class="arithmatex">\(196, 144, 25, 49, 121, 169\)</span> summing to <span class="arithmatex">\(704\)</span>. So <span class="arithmatex">\(\sigma = \sqrt{704/6} = \sqrt{117.33} = 10.832\)</span>.</p>
+<p><span class="arithmatex">\(z = (-1.292,\ -1.108,\ -0.462,\ 0.646,\ 1.016,\ 1.200)\)</span></p>
+<p>Check: the <span class="arithmatex">\(z\)</span> values sum to <span class="arithmatex">\(0\)</span> (to rounding). With the sample <span class="arithmatex">\(\sigma = \sqrt{704/5} = 11.866\)</span> the values would be <span class="arithmatex">\((-1.180, -1.011, -0.421, 0.590, 0.927, 1.096)\)</span>; the method is the same, and the two conventions should not be mixed.</p>
+</details>
+</li>
+<li>
+<p>The training values of a feature are <span class="arithmatex">\(4, 8, 12, 16, 20\)</span>. (a) Min–max normalise them to <span class="arithmatex">\([0, 1]\)</span> and standardise them (population <span class="arithmatex">\(\sigma\)</span>). (b) A test value of <span class="arithmatex">\(24\)</span> arrives: what are its min–max and z-score values? (c) Why can the min–max value exceed 1, and why is that correct rather than a bug?</p>
+<details class="note">
+<summary>Answer</summary>
+<p>(a) <span class="arithmatex">\(\min = 4\)</span>, <span class="arithmatex">\(\max = 20\)</span>: <span class="arithmatex">\(x' = (x - 4)/16 = 0, 0.25, 0.5, 0.75, 1\)</span>. Also <span class="arithmatex">\(\mu = 12\)</span> and the squared deviations are <span class="arithmatex">\(64, 16, 0, 16, 64\)</span>, summing to <span class="arithmatex">\(160\)</span>, so <span class="arithmatex">\(\sigma = \sqrt{160/5} = \sqrt{32} = 5.657\)</span> and <span class="arithmatex">\(z = -1.414, -0.707, 0, 0.707, 1.414\)</span>.</p>
+<p>(b) Using the <em>training</em> statistics: min–max <span class="arithmatex">\(= (24 - 4)/16 = 1.25\)</span>; z-score <span class="arithmatex">\(= (24 - 12)/5.657 = 2.121\)</span>.</p>
+<p>(c) <span class="arithmatex">\(\min\)</span> and <span class="arithmatex">\(\max\)</span> are learned from the training set only, and a new value beyond that range simply lies outside the interval the training data defined. The value <span class="arithmatex">\(1.25\)</span> honestly says "25% beyond the largest value seen". Recomputing the minimum and maximum with the test value included would let the test set influence the scaler. Clipping to <span class="arithmatex">\([0, 1]\)</span> is an option, not a requirement.</p>
+</details>
+</li>
+<li>
+<p>State whether you would prefer min–max normalisation, z-score standardisation or robust scaling, with a one-line reason, for (a) pixel intensities fed to a neural network; (b) household wealth, a strongly outlier-prone feature; (c) the inputs to PCA; (d) a percentage already bounded in <span class="arithmatex">\([0, 100]\)</span>.</p>
+<details class="note">
+<summary>Answer</summary>
+<p>(a) <strong>Min–max</strong>: pixel values already lie in a known fixed range (for example 0 to 255) and have no outliers, and a bounded input suits many network activations. (b) <strong>Robust scaling</strong>, possibly after a log transform: a few huge values would define the minimum and maximum, and would inflate <span class="arithmatex">\(\mu\)</span> and <span class="arithmatex">\(\sigma\)</span>, whereas the median and IQR are unmoved by them. (c) <strong>Z-score</strong>: PCA maximises variance, which depends on units, and it assumes centred data; standardising gives every feature unit variance, so that PC1 reflects relationships and not the largest-numbered column. (d) <strong>Min–max</strong> (in effect, divide by 100): the range is known in advance and the feature is already bounded, so no statistics need to be learned from the data at all.</p>
+</details>
+</li>
+<li>
+<p>A student writes:</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">scaler</span> <span class="o">=</span> <span class="n">StandardScaler</span><span class="p">()</span>
+<span class="n">X_all</span> <span class="o">=</span> <span class="n">scaler</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>       <span class="c1"># scale everything</span>
+<span class="n">X_tr</span><span class="p">,</span> <span class="n">X_te</span><span class="p">,</span> <span class="n">y_tr</span><span class="p">,</span> <span class="n">y_te</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">X_all</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_tr</span><span class="p">,</span> <span class="n">y_tr</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">X_te</span><span class="p">,</span> <span class="n">y_te</span><span class="p">))</span>        <span class="c1"># 96% accuracy!</span>
+</code></pre></div>
+<p>Identify the bug, say how it leaks information, rewrite it correctly, and give the argument from deployment for why "fit on the training data only" is the only workable rule.</p>
+<details class="note">
+<summary>Answer</summary>
+<p><strong>Bug:</strong> <code>fit_transform</code> computes <span class="arithmatex">\(\mu\)</span> and <span class="arithmatex">\(\sigma\)</span> from every row, test rows included, before the split. The test set has therefore influenced the numbers used to prepare the training data, so it is no longer truly unseen and the 96% is optimistically biased.</p>
+<p><strong>Correct version:</strong></p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">X_tr</span><span class="p">,</span> <span class="n">X_te</span><span class="p">,</span> <span class="n">y_tr</span><span class="p">,</span> <span class="n">y_te</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">scaler</span> <span class="o">=</span> <span class="n">StandardScaler</span><span class="p">()</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_tr</span><span class="p">)</span>        <span class="c1"># statistics from training rows only</span>
+<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">scaler</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X_tr</span><span class="p">),</span> <span class="n">y_tr</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">scaler</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X_te</span><span class="p">),</span> <span class="n">y_te</span><span class="p">))</span>
+</code></pre></div>
+<p>or, better, <code>make_pipeline(StandardScaler(), model)</code>, which refits the scaler inside every cross-validation fold.</p>
+<p><strong>The deployment argument:</strong> a deployed model sees one new customer at a time. It cannot compute the mean or the minimum of future data, which does not yet exist, so the only statistics available to it are those stored from the training data. An evaluation that used anything else would measure a pipeline that cannot be run in production.</p>
+</details>
+</li>
+<li>
+<p>A feature is strongly right-skewed (a long tail of large values). (a) Why does min–max scaling alone not fix this? (b) Name one transformation that would reduce the skew and say where it belongs in the pipeline relative to scaling.</p>
+<details class="note">
+<summary>Answer</summary>
+<p>(a) Min–max scaling is a linear map: it shifts and stretches the axis but cannot bend it, so a skewed column stays skewed and the long tail merely lands near 1, with the bulk of the values squeezed near 0 (as in a column with one huge value). (b) A nonlinear transform pulls the tail in: <span class="arithmatex">\(\ln (1 + x)\)</span> (or a square root) for non-negative quantities such as income or word counts. Apply it <strong>before</strong> scaling, so that the scaler sees the reshaped values; and, like any learned step, any parameters (a shift, say) must come from the training data only.</p>
+</details>
+</li>
+<li>
+<p>A classification dataset has 100 examples of class A and 50 of class B. A stratified 80/20 split is wanted. Which of these train/test splits is appropriate: S1 train <span class="arithmatex">\(\{A: 80, B: 30\}\)</span>, test <span class="arithmatex">\(\{A: 20, B: 20\}\)</span>; S2 train <span class="arithmatex">\(\{A: 20, B: 20\}\)</span>, test <span class="arithmatex">\(\{A: 80, B: 30\}\)</span>; S3 train <span class="arithmatex">\(\{A: 80, B: 40\}\)</span>, test <span class="arithmatex">\(\{A: 20, B: 10\}\)</span>; S4 train <span class="arithmatex">\(\{A: 20, B: 10\}\)</span>, test <span class="arithmatex">\(\{A: 80, B: 40\}\)</span>?</p>
+<details class="note">
+<summary>Answer</summary>
+<p>The classes are in the ratio <span class="arithmatex">\(A : B = 100 : 50 = 2 : 1\)</span>, and a stratified split keeps that ratio in both parts. <strong>S3</strong> does (<span class="arithmatex">\(80 : 40\)</span> and <span class="arithmatex">\(20 : 10\)</span>), and its sizes (<span class="arithmatex">\(120\)</span> for training, <span class="arithmatex">\(30\)</span> for testing) are the requested <span class="arithmatex">\(80/20\)</span>. S1 does not: class B is split <span class="arithmatex">\(30 : 20\)</span> (<span class="arithmatex">\(60\%\)</span> to training) while class A is split <span class="arithmatex">\(80 : 20\)</span>, so the two parts have different class proportions. S2 does not either, and it trains on the <em>smaller</em> part. S4 does preserve the <span class="arithmatex">\(2 : 1\)</span> ratio, but with only <span class="arithmatex">\(30\)</span> examples in training and <span class="arithmatex">\(120\)</span> in test it is a <span class="arithmatex">\(20/80\)</span> split in the wrong direction, leaving little to learn from. The answer is S3.</p>
+</details>
+</li>
+<li>
+<p>True or false, with a reason: (a) standardising a skewed feature makes it normally distributed; (b) decision trees need feature scaling to work well; (c) after standardising the training column, the standardised <em>test</em> column has mean exactly 0.</p>
+<details class="note">
+<summary>Answer</summary>
+<p>(a) <strong>False.</strong> Standardising is a linear map, so it changes the centre and scale but not the shape; a skewed feature stays skewed. A nonlinear transform such as the logarithm is needed to reduce skew. (b) <strong>False.</strong> A tree splits on one feature at a time and its splits depend only on the order of values, which any increasing rescaling preserves. (c) <strong>False.</strong> The mean and standard deviation come from the training column, so only the <em>training</em> column has mean exactly <span class="arithmatex">\(0\)</span> and standard deviation <span class="arithmatex">\(1\)</span>. The test column will have a mean close to <span class="arithmatex">\(0\)</span> if the test data resemble the training data, and a mean far from <span class="arithmatex">\(0\)</span> if they do not, which is itself a useful warning.</p>
+</details>
+</li>
+</ol>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="introduction-learning-from-data.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: 1. Introduction: Learning from Data">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                1. Introduction: Learning from Data
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="feature-selection-and-pca.html" class="md-footer__link md-footer__link--next" aria-label="Next: 3. Feature Selection and Principal Component Analysis">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                3. Feature Selection and Principal Component Analysis
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      The Open Book Project &middot;
+      <a href="../../about.html">About this library</a> &middot;
+      © The authors of the books
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "navigation.prune", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "toc.follow", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+  
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../../assets/mathjax.js"></script>
+      
+        <script src="../../assets/viz.js"></script>
+      
+        <script src="../../assets/reader.js"></script>
+      
+        <script src="../../assets/app.js"></script>
+      
+    
+  <script>
+    /* offline reading: the service worker at the site root (its scope is the whole site) */
+    if ("serviceWorker" in navigator && window.isSecureContext) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register(new URL("../../sw.js", location.href).href).catch(function () {});
+      });
+    }
+  </script>
+
+  </body>
+</html>

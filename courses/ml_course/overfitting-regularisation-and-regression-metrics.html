@@ -1,0 +1,2449 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#ffffff">
+  
+    <meta name="description" content="The Open Book Project: books on computer science, quantum computing, cyber security, science, university courses and the English language, read page by page like an e-book, online or offline.">
+  
+  
+    <meta name="author" content="Nikhil Kumar Rajput, Ramanujan College, University of Delhi">
+  
+  
+    <link rel="canonical" href="https://open-book-project.github.io/courses/ml_course/overfitting-regularisation-and-regression-metrics.html">
+  
+  
+    <link rel="prev" href="linear-regression-and-gradient-descent.html">
+  
+  
+    <link rel="next" href="decision-trees.html">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&family=Noto+Serif+Devanagari:wght@400;600;700&display=swap" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&family=Noto+Serif+Devanagari:wght@400;600;700&display=swap"></noscript>
+  <link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+  <link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Open Book">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="application-name" content="Open Book"><script id="bjp-books" type="application/json">[{"id": "hardware_security", "lang": "en", "path": "science/hardware_security"}, {"id": "drones_missiles", "lang": "en", "path": "science/drones_missiles"}, {"id": "code_to_electrons", "lang": "en", "path": "science/code_to_electrons"}, {"id": "dpi_ndr", "lang": "en", "path": "science/dpi_ndr"}, {"id": "quantum", "lang": "en", "path": "quantum/quantum"}, {"id": "qml", "lang": "en", "path": "quantum/qml"}, {"id": "qml_course", "lang": "en", "path": "quantum/qml_course"}, {"id": "asic", "lang": "en", "path": "computing/asic"}, {"id": "compute", "lang": "en", "path": "computing/compute"}, {"id": "memory", "lang": "en", "path": "computing/memory"}, {"id": "os", "lang": "en", "path": "computing/os"}, {"id": "databases", "lang": "en", "path": "computing/databases"}, {"id": "datacenters", "lang": "en", "path": "computing/datacenters"}, {"id": "networks", "lang": "en", "path": "computing/networks"}, {"id": "cellular", "lang": "en", "path": "computing/cellular"}, {"id": "ml", "lang": "en", "path": "computing/ml"}, {"id": "microarchitecture", "lang": "en", "path": "computing/microarchitecture"}, {"id": "rtl_hdl", "lang": "en", "path": "computing/rtl_hdl"}, {"id": "rtl_to_gdsii", "lang": "en", "path": "computing/rtl_to_gdsii"}, {"id": "ram_ddr5", "lang": "en", "path": "computing/ram_ddr5"}, {"id": "security", "lang": "en", "path": "cyber/security"}, {"id": "trust", "lang": "en", "path": "cyber/trust"}, {"id": "attack_taxonomy", "lang": "en", "path": "cyber/attack_taxonomy"}, {"id": "datacentre_security_ip", "lang": "en", "path": "cyber/datacentre_security_ip"}, {"id": "randomness_testing", "lang": "en", "path": "cyber/randomness_testing"}, {"id": "optimization_methods", "lang": "en", "path": "courses/optimization_methods"}, {"id": "quantum_computing_applications", "lang": "en", "path": "courses/quantum_computing_applications"}, {"id": "dbms_course", "lang": "en", "path": "courses/dbms_course"}, {"id": "csa_course", "lang": "en", "path": "courses/csa_course"}, {"id": "web_programming", "lang": "en", "path": "courses/web_programming"}, {"id": "ml_course", "lang": "en", "path": "courses/ml_course"}, {"id": "english_book", "lang": "en", "path": "language/english_book"}, {"id": "english_book_hinglish", "lang": "en", "path": "language/english_book_hinglish"}, {"id": "english_book_hi", "lang": "hi", "path": "language/english_book_hi"}]</script><script>
+    (function () {
+      var X = window.XMLHttpRequest, open, gate = new Promise(function (r) { open = r; });
+      if (!X) return;
+      var open0 = X.prototype.open, send0 = X.prototype.send;
+      X.prototype.open = function (method, url) {
+        this.__pkIndex = /\/search\/search_index\.json(\?|#|$)/.test(String(url));
+        return open0.apply(this, arguments);
+      };
+      X.prototype.send = function () {
+        if (!this.__pkIndex) return send0.apply(this, arguments);
+        var xhr = this, args = arguments;
+        gate.then(function () { send0.apply(xhr, args); });
+      };
+      function wake() { open(); }
+      document.addEventListener("focusin", function (e) { if (e.target && e.target.closest && e.target.closest(".md-search")) wake(); });
+      document.addEventListener("click", function (e) { if (e.target && e.target.closest && e.target.closest('label[for="__search"], .md-search')) wake(); }, true);
+      document.addEventListener("keydown", function (e) {
+        var k = e.key;
+        if ((k === "/" || k === "s" || k === "f" || k === "S" || k === "F") && !(e.target && e.target.closest && e.target.closest("input, textarea, [contenteditable]"))) wake();
+      }, true);
+      if (/[?&]q=/.test(location.search)) wake();
+    })();
+  </script><script>
+    try {
+      if ((window.matchMedia && (matchMedia("(display-mode: standalone)").matches || matchMedia("(display-mode: fullscreen)").matches)) || navigator.standalone === true) {
+        document.documentElement.className += " bjp-standalone";
+      }
+    } catch (e) { /* not an installed app */ }
+  </script>
+  <script>
+    /* a book opened from its cover on the shelf: the page stays blank, in the cover's colour, until the reader is up */
+    try {
+      var cv = sessionStorage.getItem("bjp.reader.cover");
+      if (cv && sessionStorage.getItem("bjp.reader.open") === "1") {
+        var c = JSON.parse(cv), de = document.documentElement;
+        de.className += " bjp-booting";
+        if (c && /^#[0-9a-f]{3,8}$/i.test(c.bg || "")) de.style.background = c.bg;
+        setTimeout(function () { de.classList.remove("bjp-booting"); de.style.background = ""; }, 3000);
+      }
+    } catch (e) { /* no session storage: the page simply opens as usual */ }
+  </script>
+
+    
+      
+        <title>5. Overfitting, Regularisation and Regression Metrics - The Open Book Project</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/extra.css">
+    
+      <link rel="stylesheet" href="../../assets/reader.css">
+    
+      <link rel="stylesheet" href="../../assets/viz.css">
+    
+      <link rel="stylesheet" href="../../assets/app.css">
+    
+      <link rel="stylesheet" href="../../assets/theme.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#51-polynomial-regression-and-the-trouble-it-brings" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../index.html" title="The Open Book Project" class="md-header__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+      
+  <img src="../../assets/icons/logo.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            The Open Book Project
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              5. Overfitting, Regularisation and Regression Metrics
+            
+          </span>
+        </div>
+      </div>
+    </div><a href="../../index.html" class="bjp-libbtn" aria-label="Library: all books" title="Library: all books">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V5h4v15M8 20V9h4v11M14 20L12.6 6l3.8-.8 3 14.2M3 20h18"/></svg><span>Library</span>
+    </a>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary bjp-nav bjp-nav--book" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../index.html" title="The Open Book Project" class="md-nav__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+      
+  <img src="../../assets/icons/logo.svg" alt="logo">
+
+    </a>
+    The Open Book Project
+  </label>
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      <li class="md-nav__item bjp-nav-all">
+        <a href="../../index.html" class="md-nav__link" aria-label="All books: back to the library">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+          <span class="md-ellipsis">All books</span>
+        </a>
+      </li>
+      <li class="md-nav__item bjp-nav-book" role="presentation"><span class="bjp-nav-head">Machine Learning</span></li>
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview and preface
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="preface.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Preface
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="introduction-learning-from-data.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. Introduction: Learning from Data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="preparing-the-data.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Preparing the Data: Scaling, Encoding, Outliers and Balance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="feature-selection-and-pca.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. Feature Selection and Principal Component Analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="linear-regression-and-gradient-descent.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. Linear Regression and Gradient Descent
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Overfitting, Regularisation and Regression Metrics
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="overfitting-regularisation-and-regression-metrics.html" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Overfitting, Regularisation and Regression Metrics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#51-polynomial-regression-and-the-trouble-it-brings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 Polynomial regression, and the trouble it brings
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#52-bias-variance-and-where-the-error-goes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 Bias, variance, and where the error goes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#53-regularisation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3 Regularisation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#54-regression-evaluation-metrics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.4 Regression evaluation metrics
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5.4 Regression evaluation metrics">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#estimating-the-score-honestly-holdout-and-k-fold" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Estimating the score honestly: holdout and k-fold
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#55-what-linear-regression-assumes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.5 What linear regression assumes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#56-further-topics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.6 Further topics
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5.6 Further topics">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basis-expansion-and-interaction-terms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Basis expansion and interaction terms
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#training-and-test-error-against-model-complexity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Training and test error against model complexity
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-the-lasso-is-solved-soft-thresholding" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How the lasso is solved: soft thresholding
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#57-worked-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.7 Worked examples
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#58-common-mistakes-to-avoid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.8 Common mistakes to avoid
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#59-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.9 Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#510-exercises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.10 Exercises
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="decision-trees.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. Decision Trees
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="naive-bayes.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    7. Naive Bayes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="logistic-regression-and-multi-class-classification.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    8. Logistic Regression and Multi-class Classification
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="k-nearest-neighbours.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    9. k-Nearest Neighbours
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="perceptrons-and-neural-networks.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    10. Perceptrons, Multilayer Networks and Back-propagation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="support-vector-machines.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    11. Support Vector Machines
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="evaluating-classifiers.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    12. Evaluating Classifiers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="clustering-and-k-means.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    13. Clustering and K-means
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="hierarchical-clustering-and-evaluating-clusters.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    14. Hierarchical Clustering and Evaluating Clusters
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="formula-sheet.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Formula Sheet and Notation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="glossary.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="further-reading.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Further Reading and Syllabus Map
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#51-polynomial-regression-and-the-trouble-it-brings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 Polynomial regression, and the trouble it brings
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#52-bias-variance-and-where-the-error-goes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 Bias, variance, and where the error goes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#53-regularisation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3 Regularisation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#54-regression-evaluation-metrics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.4 Regression evaluation metrics
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5.4 Regression evaluation metrics">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#estimating-the-score-honestly-holdout-and-k-fold" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Estimating the score honestly: holdout and k-fold
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#55-what-linear-regression-assumes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.5 What linear regression assumes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#56-further-topics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.6 Further topics
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5.6 Further topics">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basis-expansion-and-interaction-terms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Basis expansion and interaction terms
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#training-and-test-error-against-model-complexity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Training and test error against model complexity
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-the-lasso-is-solved-soft-thresholding" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How the lasso is solved: soft thresholding
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#57-worked-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.7 Worked examples
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#58-common-mistakes-to-avoid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.8 Common mistakes to avoid
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#59-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.9 Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#510-exercises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.10 Exercises
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="chapter-5-overfitting-regularisation-and-regression-metrics">Chapter 5: Overfitting, Regularisation and Regression Metrics<a class="headerlink" href="#chapter-5-overfitting-regularisation-and-regression-metrics" title="Permanent link">&para;</a></h1>
+<p>Chapter 4 fitted a line by least squares and walked down a cost surface with gradient descent. A line is only the simplest member of a family of models, and the first thing to learn about a family is how it fails. This chapter shows the two failures, underfitting and overfitting, traces them to bias and variance, and introduces the standard remedy, regularisation. It closes with the regression metrics that let you measure a fit honestly, and with the assumptions behind the inference people draw from a fitted line.</p>
+<h2 id="51-polynomial-regression-and-the-trouble-it-brings">5.1 Polynomial regression, and the trouble it brings<a class="headerlink" href="#51-polynomial-regression-and-the-trouble-it-brings" title="Permanent link">&para;</a></h2>
+<p>A straight line through a curve underfits. The remedy is not a new algorithm: add <span class="arithmatex">\(x^{2}, x^{3}\)</span> … as extra <em>features</em> and fit the same linear model to them. The model stays linear <strong>in the parameters</strong> — which is all that “linear regression” requires — while the curve it draws is not.</p>
+<div class="arithmatex">\[
+h_{\theta }(x) = \theta _{0} + \theta _{1}x + \theta _{2}x^{2} + \theta _{3}x^{3}
+\]</div>
+<p><em>a cubic in <span class="arithmatex">\(x\)</span>, but still a plain linear regression on the three features <span class="arithmatex">\(x, x^{2}, x^{3}\)</span></em></p>
+<p>Two practical consequences. The new features are on wildly different scales — if <span class="arithmatex">\(x\)</span> reaches 100 then <span class="arithmatex">\(x^{3}\)</span> reaches <span class="arithmatex">\(10^{6}\)</span> — so <strong>scaling becomes essential</strong>. And the number of parameters grows quickly, especially with several original features, where degree 2 also brings every interaction term <span class="arithmatex">\(x_{i}x_{j}\)</span>.</p>
+<h2 id="52-bias-variance-and-where-the-error-goes">5.2 Bias, variance, and where the error goes<a class="headerlink" href="#52-bias-variance-and-where-the-error-goes" title="Permanent link">&para;</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Definition: Expected squared error</p>
+<p>For a new point, averaged over all the training sets you might have drawn:</p>
+<p>expected error <span class="arithmatex">\(= \text{bias}^{2} +\)</span> variance + irreducible noise</p>
+<p><strong>Bias</strong> is the error from wrong assumptions — how far the average model is from the truth. <strong>Variance</strong> is how much the fitted model moves when you swap one training set for another. <strong>Noise</strong> is the part no model can remove.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">High bias / underfitting</p>
+<p>Training error already high, test error about the same. The model is too rigid. Add features, raise the degree, reduce regularisation, use a more flexible family. <strong>More data does not help.</strong></p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">High variance / overfitting</p>
+<p>Training error low, test error much higher; the <em>gap</em> is the symptom. The model is chasing noise. Get more data, remove features, raise <span class="arithmatex">\(\lambda\)</span>, stop early, prune.</p>
+</div>
+<p>The two are traded against each other by every knob in this course — the degree, <span class="arithmatex">\(\lambda\)</span>, the depth of a tree, the <span class="arithmatex">\(k\)</span> of k-NN. Turning any of them towards flexibility lowers bias and raises variance. There is a minimum of the sum somewhere in the middle, and finding it is what a validation set is for.</p>
+<div class="admonition tip">
+<p class="admonition-title">How to tell them apart in practice</p>
+<p>Plot the training and validation error against the amount of training data — a <strong>learning curve</strong>. If both curves flatten out at a high error and meet, you have high bias, and adding data will not move them. If there is a wide gap that is still closing as data is added, you have high variance, and more data will help. The figure below computes both curves for real, so you can try the three cases rather than take this on trust.</p>
+</div>
+<figure class="fig fig-diagram">
+<img src="img/learning-curve.png" alt="A learning curve: training and validation error against the number of training examples, with the irreducible noise as a floor. Curves that flatten early and meet above the floor indicate high bias; a wide gap that closes as data grow indicates high variance that more data will cure." loading="lazy" width="1575" height="949">
+<figcaption><strong>Figure 5.1.</strong> A learning curve: training and validation error against the number of training examples, with the irreducible noise as a floor. Curves that flatten early and meet above the floor indicate high bias; a wide gap that closes as data grow indicates high variance that more data will cure.</figcaption>
+</figure>
+
+<p>Read the shape, not the level. Two curves that have <strong>met</strong> say the model has extracted everything it can from data of this kind. Whether that is good news depends on <em>where</em> they met: just above the noise floor is success, far above it is high bias. Two curves still <strong>separated and converging</strong> say the model is data-limited, and the width of the gap is a rough forecast of how much there is left to win.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="c1"># the same plot, from the library</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">learning_curve</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="n">sizes</span><span class="p">,</span> <span class="n">train_scores</span><span class="p">,</span> <span class="n">val_scores</span> <span class="o">=</span> <span class="n">learning_curve</span><span class="p">(</span>
+    <span class="n">model</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span>
+    <span class="n">train_sizes</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span>
+    <span class="n">cv</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="s2">"neg_mean_squared_error"</span><span class="p">)</span>
+
+<span class="n">train_mse</span> <span class="o">=</span> <span class="o">-</span><span class="n">train_scores</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>    <span class="c1"># sklearn returns scores, so negate</span>
+<span class="n">val_mse</span>   <span class="o">=</span> <span class="o">-</span><span class="n">val_scores</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">m</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">sizes</span><span class="p">,</span> <span class="n">train_mse</span><span class="p">,</span> <span class="n">val_mse</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="nb">round</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="s2">"gap"</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">v</span> <span class="o">-</span> <span class="n">t</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+</code></pre></div>
+<h2 id="53-regularisation">5.3 Regularisation<a class="headerlink" href="#53-regularisation" title="Permanent link">&para;</a></h2>
+<p>An overfitted curve is a curve with large, opposing coefficients: +4 000 here, −3 800 there, which nearly cancel across most of the range and then swing violently wherever the data is thin. So instead of forbidding flexible models, charge them for it. Add a term to the cost that grows with the size of the coefficients, and the optimiser will only buy a large coefficient if it pays for itself in fit.</p>
+<div class="arithmatex">\[
+J(\theta ) = \sum (y_{i} - \hat{y}_{i})^{2} + \lambda \sum _{j\ge 1} \theta _{j}^{2}
+\]</div>
+<p><em>ridge — the L2 penalty. The intercept <span class="arithmatex">\(\theta _{0}\)</span> is never penalised.</em></p>
+<div class="arithmatex">\[
+J(\theta ) = \sum (y_{i} - \hat{y}_{i})^{2} + \lambda \sum _{j\ge 1} |\theta _{j}|
+\]</div>
+<p><em>lasso — the L1 penalty</em></p>
+<figure class="fig fig-diagram">
+<img src="img/ridge-path.png" alt="Ridge coefficient paths. As the regularisation strength grows, all coefficients shrink smoothly towards zero and none is dropped; correlated features (area, rooms) share the weight between them." loading="lazy" width="1576" height="859">
+<figcaption><strong>Figure 5.2.</strong> Ridge coefficient paths. As the regularisation strength grows, all coefficients shrink smoothly towards zero and none is dropped; correlated features (area, rooms) share the weight between them.</figcaption>
+</figure>
+
+<div class="admonition tip">
+<p class="admonition-title">Why only L1 gives exact zeros</p>
+<p>Think of the penalty as a budget on the coefficients and picture its boundary. For L2 the budget region is a circle — smooth everywhere — so the point where the fit's contours first touch it is almost never on an axis. For L1 the region is a diamond with corners <em>on</em> the axes, and contours arriving from a general direction touch a corner first. A corner has a coordinate exactly equal to zero. That is the whole geometric argument, and it also explains the behaviour with correlated features: a smooth circle lets two correlated coefficients share, while a diamond's corner picks one and discards the other.</p>
+</div>
+<p><strong>Ridge (L2)</strong></p>
+<ul>
+<li>Penalty <span class="arithmatex">\(\lambda \sum \theta ^{2}\)</span></li>
+<li>Shrinks smoothly; never exactly zero</li>
+<li>Keeps all features</li>
+<li>Handles correlated features by sharing weight between them</li>
+<li>Closed form: <span class="arithmatex">\(\theta = (X^{T}X + \lambda I)^{-1}X^{T}y\)</span> — always invertible</li>
+<li>Use when you believe most features matter a little</li>
+</ul>
+<p><strong>Lasso (L1)</strong></p>
+<ul>
+<li>Penalty <span class="arithmatex">\(\lambda \sum |\theta |\)</span></li>
+<li>Sets coefficients exactly to zero</li>
+<li>Selects features while fitting</li>
+<li>With correlated features it keeps one arbitrarily and drops the rest</li>
+<li>No closed form — solved by coordinate descent</li>
+<li>Use when you believe most features are irrelevant</li>
+</ul>
+<p><strong>Elastic net</strong></p>
+<ul>
+<li>Penalty <span class="arithmatex">\(\lambda _{1}\sum |\theta \mid + \lambda _{2}\sum \theta ^{2}\)</span></li>
+<li>Zeros, but gentler about it</li>
+<li>Keeps correlated groups together instead of picking one</li>
+<li>Two hyper-parameters to tune</li>
+<li>The usual choice when <span class="arithmatex">\(n\)</span> is large and features come in correlated groups</li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Two rules that are always tested</p>
+<p><strong>Standardise first</strong> — the penalty charges by coefficient size, and a coefficient is large partly because its feature is measured in small units, so an unscaled feature is punished for its units. <strong>Never penalise the intercept</strong> — <span class="arithmatex">\(\theta _{0}\)</span> only sets the overall level of the predictions, and shrinking it towards zero biases every prediction towards zero for no reason.</p>
+</div>
+<div class="language-python highlight"><pre><span></span><code><span class="c1"># ridge and lasso, with the penalty strength chosen by cross-validation</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">RidgeCV</span><span class="p">,</span> <span class="n">LassoCV</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_pipeline</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.preprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">StandardScaler</span>
+
+<span class="n">lambdas</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">40</span><span class="p">)</span>      <span class="c1"># sklearn calls this parameter alpha</span>
+
+<span class="c1"># the scaler must be INSIDE the pipeline: the penalty charges by coefficient</span>
+<span class="c1"># size, so an unscaled feature would be punished for its units</span>
+<span class="n">ridge</span> <span class="o">=</span> <span class="n">make_pipeline</span><span class="p">(</span><span class="n">StandardScaler</span><span class="p">(),</span> <span class="n">RidgeCV</span><span class="p">(</span><span class="n">alphas</span><span class="o">=</span><span class="n">lambdas</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="mi">5</span><span class="p">))</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_tr</span><span class="p">,</span> <span class="n">y_tr</span><span class="p">)</span>
+<span class="n">lasso</span> <span class="o">=</span> <span class="n">make_pipeline</span><span class="p">(</span><span class="n">StandardScaler</span><span class="p">(),</span> <span class="n">LassoCV</span><span class="p">(</span><span class="n">alphas</span><span class="o">=</span><span class="n">lambdas</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="mi">5</span><span class="p">))</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_tr</span><span class="p">,</span> <span class="n">y_tr</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"chosen penalty:"</span><span class="p">,</span> <span class="n">ridge</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">alpha_</span><span class="p">,</span> <span class="n">lasso</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">alpha_</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"exact zeros:"</span><span class="p">,</span> <span class="p">(</span><span class="n">ridge</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">coef_</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(),</span>
+                     <span class="p">(</span><span class="n">lasso</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">coef_</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>   <span class="c1"># none, then several</span>
+</code></pre></div>
+<p><span class="arithmatex">\(\lambda\)</span> is a hyper-parameter, chosen by cross-validation on the training data. <span class="arithmatex">\(\lambda = 0\)</span> gives ordinary least squares; <span class="arithmatex">\(\lambda \to \infty\)</span> drives every penalised coefficient to zero, leaving a model that predicts <span class="arithmatex">\(\bar{y}\)</span> for everything. In bias–variance language: raising <span class="arithmatex">\(\lambda\)</span> raises bias and lowers variance, and the best <span class="arithmatex">\(\lambda\)</span> is the one that minimises their sum.</p>
+<h2 id="54-regression-evaluation-metrics">5.4 Regression evaluation metrics<a class="headerlink" href="#54-regression-evaluation-metrics" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Formula</th>
+<th>Units</th>
+<th>Character</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MSE</td>
+<td><span class="arithmatex">\((1/m)\sum (y - \hat{y})^{2}\)</span></td>
+<td><span class="arithmatex">\(y^{2}\)</span>, so uninterpretable</td>
+<td>heavily penalises large errors; the thing least squares minimises</td>
+</tr>
+<tr>
+<td>RMSE</td>
+<td><span class="arithmatex">\(\sqrt{\text{MSE}}\)</span></td>
+<td>same as <span class="arithmatex">\(y\)</span></td>
+<td>the usual number to report; still outlier-sensitive</td>
+</tr>
+<tr>
+<td>MAE</td>
+<td><span class="arithmatex">\((1/m)\sum \|y - \hat{y}\|\)</span></td>
+<td>same as <span class="arithmatex">\(y\)</span></td>
+<td>robust; every rupee of error counts the same</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(R^{2}\)</span></td>
+<td><span class="arithmatex">\(1 - \text{SS}_{\text{res}}/\text{SS}_{\text{tot}}\)</span></td>
+<td>none</td>
+<td>fraction of variance explained, relative to predicting <span class="arithmatex">\(\bar{y}\)</span></td>
+</tr>
+<tr>
+<td>Adjusted <span class="arithmatex">\(R^{2}\)</span></td>
+<td><span class="arithmatex">\(1 - (1-R^{2})(m-1)/(m-n-1)\)</span></td>
+<td>none</td>
+<td><span class="arithmatex">\(R^{2}\)</span> with a charge for each extra feature; can fall</td>
+</tr>
+<tr>
+<td>MAPE</td>
+<td><span class="arithmatex">\((100/m)\sum \|(y - \hat{y})/y\|\)</span></td>
+<td>%</td>
+<td>scale-free and readable; explodes when <span class="arithmatex">\(y\)</span> is near zero</td>
+</tr>
+</tbody>
+</table>
+<p><span class="arithmatex">\(\text{RMSE} \ge \text{MAE}\)</span> always, and the gap between them grows with the spread of the errors. A large gap is itself a diagnostic: it says a few big misses are doing most of the damage, and you should go and look at them.</p>
+<figure class="fig fig-diagram">
+<img src="img/regression-metrics-outlier.png" alt="A line fitted to eight points. Pulling one point away from the line makes MSE and RMSE leap, because the error is squared before it is averaged, MAE rise in proportion, and R-squared collapse." loading="lazy" width="1569" height="853">
+<figcaption><strong>Figure 5.3.</strong> A line fitted to eight points. Pulling one point away from the line makes MSE and RMSE leap, because the error is squared before it is averaged, MAE rise in proportion, and R-squared collapse.</figcaption>
+</figure>
+
+<div class="admonition note">
+<p class="admonition-title">Definition: Three facts worth stating in an exam</p>
+<p><strong><span class="arithmatex">\(R^{2} = 0\)</span></strong> means the model is exactly as good as always predicting <span class="arithmatex">\(\bar{y}\)</span>. <strong><span class="arithmatex">\(R^{2}\)</span> can be negative</strong> on a test set, which simply means it is worse than that. <strong><span class="arithmatex">\(R^{2}\)</span> never falls when a feature is added</strong>, even a column of random numbers — so it cannot be used to compare models of different sizes, which is precisely the job adjusted <span class="arithmatex">\(R^{2}\)</span> exists to do.</p>
+</div>
+<h3 id="estimating-the-score-honestly-holdout-and-k-fold">Estimating the score honestly: holdout and k-fold<a class="headerlink" href="#estimating-the-score-honestly-holdout-and-k-fold" title="Permanent link">&para;</a></h3>
+<p>Every metric above is a number computed on <em>some</em> rows. Which rows decides what the number means. Scoring on the training rows measures memory, not learning, so the score has to come from data the model has not seen — and there are two ways to arrange that.</p>
+<div class="admonition note">
+<p class="admonition-title">Definition: Holdout and k-fold cross-validation</p>
+<p><strong>Holdout.</strong> Split once, typically 70/30 or 80/20. Fit on the training part, score on the test part. One fit, one number.</p>
+<p><strong>k-fold cross-validation.</strong> Cut the data into <span class="arithmatex">\(k\)</span> equal folds. Run <span class="arithmatex">\(k\)</span> rounds; in round i, fold i is the test set and the other <span class="arithmatex">\(k - 1\)</span> folds are the training set. Report the <strong>mean</strong> of the <span class="arithmatex">\(k\)</span> scores, and their standard deviation. Every row is tested exactly once and trained on <span class="arithmatex">\(k - 1\)</span> times. <span class="arithmatex">\(k\)</span> fits.</p>
+</div>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Holdout</th>
+<th>k-fold</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Models fitted</td>
+<td>1</td>
+<td><span class="arithmatex">\(k\)</span></td>
+</tr>
+<tr>
+<td>Rows used for training</td>
+<td>70–80% of them</td>
+<td>All of them, across the rounds</td>
+</tr>
+<tr>
+<td>Rows used for testing</td>
+<td>The other 20–30%, once</td>
+<td>All of them, each exactly once</td>
+</tr>
+<tr>
+<td>Variance of the estimate</td>
+<td><strong>High</strong> — it depends on which rows happened to land in the test set</td>
+<td><strong>Low</strong> — averaging <span class="arithmatex">\(k\)</span> estimates, and you get the spread as well as the mean</td>
+</tr>
+<tr>
+<td>Cost</td>
+<td>Cheapest possible</td>
+<td><span class="arithmatex">\(k\)</span> times as much</td>
+</tr>
+<tr>
+<td>Use when</td>
+<td>Data is plentiful, or a fit is very expensive</td>
+<td>Nearly always otherwise — and always when tuning a hyper-parameter</td>
+</tr>
+</tbody>
+</table>
+<p>Two variants are worth naming. <strong>Leave-one-out</strong> is <span class="arithmatex">\(k = m\)</span>: nearly unbiased, but <span class="arithmatex">\(m\)</span> fits and a high-variance estimate, because the <span class="arithmatex">\(m\)</span> training sets are almost identical. <strong>Stratified k-fold</strong> keeps the class proportions inside every fold, and is the correct default for classification — without it a fold of an imbalanced dataset can contain no positives at all, and its score is then meaningless.</p>
+<div class="admonition example">
+<p class="admonition-title">Example 5.1: 5-fold on ten points</p>
+<p><strong>Problem.</strong> Set up 5-fold cross-validation for D1…D10, and say how many rows are used for training and for testing in each round. Then do the same for 1000 samples.</p>
+<p><strong>Step 1 — the fold size</strong></p>
+<p>Fold size <span class="arithmatex">\(= m/k = 10/5 = 2\)</span>. Each round therefore trains on <span class="arithmatex">\(10 - 2 = 8\)</span> rows and tests on <strong>2</strong>.</p>
+<p><strong>Step 2 — the five rounds</strong></p>
+<table>
+<thead>
+<tr>
+<th>Round</th>
+<th>Test fold</th>
+<th>Training set</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>D1, D2</td>
+<td>D3–D10</td>
+</tr>
+<tr>
+<td>2</td>
+<td>D3, D4</td>
+<td>D1, D2, D5–D10</td>
+</tr>
+<tr>
+<td>3</td>
+<td>D5, D6</td>
+<td>D1–D4, D7–D10</td>
+</tr>
+<tr>
+<td>4</td>
+<td>D7, D8</td>
+<td>D1–D6, D9, D10</td>
+</tr>
+<tr>
+<td>5</td>
+<td>D9, D10</td>
+<td>D1–D8</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Step 3 — 1000 samples</strong></p>
+<p>Fold size <span class="arithmatex">\(= 1000/5 = 200\)</span>, so each round uses <strong>800 for training and 200 for testing</strong>, and five models are fitted in all.</p>
+<p><strong>Answer.</strong> Each round: 8 train <span class="arithmatex">\(/ 2\)</span> test for D1…D10, and 800 train <span class="arithmatex">\(/ 200\)</span> test for 1000 samples</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">The trap that costs the most marks, and the most real accuracy</p>
+<p>Every step that <em>learns</em> something from data — the scaler, the imputer, PCA, feature selection, SMOTE — must be refitted <strong>inside each fold</strong>, on that fold's training part only. Scaling the whole dataset and then cross-validating leaks the test rows into training and reports a score better than the model deserves. Put the steps in a <code>Pipeline</code> and pass the pipeline to <code>cross_val_score</code>; the correct order then happens automatically.</p>
+</div>
+<div class="language-python highlight"><pre><span></span><code><span class="c1"># the only correct way to cross-validate a model that needs scaling</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">KFold</span><span class="p">,</span> <span class="n">StratifiedKFold</span><span class="p">,</span> <span class="n">cross_val_score</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_pipeline</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.preprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">StandardScaler</span>
+
+<span class="n">pipe</span> <span class="o">=</span> <span class="n">make_pipeline</span><span class="p">(</span><span class="n">StandardScaler</span><span class="p">(),</span> <span class="n">model</span><span class="p">)</span>      <span class="c1"># the scaler is refit inside every fold</span>
+<span class="n">cv</span>   <span class="o">=</span> <span class="n">KFold</span><span class="p">(</span><span class="n">n_splits</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">s</span>    <span class="o">=</span> <span class="n">cross_val_score</span><span class="p">(</span><span class="n">pipe</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="n">cv</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="s2">"neg_mean_squared_error"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="o">-</span><span class="n">s</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">s</span><span class="o">.</span><span class="n">std</span><span class="p">())</span>    <span class="c1"># report the mean AND the spread — the spread is the honesty</span>
+</code></pre></div>
+<h2 id="55-what-linear-regression-assumes">5.5 What linear regression assumes<a class="headerlink" href="#55-what-linear-regression-assumes" title="Permanent link">&para;</a></h2>
+<p>The fit itself needs nothing; the <em>interpretation</em> — confidence intervals, p-values, and the claim that the model will behave the same way on new data — rests on four assumptions, usually remembered as LINE.</p>
+<ul>
+<li><strong>L</strong>inearity — the relation really is linear in the parameters. Check: plot residuals against fitted values; a curve in that plot means you have missed a non-linear term.</li>
+<li><strong>I</strong>ndependence — the errors are independent of one another. Time-series data usually violates this, and its residuals will show a pattern in time order.</li>
+<li><strong>N</strong>ormality of the residuals — needed for inference, not for the fit. Check with a Q–Q plot.</li>
+<li><strong>E</strong>qual variance (homoscedasticity) — the spread of the residuals is the same across the range. A funnel shape in the residual plot means the model is more uncertain for large predictions than small ones, and a log transform of <span class="arithmatex">\(y\)</span> often fixes it.</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">The single most useful diagnostic in this unit</p>
+<p>is a plot of residuals against fitted values. If the model is right, it looks like a featureless band of noise around zero. Any structure in it — a curve, a funnel, a cluster of points miles from the rest — is the model telling you what it has missed.</p>
+</div>
+<h2 id="56-further-topics">5.6 Further topics<a class="headerlink" href="#56-further-topics" title="Permanent link">&para;</a></h2>
+<h3 id="basis-expansion-and-interaction-terms">Basis expansion and interaction terms<a class="headerlink" href="#basis-expansion-and-interaction-terms" title="Permanent link">&para;</a></h3>
+<p>Powers of <span class="arithmatex">\(x\)</span> are only one way of enlarging the feature set. The general idea, called <strong>basis expansion</strong>, is to replace the input <span class="arithmatex">\(x\)</span> by a list of chosen functions of it, <span class="arithmatex">\(\phi_{1}(x), \phi_{2}(x), \ldots\)</span>, and fit a linear model to those:</p>
+<div class="arithmatex">\[
+h_{\theta}(x) = \theta_{0} + \theta_{1}\phi_{1}(x) + \theta_{2}\phi_{2}(x) + \cdots
+\]</div>
+<p>The functions can be powers <span class="arithmatex">\(x, x^{2}, x^{3}\)</span>, a logarithm <span class="arithmatex">\(\log x\)</span> for a quantity that grows by multiples, a sine and cosine pair for something that repeats, or the piecewise functions of a spline. Whatever they are, the model is linear in <span class="arithmatex">\(\theta\)</span>, so the normal equation, gradient descent, ridge and lasso all apply unchanged. Only the design matrix changes, and the choice of basis is where knowledge about the problem enters.</p>
+<p>With several original features the expansion can include <strong>interaction terms</strong>, products such as <span class="arithmatex">\(x_{1}x_{2}\)</span>. In <span class="arithmatex">\(\hat{y} = \theta_{0} + \theta_{1}x_{1} + \theta_{2}x_{2} + \theta_{3}x_{1}x_{2}\)</span> the effect of a unit rise in <span class="arithmatex">\(x_{1}\)</span> is <span class="arithmatex">\(\theta_{1} + \theta_{3}x_{2}\)</span>, so the slope in <span class="arithmatex">\(x_{1}\)</span> depends on the level of <span class="arithmatex">\(x_{2}\)</span>. Without the product term the model forces the effect of each feature to be the same whatever the others do. An interaction between a numeric feature and a dummy variable lets the two groups have different slopes, not only different intercepts.</p>
+<p>The cost is the number of columns. All terms up to degree <span class="arithmatex">\(d\)</span> in <span class="arithmatex">\(n\)</span> original features, apart from the intercept, number <span class="arithmatex">\(\binom{n+d}{d} - 1\)</span>. For <span class="arithmatex">\(n = 3\)</span> and <span class="arithmatex">\(d = 2\)</span> that is 9; for <span class="arithmatex">\(n = 10\)</span> and <span class="arithmatex">\(d = 3\)</span> it is 285; for <span class="arithmatex">\(n = 40\)</span> and <span class="arithmatex">\(d = 2\)</span> it is 860, more than the 300 rows of a typical small data set. A rich basis therefore calls for the machinery of this chapter: standardise the columns, and use ridge or lasso with <span class="arithmatex">\(\lambda\)</span> chosen by cross-validation, so that the extra flexibility is paid for.</p>
+<h3 id="training-and-test-error-against-model-complexity">Training and test error against model complexity<a class="headerlink" href="#training-and-test-error-against-model-complexity" title="Permanent link">&para;</a></h3>
+<p>The learning curve earlier in this chapter holds the model fixed and varies the amount of data. The other view holds the data fixed and varies the flexibility, and it is the picture behind the phrase "bias–variance trade-off". The figure shows a real run: 20 training points from <span class="arithmatex">\(y = \sin(2\pi x)\)</span> with Gaussian noise of standard deviation <span class="arithmatex">\(0.3\)</span>, so the irreducible noise is <span class="arithmatex">\(\sigma^{2} = 0.09\)</span>, fitted by polynomials of degree 1 to 12 and scored on 2000 fresh points.</p>
+<figure class="fig fig-diagram">
+<img src="img/error-vs-complexity.png" alt="Training and test mean squared error against polynomial degree, on a logarithmic scale, for a polynomial fitted to 20 noisy points. Training error falls steadily as the degree rises; test error is lowest at degree 3, near the noise floor, and then climbs by orders of magnitude." loading="lazy" width="1095" height="673">
+<figcaption><strong>Figure 5.4.</strong> Training and test mean squared error against polynomial degree, on a logarithmic scale, for a polynomial fitted to 20 noisy points. Training error falls steadily as the degree rises; test error is lowest at degree 3, near the noise floor, and then climbs by orders of magnitude.</figcaption>
+</figure>
+
+<p>Read the two curves separately. The training error never rises: each higher degree contains the lower ones as special cases, so the fit can only improve, from <span class="arithmatex">\(0.367\)</span> at degree 1 to <span class="arithmatex">\(0.020\)</span> at degree 12. The test error is U-shaped. It is high at degrees 1 and 2 (<span class="arithmatex">\(0.309\)</span>, <span class="arithmatex">\(0.307\)</span>), where the curve is too rigid for a sine wave (high bias), lowest at degree 3 (<span class="arithmatex">\(0.116\)</span>, close to the noise floor of <span class="arithmatex">\(0.09\)</span>), and then increases, to <span class="arithmatex">\(3.6\)</span> at degree 8 and into the thousands at degree 12 (high variance). Twelve coefficients fitted to 20 noisy points cannot be pinned down, and between and beyond the points the curve swings wildly.</p>
+<p>Two details repay attention. The training error at degree 3, <span class="arithmatex">\(0.067\)</span>, lies <em>below</em> the noise floor <span class="arithmatex">\(0.09\)</span>: the fit has already absorbed a little of the noise, so training error is optimistic even for the best model. And the sweet spot is found only on data the fit has not seen. Choosing the degree by training error would pick degree 12; choosing it by test or cross-validation error picks 3. The exact values depend on the random sample drawn, the shape does not.</p>
+<h3 id="how-the-lasso-is-solved-soft-thresholding">How the lasso is solved: soft thresholding<a class="headerlink" href="#how-the-lasso-is-solved-soft-thresholding" title="Permanent link">&para;</a></h3>
+<p>The chapter says that the lasso has no closed form and is solved by coordinate descent. The idea is simple enough to state in full. Cycle through the coefficients, and at each one hold the others fixed and minimise the cost over that single coefficient. That one-variable problem does have an answer.</p>
+<p>Let <span class="arithmatex">\(r_{i}\)</span> be the <strong>partial residual</strong>, the part of <span class="arithmatex">\(y_{i}\)</span> not explained by the other coefficients, and let <span class="arithmatex">\(x_{ij}\)</span> be the standardised values of feature <span class="arithmatex">\(j\)</span>. Minimising <span class="arithmatex">\(\sum_{i}(r_{i} - \theta_{j}x_{ij})^{2} + \lambda|\theta_{j}|\)</span> over <span class="arithmatex">\(\theta_{j}\)</span> gives</p>
+<div class="arithmatex">\[
+\theta_{j} = \frac{S\!\left(\sum_{i} x_{ij}r_{i},\ \lambda/2\right)}{\sum_{i} x_{ij}^{2}}, \qquad S(z, t) = \text{sign}(z)\,\max(|z| - t,\ 0)
+\]</div>
+<p>The function <span class="arithmatex">\(S\)</span> is the <strong>soft threshold</strong>: it shrinks <span class="arithmatex">\(z\)</span> towards zero by <span class="arithmatex">\(t\)</span> and returns exactly zero if <span class="arithmatex">\(|z| \le t\)</span>. The numerator <span class="arithmatex">\(\sum x_{ij}r_{i}\)</span> measures how strongly feature <span class="arithmatex">\(j\)</span> correlates with what is left unexplained. If that is smaller than <span class="arithmatex">\(\lambda/2\)</span> the feature is not worth its penalty and its coefficient is set to zero; if not, the coefficient is the least-squares value reduced by a fixed amount.</p>
+<p>The one-variable lasso in the worked example of this chapter is the special case with a single feature, where <span class="arithmatex">\(\sum xy = 31\)</span> and <span class="arithmatex">\(\sum x^{2} = 14\)</span>. At <span class="arithmatex">\(\lambda = 10\)</span> the formula gives <span class="arithmatex">\((31 - 5)/14 = 1.857\)</span>, and the coefficient becomes zero from <span class="arithmatex">\(\lambda = 62\)</span> onward. With many features the cycle is repeated, each coefficient being updated with the current partial residual, until no coefficient changes by more than a small tolerance. Because the cost is convex, this converges to the global minimum. The ridge update, by contrast, divides by <span class="arithmatex">\(\sum x_{ij}^{2} + \lambda\)</span> and never returns exactly zero.</p>
+<h2 id="57-worked-examples">5.7 Worked examples<a class="headerlink" href="#57-worked-examples" title="Permanent link">&para;</a></h2>
+<p>The examples below work through the calculations of this chapter in full. Try each one on paper before reading the steps.</p>
+<div class="admonition example">
+<p class="admonition-title">Example 5.2: Every metric, from five predictions</p>
+<p><strong>Problem.</strong> Actual <span class="arithmatex">\(y = 3, -0.5, 2, 7, 4.2\)</span> with predictions <span class="arithmatex">\(\hat{y} = 2.5, 0.0, 2, 8, 4.0\)</span>. Compute MSE, RMSE, MAE and <span class="arithmatex">\(R^{2}\)</span>.</p>
+<p><strong>Step 1 — errors, one row at a time</strong></p>
+<table>
+<thead>
+<tr>
+<th><span class="arithmatex">\(y\)</span></th>
+<th><span class="arithmatex">\(\hat{y}\)</span></th>
+<th><span class="arithmatex">\(e\)</span></th>
+<th><span class="arithmatex">\(e^{2}\)</span></th>
+<th>|e|</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>3</td>
+<td>2.5</td>
+<td>0.5</td>
+<td>0.25</td>
+<td>0.5</td>
+</tr>
+<tr>
+<td>−0.5</td>
+<td>0.0</td>
+<td>−0.5</td>
+<td>0.25</td>
+<td>0.5</td>
+</tr>
+<tr>
+<td>2</td>
+<td>2</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>7</td>
+<td>8</td>
+<td>−1</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>4.2</td>
+<td>4.0</td>
+<td>0.2</td>
+<td>0.04</td>
+<td>0.2</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(\sum\)</span></td>
+<td></td>
+<td></td>
+<td>1.54</td>
+<td>2.2</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Step 2 — MSE, RMSE, MAE</strong></p>
+<p><span class="arithmatex">\(\text{MSE} = 1.54/5 = 0.308;\quad \text{RMSE} = \sqrt{0.308} = 0.555;\quad \text{MAE} = 2.2/5 = 0.44\)</span></p>
+<p><span class="arithmatex">\(\text{RMSE} &gt; \text{MAE}\)</span>, as it must be. The gap comes almost entirely from the single error of −1.</p>
+<p><strong>Step 3 — <span class="arithmatex">\(R^{2}\)</span></strong></p>
+<p><span class="arithmatex">\(\bar{y} = (3 - 0.5 + 2 + 7 + 4.2)/5 = 15.7/5 = 3.14\)</span></p>
+<p>deviations from the mean: −0.14, −3.64, −1.14, 3.86, 1.06</p>
+<p><span class="arithmatex">\(\text{SS}_{\text{tot}} = 0.0196 + 13.25 + 1.30 + 14.90 + 1.12 = 30.59\)</span></p>
+<p><span class="arithmatex">\(\text{SS}_{\text{res}} = 1.54\)</span></p>
+<p><span class="arithmatex">\(R^{2} = 1 - 1.54/30.59 = 1 - 0.0503 = 0.9497\)</span></p>
+<p><strong>Answer.</strong> MSE 0.308; RMSE 0.555; MAE 0.44; <span class="arithmatex">\(R^{2}\)</span> 0.950</p>
+<p><strong>Comment.</strong> <span class="arithmatex">\(R^{2} = 0.95\)</span> means the model removed 95% of the variance that predicting the mean would have left. Note that <span class="arithmatex">\(R^{2}\)</span> is computed against <span class="arithmatex">\(\bar{y}\)</span> of <em>this</em> set. So an <span class="arithmatex">\(R^{2}\)</span> from a narrow slice of data is not comparable with one from a wide slice — and that is why RMSE, in the units of <span class="arithmatex">\(y\)</span>, is often the more honest number to quote.</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title">Example 5.3: Choose <span class="arithmatex">\(\lambda\)</span> without cheating</p>
+<p><strong>Problem.</strong> Ridge regression on 500 examples with 40 features. For <span class="arithmatex">\(\lambda = 0, 0.1, 1, 10, 100\)</span> the training MSE is 2.1, 2.2, 2.6, 4.0, 9.5 and the validation MSE is 6.8, 5.1, 3.9, 4.4, 9.6. Which <span class="arithmatex">\(\lambda\)</span>, and what does the pattern show?</p>
+<p><strong>Step 1 — read the training column</strong></p>
+<p>It rises monotonically with <span class="arithmatex">\(\lambda\)</span>, and it must: <span class="arithmatex">\(\lambda = 0\)</span> is unconstrained least squares, which by definition achieves the lowest possible training error. Every positive <span class="arithmatex">\(\lambda\)</span> buys something else at the cost of fit. <strong>The training column can therefore never be used to choose <span class="arithmatex">\(\lambda\)</span></strong> — it would always answer 0.</p>
+<p><strong>Step 2 — read the validation column</strong></p>
+<p><span class="arithmatex">\(6.8 \to 5.1 \to 3.9 \to 4.4 \to 9.6\)</span>. It falls, reaches a minimum at <span class="arithmatex">\(\lambda = 1\)</span>, and rises again. Choose <strong><span class="arithmatex">\(\lambda = 1\)</span></strong>.</p>
+<p><strong>Step 3 — what the U-shape means</strong></p>
+<p>Left of the minimum: training error low, validation error high — a wide gap, so <strong>overfitting</strong>, high variance. The penalty is too weak.</p>
+<p>Right of the minimum: both errors high together — <strong>underfitting</strong>, high bias. The penalty has crushed the coefficients and the model can no longer represent the data.</p>
+<p>The minimum is where <span class="arithmatex">\(\text{bias}^{2} +\)</span> variance is smallest. This U-shape is the bias–variance trade-off made visible, and you will see the same curve again for tree depth in Unit 4 and for <span class="arithmatex">\(k\)</span> in k-NN.</p>
+<p><strong>Step 4 — finish properly</strong></p>
+<p>Refit on training + validation together at <span class="arithmatex">\(\lambda = 1\)</span>, then report the error once on the untouched test set. The validation number 3.9 is not the final result — it was used to make a choice, so it is optimistic.</p>
+<p><strong>Answer.</strong> <span class="arithmatex">\(\lambda = 1\)</span>. Small <span class="arithmatex">\(\lambda\)</span> overfits, large <span class="arithmatex">\(\lambda\)</span> underfits, and only the validation curve can find the middle.</p>
+</div>
+<p>The first example diagnoses three models from their errors, the next two work through loss functions and <span class="arithmatex">\(R^{2}\)</span>, the fourth follows ridge and lasso in one variable, and the last uses cross-validation to choose between two models.</p>
+<div class="admonition example">
+<p class="admonition-title">Example 5.4: Underfit, good fit and overfit, from the numbers alone</p>
+<p><strong>Problem.</strong> Three models are fitted to the same five training points and then scored on five test points.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th><span class="arithmatex">\(x\)</span></th>
+<th>1</th>
+<th>2</th>
+<th>3</th>
+<th>4</th>
+<th>5</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>train</td>
+<td><span class="arithmatex">\(y\)</span></td>
+<td>3</td>
+<td>5</td>
+<td>6</td>
+<td>9</td>
+<td>11</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th></th>
+<th><span class="arithmatex">\(x\)</span></th>
+<th>1.5</th>
+<th>2.5</th>
+<th>3.5</th>
+<th>4.5</th>
+<th>6</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>test</td>
+<td><span class="arithmatex">\(y\)</span></td>
+<td>4.0</td>
+<td>6.0</td>
+<td>7.5</td>
+<td>10.0</td>
+<td>13.5</td>
+</tr>
+</tbody>
+</table>
+<p>Model A: <span class="arithmatex">\(\hat{y} = 6.8\)</span>. Model B: <span class="arithmatex">\(\hat{y} = 2x + 0.8\)</span>. Model C: <span class="arithmatex">\(\hat{y} = -0.25x^{4} + 3x^{3} - 12.25x^{2} + 21.5x - 9\)</span>. Compute the training and test MSE of each model, and classify each as underfitting, a good fit or overfitting.</p>
+<p><strong>Step 1 — training errors</strong></p>
+<table>
+<thead>
+<tr>
+<th><span class="arithmatex">\(x\)</span></th>
+<th><span class="arithmatex">\(y\)</span></th>
+<th>A: <span class="arithmatex">\(\hat{y}\)</span></th>
+<th><span class="arithmatex">\(e^{2}\)</span></th>
+<th>B: <span class="arithmatex">\(\hat{y}\)</span></th>
+<th><span class="arithmatex">\(e^{2}\)</span></th>
+<th>C: <span class="arithmatex">\(\hat{y}\)</span></th>
+<th><span class="arithmatex">\(e^{2}\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>3</td>
+<td>6.8</td>
+<td>14.44</td>
+<td>2.8</td>
+<td>0.04</td>
+<td>3</td>
+<td>0</td>
+</tr>
+<tr>
+<td>2</td>
+<td>5</td>
+<td>6.8</td>
+<td>3.24</td>
+<td>4.8</td>
+<td>0.04</td>
+<td>5</td>
+<td>0</td>
+</tr>
+<tr>
+<td>3</td>
+<td>6</td>
+<td>6.8</td>
+<td>0.64</td>
+<td>6.8</td>
+<td>0.64</td>
+<td>6</td>
+<td>0</td>
+</tr>
+<tr>
+<td>4</td>
+<td>9</td>
+<td>6.8</td>
+<td>4.84</td>
+<td>8.8</td>
+<td>0.04</td>
+<td>9</td>
+<td>0</td>
+</tr>
+<tr>
+<td>5</td>
+<td>11</td>
+<td>6.8</td>
+<td>17.64</td>
+<td>10.8</td>
+<td>0.04</td>
+<td>11</td>
+<td>0</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(\sum\)</span></td>
+<td></td>
+<td></td>
+<td>40.80</td>
+<td></td>
+<td>0.80</td>
+<td></td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<p>Training MSE: A <span class="arithmatex">\(= 40.8/5 = 8.16\)</span>; B <span class="arithmatex">\(= 0.8/5 = 0.16\)</span>; C <span class="arithmatex">\(= 0\)</span>.</p>
+<p><strong>Step 2 — test errors</strong></p>
+<table>
+<thead>
+<tr>
+<th><span class="arithmatex">\(x\)</span></th>
+<th><span class="arithmatex">\(y\)</span></th>
+<th>A: <span class="arithmatex">\(\hat{y}\)</span></th>
+<th><span class="arithmatex">\(e^{2}\)</span></th>
+<th>B: <span class="arithmatex">\(\hat{y}\)</span></th>
+<th><span class="arithmatex">\(e^{2}\)</span></th>
+<th>C: <span class="arithmatex">\(\hat{y}\)</span></th>
+<th><span class="arithmatex">\(e^{2}\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1.5</td>
+<td>4.0</td>
+<td>6.8</td>
+<td>7.84</td>
+<td>3.8</td>
+<td>0.04</td>
+<td>4.5469</td>
+<td>0.2991</td>
+</tr>
+<tr>
+<td>2.5</td>
+<td>6.0</td>
+<td>6.8</td>
+<td>0.64</td>
+<td>5.8</td>
+<td>0.04</td>
+<td>5.2969</td>
+<td>0.4944</td>
+</tr>
+<tr>
+<td>3.5</td>
+<td>7.5</td>
+<td>6.8</td>
+<td>0.49</td>
+<td>7.8</td>
+<td>0.09</td>
+<td>7.2969</td>
+<td>0.0413</td>
+</tr>
+<tr>
+<td>4.5</td>
+<td>10.0</td>
+<td>6.8</td>
+<td>10.24</td>
+<td>9.8</td>
+<td>0.04</td>
+<td>10.5469</td>
+<td>0.2991</td>
+</tr>
+<tr>
+<td>6</td>
+<td>13.5</td>
+<td>6.8</td>
+<td>44.89</td>
+<td>12.8</td>
+<td>0.49</td>
+<td>3.0000</td>
+<td>110.2500</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(\sum\)</span></td>
+<td></td>
+<td></td>
+<td>64.10</td>
+<td></td>
+<td>0.70</td>
+<td></td>
+<td>111.3838</td>
+</tr>
+</tbody>
+</table>
+<p>Test MSE: A <span class="arithmatex">\(= 64.10/5 = 12.82\)</span>; B <span class="arithmatex">\(= 0.70/5 = 0.14\)</span>; C <span class="arithmatex">\(= 111.3838/5 = 22.28\)</span>.</p>
+<p><strong>Step 3 — put the six numbers side by side</strong></p>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th>Train MSE</th>
+<th>Test MSE</th>
+<th>Verdict</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>8.16</td>
+<td>12.82</td>
+<td>underfit: poor on both sets, high bias</td>
+</tr>
+<tr>
+<td>B</td>
+<td>0.16</td>
+<td>0.14</td>
+<td>good fit: low on both, no gap</td>
+</tr>
+<tr>
+<td>C</td>
+<td>0.00</td>
+<td>22.28</td>
+<td>overfit: perfect on training, poor on test, high variance</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Answer.</strong> A underfits, B is the good fit and the one to keep, C overfits.</p>
+<p><strong>Comment.</strong> Model A ignores <span class="arithmatex">\(x\)</span> altogether (6.8 is the mean of the training <span class="arithmatex">\(y\)</span>), so it cannot track the trend however much data it sees. Model C has five coefficients for five points and passes through every one of them; between the points it wobbles, and at <span class="arithmatex">\(x = 6\)</span>, outside the training range, it predicts 3.0 where the truth is 13.5. Notice that B's test error is even a little below its training error, which can happen by chance with five test points: the sign of a good fit is the <em>absence of a gap</em>, not a particular ordering. Model A's test <span class="arithmatex">\(R^{2}\)</span> is also instructive: the test points have mean 8.2 and <span class="arithmatex">\(\text{SS}_{\text{tot}} = 54.3\)</span>, so <span class="arithmatex">\(R^{2} = 1 - 64.1/54.3 = -0.18\)</span>, worse than predicting the mean of the test set; for B it is <span class="arithmatex">\(0.987\)</span>.</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title">Example 5.5: MSE, MAE and Huber loss, and what one outlier does</p>
+<p><strong>Problem.</strong> A model gives these predictions.</p>
+<table>
+<thead>
+<tr>
+<th><span class="arithmatex">\(y\)</span></th>
+<th>3</th>
+<th>5</th>
+<th>7</th>
+<th>9</th>
+<th>11</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="arithmatex">\(\hat{y}\)</span></td>
+<td>2.5</td>
+<td>5.5</td>
+<td>8.0</td>
+<td>8.5</td>
+<td>12.0</td>
+</tr>
+</tbody>
+</table>
+<p>Compute SSE, MSE, the cost <span class="arithmatex">\(J = (1/2m)\sum(\hat{y} - y)^{2}\)</span>, MAE and the mean Huber loss with <span class="arithmatex">\(\delta = 1\)</span>, where one point costs <span class="arithmatex">\(\frac{1}{2}e^{2}\)</span> if <span class="arithmatex">\(|e| \le \delta\)</span> and <span class="arithmatex">\(\delta(|e| - \frac{1}{2}\delta)\)</span> otherwise. Then change the last prediction from 12 to 16 and see which measure reacts most.</p>
+<p><strong>Step 1 — the errors</strong></p>
+<table>
+<thead>
+<tr>
+<th><span class="arithmatex">\(y\)</span></th>
+<th><span class="arithmatex">\(\hat{y}\)</span></th>
+<th><span class="arithmatex">\(e = \hat{y} - y\)</span></th>
+<th><span class="arithmatex">\(e^{2}\)</span></th>
+<th><span class="arithmatex">\(\|e\|\)</span></th>
+<th>Huber</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>3</td>
+<td>2.5</td>
+<td>−0.5</td>
+<td>0.25</td>
+<td>0.5</td>
+<td>0.125</td>
+</tr>
+<tr>
+<td>5</td>
+<td>5.5</td>
+<td>0.5</td>
+<td>0.25</td>
+<td>0.5</td>
+<td>0.125</td>
+</tr>
+<tr>
+<td>7</td>
+<td>8.0</td>
+<td>1.0</td>
+<td>1.00</td>
+<td>1.0</td>
+<td>0.500</td>
+</tr>
+<tr>
+<td>9</td>
+<td>8.5</td>
+<td>−0.5</td>
+<td>0.25</td>
+<td>0.5</td>
+<td>0.125</td>
+</tr>
+<tr>
+<td>11</td>
+<td>12.0</td>
+<td>1.0</td>
+<td>1.00</td>
+<td>1.0</td>
+<td>0.500</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(\sum\)</span></td>
+<td></td>
+<td></td>
+<td>2.75</td>
+<td>3.5</td>
+<td>1.375</td>
+</tr>
+</tbody>
+</table>
+<p>Every <span class="arithmatex">\(|e| \le 1\)</span>, so the quadratic branch <span class="arithmatex">\(\frac{1}{2}e^{2}\)</span> of the Huber loss applies to all five points.</p>
+<p><strong>Step 2 — the five measures</strong></p>
+<p><span class="arithmatex">\(\text{SSE} = 2.75, \quad \text{MSE} = 2.75/5 = 0.55, \quad J = 2.75/10 = 0.275\)</span></p>
+<p><span class="arithmatex">\(\text{MAE} = 3.5/5 = 0.70, \quad \text{mean Huber} = 1.375/5 = 0.275\)</span></p>
+<p><strong>Step 3 — the outlier</strong></p>
+<p>Now take <span class="arithmatex">\(\hat{y} = 16\)</span> for the last point, so its error is <span class="arithmatex">\(e = 5\)</span>. Its squared error is <span class="arithmatex">\(25\)</span>, its absolute error <span class="arithmatex">\(5\)</span>, and, since <span class="arithmatex">\(|e| &gt; 1\)</span>, its Huber loss is <span class="arithmatex">\(1 \cdot (5 - 0.5) = 4.5\)</span>. The other four points are unchanged.</p>
+<p><span class="arithmatex">\(\text{SSE} = 1.75 + 25 = 26.75, \quad \text{MSE} = 5.35, \quad J = 2.675\)</span></p>
+<p><span class="arithmatex">\(\text{MAE} = (2.5 + 5)/5 = 1.5, \quad \text{mean Huber} = (0.875 + 4.5)/5 = 1.075\)</span></p>
+<p><strong>Step 4 — compare the reactions</strong></p>
+<table>
+<thead>
+<tr>
+<th>Measure</th>
+<th>Before</th>
+<th>After</th>
+<th>Grows by a factor of</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MSE</td>
+<td>0.55</td>
+<td>5.35</td>
+<td>9.7</td>
+</tr>
+<tr>
+<td>Mean Huber (<span class="arithmatex">\(\delta = 1\)</span>)</td>
+<td>0.275</td>
+<td>1.075</td>
+<td>3.9</td>
+</tr>
+<tr>
+<td>MAE</td>
+<td>0.70</td>
+<td>1.50</td>
+<td>2.1</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Answer.</strong> SSE <span class="arithmatex">\(= 2.75\)</span>, MSE <span class="arithmatex">\(= 0.55\)</span>, <span class="arithmatex">\(J = 0.275\)</span>, MAE <span class="arithmatex">\(= 0.70\)</span>, mean Huber <span class="arithmatex">\(= 0.275\)</span>. MSE is the most sensitive to the outlier, MAE the least, and Huber lies between them.</p>
+<p><strong>Comment.</strong> After the change the one bad point accounts for <span class="arithmatex">\(25/26.75 = 93\%\)</span> of the squared error but only <span class="arithmatex">\(5/7.5 = 67\%\)</span> of the absolute error: squaring lets a single point dominate. Huber loss squares small errors, which keeps its gradient smooth near zero, and charges only linearly for large ones, so one wild point cannot take over the fit. That is why it is the usual compromise when the data may contain outliers. In the first part the mean Huber loss equals <span class="arithmatex">\(J\)</span> only because no error exceeded <span class="arithmatex">\(\delta\)</span>.</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title">Example 5.6: <span class="arithmatex">\(R^{2}\)</span>, and the adjusted <span class="arithmatex">\(R^{2}\)</span> that charges for extra features</p>
+<p><strong>Problem.</strong> Five test observations have actual values <span class="arithmatex">\(y = 10, 12, 15, 18, 20\)</span> and predictions <span class="arithmatex">\(\hat{y} = 11, 13, 14, 17, 21\)</span>. Compute MSE, RMSE and <span class="arithmatex">\(R^{2}\)</span> and interpret <span class="arithmatex">\(R^{2}\)</span>. Then, taking this model to have one feature, compute the adjusted <span class="arithmatex">\(R^{2}\)</span>.</p>
+<p><strong>Step 1 — residuals</strong></p>
+<p><span class="arithmatex">\(\bar{y} = 75/5 = 15\)</span></p>
+<table>
+<thead>
+<tr>
+<th><span class="arithmatex">\(y\)</span></th>
+<th><span class="arithmatex">\(\hat{y}\)</span></th>
+<th><span class="arithmatex">\(e = \hat{y} - y\)</span></th>
+<th><span class="arithmatex">\(e^{2}\)</span></th>
+<th><span class="arithmatex">\(y - \bar{y}\)</span></th>
+<th><span class="arithmatex">\((y-\bar{y})^{2}\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>10</td>
+<td>11</td>
+<td>1</td>
+<td>1</td>
+<td>−5</td>
+<td>25</td>
+</tr>
+<tr>
+<td>12</td>
+<td>13</td>
+<td>1</td>
+<td>1</td>
+<td>−3</td>
+<td>9</td>
+</tr>
+<tr>
+<td>15</td>
+<td>14</td>
+<td>−1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>18</td>
+<td>17</td>
+<td>−1</td>
+<td>1</td>
+<td>3</td>
+<td>9</td>
+</tr>
+<tr>
+<td>20</td>
+<td>21</td>
+<td>1</td>
+<td>1</td>
+<td>5</td>
+<td>25</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(\sum\)</span></td>
+<td></td>
+<td></td>
+<td>5</td>
+<td>0</td>
+<td>68</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Step 2 — the three measures</strong></p>
+<p><span class="arithmatex">\(\text{MSE} = 5/5 = 1, \qquad \text{RMSE} = \sqrt{1} = 1, \qquad R^{2} = 1 - 5/68 = 63/68 = 0.9265\)</span></p>
+<p>RMSE <span class="arithmatex">\(= 1\)</span> is in the units of <span class="arithmatex">\(y\)</span>: the typical prediction is about one unit off, against values that run from 10 to 20. <span class="arithmatex">\(R^{2} = 0.9265\)</span> says the model removes 92.65% of the variation that predicting <span class="arithmatex">\(\bar{y}\)</span> would leave, so 7.35% is unexplained.</p>
+<p><strong>Step 3 — adjusted <span class="arithmatex">\(R^{2}\)</span></strong></p>
+<p>With <span class="arithmatex">\(m = 5\)</span> observations and <span class="arithmatex">\(n = 1\)</span> feature:</p>
+<p><span class="arithmatex">\(R^{2}_{\text{adj}} = 1 - (1 - R^{2})\dfrac{m - 1}{m - n - 1} = 1 - 0.0735 \times \dfrac{4}{3} = 1 - 0.0980 = 0.9020\)</span></p>
+<p><strong>Step 4 — what the charge does</strong></p>
+<p>Suppose a second feature were added that was worthless and nudged <span class="arithmatex">\(R^{2}\)</span> up to <span class="arithmatex">\(0.93\)</span>. Now <span class="arithmatex">\(n = 2\)</span> and <span class="arithmatex">\((m - 1)/(m - n - 1) = 4/2 = 2\)</span>, so <span class="arithmatex">\(R^{2}_{\text{adj}} = 1 - 0.07 \times 2 = 0.86\)</span>. The adjusted figure <em>falls</em> from <span class="arithmatex">\(0.902\)</span> to <span class="arithmatex">\(0.86\)</span> even though <span class="arithmatex">\(R^{2}\)</span> rose, which says the feature did not earn its place.</p>
+<p><strong>Answer.</strong> MSE <span class="arithmatex">\(= 1\)</span>, RMSE <span class="arithmatex">\(= 1\)</span>, <span class="arithmatex">\(R^{2} = 0.9265\)</span>, <span class="arithmatex">\(R^{2}_{\text{adj}} = 0.902\)</span>.</p>
+<p><strong>Comment.</strong> The charge is heavy here only because <span class="arithmatex">\(m\)</span> is tiny: the factor <span class="arithmatex">\((m-1)/(m-n-1)\)</span> is <span class="arithmatex">\(2\)</span> for <span class="arithmatex">\(m = 5, n = 2\)</span> but about <span class="arithmatex">\(1.02\)</span> for <span class="arithmatex">\(m = 100, n = 2\)</span>. With few rows every extra feature is expensive, which is the correct warning.</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title">Example 5.7: Ridge shrinks, lasso switches off</p>
+<p><strong>Problem.</strong> The model <span class="arithmatex">\(y = wx\)</span> (no intercept) is fitted to the data below with a penalty on <span class="arithmatex">\(w\)</span>.</p>
+<table>
+<thead>
+<tr>
+<th><span class="arithmatex">\(x\)</span></th>
+<th>1</th>
+<th>2</th>
+<th>3</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="arithmatex">\(y\)</span></td>
+<td>2</td>
+<td>4</td>
+<td>7</td>
+</tr>
+</tbody>
+</table>
+<p>(a) With the ridge cost <span class="arithmatex">\(\sum(y - wx)^{2} + \lambda w^{2}\)</span> find <span class="arithmatex">\(w\)</span> for <span class="arithmatex">\(\lambda = 0, 2, 10, 100\)</span>. (b) Do the same for the lasso cost <span class="arithmatex">\(\sum(y - wx)^{2} + \lambda|w|\)</span>. (c) For a trained model with <span class="arithmatex">\(w = (2, -3, 0.5, 0)\)</span> and residual sum of squares <span class="arithmatex">\(20\)</span>, compute both penalised costs at <span class="arithmatex">\(\lambda = 2\)</span>.</p>
+<p><strong>Step 1 — the two sums</strong></p>
+<p><span class="arithmatex">\(\sum xy = 2 + 8 + 21 = 31, \qquad \sum x^{2} = 1 + 4 + 9 = 14\)</span></p>
+<p><strong>Step 2 — (a) ridge</strong></p>
+<p>Differentiate the ridge cost: <span class="arithmatex">\(-2\sum x(y - wx) + 2\lambda w = 0\)</span>, so <span class="arithmatex">\((\sum x^{2} + \lambda)w = \sum xy\)</span> and</p>
+<p><span class="arithmatex">\(w = \dfrac{31}{14 + \lambda}\)</span></p>
+<p><strong>Step 3 — (b) lasso</strong></p>
+<p>For <span class="arithmatex">\(w &gt; 0\)</span> the derivative of the lasso cost is <span class="arithmatex">\(-2(31 - 14w) + \lambda\)</span>, which is zero at <span class="arithmatex">\(w = (31 - \lambda/2)/14\)</span>. That is positive only while <span class="arithmatex">\(\lambda/2 &lt; 31\)</span>, that is <span class="arithmatex">\(\lambda &lt; 62\)</span>; for larger <span class="arithmatex">\(\lambda\)</span> the penalty's pull is stronger than the data's push even at <span class="arithmatex">\(w = 0\)</span>, and the minimum sits exactly at <span class="arithmatex">\(w = 0\)</span>.</p>
+<p><strong>Step 4 — the table</strong></p>
+<table>
+<thead>
+<tr>
+<th><span class="arithmatex">\(\lambda\)</span></th>
+<th>ridge <span class="arithmatex">\(w\)</span></th>
+<th>lasso <span class="arithmatex">\(w\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td><span class="arithmatex">\(31/14 = 2.2143\)</span></td>
+<td><span class="arithmatex">\(31/14 = 2.2143\)</span></td>
+</tr>
+<tr>
+<td>2</td>
+<td><span class="arithmatex">\(31/16 = 1.9375\)</span></td>
+<td><span class="arithmatex">\(30/14 = 2.1429\)</span></td>
+</tr>
+<tr>
+<td>10</td>
+<td><span class="arithmatex">\(31/24 = 1.2917\)</span></td>
+<td><span class="arithmatex">\(26/14 = 1.8571\)</span></td>
+</tr>
+<tr>
+<td>100</td>
+<td><span class="arithmatex">\(31/114 = 0.2719\)</span></td>
+<td><span class="arithmatex">\(0\)</span></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Step 5 — (c) the penalised costs</strong></p>
+<p><span class="arithmatex">\(\sum w_{j}^{2} = 4 + 9 + 0.25 + 0 = 13.25\)</span>, so ridge <span class="arithmatex">\(J = 20 + 2(13.25) = 46.5\)</span>.</p>
+<p><span class="arithmatex">\(\sum |w_{j}| = 2 + 3 + 0.5 + 0 = 5.5\)</span>, so lasso <span class="arithmatex">\(J = 20 + 2(5.5) = 31.0\)</span>.</p>
+<p><strong>Answer.</strong> Ridge: <span class="arithmatex">\(w = 2.2143, 1.9375, 1.2917, 0.2719\)</span>. Lasso: <span class="arithmatex">\(w = 2.2143, 2.1429, 1.8571, 0\)</span>. Penalised costs: ridge <span class="arithmatex">\(46.5\)</span>, lasso <span class="arithmatex">\(31.0\)</span>. Only the lasso penalty produces an exact zero.</p>
+<p><strong>Comment.</strong> Compare the denominators. The ridge denominator <span class="arithmatex">\(14 + \lambda\)</span> grows with <span class="arithmatex">\(\lambda\)</span> but never makes <span class="arithmatex">\(w\)</span> zero; it shrinks the estimate by a proportional factor, <span class="arithmatex">\(14/(14 + \lambda)\)</span>. The lasso takes a fixed amount, <span class="arithmatex">\(\lambda/28\)</span>, off the estimate regardless of its size, so a small coefficient is pushed all the way to zero. Equivalently, the ridge penalty's gradient <span class="arithmatex">\(2\lambda w\)</span> vanishes as <span class="arithmatex">\(w \to 0\)</span> while the lasso's, of size <span class="arithmatex">\(\lambda\)</span>, does not. Both estimates also confirm that raising <span class="arithmatex">\(\lambda\)</span> trades bias for variance: the fit to the training data gets worse at every step down the table.</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title">Example 5.8: Leave-one-out cross-validation chooses between a line and a constant</p>
+<p><strong>Problem.</strong> The five points <span class="arithmatex">\((1, 2), (2, 4), (3, 5), (4, 4), (5, 5)\)</span> are to be described either by a constant (predict the mean of <span class="arithmatex">\(y\)</span>) or by a least-squares line. Use leave-one-out cross-validation to decide which model to prefer.</p>
+<p><strong>Step 1 — the procedure</strong></p>
+<p>Leave-one-out is <span class="arithmatex">\(k\)</span>-fold with <span class="arithmatex">\(k = m = 5\)</span>. In round <span class="arithmatex">\(i\)</span>, remove point <span class="arithmatex">\(i\)</span>, fit <em>both</em> models to the other four points, predict the removed point, and record the squared error. The score is the mean over the five rounds.</p>
+<p><strong>Step 2 — the five rounds</strong></p>
+<table>
+<thead>
+<tr>
+<th>Left out</th>
+<th>Constant <span class="arithmatex">\(=\)</span> mean of other four</th>
+<th>Squared error</th>
+<th>Line fitted to other four</th>
+<th>Prediction</th>
+<th>Squared error</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="arithmatex">\((1, 2)\)</span></td>
+<td>4.50</td>
+<td>6.2500</td>
+<td><span class="arithmatex">\(3.8 + 0.2x\)</span></td>
+<td>4.0000</td>
+<td>4.0000</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\((2, 4)\)</span></td>
+<td>4.00</td>
+<td>0.0000</td>
+<td><span class="arithmatex">\(1.7714 + 0.6857x\)</span></td>
+<td>3.1429</td>
+<td>0.7347</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\((3, 5)\)</span></td>
+<td>3.75</td>
+<td>1.5625</td>
+<td><span class="arithmatex">\(1.95 + 0.6x\)</span></td>
+<td>3.7500</td>
+<td>1.5625</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\((4, 4)\)</span></td>
+<td>4.00</td>
+<td>0.0000</td>
+<td><span class="arithmatex">\(2.1143 + 0.6857x\)</span></td>
+<td>4.8571</td>
+<td>0.7347</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\((5, 5)\)</span></td>
+<td>3.75</td>
+<td>1.5625</td>
+<td><span class="arithmatex">\(2.0 + 0.7x\)</span></td>
+<td>5.5000</td>
+<td>0.2500</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(\sum\)</span></td>
+<td></td>
+<td>9.3750</td>
+<td></td>
+<td></td>
+<td>7.2819</td>
+</tr>
+</tbody>
+</table>
+<p>For example, leaving out <span class="arithmatex">\((1, 2)\)</span> leaves <span class="arithmatex">\((2, 4), (3, 5), (4, 4), (5, 5)\)</span> with <span class="arithmatex">\(\bar{x} = 3.5, \bar{y} = 4.5\)</span>, <span class="arithmatex">\(\sum(x-\bar{x})(y-\bar{y}) = 1.0\)</span> and <span class="arithmatex">\(\sum(x-\bar{x})^{2} = 5\)</span>, so the slope is <span class="arithmatex">\(0.2\)</span> and the intercept <span class="arithmatex">\(4.5 - 0.7 = 3.8\)</span>.</p>
+<p><strong>Step 3 — the cross-validated errors</strong></p>
+<p><span class="arithmatex">\(\text{CV}_{\text{constant}} = 9.375/5 = 1.875, \qquad \text{CV}_{\text{line}} = 7.2819/5 = 1.4564\)</span></p>
+<p><strong>Answer.</strong> Prefer the line: its leave-one-out MSE is <span class="arithmatex">\(1.456\)</span> against <span class="arithmatex">\(1.875\)</span> for the constant.</p>
+<p><strong>Comment.</strong> Compare these with the errors on the training data, which are <span class="arithmatex">\(1.2\)</span> for the constant (the variance of <span class="arithmatex">\(y\)</span>) and <span class="arithmatex">\(0.48\)</span> for the line. The honest error of the line is about three times its training error (<span class="arithmatex">\(1.456\)</span> against <span class="arithmatex">\(0.48\)</span>), and the training errors would have exaggerated the line's advantage as <span class="arithmatex">\(2.5\)</span> to <span class="arithmatex">\(1\)</span> where the cross-validated ratio is only <span class="arithmatex">\(1.3\)</span> to <span class="arithmatex">\(1\)</span>. This is the reason a model, a degree or a <span class="arithmatex">\(\lambda\)</span> is always chosen on held-out scores, never on training scores. The same recipe, with a column of polynomial features or a value of <span class="arithmatex">\(\lambda\)</span> in place of "constant" and "line", is how the degree and the penalty strength are selected in practice.</p>
+</div>
+<h2 id="58-common-mistakes-to-avoid">5.8 Common mistakes to avoid<a class="headerlink" href="#58-common-mistakes-to-avoid" title="Permanent link">&para;</a></h2>
+<p>Each of the following is a mistake that costs marks in an examination or accuracy in practice.</p>
+<ul>
+<li>Do not penalise the intercept.</li>
+<li>Do not regularise without standardising first.</li>
+<li>Do not choose <span class="arithmatex">\(\lambda\)</span>, or the polynomial degree, by looking at training error. It always prefers the most flexible model.</li>
+<li>Do not report <span class="arithmatex">\(R^{2}\)</span> without saying which set it was computed on, and do not use it to compare models with different numbers of features — that is what adjusted <span class="arithmatex">\(R^{2}\)</span> is for.</li>
+</ul>
+<h2 id="59-summary">5.9 Summary<a class="headerlink" href="#59-summary" title="Permanent link">&para;</a></h2>
+<p>After working through this chapter you should be able to do the following.</p>
+<ul>
+<li>Build polynomial features, watch the training error fall while the test error turns round, and explain overfitting as a relationship between capacity, data and noise rather than a property of a model.</li>
+<li>Decompose expected error into <span class="arithmatex">\(\text{bias}^{2}\)</span>, variance and noise, read a learning curve to tell which one dominates, and know that more data cures one and not the other.</li>
+<li>Apply ridge and lasso, explain from the geometry of a circle and a diamond why only one of them yields exact zeros, and choose <span class="arithmatex">\(\lambda\)</span> by cross-validation with the test set still sealed.</li>
+<li>Compute MSE, RMSE, <span class="arithmatex">\(\text{MAE}, R^{2}\)</span>, adjusted <span class="arithmatex">\(R^{2}\)</span> and MAPE, argue for one from what a mistake costs, and read a residual plot for the structure the model missed.</li>
+</ul>
+<h2 id="510-exercises">5.10 Exercises<a class="headerlink" href="#510-exercises" title="Permanent link">&para;</a></h2>
+<ol>
+<li>
+<p>Actual 10, 20, 30, 40; predicted 12, 18, 33, 37. Compute MSE, RMSE, MAE and <span class="arithmatex">\(R^{2}\)</span>.</p>
+<details class="note">
+<summary>Answer</summary>
+<p>The errors <span class="arithmatex">\(y - \hat{y}\)</span> are <span class="arithmatex">\(-2, 2, -3, 3\)</span>, so <span class="arithmatex">\(\text{SS}_{\text{res}} = 4 + 4 + 9 + 9 = 26\)</span> and <span class="arithmatex">\(\sum|e| = 10\)</span>. <span class="arithmatex">\(\text{MSE} = 26/4 = 6.5\)</span>; <span class="arithmatex">\(\text{RMSE} = \sqrt{6.5} = 2.550\)</span>; <span class="arithmatex">\(\text{MAE} = 10/4 = 2.5\)</span>. With <span class="arithmatex">\(\bar{y} = 25\)</span>, <span class="arithmatex">\(\text{SS}_{\text{tot}} = 225 + 25 + 25 + 225 = 500\)</span>, so <span class="arithmatex">\(R^{2} = 1 - 26/500 = 0.948\)</span>.</p>
+</details>
+</li>
+<li>
+<p>Adding a column of random numbers raises <span class="arithmatex">\(R^{2}\)</span> from 0.800 to 0.802 on a model with <span class="arithmatex">\(m = 100\)</span>, <span class="arithmatex">\(n\)</span> going from 5 to 6. Compute both adjusted <span class="arithmatex">\(R^{2}\)</span> values and say which model you prefer. Then say roughly how large a rise in <span class="arithmatex">\(R^{2}\)</span> a <em>useless</em> feature can be expected to buy, and check that 0.002 is about that size.</p>
+<details class="note">
+<summary>Answer</summary>
+<p><span class="arithmatex">\(R^{2}_{\text{adj}} = 1 - (1 - R^{2})(m-1)/(m-n-1)\)</span>. For <span class="arithmatex">\(n = 5\)</span>: <span class="arithmatex">\(1 - 0.200 \times 99/94 = 0.7894\)</span>. For <span class="arithmatex">\(n = 6\)</span>: <span class="arithmatex">\(1 - 0.198 \times 99/93 = 0.7892\)</span>. Adjusted <span class="arithmatex">\(R^{2}\)</span> falls, so keep the smaller model. Setting the two adjusted values equal gives the break-even rise <span class="arithmatex">\(R^{2}_{\text{new}} - R^{2}_{\text{old}} = (1 - R^{2}_{\text{old}})/(m - n - 1)\)</span>, and this is also about what a feature of pure noise buys on average. Here it is <span class="arithmatex">\(0.200/94 = 0.0021\)</span>, and the actual rise of <span class="arithmatex">\(0.002\)</span> is a little below it: the new feature is no better than noise.</p>
+</details>
+</li>
+<li>
+<p>A model has training MSE 0.9 and test MSE 8.4. Name the problem and give three distinct remedies.</p>
+<details class="note">
+<summary>Answer</summary>
+<p>Overfitting (high variance): the test error is nine times the training error, and the <em>gap</em> is the symptom. Remedies, any three: collect more training data; remove features or lower the polynomial degree or tree depth; add or strengthen regularisation (raise <span class="arithmatex">\(\lambda\)</span> for ridge or lasso); stop training earlier; prune a tree. Whichever is chosen, select it by validation or cross-validation, not by training error. More data helps this problem; for the opposite problem (high bias) it would not.</p>
+</details>
+</li>
+<li>
+<p>Explain, using the shape of the L1 and L2 penalty regions, why lasso produces exact zeros and ridge does not.</p>
+<details class="note">
+<summary>Answer</summary>
+<p>Regularised least squares minimises the data-fit term while keeping the coefficients inside a budget region: <span class="arithmatex">\(|\theta_{1}| + |\theta_{2}| \le t\)</span> for the L1 penalty and <span class="arithmatex">\(\theta_{1}^{2} + \theta_{2}^{2} \le t\)</span> for the L2 penalty. The solution is where the elliptical contours of the fit first touch the region. The L2 region is a circle, smooth everywhere, so contours arriving from a general direction touch it at a point where neither coordinate is zero. The L1 region is a diamond with its corners <em>on the axes</em>, and contours arriving from a general direction touch a corner first; at a corner one coordinate is exactly zero. In higher dimensions the diamond has corners and edges lying in the coordinate subspaces, so several coefficients can be zero together. The same fact appears in the gradients: the ridge penalty's gradient <span class="arithmatex">\(2\lambda\theta_{j}\)</span> shrinks to zero as <span class="arithmatex">\(\theta_{j} \to 0\)</span>, so the pull weakens and <span class="arithmatex">\(\theta_{j}\)</span> glides towards zero without reaching it, while the lasso penalty pulls with constant force <span class="arithmatex">\(\lambda\)</span> however small <span class="arithmatex">\(\theta_{j}\)</span> is.</p>
+</details>
+</li>
+<li>
+<p>You are predicting delivery time in minutes and a late delivery is far worse than an early one. Which metric would you optimise, and why is neither RMSE nor MAE quite right?</p>
+<details class="note">
+<summary>Answer</summary>
+<p>RMSE and MAE are both symmetric: an error of <span class="arithmatex">\(+10\)</span> minutes costs exactly the same as <span class="arithmatex">\(-10\)</span>, which is not what the business wants. What is needed is an <strong>asymmetric loss</strong>, one that charges more for under-predicting the time than for over-predicting it. For example, with <span class="arithmatex">\(e = y - \hat{y}\)</span>, charge <span class="arithmatex">\(c_{\text{late}} \cdot e\)</span> when <span class="arithmatex">\(e &gt; 0\)</span> (the delivery took longer than predicted) and <span class="arithmatex">\(c_{\text{early}} \cdot |e|\)</span> otherwise, with <span class="arithmatex">\(c_{\text{late}} &gt; c_{\text{early}}\)</span>, say 3 to 1. This is a weighted absolute error, the pinball or quantile loss, and minimising it makes the model predict a high quantile of the delivery time rather than the average, which is exactly a cautious estimate. Squared-error training and RMSE would aim at the mean, which is late about half the time. It is also sensible to report the fraction of deliveries that were late.</p>
+</details>
+</li>
+<li>
+<p>Decide in each case what to report and what the figures suggest. (a) A colleague fits a degree-15 polynomial and boasts of <span class="arithmatex">\(R^{2} = 0.999\)</span> on the training data; what should make you sceptical, and what would you ask to see? (b) Model A has <span class="arithmatex">\(R^{2} = 0.30\)</span> on test data. Model B has <span class="arithmatex">\(R^{2} = 0.95\)</span> on the training data but <span class="arithmatex">\(0.40\)</span> on the test data. (c) Two share-price models have <span class="arithmatex">\(R^{2} = 0.67\)</span> (X) and <span class="arithmatex">\(0.97\)</span> (Y).</p>
+<details class="note">
+<summary>Answer</summary>
+<p>(a) A near-perfect training <span class="arithmatex">\(R^{2}\)</span> is the signature of overfitting: with 16 coefficients the curve can chase the noise. Training <span class="arithmatex">\(R^{2}\)</span> can never fall as features or degrees are added, so it cannot be evidence of generalisation. Ask for the <span class="arithmatex">\(R^{2}\)</span> (or RMSE) on a held-out test set or from cross-validation. (b) Report the test figures, because they estimate performance on new data: A <span class="arithmatex">\(= 0.30\)</span>, B <span class="arithmatex">\(= 0.40\)</span>. B explains 95% of the training variance but 40% of the test variance; the large gap signals overfitting, which regularisation, fewer features or more data should address. A is modest but honest, with no gap. (c) Y fits better <em>if both figures are computed on the same data and the same target</em>, but that is not enough to prefer it. If they are training figures, Y may simply be the more flexible model, and adjusted or held-out <span class="arithmatex">\(R^{2}\)</span> is the fair comparison. And a very high <span class="arithmatex">\(R^{2}\)</span> for share prices should itself prompt a check for leakage, for example a feature that already contains tomorrow's price.</p>
+</details>
+</li>
+<li>
+<p>A student standardises all the features using the mean and standard deviation of the entire dataset, then splits into training and test sets, fits a lasso, and reports an excellent test <span class="arithmatex">\(R^{2}\)</span>. Identify the methodological error, its consequence, and the correct procedure.</p>
+<details class="note">
+<summary>Answer</summary>
+<p>The error is <strong>data leakage</strong>: the scaling parameters were computed using the test rows, so information about the test set has already reached the training stage. The consequence is a test score that is optimistically biased and does not represent performance on genuinely unseen data. The correct procedure is to split first, fit the scaler (and any other learned preprocessing step) on the training part only, transform the test part with those training values, and fit the lasso on the scaled training data. In cross-validation the scaler must be refitted inside every fold; putting the scaler and the model in one <code>Pipeline</code> guarantees that.</p>
+</details>
+</li>
+<li>
+<p>A model predicts <span class="arithmatex">\(\hat{y} = (2, 4, 5, 8)\)</span> for actual <span class="arithmatex">\(y = (3, 4, 6, 7)\)</span>. Compute MSE, RMSE, MAE and <span class="arithmatex">\(R^{2}\)</span>, showing <span class="arithmatex">\(\text{SS}_{\text{res}}\)</span> and <span class="arithmatex">\(\text{SS}_{\text{tot}}\)</span>. Is RMSE above MAE, and what does that indicate?</p>
+<details class="note">
+<summary>Answer</summary>
+<p>The errors <span class="arithmatex">\(y - \hat{y}\)</span> are <span class="arithmatex">\(1, 0, 1, -1\)</span>, so <span class="arithmatex">\(\text{SS}_{\text{res}} = 1 + 0 + 1 + 1 = 3\)</span> and <span class="arithmatex">\(\sum|e| = 3\)</span>. <span class="arithmatex">\(\text{MSE} = 3/4 = 0.75\)</span>, <span class="arithmatex">\(\text{RMSE} = \sqrt{0.75} = 0.866\)</span>, <span class="arithmatex">\(\text{MAE} = 3/4 = 0.75\)</span>. <span class="arithmatex">\(\bar{y} = 5\)</span>, so <span class="arithmatex">\(\text{SS}_{\text{tot}} = 4 + 1 + 1 + 4 = 10\)</span> and <span class="arithmatex">\(R^{2} = 1 - 3/10 = 0.70\)</span>. RMSE <span class="arithmatex">\(= 0.866\)</span> is above MAE <span class="arithmatex">\(= 0.75\)</span>, as it must be (RMSE is never below MAE). The gap is small because the nonzero errors are all the same size; it would be large if a few errors dominated.</p>
+</details>
+</li>
+<li>
+<p>In 5-fold cross-validation the validation MSE of the five folds is <span class="arithmatex">\(6, 8, 7, 9, 5\)</span>. What is the reported score, and what spread should accompany it? Give one advantage of <span class="arithmatex">\(k\)</span>-fold over a single train/test split, and explain how you would use it to choose <span class="arithmatex">\(\lambda\)</span> from the grid <span class="arithmatex">\(\{0.01, 0.1, 1, 10, 100\}\)</span>.</p>
+<details class="note">
+<summary>Answer</summary>
+<p>The score is the mean: <span class="arithmatex">\((6 + 8 + 7 + 9 + 5)/5 = 7\)</span>. The sample standard deviation is <span class="arithmatex">\(\sqrt{(1 + 1 + 0 + 4 + 4)/4} = \sqrt{2.5} = 1.58\)</span>, and a score is best reported as <span class="arithmatex">\(7.0 \pm 1.6\)</span>. The advantage: every row is used for both training and validation, and the average smooths out the luck of one particular split, so the estimate is more reliable and comes with a spread. To choose <span class="arithmatex">\(\lambda\)</span>: for each value in the grid run the five rounds (scaler and model inside each round), record the mean validation error, and pick the <span class="arithmatex">\(\lambda\)</span> with the lowest mean; then refit on all the training data at that <span class="arithmatex">\(\lambda\)</span> and score once on the untouched test set. The training error must not be used for the choice, since it always favours the smallest <span class="arithmatex">\(\lambda\)</span>.</p>
+</details>
+</li>
+<li>
+<p>A model for a student's exam score reports <span class="arithmatex">\(\text{MSE} = 36.0\)</span> and <span class="arithmatex">\(R^{2} = 0.82\)</span>. What is the variance of the scores, and what does the RMSE mean in marks? Why is <span class="arithmatex">\(R^{2}\)</span> useful as well as MSE?</p>
+<details class="note">
+<summary>Answer</summary>
+<p><span class="arithmatex">\(R^{2} = 1 - \text{MSE}/\text{Var}(y)\)</span> with the variance taken as <span class="arithmatex">\(\text{SS}_{\text{tot}}/m\)</span>, so <span class="arithmatex">\(\text{Var}(y) = 36/(1 - 0.82) = 200\)</span> and the standard deviation is <span class="arithmatex">\(\sqrt{200} = 14.1\)</span> marks. RMSE <span class="arithmatex">\(= \sqrt{36} = 6\)</span> marks: a typical prediction is about 6 marks out, against a natural spread of about 14 marks. <span class="arithmatex">\(R^{2}\)</span> puts the MSE on a unit-free scale by comparing it with what predicting the mean would give, so it tells you whether 36 is large or small: here the model removes 82% of the variance. It also allows comparison across targets with different units. Note that for two models fitted to the <em>same</em> data and target, <span class="arithmatex">\(R^{2}\)</span> and MSE rank the models identically, since <span class="arithmatex">\(R^{2}\)</span> is a decreasing function of MSE when the variance is fixed.</p>
+</details>
+</li>
+<li>
+<p>A degree-1 model has training error 40 and test error 42. A degree-12 model has training error 1 and test error 55. Classify each as underfit, overfit or good fit, name the bias or variance issue, and suggest one fix for each.</p>
+<details class="note">
+<summary>Answer</summary>
+<p>Degree 1: underfitting, high bias. Both errors are high and the gap is small (<span class="arithmatex">\(42 - 40 = 2\)</span>), so the model is too rigid for the data. Fix: add flexibility (raise the degree, add features or interaction terms) or reduce regularisation; more data alone would not help. Degree 12: overfitting, high variance. Training error is nearly zero but test error is 55 times larger. Fix: lower the degree, add a ridge or lasso penalty, or collect more data, choosing the degree or <span class="arithmatex">\(\lambda\)</span> by cross-validation.</p>
+</details>
+</li>
+<li>
+<p>Explain how polynomial regression fits a curve while remaining a linear model, and why the normal equation still applies. If a degree-2 polynomial is built from 3 original features <span class="arithmatex">\(x_{1}, x_{2}, x_{3}\)</span> (squares and all pairwise products included), how many feature columns are there, excluding the intercept?</p>
+<details class="note">
+<summary>Answer</summary>
+<p>"Linear" refers to the parameters. The model <span class="arithmatex">\(\theta_{0} + \theta_{1}x + \theta_{2}x^{2} + \theta_{3}x^{3}\)</span> is a weighted sum of the features <span class="arithmatex">\(x, x^{2}, x^{3}\)</span> with the weights <span class="arithmatex">\(\theta\)</span> entering linearly, so it is ordinary linear regression on three columns that happen to be powers of one variable. The design matrix has columns <span class="arithmatex">\(1, x, x^{2}, x^{3}\)</span> and <span class="arithmatex">\(\theta = (X^{T}X)^{-1}X^{T}y\)</span> holds without change, as does gradient descent. For three features the degree-2 terms are the three originals, the three squares and the three products <span class="arithmatex">\(x_{1}x_{2}, x_{1}x_{3}, x_{2}x_{3}\)</span>: <span class="arithmatex">\(3 + 3 + 3 = 9\)</span> columns (10 with the intercept). The count grows quickly with the number of features and the degree, and the columns have very different scales, so standardisation becomes essential.</p>
+</details>
+</li>
+<li>
+<p>What happens to the ridge solution as <span class="arithmatex">\(\lambda \to 0\)</span> and as <span class="arithmatex">\(\lambda \to \infty\)</span>? Why is <span class="arithmatex">\(X^{T}X + \lambda I\)</span> invertible for every <span class="arithmatex">\(\lambda &gt; 0\)</span> even when <span class="arithmatex">\(X^{T}X\)</span> is singular, and how does this help with highly correlated features? When would you prefer ridge to lasso?</p>
+<details class="note">
+<summary>Answer</summary>
+<p>As <span class="arithmatex">\(\lambda \to 0\)</span> the penalty vanishes and ridge becomes ordinary least squares. As <span class="arithmatex">\(\lambda \to \infty\)</span> every penalised coefficient is driven towards zero (never exactly to it for finite <span class="arithmatex">\(\lambda\)</span>) and the model predicts <span class="arithmatex">\(\bar{y}\)</span> for everything. <span class="arithmatex">\(X^{T}X\)</span> is symmetric with non-negative eigenvalues, and singular exactly when some eigenvalue is zero. Adding <span class="arithmatex">\(\lambda I\)</span> adds <span class="arithmatex">\(\lambda\)</span> to <em>every</em> eigenvalue, so all are at least <span class="arithmatex">\(\lambda &gt; 0\)</span> and the matrix can be inverted. For nearly collinear features the smallest eigenvalues of <span class="arithmatex">\(X^{T}X\)</span> are tiny, which makes its inverse huge and the coefficients unstable; adding <span class="arithmatex">\(\lambda\)</span> lifts them, so the weights are shrunk and shared between the correlated features and their variance falls. Prefer ridge when you believe most features each contribute a little and want to keep them all; prefer lasso when you believe most are irrelevant and want selection.</p>
+</details>
+</li>
+<li>
+<p>Design task. You must predict apartment rent from 40 features, many of them correlated and some irrelevant, using only 300 rows. Propose a pipeline: preprocessing, model, how to tune, how to avoid leakage, and which metrics to report.</p>
+<details class="note">
+<summary>Answer</summary>
+<p>One reasonable design. Hold out a test part (say 60 of the 300 rows) and do not touch it until the end. Preprocessing: one-hot encode categorical columns with <span class="arithmatex">\(c - 1\)</span> columns each, and standardise the numeric features; if the residuals show a funnel, model the logarithm of rent. Model: an elastic net. The correlated features argue against plain lasso, which would keep one of each correlated group arbitrarily; the irrelevant features argue against plain ridge, which keeps them all; elastic net groups the correlated features and still sets the useless coefficients to zero. Tuning: <span class="arithmatex">\(k\)</span>-fold cross-validation (5 or 10) on the 240 training rows over a grid of <span class="arithmatex">\(\lambda\)</span> and of the L1/L2 mix, choosing the setting with the lowest mean validation RMSE. Leakage: put the scaler and the model in a single <code>Pipeline</code> so the scaler is refitted inside every fold. Finish by refitting on all 240 training rows at the chosen setting and scoring once on the test rows. Report RMSE and MAE in rupees and <span class="arithmatex">\(R^{2}\)</span> on the test rows, with the cross-validation spread, and look at the residual plot for structure.</p>
+</details>
+</li>
+</ol>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="linear-regression-and-gradient-descent.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: 4. Linear Regression and Gradient Descent">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                4. Linear Regression and Gradient Descent
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="decision-trees.html" class="md-footer__link md-footer__link--next" aria-label="Next: 6. Decision Trees">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                6. Decision Trees
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      The Open Book Project &middot;
+      <a href="../../about.html">About this library</a> &middot;
+      © The authors of the books
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "navigation.prune", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "toc.follow", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+  
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../../assets/mathjax.js"></script>
+      
+        <script src="../../assets/viz.js"></script>
+      
+        <script src="../../assets/reader.js"></script>
+      
+        <script src="../../assets/app.js"></script>
+      
+    
+  <script>
+    /* offline reading: the service worker at the site root (its scope is the whole site) */
+    if ("serviceWorker" in navigator && window.isSecureContext) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register(new URL("../../sw.js", location.href).href).catch(function () {});
+      });
+    }
+  </script>
+
+  </body>
+</html>

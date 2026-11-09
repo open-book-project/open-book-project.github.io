@@ -1,0 +1,2116 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#ffffff">
+  
+    <meta name="description" content="The Open Book Project: books on computer science, quantum computing, cyber security, science, university courses and the English language, read page by page like an e-book, online or offline.">
+  
+  
+    <meta name="author" content="Nikhil Kumar Rajput, Ramanujan College, University of Delhi">
+  
+  
+    <link rel="canonical" href="https://open-book-project.github.io/courses/ml_course/clustering-and-k-means.html">
+  
+  
+    <link rel="prev" href="evaluating-classifiers.html">
+  
+  
+    <link rel="next" href="hierarchical-clustering-and-evaluating-clusters.html">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&family=Noto+Serif+Devanagari:wght@400;600;700&display=swap" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&family=Noto+Serif+Devanagari:wght@400;600;700&display=swap"></noscript>
+  <link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+  <link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Open Book">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="application-name" content="Open Book"><script id="bjp-books" type="application/json">[{"id": "hardware_security", "lang": "en", "path": "science/hardware_security"}, {"id": "drones_missiles", "lang": "en", "path": "science/drones_missiles"}, {"id": "code_to_electrons", "lang": "en", "path": "science/code_to_electrons"}, {"id": "dpi_ndr", "lang": "en", "path": "science/dpi_ndr"}, {"id": "quantum", "lang": "en", "path": "quantum/quantum"}, {"id": "qml", "lang": "en", "path": "quantum/qml"}, {"id": "qml_course", "lang": "en", "path": "quantum/qml_course"}, {"id": "asic", "lang": "en", "path": "computing/asic"}, {"id": "compute", "lang": "en", "path": "computing/compute"}, {"id": "memory", "lang": "en", "path": "computing/memory"}, {"id": "os", "lang": "en", "path": "computing/os"}, {"id": "databases", "lang": "en", "path": "computing/databases"}, {"id": "datacenters", "lang": "en", "path": "computing/datacenters"}, {"id": "networks", "lang": "en", "path": "computing/networks"}, {"id": "cellular", "lang": "en", "path": "computing/cellular"}, {"id": "ml", "lang": "en", "path": "computing/ml"}, {"id": "microarchitecture", "lang": "en", "path": "computing/microarchitecture"}, {"id": "rtl_hdl", "lang": "en", "path": "computing/rtl_hdl"}, {"id": "rtl_to_gdsii", "lang": "en", "path": "computing/rtl_to_gdsii"}, {"id": "ram_ddr5", "lang": "en", "path": "computing/ram_ddr5"}, {"id": "security", "lang": "en", "path": "cyber/security"}, {"id": "trust", "lang": "en", "path": "cyber/trust"}, {"id": "attack_taxonomy", "lang": "en", "path": "cyber/attack_taxonomy"}, {"id": "datacentre_security_ip", "lang": "en", "path": "cyber/datacentre_security_ip"}, {"id": "randomness_testing", "lang": "en", "path": "cyber/randomness_testing"}, {"id": "optimization_methods", "lang": "en", "path": "courses/optimization_methods"}, {"id": "quantum_computing_applications", "lang": "en", "path": "courses/quantum_computing_applications"}, {"id": "dbms_course", "lang": "en", "path": "courses/dbms_course"}, {"id": "csa_course", "lang": "en", "path": "courses/csa_course"}, {"id": "web_programming", "lang": "en", "path": "courses/web_programming"}, {"id": "ml_course", "lang": "en", "path": "courses/ml_course"}, {"id": "english_book", "lang": "en", "path": "language/english_book"}, {"id": "english_book_hinglish", "lang": "en", "path": "language/english_book_hinglish"}, {"id": "english_book_hi", "lang": "hi", "path": "language/english_book_hi"}]</script><script>
+    (function () {
+      var X = window.XMLHttpRequest, open, gate = new Promise(function (r) { open = r; });
+      if (!X) return;
+      var open0 = X.prototype.open, send0 = X.prototype.send;
+      X.prototype.open = function (method, url) {
+        this.__pkIndex = /\/search\/search_index\.json(\?|#|$)/.test(String(url));
+        return open0.apply(this, arguments);
+      };
+      X.prototype.send = function () {
+        if (!this.__pkIndex) return send0.apply(this, arguments);
+        var xhr = this, args = arguments;
+        gate.then(function () { send0.apply(xhr, args); });
+      };
+      function wake() { open(); }
+      document.addEventListener("focusin", function (e) { if (e.target && e.target.closest && e.target.closest(".md-search")) wake(); });
+      document.addEventListener("click", function (e) { if (e.target && e.target.closest && e.target.closest('label[for="__search"], .md-search')) wake(); }, true);
+      document.addEventListener("keydown", function (e) {
+        var k = e.key;
+        if ((k === "/" || k === "s" || k === "f" || k === "S" || k === "F") && !(e.target && e.target.closest && e.target.closest("input, textarea, [contenteditable]"))) wake();
+      }, true);
+      if (/[?&]q=/.test(location.search)) wake();
+    })();
+  </script><script>
+    try {
+      if ((window.matchMedia && (matchMedia("(display-mode: standalone)").matches || matchMedia("(display-mode: fullscreen)").matches)) || navigator.standalone === true) {
+        document.documentElement.className += " bjp-standalone";
+      }
+    } catch (e) { /* not an installed app */ }
+  </script>
+  <script>
+    /* a book opened from its cover on the shelf: the page stays blank, in the cover's colour, until the reader is up */
+    try {
+      var cv = sessionStorage.getItem("bjp.reader.cover");
+      if (cv && sessionStorage.getItem("bjp.reader.open") === "1") {
+        var c = JSON.parse(cv), de = document.documentElement;
+        de.className += " bjp-booting";
+        if (c && /^#[0-9a-f]{3,8}$/i.test(c.bg || "")) de.style.background = c.bg;
+        setTimeout(function () { de.classList.remove("bjp-booting"); de.style.background = ""; }, 3000);
+      }
+    } catch (e) { /* no session storage: the page simply opens as usual */ }
+  </script>
+
+    
+      
+        <title>13. Clustering and K-means - The Open Book Project</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/extra.css">
+    
+      <link rel="stylesheet" href="../../assets/reader.css">
+    
+      <link rel="stylesheet" href="../../assets/viz.css">
+    
+      <link rel="stylesheet" href="../../assets/app.css">
+    
+      <link rel="stylesheet" href="../../assets/theme.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#131-what-a-cluster-is-and-the-families-of-methods" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../index.html" title="The Open Book Project" class="md-header__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+      
+  <img src="../../assets/icons/logo.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            The Open Book Project
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              13. Clustering and K-means
+            
+          </span>
+        </div>
+      </div>
+    </div><a href="../../index.html" class="bjp-libbtn" aria-label="Library: all books" title="Library: all books">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V5h4v15M8 20V9h4v11M14 20L12.6 6l3.8-.8 3 14.2M3 20h18"/></svg><span>Library</span>
+    </a>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary bjp-nav bjp-nav--book" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../index.html" title="The Open Book Project" class="md-nav__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+      
+  <img src="../../assets/icons/logo.svg" alt="logo">
+
+    </a>
+    The Open Book Project
+  </label>
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      <li class="md-nav__item bjp-nav-all">
+        <a href="../../index.html" class="md-nav__link" aria-label="All books: back to the library">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+          <span class="md-ellipsis">All books</span>
+        </a>
+      </li>
+      <li class="md-nav__item bjp-nav-book" role="presentation"><span class="bjp-nav-head">Machine Learning</span></li>
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview and preface
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="preface.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Preface
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="introduction-learning-from-data.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. Introduction: Learning from Data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="preparing-the-data.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Preparing the Data: Scaling, Encoding, Outliers and Balance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="feature-selection-and-pca.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. Feature Selection and Principal Component Analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="linear-regression-and-gradient-descent.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. Linear Regression and Gradient Descent
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="overfitting-regularisation-and-regression-metrics.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Overfitting, Regularisation and Regression Metrics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="decision-trees.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. Decision Trees
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="naive-bayes.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    7. Naive Bayes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="logistic-regression-and-multi-class-classification.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    8. Logistic Regression and Multi-class Classification
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="k-nearest-neighbours.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    9. k-Nearest Neighbours
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="perceptrons-and-neural-networks.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    10. Perceptrons, Multilayer Networks and Back-propagation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="support-vector-machines.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    11. Support Vector Machines
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="evaluating-classifiers.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    12. Evaluating Classifiers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    13. Clustering and K-means
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="clustering-and-k-means.html" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    13. Clustering and K-means
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#131-what-a-cluster-is-and-the-families-of-methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.1 What a cluster is, and the families of methods
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#132-distance-and-similarity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.2 Distance and similarity
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#133-k-means" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.3 K-means
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#134-choosing-the-number-of-clusters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.4 Choosing the number of clusters
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#135-further-topics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.5 Further topics
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="13.5 Further topics">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#k-means-initialisation-in-detail" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        k-means++ initialisation in detail
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#convergence-criteria-and-cost" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Convergence criteria and cost
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#soft-clustering-and-mixture-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Soft clustering and mixture models
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#k-medoids" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        k-medoids
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#density-based-clustering-and-dbscan" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Density-based clustering and DBSCAN
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#136-worked-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.6 Worked examples
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#137-common-mistakes-to-avoid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.7 Common mistakes to avoid
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#138-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.8 Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#139-exercises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.9 Exercises
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="hierarchical-clustering-and-evaluating-clusters.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    14. Hierarchical Clustering and Evaluating Clusters
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="formula-sheet.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Formula Sheet and Notation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="glossary.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="further-reading.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Further Reading and Syllabus Map
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#131-what-a-cluster-is-and-the-families-of-methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.1 What a cluster is, and the families of methods
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#132-distance-and-similarity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.2 Distance and similarity
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#133-k-means" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.3 K-means
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#134-choosing-the-number-of-clusters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.4 Choosing the number of clusters
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#135-further-topics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.5 Further topics
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="13.5 Further topics">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#k-means-initialisation-in-detail" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        k-means++ initialisation in detail
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#convergence-criteria-and-cost" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Convergence criteria and cost
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#soft-clustering-and-mixture-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Soft clustering and mixture models
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#k-medoids" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        k-medoids
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#density-based-clustering-and-dbscan" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Density-based clustering and DBSCAN
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#136-worked-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.6 Worked examples
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#137-common-mistakes-to-avoid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.7 Common mistakes to avoid
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#138-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.8 Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#139-exercises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.9 Exercises
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="chapter-13-clustering-and-k-means">Chapter 13: Clustering and K-means<a class="headerlink" href="#chapter-13-clustering-and-k-means" title="Permanent link">&para;</a></h1>
+<p>Hand somebody a pile of a thousand photographs of animals with no captions and ask them to sort it into groups. They will do it, and they will not need to be told what the groups are — but the groups they produce depend entirely on what they decided “similar” meant. Sort by species and you get one arrangement. Sort by colour, or by whether the photograph was taken indoors, and you get others. None of them is wrong.</p>
+<p>That is clustering, and it is why this unit feels different from everything before it. In Units 3 and 4 there was a right answer and the only question was how close you got. Here <strong>you supply the definition of similarity</strong> — the distance metric, the scaling, the number of clusters — and the algorithm then finds the best arrangement under <em>your</em> definition. The output is a hypothesis about the data, to be judged by whether it is useful, not by whether it is correct.</p>
+<p>Which means the choices you make before running anything — what to standardise, which distance, how many clusters — are not preliminaries. They are the model.</p>
+<div class="admonition abstract">
+<p class="admonition-title">Learning outcomes of Unit 5</p>
+<ul>
+<li>Explain what clustering is trying to achieve — high similarity within clusters, low similarity between them — and place any method in the <strong>partitional / hierarchical / density</strong> and <strong>hard / soft</strong> schemes.</li>
+<li>Compute <strong>Euclidean, Manhattan, Chebyshev, Minkowski</strong> and <strong>cosine</strong> measures, and choose between them from the shape of the data.</li>
+<li>Run <strong>k-means</strong> by hand, prove to yourself that it must terminate, and name each of its five failure modes with its remedy.</li>
+<li>Choose <span class="arithmatex">\(k\)</span> with the <strong>elbow method</strong> and the <strong>silhouette coefficient</strong>, and say why WCSS alone can never do it.</li>
+<li>Build an <strong>agglomerative</strong> clustering under single, complete and average linkage, read a <strong>dendrogram</strong>, and cut it to get a clustering.</li>
+<li>Evaluate a clustering with internal and external measures, and explain why evaluation here is genuinely harder than in Units 3 and 4.</li>
+</ul>
+</div>
+<h2 id="131-what-a-cluster-is-and-the-families-of-methods">13.1 What a cluster is, and the families of methods<a class="headerlink" href="#131-what-a-cluster-is-and-the-families-of-methods" title="Permanent link">&para;</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Definition: The clustering objective</p>
+<p>Partition the data so that <strong>intra-cluster similarity is high</strong> — points in the same cluster are close together — and <strong>inter-cluster similarity is low</strong> — points in different clusters are far apart. Every algorithm below is a different way of making that trade concrete.</p>
+</div>
+<table>
+<thead>
+<tr>
+<th>Partitional</th>
+<th>Hierarchical</th>
+<th>Density-based</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>One flat split into <span class="arithmatex">\(k\)</span> groups</td>
+<td>A nested tree of clusterings</td>
+<td>Clusters are dense regions separated by sparse ones</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(k\)</span> must be given in advance</td>
+<td><span class="arithmatex">\(k\)</span> is chosen afterwards, by cutting the tree</td>
+<td><span class="arithmatex">\(k\)</span> is never given; the algorithm decides</td>
+</tr>
+<tr>
+<td><strong>k-means</strong>, k-medoids</td>
+<td>Agglomerative (bottom-up) or divisive (top-down)</td>
+<td><strong>DBSCAN</strong>, OPTICS</td>
+</tr>
+<tr>
+<td>Fast: roughly <span class="arithmatex">\(O(\text{mkni})\)</span> per run</td>
+<td>Slow: <span class="arithmatex">\(O(m^{3})\)</span> naïvely, <span class="arithmatex">\(O(m^{2}\)</span> log <span class="arithmatex">\(m\)</span>) with care</td>
+<td>Finds arbitrary shapes — crescents, rings, spirals</td>
+</tr>
+<tr>
+<td>Finds convex, similar-sized blobs</td>
+<td>Shape depends entirely on the linkage</td>
+<td>Labels sparse points as noise, which the others cannot</td>
+</tr>
+<tr>
+<td>Restarting can give a different answer</td>
+<td>Deterministic — the same data gives the same tree</td>
+<td>Needs two parameters: <span class="arithmatex">\(\varepsilon\)</span> and minPts</td>
+</tr>
+</tbody>
+</table>
+<p>There is a second, independent axis. <strong>Hard</strong> clustering assigns each point to exactly one cluster. <strong>Soft</strong> or <strong>fuzzy</strong> clustering gives each point a degree of membership in every cluster. Gaussian mixture models are the standard example, and they are the natural choice when the groups genuinely overlap.</p>
+<h2 id="132-distance-and-similarity">13.2 Distance and similarity<a class="headerlink" href="#132-distance-and-similarity" title="Permanent link">&para;</a></h2>
+<p>“Similar” has to become arithmetic before an algorithm can use it. Every measure below is a different answer to the same question, and the answer changes the clustering.</p>
+<div class="admonition note">
+<p class="admonition-title">Definition: The Minkowski family</p>
+<p><span class="arithmatex">\(d_{p}(a, b) =\)</span> ( <span class="arithmatex">\(\sum |a_{i} - b_{i}|^{p} )^{1/p}\)</span></p>
+<p><span class="arithmatex">\(p = 1\)</span> is <strong>Manhattan</strong> (city-block), <span class="arithmatex">\(p = 2\)</span> is <strong>Euclidean</strong>, and <span class="arithmatex">\(p \to \infty\)</span> gives <strong>Chebyshev</strong>, the largest single coordinate difference.</p>
+</div>
+<figure class="fig fig-diagram">
+<img src="img/distances.png" alt="Two points A and B and three distances between them: Euclidean (the straight line), Manhattan (the staircase along the axes) and Chebyshev (the single longest coordinate gap)." loading="lazy" width="1582" height="931">
+<figcaption><strong>Figure 13.1.</strong> Two points A and B and three distances between them: Euclidean (the straight line), Manhattan (the staircase along the axes) and Chebyshev (the single longest coordinate gap).</figcaption>
+</figure>
+
+<p>Always <span class="arithmatex">\(d_{\infty } \le d_{2} \le d_{1}\)</span> — a useful check on any hand calculation.</p>
+<table>
+<thead>
+<tr>
+<th>Measure</th>
+<th>Use it for</th>
+<th>Because</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Euclidean</td>
+<td>the default; k-means is built on it</td>
+<td>ordinary geometry, and the mean minimises it</td>
+</tr>
+<tr>
+<td>Manhattan</td>
+<td>grid-like movement; robustness to one wild coordinate</td>
+<td>no squaring, so one large difference does not dominate</td>
+</tr>
+<tr>
+<td>Cosine</td>
+<td>text, and any high-dimensional sparse count data</td>
+<td>measures direction, not magnitude — a long and a short document about the same topic count as similar</td>
+</tr>
+<tr>
+<td>Jaccard</td>
+<td>sets: baskets, tags, binary presence</td>
+<td><span class="arithmatex">\(\|A\cap B\|/\|A\cup B\|\)</span> — shared items over total items</td>
+</tr>
+<tr>
+<td>Hamming</td>
+<td>strings and categorical vectors</td>
+<td>counts positions that differ</td>
+</tr>
+<tr>
+<td>Mahalanobis</td>
+<td>correlated features with different spreads</td>
+<td>divides by the covariance, so it measures distance in standard deviations</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition warning">
+<p class="admonition-title">Scale first, always</p>
+<p>Squared distance sums over features, so a feature measured in rupees swamps one measured in years and the clustering is effectively on income alone. Standardising is not a refinement here — without it you are not clustering the data you think you are clustering. The one exception is when every feature is already in the same unit and the differences in spread are themselves meaningful.</p>
+</div>
+<h2 id="133-k-means">13.3 K-means<a class="headerlink" href="#133-k-means" title="Permanent link">&para;</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Definition: Lloyd's algorithm</p>
+<ol>
+<li>Choose <span class="arithmatex">\(k\)</span> initial centroids.  </li>
+<li><strong>Assign</strong>: attach every point to its nearest centroid.  </li>
+<li><strong>Update</strong>: move each centroid to the mean of the points attached to it.  </li>
+<li>Repeat 2–3 until no assignment changes.</li>
+</ol>
+<p>It minimises the <strong>within-cluster sum of squares</strong>: <span class="arithmatex">\(\text{WCSS} = \sum _{j} \sum _{x \in C_{j}} \Vert x - \mu _{j}\Vert ^{2}\)</span>.</p>
+</div>
+<figure class="fig fig-diagram">
+<img src="img/kmeans-steps.png" alt="K-means in four frames. (a) Three centroids are placed. (b) Every point takes the colour of its nearest centroid. (c) Each centroid moves to the mean of its points. (d) The two moves are repeated until nothing changes." loading="lazy" width="1815" height="604">
+<figcaption><strong>Figure 13.2.</strong> K-means in four frames. (a) Three centroids are placed. (b) Every point takes the colour of its nearest centroid. (c) Each centroid moves to the mean of its points. (d) The two moves are repeated until nothing changes.</figcaption>
+</figure>
+
+<div class="admonition tip">
+<p class="admonition-title">Why it always terminates</p>
+<p>Both half-steps can only lower WCSS. Assignment moves each point to a nearer centroid or leaves it. Update moves each centroid to the mean — and the mean is exactly the point that minimises the sum of squared distances to a set, which is why k-means uses the mean rather than, say, the median. So WCSS never increases; and since there are only finitely many ways to partition <span class="arithmatex">\(m\)</span> points into <span class="arithmatex">\(k\)</span> groups, a quantity that never increases must eventually stop changing. <strong>Convergence is guaranteed. Convergence to the <em>best</em> partition is not.</strong></p>
+</div>
+<table>
+<thead>
+<tr>
+<th>Failure</th>
+<th>What you see</th>
+<th>Remedy</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Local optimum</td>
+<td>different clusters each run</td>
+<td>many restarts, keep the lowest WCSS; <strong>k-means++</strong> initialisation</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(k\)</span> must be guessed</td>
+<td>no principled default</td>
+<td>elbow, silhouette, or domain knowledge</td>
+</tr>
+<tr>
+<td>Non-convex shapes</td>
+<td>crescents and rings sliced in half</td>
+<td>DBSCAN, spectral clustering, single-linkage hierarchical</td>
+</tr>
+<tr>
+<td>Unequal sizes or densities</td>
+<td>a big loose cluster is split; small tight ones merged</td>
+<td>Gaussian mixtures, or accept it</td>
+</tr>
+<tr>
+<td>Outliers</td>
+<td>a cluster containing one point</td>
+<td>remove outliers first, or use <strong>k-medoids</strong>, whose centres are real data points</td>
+</tr>
+<tr>
+<td>Unscaled features</td>
+<td>the clustering follows one feature</td>
+<td>standardise before clustering</td>
+</tr>
+</tbody>
+</table>
+<p><strong>k-means++</strong> deserves a sentence of its own, because it is what every library now does by default. Rather than choosing the initial centroids uniformly at random, it picks the first at random and then chooses each subsequent one with probability proportional to its squared distance from the nearest centroid already chosen. The centroids therefore start spread out, which both reduces the chance of a poor local optimum and typically halves the number of iterations needed.</p>
+<div class="admonition example">
+<p class="admonition-title">Example 13.1: Why the centroid is the mean, and why k-means must stop</p>
+<p><strong>Problem.</strong> The update step moves each centroid to the mean of its members. Why the mean and not, say, the median — and why does that choice guarantee the algorithm terminates?</p>
+<p><strong>Step 1 — what the update step is really solving</strong></p>
+<p>Hold the assignment fixed. For one cluster <span class="arithmatex">\(C\)</span> with members <span class="arithmatex">\(x\)</span>, the contribution to the objective is</p>
+<p><span class="arithmatex">\(f(c) = \sum _{x \in C} \Vert x - c\Vert ^{2}\)</span></p>
+<p>and we are free to choose <span class="arithmatex">\(c\)</span>. It is a smooth function of <span class="arithmatex">\(c\)</span> and a sum of squares, so it has a minimum where its gradient vanishes.</p>
+<p><strong>Step 2 — differentiate</strong></p>
+<p><span class="arithmatex">\(\nabla _{c} \Vert x - c\Vert ^{2} =\)</span> −2(x <span class="arithmatex">\(- c\)</span>), so</p>
+<p><span class="arithmatex">\(\nabla f(c) = -2 \sum _{x \in C} (x - c) = 0\)</span></p>
+<p>Split the sum, using <span class="arithmatex">\(\sum c =\)</span> |C|·c:</p>
+<p><strong><span class="arithmatex">\(c = (1/|C|) \sum _{x \in C}\)</span> x</strong> — the mean, and nothing else. It is a minimum because the second derivative is <span class="arithmatex">\(2|C| &gt; 0\)</span>.</p>
+<p><strong>Step 3 — why this makes the algorithm stop</strong></p>
+<p>Write <span class="arithmatex">\(W\)</span> for the within-cluster sum of squares. Each half-step can only lower it.</p>
+<p><strong>Assignment.</strong> Every point moves to a centroid at least as close as its current one, so no term of <span class="arithmatex">\(W\)</span> increases.</p>
+<p><strong>Update.</strong> By step 2 the mean is the minimiser of that cluster's term, so replacing the old centroid by the mean cannot increase it either.</p>
+<p><strong>Step 4 — finish the argument</strong></p>
+<p><span class="arithmatex">\(W\)</span> never increases, and there are only finitely many ways to partition <span class="arithmatex">\(m\)</span> points into <span class="arithmatex">\(k\)</span> groups — at most <span class="arithmatex">\(k^{m}\)</span>. A sequence that never increases and can take only finitely many values must eventually stop changing. Hence <strong>k-means always converges, in finitely many iterations</strong>.</p>
+<p><strong>Answer.</strong> <span class="arithmatex">\(c =\)</span> the mean of the cluster; <span class="arithmatex">\(W\)</span> is non-increasing at every half-step over finitely many partitions, so the algorithm terminates</p>
+<p><strong>Comment.</strong> Notice what the proof does <em>not</em> say: nothing here promises that the partition it stops at is the best one. It promises a local optimum, reached from wherever the centroids started — which is exactly why you restart k-means and keep the run with the lowest <span class="arithmatex">\(W\)</span>. Change the objective to <span class="arithmatex">\(\sum \Vert x - c\Vert\)</span> (absolute, not squared) and step 2 returns the <em>median</em> instead: that is k-medians, and it resists outliers for the same reason MAE does.</p>
+</div>
+<div class="language-python highlight"><pre><span></span><code><span class="c1"># k-means, the elbow and the silhouette in one pass</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.cluster</span><span class="w"> </span><span class="kn">import</span> <span class="n">KMeans</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">silhouette_score</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.preprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">StandardScaler</span>
+
+<span class="n">Xs</span> <span class="o">=</span> <span class="n">StandardScaler</span><span class="p">()</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>     <span class="c1"># never skip this before a distance</span>
+
+<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">9</span><span class="p">):</span>
+    <span class="n">km</span> <span class="o">=</span> <span class="n">KMeans</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">n_init</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">Xs</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">km</span><span class="o">.</span><span class="n">inertia_</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>                 <span class="c1"># inertia IS the WCSS</span>
+          <span class="nb">round</span><span class="p">(</span><span class="n">silhouette_score</span><span class="p">(</span><span class="n">Xs</span><span class="p">,</span> <span class="n">km</span><span class="o">.</span><span class="n">labels_</span><span class="p">),</span> <span class="mi">3</span><span class="p">))</span>
+
+<span class="n">km</span> <span class="o">=</span> <span class="n">KMeans</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">n_init</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">Xs</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">km</span><span class="o">.</span><span class="n">cluster_centers_</span><span class="p">)</span>      <span class="c1"># in scaled units — inverse_transform to read them</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">km</span><span class="o">.</span><span class="n">n_iter_</span><span class="p">)</span>              <span class="c1"># how many assign/update rounds it took</span>
+</code></pre></div>
+<p><code>n_init=10</code> is the restart defence from the failure table: ten runs from different k-means++ starts, keeping the lowest inertia. Set it to 1 and the result becomes a lottery.</p>
+<p>And the same algorithm written out — the two half-steps are two lines.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="c1"># Lloyd's algorithm from scratch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">kmeans</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">iters</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+    <span class="n">C</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">rng</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">X</span><span class="p">),</span> <span class="n">k</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">)]</span>         <span class="c1"># initial centroids</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">iters</span><span class="p">):</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="p">((</span><span class="n">X</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">,</span> <span class="p">:]</span> <span class="o">-</span> <span class="n">C</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:])</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>   <span class="c1"># squared distances (m, k)</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>                         <span class="c1"># ASSIGN — no square roots needed</span>
+        <span class="n">newC</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">X</span><span class="p">[</span><span class="n">labels</span> <span class="o">==</span> <span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>        <span class="c1"># UPDATE — the mean, from the proof</span>
+                         <span class="k">if</span> <span class="p">(</span><span class="n">labels</span> <span class="o">==</span> <span class="n">j</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">()</span> <span class="k">else</span> <span class="n">C</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+                         <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">k</span><span class="p">)])</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">newC</span><span class="p">,</span> <span class="n">C</span><span class="p">):</span> <span class="k">break</span>                     <span class="c1"># nothing moved: converged</span>
+        <span class="n">C</span> <span class="o">=</span> <span class="n">newC</span>
+    <span class="n">wcss</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">X</span><span class="p">)),</span> <span class="n">labels</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">C</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">wcss</span>
+</code></pre></div>
+<h2 id="134-choosing-the-number-of-clusters">13.4 Choosing the number of clusters<a class="headerlink" href="#134-choosing-the-number-of-clusters" title="Permanent link">&para;</a></h2>
+<figure class="fig fig-diagram">
+<img src="img/elbow.png" alt="Within-cluster sum of squares against k. WCSS falls at every k and is zero at k = m, so the lowest value is useless; the elbow, the last k that buys a large drop (here k = 3), is what to look for." loading="lazy" width="1584" height="811">
+<figcaption><strong>Figure 13.3.</strong> Within-cluster sum of squares against k. WCSS falls at every k and is zero at k = m, so the lowest value is useless; the elbow, the last k that buys a large drop (here k = 3), is what to look for.</figcaption>
+</figure>
+
+<div class="admonition note">
+<p class="admonition-title">Definition: The silhouette coefficient</p>
+<p>For a point, let a be its mean distance to the other members of its own cluster and <span class="arithmatex">\(b\)</span> its mean distance to the members of the nearest other cluster. Then</p>
+<p><span class="arithmatex">\(s = (b - a) / \max(a\)</span>, b)</p>
+<p><span class="arithmatex">\(s\)</span> near <strong>+1</strong>: comfortably inside its cluster. <span class="arithmatex">\(s\)</span> near <strong>0</strong>: on a border. <span class="arithmatex">\(s\)</span> <strong>negative</strong>: closer to another cluster than its own — probably misassigned. The average <span class="arithmatex">\(s\)</span> over all points scores the whole clustering.</p>
+</div>
+<p>Unlike WCSS, the average silhouette has a genuine maximum over <span class="arithmatex">\(k\)</span>, so it can be optimised directly rather than eyeballed. It also gives per-point diagnostics: a cluster whose points mostly have low silhouettes is one you should look at again.</p>
+<div class="admonition note">
+<p class="admonition-title">Other ways to fix <span class="arithmatex">\(k\)</span>, in rough order of how often they are right</p>
+<p><strong>Domain knowledge</strong> — the marketing team wants four segments because they have four campaigns, and no statistic overrules that. <strong>The elbow.</strong> <strong>The silhouette.</strong> The <strong>gap statistic</strong>, which compares your WCSS against what uniformly random data of the same extent would give. Or <strong>hierarchical clustering</strong>, which produces every <span class="arithmatex">\(k\)</span> at once and lets you decide by looking.</p>
+</div>
+<h2 id="135-further-topics">13.5 Further topics<a class="headerlink" href="#135-further-topics" title="Permanent link">&para;</a></h2>
+<h3 id="k-means-initialisation-in-detail">k-means++ initialisation in detail<a class="headerlink" href="#k-means-initialisation-in-detail" title="Permanent link">&para;</a></h3>
+<p>The random start is the weak point of Lloyd's algorithm, since two initial centroids can fall inside one natural group and leave another group with none. k-means++ repairs this by choosing the starting centroids one at a time, in proportion to how badly each point is currently served.</p>
+<ol>
+<li>Choose the first centroid uniformly at random from the data.</li>
+<li>For every point <span class="arithmatex">\(x\)</span> let <span class="arithmatex">\(D(x)\)</span> be the distance to the nearest centroid chosen so far.</li>
+<li>Choose the next centroid from the data points, with <span class="arithmatex">\(P(x) = D(x)^{2} \Big/ \sum_{x'} D(x')^{2}\)</span>.</li>
+<li>Repeat steps 2 and 3 until <span class="arithmatex">\(k\)</span> centroids are chosen, then run Lloyd's algorithm as usual.</li>
+</ol>
+<p>A point already at a centroid has <span class="arithmatex">\(D = 0\)</span> and so can never be chosen again, and a point far from every centroid has a large share of the probability. Squaring makes the preference sharp: a point twice as far away is four times as likely to be picked. The seeding is still random, so it does not remove the need for restarts, but it is a far better random start. Its expected WCSS is provably within a factor that grows only logarithmically with <span class="arithmatex">\(k\)</span> of the best possible, and in practice it also saves iterations because the centroids begin near where they will end.</p>
+<h3 id="convergence-criteria-and-cost">Convergence criteria and cost<a class="headerlink" href="#convergence-criteria-and-cost" title="Permanent link">&para;</a></h3>
+<p>"Repeat until nothing changes" is the mathematical stopping rule, and implementations add two practical ones: stop when the centroids move by less than a small tolerance, and stop after a fixed maximum number of iterations. Both exist for the same reason, that on large data the last few iterations move a handful of borderline points and improve the WCSS by almost nothing.</p>
+<p>The cost of one iteration is <span class="arithmatex">\(O(mkn)\)</span> for <span class="arithmatex">\(m\)</span> points, <span class="arithmatex">\(k\)</span> centroids and <span class="arithmatex">\(n\)</span> features, since every point is compared with every centroid, so a run of <span class="arithmatex">\(i\)</span> iterations costs <span class="arithmatex">\(O(mkni)\)</span>. This is linear in the number of points, which is why k-means is the method that scales to millions of rows. It is also coordinate descent: the algorithm alternates between improving the assignments with the centroids fixed and improving the centroids with the assignments fixed, as gradient descent improved one parameter at a time in Unit 3, and like it can only promise a local minimum.</p>
+<h3 id="soft-clustering-and-mixture-models">Soft clustering and mixture models<a class="headerlink" href="#soft-clustering-and-mixture-models" title="Permanent link">&para;</a></h3>
+<p>In hard clustering every point belongs to exactly one cluster. A <strong>soft</strong> clustering gives each point a <strong>membership</strong> in every cluster, and the memberships of a point add up to 1. A point lying between two groups is then described as, say, 82% in one and 18% in the other, which is more honest than forcing a choice.</p>
+<p>The standard soft method is the <strong>Gaussian mixture model</strong>. Each cluster is a normal distribution with its own mean, and the membership of a point, called its <strong>responsibility</strong>, is the probability that the point came from that component. With two components of equal spread <span class="arithmatex">\(\sigma\)</span> and equal weight, centred at <span class="arithmatex">\(\mu_{1}\)</span> and <span class="arithmatex">\(\mu_{2}\)</span>, the responsibility of the first is</p>
+<div class="arithmatex">\[r_{1}(x) = \frac{e^{-(x-\mu_{1})^{2}/2\sigma^{2}}}{e^{-(x-\mu_{1})^{2}/2\sigma^{2}} + e^{-(x-\mu_{2})^{2}/2\sigma^{2}}} = \frac{1}{1 + e^{-\left[(x-\mu_{2})^{2} - (x-\mu_{1})^{2}\right]/2\sigma^{2}}}\]</div>
+<p>which is a logistic curve in the difference of the two squared distances. With <span class="arithmatex">\(\mu_{1} = 2\)</span>, <span class="arithmatex">\(\mu_{2} = 8\)</span> and <span class="arithmatex">\(\sigma = 2\)</span>:</p>
+<table>
+<thead>
+<tr>
+<th><span class="arithmatex">\(x\)</span></th>
+<th>2</th>
+<th>3</th>
+<th>4</th>
+<th>5</th>
+<th>6</th>
+<th>7</th>
+<th>8</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="arithmatex">\(r_{1}(x)\)</span></td>
+<td>0.989</td>
+<td>0.953</td>
+<td>0.818</td>
+<td>0.500</td>
+<td>0.182</td>
+<td>0.047</td>
+<td>0.011</td>
+</tr>
+</tbody>
+</table>
+<p>The point <span class="arithmatex">\(x = 5\)</span>, midway between the centres, is exactly 50% in each; the point <span class="arithmatex">\(x = 4\)</span> is 82% in the first. The fitting procedure is the <strong>EM algorithm</strong>, and it has the same two-half-step shape as k-means. The E-step computes the responsibilities with the current parameters; the M-step recomputes each mean (and spread and weight) as a responsibility-weighted average of the data. K-means is the hard limit of this procedure: shrink <span class="arithmatex">\(\sigma\)</span> towards zero and the logistic curve becomes a step, so every responsibility is 0 or 1 and the weighted mean becomes the ordinary mean of the points assigned. Mixtures also allow elliptical clusters of different sizes, which is how they escape the equal-size, round-cluster assumption of k-means. Fuzzy c-means is another soft method, with memberships defined by distance rather than by a probability model.</p>
+<h3 id="k-medoids">k-medoids<a class="headerlink" href="#k-medoids" title="Permanent link">&para;</a></h3>
+<p>K-means needs a mean, and a mean exists only for numeric features and is dragged by outliers. <strong>k-medoids</strong> keeps the same assign-and-update structure but restricts each cluster centre to be one of the data points, the <strong>medoid</strong>: the member with the smallest total dissimilarity to the others in its cluster. The classical algorithm (PAM, partitioning around medoids) picks <span class="arithmatex">\(k\)</span> medoids, assigns each point to its nearest, and then tries swapping each medoid with a non-medoid, keeping a swap whenever it lowers the total dissimilarity. For the cluster <span class="arithmatex">\(\{1, 2, 3, 4, 100\}\)</span> the mean is <span class="arithmatex">\(22\)</span>, which is not close to anything, while the medoid is <span class="arithmatex">\(3\)</span> (total distance <span class="arithmatex">\(101\)</span>, against <span class="arithmatex">\(102\)</span> for <span class="arithmatex">\(2\)</span> and <span class="arithmatex">\(4\)</span>). Because only pairwise dissimilarities are used, k-medoids works with any distance, including those for categorical data, and it is the robust choice when outliers cannot be removed. The price is speed: the swap search is much more expensive than computing means, so it is used on modest data sizes.</p>
+<h3 id="density-based-clustering-and-dbscan">Density-based clustering and DBSCAN<a class="headerlink" href="#density-based-clustering-and-dbscan" title="Permanent link">&para;</a></h3>
+<p>K-means and the linkage methods describe a cluster by its centre or its diameter. A <strong>density-based</strong> method instead calls a cluster a region where points are packed densely, separated from other clusters by sparse regions. <strong>DBSCAN</strong> has two parameters, a radius <span class="arithmatex">\(\varepsilon\)</span> and a count minPts, and sorts points into three kinds:</p>
+<ul>
+<li>a <strong>core</strong> point has at least minPts points (itself included) within distance <span class="arithmatex">\(\varepsilon\)</span>;</li>
+<li>a <strong>border</strong> point is not core but lies within <span class="arithmatex">\(\varepsilon\)</span> of a core point;</li>
+<li>every other point is <strong>noise</strong>.</li>
+</ul>
+<p>A cluster is a maximal set of core points that can be reached from one another through chains of neighbouring core points, plus the border points attached to them. Take the points <span class="arithmatex">\(1, 2, 3, 4, 10, 11, 12, 25\)</span> with <span class="arithmatex">\(\varepsilon = 1.5\)</span> and minPts <span class="arithmatex">\(= 3\)</span>. The points 2, 3 and 11 each have three points within 1.5, so they are core. The points 1 and 4 are within reach of core point 2 or 3, and 10 and 12 of core point 11, so they are border points. The point 25 has no neighbours and is noise. The result is the clusters <span class="arithmatex">\(\{1, 2, 3, 4\}\)</span> and <span class="arithmatex">\(\{10, 11, 12\}\)</span> with 25 labelled as an outlier, and nobody had to say that there were two clusters.</p>
+<figure class="fig fig-diagram">
+<img src="img/kmeans-vs-dbscan-moons.png" alt="The same 200 points arranged as two interlocking crescents. (a) K-means with k = 2 cuts both crescents with a straight line and mixes them. (b) DBSCAN follows each crescent and recovers them exactly." loading="lazy" width="1530" height="680">
+<figcaption><strong>Figure 13.4.</strong> The same 200 points arranged as two interlocking crescents. (a) K-means with k = 2 cuts both crescents with a straight line and mixes them. (b) DBSCAN follows each crescent and recovers them exactly.</figcaption>
+</figure>
+
+<p>DBSCAN is the standard answer to the shapes k-means cannot represent. It finds clusters of any shape, labels outliers instead of absorbing them, and needs no <span class="arithmatex">\(k\)</span>. Its weaknesses are that the result is sensitive to <span class="arithmatex">\(\varepsilon\)</span> and minPts, which must be chosen to suit the data, and that one pair of values cannot suit clusters of very different densities. It is covered here only as context, as the contrast to the partitional methods.</p>
+<h2 id="136-worked-examples">13.6 Worked examples<a class="headerlink" href="#136-worked-examples" title="Permanent link">&para;</a></h2>
+<p>The examples below work through the calculations of this chapter in full. Try each one on paper before reading the steps.</p>
+<div class="admonition example">
+<p class="admonition-title">Example 13.2: Two full iterations of k-means</p>
+<p><strong>Problem.</strong> Points <span class="arithmatex">\(A(1,1), B(1.5,2), C(3,4), D(5,7), E(3.5,5), F(4.5,5), G(3.5,4.5)\)</span>. Initial centroids <span class="arithmatex">\(\mu _{1} = A = (1,1)\)</span> and <span class="arithmatex">\(\mu _{2} = D = (5,7)\)</span>. Run two iterations.</p>
+<p><strong>Iteration 1, assignment — compare squared distances</strong></p>
+<table>
+<thead>
+<tr>
+<th>point</th>
+<th><span class="arithmatex">\(d^{2}\)</span> to (1,1)</th>
+<th><span class="arithmatex">\(d^{2}\)</span> to (5,7)</th>
+<th>cluster</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A (1,1)</td>
+<td>0</td>
+<td><span class="arithmatex">\(16+36 = 52\)</span></td>
+<td>1</td>
+</tr>
+<tr>
+<td>B (1.5,2)</td>
+<td><span class="arithmatex">\(0.25+1 = 1.25\)</span></td>
+<td><span class="arithmatex">\(12.25+25 = 37.25\)</span></td>
+<td>1</td>
+</tr>
+<tr>
+<td>C (3,4)</td>
+<td><span class="arithmatex">\(4+9 = 13\)</span></td>
+<td><span class="arithmatex">\(4+9 = 13\)</span></td>
+<td>tie <span class="arithmatex">\(\to 1\)</span></td>
+</tr>
+<tr>
+<td>D (5,7)</td>
+<td><span class="arithmatex">\(16+36 = 52\)</span></td>
+<td>0</td>
+<td>2</td>
+</tr>
+<tr>
+<td>E (3.5,5)</td>
+<td><span class="arithmatex">\(6.25+16 = 22.25\)</span></td>
+<td><span class="arithmatex">\(2.25+4 = 6.25\)</span></td>
+<td>2</td>
+</tr>
+<tr>
+<td>F (4.5,5)</td>
+<td><span class="arithmatex">\(12.25+16 = 28.25\)</span></td>
+<td><span class="arithmatex">\(0.25+4 = 4.25\)</span></td>
+<td>2</td>
+</tr>
+<tr>
+<td>G (3.5,4.5)</td>
+<td><span class="arithmatex">\(6.25+12.25 = 18.5\)</span></td>
+<td><span class="arithmatex">\(2.25+6.25 = 8.5\)</span></td>
+<td>2</td>
+</tr>
+</tbody>
+</table>
+<p>No square roots are needed: comparing <span class="arithmatex">\(d^{2}\)</span> gives the same winner, and the arithmetic stays exact. <span class="arithmatex">\(C\)</span> is equidistant; ties are broken by taking the lower index.</p>
+<p><strong>Iteration 1, update</strong></p>
+<p>Cluster <span class="arithmatex">\(1 =\)</span> {A, B, C}: <span class="arithmatex">\(\mu _{1} = ((1+1.5+3)/3, (1+2+4)/3) = (5.5/3, 7/3) = (1.833, 2.333)\)</span></p>
+<p>Cluster <span class="arithmatex">\(2 =\)</span> {D, E, F, G}: <span class="arithmatex">\(\mu _{2} = ((5+3.5+4.5+3.5)/4, (7+5+5+4.5)/4) = (16.5/4, 21.5/4) = (4.125, 5.375)\)</span></p>
+<p><strong>Iteration 2, assignment</strong></p>
+<p><span class="arithmatex">\(A: d^{2}\)</span> to <span class="arithmatex">\(\mu _{1} = 0.694+1.777 = 2.47\)</span>; to <span class="arithmatex">\(\mu _{2} = 9.77+19.14 = 28.9 \to\)</span> cluster 1</p>
+<p>B: <span class="arithmatex">\(0.111+0.111 = 0.22\)</span> vs <span class="arithmatex">\(6.89+11.39 = 18.3 \to\)</span> cluster 1</p>
+<p>C: <span class="arithmatex">\(1.361+2.777 = 4.14\)</span> vs <span class="arithmatex">\(1.266+1.891 = 3.16 \to\)</span> <strong>cluster 2</strong> (it has changed sides)</p>
+<p>D: <span class="arithmatex">\(10.03+21.78 = 31.8\)</span> vs <span class="arithmatex">\(0.766+2.64 = 3.41 \to\)</span> cluster 2</p>
+<p>E, F, G: all clearly nearer <span class="arithmatex">\(\mu _{2} \to\)</span> cluster 2</p>
+<p><strong>Iteration 2, update</strong></p>
+<p>Cluster <span class="arithmatex">\(1 =\)</span> {A, B}: <span class="arithmatex">\(\mu _{1} = (1.25, 1.5)\)</span></p>
+<p>Cluster <span class="arithmatex">\(2 =\)</span> {C, D, E, F, G}: <span class="arithmatex">\(\mu _{2} = (19.5/5, 25.5/5) = (3.9, 5.1)\)</span></p>
+<p><strong>Answer.</strong> After two iterations: {A, B} with centroid (1.25, 1.5) and {C, D, E, F, G} with centroid (3.9, 5.1).</p>
+<p><strong>Comment.</strong> <span class="arithmatex">\(C\)</span> changing sides in the second iteration is the interesting event: the first assignment was made by centroids that were just two arbitrary data points, and once the centroids moved to real means, the correct answer for <span class="arithmatex">\(C\)</span> changed. A third iteration would leave everything where it is — no point wants to move — so the algorithm has converged.</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title">Example 13.3: Four measures on one pair of vectors</p>
+<p><strong>Problem.</strong> Two short documents are described by counts of three words: <span class="arithmatex">\(a = (2, 0, 1)\)</span> and <span class="arithmatex">\(b = (1, 0, 3)\)</span>. Compute the Euclidean, Manhattan, Minkowski (<span class="arithmatex">\(p = 3\)</span>) and Chebyshev distances, the cosine similarity and the cosine distance, and check the ordering of the distances.</p>
+<p><strong>Step 1 — coordinate differences</strong></p>
+<p><span class="arithmatex">\(a - b = (2-1,\; 0-0,\; 1-3) = (1, 0, -2)\)</span></p>
+<p><strong>Step 2 — the four distances</strong></p>
+<p><span class="arithmatex">\(d_{2} = \sqrt{1^{2} + 0^{2} + (-2)^{2}} = \sqrt{5} = 2.236\)</span></p>
+<p><span class="arithmatex">\(d_{1} = |1| + |0| + |-2| = 3\)</span></p>
+<p><span class="arithmatex">\(d_{3} = \left(|1|^{3} + |0|^{3} + |-2|^{3}\right)^{1/3} = 9^{1/3} = 2.080\)</span></p>
+<p><span class="arithmatex">\(d_{\infty} = \max(1, 0, 2) = 2\)</span></p>
+<p><strong>Step 3 — cosine similarity and cosine distance</strong></p>
+<p><span class="arithmatex">\(a \cdot b = 2\cdot 1 + 0\cdot 0 + 1\cdot 3 = 5\)</span>, <span class="arithmatex">\(\;\Vert a\Vert = \sqrt{5}\)</span>, <span class="arithmatex">\(\;\Vert b\Vert = \sqrt{10}\)</span></p>
+<p><span class="arithmatex">\(\cos(a, b) = \dfrac{5}{\sqrt{5}\,\sqrt{10}} = \dfrac{5}{\sqrt{50}} = \dfrac{1}{\sqrt{2}} = 0.7071\)</span></p>
+<p>The angle between the vectors is <span class="arithmatex">\(\arccos(0.7071) = 45^{\circ}\)</span>, and the cosine distance is <span class="arithmatex">\(1 - 0.7071 = 0.2929\)</span>.</p>
+<p><strong>Step 4 — the arithmetic check</strong></p>
+<p><span class="arithmatex">\(d_{\infty} \le d_{3} \le d_{2} \le d_{1}\)</span> gives <span class="arithmatex">\(2 \le 2.080 \le 2.236 \le 3\)</span>, which holds.</p>
+<p><strong>Answer.</strong> Euclidean <span class="arithmatex">\(\sqrt{5} = 2.236\)</span>; Manhattan <span class="arithmatex">\(3\)</span>; Minkowski (<span class="arithmatex">\(p=3\)</span>) <span class="arithmatex">\(2.080\)</span>; Chebyshev <span class="arithmatex">\(2\)</span>; cosine similarity <span class="arithmatex">\(0.7071\)</span> (angle <span class="arithmatex">\(45^{\circ}\)</span>); cosine distance <span class="arithmatex">\(0.2929\)</span>.</p>
+<p><strong>Comment.</strong> The Minkowski distance <em>falls</em> as <span class="arithmatex">\(p\)</span> rises, from <span class="arithmatex">\(d_{1} = 3\)</span> towards <span class="arithmatex">\(d_{\infty} = 2\)</span>, so <span class="arithmatex">\(d_{3}\)</span> lies between Chebyshev and Euclidean, not between Euclidean and Manhattan. A larger <span class="arithmatex">\(p\)</span> lets the single biggest coordinate gap count for more of the total, and in the limit it is the only thing that counts.</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title">Example 13.4: Cosine against Euclidean, and what scaling does to a distance</p>
+<p><strong>Problem.</strong> (a) Ravi rates three films on a 1 to 5 scale, <span class="arithmatex">\((5, 1, 4)\)</span>, and Meera, who used a 1 to 10 slider, gives <span class="arithmatex">\((10, 2, 8)\)</span>. Do they have the same taste? (b) Six customers are described by age (years) and salary (rupees). Show what the raw Euclidean distance between customers 1 and 2 measures, and how standardising changes it.</p>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Age</th>
+<th>Salary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>44</td>
+<td>72000</td>
+</tr>
+<tr>
+<td>2</td>
+<td>27</td>
+<td>48000</td>
+</tr>
+<tr>
+<td>3</td>
+<td>30</td>
+<td>54000</td>
+</tr>
+<tr>
+<td>4</td>
+<td>38</td>
+<td>61000</td>
+</tr>
+<tr>
+<td>5</td>
+<td>50</td>
+<td>83000</td>
+</tr>
+<tr>
+<td>6</td>
+<td>37</td>
+<td>67000</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Step 1 — part (a): the two measures</strong></p>
+<p>Meera's vector is exactly twice Ravi's, <span class="arithmatex">\((10, 2, 8) = 2\,(5, 1, 4)\)</span>, so the vectors point in the same direction.</p>
+<p><span class="arithmatex">\(\cos = \dfrac{5\cdot 10 + 1\cdot 2 + 4\cdot 8}{\sqrt{42}\,\sqrt{168}} = \dfrac{84}{\sqrt{7056}} = \dfrac{84}{84} = 1\)</span></p>
+<p><span class="arithmatex">\(d_{2} = \sqrt{(5-10)^{2} + (1-2)^{2} + (4-8)^{2}} = \sqrt{25 + 1 + 16} = \sqrt{42} = 6.481\)</span></p>
+<p>Cosine says the tastes are identical; Euclidean distance calls them far apart, because it is measuring the difference in the <em>scale</em> people used rather than in what they liked.</p>
+<p><strong>Step 2 — part (b): the raw distance</strong></p>
+<p>The differences between customers 1 and 2 are <span class="arithmatex">\(44 - 27 = 17\)</span> years and <span class="arithmatex">\(72000 - 48000 = 24000\)</span> rupees.</p>
+<p><span class="arithmatex">\(d^{2} = 17^{2} + 24000^{2} = 289 + 576\,000\,000 = 576\,000\,289\)</span>, so <span class="arithmatex">\(d = 24\,000.006\)</span></p>
+<p>Age supplies <span class="arithmatex">\(289 / 576\,000\,289 \approx 5 \times 10^{-7}\)</span> of the squared distance. The raw distance is the salary difference and nothing else.</p>
+<p><strong>Step 3 — standardise each feature</strong></p>
+<p>Age: mean <span class="arithmatex">\(= 226/6 = 37.667\)</span>, and <span class="arithmatex">\(\sigma = \sqrt{365.33/6} = 7.803\)</span>.</p>
+<p>Salary: mean <span class="arithmatex">\(= 385000/6 = 64166.7\)</span>, and <span class="arithmatex">\(\sigma = 11538.6\)</span>.</p>
+<p>(Here <span class="arithmatex">\(\sigma\)</span> is the population standard deviation, dividing by 6. The sample version, dividing by 5, would change every <span class="arithmatex">\(z\)</span>-score by the same factor and leave the conclusion alone.)</p>
+<p><strong>Step 4 — the same two customers after scaling</strong></p>
+<p><span class="arithmatex">\(z_{\text{age}}\)</span>: <span class="arithmatex">\(\;(44 - 37.667)/7.803 = 0.812\)</span> and <span class="arithmatex">\((27 - 37.667)/7.803 = -1.367\)</span></p>
+<p><span class="arithmatex">\(z_{\text{salary}}\)</span>: <span class="arithmatex">\(\;(72000 - 64166.7)/11538.6 = 0.679\)</span> and <span class="arithmatex">\((48000 - 64166.7)/11538.6 = -1.401\)</span></p>
+<p><span class="arithmatex">\(d^{2} = (0.812 + 1.367)^{2} + (0.679 + 1.401)^{2} = 2.179^{2} + 2.080^{2} = 4.748 + 4.326 = 9.074\)</span>, so <span class="arithmatex">\(d = 3.012\)</span></p>
+<p>Now age supplies <span class="arithmatex">\(4.748/9.074 = 52\%\)</span> of the squared distance and salary the other <span class="arithmatex">\(48\%\)</span>.</p>
+<p><strong>Answer.</strong> (a) Cosine similarity <span class="arithmatex">\(1\)</span>, Euclidean distance <span class="arithmatex">\(6.481\)</span>: same direction, different length. (b) Raw <span class="arithmatex">\(d = 24\,000.006\)</span>, entirely salary; standardised <span class="arithmatex">\(d = 3.012\)</span>, with age and salary contributing about equally.</p>
+<p><strong>Comment.</strong> Standardising does not make the two customers more or less similar in any absolute sense. It changes the question from "how many rupees apart?" to "how many standard deviations apart, summed over the features?", which is the question you meant to ask. Any <span class="arithmatex">\(k\)</span>-means run on the raw table would have been a clustering by salary.</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title">Example 13.5: K-means in one dimension, with WCSS tracked</p>
+<p><strong>Problem.</strong> Cluster <span class="arithmatex">\(\{2, 3, 6, 8, 10, 12\}\)</span> into <span class="arithmatex">\(k = 2\)</span> groups, starting with centroids <span class="arithmatex">\(c_{1} = 2\)</span> and <span class="arithmatex">\(c_{2} = 10\)</span>. Run to convergence and record the WCSS after each half-step.</p>
+<p><strong>Step 1 — assignment (iteration 1)</strong></p>
+<table>
+<thead>
+<tr>
+<th><span class="arithmatex">\(x\)</span></th>
+<th><span class="arithmatex">\(\lvert x - 2\rvert\)</span></th>
+<th><span class="arithmatex">\(\lvert x - 10\rvert\)</span></th>
+<th>cluster</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2</td>
+<td>0</td>
+<td>8</td>
+<td>1</td>
+</tr>
+<tr>
+<td>3</td>
+<td>1</td>
+<td>7</td>
+<td>1</td>
+</tr>
+<tr>
+<td>6</td>
+<td>4</td>
+<td>4</td>
+<td>tie, take 1</td>
+</tr>
+<tr>
+<td>8</td>
+<td>6</td>
+<td>2</td>
+<td>2</td>
+</tr>
+<tr>
+<td>10</td>
+<td>8</td>
+<td>0</td>
+<td>2</td>
+</tr>
+<tr>
+<td>12</td>
+<td>10</td>
+<td>2</td>
+<td>2</td>
+</tr>
+</tbody>
+</table>
+<p>So <span class="arithmatex">\(C_{1} = \{2, 3, 6\}\)</span> and <span class="arithmatex">\(C_{2} = \{8, 10, 12\}\)</span>.</p>
+<p><strong>Step 2 — the WCSS of this assignment, about the old centroids</strong></p>
+<p><span class="arithmatex">\(\text{WCSS} = (0 + 1 + 16) + (4 + 0 + 4) = 17 + 8 = 25\)</span></p>
+<p><strong>Step 3 — update</strong></p>
+<p><span class="arithmatex">\(c_{1} = (2 + 3 + 6)/3 = 11/3 = 3.667\)</span>, <span class="arithmatex">\(\quad c_{2} = (8 + 10 + 12)/3 = 10\)</span></p>
+<p>The same two clusters now measured about their means:</p>
+<p><span class="arithmatex">\(\text{WCSS} = \left[(2 - 3.667)^{2} + (3 - 3.667)^{2} + (6 - 3.667)^{2}\right] + 8 = (2.778 + 0.444 + 5.444) + 8 = 8.667 + 8 = 16.667\)</span></p>
+<p><strong>Step 4 — assignment (iteration 2)</strong></p>
+<p>Distances to <span class="arithmatex">\(c_{1} = 3.667\)</span> and <span class="arithmatex">\(c_{2} = 10\)</span>: for <span class="arithmatex">\(x = 6\)</span> they are <span class="arithmatex">\(2.333\)</span> and <span class="arithmatex">\(4\)</span>, so 6 stays in cluster 1; for <span class="arithmatex">\(x = 8\)</span> they are <span class="arithmatex">\(4.333\)</span> and <span class="arithmatex">\(2\)</span>, so 8 stays in cluster 2. The other four points are plainly unchanged. No point moves, so the centroids stay at <span class="arithmatex">\(3.667\)</span> and <span class="arithmatex">\(10\)</span> and the algorithm has converged.</p>
+<p><strong>Answer.</strong> <span class="arithmatex">\(C_{1} = \{2, 3, 6\}\)</span> with centroid <span class="arithmatex">\(3.667\)</span> and <span class="arithmatex">\(C_{2} = \{8, 10, 12\}\)</span> with centroid <span class="arithmatex">\(10\)</span>. The WCSS fell <span class="arithmatex">\(25 \to 16.667\)</span> at the first update and then stopped changing.</p>
+<p><strong>Comment.</strong> The whole improvement came from the centroid update, because the initial centres <span class="arithmatex">\(2\)</span> and <span class="arithmatex">\(10\)</span> were already data points and the first assignment was reasonable. The tie at point 6 was broken in favour of cluster 1, the lower index, which is what a library does. Break it the other way and the same algorithm converges to <span class="arithmatex">\(\{2, 3\}\)</span> and <span class="arithmatex">\(\{6, 8, 10, 12\}\)</span> with centroids <span class="arithmatex">\(2.5\)</span> and <span class="arithmatex">\(9\)</span> and WCSS <span class="arithmatex">\(20.5\)</span>, a worse local optimum reached from the same starting centres.</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title">Example 13.6: A poor start recovers: WCSS at every half-step</p>
+<p><strong>Problem.</strong> Cluster <span class="arithmatex">\(x_{1}(1,1),\; x_{2}(2,1),\; x_{3}(4,3),\; x_{4}(5,4),\; x_{5}(6,5),\; x_{6}(6,3)\)</span> with <span class="arithmatex">\(k = 2\)</span> and deliberately bad starting centroids <span class="arithmatex">\(\mu_{1} = (1,1)\)</span>, <span class="arithmatex">\(\mu_{2} = (2,1)\)</span>, which sit side by side. Run to convergence and give the WCSS after every half-step.</p>
+<p><strong>Step 1 — first assignment</strong></p>
+<p>Squared distances to <span class="arithmatex">\((1,1)\)</span> and <span class="arithmatex">\((2,1)\)</span>:</p>
+<table>
+<thead>
+<tr>
+<th>point</th>
+<th>to <span class="arithmatex">\(\mu_{1}\)</span></th>
+<th>to <span class="arithmatex">\(\mu_{2}\)</span></th>
+<th>cluster</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="arithmatex">\(x_{1}\)</span> (1,1)</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(x_{2}\)</span> (2,1)</td>
+<td>1</td>
+<td>0</td>
+<td>2</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(x_{3}\)</span> (4,3)</td>
+<td><span class="arithmatex">\(9 + 4 = 13\)</span></td>
+<td><span class="arithmatex">\(4 + 4 = 8\)</span></td>
+<td>2</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(x_{4}\)</span> (5,4)</td>
+<td><span class="arithmatex">\(16 + 9 = 25\)</span></td>
+<td><span class="arithmatex">\(9 + 9 = 18\)</span></td>
+<td>2</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(x_{5}\)</span> (6,5)</td>
+<td><span class="arithmatex">\(25 + 16 = 41\)</span></td>
+<td><span class="arithmatex">\(16 + 16 = 32\)</span></td>
+<td>2</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(x_{6}\)</span> (6,3)</td>
+<td><span class="arithmatex">\(25 + 4 = 29\)</span></td>
+<td><span class="arithmatex">\(16 + 4 = 20\)</span></td>
+<td>2</td>
+</tr>
+</tbody>
+</table>
+<p>The WCSS of this assignment about the starting centroids is the sum of the smaller entries: <span class="arithmatex">\(0 + 0 + 8 + 18 + 32 + 20 = 78\)</span>.</p>
+<p><strong>Step 2 — first update</strong></p>
+<p><span class="arithmatex">\(\mu_{1} = (1, 1)\)</span> and <span class="arithmatex">\(\mu_{2} = \left(\dfrac{2+4+5+6+6}{5}, \dfrac{1+3+4+5+3}{5}\right) = (4.6,\; 3.2)\)</span></p>
+<p>About these centroids the same assignment has WCSS <span class="arithmatex">\(= 0 + (11.6 + 0.4 + 0.8 + 5.2 + 2.0) = 20\)</span>, where, for example, <span class="arithmatex">\(x_{2}\)</span> contributes <span class="arithmatex">\((2 - 4.6)^{2} + (1 - 3.2)^{2} = 6.76 + 4.84 = 11.6\)</span>.</p>
+<p><strong>Step 3 — second assignment</strong></p>
+<p>Squared distances to <span class="arithmatex">\(\mu_{1} = (1,1)\)</span> and <span class="arithmatex">\(\mu_{2} = (4.6, 3.2)\)</span>: <span class="arithmatex">\(x_{2}\)</span> gives <span class="arithmatex">\(1\)</span> and <span class="arithmatex">\(11.6\)</span>, so it <strong>moves to cluster 1</strong>. The others give <span class="arithmatex">\(x_{3}\)</span>: <span class="arithmatex">\(13\)</span> and <span class="arithmatex">\(0.4\)</span>; <span class="arithmatex">\(x_{4}\)</span>: <span class="arithmatex">\(25\)</span> and <span class="arithmatex">\(0.8\)</span>; <span class="arithmatex">\(x_{5}\)</span>: <span class="arithmatex">\(41\)</span> and <span class="arithmatex">\(5.2\)</span>; <span class="arithmatex">\(x_{6}\)</span>: <span class="arithmatex">\(29\)</span> and <span class="arithmatex">\(2.0\)</span>, so they stay in cluster 2.</p>
+<p>Now <span class="arithmatex">\(C_{1} = \{x_{1}, x_{2}\}\)</span> and <span class="arithmatex">\(C_{2} = \{x_{3}, x_{4}, x_{5}, x_{6}\}\)</span>. Measured about the old centroids the WCSS is <span class="arithmatex">\(0 + 1 + 0.4 + 0.8 + 5.2 + 2.0 = 9.4\)</span>.</p>
+<p><strong>Step 4 — second update</strong></p>
+<p><span class="arithmatex">\(\mu_{1} = (1.5, 1)\)</span>, giving <span class="arithmatex">\(0.25 + 0.25 = 0.5\)</span>.</p>
+<p><span class="arithmatex">\(\mu_{2} = \left(\dfrac{4+5+6+6}{4}, \dfrac{3+4+5+3}{4}\right) = (5.25,\; 3.75)\)</span>, giving <span class="arithmatex">\(2.125 + 0.125 + 2.125 + 1.125 = 5.5\)</span>.</p>
+<p>WCSS <span class="arithmatex">\(= 0.5 + 5.5 = 6.0\)</span>. A third assignment moves nobody, so the algorithm stops.</p>
+<p><strong>Answer.</strong> Final clusters <span class="arithmatex">\(\{x_{1}, x_{2}\}\)</span> and <span class="arithmatex">\(\{x_{3}, x_{4}, x_{5}, x_{6}\}\)</span> with centroids <span class="arithmatex">\((1.5, 1)\)</span> and <span class="arithmatex">\((5.25, 3.75)\)</span>. The WCSS sequence is
+<span class="arithmatex">\(78 \to 20 \to 9.4 \to 6.0 \to 6.0\)</span>.</p>
+<p><strong>Comment.</strong> Every half-step lowers the WCSS or leaves it unchanged. That sequence is the termination proof of the chapter made visible: a non-increasing list of numbers that cannot go on falling for ever. Notice also how much the poor start cost: the first assignment put five points into one cluster, and it took two updates to undo it.</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title">Example 13.7: One bad point, and why a medoid does not move</p>
+<p><strong>Problem.</strong> The points <span class="arithmatex">\((0,0), (1,0), (0,1)\)</span> form a tight cluster. A data-entry slip adds <span class="arithmatex">\((100, 100)\)</span>. Find the centroid before and after, and compare with the medoid.</p>
+<p><strong>Step 1 — the centroid before the slip</strong></p>
+<p><span class="arithmatex">\(\bar{x} = (0 + 1 + 0)/3 = 0.333\)</span> and <span class="arithmatex">\(\bar{y} = (0 + 0 + 1)/3 = 0.333\)</span>, so the centroid is <span class="arithmatex">\((0.333, 0.333)\)</span>, with WCSS <span class="arithmatex">\(= \tfrac{2}{9} + \tfrac{5}{9} + \tfrac{5}{9} = 1.333\)</span>.</p>
+<p><strong>Step 2 — the centroid after the slip</strong></p>
+<p><span class="arithmatex">\(\bar{x} = (0 + 1 + 0 + 100)/4 = 25.25\)</span> and <span class="arithmatex">\(\bar{y} = 25.25\)</span>. The centroid moves to <span class="arithmatex">\((25.25, 25.25)\)</span>, which is nowhere near any of the four points, and the cluster's WCSS becomes</p>
+<p><span class="arithmatex">\(1275.125 + 1225.625 + 1225.625 + 11175.125 = 14\,901.5\)</span></p>
+<p>about 11 000 times its value before the slip.</p>
+<p><strong>Step 3 — what k-means does about it</strong></p>
+<p>With <span class="arithmatex">\(k = 2\)</span>, putting the bad point in a cluster of its own removes almost the whole 14 901.5 and leaves 1.333. So the cheapest way to spend one of the two clusters is on a single typing error.</p>
+<p><strong>Step 4 — the medoid</strong></p>
+<p>A medoid must be one of the data points, chosen to minimise the total distance to the others.</p>
+<table>
+<thead>
+<tr>
+<th>candidate</th>
+<th>total Euclidean distance to the rest</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="arithmatex">\((0,0)\)</span></td>
+<td><span class="arithmatex">\(1 + 1 + 141.42 = 143.42\)</span></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\((1,0)\)</span></td>
+<td><span class="arithmatex">\(1 + 1.414 + 140.72 = 143.13\)</span></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\((0,1)\)</span></td>
+<td><span class="arithmatex">\(1 + 1.414 + 140.72 = 143.13\)</span></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\((100,100)\)</span></td>
+<td><span class="arithmatex">\(141.42 + 140.72 + 140.72 = 422.85\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>The medoid is <span class="arithmatex">\((1, 0)\)</span> (tied with <span class="arithmatex">\((0, 1)\)</span>), a real point sitting inside the genuine group.</p>
+<p><strong>Answer.</strong> The centroid jumps from <span class="arithmatex">\((0.333, 0.333)\)</span> to <span class="arithmatex">\((25.25, 25.25)\)</span>; a medoid is still a genuine point at <span class="arithmatex">\((1,0)\)</span> or <span class="arithmatex">\((0,1)\)</span>.</p>
+<p><strong>Comment.</strong> The squared distance is what makes the outlier so powerful: a point about 141 units from the group contributes roughly 20 000 to a sum of squared distances and only 141 to a sum of distances. That is the same reason the mean is outlier-sensitive and the median is not, and it is why k-medoids and k-medians are the standard robust variants.</p>
+</div>
+<h2 id="137-common-mistakes-to-avoid">13.7 Common mistakes to avoid<a class="headerlink" href="#137-common-mistakes-to-avoid" title="Permanent link">&para;</a></h2>
+<p>Each of the following is a mistake that costs marks in an examination or accuracy in practice.</p>
+<ul>
+<li>Do not cluster unscaled features. It is the commonest cause of a meaningless result, and it is invisible unless you check.</li>
+<li>Do not choose <span class="arithmatex">\(k\)</span> by minimising WCSS. It always answers <span class="arithmatex">\(k = m\)</span>.</li>
+<li>Do not run k-means once and trust it. Restart, and keep the best.</li>
+<li>Do not apply k-means to shapes it cannot represent. Straight boundaries, convex clusters — that is the whole of its vocabulary.</li>
+<li>Do not take square roots when you only need to compare distances. <span class="arithmatex">\(d^{2}\)</span> gives the same ordering and stays exact.</li>
+<li>Do not use Euclidean distance on text. Cosine, on TF-IDF vectors.</li>
+</ul>
+<h2 id="138-summary">13.8 Summary<a class="headerlink" href="#138-summary" title="Permanent link">&para;</a></h2>
+<p>After working through this chapter you should be able to do the following.</p>
+<ul>
+<li>State what clustering is for — high similarity inside, low similarity between — and place any method in the partitional / hierarchical / density scheme and on the hard–soft axis.</li>
+<li>Compute every distance in the syllabus, know that Chebyshev <span class="arithmatex">\(\le\)</span> Euclidean <span class="arithmatex">\(\le\)</span> Manhattan as a check on your arithmetic, and can argue for cosine on text because it measures direction rather than length.</li>
+<li>Run k-means by hand using squared distances, and you can prove it terminates: both half-steps lower WCSS, the mean is exactly the minimiser of squared distance, and there are only finitely many partitions.</li>
+<li>Name all five ways k-means fails — local optima, a guessed <span class="arithmatex">\(k\)</span>, non-convex shapes, unequal sizes, outliers — with the remedy for each, and you know what k-means++ changes and why.</li>
+</ul>
+<h2 id="139-exercises">13.9 Exercises<a class="headerlink" href="#139-exercises" title="Permanent link">&para;</a></h2>
+<ol>
+<li>
+<p><span class="arithmatex">\(A = (2, 4, 5), B = (5, 1, 9)\)</span>. Compute the Euclidean, Manhattan and Chebyshev distances and the cosine similarity.</p>
+<details class="note">
+<summary>Answer</summary>
+<p>The differences are <span class="arithmatex">\((-3, 3, -4)\)</span>.</p>
+<p>Euclidean: <span class="arithmatex">\(\sqrt{9 + 9 + 16} = \sqrt{34} = 5.831\)</span>. Manhattan: <span class="arithmatex">\(3 + 3 + 4 = 10\)</span>. Chebyshev: <span class="arithmatex">\(\max(3, 3, 4) = 4\)</span>.</p>
+<p>Cosine: <span class="arithmatex">\(A \cdot B = 10 + 4 + 45 = 59\)</span>, <span class="arithmatex">\(\Vert A\Vert = \sqrt{45} = 6.708\)</span>, <span class="arithmatex">\(\Vert B\Vert = \sqrt{107} = 10.344\)</span>, so <span class="arithmatex">\(\cos = 59/69.39 = 0.8503\)</span>.</p>
+<p>Check: <span class="arithmatex">\(4 \le 5.831 \le 10\)</span>, as it must be.</p>
+</details>
+</li>
+<li>
+<p>Points (1,2), (2,1), (8,9), (9,8) with initial centroids (1,2) and (9,8). Run k-means to convergence and give the final centroids.</p>
+<details class="note">
+<summary>Answer</summary>
+<p>Assignment: (1,2) goes to the first centroid (distance 0); (2,1) has squared distances <span class="arithmatex">\(2\)</span> and <span class="arithmatex">\(98\)</span>, so it goes to the first; (8,9) has <span class="arithmatex">\(98\)</span> and <span class="arithmatex">\(2\)</span>, so it goes to the second; (9,8) goes to the second.</p>
+<p>Update: <span class="arithmatex">\(\mu_{1} = (1.5, 1.5)\)</span> and <span class="arithmatex">\(\mu_{2} = (8.5, 8.5)\)</span>. A second assignment moves nothing, so the algorithm has converged.</p>
+<p>Final centroids <span class="arithmatex">\((1.5, 1.5)\)</span> and <span class="arithmatex">\((8.5, 8.5)\)</span>, with WCSS <span class="arithmatex">\(= 4 \times 0.5 = 2\)</span>.</p>
+</details>
+</li>
+<li>
+<p>Prove that the mean minimises <span class="arithmatex">\(\sum (x - c)^{2}\)</span> over <span class="arithmatex">\(c\)</span>, and say why this makes it the right centroid for k-means.</p>
+<details class="note">
+<summary>Answer</summary>
+<p>Let <span class="arithmatex">\(f(c) = \sum_{i=1}^{n} (x_{i} - c)^{2}\)</span>. Then <span class="arithmatex">\(f'(c) = -2\sum_{i}(x_{i} - c) = 0\)</span> gives <span class="arithmatex">\(\sum_{i} x_{i} = nc\)</span>, so <span class="arithmatex">\(c = \bar{x}\)</span>. Since <span class="arithmatex">\(f''(c) = 2n &gt; 0\)</span>, this is a minimum.</p>
+<p>A second proof needs no calculus. Write <span class="arithmatex">\(x_{i} - c = (x_{i} - \bar{x}) + (\bar{x} - c)\)</span> and square. The cross term is <span class="arithmatex">\(2(\bar{x} - c)\sum (x_{i} - \bar{x}) = 0\)</span>, so
+<span class="arithmatex">\(\sum (x_{i} - c)^{2} = \sum (x_{i} - \bar{x})^{2} + n(\bar{x} - c)^{2}\)</span>,
+which is smallest exactly when <span class="arithmatex">\(c = \bar{x}\)</span>.</p>
+<p>For vectors the same argument holds coordinate by coordinate, because the squared Euclidean distance is a sum over coordinates.</p>
+<p>In k-means the update step holds the assignment fixed and chooses each centroid to minimise its cluster's contribution to WCSS. The mean is that minimiser, so the update cannot increase WCSS. Together with an assignment step that cannot increase it either, and finitely many partitions, this is why the algorithm terminates.</p>
+</details>
+</li>
+<li>
+<p>A clustering has clusters {(0,0), (0,2)} and {(6,6), (6,8), (6,10)}. Compute the WCSS.</p>
+<details class="note">
+<summary>Answer</summary>
+<p>The first centroid is <span class="arithmatex">\((0, 1)\)</span> and the squared distances are <span class="arithmatex">\(1 + 1 = 2\)</span>. The second centroid is <span class="arithmatex">\((6, 8)\)</span> and the squared distances are <span class="arithmatex">\(4 + 0 + 4 = 8\)</span>. WCSS <span class="arithmatex">\(= 2 + 8 = 10\)</span>.</p>
+</details>
+</li>
+<li>
+<p>Explain why WCSS is a legitimate way to compare two runs at the same <span class="arithmatex">\(k\)</span> but not a way to compare <span class="arithmatex">\(k = 3\)</span> with <span class="arithmatex">\(k = 5\)</span>.</p>
+<details class="note">
+<summary>Answer</summary>
+<p>Two runs at the same <span class="arithmatex">\(k\)</span> are two local optima of the same objective with the same number of centroids, so the lower WCSS is simply the better solution to the problem being solved, and <code>n_init</code> keeps the lowest.</p>
+<p>Across values of <span class="arithmatex">\(k\)</span> the comparison is rigged. A clustering with more centroids can always match or beat one with fewer, because adding a centroid can only bring points closer to a centre, and at <span class="arithmatex">\(k = m\)</span> every point is its own centroid and the WCSS is zero. So the larger <span class="arithmatex">\(k\)</span> almost always wins whether or not the extra clusters are real. To compare different <span class="arithmatex">\(k\)</span> use something that is not monotone in <span class="arithmatex">\(k\)</span>: the elbow of the WCSS curve, the average silhouette, the gap statistic, or the purpose the clusters serve.</p>
+</details>
+</li>
+<li>
+<p>You cluster 10 000 customers on 30 standardised features and get five clusters with average silhouette 0.11. What do you conclude, and what would you try next?</p>
+<details class="note">
+<summary>Answer</summary>
+<p>An average silhouette near <span class="arithmatex">\(0.1\)</span> is close to zero: on average the points are barely nearer their own cluster than the next one. The clusters overlap heavily, so you should not describe the five groups as real, distinct segments. The result is a partition, not a discovery.</p>
+<p>Things to try: compute the silhouette for several <span class="arithmatex">\(k\)</span> to see whether any is clearly better; draw the silhouette plot to find whether one or two clusters are good and the rest ragged; reduce dimension first, since in 30 dimensions distances between points become similar to each other and silhouette suffers (PCA, or dropping redundant features); check with the gap statistic whether the data has cluster structure at all; try another method such as a Gaussian mixture, which allows overlap; and ask whether the groups are useful for the task even if they are not sharp, because a soft boundary does not make a segmentation worthless.</p>
+</details>
+</li>
+<li>
+<p>Describe how to compress an image to 16 colours with k-means: what are the examples, what are the features, and what is stored at the end?</p>
+<details class="note">
+<summary>Answer</summary>
+<p>The examples are the pixels, so <span class="arithmatex">\(m = \text{rows} \times \text{columns}\)</span>. The features are the three colour values (R, G, B) of each pixel, so every example is a point in a three-dimensional colour cube. Run k-means with <span class="arithmatex">\(k = 16\)</span>.</p>
+<p>The 16 centroids are the palette: sixteen representative colours. Each pixel is replaced by the colour of its nearest centroid. What is stored is the palette (16 colours of 24 bits each) and, for each pixel, a 4-bit index into it, since <span class="arithmatex">\(2^{4} = 16\)</span>. The quantity minimised, WCSS, is exactly the total squared colour error of the compressed image.</p>
+<p>For a <span class="arithmatex">\(1000 \times 800\)</span> image, 800 000 pixels at 24 bits take <span class="arithmatex">\(19\,200\,000\)</span> bits (2.4 MB). With the palette it takes <span class="arithmatex">\(800\,000 \times 4 + 16 \times 24 = 3\,200\,384\)</span> bits (about 0.40 MB), a saving of about six times, the palette being negligible.</p>
+</details>
+</li>
+<li>
+<p>For <span class="arithmatex">\(a = (1, 3, 4)\)</span> and <span class="arithmatex">\(b = (4, 3, 0)\)</span> compute the Euclidean, Manhattan, Minkowski (<span class="arithmatex">\(p = 3\)</span>) and Chebyshev distances and the cosine similarity.</p>
+<details class="note">
+<summary>Answer</summary>
+<p>The difference is <span class="arithmatex">\((-3, 0, 4)\)</span>.</p>
+<p>Euclidean <span class="arithmatex">\(\sqrt{9 + 0 + 16} = 5\)</span>. Manhattan <span class="arithmatex">\(3 + 0 + 4 = 7\)</span>. Minkowski (<span class="arithmatex">\(p=3\)</span>): <span class="arithmatex">\((27 + 0 + 64)^{1/3} = 91^{1/3} = 4.498\)</span>. Chebyshev <span class="arithmatex">\(4\)</span>.</p>
+<p>Cosine: <span class="arithmatex">\(a \cdot b = 4 + 9 + 0 = 13\)</span>, <span class="arithmatex">\(\Vert a\Vert = \sqrt{26} = 5.099\)</span>, <span class="arithmatex">\(\Vert b\Vert = 5\)</span>, so <span class="arithmatex">\(\cos = 13/25.495 = 0.510\)</span>.</p>
+<p>The ordering <span class="arithmatex">\(4 \le 4.498 \le 5 \le 7\)</span> confirms the arithmetic.</p>
+</details>
+</li>
+<li>
+<p>Two users rate items as <span class="arithmatex">\(u = (2, 2)\)</span> and <span class="arithmatex">\(v = (6, 6)\)</span>. Compute the Euclidean distance and the cosine similarity, say what each tells you, and explain why a recommender system may prefer cosine here.</p>
+<details class="note">
+<summary>Answer</summary>
+<p><span class="arithmatex">\(d_{2} = \sqrt{16 + 16} = \sqrt{32} = 5.657\)</span>. <span class="arithmatex">\(\cos = \dfrac{12 + 12}{\sqrt{8}\,\sqrt{72}} = \dfrac{24}{24} = 1\)</span>.</p>
+<p>The Euclidean distance says the points are far apart; the cosine says they point in exactly the same direction. Both rate the two items equally and differ only in how generously they rate: <span class="arithmatex">\(v\)</span> is <span class="arithmatex">\(u\)</span> multiplied by 3. A recommender wants to know whether two users like the same things in the same proportions, and a habit of giving high or low scores should not count against them, so cosine, which ignores the length of the vector, is the better measure.</p>
+</details>
+</li>
+<li>
+<p>Points <span class="arithmatex">\(P_{1} = (1, 2), P_{2} = (1, 4), P_{3} = (2, 2), P_{4} = (6, 4), P_{5} = (7, 3), P_{6} = (7, 5)\)</span>, initial centroids <span class="arithmatex">\(\mu_{1} = (1, 2)\)</span> and <span class="arithmatex">\(\mu_{2} = (2, 2)\)</span>. Run k-means to convergence. Give the final clusters, centroids and WCSS, and say whether any point changed cluster after the first update.</p>
+<details class="note">
+<summary>Answer</summary>
+<p>First assignment (squared distances to <span class="arithmatex">\(\mu_{1}\)</span>, <span class="arithmatex">\(\mu_{2}\)</span>): <span class="arithmatex">\(P_{1}\)</span>: 0, 1; <span class="arithmatex">\(P_{2}\)</span>: 4, 5; <span class="arithmatex">\(P_{3}\)</span>: 1, 0; <span class="arithmatex">\(P_{4}\)</span>: 29, 20; <span class="arithmatex">\(P_{5}\)</span>: 37, 26; <span class="arithmatex">\(P_{6}\)</span>: 45, 34. So <span class="arithmatex">\(C_{1} = \{P_{1}, P_{2}\}\)</span> and <span class="arithmatex">\(C_{2} = \{P_{3}, \dots, P_{6}\}\)</span>.</p>
+<p>Update: <span class="arithmatex">\(\mu_{1} = (1, 3)\)</span> and <span class="arithmatex">\(\mu_{2} = (5.5, 3.5)\)</span>. The WCSS of this partition is <span class="arithmatex">\(2 + 22 = 24\)</span>.</p>
+<p>Second assignment: <span class="arithmatex">\(P_{3}\)</span> has squared distances <span class="arithmatex">\(2\)</span> and <span class="arithmatex">\(14.5\)</span>, so it <strong>moves to cluster 1</strong>; the others stay.</p>
+<p>Update: <span class="arithmatex">\(\mu_{1} = (4/3, 8/3) = (1.333, 2.667)\)</span> and <span class="arithmatex">\(\mu_{2} = (20/3, 4) = (6.667, 4)\)</span>. A further assignment changes nothing.</p>
+<p>Final clusters <span class="arithmatex">\(\{P_{1}, P_{2}, P_{3}\}\)</span> and <span class="arithmatex">\(\{P_{4}, P_{5}, P_{6}\}\)</span>; WCSS <span class="arithmatex">\(= 3.333 + 2.667 = 6\)</span>. The WCSS went <span class="arithmatex">\(24 \to 6\)</span> at the last update and never rose.</p>
+</details>
+</li>
+<li>
+<p>The one-dimensional data <span class="arithmatex">\(\{4, 8, 12, 20, 32, 36, 48\}\)</span> is clustered with <span class="arithmatex">\(k = 2\)</span> and initial centres <span class="arithmatex">\(32\)</span> and <span class="arithmatex">\(48\)</span>. Run k-means, and give the clusters, the centres and the sum of squared errors at the end of every iteration.</p>
+<details class="note">
+<summary>Answer</summary>
+<p>Iteration 1: <span class="arithmatex">\(4, 8, 12, 20, 32, 36\)</span> are nearer 32 (the point 36 is 4 from 32 and 12 from 48); 48 goes to the second. Centres <span class="arithmatex">\(18.667\)</span> and <span class="arithmatex">\(48\)</span>; SSE <span class="arithmatex">\(= 853.33 + 0 = 853.33\)</span>.</p>
+<p>Iteration 2: 36 is now nearer 48 (12 against 17.33), while 32 stays with the first (13.33 against 16). Clusters <span class="arithmatex">\(\{4, 8, 12, 20, 32\}\)</span> and <span class="arithmatex">\(\{36, 48\}\)</span>; centres <span class="arithmatex">\(15.2\)</span> and <span class="arithmatex">\(42\)</span>; SSE <span class="arithmatex">\(= 492.8 + 72 = 564.8\)</span>.</p>
+<p>Iteration 3: 32 is now nearer the second centre (16.8 against 10). Clusters <span class="arithmatex">\(\{4, 8, 12, 20\}\)</span> and <span class="arithmatex">\(\{32, 36, 48\}\)</span>; centres <span class="arithmatex">\(11\)</span> and <span class="arithmatex">\(38.667\)</span>; SSE <span class="arithmatex">\(= 140 + 138.67 = 278.67\)</span>.</p>
+<p>Iteration 4: nothing moves, so these are the final clusters. The SSE fell <span class="arithmatex">\(853.33 \to 564.8 \to 278.67\)</span>.</p>
+</details>
+</li>
+<li>
+<p>(a) True or false, with a reason: k-means is guaranteed to find the clustering with the smallest possible WCSS. (b) True or false, with a reason: increasing <span class="arithmatex">\(k\)</span> never increases the WCSS.</p>
+<details class="note">
+<summary>Answer</summary>
+<p>(a) <strong>False.</strong> It is guaranteed to stop, at a local optimum that depends on the initial centroids. Different starts can give different WCSS, which is why you restart and keep the best.</p>
+<p>(b) <strong>True for the best clustering at each <span class="arithmatex">\(k\)</span></strong>: the optimal WCSS is non-increasing in <span class="arithmatex">\(k\)</span> and reaches 0 at <span class="arithmatex">\(k = m\)</span>. It need not be true of the single runs you actually make, because a poor local optimum at a larger <span class="arithmatex">\(k\)</span> can have a higher WCSS than a good one at a smaller <span class="arithmatex">\(k\)</span>. Even where it holds, it is the reason WCSS cannot be used to choose <span class="arithmatex">\(k\)</span>.</p>
+</details>
+</li>
+<li>
+<p>A shop clusters customers on age (about 20 to 60) and annual income (about 20 000 to 2 000 000 rupees) without scaling. By how much does income outweigh age in a squared distance for the most extreme gaps, and what is the fix?</p>
+<details class="note">
+<summary>Answer</summary>
+<p>The most extreme gaps are <span class="arithmatex">\(40\)</span> years and <span class="arithmatex">\(1\,980\,000\)</span> rupees. In the squared distance age contributes <span class="arithmatex">\(40^{2} = 1600\)</span> and income <span class="arithmatex">\(1\,980\,000^{2} = 3.92 \times 10^{12}\)</span>, about <span class="arithmatex">\(2.5 \times 10^{9}\)</span> times as much. For ordinary gaps the ratio is smaller but still enormous, so the clusters are effectively clusters by income, and age is ignored.</p>
+<p>The fix is to put the features on comparable scales before computing any distance: standardise each to mean 0 and standard deviation 1 (the <span class="arithmatex">\(z\)</span>-score), or rescale each to <span class="arithmatex">\([0, 1]\)</span>.</p>
+</details>
+</li>
+<li>
+<p>Five points on a line are <span class="arithmatex">\(1, 2, 3, 10, 11\)</span>. In k-means++ the first centre is the point <span class="arithmatex">\(2\)</span>. What are the probabilities that each point is chosen as the second centre, and how does this compare with choosing uniformly among the other four points?</p>
+<details class="note">
+<summary>Answer</summary>
+<p>The squared distances to the nearest chosen centre are <span class="arithmatex">\(1, 0, 1, 64, 81\)</span> for the points <span class="arithmatex">\(1, 2, 3, 10, 11\)</span>, which sum to <span class="arithmatex">\(147\)</span>. The selection probabilities are these divided by 147: <span class="arithmatex">\(0.0068,\; 0,\; 0.0068,\; 0.4354,\; 0.5510\)</span>.</p>
+<p>The chance that the second centre lands in the far group <span class="arithmatex">\(\{10, 11\}\)</span> is <span class="arithmatex">\(145/147 = 0.986\)</span>. Choosing uniformly among the other four points gives only <span class="arithmatex">\(2/4 = 0.5\)</span>, so a plain random start has an even chance of putting both centres in the same group, which k-means++ almost never does.</p>
+</details>
+</li>
+</ol>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="evaluating-classifiers.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: 12. Evaluating Classifiers">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                12. Evaluating Classifiers
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="hierarchical-clustering-and-evaluating-clusters.html" class="md-footer__link md-footer__link--next" aria-label="Next: 14. Hierarchical Clustering and Evaluating Clusters">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                14. Hierarchical Clustering and Evaluating Clusters
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      The Open Book Project &middot;
+      <a href="../../about.html">About this library</a> &middot;
+      © The authors of the books
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "navigation.prune", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "toc.follow", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+  
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../../assets/mathjax.js"></script>
+      
+        <script src="../../assets/viz.js"></script>
+      
+        <script src="../../assets/reader.js"></script>
+      
+        <script src="../../assets/app.js"></script>
+      
+    
+  <script>
+    /* offline reading: the service worker at the site root (its scope is the whole site) */
+    if ("serviceWorker" in navigator && window.isSecureContext) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register(new URL("../../sw.js", location.href).href).catch(function () {});
+      });
+    }
+  </script>
+
+  </body>
+</html>

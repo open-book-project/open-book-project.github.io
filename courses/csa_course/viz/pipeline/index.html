@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Five-stage pipeline with hazards</title>
+<style>
+  body { padding: .6rem .7rem .8rem; }
+  .opts { display: flex; flex-wrap: wrap; gap: .45rem 1rem; align-items: center; margin-bottom: .55rem; }
+  .opts label.t { display: inline-flex; align-items: center; gap: .35rem; font-size: .88rem; cursor: pointer; min-height: 2rem; }
+  .opts select { font-size: .88rem; }
+  .opts .cap { font-size: .8rem; color: var(--viz-muted); margin-right: .25rem; }
+  .stages { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: .3rem; margin: .5rem 0; }
+  .st { border: 2px solid var(--c); border-radius: .5rem; padding: .25rem .35rem .35rem; background: color-mix(in srgb, var(--c) 12%, var(--viz-bg)); min-width: 0; }
+  .st .nm { font-size: .72rem; font-weight: 700; letter-spacing: .06em; color: var(--viz-fg); }
+  .st .ins { font-family: ui-monospace, Consolas, Menlo, monospace; font-size: .74rem; line-height: 1.25; min-height: 2.1em; overflow-wrap: anywhere; }
+  .st.stall { border-style: dashed; }
+  .st.empty .ins { color: var(--viz-muted); }
+  .st.flush { background: color-mix(in srgb, var(--viz-bad) 22%, var(--viz-bg)); border-color: var(--viz-bad); }
+  .msg { min-height: 3.4em; margin: .1rem 0 .4rem; padding: .45rem .65rem; border-left: 4px solid var(--viz-line); background: var(--viz-surface); border-radius: 0 .4rem .4rem 0; font-size: .9rem; }
+  .msg.hz { border-left-color: var(--viz-warn); }
+  .msg.fl { border-left-color: var(--viz-bad); }
+  .msg.fw { border-left-color: var(--viz-ok); }
+  .msg b { font-weight: 700; }
+  .scroll { overflow-x: auto; border: 1px solid var(--viz-line); border-radius: .5rem; }
+  table.pt { border-collapse: separate; border-spacing: 0; width: 100%; font-size: .78rem; }
+  table.pt th, table.pt td { border: 0; border-bottom: 1px solid var(--viz-line); border-right: 1px solid var(--viz-line); padding: 0; height: 2rem; min-width: 2.35rem; text-align: center; background: var(--viz-bg); }
+  table.pt thead th { background: var(--viz-surface); font-weight: 600; font-variant-numeric: tabular-nums; height: 1.8rem; }
+  table.pt th.ins { position: sticky; left: 0; z-index: 2; text-align: left; padding: 0 .5rem; min-width: 8.2rem; white-space: nowrap; font-family: ui-monospace, Consolas, Menlo, monospace; font-weight: 500; background: var(--viz-surface); }
+  table.pt th.cyc.now, table.pt td.now { box-shadow: inset 0 0 0 2px var(--viz-accent); }
+  table.pt td .c { display: block; padding: .32rem 0; font-weight: 700; font-size: .72rem; color: var(--viz-fg); background: color-mix(in srgb, var(--c) 28%, var(--viz-bg)); }
+  table.pt td .c.stall { background: repeating-linear-gradient(135deg, color-mix(in srgb, var(--c) 28%, var(--viz-bg)) 0 5px, var(--viz-bg) 5px 9px); color: var(--viz-muted); }
+  table.pt td .c.flush { background: color-mix(in srgb, var(--viz-bad) 30%, var(--viz-bg)); color: var(--viz-fg); }
+  table.pt tr.wrong th.ins { color: var(--viz-muted); text-decoration: line-through; }
+  table.pt td.hide { color: transparent; }
+  .row { display: flex; flex-wrap: wrap; gap: .6rem 1.2rem; align-items: center; margin-top: .55rem; }
+  .stats { display: flex; flex-wrap: wrap; gap: .3rem .9rem; font-size: .84rem; color: var(--viz-muted); font-variant-numeric: tabular-nums; }
+  .stats b { color: var(--viz-fg); }
+  .leg { font-size: .74rem; color: var(--viz-muted); margin: .3rem 0 0; }
+</style>
+</head>
+<body>
+<div class="opts">
+  <span><span class="cap">Program</span><select id="prog" aria-label="Program"></select></span>
+  <label class="t"><input type="checkbox" id="fwd" checked> Forwarding</label>
+  <span id="bresw"><span class="cap">Branch resolved in</span><select id="bres" aria-label="Branch resolved in stage"><option value="EX">EX (2-cycle penalty)</option><option value="ID">ID (1-cycle penalty)</option></select></span>
+  <label class="t" id="tkl"><input type="checkbox" id="tkn" checked> Branch taken</label>
+</div>
+<div class="stages" id="stages" aria-label="What each stage holds in this cycle"></div>
+<div class="msg" id="msg" aria-live="polite"></div>
+<div class="scroll"><table class="pt" id="pt" aria-label="Pipeline diagram: instructions down, clock cycles across"></table></div>
+<p class="leg">Solid cell: the instruction works in that stage. Hatched: it waits (stall, a bubble moves down the pipeline). Red X: squashed after a wrong branch guess.</p>
+<div class="row"><div id="ctl"></div><div class="stats" id="stats"></div></div>
+<script src="viz-kit.js"></script>
+<script>
+(function () {
+  var K = VizKit, el = K.el;
+  var STAGES = ['IF', 'ID', 'EX', 'MEM', 'WB'];
+  var NAMES = { IF: 'Fetch', ID: 'Decode', EX: 'Execute', MEM: 'Memory', WB: 'Write back' };
+
+  function I(text, op, dst, src, extra) { var o = { text: text, op: op, dst: dst || null, src: src || [] }; for (var k in (extra || {})) o[k] = extra[k]; return o; }
+  var PROGS = [
+    { name: 'No dependences', prog: [I('add r1,r2,r3', 'alu', 'r1', ['r2', 'r3']), I('sub r4,r5,r6', 'alu', 'r4', ['r5', 'r6']), I('and r7,r8,r9', 'alu', 'r7', ['r8', 'r9']), I('or  r10,r11,r12', 'alu', 'r10', ['r11', 'r12']), I('xor r13,r14,r15', 'alu', 'r13', ['r14', 'r15'])] },
+    { name: 'Data hazards (RAW on r1)', prog: [I('add r1,r2,r3', 'alu', 'r1', ['r2', 'r3']), I('sub r4,r1,r5', 'alu', 'r4', ['r1', 'r5']), I('and r6,r1,r7', 'alu', 'r6', ['r1', 'r7']), I('or  r8,r1,r9', 'alu', 'r8', ['r1', 'r9']), I('xor r10,r1,r11', 'alu', 'r10', ['r1', 'r11'])] },
+    { name: 'Load-use hazard', prog: [I('lw  r1,0(r2)', 'lw', 'r1', ['r2']), I('add r3,r1,r4', 'alu', 'r3', ['r1', 'r4']), I('sub r5,r3,r6', 'alu', 'r5', ['r3', 'r6']), I('sw  r5,4(r2)', 'sw', null, ['r2'], { data: 'r5' }), I('lw  r7,8(r2)', 'lw', 'r7', ['r2'])] },
+    { name: 'Control hazard (branch)', branch: true, prog: [I('add r1,r2,r3', 'alu', 'r1', ['r2', 'r3']), I('beq r1,r4,L', 'br', null, ['r1', 'r4']), I('sub r5,r6,r7', 'alu', 'r5', ['r6', 'r7'], { wrong: true }), I('or  r8,r9,r10', 'alu', 'r8', ['r9', 'r10'], { wrong: true }), I('L: and r11,r12,r13', 'alu', 'r11', ['r12', 'r13']), I('sw  r11,0(r2)', 'sw', null, ['r2'], { data: 'r11' })] }
+  ];
+
+  var S = { prog: 1, fwd: true, bres: 'EX', taken: true };
+  var sched = null, step = null, T = 0;
+
+  /* ---- the schedule: for each instruction the cycle of every stage */
+  function schedule() {
+    var P = PROGS[S.prog], pen = S.bres === 'EX' ? 2 : 1, taken = !!(P.branch && S.taken);
+    var list = [], nw = 0;
+    P.prog.forEach(function (x) {
+      if (x.wrong) { if (!taken || ++nw > pen) return; }
+      list.push(x);
+    });
+    var rows = [], events = {}, stalls = 0, flushes = 0, lastWriter = {}, prev = null, brRow = null;
+    function ev(c, kind, text) { (events[c] = events[c] || []).push({ kind: kind, text: text }); }
+    function nm(x) { return '<b>' + x.text.replace(/^L: /, '').trim() + '</b>'; }
+    var nwrong = 0;
+    list.forEach(function (x, i) {
+      var r = { x: x, wrong: !!x.wrong };
+      rows.push(r);
+      if (x.wrong) {
+        nwrong++;
+        var b = brRow;
+        if (S.bres === 'EX') {
+          r.if0 = nwrong === 1 ? b.id0 : b.ex;
+          r.id0 = nwrong === 1 ? b.ex : null;
+          r.flush = b.ex + 1;
+        } else { r.if0 = b.id0; r.id0 = null; r.flush = b.ex; }
+        return;
+      }
+      var if0, id0;
+      if (!prev) { if0 = 1; id0 = 2; }
+      else if (prev.taken) {
+        if0 = S.bres === 'EX' ? prev.ex + 1 : prev.ex;
+        id0 = if0 + 1;
+      } else { if0 = prev.id0; id0 = prev.ex; }
+      var need = x.src.map(function (s) { return [s, x.op === 'br' && S.bres === 'ID' ? 'ID' : 'EX']; });
+      if (x.data) need.push([x.data, 'MEM']);
+      var ex = id0 + 1, why = [], first = ex;
+      need.forEach(function (n) {
+        var p = lastWriter[n[0]];
+        if (!p) return;
+        var avail, use = n[1] === 'ID' ? ex - 1 : (n[1] === 'EX' ? ex : ex + 1);
+        if (S.fwd) avail = p.op === 'lw' ? p.ex + 2 : p.ex + 1;
+        else avail = { ID: p.ex + 2, EX: p.ex + 3, MEM: p.ex + 4 }[n[1]];
+        if (use < avail) { ex += avail - use; why.push({ reg: n[0], p: p }); }
+      });
+      r.if0 = if0; r.id0 = id0; r.ex = ex; r.stall = ex - first; r.op = x.op;
+      if (r.stall > 0) {
+        stalls += r.stall;
+        why.sort(function (a, b) { return b.p.ex - a.p.ex; });
+        for (var c = id0; c < ex - 1; c++) ev(c, 'hz', nm(x) + ' waits in ID: it needs <b>' + why[0].reg + '</b> from ' + nm(why[0].p.x) + ', ' +
+          (S.fwd ? 'a load, whose data exists only after its MEM stage (a load-use hazard: forwarding cannot remove the last bubble).'
+                 : 'which writes it back only in its WB stage (there is no forwarding path).'));
+      }
+      if (S.fwd) need.forEach(function (n) {
+        var p = lastWriter[n[0]];
+        if (!p || ex - p.ex > 2) return;
+        var cons = n[1] === 'ID' ? ex - 1 : (n[1] === 'EX' ? ex : ex + 1);
+        ev(cons, 'fw', 'Forwarding: <b>' + n[0] + '</b> is taken from the ' + (ex - p.ex === 1 ? 'EX/MEM' : 'MEM/WB') + ' register (' + nm(p.x) + ') straight into the ' + n[1] + ' stage of ' + nm(x) + '. No stall.');
+      });
+      if (x.dst) lastWriter[x.dst] = r;
+      if (x.op === 'br') {
+        brRow = r;
+        r.taken = taken;
+        if (taken) {
+          flushes += pen;
+          ev(S.bres === 'EX' ? ex : ex - 1, 'fl', nm(x) + ' is resolved in ' + S.bres + ': the branch is <b>taken</b>. The pipeline guessed "not taken", so ' +
+            (pen === 2 ? 'the two instructions' : 'the one instruction') + ' fetched behind it are wrong.');
+          ev(S.bres === 'EX' ? ex + 1 : ex, 'fl', (pen === 2 ? 'The two wrong instructions are squashed' : 'The wrong instruction is squashed') + ' (red X): bubbles go down the pipeline, and the target of ' + nm(x) +
+            ' is fetched now. The branch cost <b>' + pen + '</b> cycle' + (pen > 1 ? 's' : '') + '.');
+        } else ev(ex, 'fw', nm(x) + ' is resolved in EX: <b>not taken</b>, so the instructions already fetched were the right ones. No penalty.');
+      }
+      prev = r;
+    });
+    var last = 0;
+    rows.forEach(function (r) {
+      r.cells = {};
+      if (r.wrong) {
+        for (var c = r.if0; c < r.flush; c++) r.cells[c] = { s: r.id0 !== null && c >= r.id0 ? 'ID' : 'IF', stall: r.id0 !== null && c < r.id0 && c > r.if0 || (r.id0 === null && c > r.if0) };
+        r.cells[r.flush] = { s: 'X', flush: true };
+        last = Math.max(last, r.flush);
+        return;
+      }
+      for (var c = r.if0; c < r.id0; c++) r.cells[c] = { s: 'IF', stall: c > r.if0 };
+      for (c = r.id0; c < r.ex; c++) r.cells[c] = { s: 'ID', stall: c < r.ex - 1 };
+      r.cells[r.ex] = { s: 'EX' }; r.cells[r.ex + 1] = { s: 'MEM' }; r.cells[r.ex + 2] = { s: 'WB' };
+      r.wb = r.ex + 2;
+      last = Math.max(last, r.wb);
+    });
+    sched = { rows: rows, events: events, T: last, stalls: stalls, flushes: flushes, real: rows.filter(function (r) { return !r.wrong; }).length };
+    T = last;
+  }
+
+  /* ---- drawing */
+  function build() {
+    schedule();
+    var pt = document.getElementById('pt');
+    pt.innerHTML = '';
+    var thead = el('thead'), hr = el('tr', {}, [el('th', { 'class': 'ins', text: 'Instruction', scope: 'col' })]);
+    for (var c = 1; c <= T; c++) hr.appendChild(el('th', { 'class': 'cyc', text: c, scope: 'col', 'data-c': c }));
+    thead.appendChild(hr);
+    pt.appendChild(thead);
+    var tb = el('tbody');
+    sched.rows.forEach(function (r) {
+      var tr = el('tr', { 'class': r.wrong ? 'wrong' : '' }, [el('th', { 'class': 'ins', scope: 'row', text: r.x.text.replace(/^L: /, '') })]);
+      for (var c = 1; c <= T; c++) {
+        var td = el('td', { 'data-c': c });
+        var cell = r.cells[c];
+        if (cell) {
+          var idx = STAGES.indexOf(cell.s);
+          var d = el('span', { 'class': 'c' + (cell.stall ? ' stall' : '') + (cell.flush ? ' flush' : ''), style: cell.flush ? '' : '--c:' + K.series(idx), text: cell.s });
+          d.setAttribute('aria-label', (cell.flush ? 'squashed' : (cell.stall ? 'waiting in ' : '') + cell.s) + ', ' + r.x.text.trim() + ', cycle ' + c);
+          td.appendChild(d);
+        }
+        tr.appendChild(td);
+      }
+      tb.appendChild(tr);
+    });
+    pt.appendChild(tb);
+    var host = document.getElementById('ctl');
+    host.innerHTML = '';
+    step = K.stepper(host, { count: T, interval: 1100, label: 'Clock cycle', onStep: show });
+    step.go(0);
+  }
+
+  function show(i) {
+    var cyc = i + 1, pt = document.getElementById('pt');
+    // reveal the columns up to the current cycle
+    [].forEach.call(pt.querySelectorAll('[data-c]'), function (n) {
+      var c = +n.getAttribute('data-c');
+      n.classList.toggle('now', c === cyc);
+      if (n.tagName === 'TD') { var s = n.firstChild; if (s) s.style.visibility = c <= cyc ? '' : 'hidden'; }
+    });
+    // the stages at this cycle
+    var host = document.getElementById('stages');
+    host.innerHTML = '';
+    STAGES.forEach(function (st, k) {
+      var who = null, kind = '';
+      sched.rows.forEach(function (r) { var c = r.cells[cyc]; if (c && c.s === st) { who = r; kind = c.stall ? 'stall' : ''; } });
+      var fl = null;
+      sched.rows.forEach(function (r) { var c = r.cells[cyc]; if (c && c.flush && k === 1) fl = r; });
+      var d = el('div', { 'class': 'st' + (who ? '' : ' empty') + (kind ? ' ' + kind : ''), style: '--c:' + K.series(k) });
+      d.appendChild(el('div', { 'class': 'nm', text: st + ' ' + NAMES[st].toLowerCase() }));
+      var txt = who ? who.x.text.replace(/^L: /, '') : '(bubble)';
+      if (!who && sched.rows.some(function (r) { var c = r.cells[cyc], p = r.cells[cyc - 1]; return c && c.flush && p && p.s === st; })) { txt = 'squashed'; d.classList.add('flush'); }
+      d.appendChild(el('div', { 'class': 'ins', text: txt + (kind ? ' (waits)' : '') }));
+      host.appendChild(d);
+    });
+    // the message
+    var evs = sched.events[cyc] || [], m = document.getElementById('msg');
+    var kind = evs.length ? evs[0].kind : '';
+    for (var q = 0; q < evs.length; q++) if (evs[q].kind === 'fl') kind = 'fl'; else if (evs[q].kind === 'hz' && kind !== 'fl') kind = 'hz';
+    m.className = 'msg ' + kind;
+    var base = '<b>Cycle ' + cyc + '.</b> ';
+    if (!evs.length) {
+      var pieces = [];
+      sched.rows.forEach(function (r) { var c = r.cells[cyc]; if (c && !c.flush && c.s === 'IF' && !c.stall) pieces.push('fetches <b>' + r.x.text.replace(/^L: /, '').trim() + '</b>'); });
+      var busy = sched.rows.filter(function (r) { var c = r.cells[cyc]; return c && !c.flush && !c.stall; }).length;
+      m.innerHTML = base + (cyc <= 4 ? 'The pipeline fills: each cycle one more stage is busy.' : (cyc > sched.T - 4 ? 'The pipeline drains as the last instructions finish.' : 'No hazard in this cycle: ' + busy + ' instructions are in flight, one in each busy stage.')) +
+        (pieces.length ? ' Fetching: ' + pieces.map(function (p) { return p.replace(/^fetches /, ''); }).join(', ') + '.' : '');
+    } else m.innerHTML = base + evs.map(function (e) { return e.text; }).join(' ');
+    // statistics
+    var done = sched.rows.filter(function (r) { return !r.wrong && r.wb <= cyc; }).length;
+    var st = 0, fl = 0;
+    sched.rows.forEach(function (r) {
+      for (var c = 1; c <= cyc; c++) { var x = r.cells[c]; if (x && x.stall && x.s === 'ID') st++; if (x && x.flush) fl++; }
+    });
+    document.getElementById('stats').innerHTML = 'Finished <b>' + done + '</b> of ' + sched.real + ' &middot; stall cycles <b>' + st + '</b> &middot; squashed <b>' + fl + '</b>' +
+      (cyc === T ? ' &middot; CPI <b>' + (T / sched.real).toFixed(2) + '</b> (ideal 1.00 + fill ' + (4 / sched.real).toFixed(2) + ')' : '');
+    // keep the current column in view
+    var th = pt.querySelector('th.cyc.now'), sc = pt.parentNode;
+    if (th) { var l = th.offsetLeft, w = th.offsetWidth; if (l < sc.scrollLeft + 130) sc.scrollLeft = Math.max(0, l - 130); else if (l + w > sc.scrollLeft + sc.clientWidth) sc.scrollLeft = l + w - sc.clientWidth + 6; }
+  }
+
+  var sel = document.getElementById('prog');
+  PROGS.forEach(function (p, i) { sel.appendChild(el('option', { value: i, text: p.name })); });
+  sel.value = 1;
+  function sync() {
+    document.getElementById('tkl').style.display = PROGS[S.prog].branch ? '' : 'none';
+    document.getElementById('bresw').style.display = PROGS[S.prog].branch ? '' : 'none';
+    build();
+  }
+  sel.addEventListener('change', function () { S.prog = +sel.value; sync(); });
+  document.getElementById('fwd').addEventListener('change', function (e) { S.fwd = e.target.checked; sync(); });
+  document.getElementById('bres').addEventListener('change', function (e) { S.bres = e.target.value; sync(); });
+  document.getElementById('tkn').addEventListener('change', function (e) { S.taken = e.target.checked; sync(); });
+  K.onTheme(function () { if (step) show(step.index); });
+  sync();
+  K.autoHeight();
+})();
+</script>
+</body>
+</html>

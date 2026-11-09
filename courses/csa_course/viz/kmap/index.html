@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Karnaugh map minimiser</title>
+<style>
+  body { padding: .6rem .7rem .8rem; }
+  .top { display: flex; flex-wrap: wrap; gap: .5rem .9rem; align-items: center; margin-bottom: .5rem; }
+  .top label { font-size: .85rem; color: var(--viz-muted); margin-right: .25rem; }
+  .main { display: grid; grid-template-columns: minmax(0, 1fr); gap: .9rem; }
+  @media (min-width: 640px) { .main { grid-template-columns: minmax(0, 22rem) minmax(0, 1fr); align-items: start; } }
+  .km { position: relative; display: grid; gap: 0; user-select: none; width: 100%; max-width: 24rem; }
+  .km .corner, .km .hd { font-size: .78rem; color: var(--viz-muted); display: flex; align-items: center; justify-content: center; font-variant-numeric: tabular-nums; }
+  .km .corner { font-size: .72rem; line-height: 1.1; text-align: center; }
+  .km .cell {
+    position: relative; aspect-ratio: 1; min-height: 0; padding: 0; border: 1px solid var(--viz-line); border-radius: 0; margin: 0;
+    background: var(--viz-bg); font-size: 1.35rem; font-weight: 600; display: flex; align-items: center; justify-content: center;
+  }
+  .km .cell:hover:not(:disabled) { border-color: var(--viz-line); background: var(--viz-surface); }
+  .km .cell .mn { position: absolute; left: .22rem; top: .1rem; font-size: .62rem; font-weight: 400; color: var(--viz-muted); }
+  .km .cell.v1 { color: var(--viz-fg); }
+  .km .cell.v0 { color: var(--viz-muted); font-weight: 400; }
+  .km .cell.vx { color: var(--viz-warn); }
+  .km .cell:focus-visible { outline: 3px solid var(--viz-accent); outline-offset: -3px; z-index: 3; }
+  .km svg { position: absolute; left: 0; top: 0; pointer-events: none; overflow: visible; z-index: 2; }
+  .out { min-width: 0; }
+  .expr { font-size: 1.15rem; padding: .55rem .7rem; border: 1px solid var(--viz-line); border-radius: .55rem; background: var(--viz-surface); overflow-wrap: anywhere; line-height: 1.7; }
+  .expr .lit { white-space: nowrap; }
+  .expr .t { display: inline-block; padding: 0 .35rem; border-radius: .35rem; border: 2px solid var(--c); background: color-mix(in srgb, var(--c) 14%, transparent); margin: 0 .05rem; cursor: default; }
+  .expr .t.hot { background: color-mix(in srgb, var(--c) 34%, transparent); }
+  .expr .op { color: var(--viz-muted); padding: 0 .1rem; }
+  .pn { text-decoration: none; }
+  .note { font-size: .86rem; color: var(--viz-muted); margin: .4rem 0 0; }
+  ul.pis { list-style: none; margin: .4rem 0 0; padding: 0; font-size: .86rem; display: flex; flex-wrap: wrap; gap: .3rem .5rem; }
+  ul.pis li { padding: .1rem .5rem; border: 1px solid var(--viz-line); border-radius: 999px; background: var(--viz-bg); }
+  ul.pis li.sel { border-width: 2px; border-color: var(--c); }
+  ul.pis li b { font-weight: 700; }
+  .presets { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: .6rem; }
+  .presets button { min-height: 2rem; font-size: .84rem; padding: .2rem .65rem; }
+  .hint { font-size: .8rem; color: var(--viz-muted); margin: .45rem 0 0; }
+  .over { font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body>
+<div class="top" role="group" aria-label="Map settings">
+  <span><label id="lv">Variables</label>
+    <span class="vk-seg" role="radiogroup" aria-labelledby="lv" id="nvars"></span></span>
+  <span><label id="lm">Group</label>
+    <span class="vk-seg" role="radiogroup" aria-labelledby="lm" id="mode"></span></span>
+</div>
+<div class="main">
+  <div>
+    <div class="km" id="km" role="grid" aria-label="Karnaugh map"></div>
+    <p class="hint">Click a cell, or move with the arrow keys and press Space, to cycle 0, 1 and X (don't care). Keys 0, 1 and X set the cell.</p>
+  </div>
+  <div class="out">
+    <div class="vk-muted" style="font-size:.85rem" id="fname">F =</div>
+    <div class="expr" id="expr" aria-live="polite"></div>
+    <p class="note" id="stats"></p>
+    <ul class="pis" id="pis" aria-label="Prime implicants"></ul>
+    <div class="presets" id="presets" role="group" aria-label="Examples"></div>
+  </div>
+</div>
+<script src="viz-kit.js"></script>
+<script>
+(function () {
+  var K = VizKit, el = K.el;
+  var N = 4, MODE = 'sop';
+  var vars = ['A', 'B', 'C', 'D'];
+  var cells = [];            // value per minterm index: 0, 1 or 2 (X)
+  var GRAY = [0, 1, 3, 2];
+  var focusM = 0, hot = -1;
+
+  var PRESETS = [
+    { n: 4, label: 'Example 2.3', ones: [0, 1, 2, 4, 5, 6, 8, 9, 12, 13, 14] },
+    { n: 3, label: 'Example 2.1(b)', ones: [0, 2, 4, 5, 6] },
+    { n: 3, label: 'Example 2.2', ones: [0, 1, 2, 3, 5, 7] },
+    { n: 4, label: 'With don’t-cares', ones: [4, 8, 10, 11, 12, 15], x: [9, 14] },
+    { n: 4, label: 'Checkerboard (XOR)', ones: [1, 2, 4, 7, 8, 11, 13, 14] }
+  ];
+
+  function layout() {
+    if (N === 2) return { rb: 1, cb: 1 };
+    if (N === 3) return { rb: 1, cb: 2 };
+    return { rb: 2, cb: 2 };
+  }
+  // minterm index of the cell at row r, column c
+  function mt(r, c) {
+    var L = layout(), rows = 1 << L.rb, cols = 1 << L.cb;
+    var rv = L.rb === 1 ? r : GRAY[r], cv = L.cb === 1 ? c : GRAY[c];
+    return (rv << L.cb) | cv;
+  }
+  function bits(v, n) { var s = ''; for (var i = n - 1; i >= 0; i--) s += (v >> i) & 1; return s; }
+
+  // ---- Quine-McCluskey on a set of "ones" with don't-cares
+  function primes(ones, dcs, n) {
+    var all = ones.concat(dcs), cur = {}, res = [];
+    all.forEach(function (m) { cur[m + ':0'] = { v: m, mask: 0 }; });
+    var guard = 0;
+    while (Object.keys(cur).length && guard++ < 10) {
+      var list = Object.keys(cur).map(function (k) { return cur[k]; }), nxt = {}, used = {};
+      for (var i = 0; i < list.length; i++) for (var j = i + 1; j < list.length; j++) {
+        var a = list[i], b = list[j];
+        if (a.mask !== b.mask) continue;
+        var d = a.v ^ b.v;
+        if (d && (d & (d - 1)) === 0) {
+          var mask = a.mask | d, v = a.v & ~d;
+          nxt[v + ':' + mask] = { v: v, mask: mask };
+          used[i] = used[j] = true;
+        }
+      }
+      list.forEach(function (x, i) { if (!used[i]) res.push(x); });
+      cur = nxt;
+    }
+    return res.filter(function (p) { return covers(p, n).some(function (m) { return ones.indexOf(m) >= 0; }); });
+  }
+  function covers(p, n) {
+    var out = [];
+    for (var m = 0; m < (1 << n); m++) if (((m & ~p.mask) === p.v)) out.push(m);
+    return out;
+  }
+  function lits(p, n) { return n - bitcount(p.mask); }
+  function bitcount(x) { var c = 0; while (x) { c += x & 1; x >>= 1; } return c; }
+
+  function minimalCover(ones, ps, n) {
+    var cov = ps.map(function (p) { return covers(p, n).filter(function (m) { return ones.indexOf(m) >= 0; }); });
+    var chosen = [], left = ones.slice(), essential = {};
+    // essential prime implicants
+    ones.forEach(function (m) {
+      var w = []; ps.forEach(function (p, i) { if (cov[i].indexOf(m) >= 0) w.push(i); });
+      if (w.length === 1) essential[w[0]] = true;
+    });
+    Object.keys(essential).forEach(function (i) { chosen.push(+i); });
+    left = left.filter(function (m) { return !chosen.some(function (i) { return cov[i].indexOf(m) >= 0; }); });
+    var best = null;
+    function cost(sel) { return sel.length * 100 + sel.reduce(function (s, i) { return s + lits(ps[i], n); }, 0); }
+    function rec(rem, sel) {
+      if (best && cost(sel) >= cost(best)) return;
+      if (!rem.length) { best = sel.slice(); return; }
+      var m = rem[0];
+      var cand = ps.map(function (p, i) { return i; }).filter(function (i) { return cov[i].indexOf(m) >= 0; });
+      cand.sort(function (a, b) { return cov[b].length - cov[a].length; });
+      cand.forEach(function (i) {
+        sel.push(i);
+        rec(rem.filter(function (x) { return cov[i].indexOf(x) < 0; }), sel);
+        sel.pop();
+      });
+    }
+    rec(left, chosen.slice());
+    return { sel: best || chosen, essential: essential, cov: cov };
+  }
+
+  function term(p, n, pos) {
+    // product term (SOP): constant 1 -> plain, constant 0 -> primed. sum term (POS): constant 0 -> plain, 1 -> primed
+    var parts = [];
+    for (var i = 0; i < n; i++) {
+      var bit = n - 1 - i;
+      if ((p.mask >> bit) & 1) continue;
+      var one = (p.v >> bit) & 1;
+      parts.push({ name: vars[i], prime: pos ? !!one : !one });
+    }
+    return parts;
+  }
+
+  // ---- drawing
+  var km = document.getElementById('km'), svgNS = 'http://www.w3.org/2000/svg';
+  var buttons = {};
+  function build() {
+    km.innerHTML = '';
+    buttons = {};
+    var L = layout(), rows = 1 << L.rb, cols = 1 << L.cb;
+    km.style.gridTemplateColumns = '1.8rem repeat(' + cols + ', minmax(0, 1fr))';
+    var rv = vars.slice(0, L.rb).join(''), cv = vars.slice(L.rb, N).join('');
+    km.appendChild(el('div', { 'class': 'corner', html: rv + '<br>\\' + cv, 'aria-hidden': 'true' }));
+    for (var c = 0; c < cols; c++) km.appendChild(el('div', { 'class': 'hd', text: L.cb === 1 ? c : bits(GRAY[c], 2), 'aria-hidden': 'true' }));
+    for (var r = 0; r < rows; r++) {
+      km.appendChild(el('div', { 'class': 'hd', text: L.rb === 1 ? r : bits(GRAY[r], 2), 'aria-hidden': 'true' }));
+      for (c = 0; c < cols; c++) {
+        (function (m) {
+          var b = el('button', { type: 'button', 'class': 'cell', role: 'gridcell', tabindex: m === focusM ? '0' : '-1', 'data-m': m });
+          b.addEventListener('click', function () { focusM = m; setVal(m, (cells[m] + 1) % 3); });
+          b.addEventListener('focus', function () { focusM = m; });
+          b.addEventListener('keydown', function (e) { cellKey(e, m, r, c); });
+          buttons[m] = b;
+          km.appendChild(b);
+        })(mt(r, c));
+      }
+    }
+    var svg = document.createElementNS(svgNS, 'svg');
+    svg.setAttribute('id', 'ov');
+    svg.setAttribute('aria-hidden', 'true');
+    km.appendChild(svg);
+  }
+  function posOf(m) {
+    var L = layout(), rows = 1 << L.rb, cols = 1 << L.cb;
+    for (var r = 0; r < rows; r++) for (var c = 0; c < cols; c++) if (mt(r, c) === m) return [r, c];
+  }
+  function cellKey(e, m) {
+    var L = layout(), rows = 1 << L.rb, cols = 1 << L.cb, p = posOf(m), r = p[0], c = p[1], k = e.key, t = null;
+    if (k === 'ArrowRight') t = mt(r, (c + 1) % cols);
+    else if (k === 'ArrowLeft') t = mt(r, (c + cols - 1) % cols);
+    else if (k === 'ArrowDown') t = mt((r + 1) % rows, c);
+    else if (k === 'ArrowUp') t = mt((r + rows - 1) % rows, c);
+    else if (k === '0' || k === '1') { e.preventDefault(); setVal(m, +k); return; }
+    else if (k === 'x' || k === 'X') { e.preventDefault(); setVal(m, 2); return; }
+    if (t !== null) { e.preventDefault(); e.stopPropagation(); focusM = t; buttons[t].focus(); refreshTab(); }
+  }
+  function refreshTab() { Object.keys(buttons).forEach(function (m) { buttons[m].tabIndex = (+m === focusM) ? 0 : -1; }); }
+  function setVal(m, v) { cells[m] = v; update(true); }
+
+  function rectsFor(set, L) {
+    // cells of a group -> rows and columns; split cyclic runs at the seam
+    var rows = 1 << L.rb, cols = 1 << L.cb, R = {}, C = {};
+    set.forEach(function (m) { var p = posOf(m); R[p[0]] = 1; C[p[1]] = 1; });
+    return { rr: runs(Object.keys(R).map(Number), rows), cr: runs(Object.keys(C).map(Number), cols) };
+  }
+  function runs(ix, n) {
+    ix.sort(function (a, b) { return a - b; });
+    if (ix.length === n) return [{ a: 0, b: n - 1, cutA: false, cutB: false }];
+    if (ix[0] === 0 && ix[ix.length - 1] === n - 1) {
+      // wraps: find the gap
+      var g = 0; while (ix[g + 1] === ix[g] + 1) g++;
+      return [{ a: 0, b: ix[g], cutA: true, cutB: false }, { a: ix[g + 1], b: n - 1, cutA: false, cutB: true }];
+    }
+    return [{ a: ix[0], b: ix[ix.length - 1], cutA: false, cutB: false }];
+  }
+  function draw(groups) {
+    var svg = document.getElementById('ov'), first = buttons[0];
+    var gr = km.getBoundingClientRect();
+    svg.setAttribute('width', gr.width); svg.setAttribute('height', gr.height);
+    svg.style.width = gr.width + 'px'; svg.style.height = gr.height + 'px';
+    svg.innerHTML = '';
+    var L = layout(), rows = 1 << L.rb, cols = 1 << L.cb;
+    function box(r, c) { var b = buttons[mt(r, c)].getBoundingClientRect(); return { x: b.left - gr.left, y: b.top - gr.top, w: b.width, h: b.height }; }
+    groups.forEach(function (g, gi) {
+      var col = K.series(g.color), inset = 4 + (gi % 3) * 2.5;
+      var rr = g.rects.rr, cr = g.rects.cr;
+      rr.forEach(function (R) { cr.forEach(function (Cc) {
+        var tl = box(R.a, Cc.a), br = box(R.b, Cc.b);
+        var x = tl.x + inset, y = tl.y + inset, w = br.x + br.w - tl.x - 2 * inset, h = br.y + br.h - tl.y - 2 * inset;
+        var rect = document.createElementNS(svgNS, 'rect');
+        rect.setAttribute('x', x); rect.setAttribute('y', y); rect.setAttribute('width', w); rect.setAttribute('height', h);
+        rect.setAttribute('rx', 9); rect.setAttribute('fill', col); rect.setAttribute('fill-opacity', g.hot ? .28 : .13);
+        rect.setAttribute('stroke', col); rect.setAttribute('stroke-width', g.hot ? 3.5 : 2.4);
+        if (rr.length > 1 || cr.length > 1) rect.setAttribute('stroke-dasharray', '7 4');
+        svg.appendChild(rect);
+      }); });
+    });
+  }
+
+  var last = { groups: [] };
+  function update(announce) {
+    var ones = [], dcs = [], zeros = [];
+    for (var m = 0; m < (1 << N); m++) { if (cells[m] === 1) ones.push(m); else if (cells[m] === 2) dcs.push(m); else zeros.push(m); }
+    var pos = MODE === 'pos';
+    var target = pos ? zeros : ones;
+    var res = { sel: [], ps: [], essential: {} };
+    if (target.length) {
+      var ps = primes(target, dcs, N);
+      var mc = minimalCover(target, ps, N);
+      res = { sel: mc.sel, ps: ps, essential: mc.essential };
+    }
+    var groups = res.sel.map(function (i, k) { return { p: res.ps[i], color: k, hot: k === hot }; });
+    var L = layout();
+    groups.forEach(function (g) { g.cells = covers(g.p, N); g.rects = rectsFor(g.cells, L); });
+    // cells
+    Object.keys(buttons).forEach(function (m) {
+      var b = buttons[m], v = cells[m];
+      var vr = v === 2 ? 'X' : v;
+      b.className = 'cell v' + (v === 2 ? 'x' : v);
+      b.innerHTML = '<span class="mn">' + m + '</span>' + vr;
+      var lab = 'm' + m + ', ' + vars.slice(0, N).map(function (n, i) { return n + '=' + ((m >> (N - 1 - i)) & 1); }).join(' ') + ', value ' + vr;
+      b.setAttribute('aria-label', lab);
+    });
+    // expression
+    var ex = document.getElementById('expr');
+    ex.innerHTML = '';
+    var allDash = target.length === (1 << N) - dcs.length && !target.length;
+    if (!ones.length && !pos) ex.textContent = '0';
+    else if (pos && !zeros.length) ex.textContent = '1';
+    else if (!pos && ones.length + dcs.length === (1 << N)) ex.textContent = '1';
+    else if (pos && zeros.length && zeros.length + dcs.length === (1 << N)) ex.textContent = '0';
+    else groups.forEach(function (g, k) {
+      if (k) ex.appendChild(el('span', { 'class': 'op', text: pos ? '·' : '+' }));
+      var parts = term(g.p, N, pos);
+      var t = el('span', { 'class': 't', style: '--c:' + K.series(g.color), tabindex: '-1' });
+      if (!parts.length) t.textContent = pos ? '0' : '1';
+      if (pos) t.appendChild(document.createTextNode('('));
+      parts.forEach(function (lit, i) {
+        if (pos && i) t.appendChild(document.createTextNode(' + '));
+        t.appendChild(el('span', { 'class': 'lit', html: lit.name + (lit.prime ? '′' : '') }));
+      });
+      if (pos) t.appendChild(document.createTextNode(')'));
+      t.addEventListener('mouseenter', function () { hot = k; draw(last.groups = redo()); });
+      t.addEventListener('mouseleave', function () { hot = -1; draw(last.groups = redo()); });
+      ex.appendChild(t);
+    });
+    document.getElementById('fname').textContent = 'F(' + vars.slice(0, N).join(',') + ') = ' + (pos ? 'product of sums' : 'sum of products');
+    // statistics
+    var nl = groups.reduce(function (s, g) { return s + lits(g.p, N); }, 0);
+    var esc = res.sel.filter(function (i) { return res.essential[i]; }).length;
+    var st = document.getElementById('stats');
+    st.textContent = target.length
+      ? (groups.length + (groups.length === 1 ? ' group' : ' groups') + ', ' + nl + ' literals. ' + res.ps.length + ' prime implicants, ' + esc + ' essential.' + (dcs.length ? ' Don’t-cares used only where they enlarge a group.' : ''))
+      : (pos ? 'No 0s on the map: F is constantly 1.' : 'No 1s on the map: F is constantly 0.');
+    // prime implicant list
+    var ul = document.getElementById('pis');
+    ul.innerHTML = '';
+    res.ps.forEach(function (p, i) {
+      var parts = term(p, N, pos).map(function (l) { return l.name + (l.prime ? '′' : ''); });
+      var txt = parts.length ? (pos ? '(' + parts.join(' + ') + ')' : parts.join('')) : (pos ? '0' : '1');
+      var k = res.sel.indexOf(i);
+      var li = el('li', { 'class': k >= 0 ? 'sel' : '', style: k >= 0 ? '--c:' + K.series(k) : '' });
+      li.innerHTML = (res.essential[i] ? '<b>' + txt + '</b>' : txt) + '<span class="vk-muted"> m' + covers(p, N).filter(function (m) { return target.indexOf(m) >= 0; }).join(',') + '</span>';
+      ul.appendChild(li);
+    });
+    last = { groups: groups, res: res, target: target, dcs: dcs, pos: pos };
+    draw(groups);
+    if (announce) { var s = km; }
+  }
+  function redo() { return last.groups.map(function (g, k) { g.hot = k === hot; return g; }); }
+
+  function load(n, ones, xs) {
+    N = n;
+    cells = [];
+    for (var m = 0; m < (1 << N); m++) cells.push(0);
+    ones.forEach(function (m) { cells[m] = 1; });
+    (xs || []).forEach(function (m) { cells[m] = 2; });
+    focusM = 0;
+    setSeg('nvars', N);
+    build();
+    update();
+  }
+
+  function seg(id, items, current, fn) {
+    var host = document.getElementById(id);
+    host.innerHTML = '';
+    items.forEach(function (it) {
+      var b = el('button', { type: 'button', role: 'radio', 'aria-checked': String(it[0] === current), text: it[1], 'data-v': it[0] });
+      b.addEventListener('click', function () { fn(it[0]); });
+      host.appendChild(b);
+    });
+  }
+  function setSeg(id, v) {
+    [].forEach.call(document.getElementById(id).children, function (b) {
+      var on = b.getAttribute('data-v') === String(v);
+      b.setAttribute('aria-checked', String(on));
+      b.classList.toggle('on', on);
+    });
+  }
+
+  seg('nvars', [[2, '2'], [3, '3'], [4, '4']], 4, function (n) {
+    // keep the minterms that still exist
+    var old = cells.slice(), ones = [], xs = [];
+    for (var m = 0; m < (1 << n); m++) { if (old[m] === 1) ones.push(m); else if (old[m] === 2) xs.push(m); }
+    load(n, ones, xs);
+  });
+  seg('mode', [['sop', 'Ones (SOP)'], ['pos', 'Zeros (POS)']], 'sop', function (v) { MODE = v; setSeg('mode', v); update(); });
+  var pr = document.getElementById('presets');
+  PRESETS.forEach(function (p) { pr.appendChild(el('button', { type: 'button', text: p.label, onclick: function () { load(p.n, p.ones, p.x); } })); });
+  pr.appendChild(el('button', { type: 'button', text: 'Clear', onclick: function () { load(N, [], []); } }));
+  pr.appendChild(el('button', { type: 'button', text: 'Random', onclick: function () {
+    var ones = [], xs = [];
+    for (var m = 0; m < (1 << N); m++) { var r = Math.random(); if (r < .45) ones.push(m); else if (r < .55) xs.push(m); }
+    load(N, ones, xs);
+  } }));
+  setSeg('mode', 'sop');
+  window.addEventListener('resize', function () { draw(last.groups); });
+  if (window.ResizeObserver) new ResizeObserver(function () { draw(last.groups); }).observe(km);
+  K.onTheme(function () { if (last.groups.length || cells.length) { update(); } });
+  load(4, PRESETS[0].ones);
+  K.autoHeight();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,1500 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#ffffff">
+  
+    <meta name="description" content="The Open Book Project: books on computer science, quantum computing, cyber security, science, university courses and the English language, read page by page like an e-book, online or offline.">
+  
+  
+    <meta name="author" content="Nikhil Kumar Rajput, Ramanujan College, University of Delhi">
+  
+  
+    <link rel="canonical" href="https://open-book-project.github.io/computing/microarchitecture/side-channels-and-hardware-security.html">
+  
+  
+    <link rel="prev" href="benchmarks-and-metrics.html">
+  
+  
+    <link rel="next" href="labs-and-a-design-study.html">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&family=Noto+Serif+Devanagari:wght@400;600;700&display=swap" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&family=Noto+Serif+Devanagari:wght@400;600;700&display=swap"></noscript>
+  <link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+  <link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Open Book">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="application-name" content="Open Book"><script id="bjp-books" type="application/json">[{"id": "hardware_security", "lang": "en", "path": "science/hardware_security"}, {"id": "drones_missiles", "lang": "en", "path": "science/drones_missiles"}, {"id": "code_to_electrons", "lang": "en", "path": "science/code_to_electrons"}, {"id": "dpi_ndr", "lang": "en", "path": "science/dpi_ndr"}, {"id": "quantum", "lang": "en", "path": "quantum/quantum"}, {"id": "qml", "lang": "en", "path": "quantum/qml"}, {"id": "qml_course", "lang": "en", "path": "quantum/qml_course"}, {"id": "asic", "lang": "en", "path": "computing/asic"}, {"id": "compute", "lang": "en", "path": "computing/compute"}, {"id": "memory", "lang": "en", "path": "computing/memory"}, {"id": "os", "lang": "en", "path": "computing/os"}, {"id": "databases", "lang": "en", "path": "computing/databases"}, {"id": "datacenters", "lang": "en", "path": "computing/datacenters"}, {"id": "networks", "lang": "en", "path": "computing/networks"}, {"id": "cellular", "lang": "en", "path": "computing/cellular"}, {"id": "ml", "lang": "en", "path": "computing/ml"}, {"id": "microarchitecture", "lang": "en", "path": "computing/microarchitecture"}, {"id": "rtl_hdl", "lang": "en", "path": "computing/rtl_hdl"}, {"id": "rtl_to_gdsii", "lang": "en", "path": "computing/rtl_to_gdsii"}, {"id": "ram_ddr5", "lang": "en", "path": "computing/ram_ddr5"}, {"id": "security", "lang": "en", "path": "cyber/security"}, {"id": "trust", "lang": "en", "path": "cyber/trust"}, {"id": "attack_taxonomy", "lang": "en", "path": "cyber/attack_taxonomy"}, {"id": "datacentre_security_ip", "lang": "en", "path": "cyber/datacentre_security_ip"}, {"id": "randomness_testing", "lang": "en", "path": "cyber/randomness_testing"}, {"id": "optimization_methods", "lang": "en", "path": "courses/optimization_methods"}, {"id": "quantum_computing_applications", "lang": "en", "path": "courses/quantum_computing_applications"}, {"id": "dbms_course", "lang": "en", "path": "courses/dbms_course"}, {"id": "csa_course", "lang": "en", "path": "courses/csa_course"}, {"id": "web_programming", "lang": "en", "path": "courses/web_programming"}, {"id": "ml_course", "lang": "en", "path": "courses/ml_course"}, {"id": "english_book", "lang": "en", "path": "language/english_book"}, {"id": "english_book_hinglish", "lang": "en", "path": "language/english_book_hinglish"}, {"id": "english_book_hi", "lang": "hi", "path": "language/english_book_hi"}]</script><script>
+    (function () {
+      var X = window.XMLHttpRequest, open, gate = new Promise(function (r) { open = r; });
+      if (!X) return;
+      var open0 = X.prototype.open, send0 = X.prototype.send;
+      X.prototype.open = function (method, url) {
+        this.__pkIndex = /\/search\/search_index\.json(\?|#|$)/.test(String(url));
+        return open0.apply(this, arguments);
+      };
+      X.prototype.send = function () {
+        if (!this.__pkIndex) return send0.apply(this, arguments);
+        var xhr = this, args = arguments;
+        gate.then(function () { send0.apply(xhr, args); });
+      };
+      function wake() { open(); }
+      document.addEventListener("focusin", function (e) { if (e.target && e.target.closest && e.target.closest(".md-search")) wake(); });
+      document.addEventListener("click", function (e) { if (e.target && e.target.closest && e.target.closest('label[for="__search"], .md-search')) wake(); }, true);
+      document.addEventListener("keydown", function (e) {
+        var k = e.key;
+        if ((k === "/" || k === "s" || k === "f" || k === "S" || k === "F") && !(e.target && e.target.closest && e.target.closest("input, textarea, [contenteditable]"))) wake();
+      }, true);
+      if (/[?&]q=/.test(location.search)) wake();
+    })();
+  </script><script>
+    try {
+      if ((window.matchMedia && (matchMedia("(display-mode: standalone)").matches || matchMedia("(display-mode: fullscreen)").matches)) || navigator.standalone === true) {
+        document.documentElement.className += " bjp-standalone";
+      }
+    } catch (e) { /* not an installed app */ }
+  </script>
+  <script>
+    /* a book opened from its cover on the shelf: the page stays blank, in the cover's colour, until the reader is up */
+    try {
+      var cv = sessionStorage.getItem("bjp.reader.cover");
+      if (cv && sessionStorage.getItem("bjp.reader.open") === "1") {
+        var c = JSON.parse(cv), de = document.documentElement;
+        de.className += " bjp-booting";
+        if (c && /^#[0-9a-f]{3,8}$/i.test(c.bg || "")) de.style.background = c.bg;
+        setTimeout(function () { de.classList.remove("bjp-booting"); de.style.background = ""; }, 3000);
+      }
+    } catch (e) { /* no session storage: the page simply opens as usual */ }
+  </script>
+
+    
+      
+        <title>10. Side Channels and Hardware Security - The Open Book Project</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/extra.css">
+    
+      <link rel="stylesheet" href="../../assets/reader.css">
+    
+      <link rel="stylesheet" href="../../assets/viz.css">
+    
+      <link rel="stylesheet" href="../../assets/app.css">
+    
+      <link rel="stylesheet" href="../../assets/theme.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#101-what-a-side-channel-is" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../index.html" title="The Open Book Project" class="md-header__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+      
+  <img src="../../assets/icons/logo.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            The Open Book Project
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              10. Side Channels and Hardware Security
+            
+          </span>
+        </div>
+      </div>
+    </div><a href="../../index.html" class="bjp-libbtn" aria-label="Library: all books" title="Library: all books">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V5h4v15M8 20V9h4v11M14 20L12.6 6l3.8-.8 3 14.2M3 20h18"/></svg><span>Library</span>
+    </a>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary bjp-nav bjp-nav--book" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../index.html" title="The Open Book Project" class="md-nav__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+      
+  <img src="../../assets/icons/logo.svg" alt="logo">
+
+    </a>
+    The Open Book Project
+  </label>
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      <li class="md-nav__item bjp-nav-all">
+        <a href="../../index.html" class="md-nav__link" aria-label="All books: back to the library">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+          <span class="md-ellipsis">All books</span>
+        </a>
+      </li>
+      <li class="md-nav__item bjp-nav-book" role="presentation"><span class="bjp-nav-head">Microarchitecture and SoC Design</span></li>
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview and preface
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="preface.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Preface
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="the-layer-under-the-isa.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. The Layer Under the Instruction Set
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="pipelining-and-hazards.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Pipelining and Hazards
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="out-of-order-and-superscalar.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. Out-of-Order and Superscalar Execution
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="caches-and-virtual-memory.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. Caches and Virtual Memory
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="coherence-consistency-and-scaling.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Coherence, Consistency and Scaling
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="on-chip-interconnect.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. On-Chip Interconnect
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="peripheral-interfaces.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    7. Peripheral Interfaces
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="real-risc-v-cores.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    8. Real RISC-V Cores
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="benchmarks-and-metrics.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    9. Benchmarks and Metrics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    10. Side Channels and Hardware Security
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="side-channels-and-hardware-security.html" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    10. Side Channels and Hardware Security
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#101-what-a-side-channel-is" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.1 What a side channel is
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#102-timing-channels" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.2 Timing channels
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#103-cache-timing-attacks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.3 Cache-timing attacks
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="10.3 Cache-timing attacks">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#reading-a-flushreload-measurement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reading a Flush+Reload measurement
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#104-speculative-execution-attacks-spectre-and-meltdown" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.4 Speculative-execution attacks: Spectre and Meltdown
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#105-physical-channels-and-other-shared-state" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.5 Physical channels, and other shared state
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="10.5 Physical channels, and other shared state">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#power-and-electromagnetic-analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Power and electromagnetic analysis
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fault-injection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fault injection
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#almost-any-shared-state-can-leak" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Almost any shared state can leak
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#106-defences-and-their-price" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.6 Defences, and their price
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#107-the-big-lesson" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.7 The big lesson
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#108-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.8 Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#109-exercises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.9 Exercises
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="labs-and-a-design-study.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    11. Labs and a Design Study
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="glossary-and-further-reading.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary and Further Reading
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#101-what-a-side-channel-is" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.1 What a side channel is
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#102-timing-channels" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.2 Timing channels
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#103-cache-timing-attacks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.3 Cache-timing attacks
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="10.3 Cache-timing attacks">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#reading-a-flushreload-measurement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reading a Flush+Reload measurement
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#104-speculative-execution-attacks-spectre-and-meltdown" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.4 Speculative-execution attacks: Spectre and Meltdown
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#105-physical-channels-and-other-shared-state" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.5 Physical channels, and other shared state
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="10.5 Physical channels, and other shared state">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#power-and-electromagnetic-analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Power and electromagnetic analysis
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fault-injection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fault injection
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#almost-any-shared-state-can-leak" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Almost any shared state can leak
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#106-defences-and-their-price" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.6 Defences, and their price
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#107-the-big-lesson" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.7 The big lesson
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#108-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.8 Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#109-exercises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.9 Exercises
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="chapter-10-side-channels-and-hardware-security">Chapter 10: Side Channels and Hardware Security<a class="headerlink" href="#chapter-10-side-channels-and-hardware-security" title="Permanent link">&para;</a></h1>
+<p>Every technique in this book exists to make a chip faster. Caches remember, branch predictors guess, out-of-order engines run ahead, and simultaneous multithreading shares. Each of these leaves a physical trace: a shadow in time, in power, in electromagnetic emission, or in shared microarchitectural state. A <em>side-channel attack</em> reads secrets out of those shadows without ever breaking the underlying algorithm.</p>
+<p>This chapter surveys the field from a defensive point of view. It explains what leaks, why performance features are the very source of the leaks, and how architects and programmers close the holes. It is conceptual: it describes mechanisms, and contains no working exploit code. The mechanisms are what you need to understand in order to build systems that resist them.</p>
+<p>You should know caches (Chapter 4) and speculation (Chapter 3).</p>
+<h2 id="101-what-a-side-channel-is">10.1 What a side channel is<a class="headerlink" href="#101-what-a-side-channel-is" title="Permanent link">&para;</a></h2>
+<p>A cryptographic algorithm can be mathematically perfect (AES with a 256-bit key will not be brute-forced) and the system built on it can still leak the key. The reason is that software does not run on mathematics; it runs on physical hardware that takes time, draws current, gives off electromagnetic fields, warms up and changes shared internal state. When any of these observable quantities depends on the secret data being processed, an observer who can measure it recovers information that the algorithm never meant to reveal.</p>
+<p>A safe-cracker does not need the combination: pressing an ear to the door, they listen for the faint click as each wheel falls into place. The lock's design is sound; its behaviour gives it away.</p>
+<div class="admonition note">
+<p class="admonition-title">Definition: side channel</p>
+<p>A <strong>side channel</strong> leaks secrets through unintended physical or microarchitectural signals (execution time, power draw, electromagnetic emission, acoustic noise, cache or predictor state) rather than through a flaw in the algorithm. The attacker does not defeat the cipher; they watch the machine running it.</p>
+</div>
+<p>A <strong>covert channel</strong> uses the same physical effects <em>on purpose</em>.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Side channel</th>
+<th>Covert channel</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Intent</td>
+<td>Unintended: the victim leaks</td>
+<td>Deliberate: someone signals on purpose</td>
+</tr>
+<tr>
+<td>Parties</td>
+<td>An unaware victim and an attacker</td>
+<td>Two colluding programs</td>
+</tr>
+<tr>
+<td>Goal</td>
+<td>Steal a secret the victim holds</td>
+<td>Sneak data past an isolation rule</td>
+</tr>
+<tr>
+<td>Typical medium</td>
+<td>Time, power, radiation, cache state</td>
+<td>The same media, modulated on purpose</td>
+</tr>
+</tbody>
+</table>
+<p>Many attacks build a covert channel internally to carry a stolen value out. The threat model matters. A side channel is exploitable only if the attacker can <em>measure</em> the signal: from a co-resident program on the same core or machine (cloud virtual machines, browser JavaScript, a malicious app), or physically near the device (a smart card in a reader, an IoT node on a bench with an oscilloscope). For every attack, ask two questions: <em>what secret-dependent signal leaks</em>, and <em>what measurement capability does the attacker need</em>?</p>
+<h2 id="102-timing-channels">10.2 Timing channels<a class="headerlink" href="#102-timing-channels" title="Permanent link">&para;</a></h2>
+<p>The simplest channel of all is a stopwatch. If the number of cycles a routine takes depends on secret data, then a stopwatch is a partial key-recovery oracle. The classic offender is a non-constant-time comparison. A naive comparison of a string or a message-authentication code returns as soon as it finds the first mismatching byte.</p>
+<div class="language-c highlight"><pre><span></span><code><span class="cm">/* LEAKY: do not use for secrets. It returns as soon as one byte differs,</span>
+<span class="cm">   so its running time reveals how many leading bytes matched. */</span>
+<span class="kt">bool</span><span class="w"> </span><span class="nf">compare</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="o">*</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="o">*</span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">n</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w">     </span><span class="cm">/* &lt;-- the early exit leaks */</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>A guess whose first byte is right takes slightly longer to be rejected than a guess with no right bytes. An attacker tries all 256 values for byte 1, keeps the slowest, then moves on to byte 2, and so on.</p>
+<div class="admonition example">
+<p class="admonition-title">Example 10.1: the cost of an early exit</p>
+<p>For a 16-byte secret, the attacker needs about <span class="arithmatex">\(16 \times 256 = 4\,096\)</span> tries instead of <span class="arithmatex">\(256^{16} = 2^{128} \approx 3.4 \times 10^{38}\)</span>. An impossible search becomes a quick one. (Averaging, about half as many tries per byte suffice; the order of magnitude is the point.) The same pattern appears in data-dependent branches, secret-indexed table lookups (early cache-based implementations of AES's S-boxes), variable-latency instructions (some early integer dividers, floating-point denormal numbers) and secret-length-dependent loops.</p>
+</div>
+<p>The fix is <strong>constant-time code</strong>: code that takes the same time whatever the secret is. Its rules are:</p>
+<ul>
+<li>no branches that depend on secret data;</li>
+<li>no memory addresses computed from secrets (no <code>table[secret]</code>);</li>
+<li>no instructions whose speed depends on their operands, used on secrets.</li>
+</ul>
+<div class="language-c highlight"><pre><span></span><code><span class="cm">/* CONSTANT TIME: always looks at every byte, never branches on secrets. */</span>
+<span class="kt">bool</span><span class="w"> </span><span class="nf">ct_equal</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="o">*</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="o">*</span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">diff</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">n</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span>
+<span class="w">        </span><span class="n">diff</span><span class="w"> </span><span class="o">|=</span><span class="w"> </span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">^</span><span class="w"> </span><span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">];</span><span class="w">     </span><span class="cm">/* collect differences; never stop early */</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">diff</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w">            </span><span class="cm">/* one test, not dependent on where the bytes differed */</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Compare with a branch-free accumulator; select with bit masks, not with <code>if</code>; process every byte regardless of early results. This discipline is why real cryptographic libraries go to great lengths (bit-sliced ciphers, masked table lookups, verified constant-time primitives), and why languages offer helpers such as a timing-safe equality function. "It is fast on average" is not a security property. The variation is the leak.</p>
+<h2 id="103-cache-timing-attacks">10.3 Cache-timing attacks<a class="headerlink" href="#103-cache-timing-attacks" title="Permanent link">&para;</a></h2>
+<p>Timing becomes far more powerful once you notice that the cache is a secret-dependent time oracle <em>shared</em> between the victim and the attacker. A hit takes a few cycles and a miss hundreds, a difference that is easy to measure. If a victim's memory accesses depend on a secret, the set of blocks it leaves in a shared cache encodes that secret, and an attacker sharing the cache can read the pattern back by timing their own accesses. No bug in the victim is needed: the leak is a side effect of caching itself.</p>
+<p>Three classic techniques exist, described here conceptually.</p>
+<ul>
+<li><strong>Flush+Reload</strong> needs memory shared with the victim (for example a shared library page). The attacker flushes a target line from the cache, lets the victim run, then reloads the line and times it. A fast reload means that the victim touched it. It is precise (one line) and has little noise.</li>
+<li><strong>Prime+Probe</strong> needs no shared memory. The attacker primes a cache set by filling it with their own lines, lets the victim run, then probes by re-timing those lines. Slow ones were evicted, so the victim used that set. It works across virtual machines on the last-level cache.</li>
+<li><strong>Evict+Time</strong> times the victim as a whole, evicts a chosen set, and times the victim again. If the second run is slower, the victim depends on that set. It is coarse and noisy but needs neither shared memory nor a flush instruction.</li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Why this is hard to kill</p>
+<p>The cache is supposed to be transparent: it must not change a program's result, only its speed. Side channels exploit exactly the part that the ISA leaves undefined: timing. And the whole point of a shared last-level cache is that it is shared; isolating it perfectly would erase its benefit. That tension, in which the feature is the vulnerability, is the recurring theme of this chapter.</p>
+</div>
+<h3 id="reading-a-flushreload-measurement">Reading a Flush+Reload measurement<a class="headerlink" href="#reading-a-flushreload-measurement" title="Permanent link">&para;</a></h3>
+<p>Imagine a victim whose single secret-dependent access is <code>probe[secret]</code>, which pulls exactly one line of a 16-entry probe array into the cache. Architecturally nothing has leaked: the victim has simply computed. But the cache state now silently records which index it touched. The attacker reloads every entry of <code>probe[]</code> and records the time of each reload.</p>
+<figure class="fig fig-diagram">
+<img src="img/ch10_flush_reload.svg" alt="Reload times, in cycles, for a 16-entry probe array in a model run: one entry reloads in tens of cycles because it is cached, every other entry takes hundreds. The fast one is the entry at index 10." loading="lazy" width="668" height="341">
+<figcaption><strong>Figure 10.1.</strong> Reload times, in cycles, for a 16-entry probe array in a model run: one entry reloads in tens of cycles because it is cached, every other entry takes hundreds. The fast one is the entry at index 10.</figcaption>
+</figure>
+
+<p>One entry comes back fast, here 59 cycles, because it is already cached: that is the line the victim brought in. Every other entry is slow (a miss, 180 to 220 cycles in this model). The single short bar identifies <code>probe[10]</code>, so the secret is 10. The attacker recovered the value purely from timing, never reading the secret directly. (The numbers are an illustrative model, not measurements of any machine.)</p>
+<p>Scale this up: in a real Flush+Reload against a table-based AES implementation, <code>probe[]</code> is the S-box, and the "secret index" is a function of a key byte and a known plaintext byte. Repeated over many encryptions, the statistics collapse onto the key. The model compresses all of that into one deterministic round so that the mechanism, <em>victim caches, attacker times, fast means leaked</em>, is unmistakable.</p>
+<h2 id="104-speculative-execution-attacks-spectre-and-meltdown">10.4 Speculative-execution attacks: Spectre and Meltdown<a class="headerlink" href="#104-speculative-execution-attacks-spectre-and-meltdown" title="Permanent link">&para;</a></h2>
+<p>In 2018, Spectre and Meltdown showed that the out-of-order and speculative machinery of Chapter 3 is itself a side-channel engine. Recall the key idea there: to avoid stalling, the core executes past unresolved branches and unretired instructions on a guess, and only <em>commits</em> results in program order. If a guess was wrong, the mis-speculated instructions are squashed, and their architectural effects (registers and memory) are rolled back as if they never ran.</p>
+<div class="admonition note">
+<p class="admonition-title">The gap that leaks</p>
+<p>The rollback is <em>architectural</em>, not <em>microarchitectural</em>. Squashed instructions leave no register or memory trace, but the cache lines they loaded <strong>stay resident</strong>. This brief window between speculative execution and squash is called <strong>transient execution</strong>. It is long enough to (1) access a secret and (2) touch a cache line whose address depends on the secret. The secret is then read out of the cache with Flush+Reload or Prime+Probe. Speculation deletes the result, but not the footprint.</p>
+</div>
+<figure class="fig fig-diagram">
+<img src="img/ch10_transient.svg" alt="Transient execution: a mispredicted branch lets wrong-path instructions read a secret and leave a footprint in the cache. The squash restores architectural state, but not the cache." loading="lazy" width="763" height="337">
+<figcaption><strong>Figure 10.2.</strong> Transient execution: a mispredicted branch lets wrong-path instructions read a secret and leave a footprint in the cache. The squash restores architectural state, but not the cache.</figcaption>
+</figure>
+
+<p><strong>Spectre</strong>, in its bounds-check and branch-target variants, <em>mistrains a predictor</em>. The attacker repeatedly exercises a victim branch so that the branch predictor learns to go one way, then supplies an input that should go the other way (for example an out-of-bounds array index). The core speculatively takes the trained but wrong path, transiently reads memory outside the intended bounds, and uses that secret value to index a probe array, seeding the cache. The bounds check eventually resolves and squashes everything, but the cache footprint remains and is timed out. Crucially, Spectre makes a program attack <em>itself</em>: it turns the victim's own trusted code, or a just-in-time-compiled sandbox, into the transient gadget.</p>
+<p><strong>Meltdown</strong> exploits a different gap: the delay between a faulting load and the delivery of the fault. On affected cores, a user-mode load of a kernel address executed transiently and forwarded the fetched byte to dependent instructions before the permission fault retired. Those instructions encoded the byte into the cache; the fault then squashed the pipeline, but again the footprint survived. The net effect was to read kernel (privileged) memory from user space by racing the fault.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Spectre</th>
+<th>Meltdown</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Root cause</td>
+<td>Speculating past a branch on a mistrained predictor</td>
+<td>Using a load's result transiently before its permission fault takes effect</td>
+</tr>
+<tr>
+<td>Barrier bypassed</td>
+<td>A software bounds or type check</td>
+<td>Hardware privilege (user to kernel) isolation</td>
+</tr>
+<tr>
+<td>Reads</td>
+<td>Within the victim's own address space</td>
+<td>Across a privilege boundary (kernel memory)</td>
+</tr>
+<tr>
+<td>Carried out by</td>
+<td>The cache (Flush+Reload or Prime+Probe)</td>
+<td>The cache (Flush+Reload)</td>
+</tr>
+<tr>
+<td>Hardest part</td>
+<td>Finding and training a usable gadget</td>
+<td>Winning the fault race (many CPUs are immune by design)</td>
+</tr>
+<tr>
+<td>Main mitigation</td>
+<td>Speculation fences, retpolines, masked indices</td>
+<td>Kernel page-table isolation (KPTI); fixed silicon</td>
+</tr>
+</tbody>
+</table>
+<p>A whole family followed the same recipe: find a transient window, make a secret-dependent access, and carry the result out through a microarchitectural channel. Foreshadow, the MDS group (RIDL, Fallout, ZombieLoad, which leak from internal buffers), LVI, Retbleed and others differ in windows and channels but share one structure. Understanding the mechanism is what lets you defend; a working exploit is not needed, and none is given here.</p>
+<h2 id="105-physical-channels-and-other-shared-state">10.5 Physical channels, and other shared state<a class="headerlink" href="#105-physical-channels-and-other-shared-state" title="Permanent link">&para;</a></h2>
+<p>Hold the device, and power, radiation and deliberate glitches join the list.</p>
+<h3 id="power-and-electromagnetic-analysis">Power and electromagnetic analysis<a class="headerlink" href="#power-and-electromagnetic-analysis" title="Permanent link">&para;</a></h3>
+<p>The dynamic power a CMOS circuit draws depends on how many bits toggle each cycle, as in the <span class="arithmatex">\(P \approx C V^2 f \alpha\)</span> of Chapter 1 (with <span class="arithmatex">\(\alpha\)</span> the activity factor), and that toggling depends on the data. Measure the current, or the electromagnetic field it induces with a near-field probe, and you are watching the computation's outline. This is the stock in trade of attacks on smart cards, TPMs, hardware wallets and embedded cryptography.</p>
+<ul>
+<li><strong>Simple power analysis (SPA)</strong> reads the secret directly from one or a few power traces. In a naive square-and-multiply modular exponentiation (RSA), a 1 bit in the key triggers an extra multiply, an extra bump in the trace, so the trace <em>spells out the key</em>. The fix mirrors constant-time code: make the sequence of operations independent of the key (for example always multiply, then keep or discard the result).</li>
+<li><strong>Differential and correlation power analysis (DPA, CPA)</strong> use statistics when the leak is buried in noise. Collect thousands of traces with known inputs, hypothesise a small chunk of the key, predict the leakage for each hypothesis (for example the Hamming weight of an S-box output), and correlate the prediction with the measured power. The correct guess correlates; the wrong ones do not.</li>
+</ul>
+<h3 id="fault-injection">Fault injection<a class="headerlink" href="#fault-injection" title="Permanent link">&para;</a></h3>
+<p><strong>Fault injection</strong> (glitching) is the active cousin: instead of only observing, the attacker perturbs the hardware to force an error. Techniques include voltage glitching (a brief dip in the supply), clock glitching (a too-short clock pulse), electromagnetic pulses, and a focused laser on a decapsulated die. One well-timed glitch can skip a single instruction, such as the branch that checks a signature at boot, or corrupt one step of a cipher so that comparing right and wrong outputs reveals the key. Defences are checks done twice, sensors that detect glitches, randomised timing and error-detecting arithmetic. These attacks need the device in hand, which narrows the threat model sharply, but for smart cards and IoT devices that is exactly what the attacker has.</p>
+<h3 id="almost-any-shared-state-can-leak">Almost any shared state can leak<a class="headerlink" href="#almost-any-shared-state-can-leak" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Channel</th>
+<th>Shared or stateful thing</th>
+<th>What leaks</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Branch predictor</td>
+<td>Prediction tables</td>
+<td>The victim's branch directions; also how Spectre misleads</td>
+</tr>
+<tr>
+<td>TLB</td>
+<td>Translation cache</td>
+<td>Which pages the victim uses, even when data-cache attacks are mitigated</td>
+</tr>
+<tr>
+<td>Execution ports</td>
+<td>Units shared by SMT sibling threads</td>
+<td>Which kinds of instruction the sibling thread runs</td>
+</tr>
+<tr>
+<td>DRAM rows</td>
+<td>Physical memory cells</td>
+<td>Not a leak but a fault: Rowhammer</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Rowhammer</strong> breaks the usual boundary. Activating one DRAM row very rapidly disturbs its neighbours (charge leaks between densely packed cells) and flips their bits, with nothing but legal reads. It is a reliability failure of DRAM that becomes a security primitive, and it has been used to corrupt page tables. Defences are targeted row refresh in the DRAM, higher refresh rates, error-correcting memory (a partial defence) and guard rows.</p>
+<h2 id="106-defences-and-their-price">10.6 Defences, and their price<a class="headerlink" href="#106-defences-and-their-price" title="Permanent link">&para;</a></h2>
+<p>There is no single fix, because the channels are diverse. Defence is layered, some in the programmer's hands, some in the operating system, some only in silicon. The unifying principle is to <em>break the dependence between the secret and any observable signal</em>, or to <em>break the attacker's ability to observe</em>.</p>
+<table>
+<thead>
+<tr>
+<th>Defence</th>
+<th>Layer</th>
+<th>Against</th>
+<th>Price</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Constant-time programming</td>
+<td>Software</td>
+<td>Timing, cache timing</td>
+<td>Careful coding</td>
+</tr>
+<tr>
+<td>Cache partitioning or colouring</td>
+<td>Hardware and OS</td>
+<td>Prime+Probe, Flush+Reload</td>
+<td>Less cache per program</td>
+</tr>
+<tr>
+<td>Flushing at context switches</td>
+<td>OS and hardware</td>
+<td>Leftover cache and predictor state</td>
+<td>Cold caches after every switch</td>
+</tr>
+<tr>
+<td>Speculation barriers (fences)</td>
+<td>Compiler, programmer</td>
+<td>Spectre (bounds check)</td>
+<td>Stalls the pipeline</td>
+</tr>
+<tr>
+<td>Retpolines, index masking</td>
+<td>Compiler</td>
+<td>Spectre variants</td>
+<td>Slower indirect jumps</td>
+</tr>
+<tr>
+<td>Kernel page-table isolation</td>
+<td>OS</td>
+<td>Meltdown</td>
+<td>Slower system calls</td>
+</tr>
+<tr>
+<td>Masking and hiding</td>
+<td>Hardware, cryptography</td>
+<td>Power and radiation analysis</td>
+<td>Area and power</td>
+</tr>
+<tr>
+<td>SMT off for strangers</td>
+<td>OS</td>
+<td>Port contention, MDS</td>
+<td>Half the threads</td>
+</tr>
+<tr>
+<td>Silicon fixes</td>
+<td>Hardware</td>
+<td>Meltdown, MDS, Rowhammer</td>
+<td>Only in new parts</td>
+</tr>
+</tbody>
+</table>
+<p>Notice the recurring cost: nearly every defence gives back some of the performance that the feature bought. Flushing on every context switch throws away warm caches; fences serialise the pipeline; disabling SMT halves a core's thread count; KPTI adds pressure on the TLB on every system call. Security here is not free. It is a deliberate trade against the very speed that most of this book chases.</p>
+<h2 id="107-the-big-lesson">10.7 The big lesson<a class="headerlink" href="#107-the-big-lesson" title="Permanent link">&para;</a></h2>
+<div class="admonition note">
+<p class="admonition-title">The feature is the leak</p>
+<p>Caches leak because they are shared and fast on reuse. Speculation leaks because it runs ahead of correctness. SMT leaks because it shares execution resources. Every microarchitectural side channel traces back to a performance optimisation: the same reuse, prediction and sharing that make chips fast are exactly what carries the secret out. Security cannot be bolted on afterwards. Isolation, constant-time behaviour and the option to turn sharing off must be designed into the microarchitecture from the start.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">If the mathematics is secure, the chip is secure?</p>
+<p>False. Provable cryptographic security assumes an idealised machine that reveals only its inputs and outputs. Real silicon also reveals time, power, emission and shared cache and predictor state, none of which the security proof accounts for. AES-256 is unbroken, yet a table-based implementation of AES has leaked keys through the cache, and RSA keys have fallen to a single power trace. The algorithm and its physical implementation are two different security problems.</p>
+</div>
+<p>Imagine a CPU that never speculates and shares nothing: no branch prediction, no shared caches, no SMT. It would be free of these microarchitectural channels, but it might run 5 to 10 times slower on everyday code (an illustrative estimate, not a measurement), pricing itself out of every market it was meant to protect. That is the real dilemma of the field: security and performance draw on the same microarchitectural budget, and "just turn the optimisations off" has a very large, very visible price tag. The engineering art is to find the minimum sharing and speculation that you must give up to close a specific channel.</p>
+<h2 id="108-summary">10.8 Summary<a class="headerlink" href="#108-summary" title="Permanent link">&para;</a></h2>
+<ul>
+<li>A side channel leaks secrets through unintended signals (time, power, radiation, cache state), not through the algorithm; a covert channel abuses the same media deliberately.</li>
+<li>Timing leaks demand constant-time code: no secret-dependent branches, addresses or variable-latency operations.</li>
+<li>Flush+Reload, Prime+Probe and Evict+Time read a victim's access pattern from a shared cache: the victim caches, the attacker times, and fast means leaked.</li>
+<li>Spectre and Meltdown abuse the transient window of speculative execution: it rolls back architectural state but not the cache footprint.</li>
+<li>Power and electromagnetic analysis (SPA, DPA, CPA) and fault injection attack physical implementations; the branch predictor, TLB, execution ports and Rowhammer add more channels.</li>
+<li>Defences span constant-time code, cache partitioning, flushing, fences and retpolines, KPTI, masking and hiding, and silicon fixes, and each gives back performance. The feature is the leak: security must be designed in.</li>
+</ul>
+<h2 id="109-exercises">10.9 Exercises<a class="headerlink" href="#109-exercises" title="Permanent link">&para;</a></h2>
+<p><strong>Exercise 10.1.</strong> Why does <code>if (secret_bit) x = slow(); else x = fast();</code> leak, even though <code>x</code> is never printed?</p>
+<details class="note">
+<summary>Answer</summary>
+<p>The running time depends on the secret bit: anyone who can time the code learns the bit.</p>
+</details>
+<p><strong>Exercise 10.2.</strong> After a wrong guess is squashed, what survives that Spectre relies on?</p>
+<details class="note">
+<summary>Answer</summary>
+<p>The cache state. Blocks loaded by the transient instructions stay in the cache after the squash, and their timing can be measured with Flush+Reload or Prime+Probe.</p>
+</details>
+<p><strong>Exercise 10.3.</strong> Classify each as a side channel or a covert channel: (a) an attacker times a victim's AES encryptions to find its key; (b) two colluding apps on a phone pass data through contention for a shared cache although the operating system forbids them to communicate.</p>
+<details class="note">
+<summary>Answer</summary>
+<p>(a) Side channel: the victim is unaware and leaks unintentionally. (b) Covert channel: two cooperating parties deliberately signal through a shared physical effect to bypass an isolation rule.</p>
+</details>
+<p><strong>Exercise 10.4.</strong> A secret token is 8 bytes long. How many guesses does the early-exit comparison need in the worst case with a timing attack, against a blind brute-force search? (Use <span class="arithmatex">\(8 \times 256\)</span> for the first and <span class="arithmatex">\(256^8\)</span> for the second.)</p>
+<details class="note">
+<summary>Answer</summary>
+<p>The timing attack needs about <span class="arithmatex">\(8 \times 256 = 2\,048\)</span> guesses (256 per byte, one byte at a time). Brute force needs up to <span class="arithmatex">\(256^8 = 2^{64} \approx 1.8 \times 10^{19}\)</span>.</p>
+</details>
+<p><strong>Exercise 10.5.</strong> In a Flush+Reload run on an 8-entry probe array the reload times in cycles are 205, 198, 61, 210, 192, 215, 201, 207. Which index did the victim touch, and what is the secret?</p>
+<details class="note">
+<summary>Answer</summary>
+<p>Index 2 (counting from 0), whose reload took 61 cycles, far below the others, which are all about 200: it was cached by the victim. The secret is 2.</p>
+</details>
+<p><strong>Exercise 10.6.</strong> For each attack, name a defence from Section 10.6: (a) Meltdown; (b) Spectre by branch mistraining on a bounds check; (c) simple power analysis of a square-and-multiply loop; (d) Prime+Probe between two virtual machines.</p>
+<details class="note">
+<summary>Answer</summary>
+<p>(a) Kernel page-table isolation (or silicon that fixes the fault race). (b) A speculation fence after the bounds check, or masking the index so that even a mis-speculated access stays in bounds. (c) Make the operation sequence independent of the key bits (always multiply, then keep or discard the result), or mask the secret. (d) Cache partitioning (or colouring) so that the machines cannot evict each other's lines, or not co-scheduling mutually distrusting machines on shared cache resources.</p>
+</details>
+<p><strong>Exercise 10.7 (practical).</strong> Write the early-exit <code>compare</code> and the constant-time <code>ct_equal</code> from Section 10.2 in C. Test both for correctness on at least six vectors (equal, first byte differs, last byte differs, and so on). On your own machine, time each function many thousands of times for a 32-byte secret against guesses that match 0, 8, 16 and 31 leading bytes. Plot the median times, and explain the plot in terms of the attack in the chapter.</p>
+<details class="note">
+<summary>Answer</summary>
+<p>The early-exit version's time grows with the number of matching leading bytes, a staircase; the constant-time version is flat apart from noise. Measurement noise is large, so use many repetitions and the median. Only measure code you wrote, on your own machine.</p>
+</details>
+<p><strong>Exercise 10.8.</strong> A hypothetical processor has no speculation, no shared caches and no SMT. Name two things it gains and two things it loses.</p>
+<details class="note">
+<summary>Answer</summary>
+<p>It gains freedom from Spectre-style transient-execution channels, from cache and predictor-state channels, and from SMT port contention, and its behaviour is simpler to reason about. It loses much of its performance (branch prediction, caching and multithreading are what keep a fast core fed, and the loss on everyday code could be large) and, with it, its energy efficiency.</p>
+</details>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="benchmarks-and-metrics.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: 9. Benchmarks and Metrics">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                9. Benchmarks and Metrics
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="labs-and-a-design-study.html" class="md-footer__link md-footer__link--next" aria-label="Next: 11. Labs and a Design Study">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                11. Labs and a Design Study
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      The Open Book Project &middot;
+      <a href="../../about.html">About this library</a> &middot;
+      © The authors of the books
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "navigation.prune", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "toc.follow", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+  
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../../assets/mathjax.js"></script>
+      
+        <script src="../../assets/viz.js"></script>
+      
+        <script src="../../assets/reader.js"></script>
+      
+        <script src="../../assets/app.js"></script>
+      
+    
+  <script>
+    /* offline reading: the service worker at the site root (its scope is the whole site) */
+    if ("serviceWorker" in navigator && window.isSecureContext) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register(new URL("../../sw.js", location.href).href).catch(function () {});
+      });
+    }
+  </script>
+
+  </body>
+</html>

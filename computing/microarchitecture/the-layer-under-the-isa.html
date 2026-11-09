@@ -1,0 +1,1387 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#ffffff">
+  
+    <meta name="description" content="The Open Book Project: books on computer science, quantum computing, cyber security, science, university courses and the English language, read page by page like an e-book, online or offline.">
+  
+  
+    <meta name="author" content="Nikhil Kumar Rajput, Ramanujan College, University of Delhi">
+  
+  
+    <link rel="canonical" href="https://open-book-project.github.io/computing/microarchitecture/the-layer-under-the-isa.html">
+  
+  
+    <link rel="prev" href="preface.html">
+  
+  
+    <link rel="next" href="pipelining-and-hazards.html">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&family=Noto+Serif+Devanagari:wght@400;600;700&display=swap" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&family=Noto+Serif+Devanagari:wght@400;600;700&display=swap"></noscript>
+  <link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+  <link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Open Book">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="application-name" content="Open Book"><script id="bjp-books" type="application/json">[{"id": "hardware_security", "lang": "en", "path": "science/hardware_security"}, {"id": "drones_missiles", "lang": "en", "path": "science/drones_missiles"}, {"id": "code_to_electrons", "lang": "en", "path": "science/code_to_electrons"}, {"id": "dpi_ndr", "lang": "en", "path": "science/dpi_ndr"}, {"id": "quantum", "lang": "en", "path": "quantum/quantum"}, {"id": "qml", "lang": "en", "path": "quantum/qml"}, {"id": "qml_course", "lang": "en", "path": "quantum/qml_course"}, {"id": "asic", "lang": "en", "path": "computing/asic"}, {"id": "compute", "lang": "en", "path": "computing/compute"}, {"id": "memory", "lang": "en", "path": "computing/memory"}, {"id": "os", "lang": "en", "path": "computing/os"}, {"id": "databases", "lang": "en", "path": "computing/databases"}, {"id": "datacenters", "lang": "en", "path": "computing/datacenters"}, {"id": "networks", "lang": "en", "path": "computing/networks"}, {"id": "cellular", "lang": "en", "path": "computing/cellular"}, {"id": "ml", "lang": "en", "path": "computing/ml"}, {"id": "microarchitecture", "lang": "en", "path": "computing/microarchitecture"}, {"id": "rtl_hdl", "lang": "en", "path": "computing/rtl_hdl"}, {"id": "rtl_to_gdsii", "lang": "en", "path": "computing/rtl_to_gdsii"}, {"id": "ram_ddr5", "lang": "en", "path": "computing/ram_ddr5"}, {"id": "security", "lang": "en", "path": "cyber/security"}, {"id": "trust", "lang": "en", "path": "cyber/trust"}, {"id": "attack_taxonomy", "lang": "en", "path": "cyber/attack_taxonomy"}, {"id": "datacentre_security_ip", "lang": "en", "path": "cyber/datacentre_security_ip"}, {"id": "randomness_testing", "lang": "en", "path": "cyber/randomness_testing"}, {"id": "optimization_methods", "lang": "en", "path": "courses/optimization_methods"}, {"id": "quantum_computing_applications", "lang": "en", "path": "courses/quantum_computing_applications"}, {"id": "dbms_course", "lang": "en", "path": "courses/dbms_course"}, {"id": "csa_course", "lang": "en", "path": "courses/csa_course"}, {"id": "web_programming", "lang": "en", "path": "courses/web_programming"}, {"id": "ml_course", "lang": "en", "path": "courses/ml_course"}, {"id": "english_book", "lang": "en", "path": "language/english_book"}, {"id": "english_book_hinglish", "lang": "en", "path": "language/english_book_hinglish"}, {"id": "english_book_hi", "lang": "hi", "path": "language/english_book_hi"}]</script><script>
+    (function () {
+      var X = window.XMLHttpRequest, open, gate = new Promise(function (r) { open = r; });
+      if (!X) return;
+      var open0 = X.prototype.open, send0 = X.prototype.send;
+      X.prototype.open = function (method, url) {
+        this.__pkIndex = /\/search\/search_index\.json(\?|#|$)/.test(String(url));
+        return open0.apply(this, arguments);
+      };
+      X.prototype.send = function () {
+        if (!this.__pkIndex) return send0.apply(this, arguments);
+        var xhr = this, args = arguments;
+        gate.then(function () { send0.apply(xhr, args); });
+      };
+      function wake() { open(); }
+      document.addEventListener("focusin", function (e) { if (e.target && e.target.closest && e.target.closest(".md-search")) wake(); });
+      document.addEventListener("click", function (e) { if (e.target && e.target.closest && e.target.closest('label[for="__search"], .md-search')) wake(); }, true);
+      document.addEventListener("keydown", function (e) {
+        var k = e.key;
+        if ((k === "/" || k === "s" || k === "f" || k === "S" || k === "F") && !(e.target && e.target.closest && e.target.closest("input, textarea, [contenteditable]"))) wake();
+      }, true);
+      if (/[?&]q=/.test(location.search)) wake();
+    })();
+  </script><script>
+    try {
+      if ((window.matchMedia && (matchMedia("(display-mode: standalone)").matches || matchMedia("(display-mode: fullscreen)").matches)) || navigator.standalone === true) {
+        document.documentElement.className += " bjp-standalone";
+      }
+    } catch (e) { /* not an installed app */ }
+  </script>
+  <script>
+    /* a book opened from its cover on the shelf: the page stays blank, in the cover's colour, until the reader is up */
+    try {
+      var cv = sessionStorage.getItem("bjp.reader.cover");
+      if (cv && sessionStorage.getItem("bjp.reader.open") === "1") {
+        var c = JSON.parse(cv), de = document.documentElement;
+        de.className += " bjp-booting";
+        if (c && /^#[0-9a-f]{3,8}$/i.test(c.bg || "")) de.style.background = c.bg;
+        setTimeout(function () { de.classList.remove("bjp-booting"); de.style.background = ""; }, 3000);
+      }
+    } catch (e) { /* no session storage: the page simply opens as usual */ }
+  </script>
+
+    
+      
+        <title>1. The Layer Under the Instruction Set - The Open Book Project</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/extra.css">
+    
+      <link rel="stylesheet" href="../../assets/reader.css">
+    
+      <link rel="stylesheet" href="../../assets/viz.css">
+    
+      <link rel="stylesheet" href="../../assets/app.css">
+    
+      <link rel="stylesheet" href="../../assets/theme.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#11-the-contract-and-the-implementation" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../index.html" title="The Open Book Project" class="md-header__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+      
+  <img src="../../assets/icons/logo.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            The Open Book Project
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              1. The Layer Under the Instruction Set
+            
+          </span>
+        </div>
+      </div>
+    </div><a href="../../index.html" class="bjp-libbtn" aria-label="Library: all books" title="Library: all books">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V5h4v15M8 20V9h4v11M14 20L12.6 6l3.8-.8 3 14.2M3 20h18"/></svg><span>Library</span>
+    </a>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary bjp-nav bjp-nav--book" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../index.html" title="The Open Book Project" class="md-nav__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+      
+  <img src="../../assets/icons/logo.svg" alt="logo">
+
+    </a>
+    The Open Book Project
+  </label>
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      <li class="md-nav__item bjp-nav-all">
+        <a href="../../index.html" class="md-nav__link" aria-label="All books: back to the library">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+          <span class="md-ellipsis">All books</span>
+        </a>
+      </li>
+      <li class="md-nav__item bjp-nav-book" role="presentation"><span class="bjp-nav-head">Microarchitecture and SoC Design</span></li>
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview and preface
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="preface.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Preface
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. The Layer Under the Instruction Set
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="the-layer-under-the-isa.html" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. The Layer Under the Instruction Set
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#11-the-contract-and-the-implementation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1 The contract and the implementation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#12-the-iron-law-of-performance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2 The Iron Law of performance
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#13-sources-of-speed-three-kinds-of-parallelism" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.3 Sources of speed: three kinds of parallelism
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#14-wall-one-the-memory-wall" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.4 Wall one: the memory wall
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#15-wall-two-amdahls-law" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.5 Wall two: Amdahl's law
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#16-wall-three-the-end-of-dennard-scaling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.6 Wall three: the end of Dennard scaling
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#17-measuring-honestly" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.7 Measuring honestly
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#18-a-map-of-the-book" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.8 A map of the book
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#19-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.9 Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#110-exercises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.10 Exercises
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="pipelining-and-hazards.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Pipelining and Hazards
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="out-of-order-and-superscalar.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. Out-of-Order and Superscalar Execution
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="caches-and-virtual-memory.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. Caches and Virtual Memory
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="coherence-consistency-and-scaling.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Coherence, Consistency and Scaling
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="on-chip-interconnect.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. On-Chip Interconnect
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="peripheral-interfaces.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    7. Peripheral Interfaces
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="real-risc-v-cores.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    8. Real RISC-V Cores
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="benchmarks-and-metrics.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    9. Benchmarks and Metrics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="side-channels-and-hardware-security.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    10. Side Channels and Hardware Security
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="labs-and-a-design-study.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    11. Labs and a Design Study
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="glossary-and-further-reading.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary and Further Reading
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+      
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#11-the-contract-and-the-implementation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1 The contract and the implementation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#12-the-iron-law-of-performance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2 The Iron Law of performance
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#13-sources-of-speed-three-kinds-of-parallelism" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.3 Sources of speed: three kinds of parallelism
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#14-wall-one-the-memory-wall" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.4 Wall one: the memory wall
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#15-wall-two-amdahls-law" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.5 Wall two: Amdahl's law
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#16-wall-three-the-end-of-dennard-scaling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.6 Wall three: the end of Dennard scaling
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#17-measuring-honestly" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.7 Measuring honestly
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#18-a-map-of-the-book" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.8 A map of the book
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#19-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.9 Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#110-exercises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.10 Exercises
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="chapter-1-the-layer-under-the-instruction-set">Chapter 1: The Layer Under the Instruction Set<a class="headerlink" href="#chapter-1-the-layer-under-the-instruction-set" title="Permanent link">&para;</a></h1>
+<p>This chapter draws the map. It separates the instruction set, which is a contract, from the microarchitecture, which is one way of keeping it; it introduces the Iron Law of performance, the one equation against which almost every design decision in the book can be scored; and it names the three kinds of parallelism and the three walls (memory, Amdahl's law and power) that shape every modern processor. If you remember only this chapter's equations and the reasons behind the walls, you will understand why the later chapters contain what they do.</p>
+<h2 id="11-the-contract-and-the-implementation">1.1 The contract and the implementation<a class="headerlink" href="#11-the-contract-and-the-implementation" title="Permanent link">&para;</a></h2>
+<p>The instruction set architecture, or ISA, is the visible interface between software and hardware. It names the registers a program can use, the instructions it can issue and how they are encoded, the rules of the memory model, and what happens on exceptions and at different privilege levels. A compiler and an assembly programmer target the ISA and nothing below it.</p>
+<p>The <strong>microarchitecture</strong>, sometimes called the <em>organisation</em>, is everything below that contract: how many steps an instruction takes, how many instructions start in one cycle, the buffers that hold instructions in flight, the caches, the branch predictors, the execution units. A correct program must never depend on any of it for its <em>result</em>. It may depend on it only for its <em>speed</em>.</p>
+<div class="admonition note">
+<p class="admonition-title">Definition: ISA and microarchitecture</p>
+<p>The <strong>ISA</strong> is the architectural state and behaviour a programmer can rely on (for example RISC-V RV64GC, x86-64 or Armv9). A <strong>microarchitecture</strong> is one particular way of building hardware that obeys that ISA. One ISA, many microarchitectures.</p>
+</div>
+<p>A useful picture is a restaurant chain that prints one menu. A diner can order any dish on it and knows what will arrive. But one branch has two cooks and a small stove, and another has twenty cooks, three ovens and a prep line. Same menu, same dishes, very different speeds. The menu is the ISA; the kitchen is the microarchitecture.</p>
+<figure class="fig fig-diagram">
+<img src="img/ch01_isa_layers.svg" alt="The ISA is the contract between software and hardware; many microarchitectures can implement it. Circuits and silicon lie below." loading="lazy" width="614" height="344">
+<figcaption><strong>Figure 1.1.</strong> The ISA is the contract between software and hardware; many microarchitectures can implement it. Circuits and silicon lie below.</figcaption>
+</figure>
+
+<p>The power of this separation is that the same program file runs on very different machines.</p>
+<table>
+<thead>
+<tr>
+<th>ISA</th>
+<th>Some microarchitectures that implement it</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>x86-64</td>
+<td>Intel Skylake, Intel Alder Lake (big and small cores), AMD Zen 4</td>
+</tr>
+<tr>
+<td>Arm v8/v9</td>
+<td>Cortex-A53 (small and frugal), Cortex-A76 (big and fast), Apple's M-series cores</td>
+</tr>
+<tr>
+<td>RISC-V</td>
+<td>PicoRV32 (tiny), Rocket (classic), BOOM (big and fast), CVA6</td>
+</tr>
+</tbody>
+</table>
+<p>Every design in a row runs the same binary, at very different speeds, sizes and power budgets. The ISA is fixed; everything in this book is about the freedom left underneath it.</p>
+<table>
+<thead>
+<tr>
+<th>Concern</th>
+<th>ISA (architecture)</th>
+<th>Microarchitecture</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Visible to programs?</td>
+<td>Yes, it is the contract</td>
+<td>No, except through timing</td>
+</tr>
+<tr>
+<td>Defines</td>
+<td>Registers, instructions, memory model, traps</td>
+<td>Pipeline, caches, predictors, reorder buffer, execution ports</td>
+</tr>
+<tr>
+<td>Changes</td>
+<td>Rarely; stable for decades</td>
+<td>Every product generation</td>
+</tr>
+<tr>
+<td>Affects</td>
+<td>Whether the answer is correct</td>
+<td>Only speed, power and area</td>
+</tr>
+</tbody>
+</table>
+<p>The last row is a promise: a correct program gets the same answer on every microarchitecture. But note the words "except through timing" in the first row. Timing is the one thing about a machine that a program can always observe, and Chapter 10 shows how that small gap lets secrets leak.</p>
+<h2 id="12-the-iron-law-of-performance">1.2 The Iron Law of performance<a class="headerlink" href="#12-the-iron-law-of-performance" title="Permanent link">&para;</a></h2>
+<p>What does "fast" mean? It does not mean gigahertz, and it does not mean "instructions per second". It means that your program finishes sooner. The time a program takes depends on three things.</p>
+<ul>
+<li><strong>Instruction count (IC):</strong> how many instructions the program executes. It is set by the ISA and the compiler.</li>
+<li><strong>Cycles per instruction (CPI):</strong> the average number of clock ticks each instruction costs. It is set by the microarchitecture. Its reciprocal, <em>instructions per cycle</em> (IPC), is often quoted instead: CPI 0.5 is the same as IPC 2.</li>
+<li><strong>Clock period:</strong> the duration of one tick, which is <span class="arithmatex">\(1/f\)</span>. At 4 GHz it is 0.25 ns. It is set by the longest path through the logic and by the process technology.</li>
+</ul>
+<div class="arithmatex">\[\text{CPU time} \;=\; \text{IC} \times \text{CPI} \times \text{clock period} \;=\; \frac{\text{IC} \times \text{CPI}}{f}\]</div>
+<p>This is the <strong>Iron Law</strong>. There are only three levers, and making one better usually makes another worse.</p>
+<table>
+<thead>
+<tr>
+<th>Push this lever...</th>
+<th>...and this tends to happen</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Split each instruction's work into more, shorter steps, giving a shorter clock period</td>
+<td>More waiting between dependent instructions, so a higher CPI</td>
+</tr>
+<tr>
+<td>Richer, more powerful instructions, giving a lower instruction count</td>
+<td>Each is harder to decode and run, so a longer clock period</td>
+</tr>
+<tr>
+<td>Much smarter hardware, giving a lower CPI</td>
+<td>More chip area and more power</td>
+</tr>
+</tbody>
+</table>
+<p>You cannot optimise one term alone. You optimise the product.</p>
+<div class="admonition example">
+<p class="admonition-title">Example 1.1: the slower clock wins</p>
+<p>A program executes <span class="arithmatex">\(2.0 \times 10^9\)</span> instructions.</p>
+<p><strong>Design A:</strong> 4.0 GHz, CPI 1.6. The clock period is <span class="arithmatex">\(1/4.0\ \text{GHz} = 0.25\)</span> ns.
+$<span class="arithmatex">\(t_A = 2.0\times10^{9} \times 1.6 \times 0.25\ \text{ns} = 0.80\ \text{s}\)</span>$</p>
+<p><strong>Design B:</strong> 3.0 GHz, CPI 0.9. The clock period is <span class="arithmatex">\(0.333\)</span> ns.
+$<span class="arithmatex">\(t_B = 2.0\times10^{9} \times 0.9 \times 0.333\ \text{ns} = 0.60\ \text{s}\)</span>$</p>
+<p>B is <span class="arithmatex">\(0.80/0.60 = 1.33\)</span> times faster with a clock that is 25% slower. It does more useful work per tick. The clock rate alone tells you almost nothing.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Higher clock speed does not always mean a faster CPU</p>
+<p>Around 2000 to 2005, processors chased gigahertz with very long chains of very short steps, and lost to slower-clocked designs that got more done per tick. Judge a chip by how long real programs take.</p>
+</div>
+<h2 id="13-sources-of-speed-three-kinds-of-parallelism">1.3 Sources of speed: three kinds of parallelism<a class="headerlink" href="#13-sources-of-speed-three-kinds-of-parallelism" title="Permanent link">&para;</a></h2>
+<p>Once the instruction count is fixed by the compiler and the clock is bounded by physics, the CPI term is where architects win. The way to lower CPI is to find parallelism: to do more than one useful thing at a time. There are three kinds.</p>
+<p><strong>Instruction-level parallelism (ILP).</strong> Independent instructions of a single program run at the same time. A cook overlaps the steps of one recipe: the water boils while the onions are chopped.</p>
+<p><strong>Thread-level parallelism (TLP).</strong> Separate threads or programs run on separate cores, or interleave on one core. Several cooks each make a different order. A <em>thread</em> is one independent stream of instructions; a program may have one or many.</p>
+<p><strong>Data-level parallelism (DLP).</strong> One instruction applies the same operation to many numbers at once. One chop of a wide knife cuts ten carrots. Vector units and GPUs are the home of DLP.</p>
+<p>There is only so much independent work inside one instruction stream, so ILP eventually runs out. The industry's route to more performance followed the techniques in the order in which each one hit diminishing returns:</p>
+<table>
+<thead>
+<tr>
+<th>Stage of the road</th>
+<th>Idea</th>
+<th>Parallelism</th>
+<th>Where in this book</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Pipelining</td>
+<td>Overlap the stages of consecutive instructions</td>
+<td>ILP</td>
+<td>Chapter 2</td>
+</tr>
+<tr>
+<td>Out-of-order and superscalar</td>
+<td>Reorder, and issue several independent instructions per cycle</td>
+<td>deeper ILP</td>
+<td>Chapter 3</td>
+</tr>
+<tr>
+<td>Multicore and SMT</td>
+<td>Many cores, many threads</td>
+<td>TLP</td>
+<td>Chapters 3 and 5</td>
+</tr>
+<tr>
+<td>SIMD and GPUs</td>
+<td>One operation over many data lanes</td>
+<td>DLP</td>
+<td>Chapter 8 (the RISC-V vector extension)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="14-wall-one-the-memory-wall">1.4 Wall one: the memory wall<a class="headerlink" href="#14-wall-one-the-memory-wall" title="Permanent link">&para;</a></h2>
+<p>For decades processors got faster by about 55% a year, while the response time of main memory improved by about 7% a year. Today one trip to main memory takes about 100 ns, in which a core could have run hundreds of instructions. This growing gap is the <strong>memory wall</strong>.</p>
+<p>The numbers compound quickly. If both rates held for ten years, processor speed would have grown by <span class="arithmatex">\(1.55^{10} \approx 80.0\)</span> times and memory response by <span class="arithmatex">\(1.07^{10} \approx 1.97\)</span> times. The gap would be <span class="arithmatex">\(80.0/1.97 \approx 41\)</span> times, and after twenty years <span class="arithmatex">\((1.55/1.07)^{20} \approx 1\,656\)</span> times.</p>
+<figure class="fig fig-diagram">
+<img src="img/ch01_memory_wall.svg" alt="If processors improve by 55% a year and DRAM response time by 7% a year, the gap grows by a factor of about 41 in ten years." loading="lazy" width="591" height="356">
+<figcaption><strong>Figure 1.2.</strong> If processors improve by 55% a year and DRAM response time by 7% a year, the gap grows by a factor of about 41 in ten years.</figcaption>
+</figure>
+
+<p>Small, fast memories near the core (caches, Chapter 4) and cores that find other work while they wait (out-of-order execution, Chapter 3) exist largely to hide this gap. Picture a chef who can chop in seconds but whose ingredients come from a warehouse across town. Without a fridge in the kitchen, the chef mostly waits.</p>
+<h2 id="15-wall-two-amdahls-law">1.5 Wall two: Amdahl's law<a class="headerlink" href="#15-wall-two-amdahls-law" title="Permanent link">&para;</a></h2>
+<p>Speed up part of a job, and the part you did not speed up becomes the limit. If a fraction <span class="arithmatex">\(p\)</span> of the work is made <span class="arithmatex">\(s\)</span> times faster, the overall speed-up is</p>
+<div class="arithmatex">\[\text{Speedup} = \frac{1}{(1-p) + p/s}\]</div>
+<p>The <span class="arithmatex">\((1-p)\)</span> part never gets faster, so it sets a ceiling of <span class="arithmatex">\(1/(1-p)\)</span> however large <span class="arithmatex">\(s\)</span> becomes.</p>
+<div class="admonition example">
+<p class="admonition-title">Example 1.2: where is the ceiling?</p>
+<p>Ninety per cent of a program can run in parallel, so <span class="arithmatex">\(p = 0.9\)</span>.</p>
+<p>With an 8-fold speed-up of that part:
+$<span class="arithmatex">\(\frac{1}{0.1 + 0.9/8} = \frac{1}{0.1 + 0.1125} = \frac{1}{0.2125} \approx 4.7\)</span>$</p>
+<p>With infinitely many cores the parallel term vanishes and the speed-up is <span class="arithmatex">\(1/0.1 = 10\)</span>, never more.</p>
+<p>Now take <span class="arithmatex">\(p = 0.5\)</span>. The ceiling is <span class="arithmatex">\(1/0.5 = 2\)</span>, and no number of cores gets you past it.</p>
+</div>
+<figure class="fig fig-diagram">
+<img src="img/ch01_amdahl.svg" alt="Amdahl&#x27;s law: speed-up against the speed-up of the parallel part, for three values of the parallel fraction p. Dotted lines mark the ceilings 2, 5 and 10." loading="lazy" width="585" height="356">
+<figcaption><strong>Figure 1.3.</strong> Amdahl&#x27;s law: speed-up against the speed-up of the parallel part, for three values of the parallel fraction p. Dotted lines mark the ceilings 2, 5 and 10.</figcaption>
+</figure>
+
+<p>The lesson is to speed up the common case, and never to forget the stubborn remainder.</p>
+<h2 id="16-wall-three-the-end-of-dennard-scaling">1.6 Wall three: the end of Dennard scaling<a class="headerlink" href="#16-wall-three-the-end-of-dennard-scaling" title="Permanent link">&para;</a></h2>
+<p>For about thirty years, smaller transistors also needed less voltage, so chips could be clocked faster at the same power per square millimetre. This was <em>Dennard scaling</em>. The power a chip burns while switching is roughly</p>
+<div class="arithmatex">\[P_{\text{dynamic}} \approx C \cdot V^{2} \cdot f\]</div>
+<p>(capacitance, voltage squared, frequency; a more complete form carries an activity factor <span class="arithmatex">\(\alpha\)</span> for the fraction of the circuit that switches each cycle). Around 2005 the supply voltage stopped falling, because of leakage. From then on, raising <span class="arithmatex">\(f\)</span> meant melting the chip: the cost is steep, since power rises with frequency and, if the voltage must rise to support the frequency, with the square of the voltage too. Clock rates stalled at a few gigahertz.</p>
+<div class="admonition example">
+<p class="admonition-title">Example 1.3: what a voltage cut buys</p>
+<p>At a fixed frequency, lowering the supply voltage by 10% multiplies dynamic power by <span class="arithmatex">\(0.9^2 = 0.81\)</span>, a saving of 19%. Lowering both voltage and frequency by 20% multiplies it by <span class="arithmatex">\(0.8^2 \times 0.8 = 0.512\)</span>: half the power for four-fifths of the clock.</p>
+</div>
+<p>Transistors kept getting smaller and cheaper, but could no longer be spent on a faster clock. They were spent on more cores, which runs straight into Amdahl's law. This is why the industry went multicore around 2005, shifting the burden of performance onto software parallelism. Today the frontier is energy per operation and specialisation (GPUs and other accelerators), not raw clock speed.</p>
+<h2 id="17-measuring-honestly">1.7 Measuring honestly<a class="headerlink" href="#17-measuring-honestly" title="Permanent link">&para;</a></h2>
+<p>To compare microarchitectures fairly you need honest metrics, and several popular ones mislead.</p>
+<p><strong>IPC</strong> compares designs only when they run the same ISA and the same program file. <strong>MIPS</strong>, millions of instructions per second, misleads: a machine that runs many simple instructions can post a big number while finishing the job later. Its nickname is the "Meaningless Indicator of Processor Speed". The fair answer is a <strong>benchmark</strong>: a fixed set of real programs, timed end to end. SPEC CPU is the industry's standard set, and CoreMark and Embench are popular for small cores. Chapter 9 is devoted to them. For now, remember one rule: trust wall-clock time on real work. Every other number is a clue, not a verdict.</p>
+<h2 id="18-a-map-of-the-book">1.8 A map of the book<a class="headerlink" href="#18-a-map-of-the-book" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Chapter</th>
+<th>The question it answers</th>
+<th>Iron Law term</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2. Pipelining and hazards</td>
+<td>How do we overlap instructions, and what goes wrong?</td>
+<td>CPI and clock period</td>
+</tr>
+<tr>
+<td>3. Out-of-order and superscalar</td>
+<td>How do we run several at once, in any safe order?</td>
+<td>CPI below 1</td>
+</tr>
+<tr>
+<td>4 and 5. Caches, memory and coherence</td>
+<td>How do we hide the memory wall and share memory among cores?</td>
+<td>CPI (stalls)</td>
+</tr>
+<tr>
+<td>6. Interconnect</td>
+<td>How do the blocks of a chip talk?</td>
+<td>the whole chip</td>
+</tr>
+<tr>
+<td>7. Peripheral interfaces</td>
+<td>How does a chip talk to the outside world?</td>
+<td>the whole system</td>
+</tr>
+<tr>
+<td>8. RISC-V cores</td>
+<td>What do real designs look like?</td>
+<td>all three</td>
+</tr>
+<tr>
+<td>9. Benchmarks</td>
+<td>How do we compare processors fairly?</td>
+<td>measure all three</td>
+</tr>
+<tr>
+<td>10. Side channels</td>
+<td>How can speed tricks leak secrets?</td>
+<td>the price of speed</td>
+</tr>
+<tr>
+<td>11. Labs</td>
+<td>How do I run and measure real cores?</td>
+<td>measure it</td>
+</tr>
+</tbody>
+</table>
+<h2 id="19-summary">1.9 Summary<a class="headerlink" href="#19-summary" title="Permanent link">&para;</a></h2>
+<ul>
+<li>The ISA is the contract; the microarchitecture is one way of building it. A correct program gets the same answer on every microarchitecture; only speed, power and area differ.</li>
+<li>The Iron Law: CPU time = instruction count × CPI × clock period. The three levers trade against each other, so it is the product that counts.</li>
+<li>Parallelism lowers CPI: ILP within one instruction stream, TLP across threads and cores, DLP across data.</li>
+<li>Three walls shape every modern chip: the memory wall (processors improved far faster than DRAM latency), Amdahl's law (the unaccelerated fraction caps the speed-up at <span class="arithmatex">\(1/(1-p)\)</span>) and the end of Dennard scaling (voltage stopped falling, so dynamic power <span class="arithmatex">\(\approx CV^2f\)</span> capped the clock and pushed designs to multicore).</li>
+<li>Measure with real programs. Gigahertz and MIPS are not performance.</li>
+</ul>
+<h2 id="110-exercises">1.10 Exercises<a class="headerlink" href="#110-exercises" title="Permanent link">&para;</a></h2>
+<p><strong>Exercise 1.1.</strong> Which of the following belong to the ISA and which to the microarchitecture: the number of registers; the size of the fast on-chip memory; how an <code>add</code> instruction is encoded; how many instructions can start each cycle?</p>
+<details class="note">
+<summary>Answer</summary>
+<p>ISA: the number of registers and the encoding of <code>add</code>, because programs depend on them. Microarchitecture: the size of the on-chip memory and the number of instructions that start per cycle, because they change only the speed.</p>
+</details>
+<p><strong>Exercise 1.2.</strong> A program runs <span class="arithmatex">\(1 \times 10^9\)</span> instructions. Machine A: 2 GHz, CPI 1.5. Machine B: 3 GHz, CPI 2.4. Find the time on each machine and say which is faster, and by how much.</p>
+<details class="note">
+<summary>Answer</summary>
+<p><span class="arithmatex">\(t_A = 10^9 \times 1.5 / (2\times10^9) = 0.75\)</span> s. <span class="arithmatex">\(t_B = 10^9 \times 2.4/(3\times10^9) = 0.80\)</span> s. A is faster by <span class="arithmatex">\(0.80/0.75 \approx 1.07\)</span> times, although its clock is slower.</p>
+</details>
+<p><strong>Exercise 1.3.</strong> A new compiler cuts machine A's instruction count by 20% but raises its CPI to 1.7. Is A faster or slower, and by how much?</p>
+<details class="note">
+<summary>Answer</summary>
+<p>New instruction count <span class="arithmatex">\(0.8 \times 10^9\)</span>. <span class="arithmatex">\(t = 0.8\times10^9 \times 1.7 / (2\times10^9) = 0.68\)</span> s. This is faster than 0.75 s by <span class="arithmatex">\(0.75/0.68 \approx 1.10\)</span> times.</p>
+</details>
+<p><strong>Exercise 1.4.</strong> Eighty per cent of a job is parallel. What speed-up does Amdahl's law give on 4 cores? On 16? What is the limit? Then compare 16 cores with 4 cores plus a change that halves the serial part.</p>
+<details class="note">
+<summary>Answer</summary>
+<p>Four cores: <span class="arithmatex">\(1/(0.2 + 0.8/4) = 1/0.4 = 2.5\)</span>. Sixteen cores: <span class="arithmatex">\(1/(0.2 + 0.8/16) = 1/0.25 = 4\)</span>. Limit: <span class="arithmatex">\(1/0.2 = 5\)</span>.</p>
+<p>Halving the serial part leaves 10% serial and 90% parallel. On 4 cores: <span class="arithmatex">\(1/(0.1 + 0.9/4) = 1/0.325 \approx 3.1\)</span>. That is less than the 4 given by 16 cores, but it uses a quarter of the cores.</p>
+</details>
+<p><strong>Exercise 1.5.</strong> A program is 60% parallel. What is the best speed-up any number of cores can give?</p>
+<details class="note">
+<summary>Answer</summary>
+<p><span class="arithmatex">\(1/(1 - 0.6) = 2.5\)</span>.</p>
+</details>
+<p><strong>Exercise 1.6.</strong> Machine A executes a job as 2.0 billion simple instructions in 1.0 s. Machine B executes the same job as 1.2 billion richer instructions in 0.8 s. Compute the MIPS of each and say which is faster.</p>
+<details class="note">
+<summary>Answer</summary>
+<p>A: <span class="arithmatex">\(2.0\times10^9 / (1.0 \times 10^6) = 2000\)</span> MIPS. B: <span class="arithmatex">\(1.2\times10^9/(0.8\times10^6) = 1500\)</span> MIPS. B has the lower MIPS but finishes <span class="arithmatex">\(1.0/0.8 = 1.25\)</span> times sooner. MIPS rewarded A for doing more, smaller steps.</p>
+</details>
+<p><strong>Exercise 1.7.</strong> If processor speed grows 55% a year and DRAM response time improves 7% a year, by what factor does the gap grow in five years?</p>
+<details class="note">
+<summary>Answer</summary>
+<p><span class="arithmatex">\((1.55/1.07)^5 = 1.4486^5 \approx 6.4\)</span>. (Check: <span class="arithmatex">\(1.55^5 \approx 8.95\)</span>, <span class="arithmatex">\(1.07^5 \approx 1.40\)</span>, and <span class="arithmatex">\(8.95/1.40 \approx 6.4\)</span>.)</p>
+</details>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="preface.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: Preface">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Preface
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="pipelining-and-hazards.html" class="md-footer__link md-footer__link--next" aria-label="Next: 2. Pipelining and Hazards">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                2. Pipelining and Hazards
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      The Open Book Project &middot;
+      <a href="../../about.html">About this library</a> &middot;
+      © The authors of the books
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "navigation.prune", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "toc.follow", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+  
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../../assets/mathjax.js"></script>
+      
+        <script src="../../assets/viz.js"></script>
+      
+        <script src="../../assets/reader.js"></script>
+      
+        <script src="../../assets/app.js"></script>
+      
+    
+  <script>
+    /* offline reading: the service worker at the site root (its scope is the whole site) */
+    if ("serviceWorker" in navigator && window.isSecureContext) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register(new URL("../../sw.js", location.href).href).catch(function () {});
+      });
+    }
+  </script>
+
+  </body>
+</html>
