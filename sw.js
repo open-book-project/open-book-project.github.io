@@ -16,9 +16,9 @@
  */
 "use strict";
 
-var VERSION = "8d6edc9dc095";
+var VERSION = "e7038b6b8c7e";
 var SHELL = ["index.html", "about.html", "install.html", "publish.html", "offline.html", "sitemap.xml", "manifest.webmanifest", "library.json", "assets/app.css", "assets/app.js", "assets/extra.css", "assets/icons/apple-touch-icon.png", "assets/icons/favicon-32.png", "assets/icons/favicon.svg", "assets/icons/icon-192.png", "assets/icons/icon-512.png", "assets/icons/logo.svg", "assets/icons/maskable-512.png", "assets/images/favicon.png", "assets/javascripts/bundle.d7400e89.min.js", "assets/javascripts/workers/search.2c215733.min.js", "assets/mathjax.js", "assets/reader.css", "assets/reader.js", "assets/stylesheets/main.ec1eaa64.min.css", "assets/stylesheets/palette.ab4e12ef.min.css", "assets/theme.css", "assets/viz-kit.js", "assets/viz.css", "assets/viz.js"];
-var BOOKS = ["courses/quantum_computing_applications", "language/english_book_hinglish", "cyber/datacentre_security_ip", "courses/optimization_methods", "computing/microarchitecture", "science/hardware_security", "science/code_to_electrons", "cyber/randomness_testing", "language/english_book_hi", "science/drones_missiles", "courses/web_programming", "computing/rtl_to_gdsii", "computing/datacenters", "cyber/attack_taxonomy", "language/english_book", "computing/databases", "courses/dbms_course", "quantum/qml_course", "computing/networks", "computing/cellular", "computing/ram_ddr5", "courses/csa_course", "computing/compute", "computing/rtl_hdl", "courses/ml_course", "computing/memory", "science/dpi_ndr", "quantum/quantum", "computing/asic", "cyber/security", "computing/os", "computing/ml", "quantum/qml", "cyber/trust"];                           // the books' folders, longest first
+var BOOKS = [];                           // the books' folders, longest first
 
 var SCOPE = self.registration.scope;               // the site root, ending in "/"
 var SCOPE_PATH = new URL(SCOPE).pathname;
