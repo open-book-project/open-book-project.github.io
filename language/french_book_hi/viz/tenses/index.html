@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en" data-ui="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A timeline of French tenses</title>
+<link rel="stylesheet" href="langviz.css">
+<style>
+.chips { display: flex; flex-wrap: wrap; gap: 0.35rem; margin: 0.4rem 0 0.6rem; }
+.chips button { border-radius: 999px; font-weight: 600; }
+.chips button[aria-pressed="true"] { background: var(--c); border-color: var(--c); color: var(--viz-bg); }
+svg.tl { display: block; width: 100%; height: auto; }
+.tl .axis { stroke: var(--viz-fg); stroke-width: 2; }
+.tl .now { stroke: var(--viz-accent); stroke-width: 2; stroke-dasharray: 4 4; }
+.tl .lbl { fill: var(--viz-muted); font: 600 19px system-ui, sans-serif; text-anchor: middle; }
+.tl .nowl { fill: var(--viz-accent); font: 700 19px system-ui, sans-serif; text-anchor: middle; }
+.tl .mark { opacity: 0.18; transition: opacity 0.25s; }
+.tl .mark.on { opacity: 1; }
+.tl .tname { font: 700 20px system-ui, sans-serif; text-anchor: middle; display: none; }
+.tl .mark.on .tname { display: inline; }
+.tl .mark .lbl { display: none; }
+.tl .mark.on .lbl { display: inline; }
+.ex { font-size: 1.12rem; font-weight: 650; }
+.form { margin: 0.35rem 0 0; }
+.form code { font: inherit; font-weight: 650; color: var(--viz-accent); }
+</style>
+</head>
+<body>
+<div class="lv-head"><h1 id="title"></h1></div>
+<p class="lv-novoice" id="novoice"></p>
+<p class="lv-muted" id="hint"></p>
+<div class="chips" id="chips" role="group"></div>
+<svg class="tl" id="tl" viewBox="0 0 640 175" role="img"></svg>
+<div class="lv-card" id="card" aria-live="polite"></div>
+<script src="viz-kit.js"></script>
+<script src="sayk.js"></script>
+<script>
+(function () {
+  "use strict";
+  var UI = {
+    en: { title: "A timeline of French tenses", hint: "Tap a tense: its place on the timeline, how it is made, and an example to hear.", past: "past", now: "now", future: "future",
+      made: "How it is made", use: "Used for", novoice: "This device has no French voice: read the examples instead.", hypo: "if… (not on the line)" },
+    hinglish: { title: "French tenses ki timeline", hint: "Kisi tense par tap karo: timeline par uski jagah, woh kaise banta hai, aur sunne ke liye ek example.", past: "beeta", now: "abhi", future: "aane wala",
+      made: "Kaise banta hai", use: "Kab use hota hai", novoice: "Is device par French awaaz nahi hai: examples padh lo.", hypo: "agar… (line par nahi)" },
+    hi: { title: "फ़्रेंच काल की समय-रेखा", hint: "किसी काल पर टैप करो: समय-रेखा पर उसकी जगह, वह कैसे बनता है, और सुनने के लिए एक उदाहरण।", past: "भूत", now: "अभी", future: "भविष्य",
+      made: "कैसे बनता है", use: "कब प्रयोग होता है", novoice: "इस डिवाइस पर फ़्रेंच आवाज़ नहीं है: उदाहरण पढ़ लो।", hypo: "अगर… (रेखा पर नहीं)" }
+  };
+  var T = UI[Say.ui] || UI.en, U = Say.ui === "hi" ? "hi" : Say.ui === "hinglish" ? "hg" : "en";
+  // name, colour, shape [kind, x1, x2], formation, use {en, hg, hi}, example, translation {en, hi}
+  var TENSES = [
+    ["plus-que-parfait", "#8a3fa0", ["point", 95], "avoir / être (imparfait) + participe passé",
+      { en: "the past before another past", hg: "past se bhi pehle ki baat", hi: "किसी भूत से भी पहले की बात" },
+      "J'avais déjà mangé quand il est arrivé.", { en: "I had already eaten when he arrived.", hi: "जब वह आया, मैं खा चुका था।" }],
+    ["passé composé", "#c4521a", ["point", 205], "avoir / être (présent) + participe passé",
+      { en: "a finished action, an event", hg: "khatam hua kaam, ek ghatna", hi: "पूरा हो चुका काम, एक घटना" },
+      "Hier, j'ai mangé une pizza.", { en: "Yesterday I ate a pizza.", hi: "कल मैंने पिज़्ज़ा खाया।" }],
+    ["imparfait", "#1f5fa8", ["wave", 70, 250], "radical de « nous » + -ais, -ais, -ait, -ions, -iez, -aient",
+      { en: "background, habit, description in the past", hg: "past mein background, aadat, description", hi: "भूत में पृष्ठभूमि, आदत, वर्णन" },
+      "Quand j'étais petit, je mangeais beaucoup de chocolat.", { en: "When I was little, I used to eat a lot of chocolate.", hi: "जब मैं छोटा था, मैं बहुत चॉकलेट खाता था।" }],
+    ["présent", "#2a8a4a", ["band", 300, 340], "radical + -e, -es, -e, -ons, -ez, -ent (-er)",
+      { en: "now, habits, general truths", hg: "abhi, aadatein, saamaanya sach", hi: "अभी, आदतें, सामान्य सत्य" },
+      "Je mange une pomme.", { en: "I eat / I am eating an apple.", hi: "मैं सेब खाता हूँ / खा रहा हूँ।" }],
+    ["passé récent", "#b02a5a", ["point", 278], "venir de + infinitif",
+      { en: "something that has just happened", hg: "abhi-abhi hua kaam", hi: "अभी-अभी हुआ काम" },
+      "Je viens de manger.", { en: "I have just eaten.", hi: "मैंने अभी-अभी खाया है।" }],
+    ["futur proche", "#1a8a96", ["point", 375], "aller (présent) + infinitif",
+      { en: "the near, planned future", hg: "paas ka, plan kiya hua future", hi: "निकट का, तय किया हुआ भविष्य" },
+      "Ce soir, je vais manger au restaurant.", { en: "Tonight I am going to eat at the restaurant.", hi: "आज रात मैं रेस्टोरेंट में खाने वाला हूँ।" }],
+    ["futur simple", "#b08a00", ["point", 500], "infinitif + -ai, -as, -a, -ons, -ez, -ont",
+      { en: "the future, promises, predictions", hg: "future, vaade, anumaan", hi: "भविष्य, वादे, अनुमान" },
+      "L'année prochaine, je mangerai à Paris.", { en: "Next year I will eat in Paris.", hi: "अगले साल मैं पेरिस में खाऊँगा।" }],
+    ["futur antérieur", "#5a6270", ["point", 450], "avoir / être (futur) + participe passé",
+      { en: "done before a moment in the future", hg: "future ke kisi pal se pehle ho chuka", hi: "भविष्य के किसी पल से पहले हो चुका" },
+      "Quand tu arriveras, j'aurai fini.", { en: "When you arrive, I will have finished.", hi: "जब तुम पहुँचोगे, मैं ख़त्म कर चुका होऊँगा।" }],
+    ["conditionnel", "#7a5a2a", ["cloud", 560], "infinitif + -ais, -ais, -ait, -ions, -iez, -aient",
+      { en: "wishes, polite requests, what would happen if…", hg: "ichchha, vinamra request, agar… to kya hota", hi: "इच्छा, विनम्र अनुरोध, अगर… तो क्या होता" },
+      "Si j'avais faim, je mangerais une glace.", { en: "If I were hungry, I would eat an ice cream.", hi: "अगर मुझे भूख होती, तो मैं आइसक्रीम खाता।" }]
+  ];
+  function $(id) { return document.getElementById(id); }
+  $("title").textContent = T.title; $("hint").textContent = T.hint; $("novoice").textContent = T.novoice;
+  $("tl").setAttribute("aria-label", T.title);
+  var s = '<line class="axis" x1="20" y1="96" x2="620" y2="96" marker-end="url(#ar)"/><defs><marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="currentColor"/></marker></defs>' +
+    '<line class="now" x1="320" y1="40" x2="320" y2="140"/><text class="nowl" x="320" y="165">' + T.now + '</text>' +
+    '<text class="lbl" x="130" y="165">← ' + T.past + '</text><text class="lbl" x="510" y="165">' + T.future + ' →</text>';
+  TENSES.forEach(function (t, i) {
+    var sh = t[2], c = t[1], g = '<g class="mark" data-i="' + i + '" fill="' + c + '" stroke="' + c + '">';
+    if (sh[0] === "point") g += '<circle cx="' + sh[1] + '" cy="96" r="8"/><text class="tname" x="' + Math.min(560, Math.max(80, sh[1])) + '" y="66" stroke="none">' + t[0] + "</text>";
+    else if (sh[0] === "wave") { var d = "M" + sh[1] + " 96"; for (var x = sh[1]; x < sh[2]; x += 20) d += " q5 -9 10 0 t10 0"; g += '<path d="' + d + '" fill="none" stroke-width="5"/><text class="tname" x="' + ((sh[1] + sh[2]) / 2) + '" y="66" stroke="none">' + t[0] + "</text>"; }
+    else if (sh[0] === "band") g += '<rect x="' + sh[1] + '" y="86" width="' + (sh[2] - sh[1]) + '" height="20" rx="6" opacity="0.8"/><text class="tname" x="320" y="66" stroke="none">' + t[0] + "</text>";
+    else g += '<ellipse cx="' + sh[1] + '" cy="52" rx="44" ry="18" fill="none" stroke-dasharray="4 3" stroke-width="2"/><text class="tname" x="' + sh[1] + '" y="56" stroke="none">' + t[0] + "</text><text class=\"lbl\" x=\"" + sh[1] + "\" y=\"24\">" + T.hypo + "</text>";
+    s += g + "</g>";
+  });
+  $("tl").innerHTML = s;
+  $("chips").innerHTML = TENSES.map(function (t, i) { return '<button type="button" style="--c:' + t[1] + '" data-i="' + i + '" aria-pressed="false">' + t[0] + "</button>"; }).join("");
+  function show(i, speak) {
+    var t = TENSES[i];
+    [].forEach.call(document.querySelectorAll("#chips button"), function (b) { b.setAttribute("aria-pressed", String(+b.getAttribute("data-i") === i)); });
+    [].forEach.call(document.querySelectorAll(".tl .mark"), function (g) { g.classList.toggle("on", +g.getAttribute("data-i") === i); });
+    $("card").innerHTML = '<div class="lv-row"><button type="button" class="lv-say" id="sp" aria-label="Listen">🔊</button><span class="ex lv-grow" lang="fr">' + t[5] + '</span></div>' +
+      '<p class="lv-muted">' + (t[6][U === "hi" ? "hi" : "en"]) + "</p>" +
+      '<p class="form"><b>' + T.made + ":</b> <code lang=\"fr\">" + t[3] + "</code></p><p class=\"form\"><b>" + T.use + ":</b> " + t[4][U] + "</p>";
+    $("sp").addEventListener("click", function () { Say.say(t[5], "fr"); });
+    if (speak) Say.say(t[5], "fr");
+    VizKit.autoHeight();
+  }
+  $("chips").addEventListener("click", function (e) { var b = e.target.closest("button"); if (b) show(+b.getAttribute("data-i"), true); });
+  $("tl").addEventListener("click", function (e) { var g = e.target.closest(".mark"); if (g) show(+g.getAttribute("data-i"), true); });
+  Say.onVoices(function () { document.body.classList.toggle("no-voice", !Say.has("fr")); VizKit.autoHeight(); });
+  show(1, false);
+})();
+</script>
+</body>
+</html>

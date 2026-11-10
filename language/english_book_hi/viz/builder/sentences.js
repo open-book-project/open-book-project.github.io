@@ -1,0 +1,16 @@
+/* English sentences for the sentence builder: words with their role (S subject, V verb, O object, N negation,
+   A adjective, P pronoun, T time, L place, Q question word, D adverb), the meaning and the rule shown. */
+window.SENTENCES = [
+  { w: ["I|S", "eat|V", "an apple|O"], en: "Main ek seb khaata hoon.", hi: "मैं एक सेब खाता हूँ।", why: "Subject + verb + object (SVO). Hindi puts the verb last (SOV); English puts it second.", whyhi: "कर्ता + क्रिया + कर्म (SVO)। हिन्दी में क्रिया अंत में आती है, अंग्रेज़ी में दूसरे स्थान पर।" },
+  { w: ["We|S", "met|V", "our friends|O", "at the station|L", "yesterday|T"], en: "Kal hum station par apne doston se mile.", hi: "कल हम स्टेशन पर अपने दोस्तों से मिले।", why: "After the object: place, then time.", whyhi: "कर्म के बाद: पहले स्थान, फिर समय।" },
+  { w: ["He|S", "doesn't|N", "like|V", "coffee|O"], en: "Use coffee pasand nahi hai.", hi: "उसे कॉफ़ी पसंद नहीं है।", why: "Negative: do / does / did + not + the base verb.", whyhi: "निषेध: do / does / did + not + मूल क्रिया।" },
+  { w: ["Do|Q", "you|S", "speak|V", "English|O", "?|Q"], en: "Kya tum English bolte ho?", hi: "क्या तुम अंग्रेज़ी बोलते हो?", why: "Question: do comes before the subject; no 'kya' word is needed.", whyhi: "प्रश्न: do कर्ता से पहले आता है; 'क्या' जैसा शब्द नहीं चाहिए।" },
+  { w: ["My brother|S", "always|D", "reads|V", "the newspaper|O"], en: "Mera bhai hamesha akhbaar padhta hai.", hi: "मेरा भाई हमेशा अख़बार पढ़ता है।", why: "always, often, never go before the main verb.", whyhi: "always, often, never मुख्य क्रिया से पहले आते हैं।" },
+  { w: ["Where|Q", "do|V", "you|S", "live|V", "?|Q"], en: "Tum kahan rehte ho?", hi: "तुम कहाँ रहते हो?", why: "Wh- word + do + subject + verb.", whyhi: "Wh- शब्द + do + कर्ता + क्रिया।" },
+  { w: ["I|S", "have|V", "never|D", "seen|V", "snow|O"], en: "Maine kabhi barf nahi dekhi.", hi: "मैंने कभी बर्फ़ नहीं देखी।", why: "never goes between have and the past participle.", whyhi: "never, have और past participle के बीच आता है।" },
+  { w: ["She|S", "gave|V", "me|P", "a book|O"], en: "Usne mujhe ek kitaab di.", hi: "उसने मुझे एक किताब दी।", why: "Two objects: the person first, then the thing.", whyhi: "दो कर्म: पहले व्यक्ति, फिर वस्तु।" },
+  { w: ["It|S", "is|V", "a|O", "beautiful|A", "old|A", "house|O"], en: "Yeh ek sundar purana ghar hai.", hi: "यह एक सुंदर पुराना घर है।", why: "Adjectives come before the noun: opinion before age.", whyhi: "विशेषण संज्ञा से पहले आते हैं: राय, फिर आयु।" },
+  { w: ["They|S", "are watching|V", "a film|O", "at home|L", "now|T"], en: "Woh abhi ghar par film dekh rahe hain.", hi: "वे अभी घर पर फ़िल्म देख रहे हैं।", why: "be + verb-ing for now; place, then time.", whyhi: "अभी के लिए be + verb-ing; पहले स्थान, फिर समय।" },
+  { w: ["Can|Q", "you|S", "help|V", "me|P", "?|Q"], en: "Kya tum meri madad kar sakte ho?", hi: "क्या तुम मेरी मदद कर सकते हो?", why: "Question with a modal: the modal comes first.", whyhi: "modal वाला प्रश्न: modal पहले आता है।" },
+  { w: ["I|S", "didn't|N", "go|V", "to office|L", "on Monday|T"], en: "Main Monday ko office nahi gaya.", hi: "मैं सोमवार को ऑफ़िस नहीं गया।", why: "After didn't, the base verb: go, not went.", whyhi: "didn't के बाद मूल क्रिया: go, went नहीं।" }
+];

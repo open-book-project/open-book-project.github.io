@@ -993,6 +993,12 @@
     if (onlyIfChanged && before === S.lastDims && S.lastN === S.n) { /* unchanged */ }
     S.lastN = S.n;
     restoreAnchor(keep);
+    // the text box being typed into (a quiz) stays on screen when the pages are laid out again
+    var ae = document.activeElement;
+    if (ae && ae !== $.flow && $.flow.contains(ae) && /^(INPUT|TEXTAREA|SELECT)$/.test(ae.tagName)) {
+      var p = pageOfEl(ae);
+      if (p !== null && !isOnPage(p)) goto(p, false);
+    }
   }
 
   function pageOfEl(e) {
@@ -2314,11 +2320,12 @@
   }
 
   /* ---------------------------------------------------------------- input: pointer, wheel, keyboard */
-  var INTERACTIVE = "a,button,summary,input,select,textarea,.rd-panel,.rd-pop,.rd-top,.rd-bot,.rd-back,.rd-selbar,[role=button]";
+  var INTERACTIVE = "a,button,summary,input,select,textarea,label,.pk-q-ui,.rd-panel,.rd-pop,.rd-top,.rd-bot,.rd-back,.rd-selbar,[role=button]";
 
   function onPointerDown(e) {
     if (!S.open || S.loading) return;
     if (e.pointerType === "mouse" && e.button !== 0) return;
+    if (e.target && e.target.closest && e.target.closest("input, textarea, select")) return;     // a text box of a quiz: no page turns
     S.p = { id: e.pointerId, x: e.clientX, y: e.clientY, t: e.timeStamp, mouse: e.pointerType === "mouse", drag: false, moved: false, target: e.target, dx: 0 };
   }
   function edgeResist(dx) {
@@ -2465,7 +2472,8 @@
   }
 
   /* ---------------------------------------------------------------- start */
-  window.bjpReader = { open: open, close: close, goto: function (p) { goto(p, false); }, state: S };
+  window.bjpReader = { open: open, close: close, goto: function (p) { goto(p, false); }, state: S,
+    relayout: function () { relayout(false); } };      // assets/quiz.js: a question that grew
   if (window.document$ && window.document$.subscribe) window.document$.subscribe(init);
   else if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
   else init();

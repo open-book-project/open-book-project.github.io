@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en" data-ui="en" data-lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Numbers and time trainer</title>
+<link rel="stylesheet" href="langviz.css">
+<style>
+.big { font: 700 3rem/1.1 system-ui, sans-serif; letter-spacing: 0.02em; text-align: center; margin: 0.3rem 0; min-height: 3.3rem; }
+.words { text-align: center; font-size: 1.15rem; font-weight: 600; min-height: 1.6em; color: var(--viz-accent); }
+.words.hide { filter: blur(7px); opacity: 0.5; cursor: pointer; user-select: none; }
+.ctr { justify-content: center; margin: 0.5rem 0; }
+.clock { display: block; width: min(13rem, 70vw); height: auto; margin: 0.2rem auto; }
+.clock .face { fill: var(--viz-bg); stroke: var(--viz-fg); stroke-width: 3; }
+.clock .tick { stroke: var(--viz-muted); stroke-width: 2; }
+.clock .num { fill: var(--viz-fg); font: 600 12px system-ui, sans-serif; text-anchor: middle; dominant-baseline: central; }
+.clock .h { stroke: var(--viz-fg); stroke-width: 6; stroke-linecap: round; }
+.clock .m { stroke: var(--viz-accent); stroke-width: 4; stroke-linecap: round; }
+.clock .h, .clock .m { transition: transform 0.5s ease; transform-origin: 100px 100px; }
+.check { justify-content: center; margin-top: 0.4rem; }
+.check input { width: 9rem; text-align: center; }
+#fb { text-align: center; min-height: 1.5em; margin: 0.4rem 0 0; }
+select { min-height: 2.2rem; border-radius: 0.45rem; border: 1px solid var(--viz-line); background: var(--viz-surface); }
+</style>
+</head>
+<body>
+<div class="lv-head"><h1 id="title"></h1><div class="lv-tabs" role="group"><button type="button" id="tab-num" aria-pressed="true"></button><button type="button" id="tab-time" aria-pressed="false"></button></div></div>
+<p class="lv-novoice" id="novoice"></p>
+<div class="lv-card">
+  <div class="lv-row"><div class="lv-tabs" role="group" id="modes"><button type="button" data-mode="read" aria-pressed="true"></button><button type="button" data-mode="listen" aria-pressed="false"></button></div>
+    <span class="lv-grow"></span><select id="range" aria-label="Range"><option value="20">0–20</option><option value="100" selected>0–100</option><option value="1000">0–1000</option><option value="9999">0–9999</option></select>
+    <select id="clock24" aria-label="Clock" hidden><option value="12">12 h</option><option value="24">24 h</option></select></div>
+  <svg class="clock" id="clock" viewBox="0 0 200 200" hidden aria-hidden="true"></svg>
+  <div class="big" id="big" aria-live="polite"></div>
+  <div class="words" id="words" aria-live="polite"></div>
+  <div class="lv-row ctr"><button type="button" class="lv-say lv-big" id="say" aria-label="Listen">🔊</button><button type="button" class="lv-say lv-big" id="slow" aria-label="Slowly">🐢</button><button type="button" id="next"></button></div>
+  <div class="lv-row check" id="checkrow" hidden><input class="lv-in" id="ans" inputmode="numeric" autocomplete="off" aria-label="Answer"><button type="button" id="check"></button></div>
+  <p id="fb" aria-live="polite"></p>
+</div>
+<script src="viz-kit.js"></script>
+<script src="sayk.js"></script>
+<script src="numwords.js"></script>
+<script>
+(function () {
+  "use strict";
+  var LANG = document.documentElement.getAttribute("data-lang") || "fr";
+  var NAME = { fr: { en: "French", hinglish: "French", hi: "फ़्रेंच" }, en: { en: "English", hinglish: "English", hi: "अंग्रेज़ी" } }[LANG];
+  var UI = {
+    en: { title: "Numbers and time in " + NAME.en, num: "Numbers", time: "Time", read: "See and hear", listen: "Listen and type", next: "New", check: "Check",
+      right: "Right!", wrong: "Not quite: it was", typeNum: "Type the number you hear", typeTime: "Type the time you hear, e.g. 3:15", tap: "tap to show the words",
+      novoice: "This device has no " + NAME.en + " voice: read the words instead." },
+    hinglish: { title: NAME.hinglish + " mein numbers aur time", num: "Numbers", time: "Time", read: "Dekho aur suno", listen: "Suno aur likho", next: "Naya", check: "Check karo",
+      right: "Sahi!", wrong: "Poora sahi nahi: ye tha", typeNum: "Jo number suna woh likho", typeTime: "Jo time suna woh likho, jaise 3:15", tap: "words dekhne ke liye tap karo",
+      novoice: "Is device par " + NAME.hinglish + " awaaz nahi hai: words padh lo." },
+    hi: { title: NAME.hi + " में संख्याएँ और समय", num: "संख्याएँ", time: "समय", read: "देखो और सुनो", listen: "सुनो और लिखो", next: "नया", check: "जाँचो",
+      right: "सही!", wrong: "पूरा सही नहीं: यह था", typeNum: "जो संख्या सुनी, वह लिखो", typeTime: "जो समय सुना, वह लिखो, जैसे 3:15", tap: "शब्द देखने के लिए टैप करो",
+      novoice: "इस डिवाइस पर " + NAME.hi + " आवाज़ नहीं है: शब्द पढ़ लो।" }
+  };
+  var T = UI[Say.ui] || UI.en;
+  function $(id) { return document.getElementById(id); }
+  $("title").textContent = T.title; $("tab-num").textContent = T.num; $("tab-time").textContent = T.time; $("next").textContent = T.next; $("check").textContent = T.check;
+  $("novoice").textContent = T.novoice;
+  var modes = document.querySelectorAll("[data-mode]"); modes[0].textContent = T.read; modes[1].textContent = T.listen;
+  if (LANG !== "fr") $("clock24").querySelector('[value="24"]').textContent = "digital";
+  var tab = "num", mode = "read", cur = null, answered = false;
+  // the clock face
+  var svg = '<circle class="face" cx="100" cy="100" r="92"/>';
+  for (var i = 0; i < 60; i++) { var a = i * Math.PI / 30, r1 = i % 5 ? 86 : 80; svg += '<line class="tick" x1="' + (100 + 90 * Math.sin(a)).toFixed(1) + '" y1="' + (100 - 90 * Math.cos(a)).toFixed(1) + '" x2="' + (100 + r1 * Math.sin(a)).toFixed(1) + '" y2="' + (100 - r1 * Math.cos(a)).toFixed(1) + '"/>'; }
+  for (i = 1; i <= 12; i++) { a = i * Math.PI / 6; svg += '<text class="num" x="' + (100 + 68 * Math.sin(a)).toFixed(1) + '" y="' + (100 - 68 * Math.cos(a)).toFixed(1) + '">' + i + "</text>"; }
+  svg += '<line class="h" id="hh" x1="100" y1="100" x2="100" y2="52"/><line class="m" id="mh" x1="100" y1="100" x2="100" y2="28"/><circle cx="100" cy="100" r="5" fill="currentColor"/>';
+  $("clock").innerHTML = svg;
+
+  function newItem() {
+    answered = false;
+    $("fb").textContent = ""; $("ans").value = "";
+    if (tab === "num") {
+      var max = +$("range").value, n = Math.floor(Math.random() * (max + 1));
+      if (max >= 100 && Math.random() < 0.35) n = 60 + Math.floor(Math.random() * 40);      // the hard part of French numbers
+      cur = { show: String(n), words: NumWords.number(n, LANG), answer: String(n) };
+    } else {
+      var h = Math.floor(Math.random() * 24), m = 5 * Math.floor(Math.random() * 12), fmt = $("clock24").value;
+      cur = { show: (fmt === "24" ? h : (h % 12 || 12)) + ":" + (m < 10 ? "0" : "") + m, words: NumWords.time(h, m, LANG, fmt === "24"), h: h, m: m };
+      $("hh").style.transform = "rotate(" + ((h % 12) * 30 + m / 2) + "deg)";
+      $("mh").style.transform = "rotate(" + (m * 6) + "deg)";
+    }
+    render();
+  }
+  function render() {
+    var listen = mode === "listen" && !answered;
+    $("big").textContent = listen ? "?" : cur.show;
+    $("words").textContent = cur.words;
+    $("words").classList.toggle("hide", listen);
+    $("words").title = listen ? "" : "";
+    $("clock").style.visibility = listen ? "hidden" : "visible";
+    $("checkrow").hidden = mode !== "listen";
+    $("ans").placeholder = tab === "num" ? T.typeNum : T.typeTime;
+    $("ans").setAttribute("inputmode", tab === "num" ? "numeric" : "text");
+    VizKit.autoHeight();
+  }
+  function check() {
+    if (answered || !$("ans").value.trim()) return;
+    var v = $("ans").value.trim().replace(/[.,h ]+/g, ":").replace(/^:|:$/g, ""), ok;
+    if (tab === "num") ok = v.replace(/:/g, "") === cur.answer;
+    else {
+      var p = v.split(":"), hh = +p[0], mm = +(p[1] || 0);
+      ok = mm === cur.m && (hh % 12) === (cur.h % 12);
+    }
+    answered = true;
+    $("fb").innerHTML = ok ? '<span class="lv-ok">' + T.right + "</span>" : '<span class="lv-bad">' + T.wrong + " " + cur.show + "</span>";
+    render();
+  }
+  function setTab(t) {
+    tab = t;
+    $("tab-num").setAttribute("aria-pressed", String(t === "num")); $("tab-time").setAttribute("aria-pressed", String(t === "time"));
+    $("range").hidden = t !== "num"; $("clock24").hidden = t !== "time"; $("clock").hidden = t !== "time";
+    newItem();
+  }
+  [].forEach.call(modes, function (b) { b.addEventListener("click", function () { mode = b.getAttribute("data-mode"); [].forEach.call(modes, function (x) { x.setAttribute("aria-pressed", String(x === b)); }); newItem(); if (mode === "listen") Say.say(cur.words, LANG); }); });
+  $("tab-num").addEventListener("click", function () { setTab("num"); });
+  $("tab-time").addEventListener("click", function () { setTab("time"); });
+  $("range").addEventListener("change", newItem);
+  $("clock24").addEventListener("change", newItem);
+  $("next").addEventListener("click", function () { newItem(); if (mode === "listen") Say.say(cur.words, LANG); });
+  $("say").addEventListener("click", function () { Say.say(cur.words, LANG); });
+  $("slow").addEventListener("click", function () { Say.say(cur.words, LANG, true); });
+  $("check").addEventListener("click", check);
+  $("ans").addEventListener("keydown", function (e) { if (e.key === "Enter") check(); });
+  $("words").addEventListener("click", function () { if ($("words").classList.contains("hide")) { $("words").classList.remove("hide"); } });
+  Say.onVoices(function () { document.body.classList.toggle("no-voice", !Say.has(LANG)); VizKit.autoHeight(); });
+  setTab("num");
+})();
+</script>
+</body>
+</html>

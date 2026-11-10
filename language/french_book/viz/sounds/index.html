@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en" data-ui="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The sounds of French</title>
+<link rel="stylesheet" href="langviz.css">
+<style>
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(5.6rem, 1fr)); gap: 0.4rem; }
+.snd { display: flex; flex-direction: column; align-items: flex-start; gap: 0.1rem; min-height: 4.2rem; padding: 0.45rem 0.55rem; text-align: left; border-radius: 0.6rem; }
+.snd b { font-size: 1.15rem; }
+.snd span { font-size: 0.78rem; color: var(--viz-muted); line-height: 1.2; }
+.snd.nasal { border-color: color-mix(in srgb, var(--viz-accent2) 55%, var(--viz-line)); }
+.snd[aria-pressed="true"] { border-color: var(--viz-accent); box-shadow: 0 0 0 2px var(--viz-accent) inset; }
+.snd[aria-pressed="true"] span { color: inherit; opacity: 0.85; }
+h2 { font-size: 0.9rem; margin: 0.8rem 0 0.35rem; color: var(--viz-muted); text-transform: uppercase; letter-spacing: 0.06em; }
+.detail { margin-top: 0.7rem; }
+.detail .ipa { font-size: 1.6rem; font-weight: 700; margin-right: 0.4rem; }
+.words { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.45rem; }
+.words button { min-height: 2.6rem; border-radius: 999px; }
+.pair { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin: 0.7rem 0; }
+.pair button { min-height: 3.2rem; font-size: 1.2rem; font-weight: 650; }
+.pair button.right { border-color: var(--viz-ok); background: color-mix(in srgb, var(--viz-ok) 16%, transparent); }
+.pair button.wrong { border-color: var(--viz-bad); background: color-mix(in srgb, var(--viz-bad) 14%, transparent); }
+</style>
+</head>
+<body>
+<div class="lv-head"><h1 id="t-title"></h1><div class="lv-tabs" role="group"><button type="button" id="tab-chart" aria-pressed="true"></button><button type="button" id="tab-pairs" aria-pressed="false"></button></div></div>
+<p class="lv-novoice" id="t-novoice"></p>
+<section id="chart">
+  <p class="lv-muted" id="t-hint"></p>
+  <h2 id="t-oral"></h2><div class="grid" id="oral"></div>
+  <h2 id="t-nasal"></h2><div class="grid" id="nasal"></div>
+  <h2 id="t-more"></h2><div class="grid" id="more"></div>
+  <div class="detail lv-card" id="detail" aria-live="polite"></div>
+</section>
+<section id="pairs" hidden>
+  <p class="lv-muted" id="t-pairhint"></p>
+  <div class="lv-card">
+    <div class="lv-row"><button type="button" class="lv-say lv-big" id="replay" aria-label="Listen">🔊</button><span class="lv-grow" id="pq"></span><span id="pscore" class="lv-muted"></span></div>
+    <div class="pair" id="pchoices"></div>
+    <p id="pfb" aria-live="polite"></p>
+    <button type="button" id="pnext"></button>
+  </div>
+</section>
+<script src="viz-kit.js"></script>
+<script src="sayk.js"></script>
+<script>
+(function () {
+  "use strict";
+  var UI = {
+    en: { title: "The sounds of French", chart: "Sound chart", pairs: "Which did you hear?", hint: "Tap a sound to hear it in words; tap a word to hear it alone.",
+      oral: "Oral vowels", nasal: "Nasal vowels", more: "Other sounds to watch", spell: "Written", like: "Sounds like", ex: "Words",
+      pairhint: "Two words differ by one sound. Listen, then pick the word you heard.", q: "Listen, then choose:", next: "Next pair", right: "Yes!", wrong: "No, it was",
+      score: "right", novoice: "This device has no French voice: read the sound hints (install a French voice in the system's speech settings to hear them)." },
+    hinglish: { title: "French ki awaazein", chart: "Sound chart", pairs: "Kaunsa suna?", hint: "Kisi sound par tap karo, words mein suno; kisi word par tap karo, akela suno.",
+      oral: "Oral vowels", nasal: "Nasal vowels (naak se)", more: "Dhyan dene wali awaazein", spell: "Likhte hain", like: "Aisi lagti hai", ex: "Words",
+      pairhint: "Do words mein bas ek sound ka farak hai. Suno, phir jo suna woh chuno.", q: "Suno, phir chuno:", next: "Agla pair", right: "Haan!", wrong: "Nahi, ye tha",
+      score: "sahi", novoice: "Is device par French awaaz nahi hai: sound hints padho (system ki speech settings mein French voice install karo)." },
+    hi: { title: "फ़्रेंच की ध्वनियाँ", chart: "ध्वनि चार्ट", pairs: "कौन-सा सुना?", hint: "किसी ध्वनि पर टैप करो, शब्दों में सुनो; किसी शब्द पर टैप करो, अकेला सुनो।",
+      oral: "मौखिक स्वर", nasal: "अनुनासिक स्वर", more: "ध्यान देने वाली ध्वनियाँ", spell: "लिखते हैं", like: "ऐसी सुनाई देती है", ex: "शब्द",
+      pairhint: "दो शब्दों में बस एक ध्वनि का फ़र्क है। सुनो, फिर जो सुना वह चुनो।", q: "सुनो, फिर चुनो:", next: "अगली जोड़ी", right: "हाँ!", wrong: "नहीं, यह था",
+      score: "सही", novoice: "इस डिवाइस पर फ़्रेंच आवाज़ नहीं है: ध्वनि के संकेत पढ़ो (सिस्टम की स्पीच सेटिंग में फ़्रेंच आवाज़ जोड़ो)।" }
+  };
+  var T = UI[Say.ui] || UI.en, HI = Say.ui === "hi";
+  // [IPA, written, sounds like (English / Hindi), words]
+  var ORAL = [
+    ["a", "a, à", "a in father / आ", ["ami", "chat", "là"]],
+    ["e", "é, -er, -ez", "ay, short and tight / ए", ["été", "parler", "nez"]],
+    ["ɛ", "è, ê, ai", "e in bed / ऐ (short)", ["mère", "fête", "lait"]],
+    ["i", "i, y", "ee, short / ई", ["lit", "stylo", "midi"]],
+    ["o", "o, au, eau", "o in go, no glide / ओ", ["mot", "chaud", "beau"]],
+    ["ɔ", "o + consonant", "o in hot / ऑ", ["porte", "bol", "homme"]],
+    ["u", "ou", "oo in food / ऊ", ["vous", "roue", "tout"]],
+    ["y", "u", "say ee with round lips", ["vu", "rue", "tu"]],
+    ["ø", "eu (end)", "say ay with round lips", ["deux", "peu", "bleu"]],
+    ["œ", "eu + consonant", "e in her, lips round", ["peur", "fleur", "neuf"]],
+    ["ə", "e", "short uh / अ", ["le", "petit", "demain"]]
+  ];
+  var NASAL = [
+    ["ɑ̃", "an, am, en, em", "ah through the nose / आँ", ["enfant", "chambre", "temps"]],
+    ["ɔ̃", "on, om", "oh through the nose / ओं", ["bon", "nom", "onze"]],
+    ["ɛ̃", "in, im, ain, ein, un", "a in cat through the nose / ऐं", ["vin", "pain", "plein"]]
+  ];
+  var MORE = [
+    ["ʁ", "r", "a soft gargle at the back", ["rouge", "Paris", "merci"]],
+    ["ʒ", "j, ge, gi", "s in measure", ["je", "rouge", "gilet"]],
+    ["ɲ", "gn", "ny in canyon / ञ", ["montagne", "signe", "gagner"]],
+    ["wa", "oi", "wa in water", ["moi", "trois", "voiture"]],
+    ["ɥi", "ui", "u + ee, one beat", ["huit", "nuit", "lui"]],
+    ["j", "ill, -il, y", "y in yes", ["fille", "travail", "payer"]]
+  ];
+  var PAIRS = [["vous", "vu"], ["roue", "rue"], ["tout", "tu"], ["beau", "bon"], ["vent", "vin"], ["sans", "son"], ["le", "les"], ["deux", "des"], ["mais", "main"], ["peur", "père"], ["bas", "banc"], ["dessous", "dessus"]];
+  function $(id) { return document.getElementById(id); }
+  ["title", "hint", "oral", "nasal", "more", "pairhint", "novoice"].forEach(function (k) { $("t-" + k).textContent = T[k]; });
+  $("tab-chart").textContent = T.chart; $("tab-pairs").textContent = T.pairs; $("pnext").textContent = T.next; $("pq").textContent = T.q;
+  function hint(s) { var p = s.split(" / "); return HI && p[1] ? p[1] : p[0]; }
+  function grid(id, list, nasal) {
+    var g = $(id);
+    list.forEach(function (s, i) {
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "snd" + (nasal ? " nasal" : ""); b.setAttribute("aria-pressed", "false");
+      b.innerHTML = "<b>[" + s[0] + "]</b><span>" + s[1] + "</span>";
+      b.setAttribute("aria-label", "[" + s[0] + "] " + s[1] + ": " + s[3].join(", "));
+      b.addEventListener("click", function () { pick(b, s); });
+      g.appendChild(b);
+    });
+  }
+  function pick(b, s, quiet) {
+    [].forEach.call(document.querySelectorAll(".snd"), function (x) { x.setAttribute("aria-pressed", String(x === b)); });
+    var d = $("detail");
+    d.innerHTML = '<div class="lv-row"><span class="ipa">[' + s[0] + ']</span><span class="lv-grow"><b>' + T.spell + ":</b> " + s[1] + "<br><b>" + T.like + ":</b> " + hint(s[2]) +
+      '</span></div><div class="words">' + s[3].map(function (w) { return '<button type="button" data-w="' + w + '">🔊 ' + w + "</button>"; }).join("") + "</div>";
+    [].forEach.call(d.querySelectorAll("[data-w]"), function (x) { x.addEventListener("click", function () { Say.say(x.getAttribute("data-w"), "fr", true); }); });
+    if (!quiet) Say.say(s[3].join(", "), "fr");
+    VizKit.autoHeight();
+  }
+  grid("oral", ORAL); grid("nasal", NASAL, true); grid("more", MORE);
+  pick(document.querySelector(".snd"), ORAL[0], true);
+
+  // which did you hear?
+  var cur = null, n = 0, right = 0, done = false, order = PAIRS.slice().sort(function () { return Math.random() - 0.5; });
+  function nextPair() {
+    var p = order[n % order.length]; n++;
+    cur = { pair: Math.random() < 0.5 ? p : [p[1], p[0]], word: p[Math.random() < 0.5 ? 0 : 1] };
+    done = false;
+    $("pchoices").innerHTML = cur.pair.map(function (w) { return '<button type="button" data-w="' + w + '">' + w + "</button>"; }).join("");
+    [].forEach.call($("pchoices").querySelectorAll("button"), function (b) { b.addEventListener("click", function () { answer(b); }); });
+    $("pfb").textContent = "";
+    Say.say(cur.word, "fr", true);
+  }
+  function answer(b) {
+    if (done) return;
+    done = true;
+    var ok = b.getAttribute("data-w") === cur.word;
+    if (ok) right++;
+    [].forEach.call($("pchoices").querySelectorAll("button"), function (x) { if (x.getAttribute("data-w") === cur.word) x.classList.add("right"); else if (x === b) x.classList.add("wrong"); });
+    $("pfb").innerHTML = ok ? '<span class="lv-ok">' + T.right + "</span>" : '<span class="lv-bad">' + T.wrong + " « " + cur.word + " »</span>";
+    $("pscore").textContent = right + " / " + n + " " + T.score;
+    Say.say(cur.pair.join(" … "), "fr", true);
+  }
+  $("replay").addEventListener("click", function () { if (cur) Say.say(cur.word, "fr", true); });
+  $("pnext").addEventListener("click", nextPair);
+  function tab(which) {
+    $("chart").hidden = which !== "chart"; $("pairs").hidden = which !== "pairs";
+    $("tab-chart").setAttribute("aria-pressed", String(which === "chart")); $("tab-pairs").setAttribute("aria-pressed", String(which === "pairs"));
+    if (which === "pairs" && !cur) nextPair();
+    VizKit.autoHeight();
+  }
+  $("tab-chart").addEventListener("click", function () { tab("chart"); });
+  $("tab-pairs").addEventListener("click", function () { tab("pairs"); });
+  Say.onVoices(function () { document.body.classList.toggle("no-voice", !Say.has("fr")); VizKit.autoHeight(); });
+  VizKit.autoHeight();
+})();
+</script>
+</body>
+</html>

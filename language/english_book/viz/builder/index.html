@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en" data-ui="en" data-lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sentence builder</title>
+<link rel="stylesheet" href="langviz.css">
+<style>
+.mean { font-size: 1rem; margin: 0.2rem 0 0.5rem; }
+.slot { display: flex; flex-wrap: wrap; gap: 0.35rem; align-items: center; min-height: 3.2rem; padding: 0.4rem; border: 2px dashed var(--viz-line); border-radius: 0.7rem; }
+.slot.ok { border-style: solid; border-color: var(--viz-ok); background: color-mix(in srgb, var(--viz-ok) 10%, transparent); }
+.slot.no { border-style: solid; border-color: var(--viz-bad); }
+.tray { display: flex; flex-wrap: wrap; gap: 0.35rem; margin: 0.6rem 0; min-height: 2.6rem; }
+.tile { min-height: 2.6rem; padding: 0.25rem 0.75rem; border-radius: 0.55rem; font-weight: 650; font-size: 1.02rem; border-width: 2px; }
+.tile[disabled] { visibility: hidden; }
+.roles .tile, .slot.ok .tile { border-color: var(--c); color: var(--c); background: color-mix(in srgb, var(--c) 10%, transparent); }
+.legend { display: flex; flex-wrap: wrap; gap: 0.3rem 0.8rem; font-size: 0.8rem; margin-top: 0.5rem; }
+.legend span { display: inline-flex; align-items: center; gap: 0.3rem; }
+.legend span::before { content: ""; width: 0.75rem; height: 0.75rem; border-radius: 50%; background: var(--c); }
+#fb { min-height: 1.5em; margin: 0.4rem 0; }
+.note { font-size: 0.88rem; color: var(--viz-muted); }
+</style>
+</head>
+<body>
+<div class="lv-head"><h1 id="title"></h1><span class="lv-muted" id="count"></span></div>
+<p class="lv-novoice" id="novoice"></p>
+<div class="lv-card">
+  <p class="lv-muted" id="hint"></p>
+  <p class="mean" id="mean"></p>
+  <div class="slot" id="slot" aria-live="polite"></div>
+  <div class="tray" id="tray"></div>
+  <div class="lv-row"><button type="button" id="check"></button><button type="button" id="clear"></button><button type="button" id="roles" aria-pressed="false"></button>
+    <span class="lv-grow"></span><button type="button" class="lv-say" id="say" aria-label="Listen">🔊</button><button type="button" id="next"></button></div>
+  <p id="fb" aria-live="polite"></p>
+  <p class="note" id="note"></p>
+  <div class="legend" id="legend"></div>
+</div>
+<script src="viz-kit.js"></script>
+<script src="sayk.js"></script>
+<script src="sentences.js"></script>
+<script>
+(function () {
+  "use strict";
+  var LANG = document.documentElement.getAttribute("data-lang") || "fr";
+  var UI = {
+    en: { title: "Build the sentence", hint: "Tap the words in the right order. The meaning is above.", check: "Check", clear: "Clear", roles: "Show the roles", next: "Next sentence",
+      right: "Right! Listen to it.", wrong: "Not yet. The right order:", novoice: "This device has no voice for this language: read the sentence instead.",
+      R: { S: "subject", V: "verb", O: "object", N: "negation", A: "adjective", P: "pronoun", T: "time", L: "place", Q: "question", D: "adverb" } },
+    hinglish: { title: "Vaakya banao", hint: "Words ko sahi kram mein tap karo. Matlab upar likha hai.", check: "Check karo", clear: "Saaf karo", roles: "Roles dikhao", next: "Agla vaakya",
+      right: "Sahi! Ab suno.", wrong: "Abhi nahi. Sahi kram:", novoice: "Is device par is bhasha ki awaaz nahi hai: vaakya padh lo.",
+      R: { S: "subject (karta)", V: "verb (kriya)", O: "object (karm)", N: "negation", A: "adjective", P: "pronoun", T: "time", L: "jagah", Q: "sawaal", D: "adverb" } },
+    hi: { title: "वाक्य बनाओ", hint: "शब्दों को सही क्रम में टैप करो। अर्थ ऊपर लिखा है।", check: "जाँचो", clear: "साफ़ करो", roles: "भूमिकाएँ दिखाओ", next: "अगला वाक्य",
+      right: "सही! अब सुनो।", wrong: "अभी नहीं। सही क्रम:", novoice: "इस डिवाइस पर इस भाषा की आवाज़ नहीं है: वाक्य पढ़ लो।",
+      R: { S: "कर्ता", V: "क्रिया", O: "कर्म", N: "निषेध", A: "विशेषण", P: "सर्वनाम", T: "समय", L: "स्थान", Q: "प्रश्न", D: "क्रिया-विशेषण" } }
+  };
+  var COL = { S: "#1f5fa8", V: "#2a8a4a", O: "#c4521a", N: "#b3261e", A: "#8a3fa0", P: "#1a8a96", T: "#7a6a10", L: "#5a7a10", Q: "#5a6270", D: "#b02a5a" };
+  var T = UI[Say.ui] || UI.en, HI = Say.ui === "hi";
+  var LIST = window.SENTENCES || [];
+  function $(id) { return document.getElementById(id); }
+  $("title").textContent = T.title; $("hint").textContent = T.hint; $("check").textContent = T.check; $("clear").textContent = T.clear;
+  $("roles").textContent = T.roles; $("next").textContent = T.next; $("novoice").textContent = T.novoice;
+  var k = 0, cur, done = false;
+  function words(s) { return s.w.map(function (x) { var p = x.split("|"); return { t: p[0], r: p[1] || "O" }; }); }
+  function text(s) { return words(s).map(function (x) { return x.t; }).join(" ").replace(/ ([?!.,])/g, function (m, c) { return LANG === "fr" && c !== "." && c !== "," ? " " + c : c; }).replace(/' /g, "'").replace(/ -/g, "-"); }
+  function shuffle(a) { var b = a.slice(); for (var i = b.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)), t = b[i]; b[i] = b[j]; b[j] = t; } return b; }
+  function load() {
+    cur = LIST[k % LIST.length];
+    done = false;
+    var ws = words(cur), order = shuffle(ws.map(function (x, i) { return i; }));
+    for (var tries = 0; tries < 5 && order.every(function (v, i) { return v === i; }); tries++) order = shuffle(order);
+    $("mean").textContent = "“" + (HI && cur.hi ? cur.hi : cur.en) + "”";
+    $("slot").innerHTML = ""; $("slot").className = "slot";
+    $("tray").innerHTML = order.map(function (i) { return '<button type="button" class="tile" data-i="' + i + '" style="--c:' + COL[ws[i].r] + '">' + ws[i].t + "</button>"; }).join("");
+    $("fb").textContent = ""; $("note").textContent = "";
+    $("count").textContent = (k % LIST.length + 1) + " / " + LIST.length;
+    var used = {}; ws.forEach(function (x) { used[x.r] = 1; });
+    $("legend").innerHTML = Object.keys(used).map(function (r) { return '<span style="--c:' + COL[r] + '">' + T.R[r] + "</span>"; }).join("");
+    VizKit.autoHeight();
+  }
+  $("tray").addEventListener("click", function (e) {
+    var b = e.target.closest(".tile"); if (!b || done) return;
+    b.disabled = true;
+    var c = b.cloneNode(true); c.disabled = false; c._src = b;
+    $("slot").appendChild(c);
+  });
+  $("slot").addEventListener("click", function (e) {
+    var c = e.target.closest(".tile"); if (!c || done) return;
+    c._src.disabled = false; c.remove();
+  });
+  $("clear").addEventListener("click", function () { if (!done) load(); });
+  $("check").addEventListener("click", function () {
+    var got = [].map.call($("slot").children, function (c) { return c.textContent; }), want = words(cur).map(function (x) { return x.t; });
+    if (!got.length || done) return;
+    var ok = got.join(" ") === want.join(" ") || (cur.alt || []).some(function (a) { return got.join(" ") === a; });
+    done = ok;
+    $("slot").className = "slot " + (ok ? "ok" : "no");
+    $("fb").innerHTML = ok ? '<span class="lv-ok">' + T.right + "</span>" : '<span class="lv-bad">' + T.wrong + "</span> " + text(cur);
+    if (cur.why) $("note").textContent = HI && cur.whyhi ? cur.whyhi : cur.why;
+    if (ok) Say.say(text(cur), LANG);
+    VizKit.autoHeight();
+  });
+  $("roles").addEventListener("click", function () { var on = $("roles").getAttribute("aria-pressed") !== "true"; $("roles").setAttribute("aria-pressed", String(on)); document.body.classList.toggle("roles", on); });
+  $("say").addEventListener("click", function () { Say.say(text(cur), LANG); });
+  $("next").addEventListener("click", function () { k++; load(); });
+  Say.onVoices(function () { document.body.classList.toggle("no-voice", !Say.has(LANG)); VizKit.autoHeight(); });
+  load();
+})();
+</script>
+</body>
+</html>

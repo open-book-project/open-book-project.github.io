@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en" data-ui="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The twelve English tenses on a timeline</title>
+<link rel="stylesheet" href="langviz.css">
+<style>
+table.grid { width: 100%; border-collapse: separate; border-spacing: 0.25rem; table-layout: fixed; }
+.grid th { font-size: 0.72rem; color: var(--viz-muted); font-weight: 650; text-align: center; padding: 0; }
+.grid th.row { text-align: left; width: 3.6rem; }
+.grid button { width: 100%; min-height: 2.6rem; padding: 0.2rem; font-size: 0.74rem; line-height: 1.15; border-radius: 0.45rem; }
+.grid button[aria-pressed="true"] { background: var(--viz-accent); border-color: var(--viz-accent); color: var(--viz-bg); }
+svg.tl { display: block; width: 100%; height: auto; margin: 0.4rem 0; }
+.tl .axis { stroke: var(--viz-fg); stroke-width: 2; }
+.tl .now { stroke: var(--viz-accent); stroke-width: 2; stroke-dasharray: 4 4; }
+.tl .lbl { fill: var(--viz-muted); font: 600 19px system-ui, sans-serif; text-anchor: middle; }
+.tl .nowl { fill: var(--viz-accent); font: 700 19px system-ui, sans-serif; text-anchor: middle; }
+.tl .act { fill: var(--viz-accent2); stroke: var(--viz-accent2); }
+.tl .ref { stroke: var(--viz-fg); stroke-width: 2; }
+.tl .refl { fill: var(--viz-fg); font: 600 18px system-ui, sans-serif; text-anchor: middle; }
+.ex { font-size: 1.1rem; font-weight: 650; }
+.form code { font: inherit; font-weight: 650; color: var(--viz-accent); }
+.form { margin: 0.3rem 0 0; }
+</style>
+</head>
+<body>
+<div class="lv-head"><h1 id="title"></h1></div>
+<p class="lv-novoice" id="novoice"></p>
+<p class="lv-muted" id="hint"></p>
+<table class="grid" id="grid"></table>
+<svg class="tl" id="tl" viewBox="0 0 640 160" role="img"></svg>
+<div class="lv-card" id="card" aria-live="polite"></div>
+<script src="viz-kit.js"></script>
+<script src="sayk.js"></script>
+<script>
+(function () {
+  "use strict";
+  var UI = {
+    en: { title: "The twelve tenses on a timeline", hint: "Pick a time (row) and an aspect (column): see where the action sits, how the tense is made, and hear an example.",
+      rows: ["Past", "Present", "Future"], cols: ["Simple", "Continuous", "Perfect", "Perfect continuous"], past: "past", now: "now", future: "future",
+      made: "Form", use: "Use", by: "by then", novoice: "This device has no English voice: read the examples instead." },
+    hinglish: { title: "Baarah tenses ek timeline par", hint: "Ek time (row) aur ek aspect (column) chuno: action kahan hai, tense kaise banta hai, aur example suno.",
+      rows: ["Past", "Present", "Future"], cols: ["Simple", "Continuous", "Perfect", "Perfect continuous"], past: "beeta", now: "abhi", future: "aane wala",
+      made: "Banawat", use: "Kab", by: "tab tak", novoice: "Is device par English awaaz nahi hai: examples padh lo." },
+    hi: { title: "बारह काल एक समय-रेखा पर", hint: "एक समय (पंक्ति) और एक पक्ष (स्तंभ) चुनो: क्रिया कहाँ है, काल कैसे बनता है, और उदाहरण सुनो।",
+      rows: ["भूत", "वर्तमान", "भविष्य"], cols: ["सामान्य", "अपूर्ण", "पूर्ण", "पूर्ण अपूर्ण"], past: "भूत", now: "अभी", future: "भविष्य",
+      made: "बनावट", use: "प्रयोग", by: "तब तक", novoice: "इस डिवाइस पर अंग्रेज़ी आवाज़ नहीं है: उदाहरण पढ़ लो।" }
+  };
+  var T = UI[Say.ui] || UI.en, HI = Say.ui === "hi";
+  var C = { 0: 150, 1: 320, 2: 490 };       // where past, present and future sit on the line
+  // [form, example, Hindi meaning, use (en), use (hi)]
+  var D = [
+    [["V2 (past form)", "I watched a film yesterday.", "मैंने कल एक फ़िल्म देखी।", "a finished action at a past time", "बीते समय का पूरा काम"],
+     ["was / were + V-ing", "I was watching a film at 9 last night.", "कल रात 9 बजे मैं फ़िल्म देख रहा था।", "in progress at a past moment", "बीते किसी पल पर चल रहा काम"],
+     ["had + V3", "The film had started when I arrived.", "जब मैं पहुँचा, फ़िल्म शुरू हो चुकी थी।", "before another past action", "किसी दूसरे बीते काम से पहले"],
+     ["had been + V-ing", "I had been waiting for an hour when the bus came.", "बस आने तक मैं एक घंटे से इंतज़ार कर रहा था।", "going on up to a past moment", "बीते किसी पल तक चलता रहा काम"]],
+    [["V1 / V1 + s", "She works in Pune.", "वह पुणे में काम करती है।", "habits, facts, timetables", "आदतें, तथ्य, समय-सारणी"],
+     ["am / is / are + V-ing", "She is working right now.", "वह अभी काम कर रही है।", "happening now", "अभी हो रहा काम"],
+     ["have / has + V3", "She has finished her work.", "उसने अपना काम पूरा कर लिया है।", "past action, result now", "बीता काम, नतीजा अभी"],
+     ["have / has been + V-ing", "She has been working since morning.", "वह सुबह से काम कर रही है।", "started in the past, still going", "पहले शुरू हुआ, अब भी जारी"]],
+    [["will + V1", "I will call you tomorrow.", "मैं कल तुम्हें फ़ोन करूँगा।", "decisions, promises, predictions", "फ़ैसले, वादे, अनुमान"],
+     ["will be + V-ing", "I will be travelling at this time tomorrow.", "कल इस समय मैं सफ़र कर रहा होऊँगा।", "in progress at a future moment", "भविष्य के किसी पल पर चल रहा काम"],
+     ["will have + V3", "I will have finished by Friday.", "शुक्रवार तक मैं पूरा कर चुका होऊँगा।", "done before a future moment", "भविष्य के किसी पल से पहले पूरा"],
+     ["will have been + V-ing", "By June, I will have been working here for two years.", "जून तक मुझे यहाँ काम करते दो साल हो जाएँगे।", "going on up to a future moment", "भविष्य के किसी पल तक चलता रहेगा"]]
+  ];
+  function $(id) { return document.getElementById(id); }
+  $("title").textContent = T.title; $("hint").textContent = T.hint; $("novoice").textContent = T.novoice; $("tl").setAttribute("aria-label", T.title);
+  var h = "<tr><th></th>" + T.cols.map(function (c) { return "<th>" + c + "</th>"; }).join("") + "</tr>";
+  D.forEach(function (row, r) {
+    h += '<tr><th class="row">' + T.rows[r] + "</th>" + row.map(function (x, c) { return '<td><button type="button" data-r="' + r + '" data-c="' + c + '" aria-pressed="false" aria-label="' + T.rows[r] + " " + T.cols[c] + '">' + x[0] + "</button></td>"; }).join("") + "</tr>";
+  });
+  $("grid").innerHTML = h;
+  function draw(r, c) {
+    var x = C[r], s = '<defs><marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="currentColor"/></marker></defs>' +
+      '<line class="axis" x1="20" y1="90" x2="620" y2="90" marker-end="url(#ar)"/><line class="now" x1="320" y1="30" x2="320" y2="125"/>' +
+      '<text class="nowl" x="320" y="155">' + T.now + '</text><text class="lbl" x="110" y="155">← ' + T.past + '</text><text class="lbl" x="530" y="155">' + T.future + " →</text>";
+    var ref = r === 1 ? 320 : x;          // the reference moment: now, or a moment in the past or future
+    if (r !== 1 && c > 0) s += '<line class="ref" x1="' + ref + '" y1="50" x2="' + ref + '" y2="105"/><text class="refl" x="' + ref + '" y="44">' + T.by + "</text>";
+    if (c === 0) s += '<circle class="act" cx="' + (r === 1 ? 320 : x) + '" cy="90" r="9"/>' + (r === 1 ? '<circle class="act" cx="250" cy="90" r="6" opacity=".5"/><circle class="act" cx="390" cy="90" r="6" opacity=".5"/>' : "");
+    else if (c === 1) { var d = "M" + (ref - 60) + " 90"; for (var i = 0; i < 6; i++) d += " q5 -10 10 0 t10 0"; s += '<path class="act" d="' + d + '" fill="none" stroke-width="5"/>'; }
+    else if (c === 2) s += '<circle class="act" cx="' + (ref - 70) + '" cy="90" r="9"/><path class="act" d="M' + (ref - 58) + " 78 Q" + (ref - 35) + " 55 " + (ref - 6) + ' 78" fill="none" stroke-width="2.5" marker-end="url(#ar)"/>';
+    else { var d2 = "M" + (ref - 120) + " 90"; for (var j = 0; j < 6; j++) d2 += " q5 -10 10 0 t10 0"; s += '<path class="act" d="' + d2 + '" fill="none" stroke-width="5"/><line class="act" x1="' + (ref - 120) + '" y1="80" x2="' + (ref - 120) + '" y2="100" stroke-width="3"/>'; }
+    $("tl").innerHTML = s;
+  }
+  function show(r, c, speak) {
+    var x = D[r][c];
+    [].forEach.call(document.querySelectorAll("#grid button"), function (b) { b.setAttribute("aria-pressed", String(+b.getAttribute("data-r") === r && +b.getAttribute("data-c") === c)); });
+    draw(r, c);
+    $("card").innerHTML = '<p class="lv-muted" style="margin:0 0 .3rem">' + T.rows[r] + " · " + T.cols[c] + '</p><div class="lv-row"><button type="button" class="lv-say" id="sp" aria-label="Listen">🔊</button><span class="ex lv-grow">' + x[1] + "</span></div>" +
+      '<p class="lv-muted" lang="hi">' + x[2] + '</p><p class="form"><b>' + T.made + ":</b> <code>" + x[0] + "</code></p><p class=\"form\"><b>" + T.use + ":</b> " + (HI ? x[4] : x[3]) + "</p>";
+    $("sp").addEventListener("click", function () { Say.say(x[1], "en"); });
+    if (speak) Say.say(x[1], "en");
+    VizKit.autoHeight();
+  }
+  $("grid").addEventListener("click", function (e) { var b = e.target.closest("button"); if (b) show(+b.getAttribute("data-r"), +b.getAttribute("data-c"), true); });
+  Say.onVoices(function () { document.body.classList.toggle("no-voice", !Say.has("en")); VizKit.autoHeight(); });
+  show(1, 2, false);
+})();
+</script>
+</body>
+</html>
