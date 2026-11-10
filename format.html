@@ -1051,6 +1051,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#audio-pipeline-recorded-voices" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Audio pipeline (recorded voices)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#quizzes" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2694,6 +2705,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#audio-pipeline-recorded-voices" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Audio pipeline (recorded voices)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#quizzes" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4173,7 +4195,7 @@ before 1965 (life plus sixty years); a title that is in doubt is left out.</p>
   (<code>&lt;collection path&gt;/&lt;book id&gt;</code>):</li>
 </ul>
 <div class="language-yaml highlight"><pre><span></span><code><span class="nt">editions</span><span class="p">:</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">scans</span><span class="p">:</span><span class="w"> </span><span class="nv">rare-books/ayurvedasutram</span><span class="p p-Indicator">,</span><span class="nt"> text</span><span class="p">:</span><span class="w"> </span><span class="nv">rare-texts/ayurvedasutram-text</span><span class="p p-Indicator">}</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">scans</span><span class="p">:</span><span class="w"> </span><span class="nv">rare-books/my-scanned-book</span><span class="p p-Indicator">,</span><span class="nt"> text</span><span class="p">:</span><span class="w"> </span><span class="nv">rare-texts/my-scanned-book-text</span><span class="p p-Indicator">}</span>
 </code></pre></div>
 <p>The first page of the scanned book then has the link "Read as text", and that of the text book "View the scans"
   (<code>tools/editions.py</code>). Inside the text book, a page opens its scan in the library's own viewer with a button
@@ -4193,21 +4215,75 @@ reader (typing in a box never turns a page) and in slides, offline, with the key
 &lt;span data-say="Le samedi matin, Léa va à la boulangerie." lang="fr" data-rate="0.8"&gt;▶ the whole story&lt;/span&gt;
 </code></pre></div>
 <ul>
-<li>A span with <code>data-say</code> gets a <strong>Listen</strong> button after it. Without a value it speaks its own text; with a value it
-  speaks the value (the spelling a voice reads best, or a longer passage behind a short label).</li>
+<li>A span with <code>data-say</code> gets a <strong>Listen</strong> (speaker) button after it. Without a value it speaks its own text; with a
+  value it speaks the value (the spelling a voice reads best, or a longer passage behind a short label).</li>
 <li><code>lang</code> is the language of the voice (<code>fr</code>, <code>en</code>, <code>hi</code>, <code>de</code>, <code>es</code>, or a full tag such as <code>en-GB</code>). Without it the
   nearest <code>lang</code> around the span, or the page's language, is used.</li>
 <li><code>data-rate</code> slows a phrase down (1 is the normal speed of the language; French is spoken at 0.82, English at 0.9).</li>
-<li>The voice is the device's own (the Web Speech API), chosen as the books' own readers chose it: the clearest voice of
-  the language, natural and neural voices first. A second tap on a button plays the phrase slowly. "Voice and speed"
-  above the chapter lets the reader choose another voice and a slower or faster speed (kept in the browser).</li>
-<li>Where the browser can recognise speech, a <strong>microphone</strong> button follows phrases of up to 22 words: the reader says
-  the phrase and sees how close it was.</li>
-<li>Where the device has no voice for the language, the buttons are hidden. Write the pronunciation in the text
-  (<code>[luh LEEVR]</code>), so that the reader still has it.</li>
-<li>The span may hold other inline Markdown (<code>**bold**</code>, other spans). Do not put a span around a whole paragraph of
-  explanation: mark the phrase.</li>
+<li><strong>Recorded voices.</strong> The button plays a recording of the phrase in a native voice, the same on every phone and
+  browser (many devices have no French voice of their own). A second tap on the button plays the phrase slowly
+  (<code>playbackRate</code> 0.75, the pitch kept). The recordings are made offline by <code>python tools/tts.py</code> (see "Audio pipeline"
+  below). The device's own voice (the Web Speech API) is used only if the reader chooses <strong>Device voice</strong> in
+  "Voice and speed" above the chapter (also: a slower or faster speed, kept in the browser), or for a phrase that has
+  no recording. The button is hidden only where there is neither a recording nor a device voice for the language;
+  write the pronunciation in the text (<code>[luh LEEVR]</code>), so that the reader still has it.</li>
+<li><strong>Microphone.</strong> Where the browser can recognise speech, a microphone button (say the phrase, see how close it was)
+  is shown only inside <strong>speaking exercises</strong>: an exercise box titled "Say it", "Speak" or "Say", and the <code>say</code>
+  questions of a quiz. It is not put beside every phrase.</li>
+<li><strong>Play all.</strong> A list of three or more phrases (a dialogue, a word list) or a table with four or more phrases in its
+  rows gets a <strong>Play all</strong> button above it, which plays them one after another (tap again to stop).</li>
+<li>In a table, put the phrase in its cell; one small speaker per item, not a column of buttons. The importers of the two
+  language books mark the language taught in the tables of words, phrases and examples, in the rows of conjugation
+  tables (<code>je parle</code>, with the person) and in the lists of phrases (<code>tools/importers/speakable.py</code>); a cell in
+  English, Hindi or Hinglish is never marked, so a French voice never reads English.</li>
+<li>After a quiz question is checked, a speaker beside the feedback plays the model sentence (the answer, or the
+  question with its blanks filled in) when it is in the language and has a recording.</li>
 </ul>
+<h3 id="audio-pipeline-recorded-voices">Audio pipeline (recorded voices)<a class="headerlink" href="#audio-pipeline-recorded-voices" title="Permanent link">&para;</a></h3>
+<p><code>tools/tts.py</code> collects every phrase of the built site (<code>data-say</code> spans and the quiz questions that are spoken:
+<code>say</code>, <code>listen</code>, <code>dictation</code> and the model answers), normalises the text (Unicode NFC, one space between words,
+the 🔊 mark removed) and makes one MP3 per unique <code>(language, text)</code> with <a href="https://github.com/rhasspy/piper">Piper</a>
+(MIT, offline, CPU): mono, 32 kbit/s, 22.05 kHz, named by the hash of the text, <code>audio/&lt;lang&gt;/&lt;sha1-12&gt;.mp3</code>.
+The recordings are kept in a separate repository of book assets, <code>language-audio</code> (<code>library.yml</code>
+<code>app.audio_repo: language-audio</code>, its folder in the git-ignored <code>library.local.yml</code> <code>local:</code>), so that a phrase is made
+once and a rerun makes only the new phrases. The build copies the recordings a site needs into
+<code>site/assets/audio/&lt;lang&gt;/</code> with <code>assets/audio/index.json</code> (<code>{lang: [hash, ...]}</code>, read once by <code>speak.js</code>, which
+hashes a phrase itself with SHA-1 and looks it up). Without <code>app.audio_repo</code>, or without the folder, nothing is copied and
+every phrase plays with the device's voice.</p>
+<table>
+<thead>
+<tr>
+<th>Language</th>
+<th>Voice</th>
+<th>Source and licence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>French</td>
+<td><code>fr_FR-siwis-medium</code></td>
+<td>rhasspy/piper-voices on Hugging Face; SIWIS French Speech Synthesis Database (University of Edinburgh); CC BY 4.0</td>
+</tr>
+<tr>
+<td>English</td>
+<td><code>en_GB-cori-medium</code></td>
+<td>rhasspy/piper-voices; Hi-Fi TTS (NVIDIA, OpenSLR 109), the voice of the LibriVox reader Cori Samuel; CC BY 4.0</td>
+</tr>
+</tbody>
+</table>
+<p>CC BY 4.0 allows the recordings to be redistributed with attribution: the voices and their sources are credited in
+the audio repository's README, which travels with the recordings.</p>
+<p>To regenerate: install Piper and the MP3 encoder in a virtual environment (nothing system-wide):
+<code>python -m venv D:/books/.work/tts/venv</code>, <code>venv/Scripts/python -m pip install piper-tts lameenc</code>; build the site
+(<code>python tools/build.py</code>, <code>python -m mkdocs build</code>), then <code>venv/Scripts/python tools/tts.py</code> (<code>--jobs N</code> for the number
+of processes, <code>--list</code> to only count, <code>--copy</code> to copy the recordings into <code>site/assets/audio/</code>), and build again
+(<code>python -m mkdocs build</code>) so that the offline lists of <code>library.json</code> include them. The voices are fetched on first use
+into <code>$PK_TTS_VOICES</code> (default <code>D:/books/.work/tts/voices</code>).</p>
+<p><strong>Offline reading.</strong> A played recording is kept in the browser (Cache Storage <code>pk-audio-v1</code>) and plays offline the next
+time. "Keep for offline reading" also keeps a book's recordings when they total no more than <code>app.audio_offline_mb</code>
+(default 12 MB); a larger book (a whole language course in three editions) keeps what the reader has played.
+* The span may hold other inline Markdown (<code>**bold**</code>, other spans). Do not put a span around a whole paragraph of
+  explanation: mark the phrase.</p>
 <h3 id="quizzes">Quizzes<a class="headerlink" href="#quizzes" title="Permanent link">&para;</a></h3>
 <p>A fenced block <code>quiz</code> holds the questions of a quiz, written in YAML:</p>
 <div class="language-markdown highlight"><pre><span></span><code><span class="sb">```quiz</span>
