@@ -1,0 +1,1358 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="description" content="The Open Book Project: books on computer science, quantum computing, cyber security, science, the social sciences, university courses and languages, read page by page like an e-book, online or offline.">
+<meta name="author" content="The Open Book Project">
+<link rel="canonical" href="https://open-book-project.github.io/cyber/post_quantum_cryptography/ch09-pqc-applications-and-national-solutions.html">
+<link rel="prev" href="ch08-side-channel-attacks-and-countermeasures.html">
+<link rel="next" href="ch10-pqc-research-and-open-problems.html">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap"></noscript>
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Open Book">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="application-name" content="Open Book"><script src="../../assets/library-data.js"></script><script>
+    (function () {
+      var X = window.XMLHttpRequest, open, gate = new Promise(function (r) { open = r; });
+      if (!X) return;
+      var open0 = X.prototype.open, send0 = X.prototype.send;
+      X.prototype.open = function (method, url) {
+        this.__pkIndex = /\/search\/search_index\.json(\?|#|$)/.test(String(url));
+        return open0.apply(this, arguments);
+      };
+      X.prototype.send = function () {
+        if (!this.__pkIndex) return send0.apply(this, arguments);
+        var xhr = this, args = arguments;
+        gate.then(function () { send0.apply(xhr, args); });
+      };
+      function wake() { open(); }
+      document.addEventListener("focusin", function (e) { if (e.target && e.target.closest && e.target.closest(".md-search")) wake(); });
+      document.addEventListener("click", function (e) { if (e.target && e.target.closest && e.target.closest('label[for="__search"], .md-search')) wake(); }, true);
+      document.addEventListener("keydown", function (e) {
+        var k = e.key;
+        if ((k === "/" || k === "s" || k === "f" || k === "S" || k === "F") && !(e.target && e.target.closest && e.target.closest("input, textarea, [contenteditable]"))) wake();
+      }, true);
+      if (/[?&]q=/.test(location.search)) wake();
+    })();
+  </script><script>
+    try {
+      if ((window.matchMedia && (matchMedia("(display-mode: standalone)").matches || matchMedia("(display-mode: fullscreen)").matches)) || navigator.standalone === true) {
+        document.documentElement.className += " bjp-standalone";
+      }
+    } catch (e) { /* not an installed app */ }
+    /* the books of a subject or of the whole library as covers or as a list (assets/app.js): the reader's choice */
+    try {
+      var bv = localStorage.getItem("bjp.view");
+      if (bv === "list" || (bv !== "grid" && /\/books\.html$/.test(location.pathname))) document.documentElement.className += " bjp-view-list";
+    } catch (e) { /* no storage: covers */ }
+  </script>
+<script>
+    /* a book opened from its cover on the shelf: the page stays blank, in the cover's colour, until the reader is up */
+    try {
+      var cv = sessionStorage.getItem("bjp.reader.cover");
+      if (cv && sessionStorage.getItem("bjp.reader.open") === "1") {
+        var c = JSON.parse(cv), de = document.documentElement;
+        de.className += " bjp-booting";
+        if (c && /^#[0-9a-f]{3,8}$/i.test(c.bg || "")) de.style.background = c.bg;
+        setTimeout(function () { de.classList.remove("bjp-booting"); de.style.background = ""; }, 3000);
+      }
+    } catch (e) { /* no session storage: the page simply opens as usual */ }
+  </script>
+<title>9. PQC Applications and National Solutions - The Open Book Project</title>
+<link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+<link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+<link rel="stylesheet" href="../../assets/extra.css">
+<link rel="stylesheet" href="../../assets/reader.css">
+<link rel="stylesheet" href="../../assets/viz.css">
+<link rel="stylesheet" href="../../assets/app.css">
+<link rel="stylesheet" href="../../assets/theme.css">
+<link rel="stylesheet" href="../../assets/slides.css">
+<link rel="stylesheet" href="../../assets/remote.css">
+<link rel="stylesheet" href="../../assets/scans.css">
+<link rel="stylesheet" href="../../assets/speak.css">
+<link rel="stylesheet" href="../../assets/quiz.css">
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+<input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+<input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a href="#91-tls-and-secure-web-communication" class="md-skip">
+Skip to content
+</a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav class="md-header__inner md-grid" aria-label="Header">
+<a href="../../index.html" title="The Open Book Project" class="md-header__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+The Open Book Project
+</span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+9. PQC Applications and National Solutions
+</span>
+</div>
+</div>
+</div><a href="../../index.html" class="bjp-libbtn" aria-label="Library: all books" title="Library: all books">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V5h4v15M8 20V9h4v11M14 20L12.6 6l3.8-.8 3 14.2M3 20h18"/></svg><span>Library</span>
+</a>
+<a href="../../subjects/index.html" class="pk-catbtn" aria-haspopup="true" aria-expanded="false" title="Browse the books by category">
+<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><circle cx="17" cy="7" r="3.6"/><path d="M7 13.4l3.9 6.8H3.1z"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg><span>Categories</span>
+</a>
+<form class="md-header__option" data-md-component="palette">
+<input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+<label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+</label>
+<input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+<label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+<label class="md-search__icon md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</label>
+<nav class="md-search__options" aria-label="Search">
+<button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+Initializing search
+</div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--primary bjp-nav bjp-nav--book" aria-label="Navigation" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a href="../../index.html" title="The Open Book Project" class="md-nav__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+The Open Book Project
+</label>
+<ul class="md-nav__list" data-md-scrollfix>
+<li class="md-nav__item bjp-nav-all">
+<a href="../../index.html" class="md-nav__link" aria-label="All books: back to the library">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+<span class="md-ellipsis">All books</span>
+</a>
+</li>
+<li class="md-nav__item bjp-nav-book" role="presentation"><span class="bjp-nav-head">Post-Quantum Cryptography</span></li>
+<li class="md-nav__item">
+<a href="index.html" class="md-nav__link">
+<span class="md-ellipsis">
+Overview and preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch01-foundations-of-post-quantum-cryptography.html" class="md-nav__link">
+<span class="md-ellipsis">
+1. Foundations of Post-Quantum Cryptography
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch02-pqc-algorithm-families.html" class="md-nav__link">
+<span class="md-ellipsis">
+2. PQC Algorithm Families
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch03-nist-pqc-standards.html" class="md-nav__link">
+<span class="md-ellipsis">
+3. NIST PQC Standards
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch04-pqc-implementation.html" class="md-nav__link">
+<span class="md-ellipsis">
+4. PQC Implementation
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch05-pqc-migration-strategy.html" class="md-nav__link">
+<span class="md-ellipsis">
+5. PQC Migration Strategy
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch06-hybrid-cryptography.html" class="md-nav__link">
+<span class="md-ellipsis">
+6. Hybrid Cryptography
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch07-pqc-testing-and-validation.html" class="md-nav__link">
+<span class="md-ellipsis">
+7. PQC Testing and Validation
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch08-side-channel-attacks-and-countermeasures.html" class="md-nav__link">
+<span class="md-ellipsis">
+8. Side-Channel Attacks and Countermeasures
+</span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+9. PQC Applications and National Solutions
+</span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a href="ch09-pqc-applications-and-national-solutions.html" class="md-nav__link md-nav__link--active">
+<span class="md-ellipsis">
+9. PQC Applications and National Solutions
+</span>
+</a>
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#91-tls-and-secure-web-communication" class="md-nav__link">
+<span class="md-ellipsis">
+9.1 TLS and Secure Web Communication
+</span>
+</a>
+<nav class="md-nav" aria-label="9.1 TLS and Secure Web Communication">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#911-tls-13-with-pqc" class="md-nav__link">
+<span class="md-ellipsis">
+9.1.1 TLS 1.3 with PQC
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#912-cloudflares-pqc-deployment" class="md-nav__link">
+<span class="md-ellipsis">
+9.1.2 Cloudflare’s PQC Deployment
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#92-secure-messaging" class="md-nav__link">
+<span class="md-ellipsis">
+9.2 Secure Messaging
+</span>
+</a>
+<nav class="md-nav" aria-label="9.2 Secure Messaging">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#921-signals-pqxdh-protocol" class="md-nav__link">
+<span class="md-ellipsis">
+9.2.1 Signal’s PQXDH Protocol
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#922-apple-imessage-pq3" class="md-nav__link">
+<span class="md-ellipsis">
+9.2.2 Apple iMessage PQ3
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#93-public-key-infrastructure-pki" class="md-nav__link">
+<span class="md-ellipsis">
+9.3 Public Key Infrastructure (PKI)
+</span>
+</a>
+<nav class="md-nav" aria-label="9.3 Public Key Infrastructure (PKI)">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#931-x509-pqc-certificates" class="md-nav__link">
+<span class="md-ellipsis">
+9.3.1 X.509 PQC Certificates
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#932-certificate-transparency-ct-impact" class="md-nav__link">
+<span class="md-ellipsis">
+9.3.2 Certificate Transparency (CT) Impact
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#94-code-signing" class="md-nav__link">
+<span class="md-ellipsis">
+9.4 Code Signing
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#95-blockchain-and-quantum-resistant-ledgers" class="md-nav__link">
+<span class="md-ellipsis">
+9.5 Blockchain and Quantum-Resistant Ledgers
+</span>
+</a>
+<nav class="md-nav" aria-label="9.5 Blockchain and Quantum-Resistant Ledgers">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#951-bitcoin-and-ecdsa-vulnerability" class="md-nav__link">
+<span class="md-ellipsis">
+9.5.1 Bitcoin and ECDSA Vulnerability
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#952-quantum-resistant-ledger-qrl" class="md-nav__link">
+<span class="md-ellipsis">
+9.5.2 Quantum Resistant Ledger (QRL)
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#96-national-and-indigenous-pqc-solutions" class="md-nav__link">
+<span class="md-ellipsis">
+9.6 National and Indigenous PQC Solutions
+</span>
+</a>
+<nav class="md-nav" aria-label="9.6 National and Indigenous PQC Solutions">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#961-china-sm-series-cryptography" class="md-nav__link">
+<span class="md-ellipsis">
+9.6.1 China: SM-Series Cryptography
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#962-russia-gost-cryptographic-standards" class="md-nav__link">
+<span class="md-ellipsis">
+9.6.2 Russia: GOST Cryptographic Standards
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#963-south-korea-kpqc" class="md-nav__link">
+<span class="md-ellipsis">
+9.6.3 South Korea: KPQC
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#964-germany-bsi-bundesamt-fur-sicherheit-in-der-informationstechnik" class="md-nav__link">
+<span class="md-ellipsis">
+9.6.4 Germany: BSI (Bundesamt für Sicherheit in der Informationstechnik)
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#965-france-anssi-agence-nationale-de-la-securite-des-systemes-dinformation" class="md-nav__link">
+<span class="md-ellipsis">
+9.6.5 France: ANSSI (Agence Nationale de la Sécurité des Systèmes d’Information)
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#966-japan-cryptrec" class="md-nav__link">
+<span class="md-ellipsis">
+9.6.6 Japan: CRYPTREC
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#967-india" class="md-nav__link">
+<span class="md-ellipsis">
+9.6.7 India
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#968-australia-asd-australian-signals-directorate" class="md-nav__link">
+<span class="md-ellipsis">
+9.6.8 Australia: ASD (Australian Signals Directorate)
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#969-israel" class="md-nav__link">
+<span class="md-ellipsis">
+9.6.9 Israel
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#97-iot-and-embedded-applications" class="md-nav__link">
+<span class="md-ellipsis">
+9.7 IoT and Embedded Applications
+</span>
+</a>
+<nav class="md-nav" aria-label="9.7 IoT and Embedded Applications">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#971-dtls-13-with-pqc-for-iot" class="md-nav__link">
+<span class="md-ellipsis">
+9.7.1 DTLS 1.3 with PQC for IoT
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#972-automotive-v2x-and-secure-boot" class="md-nav__link">
+<span class="md-ellipsis">
+9.7.2 Automotive: V2X and Secure Boot
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#98-summary" class="md-nav__link">
+<span class="md-ellipsis">
+9.8 Summary
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="ch10-pqc-research-and-open-problems.html" class="md-nav__link">
+<span class="md-ellipsis">
+10. PQC Research and Open Problems
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#91-tls-and-secure-web-communication" class="md-nav__link">
+<span class="md-ellipsis">
+9.1 TLS and Secure Web Communication
+</span>
+</a>
+<nav class="md-nav" aria-label="9.1 TLS and Secure Web Communication">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#911-tls-13-with-pqc" class="md-nav__link">
+<span class="md-ellipsis">
+9.1.1 TLS 1.3 with PQC
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#912-cloudflares-pqc-deployment" class="md-nav__link">
+<span class="md-ellipsis">
+9.1.2 Cloudflare’s PQC Deployment
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#92-secure-messaging" class="md-nav__link">
+<span class="md-ellipsis">
+9.2 Secure Messaging
+</span>
+</a>
+<nav class="md-nav" aria-label="9.2 Secure Messaging">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#921-signals-pqxdh-protocol" class="md-nav__link">
+<span class="md-ellipsis">
+9.2.1 Signal’s PQXDH Protocol
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#922-apple-imessage-pq3" class="md-nav__link">
+<span class="md-ellipsis">
+9.2.2 Apple iMessage PQ3
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#93-public-key-infrastructure-pki" class="md-nav__link">
+<span class="md-ellipsis">
+9.3 Public Key Infrastructure (PKI)
+</span>
+</a>
+<nav class="md-nav" aria-label="9.3 Public Key Infrastructure (PKI)">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#931-x509-pqc-certificates" class="md-nav__link">
+<span class="md-ellipsis">
+9.3.1 X.509 PQC Certificates
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#932-certificate-transparency-ct-impact" class="md-nav__link">
+<span class="md-ellipsis">
+9.3.2 Certificate Transparency (CT) Impact
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#94-code-signing" class="md-nav__link">
+<span class="md-ellipsis">
+9.4 Code Signing
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#95-blockchain-and-quantum-resistant-ledgers" class="md-nav__link">
+<span class="md-ellipsis">
+9.5 Blockchain and Quantum-Resistant Ledgers
+</span>
+</a>
+<nav class="md-nav" aria-label="9.5 Blockchain and Quantum-Resistant Ledgers">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#951-bitcoin-and-ecdsa-vulnerability" class="md-nav__link">
+<span class="md-ellipsis">
+9.5.1 Bitcoin and ECDSA Vulnerability
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#952-quantum-resistant-ledger-qrl" class="md-nav__link">
+<span class="md-ellipsis">
+9.5.2 Quantum Resistant Ledger (QRL)
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#96-national-and-indigenous-pqc-solutions" class="md-nav__link">
+<span class="md-ellipsis">
+9.6 National and Indigenous PQC Solutions
+</span>
+</a>
+<nav class="md-nav" aria-label="9.6 National and Indigenous PQC Solutions">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#961-china-sm-series-cryptography" class="md-nav__link">
+<span class="md-ellipsis">
+9.6.1 China: SM-Series Cryptography
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#962-russia-gost-cryptographic-standards" class="md-nav__link">
+<span class="md-ellipsis">
+9.6.2 Russia: GOST Cryptographic Standards
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#963-south-korea-kpqc" class="md-nav__link">
+<span class="md-ellipsis">
+9.6.3 South Korea: KPQC
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#964-germany-bsi-bundesamt-fur-sicherheit-in-der-informationstechnik" class="md-nav__link">
+<span class="md-ellipsis">
+9.6.4 Germany: BSI (Bundesamt für Sicherheit in der Informationstechnik)
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#965-france-anssi-agence-nationale-de-la-securite-des-systemes-dinformation" class="md-nav__link">
+<span class="md-ellipsis">
+9.6.5 France: ANSSI (Agence Nationale de la Sécurité des Systèmes d’Information)
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#966-japan-cryptrec" class="md-nav__link">
+<span class="md-ellipsis">
+9.6.6 Japan: CRYPTREC
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#967-india" class="md-nav__link">
+<span class="md-ellipsis">
+9.6.7 India
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#968-australia-asd-australian-signals-directorate" class="md-nav__link">
+<span class="md-ellipsis">
+9.6.8 Australia: ASD (Australian Signals Directorate)
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#969-israel" class="md-nav__link">
+<span class="md-ellipsis">
+9.6.9 Israel
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#97-iot-and-embedded-applications" class="md-nav__link">
+<span class="md-ellipsis">
+9.7 IoT and Embedded Applications
+</span>
+</a>
+<nav class="md-nav" aria-label="9.7 IoT and Embedded Applications">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#971-dtls-13-with-pqc-for-iot" class="md-nav__link">
+<span class="md-ellipsis">
+9.7.1 DTLS 1.3 with PQC for IoT
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#972-automotive-v2x-and-secure-boot" class="md-nav__link">
+<span class="md-ellipsis">
+9.7.2 Automotive: V2X and Secure Boot
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#98-summary" class="md-nav__link">
+<span class="md-ellipsis">
+9.8 Summary
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="ch-applications">Chapter 9: PQC Applications and National Solutions<a class="headerlink" href="#ch-applications" title="Permanent link">&para;</a></h1>
+<h2 id="91-tls-and-secure-web-communication"><span class="secnum">9.1</span> TLS and Secure Web Communication<a class="headerlink" href="#91-tls-and-secure-web-communication" title="Permanent link">&para;</a></h2>
+<p>TLS (Transport Layer Security) is the most widely deployed cryptographic protocol. Migrating TLS to PQC protects web, API, VPN, and data-center traffic.</p>
+<h3 id="911-tls-13-with-pqc"><span class="secnum">9.1.1</span> TLS 1.3 with PQC<a class="headerlink" href="#911-tls-13-with-pqc" title="Permanent link">&para;</a></h3>
+<p>TLS 1.3’s clean design (fixed cipher suites, single key exchange) makes PQC integration straightforward:</p>
+<div class="language-text highlight"><pre><span></span><code># /etc/nginx/sites-enabled/pqc-server.conf
+server {
+    listen 443 ssl;
+    server_name pqc.example.com;
+
+    # ML-DSA-65 server certificate and key
+    ssl_certificate     /etc/ssl/certs/server_mldsa65.pem;
+    ssl_certificate_key /etc/ssl/private/server_mldsa65_key.pem;
+
+    # TLS 1.3 only; include hybrid PQC key exchange
+    ssl_protocols TLSv1.3;
+    ssl_ecdh_curve X25519MLKEM768:x25519:prime256v1;
+
+    # Cipher suites (AES-256 preferred for PQC era)
+    ssl_ciphers TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256;
+
+    # OCSP stapling for certificate revocation
+    ssl_stapling on;
+    ssl_stapling_verify on;
+
+    location / {
+        proxy_pass http://backend;
+        add_header X-PQC-KEM X25519MLKEM768 always;
+    }
+}
+</code></pre></div>
+<h3 id="912-cloudflares-pqc-deployment"><span class="secnum">9.1.2</span> Cloudflare’s PQC Deployment<a class="headerlink" href="#912-cloudflares-pqc-deployment" title="Permanent link">&para;</a></h3>
+<p>Cloudflare has been the largest early deployer of PQC at scale:</p>
+<ul>
+<li>
+<p>Deployed X25519MLKEM768 by default on all Cloudflare edge servers (2024).</p>
+</li>
+<li>
+<p>Over 50% of TLS connections to Cloudflare now use PQC key exchange.</p>
+</li>
+<li>
+<p>Conducted measurement studies showing negligible performance impact (<span class="arithmatex">\(&lt;\)</span>0.5% latency increase).</p>
+</li>
+<li>
+<p>Published open research on hybrid PQC deployment at internet scale.</p>
+</li>
+</ul>
+<h2 id="92-secure-messaging"><span class="secnum">9.2</span> Secure Messaging<a class="headerlink" href="#92-secure-messaging" title="Permanent link">&para;</a></h2>
+<h3 id="921-signals-pqxdh-protocol"><span class="secnum">9.2.1</span> Signal’s PQXDH Protocol<a class="headerlink" href="#921-signals-pqxdh-protocol" title="Permanent link">&para;</a></h3>
+<p>Signal’s Post-Quantum Extended Diffie-Hellman (PQXDH) provides PQC forward secrecy for messaging:</p>
+<figure class="fig fig-diagram" id="fig-pqxdh">
+<img class="tikz" src="img/tikz-5fc41aed405e.svg" alt="Signal PQXDH protocol: combines classical X25519 with ML-KEM-1024." loading="lazy" width="328" height="114">
+<figcaption><strong>Figure 9.1.</strong> Signal PQXDH protocol: combines classical X25519 with ML-KEM-1024.</figcaption>
+</figure>
+<h3 id="922-apple-imessage-pq3"><span class="secnum">9.2.2</span> Apple iMessage PQ3<a class="headerlink" href="#922-apple-imessage-pq3" title="Permanent link">&para;</a></h3>
+<p>Apple PQ3 (February 2024) provides Level 3 post-quantum security:</p>
+<ul>
+<li>
+<p><strong>Initial session</strong>: ML-KEM-768 hybrid with X25519 for initial key exchange.</p>
+</li>
+<li>
+<p><strong>Periodic re-keying</strong>: ML-KEM encapsulation in every message re-establishes forward secrecy.</p>
+</li>
+<li>
+<p><strong>Authentication</strong>: ECDSA + ML-DSA composite signatures on device keys.</p>
+</li>
+<li>
+<p><strong>Reach</strong>: Protects over 1 billion iMessage users by default since iOS 17.4.</p>
+</li>
+</ul>
+<h2 id="93-public-key-infrastructure-pki"><span class="secnum">9.3</span> Public Key Infrastructure (PKI)<a class="headerlink" href="#93-public-key-infrastructure-pki" title="Permanent link">&para;</a></h2>
+<h3 id="931-x509-pqc-certificates"><span class="secnum">9.3.1</span> X.509 PQC Certificates<a class="headerlink" href="#931-x509-pqc-certificates" title="Permanent link">&para;</a></h3>
+<p>PQC certificates have significantly different sizes from classical certificates:</p>
+<div class="tbl" id="tab-cert_sizes">
+<div class="tbl-caption"><strong>Table 9.1.</strong> X.509 Certificate Size Comparison</div>
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Algorithm</strong></th>
+<th style="text-align: left;"><strong>Public Key (B)</strong></th>
+<th style="text-align: left;"><strong>Sig (B)</strong></th>
+<th style="text-align: left;"><strong>Cert size (B)</strong></th>
+<th style="text-align: left;"><strong>Chain (B)</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">RSA-2048</td>
+<td style="text-align: left;">256</td>
+<td style="text-align: left;">256</td>
+<td style="text-align: left;"><span class="math inline">\(\approx\)</span>1000</td>
+<td style="text-align: left;"><span class="math inline">\(\approx\)</span>4000</td>
+</tr>
+<tr>
+<td style="text-align: left;">ECDSA P-256</td>
+<td style="text-align: left;">64</td>
+<td style="text-align: left;">64</td>
+<td style="text-align: left;"><span class="math inline">\(\approx\)</span>500</td>
+<td style="text-align: left;"><span class="math inline">\(\approx\)</span>2000</td>
+</tr>
+<tr>
+<td style="text-align: left;">ML-DSA-44</td>
+<td style="text-align: left;">1312</td>
+<td style="text-align: left;">2420</td>
+<td style="text-align: left;"><span class="math inline">\(\approx\)</span>4200</td>
+<td style="text-align: left;"><span class="math inline">\(\approx\)</span>12000</td>
+</tr>
+<tr>
+<td style="text-align: left;">ML-DSA-65</td>
+<td style="text-align: left;">1952</td>
+<td style="text-align: left;">3309</td>
+<td style="text-align: left;"><span class="math inline">\(\approx\)</span>5800</td>
+<td style="text-align: left;"><span class="math inline">\(\approx\)</span>17000</td>
+</tr>
+<tr>
+<td style="text-align: left;">SLH-DSA-SHA2-128f</td>
+<td style="text-align: left;">32</td>
+<td style="text-align: left;">17088</td>
+<td style="text-align: left;"><span class="math inline">\(\approx\)</span>17700</td>
+<td style="text-align: left;"><span class="math inline">\(\approx\)</span>52000</td>
+</tr>
+</tbody>
+</table>
+</div></div>
+<div class="admonition note box-notebox kind-note">
+<p class="admonition-title">Certificate Size Impact</p>
+<p>ML-DSA-65 certificates are <span class="arithmatex">\(\sim\)</span>10<span class="arithmatex">\(\times\)</span> larger than ECDSA P-256. This impacts TLS handshake performance (more data transmitted) but is well within acceptable limits for most applications. SLH-DSA’s large signatures may cause issues in protocols with size limits.</p>
+</div>
+<h3 id="932-certificate-transparency-ct-impact"><span class="secnum">9.3.2</span> Certificate Transparency (CT) Impact<a class="headerlink" href="#932-certificate-transparency-ct-impact" title="Permanent link">&para;</a></h3>
+<p>Larger PQC certificates also increase the storage and bandwidth requirements for Certificate Transparency logs. CT log operators are planning infrastructure upgrades for the PQC era.</p>
+<h2 id="94-code-signing"><span class="secnum">9.4</span> Code Signing<a class="headerlink" href="#94-code-signing" title="Permanent link">&para;</a></h2>
+<p>Code signing with PQC protects against quantum-enabled code tampering:</p>
+<div class="language-python highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">oqs</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">hashlib</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">sign_artifact</span><span class="p">(</span><span class="n">artifact_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">sk_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Sign a file artifact with SLH-DSA-SHA2-128f."""</span>
+    <span class="c1"># Read artifact and compute its hash</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">artifact_path</span><span class="p">,</span> <span class="s1">'rb'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+    <span class="n">artifact_hash</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">digest</span><span class="p">()</span>
+
+    <span class="c1"># Create signing metadata</span>
+    <span class="n">metadata</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">"file"</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">artifact_path</span><span class="p">),</span>
+        <span class="s2">"size"</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">),</span>
+        <span class="s2">"sha256"</span><span class="p">:</span> <span class="n">artifact_hash</span><span class="o">.</span><span class="n">hex</span><span class="p">(),</span>
+        <span class="s2">"algorithm"</span><span class="p">:</span> <span class="s2">"SLH-DSA-SHA2-128f"</span><span class="p">,</span>
+        <span class="s2">"version"</span><span class="p">:</span> <span class="s2">"1.0"</span>
+    <span class="p">}</span>
+    <span class="n">msg</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">metadata</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span>
+
+    <span class="c1"># Load private key and sign</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">sk_path</span><span class="p">,</span> <span class="s1">'rb'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">sk</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+    <span class="n">signer</span> <span class="o">=</span> <span class="n">oqs</span><span class="o">.</span><span class="n">Signature</span><span class="p">(</span><span class="s2">"SPHINCS+-SHA2-128f-simple"</span><span class="p">)</span>  <span class="c1"># SLH-DSA</span>
+    <span class="n">signature</span> <span class="o">=</span> <span class="n">signer</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">sk</span><span class="p">)</span>
+
+    <span class="c1"># Write signature bundle</span>
+    <span class="n">bundle</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">"metadata"</span><span class="p">:</span> <span class="n">metadata</span><span class="p">,</span>
+        <span class="s2">"signature"</span><span class="p">:</span> <span class="n">signature</span><span class="o">.</span><span class="n">hex</span><span class="p">()</span>
+    <span class="p">}</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span> <span class="s1">'w'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">bundle</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Signed </span><span class="si">{</span><span class="n">artifact_path</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="n">output_path</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Signature size: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">signature</span><span class="p">)</span><span class="si">}</span><span class="s2"> bytes"</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">verify_artifact</span><span class="p">(</span><span class="n">artifact_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">bundle_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">pk_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Verify a PQC-signed artifact."""</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">artifact_path</span><span class="p">,</span> <span class="s1">'rb'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">bundle_path</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">bundle</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">pk_path</span><span class="p">,</span> <span class="s1">'rb'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">pk</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+    <span class="c1"># Verify hash</span>
+    <span class="n">actual_hash</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
+    <span class="k">assert</span> <span class="n">actual_hash</span> <span class="o">==</span> <span class="n">bundle</span><span class="p">[</span><span class="s2">"metadata"</span><span class="p">][</span><span class="s2">"sha256"</span><span class="p">],</span> <span class="s2">"Hash mismatch!"</span>
+
+    <span class="c1"># Reconstruct signed message</span>
+    <span class="n">msg</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">bundle</span><span class="p">[</span><span class="s2">"metadata"</span><span class="p">],</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span>
+    <span class="n">sig</span> <span class="o">=</span> <span class="nb">bytes</span><span class="o">.</span><span class="n">fromhex</span><span class="p">(</span><span class="n">bundle</span><span class="p">[</span><span class="s2">"signature"</span><span class="p">])</span>
+
+    <span class="c1"># Verify signature</span>
+    <span class="n">verifier</span> <span class="o">=</span> <span class="n">oqs</span><span class="o">.</span><span class="n">Signature</span><span class="p">(</span><span class="s2">"SPHINCS+-SHA2-128f-simple"</span><span class="p">)</span>
+    <span class="n">is_valid</span> <span class="o">=</span> <span class="n">verifier</span><span class="o">.</span><span class="n">verify</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">sig</span><span class="p">,</span> <span class="n">pk</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Signature </span><span class="si">{</span><span class="s1">'VALID'</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">is_valid</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">'INVALID'</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">is_valid</span>
+</code></pre></div>
+<h2 id="95-blockchain-and-quantum-resistant-ledgers"><span class="secnum">9.5</span> Blockchain and Quantum-Resistant Ledgers<a class="headerlink" href="#95-blockchain-and-quantum-resistant-ledgers" title="Permanent link">&para;</a></h2>
+<h3 id="951-bitcoin-and-ecdsa-vulnerability"><span class="secnum">9.5.1</span> Bitcoin and ECDSA Vulnerability<a class="headerlink" href="#951-bitcoin-and-ecdsa-vulnerability" title="Permanent link">&para;</a></h3>
+<p>Bitcoin uses ECDSA over secp256k1 for transaction signing. A CRQC running Shor’s algorithm could:</p>
+<ol>
+<li>
+<p>Derive private key from public key in polynomial time.</p>
+</li>
+<li>
+<p>Sign fraudulent transactions on behalf of any address that has revealed its public key.</p>
+</li>
+<li>
+<p>Addresses that have never transacted (public key not revealed) are safer, but transacted addresses are vulnerable.</p>
+</li>
+</ol>
+<h3 id="952-quantum-resistant-ledger-qrl"><span class="secnum">9.5.2</span> Quantum Resistant Ledger (QRL)<a class="headerlink" href="#952-quantum-resistant-ledger-qrl" title="Permanent link">&para;</a></h3>
+<p>QRL is the first proof-of-work blockchain using PQC natively:</p>
+<ul>
+<li>
+<p>Uses XMSS (eXtended Merkle Signature Scheme) for all transaction signing.</p>
+</li>
+<li>
+<p>Stateful key management: each QRL wallet manages XMSS tree state.</p>
+</li>
+<li>
+<p>Proof-of-Work consensus with XMSS-signed blocks.</p>
+</li>
+<li>
+<p>Fully operational since 2018.</p>
+</li>
+</ul>
+<h2 id="96-national-and-indigenous-pqc-solutions"><span class="secnum">9.6</span> National and Indigenous PQC Solutions<a class="headerlink" href="#96-national-and-indigenous-pqc-solutions" title="Permanent link">&para;</a></h2>
+<p>Countries and regions have developed indigenous PQC cryptographic standards and algorithms alongside (or instead of) NIST standards.</p>
+<h3 id="961-china-sm-series-cryptography"><span class="secnum">9.6.1</span> China: SM-Series Cryptography<a class="headerlink" href="#961-china-sm-series-cryptography" title="Permanent link">&para;</a></h3>
+<p>China’s commercial cryptographic standards are managed by the State Cryptography Administration (SCA, or OSCCA):</p>
+<div class="tbl" id="tab-china_sm">
+<div class="tbl-caption"><strong>Table 9.2.</strong> China SM Cryptographic Standards</div>
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Standard</strong></th>
+<th style="text-align: left;"><strong>Type</strong></th>
+<th style="text-align: left;"><strong>Description</strong></th>
+<th style="text-align: left;"><strong>Status</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">SM2</td>
+<td style="text-align: left;">ECC Signature/KEM</td>
+<td style="text-align: left;">256-bit elliptic curve; used in Chinese PKI</td>
+<td style="text-align: left;">Mandatory for gov.</td>
+</tr>
+<tr>
+<td style="text-align: left;">SM3</td>
+<td style="text-align: left;">Hash</td>
+<td style="text-align: left;">256-bit hash function; similar to SHA-256</td>
+<td style="text-align: left;">Mandatory</td>
+</tr>
+<tr>
+<td style="text-align: left;">SM4</td>
+<td style="text-align: left;">Block cipher</td>
+<td style="text-align: left;">128-bit key, 128-bit block; replace AES</td>
+<td style="text-align: left;">Mandatory</td>
+</tr>
+<tr>
+<td style="text-align: left;">SM9</td>
+<td style="text-align: left;">Identity-based</td>
+<td style="text-align: left;">Pairing-based identity-based encryption</td>
+<td style="text-align: left;">Optional</td>
+</tr>
+<tr>
+<td style="text-align: left;">ZUC</td>
+<td style="text-align: left;">Stream cipher</td>
+<td style="text-align: left;">SNOW-based; used in LTE/5G</td>
+<td style="text-align: left;">Telecom standard</td>
+</tr>
+</tbody>
+</table>
+</div></div>
+<p>China’s PQC research: CNITSEC (National Research Center for Information Technology Security) is actively developing indigenous PQC algorithms. SM2/SM9 are quantum-vulnerable; China is expected to announce indigenous PQC standards from their national standardization body.</p>
+<h3 id="962-russia-gost-cryptographic-standards"><span class="secnum">9.6.2</span> Russia: GOST Cryptographic Standards<a class="headerlink" href="#962-russia-gost-cryptographic-standards" title="Permanent link">&para;</a></h3>
+<p>Russia’s GOST (state standard) cryptographic algorithms are managed by the Federal Security Service (FSB):</p>
+<div class="tbl" id="tab-russia_gost">
+<div class="tbl-caption"><strong>Table 9.3.</strong> Russian GOST Cryptographic Standards</div>
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Standard</strong></th>
+<th style="text-align: left;"><strong>Type</strong></th>
+<th style="text-align: left;"><strong>Description</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">GOST R 34.10-2012</td>
+<td style="text-align: left;">ECC Signature</td>
+<td style="text-align: left;">256/512-bit elliptic curve signatures (quantum-vulnerable)</td>
+</tr>
+<tr>
+<td style="text-align: left;">GOST R 34.11-2012 (Streebog)</td>
+<td style="text-align: left;">Hash</td>
+<td style="text-align: left;">256/512-bit hash function</td>
+</tr>
+<tr>
+<td style="text-align: left;">GOST R 34.12-2015 (Grasshopper/Magma)</td>
+<td style="text-align: left;">Block cipher</td>
+<td style="text-align: left;">128-bit and 64-bit block ciphers</td>
+</tr>
+<tr>
+<td style="text-align: left;">GOST R 34.13-2015</td>
+<td style="text-align: left;">Block cipher modes</td>
+<td style="text-align: left;">Cipher modes of operation</td>
+</tr>
+</tbody>
+</table>
+</div></div>
+<p>Russia’s ViPNet (InfoWatch) and Crypto-Pro companies are developing PQC extensions to GOST. GOST R 34.10-2012 is quantum-vulnerable and will require replacement.</p>
+<h3 id="963-south-korea-kpqc"><span class="secnum">9.6.3</span> South Korea: KPQC<a class="headerlink" href="#963-south-korea-kpqc" title="Permanent link">&para;</a></h3>
+<p>South Korea’s National Intelligence Service (NIS) and KISA (Korea Internet &amp; Security Agency) conducted the Korean PQC (KPQC) competition (2022–2024):</p>
+<div class="tbl" id="tab-kpqc">
+<div class="tbl-caption"><strong>Table 9.4.</strong> Korean PQC (KPQC) Algorithm Finalists</div>
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Algorithm</strong></th>
+<th style="text-align: left;"><strong>Type</strong></th>
+<th style="text-align: left;"><strong>Description</strong></th>
+<th style="text-align: left;"><strong>Level</strong></th>
+<th style="text-align: left;"><strong>Status</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">HAETAE</td>
+<td style="text-align: left;">Lattice Sig</td>
+<td style="text-align: left;">Module-lattice signature (Korean design)</td>
+<td style="text-align: left;">2/3/5</td>
+<td style="text-align: left;">Selected</td>
+</tr>
+<tr>
+<td style="text-align: left;">NTRUplus</td>
+<td style="text-align: left;">Lattice KEM</td>
+<td style="text-align: left;">NTRU-based KEM (Korean design)</td>
+<td style="text-align: left;">1/3/5</td>
+<td style="text-align: left;">Selected</td>
+</tr>
+<tr>
+<td style="text-align: left;">Peregrine</td>
+<td style="text-align: left;">Lattice Sig</td>
+<td style="text-align: left;">FALCON variant (Korean enhanced)</td>
+<td style="text-align: left;">1/3/5</td>
+<td style="text-align: left;">Selected</td>
+</tr>
+<tr>
+<td style="text-align: left;">PALOMA</td>
+<td style="text-align: left;">Code KEM</td>
+<td style="text-align: left;">Code-based KEM (similar to Classic McEliece)</td>
+<td style="text-align: left;">1/3/5</td>
+<td style="text-align: left;">Selected</td>
+</tr>
+<tr>
+<td style="text-align: left;">SOLMAE</td>
+<td style="text-align: left;">Lattice Sig</td>
+<td style="text-align: left;">Module-NTRU signature scheme</td>
+<td style="text-align: left;">2/3</td>
+<td style="text-align: left;">Selected</td>
+</tr>
+</tbody>
+</table>
+</div></div>
+<p>KPQC winners are expected to become Korean domestic standards in 2025–2026 alongside NIST standards.</p>
+<h3 id="964-germany-bsi-bundesamt-fur-sicherheit-in-der-informationstechnik"><span class="secnum">9.6.4</span> Germany: BSI (Bundesamt für Sicherheit in der Informationstechnik)<a class="headerlink" href="#964-germany-bsi-bundesamt-fur-sicherheit-in-der-informationstechnik" title="Permanent link">&para;</a></h3>
+<p>BSI provides comprehensive PQC guidance:</p>
+<ul>
+<li>
+<p><strong>Technical Guideline TR-02102-1</strong>: Specifies approved cryptographic mechanisms.</p>
+</li>
+<li>
+<p>Updated 2024 to include ML-KEM, ML-DSA, and SLH-DSA as approved algorithms.</p>
+</li>
+<li>
+<p>BSI recommends hybrid PQC as the current best practice.</p>
+</li>
+<li>
+<p>BSI mandates SLH-DSA for long-lived signatures (<span class="arithmatex">\(&gt;\)</span>10 years), ML-DSA for general use.</p>
+</li>
+<li>
+<p><strong>ELSI</strong>: BSI’s quantum-safe initiative for critical infrastructure.</p>
+</li>
+</ul>
+<h3 id="965-france-anssi-agence-nationale-de-la-securite-des-systemes-dinformation"><span class="secnum">9.6.5</span> France: ANSSI (Agence Nationale de la Sécurité des Systèmes d’Information)<a class="headerlink" href="#965-france-anssi-agence-nationale-de-la-securite-des-systemes-dinformation" title="Permanent link">&para;</a></h3>
+<p>ANSSI PQC position (2024):</p>
+<ul>
+<li>
+<p>Endorses NIST PQC standards while advocating for European evaluation.</p>
+</li>
+<li>
+<p>Recommends hybrid classical+PQC for the transition period.</p>
+</li>
+<li>
+<p>Published “Recommandations pour la migration vers la cryptographie post-quantique” (2024).</p>
+</li>
+<li>
+<p>ANSSI emphasizes the importance of European PQC research and standards development.</p>
+</li>
+<li>
+<p>Collaborates with ENISA (European Union Agency for Cybersecurity) on EU-wide PQC guidance.</p>
+</li>
+</ul>
+<h3 id="966-japan-cryptrec"><span class="secnum">9.6.6</span> Japan: CRYPTREC<a class="headerlink" href="#966-japan-cryptrec" title="Permanent link">&para;</a></h3>
+<p>Japan’s CRYPTREC (Cryptography Research and Evaluation Committees) manages Japanese cryptographic standards:</p>
+<ul>
+<li>
+<p>Updated the CRYPTREC cipher list to include PQC algorithms (2024).</p>
+</li>
+<li>
+<p>Monitoring NIST PQC standards and IPA (Information-technology Promotion Agency) conducting PQC evaluation.</p>
+</li>
+<li>
+<p>Japan’s NICT (National Institute of Information and Communications Technology) conducting research on lattice-based and hash-based PQC.</p>
+</li>
+</ul>
+<h3 id="967-india"><span class="secnum">9.6.7</span> India<a class="headerlink" href="#967-india" title="Permanent link">&para;</a></h3>
+<p>India’s PQC developments:</p>
+<ul>
+<li>
+<p><strong>C-DAC</strong> (Centre for Development of Advanced Computing): Developing PQC reference implementations for Indian e-governance applications.</p>
+</li>
+<li>
+<p><strong>CERT-In</strong>: Issued advisories on PQC migration for government departments.</p>
+</li>
+<li>
+<p><strong>STQC</strong> (Standardisation Testing and Quality Certification): Evaluating PQC for FIPS-equivalent Indian standards.</p>
+</li>
+<li>
+<p>India’s National Cyber Security Policy 2020 emphasizes indigenous cryptographic capability development.</p>
+</li>
+</ul>
+<h3 id="968-australia-asd-australian-signals-directorate"><span class="secnum">9.6.8</span> Australia: ASD (Australian Signals Directorate)<a class="headerlink" href="#968-australia-asd-australian-signals-directorate" title="Permanent link">&para;</a></h3>
+<p>Australia’s ASD PQC guidance:</p>
+<ul>
+<li>
+<p>Published “Post-Quantum Cryptography” guidance aligned with NSA CNSA 2.0.</p>
+</li>
+<li>
+<p>Australian Cyber Security Centre (ACSC) recommends ML-KEM-768 and ML-DSA-65 for general use.</p>
+</li>
+<li>
+<p>ASD participates in Five Eyes (FVEY) PQC coordination: USA, UK, Canada, Australia, New Zealand.</p>
+</li>
+<li>
+<p>NCSC (UK), CISA (US), CCCS (Canada) jointly published PQC transition guidance.</p>
+</li>
+</ul>
+<h3 id="969-israel"><span class="secnum">9.6.9</span> Israel<a class="headerlink" href="#969-israel" title="Permanent link">&para;</a></h3>
+<p>Israel’s PQC activities:</p>
+<ul>
+<li>
+<p>NIMDA (Israel National Cyber Directorate) issued PQC transition guidelines.</p>
+</li>
+<li>
+<p>WeizmanInstitute, Ben-Gurion University, Hebrew University active in PQC research.</p>
+</li>
+<li>
+<p>Strong industry presence: Ironclad, Ceva Wireless PQC IP cores, SIEVERT.</p>
+</li>
+</ul>
+<h2 id="97-iot-and-embedded-applications"><span class="secnum">9.7</span> IoT and Embedded Applications<a class="headerlink" href="#97-iot-and-embedded-applications" title="Permanent link">&para;</a></h2>
+<h3 id="971-dtls-13-with-pqc-for-iot"><span class="secnum">9.7.1</span> DTLS 1.3 with PQC for IoT<a class="headerlink" href="#971-dtls-13-with-pqc-for-iot" title="Permanent link">&para;</a></h3>
+<p>DTLS (Datagram TLS) is used for UDP-based IoT communication. PQC DTLS implementations:</p>
+<div class="tbl" id="tab-iot_dtls">
+<div class="tbl-caption"><strong>Table 9.5.</strong> PQC DTLS Implementation Feasibility for IoT Classes</div>
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Device Class</strong></th>
+<th style="text-align: left;"><strong>RAM</strong></th>
+<th style="text-align: left;"><strong>Feasible PQC</strong></th>
+<th style="text-align: left;"><strong>Approach</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">High-end IoT (RPi, ESP32-S3)</td>
+<td style="text-align: left;"><span class="math inline">\(&gt;\)</span>512 KB</td>
+<td style="text-align: left;">All NIST PQC</td>
+<td style="text-align: left;">Full stack</td>
+</tr>
+<tr>
+<td style="text-align: left;">Mid-range (STM32F4, nRF5340)</td>
+<td style="text-align: left;">256–512 KB</td>
+<td style="text-align: left;">ML-KEM-768, ML-DSA-44</td>
+<td style="text-align: left;">pqm4 or liboqs</td>
+</tr>
+<tr>
+<td style="text-align: left;">Low-end (STM32L0, nRF52832)</td>
+<td style="text-align: left;">64–256 KB</td>
+<td style="text-align: left;">ML-KEM-512</td>
+<td style="text-align: left;">PQClean, on-the-fly</td>
+</tr>
+<tr>
+<td style="text-align: left;">Ultra-constrained (<span class="math inline">\(&lt;\)</span>64 KB)</td>
+<td style="text-align: left;"><span class="math inline">\(&lt;\)</span>64 KB</td>
+<td style="text-align: left;">ML-KEM-512 (marginal)</td>
+<td style="text-align: left;">Custom optimization</td>
+</tr>
+</tbody>
+</table>
+</div></div>
+<h3 id="972-automotive-v2x-and-secure-boot"><span class="secnum">9.7.2</span> Automotive: V2X and Secure Boot<a class="headerlink" href="#972-automotive-v2x-and-secure-boot" title="Permanent link">&para;</a></h3>
+<p>Vehicle-to-Everything (V2X) communication uses ECDSA (IEEE 1609.2) for authentication. PQC migration path:</p>
+<ul>
+<li>
+<p><strong>V2X certificates</strong>: Migrate from ECDSA P-256 to ML-DSA-44 (IEEE 1609.2 PQC extension in development).</p>
+</li>
+<li>
+<p><strong>Secure boot</strong>: Replace ECDSA-signed firmware with ML-DSA-signed firmware.</p>
+</li>
+<li>
+<p><strong>HSM integration</strong>: Automotive HSMs (e.g., SHE, AUTOSAR SecOC) require PQC hardware support.</p>
+</li>
+<li>
+<p>Vehicle lifetime of 15+ years means cars built today may face CRQC attacks before retirement.</p>
+</li>
+</ul>
+<h2 id="98-summary"><span class="secnum">9.8</span> Summary<a class="headerlink" href="#98-summary" title="Permanent link">&para;</a></h2>
+<ul>
+<li>
+<p>TLS is the most urgent migration target; X25519MLKEM768 hybrid is already deployed by Chrome, Firefox, and Cloudflare.</p>
+</li>
+<li>
+<p>Signal (PQXDH) and Apple iMessage (PQ3) demonstrate successful PQC deployment for secure messaging.</p>
+</li>
+<li>
+<p>PQC X.509 certificates are 5–30<span class="arithmatex">\(\times\)</span> larger than ECDSA equivalents; infrastructure must be updated.</p>
+</li>
+<li>
+<p>Bitcoin/blockchain systems using ECDSA are quantum-vulnerable; QRL demonstrates a PQC-native ledger.</p>
+</li>
+<li>
+<p>China (SM-series), Russia (GOST), South Korea (KPQC), Germany (BSI), and Japan (CRYPTREC) are developing indigenous PQC standards and guidance.</p>
+</li>
+<li>
+<p>Korea’s KPQC selected HAETAE, NTRUplus, Peregrine, PALOMA, and SOLMAE as domestic candidates.</p>
+</li>
+<li>
+<p>IoT devices can implement ML-KEM-512 even on constrained platforms (<span class="arithmatex">\(&gt;\)</span>64 KB RAM).</p>
+</li>
+<li>
+<p>Automotive V2X communication requires PQC migration due to 15+ year vehicle lifetimes.</p>
+</li>
+</ul>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button type="button" class="md-top md-icon" data-md-component="top" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+Back to top
+</button>
+</main>
+<footer class="md-footer">
+<nav class="md-footer__inner md-grid" aria-label="Footer" >
+<a href="ch08-side-channel-attacks-and-countermeasures.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: 8. Side-Channel Attacks and Countermeasures">
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</div>
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Previous
+</span>
+<div class="md-ellipsis">
+8. Side-Channel Attacks and Countermeasures
+</div>
+</div>
+</a>
+<a href="ch10-pqc-research-and-open-problems.html" class="md-footer__link md-footer__link--next" aria-label="Next: 10. PQC Research and Open Problems">
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Next
+</span>
+<div class="md-ellipsis">
+10. PQC Research and Open Problems
+</div>
+</div>
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+</div>
+</a>
+</nav>
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+The Open Book Project &middot;
+<a href="../../about.html">About this library</a> &middot;
+<a href="../../publish.html">Publish your book</a> &middot;
+© The authors of the books
+</div>
+Made with
+<a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+Material for MkDocs
+</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "navigation.prune", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "toc.follow", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+<script src="../../assets/mathjax.js"></script>
+<script src="../../assets/viz.js"></script>
+<script src="../../assets/remote.js"></script>
+<script src="../../assets/scans.js"></script>
+<script src="../../assets/reader.js"></script>
+<script src="../../assets/app.js"></script>
+<script src="../../assets/slides.js"></script>
+<script src="../../assets/speak.js"></script>
+<script src="../../assets/quiz.js"></script>
+<script>
+    /* offline reading: the service worker at the site root (its scope is the whole site) */
+    if ("serviceWorker" in navigator && window.isSecureContext) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register(new URL("../../sw.js", location.href).href).catch(function () {});
+      });
+    }
+  </script>
+</body>
+</html>

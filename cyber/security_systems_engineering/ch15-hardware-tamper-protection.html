@@ -1,0 +1,1089 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="description" content="The Open Book Project: books on computer science, quantum computing, cyber security, science, the social sciences, university courses and languages, read page by page like an e-book, online or offline.">
+<meta name="author" content="The Open Book Project">
+<link rel="canonical" href="https://open-book-project.github.io/cyber/security_systems_engineering/ch15-hardware-tamper-protection.html">
+<link rel="prev" href="ch14-side-channel-attacks.html">
+<link rel="next" href="ch16-transport-layer-security.html">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap"></noscript>
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Open Book">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="application-name" content="Open Book"><script src="../../assets/library-data.js"></script><script>
+    (function () {
+      var X = window.XMLHttpRequest, open, gate = new Promise(function (r) { open = r; });
+      if (!X) return;
+      var open0 = X.prototype.open, send0 = X.prototype.send;
+      X.prototype.open = function (method, url) {
+        this.__pkIndex = /\/search\/search_index\.json(\?|#|$)/.test(String(url));
+        return open0.apply(this, arguments);
+      };
+      X.prototype.send = function () {
+        if (!this.__pkIndex) return send0.apply(this, arguments);
+        var xhr = this, args = arguments;
+        gate.then(function () { send0.apply(xhr, args); });
+      };
+      function wake() { open(); }
+      document.addEventListener("focusin", function (e) { if (e.target && e.target.closest && e.target.closest(".md-search")) wake(); });
+      document.addEventListener("click", function (e) { if (e.target && e.target.closest && e.target.closest('label[for="__search"], .md-search')) wake(); }, true);
+      document.addEventListener("keydown", function (e) {
+        var k = e.key;
+        if ((k === "/" || k === "s" || k === "f" || k === "S" || k === "F") && !(e.target && e.target.closest && e.target.closest("input, textarea, [contenteditable]"))) wake();
+      }, true);
+      if (/[?&]q=/.test(location.search)) wake();
+    })();
+  </script><script>
+    try {
+      if ((window.matchMedia && (matchMedia("(display-mode: standalone)").matches || matchMedia("(display-mode: fullscreen)").matches)) || navigator.standalone === true) {
+        document.documentElement.className += " bjp-standalone";
+      }
+    } catch (e) { /* not an installed app */ }
+    /* the books of a subject or of the whole library as covers or as a list (assets/app.js): the reader's choice */
+    try {
+      var bv = localStorage.getItem("bjp.view");
+      if (bv === "list" || (bv !== "grid" && /\/books\.html$/.test(location.pathname))) document.documentElement.className += " bjp-view-list";
+    } catch (e) { /* no storage: covers */ }
+  </script>
+<script>
+    /* a book opened from its cover on the shelf: the page stays blank, in the cover's colour, until the reader is up */
+    try {
+      var cv = sessionStorage.getItem("bjp.reader.cover");
+      if (cv && sessionStorage.getItem("bjp.reader.open") === "1") {
+        var c = JSON.parse(cv), de = document.documentElement;
+        de.className += " bjp-booting";
+        if (c && /^#[0-9a-f]{3,8}$/i.test(c.bg || "")) de.style.background = c.bg;
+        setTimeout(function () { de.classList.remove("bjp-booting"); de.style.background = ""; }, 3000);
+      }
+    } catch (e) { /* no session storage: the page simply opens as usual */ }
+  </script>
+<title>15. Hardware Tamper Protection - The Open Book Project</title>
+<link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+<link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+<link rel="stylesheet" href="../../assets/extra.css">
+<link rel="stylesheet" href="../../assets/reader.css">
+<link rel="stylesheet" href="../../assets/viz.css">
+<link rel="stylesheet" href="../../assets/app.css">
+<link rel="stylesheet" href="../../assets/theme.css">
+<link rel="stylesheet" href="../../assets/slides.css">
+<link rel="stylesheet" href="../../assets/remote.css">
+<link rel="stylesheet" href="../../assets/scans.css">
+<link rel="stylesheet" href="../../assets/speak.css">
+<link rel="stylesheet" href="../../assets/quiz.css">
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+<input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+<input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a href="#151-trusted-execution-environments" class="md-skip">
+Skip to content
+</a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav class="md-header__inner md-grid" aria-label="Header">
+<a href="../../index.html" title="The Open Book Project" class="md-header__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+The Open Book Project
+</span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+15. Hardware Tamper Protection
+</span>
+</div>
+</div>
+</div><a href="../../index.html" class="bjp-libbtn" aria-label="Library: all books" title="Library: all books">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V5h4v15M8 20V9h4v11M14 20L12.6 6l3.8-.8 3 14.2M3 20h18"/></svg><span>Library</span>
+</a>
+<a href="../../subjects/index.html" class="pk-catbtn" aria-haspopup="true" aria-expanded="false" title="Browse the books by category">
+<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><circle cx="17" cy="7" r="3.6"/><path d="M7 13.4l3.9 6.8H3.1z"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg><span>Categories</span>
+</a>
+<form class="md-header__option" data-md-component="palette">
+<input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+<label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+</label>
+<input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+<label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+<label class="md-search__icon md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</label>
+<nav class="md-search__options" aria-label="Search">
+<button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+Initializing search
+</div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--primary bjp-nav bjp-nav--book" aria-label="Navigation" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a href="../../index.html" title="The Open Book Project" class="md-nav__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+The Open Book Project
+</label>
+<ul class="md-nav__list" data-md-scrollfix>
+<li class="md-nav__item bjp-nav-all">
+<a href="../../index.html" class="md-nav__link" aria-label="All books: back to the library">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+<span class="md-ellipsis">All books</span>
+</a>
+</li>
+<li class="md-nav__item bjp-nav-book" role="presentation"><span class="bjp-nav-head">Security Systems Engineering</span></li>
+<li class="md-nav__item">
+<a href="index.html" class="md-nav__link">
+<span class="md-ellipsis">
+Overview and preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="notation-and-conventions.html" class="md-nav__link">
+<span class="md-ellipsis">
+Notation and Conventions
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch01-mathematical-foundations-of-cryptography.html" class="md-nav__link">
+<span class="md-ellipsis">
+1. Mathematical Foundations of Cryptography
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch02-symmetric-cryptography.html" class="md-nav__link">
+<span class="md-ellipsis">
+2. Symmetric Cryptography
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch03-public-key-cryptography.html" class="md-nav__link">
+<span class="md-ellipsis">
+3. Public-Key Cryptography
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch04-cryptographic-hash-functions-and-macs.html" class="md-nav__link">
+<span class="md-ellipsis">
+4. Cryptographic Hash Functions and MACs
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch05-key-management-and-public-key-infrastructure.html" class="md-nav__link">
+<span class="md-ellipsis">
+5. Key Management and Public Key Infrastructure
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch06-cryptographic-protocols-and-security-proofs.html" class="md-nav__link">
+<span class="md-ellipsis">
+6. Cryptographic Protocols and Security Proofs
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch07-quantum-cryptography-and-post-quantum-migration.html" class="md-nav__link">
+<span class="md-ellipsis">
+7. Quantum Cryptography and Post-Quantum Migration
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch08-network-security-fundamentals.html" class="md-nav__link">
+<span class="md-ellipsis">
+8. Network Security Fundamentals
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch09-firewalls-ids-and-ips.html" class="md-nav__link">
+<span class="md-ellipsis">
+9. Firewalls, IDS, and IPS
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch10-network-protocol-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+10. Network Protocol Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch11-web-application-security-fundamentals.html" class="md-nav__link">
+<span class="md-ellipsis">
+11. Web Application Security Fundamentals
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch12-authentication-authorization-and-access-control.html" class="md-nav__link">
+<span class="md-ellipsis">
+12. Authentication, Authorization, and Access Control
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch13-api-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+13. API Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch14-side-channel-attacks.html" class="md-nav__link">
+<span class="md-ellipsis">
+14. Side-Channel Attacks
+</span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+15. Hardware Tamper Protection
+</span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a href="ch15-hardware-tamper-protection.html" class="md-nav__link md-nav__link--active">
+<span class="md-ellipsis">
+15. Hardware Tamper Protection
+</span>
+</a>
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#151-trusted-execution-environments" class="md-nav__link">
+<span class="md-ellipsis">
+15.1 Trusted Execution Environments
+</span>
+</a>
+<nav class="md-nav" aria-label="15.1 Trusted Execution Environments">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1511-arm-trustzone" class="md-nav__link">
+<span class="md-ellipsis">
+15.1.1 ARM TrustZone
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#152-trusted-platform-module-tpm-20" class="md-nav__link">
+<span class="md-ellipsis">
+15.2 Trusted Platform Module (TPM 2.0)
+</span>
+</a>
+<nav class="md-nav" aria-label="15.2 Trusted Platform Module (TPM 2.0)">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1521-tpm-key-hierarchy" class="md-nav__link">
+<span class="md-ellipsis">
+15.2.1 TPM Key Hierarchy
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1522-platform-configuration-registers-and-sealing" class="md-nav__link">
+<span class="md-ellipsis">
+15.2.2 Platform Configuration Registers and Sealing
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#153-secure-boot-chain" class="md-nav__link">
+<span class="md-ellipsis">
+15.3 Secure Boot Chain
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#154-physical-unclonable-functions" class="md-nav__link">
+<span class="md-ellipsis">
+15.4 Physical Unclonable Functions
+</span>
+</a>
+<nav class="md-nav" aria-label="15.4 Physical Unclonable Functions">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1541-sram-puf" class="md-nav__link">
+<span class="md-ellipsis">
+15.4.1 SRAM PUF
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1542-arbiter-puf" class="md-nav__link">
+<span class="md-ellipsis">
+15.4.2 Arbiter PUF
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1543-challenge-response-pair-enrollment-and-aging" class="md-nav__link">
+<span class="md-ellipsis">
+15.4.3 Challenge-Response Pair Enrollment and Aging
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1544-use-cases" class="md-nav__link">
+<span class="md-ellipsis">
+15.4.4 Use Cases
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#155-hardware-security-modules" class="md-nav__link">
+<span class="md-ellipsis">
+15.5 Hardware Security Modules
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#156-anti-tamper-techniques" class="md-nav__link">
+<span class="md-ellipsis">
+15.6 Anti-Tamper Techniques
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#157-cold-boot-attacks" class="md-nav__link">
+<span class="md-ellipsis">
+15.7 Cold Boot Attacks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#158-memory-encryption" class="md-nav__link">
+<span class="md-ellipsis">
+15.8 Memory Encryption
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#159-jtag-security" class="md-nav__link">
+<span class="md-ellipsis">
+15.9 JTAG Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1510-hardware-security-mechanisms-comparison" class="md-nav__link">
+<span class="md-ellipsis">
+15.10 Hardware Security Mechanisms Comparison
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1511-exercises" class="md-nav__link">
+<span class="md-ellipsis">
+15.11 Exercises
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="ch16-transport-layer-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+16. Transport Layer Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch17-ssh-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+17. SSH Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch18-email-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+18. Email Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch19-advanced-network-protocol-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+19. Advanced Network Protocol Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch20-malware-analysis.html" class="md-nav__link">
+<span class="md-ellipsis">
+20. Malware Analysis
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch21-reverse-engineering.html" class="md-nav__link">
+<span class="md-ellipsis">
+21. Reverse Engineering
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch22-digital-forensics.html" class="md-nav__link">
+<span class="md-ellipsis">
+22. Digital Forensics
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch23-vulnerability-research-and-fuzzing.html" class="md-nav__link">
+<span class="md-ellipsis">
+23. Vulnerability Research and Fuzzing
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch24-exploit-development-fundamentals.html" class="md-nav__link">
+<span class="md-ellipsis">
+24. Exploit Development Fundamentals
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch25-security-architecture-and-design.html" class="md-nav__link">
+<span class="md-ellipsis">
+25. Security Architecture and Design
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch26-cloud-native-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+26. Cloud-Native Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch27-human-factors-in-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+27. Human Factors in Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch28-artificial-intelligence-and-machine-learning.html" class="md-nav__link">
+<span class="md-ellipsis">
+28. Artificial Intelligence and Machine Learning Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch29-iot-industrial-control-systems-and-the-emerging.html" class="md-nav__link">
+<span class="md-ellipsis">
+29. IoT, Industrial Control Systems, and the Emerging Threat Horizon
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="app-a-mathematical-reference.html" class="md-nav__link">
+<span class="md-ellipsis">
+Appendix A. Mathematical Reference
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="app-b-security-tools-reference.html" class="md-nav__link">
+<span class="md-ellipsis">
+Appendix B. Security Tools Reference
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="app-c-selected-exercise-solutions.html" class="md-nav__link">
+<span class="md-ellipsis">
+Appendix C. Selected Exercise Solutions
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="bibliography.html" class="md-nav__link">
+<span class="md-ellipsis">
+References
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#151-trusted-execution-environments" class="md-nav__link">
+<span class="md-ellipsis">
+15.1 Trusted Execution Environments
+</span>
+</a>
+<nav class="md-nav" aria-label="15.1 Trusted Execution Environments">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1511-arm-trustzone" class="md-nav__link">
+<span class="md-ellipsis">
+15.1.1 ARM TrustZone
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#152-trusted-platform-module-tpm-20" class="md-nav__link">
+<span class="md-ellipsis">
+15.2 Trusted Platform Module (TPM 2.0)
+</span>
+</a>
+<nav class="md-nav" aria-label="15.2 Trusted Platform Module (TPM 2.0)">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1521-tpm-key-hierarchy" class="md-nav__link">
+<span class="md-ellipsis">
+15.2.1 TPM Key Hierarchy
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1522-platform-configuration-registers-and-sealing" class="md-nav__link">
+<span class="md-ellipsis">
+15.2.2 Platform Configuration Registers and Sealing
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#153-secure-boot-chain" class="md-nav__link">
+<span class="md-ellipsis">
+15.3 Secure Boot Chain
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#154-physical-unclonable-functions" class="md-nav__link">
+<span class="md-ellipsis">
+15.4 Physical Unclonable Functions
+</span>
+</a>
+<nav class="md-nav" aria-label="15.4 Physical Unclonable Functions">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1541-sram-puf" class="md-nav__link">
+<span class="md-ellipsis">
+15.4.1 SRAM PUF
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1542-arbiter-puf" class="md-nav__link">
+<span class="md-ellipsis">
+15.4.2 Arbiter PUF
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1543-challenge-response-pair-enrollment-and-aging" class="md-nav__link">
+<span class="md-ellipsis">
+15.4.3 Challenge-Response Pair Enrollment and Aging
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1544-use-cases" class="md-nav__link">
+<span class="md-ellipsis">
+15.4.4 Use Cases
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#155-hardware-security-modules" class="md-nav__link">
+<span class="md-ellipsis">
+15.5 Hardware Security Modules
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#156-anti-tamper-techniques" class="md-nav__link">
+<span class="md-ellipsis">
+15.6 Anti-Tamper Techniques
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#157-cold-boot-attacks" class="md-nav__link">
+<span class="md-ellipsis">
+15.7 Cold Boot Attacks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#158-memory-encryption" class="md-nav__link">
+<span class="md-ellipsis">
+15.8 Memory Encryption
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#159-jtag-security" class="md-nav__link">
+<span class="md-ellipsis">
+15.9 JTAG Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1510-hardware-security-mechanisms-comparison" class="md-nav__link">
+<span class="md-ellipsis">
+15.10 Hardware Security Mechanisms Comparison
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1511-exercises" class="md-nav__link">
+<span class="md-ellipsis">
+15.11 Exercises
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="ch-tamper-protection">Chapter 15: Hardware Tamper Protection<a class="headerlink" href="#ch-tamper-protection" title="Permanent link">&para;</a></h1>
+<p>Physical access to a device has long been considered equivalent to full compromise. Hardware security engineering challenges this assumption by making tampering detectable, difficult, or physically impossible. This chapter covers the spectrum of hardware-rooted trust mechanisms, from Trusted Execution Environments to Physical Unclonable Functions and Hardware Security Modules.</p>
+<h2 id="151-trusted-execution-environments"><span class="secnum">15.1</span> Trusted Execution Environments<a class="headerlink" href="#151-trusted-execution-environments" title="Permanent link">&para;</a></h2>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 15.1 (Trusted Execution Environment (TEE))</p>
+<p>A <strong>Trusted Execution Environment</strong> is an isolated execution context provided by processor hardware that protects code and data confidentiality and integrity from the rich operating system, hypervisor, and other applications running on the same processor. The TEE maintains a <em>trust boundary</em> enforced in hardware.</p>
+</div>
+<h3 id="1511-arm-trustzone"><span class="secnum">15.1.1</span> ARM TrustZone<a class="headerlink" href="#1511-arm-trustzone" title="Permanent link">&para;</a></h3>
+<p>ARM TrustZone partitions the processor into two worlds: the <em>Secure World</em> (TEE) and the <em>Normal World</em> (Rich OS). A hardware bit in each bus transaction determines which world can access a given memory region. The Secure Monitor Call (<code>SMC</code>) instruction is the only crossing point, arbitrated by a Secure Monitor running at EL3.</p>
+<p>FIDO2 authenticators and mobile payment credentials are commonly stored in the TEE, where even a compromised Android or iOS kernel can’t extract the private keys. TEE-resident code is called a <em>Trusted Application (TA)</em>.</p>
+<h2 id="152-trusted-platform-module-tpm-20"><span class="secnum">15.2</span> Trusted Platform Module (TPM 2.0)<a class="headerlink" href="#152-trusted-platform-module-tpm-20" title="Permanent link">&para;</a></h2>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 15.2 (TPM 2.0)</p>
+<p>A <strong>Trusted Platform Module</strong> (ISO/IEC 11889) is a secure cryptoprocessor providing hardware-rooted trust services: key generation, secure key storage, attestation, sealing, and random number generation. TPM 2.0 (2014) is the current standard; it supports algorithm agility (RSA, ECC, AES, SHA-2/3).</p>
+</div>
+<h3 id="1521-tpm-key-hierarchy"><span class="secnum">15.2.1</span> TPM Key Hierarchy<a class="headerlink" href="#1521-tpm-key-hierarchy" title="Permanent link">&para;</a></h3>
+<div class="center">
+<div class="tbl">
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Key</strong></th>
+<th style="text-align: left;"><strong>Full Name</strong></th>
+<th style="text-align: left;"><strong>Purpose</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">EK</td>
+<td style="text-align: left;">Endorsement Key</td>
+<td style="text-align: left;">Unique per TPM; used for attestation; non-migratable</td>
+</tr>
+<tr>
+<td style="text-align: left;">SRK</td>
+<td style="text-align: left;">Storage Root Key</td>
+<td style="text-align: left;">Root of the key storage hierarchy; never leaves TPM</td>
+</tr>
+<tr>
+<td style="text-align: left;">AIK</td>
+<td style="text-align: left;">Attestation Identity Key</td>
+<td style="text-align: left;">Pseudonymous key used in remote attestation</td>
+</tr>
+<tr>
+<td style="text-align: left;">Sealing Key</td>
+<td style="text-align: left;">(derived)</td>
+<td style="text-align: left;">Encrypts data bound to a specific PCR state</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<h3 id="1522-platform-configuration-registers-and-sealing"><span class="secnum">15.2.2</span> Platform Configuration Registers and Sealing<a class="headerlink" href="#1522-platform-configuration-registers-and-sealing" title="Permanent link">&para;</a></h3>
+<p>PCRs (Platform Configuration Registers) store cumulative SHA-256 hash digests of firmware, bootloader, and OS components measured at boot time. Each PCR extends as:</p>
+<div class="arithmatex">\[\text{PCR}[i] \leftarrow \text{SHA-256}\!\left(\text{PCR}[i] \,\|\, \text{new\_measurement}\right)\]</div>
+<p>The extend operation is one-way and append-only: you can add measurements but you can’t remove or replace them, and you can’t reach a given PCR state without having extended with exactly the right sequence of measurements. A PCR starts at all-zeros; extending with measurement <span class="arithmatex">\(m_1\)</span> gives <span class="arithmatex">\(\text{SHA-256}(\mathbf{0}^{256} \| m_1)\)</span>; extending again with <span class="arithmatex">\(m_2\)</span> gives <span class="arithmatex">\(\text{SHA-256}(\text{PCR} \| m_2)\)</span>. Reordering measurements or substituting any component produces a completely different final PCR value. This means a TPM PCR is really a commitment to the entire <em>sequence</em> of software that ran during boot—not just a set of components.</p>
+<p><strong>Sealing</strong> binds a secret (e.g., a disk encryption key) to a specific PCR state. The TPM will only <em>unseal</em> it if the current PCR values match the values at seal time, so the secret is unavailable if the boot chain has been tampered with.</p>
+<p><strong>Remote attestation</strong> extends sealing to a verifier that doesn’t share the device. The flow works as follows: the verifier sends the TPM a fresh random nonce. The TPM constructs a <em>quote</em>—a signed structure containing the current PCR values and the nonce—signed with an Attestation Identity Key (AIK). The AIK’s certificate chains to the TPM’s Endorsement Key (EK), which is burned into the chip by the manufacturer and certified by the TCG Certificate Authority. The verifier checks: that the EK certificate is genuine (device is a real TPM), that the AIK certificate is properly bound to the EK (key is on that real TPM), that the nonce matches (freshness, preventing replay), and that the PCR values correspond to a known-good boot policy. If all checks pass, the verifier can be confident that the attesting machine ran exactly the software stack it claims. This is the mechanism underlying cloud confidential computing attestation in Intel TDX, AMD SEV-SNP, and ARM CCA.</p>
+<div class="admonition example box-example kind-example">
+<p class="admonition-title">Example 15.1 (BitLocker TPM Sealing)</p>
+<p>Windows BitLocker seals the Volume Master Key to TPM PCRs 0, 2, 4, 7, and 11 (covering firmware, option ROMs, bootloader, Secure Boot policy, and BitLocker access control). Any firmware update or boot-path change causes PCR mismatch, preventing unseal until the user authenticates with a recovery key.</p>
+</div>
+<h2 id="153-secure-boot-chain"><span class="secnum">15.3</span> Secure Boot Chain<a class="headerlink" href="#153-secure-boot-chain" title="Permanent link">&para;</a></h2>
+<div class="center">
+<div class="center">
+<p><img class="tikz" src="img/tikz-9dba3f201eb4.svg" alt="image" loading="lazy" width="451" height="50"></p>
+</div>
+</div>
+<p>UEFI Secure Boot uses a key database (<code>db</code>) of trusted certificates and a deny list (<code>dbx</code>) of revoked hashes/certificates. The Platform Key (PK) is the root of trust held by the OEM; the Key Exchange Key (KEK) lets OS vendors update <code>db</code> and <code>dbx</code>. On Linux, Microsoft signs the <em>shim</em> bootloader; shim verifies GRUB using a Machine Owner Key (MOK) stored in NVRAM.</p>
+<p>When a user disables UEFI Secure Boot in the firmware settings, the entire chain of trust from that point forward collapses. The UEFI firmware will load any bootloader regardless of its signature, which means an attacker with brief physical access can boot a live USB containing a modified kernel or a rootkit installer. With a rootkit in place before the legitimate OS boots, any subsequent software-based integrity checks are meaningless—the rootkit controls the environment those checks run in. This is why enterprise device management policies (Microsoft Intune, Jamf, Google BeyondCorp) report Secure Boot status as a health signal and deny network access to machines with it disabled. The TPM’s PCR 7 specifically records the Secure Boot policy state, so attestation-based network access control can detect if Secure Boot was disabled even after the machine was re-enabled.</p>
+<p><strong>Shim</strong> exists because of a practical key management problem. Microsoft’s KEK controls updates to the UEFI <code>db</code>, and most consumer and enterprise hardware ships with Microsoft’s certificate in <code>db</code> as the only trusted signing authority. Linux distributions can’t independently add their own certificates to every OEM’s key database. The solution is a small Microsoft-signed stub bootloader—shim—that serves as a trust extension point. Shim carries a compiled-in certificate (the distribution’s own key), verifies the GRUB2 binary against it, and then hands off. The Machine Owner Key (MOK) mechanism lets administrators add their own keys to shim’s trusted list without going through Microsoft. This is essential for custom or unsigned kernels, driver modules signed by local keys, or custom hardware. The tradeoff is that shim is a single point of trust: compromising the shim binary or the signing key that Microsoft uses to sign it would break the entire Linux Secure Boot chain, which is why the 2020 BootHole vulnerability (CVE-2020-10713), a buffer overflow in GRUB2’s config parser, required a coordinated dbx update across essentially every UEFI system in existence.</p>
+<h2 id="154-physical-unclonable-functions"><span class="secnum">15.4</span> Physical Unclonable Functions<a class="headerlink" href="#154-physical-unclonable-functions" title="Permanent link">&para;</a></h2>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 15.3 (Physical Unclonable Function (PUF))</p>
+<p>A <strong>PUF</strong> exploits unavoidable manufacturing process variations to produce a unique and unpredictable <em>response</em> for each <em>challenge</em>. The response is reproducible on the same device but infeasible to clone or predict from device specifications alone. Formally, a PUF is a function <span class="arithmatex">\(f: \{0,1\}^n \to \{0,1\}^m\)</span> implemented in uncontrollable physical variation.</p>
+</div>
+<h3 id="1541-sram-puf"><span class="secnum">15.4.1</span> SRAM PUF<a class="headerlink" href="#1541-sram-puf" title="Permanent link">&para;</a></h3>
+<p>SRAM cells power up to a “preferred” state (0 or 1) determined by transistor mismatch. Reading SRAM immediately after power-on yields a unique bitstring—the <em>SRAM PUF fingerprint</em>. Across power cycles on the same chip the fingerprint is stable (with a small error rate corrected by fuzzy extractors), and no two chips produce the same fingerprint.</p>
+<h3 id="1542-arbiter-puf"><span class="secnum">15.4.2</span> Arbiter PUF<a class="headerlink" href="#1542-arbiter-puf" title="Permanent link">&para;</a></h3>
+<p>A race condition between two signal paths with nominally identical length, caused by manufacturing variation in gate delays, determines a 1-bit response for each challenge (path selection input). Chaining <span class="arithmatex">\(n\)</span> stages produces <span class="arithmatex">\(2^n\)</span> challenge-response pairs.</p>
+<h3 id="1543-challenge-response-pair-enrollment-and-aging"><span class="secnum">15.4.3</span> Challenge-Response Pair Enrollment and Aging<a class="headerlink" href="#1543-challenge-response-pair-enrollment-and-aging" title="Permanent link">&para;</a></h3>
+<p>PUF deployment requires an <em>enrollment</em> phase during manufacturing. The device is placed in a controlled environment, and a large set of challenges is applied to the PUF. The corresponding responses are measured, and the (challenge, response) pairs—called CRPs—are stored securely in a server-side database. In the field, authentication works by the server sending a challenge the device has never seen (to prevent replay) and comparing the device’s response to the stored CRP. Strong PUFs like the arbiter PUF can have exponentially many CRPs, making exhaustive CRP theft impractical. Weak PUFs like SRAM PUFs have a fixed-size fingerprint used for key generation rather than per-challenge authentication.</p>
+<p>Aging is the adversary of PUF reliability. Semiconductor transistors degrade over time via Hot Carrier Injection (HCI) and Bias Temperature Instability (BTI), which cause the threshold voltages of transistors to drift. An SRAM cell that powered up to “1” at manufacturing might drift toward “0” after years of use, causing bit flips in the PUF fingerprint. The error rate of a freshly manufactured device is typically 1–5%; after 10 years in the field at elevated temperatures, it can rise substantially. <em>Fuzzy extractors</em> handle this by applying an error-correcting code (ECC) during enrollment: the enrollment process identifies which bits are “noisy” (unreliable across multiple measurements) and constructs <em>helper data</em> that allows the ECC decoder to correct the expected bit flip errors on subsequent readings without revealing the underlying secret. The helper data is safe to store in non-volatile memory—it leaks nothing about the PUF response because it was designed so that the corrected output is information- theoretically independent of the helper data. However, if aging pushes the error rate above the ECC correction capacity, key reconstruction fails, which can lock the device out of its own secrets. This is why PUF-based systems are designed with comfortable margins between the expected aging-induced error rate and the ECC correction capacity, and why accelerated aging tests during qualification are essential.</p>
+<h3 id="1544-use-cases"><span class="secnum">15.4.4</span> Use Cases<a class="headerlink" href="#1544-use-cases" title="Permanent link">&para;</a></h3>
+<ul>
+<li>
+<p><strong>Device fingerprinting</strong>: authenticate a specific chip without pre-provisioned keys.</p>
+</li>
+<li>
+<p><strong>Key generation</strong>: derive a cryptographic key from the PUF response at runtime; the key is never stored, only reconstructed on demand.</p>
+</li>
+<li>
+<p><strong>Anti-cloning</strong>: prove a hardware device is the genuine article.</p>
+</li>
+</ul>
+<h2 id="155-hardware-security-modules"><span class="secnum">15.5</span> Hardware Security Modules<a class="headerlink" href="#155-hardware-security-modules" title="Permanent link">&para;</a></h2>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 15.4 (Hardware Security Module (HSM))</p>
+<p>An <strong>HSM</strong> is a dedicated cryptographic device providing key management, key storage, and cryptographic operations within a tamper-resistant hardware boundary. HSMs are evaluated against FIPS 140-3 (2023) or Common Criteria.</p>
+</div>
+<div class="center">
+<div class="tbl">
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>FIPS 140-3 Level</strong></th>
+<th style="text-align: left;"><strong>Security Requirements</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Level 1</td>
+<td style="text-align: left;">Software-only; no physical requirements; approved algorithms only</td>
+</tr>
+<tr>
+<td style="text-align: left;">Level 2</td>
+<td style="text-align: left;">Tamper-evident seals; role-based authentication</td>
+</tr>
+<tr>
+<td style="text-align: left;">Level 3</td>
+<td style="text-align: left;">Tamper-response: zeroize keys on intrusion; identity-based auth</td>
+</tr>
+<tr>
+<td style="text-align: left;">Level 4</td>
+<td style="text-align: left;">Complete physical protection; detect environmental attacks (voltage, temp)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>Commercial HSM examples: Thales Luna Network HSM (Level 3), AWS CloudHSM (Level 3), YubiHSM 2 (Level 3, compact USB form factor). When an HSM detects tampering it <em>zeroizes</em> all stored keys, making the device useless to an attacker even after physical extraction.</p>
+<h2 id="156-anti-tamper-techniques"><span class="secnum">15.6</span> Anti-Tamper Techniques<a class="headerlink" href="#156-anti-tamper-techniques" title="Permanent link">&para;</a></h2>
+<div class="admonition info box-keybox kind-concept">
+<p class="admonition-title">Hardware Anti-Tamper Mechanisms</p>
+<ul>
+<li>
+<p><strong>Epoxy potting</strong>: security-critical circuitry is encased in opaque epoxy; removal destroys the component.</p>
+</li>
+<li>
+<p><strong>Mesh wires</strong>: a fine conductive grid covers the chip die; cutting the mesh to reach internals breaks continuity, triggering zeroisation.</p>
+</li>
+<li>
+<p><strong>Active shields</strong>: top-layer conductors on a chip carry random bit patterns; any attempt to probe underlying layers shorts the shield and is detected.</p>
+</li>
+<li>
+<p><strong>Voltage/temperature monitors</strong>: circuits that trigger key erasure if supply voltage or die temperature exceeds safe bounds (targeting glitch attacks).</p>
+</li>
+</ul>
+</div>
+<h2 id="157-cold-boot-attacks"><span class="secnum">15.7</span> Cold Boot Attacks<a class="headerlink" href="#157-cold-boot-attacks" title="Permanent link">&para;</a></h2>
+<div class="admonition warning box-attackbox kind-safety">
+<p class="admonition-title">Cold Boot Attack</p>
+<p>DRAM retains data for seconds to minutes after power is removed, especially when cooled with compressed air or liquid nitrogen (which extends retention to minutes or hours). An attacker reboots a locked or sleeping computer and boots from USB, dumping RAM. Encryption keys found in memory compromise full-disk encryption.</p>
+<p><strong>Defence</strong>: require a TPM+PIN or TPM+USB key so that the VMK (Volume Master Key) is never held in plaintext RAM; use memory encryption (AMD SME); configure BIOS to disable USB boot; enable pre-boot authentication that clears the key from RAM on lock.</p>
+</div>
+<h2 id="158-memory-encryption"><span class="secnum">15.8</span> Memory Encryption<a class="headerlink" href="#158-memory-encryption" title="Permanent link">&para;</a></h2>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 15.5 (AMD SME and SEV)</p>
+<p><strong>AMD Secure Memory Encryption (SME)</strong> encrypts all DRAM using a 128-bit AES key stored in the CPU, making cold-boot attacks impractical. <strong>AMD Secure Encrypted Virtualization (SEV)</strong> extends this by providing per-VM encryption keys, so a compromised hypervisor can’t read guest VM memory.</p>
+</div>
+<p>Intel Total Memory Encryption (TME) provides analogous DRAM encryption from the CPU memory controller, transparent to software.</p>
+<h2 id="159-jtag-security"><span class="secnum">15.9</span> JTAG Security<a class="headerlink" href="#159-jtag-security" title="Permanent link">&para;</a></h2>
+<p>JTAG (IEEE 1149.1) debug ports provide direct access to processor registers, memory, and peripheral state. In production devices, JTAG must be disabled:</p>
+<ul>
+<li>
+<p>Permanently disable via <em>fuse programming</em> (one-time programmable bits).</p>
+</li>
+<li>
+<p>Use <em>secure debug</em>: JTAG access requires cryptographic authentication (a challenge-response protocol with a device-unique key), enabling authorised field debugging without opening an attack surface on unmodified devices.</p>
+</li>
+</ul>
+<h2 id="1510-hardware-security-mechanisms-comparison"><span class="secnum">15.10</span> Hardware Security Mechanisms Comparison<a class="headerlink" href="#1510-hardware-security-mechanisms-comparison" title="Permanent link">&para;</a></h2>
+<div class="center">
+<div class="tbl">
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Property</strong></th>
+<th style="text-align: left;"><strong>TEE</strong></th>
+<th style="text-align: left;"><strong>TPM</strong></th>
+<th style="text-align: left;"><strong>HSM</strong></th>
+<th style="text-align: left;"><strong>PUF</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Key storage</td>
+<td style="text-align: left;">Yes (volatile)</td>
+<td style="text-align: left;">Yes (NV)</td>
+<td style="text-align: left;">Yes (NV, zeroize)</td>
+<td style="text-align: left;">No (derived)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Physical tamper resist</td>
+<td style="text-align: left;">Moderate</td>
+<td style="text-align: left;">Moderate</td>
+<td style="text-align: left;">High (FIPS 140-3 L3+)</td>
+<td style="text-align: left;">Inherent</td>
+</tr>
+<tr>
+<td style="text-align: left;">Remote attestation</td>
+<td style="text-align: left;">Yes (proprietary)</td>
+<td style="text-align: left;">Yes (standard)</td>
+<td style="text-align: left;">Limited</td>
+<td style="text-align: left;">Yes (CRP)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Crypto performance</td>
+<td style="text-align: left;">High</td>
+<td style="text-align: left;">Low</td>
+<td style="text-align: left;">Very high</td>
+<td style="text-align: left;">N/A</td>
+</tr>
+<tr>
+<td style="text-align: left;">Standard</td>
+<td style="text-align: left;">GlobalPlatform</td>
+<td style="text-align: left;">ISO/IEC 11889</td>
+<td style="text-align: left;">FIPS 140-3 / CC</td>
+<td style="text-align: left;">No formal std</td>
+</tr>
+<tr>
+<td style="text-align: left;">Clonability</td>
+<td style="text-align: left;">Possible (soft copy)</td>
+<td style="text-align: left;">No (EK bound)</td>
+<td style="text-align: left;">No</td>
+<td style="text-align: left;">No (by design)</td>
+</tr>
+<tr>
+<td style="text-align: left;">FIPS validated</td>
+<td style="text-align: left;">No</td>
+<td style="text-align: left;">Yes (2.0)</td>
+<td style="text-align: left;">Yes (Level 1–4)</td>
+<td style="text-align: left;">No</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<h2 id="1511-exercises"><span class="secnum">15.11</span> Exercises<a class="headerlink" href="#1511-exercises" title="Permanent link">&para;</a></h2>
+<div class="admonition example box-exercise kind-example">
+<p class="admonition-title">Exercise 15.1</p>
+<p>Design a remote attestation flow using TPM 2.0 for a cloud virtual machine. Your design must: (a) specify which PCRs are measured and what they cover (firmware, bootloader, kernel, initrd); (b) describe how the Attestation Identity Key (AIK) proves the attestation came from a genuine TPM without revealing the device’s Endorsement Key; (c) explain how a verifier (attestation service) validates the PCR quote; (d) identify what an attacker can and cannot do if they compromise the hypervisor but not the guest TEE.</p>
+</div>
+<div class="admonition example box-exercise kind-example">
+<p class="admonition-title">Exercise 15.2</p>
+<p>Compare HSM and TEE for the following key storage scenarios, justifying your recommendation in each case: (a) signing keys for a certificate authority issuing millions of TLS certificates per day; (b) FIDO2 private keys on a smartphone; (c) payment terminal PIN encryption keys subject to PCI HSM requirements; (d) a secrets manager for a Kubernetes cluster running on bare metal.</p>
+</div>
+<div class="admonition example box-exercise kind-example">
+<p class="admonition-title">Exercise 15.3</p>
+<p>A laptop uses BitLocker with TPM-only mode (no PIN). An attacker steals the laptop while it is in sleep (S3) mode. (a) Describe the cold boot attack procedure. (b) Explain why TPM-only mode (without PIN) does not protect against this attack. (c) How does enabling the BitLocker pre-boot PIN improve security? (d) How does AMD SME change the attacker’s capabilities if enabled?</p>
+</div>
+<div class="admonition example box-exercise kind-example">
+<p class="admonition-title">Exercise 15.4</p>
+<p>Explain how an SRAM PUF can be used to derive a symmetric encryption key without ever storing the key in non-volatile memory. Your answer should address: (a) the role of a fuzzy extractor in handling the PUF’s unstable bits; (b) how helper data (stored in NVM) enables key reconstruction without revealing the key; (c) the security consequence of an attacker obtaining the helper data; (d) why identical manufacturing processes (e.g., two chips from the same mask) still produce different PUF responses.</p>
+</div>
+<div class="admonition example box-exercise kind-example">
+<p class="admonition-title">Exercise 15.5</p>
+<p>An IoT firmware update server signs firmware images with an RSA-2048 private key. The matching public key is burned into the device’s secure boot key database. An attacker gains access to the signing server and extracts the private key. (a) What is the immediate impact? (b) Describe the revocation mechanism available via UEFI Secure Boot’s <code>dbx</code>. (c) Explain why revocation via hash is more granular than revocation via certificate, and when each is preferable. (d) Propose a key ceremony procedure that limits the exposure window if the signing key is compromised.</p>
+</div>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button type="button" class="md-top md-icon" data-md-component="top" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+Back to top
+</button>
+</main>
+<footer class="md-footer">
+<nav class="md-footer__inner md-grid" aria-label="Footer" >
+<a href="ch14-side-channel-attacks.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: 14. Side-Channel Attacks">
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</div>
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Previous
+</span>
+<div class="md-ellipsis">
+14. Side-Channel Attacks
+</div>
+</div>
+</a>
+<a href="ch16-transport-layer-security.html" class="md-footer__link md-footer__link--next" aria-label="Next: 16. Transport Layer Security">
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Next
+</span>
+<div class="md-ellipsis">
+16. Transport Layer Security
+</div>
+</div>
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+</div>
+</a>
+</nav>
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+The Open Book Project &middot;
+<a href="../../about.html">About this library</a> &middot;
+<a href="../../publish.html">Publish your book</a> &middot;
+© The authors of the books
+</div>
+Made with
+<a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+Material for MkDocs
+</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "navigation.prune", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "toc.follow", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+<script src="../../assets/mathjax.js"></script>
+<script src="../../assets/viz.js"></script>
+<script src="../../assets/remote.js"></script>
+<script src="../../assets/scans.js"></script>
+<script src="../../assets/reader.js"></script>
+<script src="../../assets/app.js"></script>
+<script src="../../assets/slides.js"></script>
+<script src="../../assets/speak.js"></script>
+<script src="../../assets/quiz.js"></script>
+<script>
+    /* offline reading: the service worker at the site root (its scope is the whole site) */
+    if ("serviceWorker" in navigator && window.isSecureContext) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register(new URL("../../sw.js", location.href).href).catch(function () {});
+      });
+    }
+  </script>
+</body>
+</html>

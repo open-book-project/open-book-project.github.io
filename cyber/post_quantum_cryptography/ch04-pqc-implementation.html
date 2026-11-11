@@ -1,0 +1,1283 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="description" content="The Open Book Project: books on computer science, quantum computing, cyber security, science, the social sciences, university courses and languages, read page by page like an e-book, online or offline.">
+<meta name="author" content="The Open Book Project">
+<link rel="canonical" href="https://open-book-project.github.io/cyber/post_quantum_cryptography/ch04-pqc-implementation.html">
+<link rel="prev" href="ch03-nist-pqc-standards.html">
+<link rel="next" href="ch05-pqc-migration-strategy.html">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap"></noscript>
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Open Book">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="application-name" content="Open Book"><script src="../../assets/library-data.js"></script><script>
+    (function () {
+      var X = window.XMLHttpRequest, open, gate = new Promise(function (r) { open = r; });
+      if (!X) return;
+      var open0 = X.prototype.open, send0 = X.prototype.send;
+      X.prototype.open = function (method, url) {
+        this.__pkIndex = /\/search\/search_index\.json(\?|#|$)/.test(String(url));
+        return open0.apply(this, arguments);
+      };
+      X.prototype.send = function () {
+        if (!this.__pkIndex) return send0.apply(this, arguments);
+        var xhr = this, args = arguments;
+        gate.then(function () { send0.apply(xhr, args); });
+      };
+      function wake() { open(); }
+      document.addEventListener("focusin", function (e) { if (e.target && e.target.closest && e.target.closest(".md-search")) wake(); });
+      document.addEventListener("click", function (e) { if (e.target && e.target.closest && e.target.closest('label[for="__search"], .md-search')) wake(); }, true);
+      document.addEventListener("keydown", function (e) {
+        var k = e.key;
+        if ((k === "/" || k === "s" || k === "f" || k === "S" || k === "F") && !(e.target && e.target.closest && e.target.closest("input, textarea, [contenteditable]"))) wake();
+      }, true);
+      if (/[?&]q=/.test(location.search)) wake();
+    })();
+  </script><script>
+    try {
+      if ((window.matchMedia && (matchMedia("(display-mode: standalone)").matches || matchMedia("(display-mode: fullscreen)").matches)) || navigator.standalone === true) {
+        document.documentElement.className += " bjp-standalone";
+      }
+    } catch (e) { /* not an installed app */ }
+    /* the books of a subject or of the whole library as covers or as a list (assets/app.js): the reader's choice */
+    try {
+      var bv = localStorage.getItem("bjp.view");
+      if (bv === "list" || (bv !== "grid" && /\/books\.html$/.test(location.pathname))) document.documentElement.className += " bjp-view-list";
+    } catch (e) { /* no storage: covers */ }
+  </script>
+<script>
+    /* a book opened from its cover on the shelf: the page stays blank, in the cover's colour, until the reader is up */
+    try {
+      var cv = sessionStorage.getItem("bjp.reader.cover");
+      if (cv && sessionStorage.getItem("bjp.reader.open") === "1") {
+        var c = JSON.parse(cv), de = document.documentElement;
+        de.className += " bjp-booting";
+        if (c && /^#[0-9a-f]{3,8}$/i.test(c.bg || "")) de.style.background = c.bg;
+        setTimeout(function () { de.classList.remove("bjp-booting"); de.style.background = ""; }, 3000);
+      }
+    } catch (e) { /* no session storage: the page simply opens as usual */ }
+  </script>
+<title>4. PQC Implementation - The Open Book Project</title>
+<link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+<link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+<link rel="stylesheet" href="../../assets/extra.css">
+<link rel="stylesheet" href="../../assets/reader.css">
+<link rel="stylesheet" href="../../assets/viz.css">
+<link rel="stylesheet" href="../../assets/app.css">
+<link rel="stylesheet" href="../../assets/theme.css">
+<link rel="stylesheet" href="../../assets/slides.css">
+<link rel="stylesheet" href="../../assets/remote.css">
+<link rel="stylesheet" href="../../assets/scans.css">
+<link rel="stylesheet" href="../../assets/speak.css">
+<link rel="stylesheet" href="../../assets/quiz.css">
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+<input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+<input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a href="#41-software-libraries" class="md-skip">
+Skip to content
+</a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav class="md-header__inner md-grid" aria-label="Header">
+<a href="../../index.html" title="The Open Book Project" class="md-header__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+The Open Book Project
+</span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+4. PQC Implementation
+</span>
+</div>
+</div>
+</div><a href="../../index.html" class="bjp-libbtn" aria-label="Library: all books" title="Library: all books">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V5h4v15M8 20V9h4v11M14 20L12.6 6l3.8-.8 3 14.2M3 20h18"/></svg><span>Library</span>
+</a>
+<a href="../../subjects/index.html" class="pk-catbtn" aria-haspopup="true" aria-expanded="false" title="Browse the books by category">
+<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><circle cx="17" cy="7" r="3.6"/><path d="M7 13.4l3.9 6.8H3.1z"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg><span>Categories</span>
+</a>
+<form class="md-header__option" data-md-component="palette">
+<input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+<label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+</label>
+<input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+<label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+<label class="md-search__icon md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</label>
+<nav class="md-search__options" aria-label="Search">
+<button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+Initializing search
+</div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--primary bjp-nav bjp-nav--book" aria-label="Navigation" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a href="../../index.html" title="The Open Book Project" class="md-nav__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+The Open Book Project
+</label>
+<ul class="md-nav__list" data-md-scrollfix>
+<li class="md-nav__item bjp-nav-all">
+<a href="../../index.html" class="md-nav__link" aria-label="All books: back to the library">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+<span class="md-ellipsis">All books</span>
+</a>
+</li>
+<li class="md-nav__item bjp-nav-book" role="presentation"><span class="bjp-nav-head">Post-Quantum Cryptography</span></li>
+<li class="md-nav__item">
+<a href="index.html" class="md-nav__link">
+<span class="md-ellipsis">
+Overview and preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch01-foundations-of-post-quantum-cryptography.html" class="md-nav__link">
+<span class="md-ellipsis">
+1. Foundations of Post-Quantum Cryptography
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch02-pqc-algorithm-families.html" class="md-nav__link">
+<span class="md-ellipsis">
+2. PQC Algorithm Families
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch03-nist-pqc-standards.html" class="md-nav__link">
+<span class="md-ellipsis">
+3. NIST PQC Standards
+</span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+4. PQC Implementation
+</span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a href="ch04-pqc-implementation.html" class="md-nav__link md-nav__link--active">
+<span class="md-ellipsis">
+4. PQC Implementation
+</span>
+</a>
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#41-software-libraries" class="md-nav__link">
+<span class="md-ellipsis">
+4.1 Software Libraries
+</span>
+</a>
+<nav class="md-nav" aria-label="4.1 Software Libraries">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#411-liboqs-open-quantum-safe" class="md-nav__link">
+<span class="md-ellipsis">
+4.1.1 liboqs — Open Quantum Safe
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#412-oqs-provider-for-openssl" class="md-nav__link">
+<span class="md-ellipsis">
+4.1.2 OQS Provider for OpenSSL
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#413-pqclean" class="md-nav__link">
+<span class="md-ellipsis">
+4.1.3 PQClean
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#414-language-ecosystem" class="md-nav__link">
+<span class="md-ellipsis">
+4.1.4 Language Ecosystem
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#415-mlkem-native-formally-verified-implementation" class="md-nav__link">
+<span class="md-ellipsis">
+4.1.5 mlkem-native: Formally Verified Implementation
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#42-hardware-acceleration" class="md-nav__link">
+<span class="md-ellipsis">
+4.2 Hardware Acceleration
+</span>
+</a>
+<nav class="md-nav" aria-label="4.2 Hardware Acceleration">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#421-ntt-hardware-architecture" class="md-nav__link">
+<span class="md-ellipsis">
+4.2.1 NTT Hardware Architecture
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#422-fpga-implementation-results" class="md-nav__link">
+<span class="md-ellipsis">
+4.2.2 FPGA Implementation Results
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#423-asic-implementation-results" class="md-nav__link">
+<span class="md-ellipsis">
+4.2.3 ASIC Implementation Results
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#424-gpu-acceleration" class="md-nav__link">
+<span class="md-ellipsis">
+4.2.4 GPU Acceleration
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#43-embedded-systems-implementation" class="md-nav__link">
+<span class="md-ellipsis">
+4.3 Embedded Systems Implementation
+</span>
+</a>
+<nav class="md-nav" aria-label="4.3 Embedded Systems Implementation">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#431-pqm4-cortex-m4-benchmark" class="md-nav__link">
+<span class="md-ellipsis">
+4.3.1 pqm4: Cortex-M4 Benchmark
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#432-assembly-optimization-techniques" class="md-nav__link">
+<span class="md-ellipsis">
+4.3.2 Assembly Optimization Techniques
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#433-memory-constrained-implementations" class="md-nav__link">
+<span class="md-ellipsis">
+4.3.3 Memory-Constrained Implementations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#434-on-the-fly-key-expansion" class="md-nav__link">
+<span class="md-ellipsis">
+4.3.4 On-the-Fly Key Expansion
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#44-performance-benchmarks" class="md-nav__link">
+<span class="md-ellipsis">
+4.4 Performance Benchmarks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#45-tls-integration" class="md-nav__link">
+<span class="md-ellipsis">
+4.5 TLS Integration
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#46-summary" class="md-nav__link">
+<span class="md-ellipsis">
+4.6 Summary
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="ch05-pqc-migration-strategy.html" class="md-nav__link">
+<span class="md-ellipsis">
+5. PQC Migration Strategy
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch06-hybrid-cryptography.html" class="md-nav__link">
+<span class="md-ellipsis">
+6. Hybrid Cryptography
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch07-pqc-testing-and-validation.html" class="md-nav__link">
+<span class="md-ellipsis">
+7. PQC Testing and Validation
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch08-side-channel-attacks-and-countermeasures.html" class="md-nav__link">
+<span class="md-ellipsis">
+8. Side-Channel Attacks and Countermeasures
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch09-pqc-applications-and-national-solutions.html" class="md-nav__link">
+<span class="md-ellipsis">
+9. PQC Applications and National Solutions
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch10-pqc-research-and-open-problems.html" class="md-nav__link">
+<span class="md-ellipsis">
+10. PQC Research and Open Problems
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#41-software-libraries" class="md-nav__link">
+<span class="md-ellipsis">
+4.1 Software Libraries
+</span>
+</a>
+<nav class="md-nav" aria-label="4.1 Software Libraries">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#411-liboqs-open-quantum-safe" class="md-nav__link">
+<span class="md-ellipsis">
+4.1.1 liboqs — Open Quantum Safe
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#412-oqs-provider-for-openssl" class="md-nav__link">
+<span class="md-ellipsis">
+4.1.2 OQS Provider for OpenSSL
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#413-pqclean" class="md-nav__link">
+<span class="md-ellipsis">
+4.1.3 PQClean
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#414-language-ecosystem" class="md-nav__link">
+<span class="md-ellipsis">
+4.1.4 Language Ecosystem
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#415-mlkem-native-formally-verified-implementation" class="md-nav__link">
+<span class="md-ellipsis">
+4.1.5 mlkem-native: Formally Verified Implementation
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#42-hardware-acceleration" class="md-nav__link">
+<span class="md-ellipsis">
+4.2 Hardware Acceleration
+</span>
+</a>
+<nav class="md-nav" aria-label="4.2 Hardware Acceleration">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#421-ntt-hardware-architecture" class="md-nav__link">
+<span class="md-ellipsis">
+4.2.1 NTT Hardware Architecture
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#422-fpga-implementation-results" class="md-nav__link">
+<span class="md-ellipsis">
+4.2.2 FPGA Implementation Results
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#423-asic-implementation-results" class="md-nav__link">
+<span class="md-ellipsis">
+4.2.3 ASIC Implementation Results
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#424-gpu-acceleration" class="md-nav__link">
+<span class="md-ellipsis">
+4.2.4 GPU Acceleration
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#43-embedded-systems-implementation" class="md-nav__link">
+<span class="md-ellipsis">
+4.3 Embedded Systems Implementation
+</span>
+</a>
+<nav class="md-nav" aria-label="4.3 Embedded Systems Implementation">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#431-pqm4-cortex-m4-benchmark" class="md-nav__link">
+<span class="md-ellipsis">
+4.3.1 pqm4: Cortex-M4 Benchmark
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#432-assembly-optimization-techniques" class="md-nav__link">
+<span class="md-ellipsis">
+4.3.2 Assembly Optimization Techniques
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#433-memory-constrained-implementations" class="md-nav__link">
+<span class="md-ellipsis">
+4.3.3 Memory-Constrained Implementations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#434-on-the-fly-key-expansion" class="md-nav__link">
+<span class="md-ellipsis">
+4.3.4 On-the-Fly Key Expansion
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#44-performance-benchmarks" class="md-nav__link">
+<span class="md-ellipsis">
+4.4 Performance Benchmarks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#45-tls-integration" class="md-nav__link">
+<span class="md-ellipsis">
+4.5 TLS Integration
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#46-summary" class="md-nav__link">
+<span class="md-ellipsis">
+4.6 Summary
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="ch-implementation">Chapter 4: PQC Implementation<a class="headerlink" href="#ch-implementation" title="Permanent link">&para;</a></h1>
+<h2 id="41-software-libraries"><span class="secnum">4.1</span> Software Libraries<a class="headerlink" href="#41-software-libraries" title="Permanent link">&para;</a></h2>
+<h3 id="411-liboqs-open-quantum-safe"><span class="secnum">4.1.1</span> liboqs — Open Quantum Safe<a class="headerlink" href="#411-liboqs-open-quantum-safe" title="Permanent link">&para;</a></h3>
+<p>liboqs is the primary open-source C library for PQC, developed by the Open Quantum Safe (OQS) project. It provides a unified API for all NIST-standardized algorithms plus many candidates.</p>
+<div class="language-text highlight"><pre><span></span><code>#include &lt;oqs/oqs.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+int main(void) {
+    OQS_KEM *kem = OQS_KEM_new(OQS_KEM_alg_ml_kem_768);
+    if (kem == NULL) { fprintf(stderr, "KEM init failed\n"); return 1; }
+
+    uint8_t *pk = malloc(kem-&gt;length_public_key);    /* 1184 bytes */
+    uint8_t *sk = malloc(kem-&gt;length_secret_key);    /* 2400 bytes */
+    uint8_t *ct = malloc(kem-&gt;length_ciphertext);    /* 1088 bytes */
+    uint8_t *ss_enc = malloc(kem-&gt;length_shared_secret); /* 32 bytes */
+    uint8_t *ss_dec = malloc(kem-&gt;length_shared_secret);
+
+    /* Key generation */
+    OQS_STATUS rc = OQS_KEM_keypair(kem, pk, sk);
+    if (rc != OQS_SUCCESS) goto cleanup;
+
+    /* Encapsulation (sender) */
+    rc = OQS_KEM_encaps(kem, ct, ss_enc, pk);
+    if (rc != OQS_SUCCESS) goto cleanup;
+
+    /* Decapsulation (receiver) */
+    rc = OQS_KEM_decaps(kem, ss_dec, ct, sk);
+    if (rc != OQS_SUCCESS) goto cleanup;
+
+    printf("Shared secrets match:
+           memcmp(ss_enc, ss_dec, kem-&gt;length_shared_secret) == 0
+           ? "YES" : "NO");
+
+cleanup:
+    OQS_KEM_free(kem);
+    free(pk); free(sk); free(ct); free(ss_enc); free(ss_dec);
+    return rc == OQS_SUCCESS ? 0 : 1;
+}
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>#include &lt;oqs/oqs.h&gt;
+
+int pqc_sign_verify_example(void) {
+    OQS_SIG *sig = OQS_SIG_new(OQS_SIG_alg_ml_dsa_65);
+
+    uint8_t *pk = malloc(sig-&gt;length_public_key);   /* 1952 bytes */
+    uint8_t *sk = malloc(sig-&gt;length_secret_key);   /* 4000 bytes */
+    uint8_t *signature = malloc(sig-&gt;length_signature); /* &lt;=3309 B */
+    size_t sig_len;
+
+    const uint8_t *message = (uint8_t*)"Hello PQC World!";
+    size_t msg_len = 16;
+
+    OQS_SIG_keypair(sig, pk, sk);
+    OQS_SIG_sign(sig, signature, &amp;sig_len, message, msg_len, sk);
+    OQS_STATUS valid = OQS_SIG_verify(sig, message, msg_len,
+                                       signature, sig_len, pk);
+
+    printf("Signature valid:
+           valid == OQS_SUCCESS ? "YES" : "NO");
+
+    OQS_SIG_free(sig);
+    free(pk); free(sk); free(signature);
+    return 0;
+}
+</code></pre></div>
+<h3 id="412-oqs-provider-for-openssl"><span class="secnum">4.1.2</span> OQS Provider for OpenSSL<a class="headerlink" href="#412-oqs-provider-for-openssl" title="Permanent link">&para;</a></h3>
+<p>The OQS provider integrates PQC into OpenSSL 3.x, enabling PQC in TLS, X.509 certificates, and all OpenSSL-based applications:</p>
+<div class="language-text highlight"><pre><span></span><code># Install OQS Provider
+git clone https://github.com/open-quantum-safe/oqs-provider.git
+cd oqs-provider
+cmake -S . -B build -DOPENSSL_ROOT_DIR=/usr/local/ssl
+cmake --build build
+sudo cmake --install build
+
+# Configure OpenSSL to load OQS provider
+# In openssl.cnf:
+# [provider_sect]
+# default = default_sect
+# oqsprovider = oqsprovider_sect
+# [oqsprovider_sect]
+# activate = 1
+
+# Generate ML-KEM-768 keypair
+openssl genpkey -algorithm ML-KEM-768 -out mlkem768_key.pem
+
+# Generate ML-DSA-65 certificate
+openssl req -new -x509 -nodes \
+    -newkey ML-DSA-65 \
+    -keyout mldsa65_key.pem \
+    -out mldsa65_cert.pem \
+    -subj "/CN=PQC Test CA"
+
+# TLS server with PQC
+openssl s_server -cert mldsa65_cert.pem -key mldsa65_key.pem \
+    -groups mlkem768 -port 4433
+
+# TLS client with PQC
+openssl s_client -connect localhost:4433 -groups mlkem768
+
+# List available PQC algorithms
+openssl list -kem-algorithms -provider oqsprovider
+openssl list -signature-algorithms -provider oqsprovider
+</code></pre></div>
+<h3 id="413-pqclean"><span class="secnum">4.1.3</span> PQClean<a class="headerlink" href="#413-pqclean" title="Permanent link">&para;</a></h3>
+<p>PQClean provides clean, standalone C implementations of NIST-standardized algorithms with no external dependencies — ideal for formal analysis, embedded porting, and reference implementations.</p>
+<div class="language-text highlight"><pre><span></span><code>#include "api.h"   /* PQCLEAN_MLKEM768_CLEAN_CRYPTO_* constants */
+
+/* All lengths are compile-time constants */
+uint8_t pk[PQCLEAN_MLKEM768_CLEAN_CRYPTO_PUBLICKEYBYTES];   /* 1184 */
+uint8_t sk[PQCLEAN_MLKEM768_CLEAN_CRYPTO_SECRETKEYBYTES];   /* 2400 */
+uint8_t ct[PQCLEAN_MLKEM768_CLEAN_CRYPTO_CIPHERTEXTBYTES];  /* 1088 */
+uint8_t ss[PQCLEAN_MLKEM768_CLEAN_CRYPTO_BYTES];            /* 32   */
+
+/* No dynamic allocation -- ideal for embedded systems */
+PQCLEAN_MLKEM768_CLEAN_crypto_kem_keypair(pk, sk);
+PQCLEAN_MLKEM768_CLEAN_crypto_kem_enc(ct, ss, pk);
+</code></pre></div>
+<h3 id="414-language-ecosystem"><span class="secnum">4.1.4</span> Language Ecosystem<a class="headerlink" href="#414-language-ecosystem" title="Permanent link">&para;</a></h3>
+<div class="tbl" id="tab-lang_support">
+<div class="tbl-caption"><strong>Table 4.1.</strong> PQC Library Support by Language</div>
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Language</strong></th>
+<th style="text-align: left;"><strong>Library</strong></th>
+<th style="text-align: left;"><strong>Algorithms</strong></th>
+<th style="text-align: left;"><strong>License</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">C</td>
+<td style="text-align: left;">liboqs, PQClean, mlkem-native</td>
+<td style="text-align: left;">All NIST + candidates</td>
+<td style="text-align: left;">MIT/Apache2</td>
+</tr>
+<tr>
+<td style="text-align: left;">C++</td>
+<td style="text-align: left;">liboqs C++ wrapper</td>
+<td style="text-align: left;">All NIST</td>
+<td style="text-align: left;">MIT</td>
+</tr>
+<tr>
+<td style="text-align: left;">Rust</td>
+<td style="text-align: left;">pqcrypto, ml-kem crate</td>
+<td style="text-align: left;">ML-KEM, ML-DSA</td>
+<td style="text-align: left;">MIT/Apache2</td>
+</tr>
+<tr>
+<td style="text-align: left;">Python</td>
+<td style="text-align: left;">liboqs-python</td>
+<td style="text-align: left;">All via CFFI</td>
+<td style="text-align: left;">MIT</td>
+</tr>
+<tr>
+<td style="text-align: left;">Java</td>
+<td style="text-align: left;">Bouncy Castle 1.77+</td>
+<td style="text-align: left;">ML-KEM, ML-DSA, SLH-DSA</td>
+<td style="text-align: left;">MIT</td>
+</tr>
+<tr>
+<td style="text-align: left;">JavaScript</td>
+<td style="text-align: left;">liboqs-js (WASM)</td>
+<td style="text-align: left;">ML-KEM, ML-DSA</td>
+<td style="text-align: left;">MIT</td>
+</tr>
+<tr>
+<td style="text-align: left;">Go</td>
+<td style="text-align: left;">cloudflare/circl</td>
+<td style="text-align: left;">ML-KEM, X25519MLKEM768</td>
+<td style="text-align: left;">BSD-3</td>
+</tr>
+<tr>
+<td style="text-align: left;">.NET</td>
+<td style="text-align: left;">Microsoft SymCrypt</td>
+<td style="text-align: left;">ML-KEM, ML-DSA</td>
+<td style="text-align: left;">MIT</td>
+</tr>
+</tbody>
+</table>
+</div></div>
+<h3 id="415-mlkem-native-formally-verified-implementation"><span class="secnum">4.1.5</span> mlkem-native: Formally Verified Implementation<a class="headerlink" href="#415-mlkem-native-formally-verified-implementation" title="Permanent link">&para;</a></h3>
+<p>mlkem-native is a production-quality, formally verified implementation of ML-KEM with:</p>
+<ul>
+<li>
+<p><strong>CBMC formal verification</strong>: Memory safety, no undefined behavior, functional correctness.</p>
+</li>
+<li>
+<p><strong>Optimized backends</strong>: AARCH64 and x86_64 (AVX2) assembly for critical inner loops.</p>
+</li>
+<li>
+<p><strong>Constant-time</strong>: Verified constant-time NTT and arithmetic operations.</p>
+</li>
+<li>
+<p><strong>Integrated</strong>: Used in AWS-LC and Microsoft SymCrypt.</p>
+</li>
+</ul>
+<h2 id="42-hardware-acceleration"><span class="secnum">4.2</span> Hardware Acceleration<a class="headerlink" href="#42-hardware-acceleration" title="Permanent link">&para;</a></h2>
+<p>Hardware acceleration is essential for high-throughput and low-latency PQC deployments (TLS servers, HSMs, embedded systems).</p>
+<h3 id="421-ntt-hardware-architecture"><span class="secnum">4.2.1</span> NTT Hardware Architecture<a class="headerlink" href="#421-ntt-hardware-architecture" title="Permanent link">&para;</a></h3>
+<p>The Number Theoretic Transform (NTT) is the computational bottleneck of lattice-based PQC. An optimized NTT hardware unit provides <span class="arithmatex">\(10\times\)</span>–<span class="arithmatex">\(100\times\)</span> speedup over software.</p>
+<figure class="fig fig-diagram" id="fig-ntt_butterfly">
+<img class="tikz" src="img/tikz-86aa94255dea.svg" alt="NTT butterfly unit: core computation for lattice-based PQC hardware." loading="lazy" width="242" height="108">
+<figcaption><strong>Figure 4.1.</strong> NTT butterfly unit: core computation for lattice-based PQC hardware.</figcaption>
+</figure>
+<p>A complete NTT hardware accelerator for ML-KEM (<span class="arithmatex">\(n=256\)</span>, <span class="arithmatex">\(q=3329\)</span>) requires:</p>
+<ul>
+<li>
+<p>8 layers of <span class="arithmatex">\(n/2=128\)</span> butterfly operations each.</p>
+</li>
+<li>
+<p>Each butterfly: one modular multiplication + two modular additions.</p>
+</li>
+<li>
+<p>Twiddle factor ROM: <span class="arithmatex">\(256 \times 12\)</span> bits <span class="arithmatex">\(= 384\)</span> bytes.</p>
+</li>
+</ul>
+<h3 id="422-fpga-implementation-results"><span class="secnum">4.2.2</span> FPGA Implementation Results<a class="headerlink" href="#422-fpga-implementation-results" title="Permanent link">&para;</a></h3>
+<div class="tbl" id="tab-fpga_mlkem">
+<div class="tbl-caption"><strong>Table 4.2.</strong> ML-KEM FPGA Implementation Survey</div>
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Work</strong></th>
+<th style="text-align: left;"><strong>Platform</strong></th>
+<th style="text-align: left;"><strong>Variant</strong></th>
+<th style="text-align: left;"><strong>LUTs</strong></th>
+<th style="text-align: left;"><strong>DSPs</strong></th>
+<th style="text-align: left;"><strong>KeyGen</strong></th>
+<th style="text-align: left;"><strong>Encaps</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Basso et al.</td>
+<td style="text-align: left;">Xilinx UltraScale+</td>
+<td style="text-align: left;">ML-KEM-768</td>
+<td style="text-align: left;">12,500</td>
+<td style="text-align: left;">48</td>
+<td style="text-align: left;">5.9<span class="math inline">\(\mu\)</span>s</td>
+<td style="text-align: left;">6.8<span class="math inline">\(\mu\)</span>s</td>
+</tr>
+<tr>
+<td style="text-align: left;">Roy et al.</td>
+<td style="text-align: left;">Artix-7 (100MHz)</td>
+<td style="text-align: left;">ML-KEM-512</td>
+<td style="text-align: left;">7,800</td>
+<td style="text-align: left;">32</td>
+<td style="text-align: left;">14<span class="math inline">\(\mu\)</span>s</td>
+<td style="text-align: left;">16<span class="math inline">\(\mu\)</span>s</td>
+</tr>
+<tr>
+<td style="text-align: left;">Fritzmann et al.</td>
+<td style="text-align: left;">Stratix 10</td>
+<td style="text-align: left;">ML-KEM-1024</td>
+<td style="text-align: left;">18,200</td>
+<td style="text-align: left;">64</td>
+<td style="text-align: left;">3.2<span class="math inline">\(\mu\)</span>s</td>
+<td style="text-align: left;">3.9<span class="math inline">\(\mu\)</span>s</td>
+</tr>
+</tbody>
+</table>
+</div></div>
+<h3 id="423-asic-implementation-results"><span class="secnum">4.2.3</span> ASIC Implementation Results<a class="headerlink" href="#423-asic-implementation-results" title="Permanent link">&para;</a></h3>
+<div class="tbl" id="tab-asic_mlkem">
+<div class="tbl-caption"><strong>Table 4.3.</strong> ML-KEM ASIC Implementation Results</div>
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Technology</strong></th>
+<th style="text-align: left;"><strong>Variant</strong></th>
+<th style="text-align: left;"><strong>Freq (MHz)</strong></th>
+<th style="text-align: left;"><strong>Area (kGE)</strong></th>
+<th style="text-align: left;"><strong>KeyGen</strong></th>
+<th style="text-align: left;"><strong>Energy/op</strong></th>
+<th style="text-align: left;"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">28nm CMOS</td>
+<td style="text-align: left;">ML-KEM-768</td>
+<td style="text-align: left;">400</td>
+<td style="text-align: left;">85</td>
+<td style="text-align: left;">3.8<span class="math inline">\(\mu\)</span>s</td>
+<td style="text-align: left;">1.2 nJ</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">45nm CMOS</td>
+<td style="text-align: left;">ML-KEM-512</td>
+<td style="text-align: left;">250</td>
+<td style="text-align: left;">52</td>
+<td style="text-align: left;">7.1<span class="math inline">\(\mu\)</span>s</td>
+<td style="text-align: left;">2.8 nJ</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">65nm CMOS</td>
+<td style="text-align: left;">ML-KEM-768</td>
+<td style="text-align: left;">100</td>
+<td style="text-align: left;">38</td>
+<td style="text-align: left;">18<span class="math inline">\(\mu\)</span>s</td>
+<td style="text-align: left;">9.4 nJ</td>
+<td style="text-align: left;"></td>
+</tr>
+</tbody>
+</table>
+</div></div>
+<h3 id="424-gpu-acceleration"><span class="secnum">4.2.4</span> GPU Acceleration<a class="headerlink" href="#424-gpu-acceleration" title="Permanent link">&para;</a></h3>
+<p>NVIDIA’s cuPQC library (released January 2025) provides GPU-accelerated PQC:</p>
+<div class="language-text highlight"><pre><span></span><code>#include &lt;cupqc.h&gt;
+
+/* Batch ML-KEM key generation on GPU --- 1M ops/sec on H100 */
+cupqcMLKEMBatch *batch = cupqcMLKEMBatchCreate(
+    CUPQC_ML_KEM_768,
+    1024 /* batch size */
+);
+
+/* Generate 1024 keypairs in parallel */
+cupqcMLKEMBatchKeyGen(batch, pk_device, sk_device, stream);
+
+/* Encapsulate 1024 ciphertexts in parallel */
+cupqcMLKEMBatchEncaps(batch, ct_device, ss_device, pk_device, stream);
+
+cudaStreamSynchronize(stream);
+cupqcMLKEMBatchDestroy(batch);
+</code></pre></div>
+<p>cuPQC achieves approximately 1 million ML-KEM-768 operations per second on an NVIDIA H100 GPU, enabling high-throughput server-side PQC.</p>
+<h2 id="43-embedded-systems-implementation"><span class="secnum">4.3</span> Embedded Systems Implementation<a class="headerlink" href="#43-embedded-systems-implementation" title="Permanent link">&para;</a></h2>
+<h3 id="431-pqm4-cortex-m4-benchmark"><span class="secnum">4.3.1</span> pqm4: Cortex-M4 Benchmark<a class="headerlink" href="#431-pqm4-cortex-m4-benchmark" title="Permanent link">&para;</a></h3>
+<p>pqm4 provides highly optimized assembly implementations for ARM Cortex-M4 processors (used in STM32, Nordic nRF series, etc.).</p>
+<div class="tbl" id="tab-pqm4_kem">
+<div class="tbl-caption"><strong>Table 4.4.</strong> pqm4 Cortex-M4 Cycle Counts (ML-KEM)</div>
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Algorithm</strong></th>
+<th style="text-align: left;"><strong>KeyGen (kcc)</strong></th>
+<th style="text-align: left;"><strong>Encaps (kcc)</strong></th>
+<th style="text-align: left;"><strong>Decaps (kcc)</strong></th>
+<th style="text-align: left;"><strong>Stack (B)</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">ML-KEM-512</td>
+<td style="text-align: left;">488</td>
+<td style="text-align: left;">561</td>
+<td style="text-align: left;">582</td>
+<td style="text-align: left;">7,168</td>
+</tr>
+<tr>
+<td style="text-align: left;">ML-KEM-768</td>
+<td style="text-align: left;">764</td>
+<td style="text-align: left;">869</td>
+<td style="text-align: left;">891</td>
+<td style="text-align: left;">9,216</td>
+</tr>
+<tr>
+<td style="text-align: left;">ML-KEM-1024</td>
+<td style="text-align: left;">1,107</td>
+<td style="text-align: left;">1,248</td>
+<td style="text-align: left;">1,276</td>
+<td style="text-align: left;">11,264</td>
+</tr>
+</tbody>
+</table>
+</div></div>
+<div class="tbl" id="tab-pqm4_sig">
+<div class="tbl-caption"><strong>Table 4.5.</strong> pqm4 Cortex-M4 Cycle Counts (Signatures)</div>
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Algorithm</strong></th>
+<th style="text-align: left;"><strong>KeyGen (kcc)</strong></th>
+<th style="text-align: left;"><strong>Sign (kcc)</strong></th>
+<th style="text-align: left;"><strong>Verify (kcc)</strong></th>
+<th style="text-align: left;"><strong>Stack (B)</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">ML-DSA-44</td>
+<td style="text-align: left;">1,246</td>
+<td style="text-align: left;">2,891</td>
+<td style="text-align: left;">1,380</td>
+<td style="text-align: left;">27,664</td>
+</tr>
+<tr>
+<td style="text-align: left;">ML-DSA-65</td>
+<td style="text-align: left;">1,984</td>
+<td style="text-align: left;">4,219</td>
+<td style="text-align: left;">2,076</td>
+<td style="text-align: left;">39,552</td>
+</tr>
+<tr>
+<td style="text-align: left;">SLH-DSA-SHA2-128f</td>
+<td style="text-align: left;">8,012</td>
+<td style="text-align: left;">78,432</td>
+<td style="text-align: left;">15,891</td>
+<td style="text-align: left;">14,336</td>
+</tr>
+<tr>
+<td style="text-align: left;">SLH-DSA-SHA2-128s</td>
+<td style="text-align: left;">8,012</td>
+<td style="text-align: left;">2,891,000</td>
+<td style="text-align: left;">15,891</td>
+<td style="text-align: left;">14,336</td>
+</tr>
+</tbody>
+</table>
+</div></div>
+<p>kcc = kilo clock cycles at 168 MHz (Cortex-M4 max). Divide by 168,000 for milliseconds.</p>
+<h3 id="432-assembly-optimization-techniques"><span class="secnum">4.3.2</span> Assembly Optimization Techniques<a class="headerlink" href="#432-assembly-optimization-techniques" title="Permanent link">&para;</a></h3>
+<p>The Cortex-M4’s UMAAL (Unsigned Multiply Accumulate Accumulate Long) instruction is critical for modular arithmetic:</p>
+<div class="language-text highlight"><pre><span></span><code>/* Cortex-M4 Montgomery modular multiplication using UMAAL */
+/* Computes a*b*R^-1 mod q, where R = 2^32 */
+static inline uint32_t montgomery_mul(uint32_t a, uint32_t b,
+                                       uint32_t q, uint32_t q_inv) {
+    uint32_t lo, hi;
+    uint64_t result;
+    uint32_t m;
+
+    /* Inline assembly using UMAAL for double-precision */
+    __asm__ volatile (
+        "umull
+        "mul
+        "umlal
+        : [lo]"=r"(lo), [hi]"=r"(hi), [m]"=r"(m)
+        : [a]"r"(a), [b]"r"(b), [q]"r"(q), [qi]"r"(q_inv)
+    );
+    return hi;  /* hi is the Montgomery result */
+}
+</code></pre></div>
+<h3 id="433-memory-constrained-implementations"><span class="secnum">4.3.3</span> Memory-Constrained Implementations<a class="headerlink" href="#433-memory-constrained-implementations" title="Permanent link">&para;</a></h3>
+<div class="tbl" id="tab-memory_mlkem">
+<div class="tbl-caption"><strong>Table 4.6.</strong> Memory Footprint Comparison for ML-KEM-768</div>
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Implementation</strong></th>
+<th style="text-align: left;"><strong>Flash (KB)</strong></th>
+<th style="text-align: left;"><strong>RAM (KB)</strong></th>
+<th style="text-align: left;"><strong>Stack (KB)</strong></th>
+<th style="text-align: left;"><strong>Platform</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">pqm4 (reference)</td>
+<td style="text-align: left;">12</td>
+<td style="text-align: left;">2.4</td>
+<td style="text-align: left;">9.2</td>
+<td style="text-align: left;">ARM Cortex-M4</td>
+</tr>
+<tr>
+<td style="text-align: left;">pqm4 (optimized)</td>
+<td style="text-align: left;">18</td>
+<td style="text-align: left;">2.4</td>
+<td style="text-align: left;">9.2</td>
+<td style="text-align: left;">ARM Cortex-M4</td>
+</tr>
+<tr>
+<td style="text-align: left;">PQClean (clean)</td>
+<td style="text-align: left;">8</td>
+<td style="text-align: left;">2.4</td>
+<td style="text-align: left;">15.0</td>
+<td style="text-align: left;">Generic C</td>
+</tr>
+<tr>
+<td style="text-align: left;">On-the-fly NTT</td>
+<td style="text-align: left;">8</td>
+<td style="text-align: left;">0.8</td>
+<td style="text-align: left;">11.0</td>
+<td style="text-align: left;">Ultra-constrained</td>
+</tr>
+</tbody>
+</table>
+</div></div>
+<h3 id="434-on-the-fly-key-expansion"><span class="secnum">4.3.4</span> On-the-Fly Key Expansion<a class="headerlink" href="#434-on-the-fly-key-expansion" title="Permanent link">&para;</a></h3>
+<p>For ultra-constrained devices (RAM <span class="arithmatex">\(&lt; 4\)</span>KB), the public matrix <span class="arithmatex">\(\mathbf{A}\)</span> can be expanded on-the-fly from its seed rather than stored:</p>
+<div class="language-text highlight"><pre><span></span><code>/* Instead of storing A[k][k][256] (requires k*k*256*2 bytes = ~3KB for k=3)
+ * generate each row on-the-fly during matrix-vector multiplication */
+void matvec_onthefly(poly *result, const uint8_t *seed, const poly *vec,
+                     int k, bool transposed) {
+    for (int i = 0; i &lt; k; i++) {
+        poly_init(&amp;result[i]);
+        for (int j = 0; j &lt; k; j++) {
+            poly a_ij;
+            /* Generate single polynomial from seed with indices */
+            gen_poly_from_seed(&amp;a_ij, seed, transposed ? j : i,
+                               transposed ? i : j);
+            poly_ntt_mul_acc(&amp;result[i], &amp;a_ij, &amp;vec[j]); /* += A_ij * vec_j */
+        }
+    }
+}
+/* Memory savings: ~3KB for k=3 vs storing entire matrix */
+</code></pre></div>
+<h2 id="44-performance-benchmarks"><span class="secnum">4.4</span> Performance Benchmarks<a class="headerlink" href="#44-performance-benchmarks" title="Permanent link">&para;</a></h2>
+<div class="tbl" id="tab-sw_perf">
+<div class="tbl-caption"><strong>Table 4.7.</strong> Software Performance Comparison (Intel i7, AVX2, Linux)</div>
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Operation</strong></th>
+<th style="text-align: left;"><strong>ML-KEM-768</strong></th>
+<th style="text-align: left;"><strong>ML-DSA-65</strong></th>
+<th style="text-align: left;"><strong>SLH-DSA-128f</strong></th>
+<th style="text-align: left;"><strong>ECDH P-256</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">KeyGen (<span class="math inline">\(\mu\)</span>s)</td>
+<td style="text-align: left;">37</td>
+<td style="text-align: left;">111</td>
+<td style="text-align: left;">15</td>
+<td style="text-align: left;">47</td>
+</tr>
+<tr>
+<td style="text-align: left;">Encaps/Sign (<span class="math inline">\(\mu\)</span>s)</td>
+<td style="text-align: left;">46</td>
+<td style="text-align: left;">111</td>
+<td style="text-align: left;">26</td>
+<td style="text-align: left;">54</td>
+</tr>
+<tr>
+<td style="text-align: left;">Decaps/Verify (<span class="math inline">\(\mu\)</span>s)</td>
+<td style="text-align: left;">50</td>
+<td style="text-align: left;">65</td>
+<td style="text-align: left;">8</td>
+<td style="text-align: left;">47</td>
+</tr>
+<tr>
+<td style="text-align: left;">pk size (bytes)</td>
+<td style="text-align: left;">1184</td>
+<td style="text-align: left;">1952</td>
+<td style="text-align: left;">32</td>
+<td style="text-align: left;">64</td>
+</tr>
+<tr>
+<td style="text-align: left;">sk size (bytes)</td>
+<td style="text-align: left;">2400</td>
+<td style="text-align: left;">4000</td>
+<td style="text-align: left;">64</td>
+<td style="text-align: left;">32</td>
+</tr>
+<tr>
+<td style="text-align: left;">ct/sig size (bytes)</td>
+<td style="text-align: left;">1088</td>
+<td style="text-align: left;">3309</td>
+<td style="text-align: left;">17088</td>
+<td style="text-align: left;">64</td>
+</tr>
+</tbody>
+</table>
+</div></div>
+<h2 id="45-tls-integration"><span class="secnum">4.5</span> TLS Integration<a class="headerlink" href="#45-tls-integration" title="Permanent link">&para;</a></h2>
+<div class="language-text highlight"><pre><span></span><code># Server: ML-DSA-65 certificate + ML-KEM-768 key exchange
+openssl s_server \
+    -cert mldsa65.crt -key mldsa65.key \
+    -accept 8443 \
+    -tls1_3 \
+    -curves mlkem768:x25519 \   # Prefer ML-KEM-768, fallback X25519
+    -provider oqsprovider -provider default
+
+# Client verification
+openssl s_client \
+    -connect localhost:8443 \
+    -tls1_3 \
+    -curves mlkem768 \
+    -provider oqsprovider -provider default \
+    -verify_return_error
+
+# X25519MLKEM768 hybrid (recommended during transition)
+openssl s_client -connect pq.example.com:443 \
+    -curves X25519MLKEM768 \
+    -provider oqsprovider -provider default
+</code></pre></div>
+<h2 id="46-summary"><span class="secnum">4.6</span> Summary<a class="headerlink" href="#46-summary" title="Permanent link">&para;</a></h2>
+<ul>
+<li>
+<p><strong>liboqs</strong> provides a comprehensive unified API for all NIST PQC algorithms in C.</p>
+</li>
+<li>
+<p><strong>OQS Provider</strong> integrates PQC into OpenSSL 3.x for TLS, X.509, and all OpenSSL-based applications.</p>
+</li>
+<li>
+<p><strong>mlkem-native</strong> offers formally verified, production-quality ML-KEM with assembly optimizations.</p>
+</li>
+<li>
+<p><strong>NTT acceleration</strong> (FPGA/ASIC) achieves <span class="arithmatex">\(&lt;\)</span>10<span class="arithmatex">\(\mu\)</span>s per ML-KEM operation; GPU achieves 1M ops/sec.</p>
+</li>
+<li>
+<p><strong>pqm4</strong> provides optimized Cortex-M4 implementations; ML-KEM-768 KeyGen requires <span class="arithmatex">\(\sim\)</span>764 kcc.</p>
+</li>
+<li>
+<p>On-the-fly key expansion significantly reduces RAM usage for ultra-constrained IoT devices.</p>
+</li>
+<li>
+<p>Bouncy Castle (Java), Rust crates, and Go’s cloudflare/circl provide idiomatic PQC across languages.</p>
+</li>
+</ul>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button type="button" class="md-top md-icon" data-md-component="top" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+Back to top
+</button>
+</main>
+<footer class="md-footer">
+<nav class="md-footer__inner md-grid" aria-label="Footer" >
+<a href="ch03-nist-pqc-standards.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: 3. NIST PQC Standards">
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</div>
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Previous
+</span>
+<div class="md-ellipsis">
+3. NIST PQC Standards
+</div>
+</div>
+</a>
+<a href="ch05-pqc-migration-strategy.html" class="md-footer__link md-footer__link--next" aria-label="Next: 5. PQC Migration Strategy">
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Next
+</span>
+<div class="md-ellipsis">
+5. PQC Migration Strategy
+</div>
+</div>
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+</div>
+</a>
+</nav>
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+The Open Book Project &middot;
+<a href="../../about.html">About this library</a> &middot;
+<a href="../../publish.html">Publish your book</a> &middot;
+© The authors of the books
+</div>
+Made with
+<a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+Material for MkDocs
+</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "navigation.prune", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "toc.follow", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+<script src="../../assets/mathjax.js"></script>
+<script src="../../assets/viz.js"></script>
+<script src="../../assets/remote.js"></script>
+<script src="../../assets/scans.js"></script>
+<script src="../../assets/reader.js"></script>
+<script src="../../assets/app.js"></script>
+<script src="../../assets/slides.js"></script>
+<script src="../../assets/speak.js"></script>
+<script src="../../assets/quiz.js"></script>
+<script>
+    /* offline reading: the service worker at the site root (its scope is the whole site) */
+    if ("serviceWorker" in navigator && window.isSecureContext) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register(new URL("../../sw.js", location.href).href).catch(function () {});
+      });
+    }
+  </script>
+</body>
+</html>

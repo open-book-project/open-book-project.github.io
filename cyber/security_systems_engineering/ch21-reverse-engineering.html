@@ -1,0 +1,1213 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="description" content="The Open Book Project: books on computer science, quantum computing, cyber security, science, the social sciences, university courses and languages, read page by page like an e-book, online or offline.">
+<meta name="author" content="The Open Book Project">
+<link rel="canonical" href="https://open-book-project.github.io/cyber/security_systems_engineering/ch21-reverse-engineering.html">
+<link rel="prev" href="ch20-malware-analysis.html">
+<link rel="next" href="ch22-digital-forensics.html">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap"></noscript>
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Open Book">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="application-name" content="Open Book"><script src="../../assets/library-data.js"></script><script>
+    (function () {
+      var X = window.XMLHttpRequest, open, gate = new Promise(function (r) { open = r; });
+      if (!X) return;
+      var open0 = X.prototype.open, send0 = X.prototype.send;
+      X.prototype.open = function (method, url) {
+        this.__pkIndex = /\/search\/search_index\.json(\?|#|$)/.test(String(url));
+        return open0.apply(this, arguments);
+      };
+      X.prototype.send = function () {
+        if (!this.__pkIndex) return send0.apply(this, arguments);
+        var xhr = this, args = arguments;
+        gate.then(function () { send0.apply(xhr, args); });
+      };
+      function wake() { open(); }
+      document.addEventListener("focusin", function (e) { if (e.target && e.target.closest && e.target.closest(".md-search")) wake(); });
+      document.addEventListener("click", function (e) { if (e.target && e.target.closest && e.target.closest('label[for="__search"], .md-search')) wake(); }, true);
+      document.addEventListener("keydown", function (e) {
+        var k = e.key;
+        if ((k === "/" || k === "s" || k === "f" || k === "S" || k === "F") && !(e.target && e.target.closest && e.target.closest("input, textarea, [contenteditable]"))) wake();
+      }, true);
+      if (/[?&]q=/.test(location.search)) wake();
+    })();
+  </script><script>
+    try {
+      if ((window.matchMedia && (matchMedia("(display-mode: standalone)").matches || matchMedia("(display-mode: fullscreen)").matches)) || navigator.standalone === true) {
+        document.documentElement.className += " bjp-standalone";
+      }
+    } catch (e) { /* not an installed app */ }
+    /* the books of a subject or of the whole library as covers or as a list (assets/app.js): the reader's choice */
+    try {
+      var bv = localStorage.getItem("bjp.view");
+      if (bv === "list" || (bv !== "grid" && /\/books\.html$/.test(location.pathname))) document.documentElement.className += " bjp-view-list";
+    } catch (e) { /* no storage: covers */ }
+  </script>
+<script>
+    /* a book opened from its cover on the shelf: the page stays blank, in the cover's colour, until the reader is up */
+    try {
+      var cv = sessionStorage.getItem("bjp.reader.cover");
+      if (cv && sessionStorage.getItem("bjp.reader.open") === "1") {
+        var c = JSON.parse(cv), de = document.documentElement;
+        de.className += " bjp-booting";
+        if (c && /^#[0-9a-f]{3,8}$/i.test(c.bg || "")) de.style.background = c.bg;
+        setTimeout(function () { de.classList.remove("bjp-booting"); de.style.background = ""; }, 3000);
+      }
+    } catch (e) { /* no session storage: the page simply opens as usual */ }
+  </script>
+<title>21. Reverse Engineering - The Open Book Project</title>
+<link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+<link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+<link rel="stylesheet" href="../../assets/extra.css">
+<link rel="stylesheet" href="../../assets/reader.css">
+<link rel="stylesheet" href="../../assets/viz.css">
+<link rel="stylesheet" href="../../assets/app.css">
+<link rel="stylesheet" href="../../assets/theme.css">
+<link rel="stylesheet" href="../../assets/slides.css">
+<link rel="stylesheet" href="../../assets/remote.css">
+<link rel="stylesheet" href="../../assets/scans.css">
+<link rel="stylesheet" href="../../assets/speak.css">
+<link rel="stylesheet" href="../../assets/quiz.css">
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+<input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+<input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a href="#sec-assembly-basics" class="md-skip">
+Skip to content
+</a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav class="md-header__inner md-grid" aria-label="Header">
+<a href="../../index.html" title="The Open Book Project" class="md-header__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+The Open Book Project
+</span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+21. Reverse Engineering
+</span>
+</div>
+</div>
+</div><a href="../../index.html" class="bjp-libbtn" aria-label="Library: all books" title="Library: all books">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V5h4v15M8 20V9h4v11M14 20L12.6 6l3.8-.8 3 14.2M3 20h18"/></svg><span>Library</span>
+</a>
+<a href="../../subjects/index.html" class="pk-catbtn" aria-haspopup="true" aria-expanded="false" title="Browse the books by category">
+<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><circle cx="17" cy="7" r="3.6"/><path d="M7 13.4l3.9 6.8H3.1z"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg><span>Categories</span>
+</a>
+<form class="md-header__option" data-md-component="palette">
+<input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+<label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+</label>
+<input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+<label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+<label class="md-search__icon md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</label>
+<nav class="md-search__options" aria-label="Search">
+<button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+Initializing search
+</div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--primary bjp-nav bjp-nav--book" aria-label="Navigation" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a href="../../index.html" title="The Open Book Project" class="md-nav__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+The Open Book Project
+</label>
+<ul class="md-nav__list" data-md-scrollfix>
+<li class="md-nav__item bjp-nav-all">
+<a href="../../index.html" class="md-nav__link" aria-label="All books: back to the library">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+<span class="md-ellipsis">All books</span>
+</a>
+</li>
+<li class="md-nav__item bjp-nav-book" role="presentation"><span class="bjp-nav-head">Security Systems Engineering</span></li>
+<li class="md-nav__item">
+<a href="index.html" class="md-nav__link">
+<span class="md-ellipsis">
+Overview and preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="notation-and-conventions.html" class="md-nav__link">
+<span class="md-ellipsis">
+Notation and Conventions
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch01-mathematical-foundations-of-cryptography.html" class="md-nav__link">
+<span class="md-ellipsis">
+1. Mathematical Foundations of Cryptography
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch02-symmetric-cryptography.html" class="md-nav__link">
+<span class="md-ellipsis">
+2. Symmetric Cryptography
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch03-public-key-cryptography.html" class="md-nav__link">
+<span class="md-ellipsis">
+3. Public-Key Cryptography
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch04-cryptographic-hash-functions-and-macs.html" class="md-nav__link">
+<span class="md-ellipsis">
+4. Cryptographic Hash Functions and MACs
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch05-key-management-and-public-key-infrastructure.html" class="md-nav__link">
+<span class="md-ellipsis">
+5. Key Management and Public Key Infrastructure
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch06-cryptographic-protocols-and-security-proofs.html" class="md-nav__link">
+<span class="md-ellipsis">
+6. Cryptographic Protocols and Security Proofs
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch07-quantum-cryptography-and-post-quantum-migration.html" class="md-nav__link">
+<span class="md-ellipsis">
+7. Quantum Cryptography and Post-Quantum Migration
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch08-network-security-fundamentals.html" class="md-nav__link">
+<span class="md-ellipsis">
+8. Network Security Fundamentals
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch09-firewalls-ids-and-ips.html" class="md-nav__link">
+<span class="md-ellipsis">
+9. Firewalls, IDS, and IPS
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch10-network-protocol-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+10. Network Protocol Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch11-web-application-security-fundamentals.html" class="md-nav__link">
+<span class="md-ellipsis">
+11. Web Application Security Fundamentals
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch12-authentication-authorization-and-access-control.html" class="md-nav__link">
+<span class="md-ellipsis">
+12. Authentication, Authorization, and Access Control
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch13-api-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+13. API Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch14-side-channel-attacks.html" class="md-nav__link">
+<span class="md-ellipsis">
+14. Side-Channel Attacks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch15-hardware-tamper-protection.html" class="md-nav__link">
+<span class="md-ellipsis">
+15. Hardware Tamper Protection
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch16-transport-layer-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+16. Transport Layer Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch17-ssh-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+17. SSH Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch18-email-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+18. Email Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch19-advanced-network-protocol-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+19. Advanced Network Protocol Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch20-malware-analysis.html" class="md-nav__link">
+<span class="md-ellipsis">
+20. Malware Analysis
+</span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+21. Reverse Engineering
+</span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a href="ch21-reverse-engineering.html" class="md-nav__link md-nav__link--active">
+<span class="md-ellipsis">
+21. Reverse Engineering
+</span>
+</a>
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#sec-assembly-basics" class="md-nav__link">
+<span class="md-ellipsis">
+21.1 Assembly and Calling Conventions
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-disassembly-decompilation" class="md-nav__link">
+<span class="md-ellipsis">
+21.2 Disassembly vs. Decompilation
+</span>
+</a>
+<nav class="md-nav" aria-label="21.2 Disassembly vs. Decompilation">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#2121-ida-pro-vs-ghidra-vs-binary-ninja" class="md-nav__link">
+<span class="md-ellipsis">
+21.2.1 IDA Pro vs. Ghidra vs. Binary Ninja
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-re-static" class="md-nav__link">
+<span class="md-ellipsis">
+21.3 Static Analysis Techniques
+</span>
+</a>
+<nav class="md-nav" aria-label="21.3 Static Analysis Techniques">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#2131-binary-diffing" class="md-nav__link">
+<span class="md-ellipsis">
+21.3.1 Binary Diffing
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-re-dynamic" class="md-nav__link">
+<span class="md-ellipsis">
+21.4 Dynamic Analysis with Debuggers
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-anti-analysis" class="md-nav__link">
+<span class="md-ellipsis">
+21.5 Anti-Analysis Techniques
+</span>
+</a>
+<nav class="md-nav" aria-label="21.5 Anti-Analysis Techniques">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#2151-anti-disassembly" class="md-nav__link">
+<span class="md-ellipsis">
+21.5.1 Anti-Disassembly
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2152-anti-debugging" class="md-nav__link">
+<span class="md-ellipsis">
+21.5.2 Anti-Debugging
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2153-anti-vm-detection" class="md-nav__link">
+<span class="md-ellipsis">
+21.5.3 Anti-VM Detection
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-symbolic-exec-angr" class="md-nav__link">
+<span class="md-ellipsis">
+21.6 Symbolic Execution with angr
+</span>
+</a>
+<nav class="md-nav" aria-label="21.6 Symbolic Execution with angr">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#2161-state-explosion-and-veritesting" class="md-nav__link">
+<span class="md-ellipsis">
+21.6.1 State Explosion and Veritesting
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-unpacking" class="md-nav__link">
+<span class="md-ellipsis">
+21.7 Unpacking: Finding the OEP
+</span>
+</a>
+<nav class="md-nav" aria-label="21.7 Unpacking: Finding the OEP">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#2171-packer-analysis-and-import-reconstruction" class="md-nav__link">
+<span class="md-ellipsis">
+21.7.1 Packer Analysis and Import Reconstruction
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-deobfuscation" class="md-nav__link">
+<span class="md-ellipsis">
+21.8 Deobfuscation: XOR Decoding
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-re-crypto" class="md-nav__link">
+<span class="md-ellipsis">
+21.9 Recognising Crypto in Binaries
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-re-workflow-diagram" class="md-nav__link">
+<span class="md-ellipsis">
+21.10 RE Workflow Diagram
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-re-exercises" class="md-nav__link">
+<span class="md-ellipsis">
+21.11 Exercises
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="ch22-digital-forensics.html" class="md-nav__link">
+<span class="md-ellipsis">
+22. Digital Forensics
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch23-vulnerability-research-and-fuzzing.html" class="md-nav__link">
+<span class="md-ellipsis">
+23. Vulnerability Research and Fuzzing
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch24-exploit-development-fundamentals.html" class="md-nav__link">
+<span class="md-ellipsis">
+24. Exploit Development Fundamentals
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch25-security-architecture-and-design.html" class="md-nav__link">
+<span class="md-ellipsis">
+25. Security Architecture and Design
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch26-cloud-native-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+26. Cloud-Native Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch27-human-factors-in-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+27. Human Factors in Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch28-artificial-intelligence-and-machine-learning.html" class="md-nav__link">
+<span class="md-ellipsis">
+28. Artificial Intelligence and Machine Learning Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch29-iot-industrial-control-systems-and-the-emerging.html" class="md-nav__link">
+<span class="md-ellipsis">
+29. IoT, Industrial Control Systems, and the Emerging Threat Horizon
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="app-a-mathematical-reference.html" class="md-nav__link">
+<span class="md-ellipsis">
+Appendix A. Mathematical Reference
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="app-b-security-tools-reference.html" class="md-nav__link">
+<span class="md-ellipsis">
+Appendix B. Security Tools Reference
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="app-c-selected-exercise-solutions.html" class="md-nav__link">
+<span class="md-ellipsis">
+Appendix C. Selected Exercise Solutions
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="bibliography.html" class="md-nav__link">
+<span class="md-ellipsis">
+References
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#sec-assembly-basics" class="md-nav__link">
+<span class="md-ellipsis">
+21.1 Assembly and Calling Conventions
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-disassembly-decompilation" class="md-nav__link">
+<span class="md-ellipsis">
+21.2 Disassembly vs. Decompilation
+</span>
+</a>
+<nav class="md-nav" aria-label="21.2 Disassembly vs. Decompilation">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#2121-ida-pro-vs-ghidra-vs-binary-ninja" class="md-nav__link">
+<span class="md-ellipsis">
+21.2.1 IDA Pro vs. Ghidra vs. Binary Ninja
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-re-static" class="md-nav__link">
+<span class="md-ellipsis">
+21.3 Static Analysis Techniques
+</span>
+</a>
+<nav class="md-nav" aria-label="21.3 Static Analysis Techniques">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#2131-binary-diffing" class="md-nav__link">
+<span class="md-ellipsis">
+21.3.1 Binary Diffing
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-re-dynamic" class="md-nav__link">
+<span class="md-ellipsis">
+21.4 Dynamic Analysis with Debuggers
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-anti-analysis" class="md-nav__link">
+<span class="md-ellipsis">
+21.5 Anti-Analysis Techniques
+</span>
+</a>
+<nav class="md-nav" aria-label="21.5 Anti-Analysis Techniques">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#2151-anti-disassembly" class="md-nav__link">
+<span class="md-ellipsis">
+21.5.1 Anti-Disassembly
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2152-anti-debugging" class="md-nav__link">
+<span class="md-ellipsis">
+21.5.2 Anti-Debugging
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2153-anti-vm-detection" class="md-nav__link">
+<span class="md-ellipsis">
+21.5.3 Anti-VM Detection
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-symbolic-exec-angr" class="md-nav__link">
+<span class="md-ellipsis">
+21.6 Symbolic Execution with angr
+</span>
+</a>
+<nav class="md-nav" aria-label="21.6 Symbolic Execution with angr">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#2161-state-explosion-and-veritesting" class="md-nav__link">
+<span class="md-ellipsis">
+21.6.1 State Explosion and Veritesting
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-unpacking" class="md-nav__link">
+<span class="md-ellipsis">
+21.7 Unpacking: Finding the OEP
+</span>
+</a>
+<nav class="md-nav" aria-label="21.7 Unpacking: Finding the OEP">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#2171-packer-analysis-and-import-reconstruction" class="md-nav__link">
+<span class="md-ellipsis">
+21.7.1 Packer Analysis and Import Reconstruction
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-deobfuscation" class="md-nav__link">
+<span class="md-ellipsis">
+21.8 Deobfuscation: XOR Decoding
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-re-crypto" class="md-nav__link">
+<span class="md-ellipsis">
+21.9 Recognising Crypto in Binaries
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-re-workflow-diagram" class="md-nav__link">
+<span class="md-ellipsis">
+21.10 RE Workflow Diagram
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-re-exercises" class="md-nav__link">
+<span class="md-ellipsis">
+21.11 Exercises
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="ch-reverse-engineering">Chapter 21: Reverse Engineering<a class="headerlink" href="#ch-reverse-engineering" title="Permanent link">&para;</a></h1>
+<p>Reverse engineering (RE) is the process of recovering design, architecture, and implementation details from a compiled binary when source code is unavailable. It underpins malware analysis, vulnerability research, CTF competitions, interoperability work, and software auditing. This chapter covers the foundational skills: assembly comprehension, tool selection, anti-analysis bypass, deobfuscation, and cryptographic identification.</p>
+<p>The progression in this chapter follows the natural workflow of a practising analyst—starting with static techniques, moving to dynamic debugging, then tackling the anti-analysis obstacles that real-world samples erect along the way.</p>
+<h2 id="sec-assembly-basics"><span class="secnum">21.1</span> Assembly and Calling Conventions<a class="headerlink" href="#sec-assembly-basics" title="Permanent link">&para;</a></h2>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 21.1 (x86-64 System V AMD64 ABI (Linux))</p>
+<p>On 64-bit Linux, function arguments are passed in registers in order: <code>RDI</code>, <code>RSI</code>, <code>RDX</code>, <code>RCX</code>, <code>R8</code>, <code>R9</code>. Additional arguments are pushed on the stack right-to-left. The return value is in <code>RAX</code> (or <code>RAX:RDX</code> for 128-bit). Caller-saved registers: <code>RAX</code>, <code>RCX</code>, <code>RDX</code>, <code>RSI</code>, <code>RDI</code>, <code>R8--R11</code>. Callee-saved: <code>RBX</code>, <code>RBP</code>, <code>R12--R15</code>.</p>
+</div>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 21.2 (Microsoft x64 Calling Convention (Windows))</p>
+<p>Windows 64-bit passes the first four arguments in <code>RCX</code>, <code>RDX</code>, <code>R8</code>, <code>R9</code>; remaining arguments go on the stack. The callee must allocate a 32-byte “shadow space” above the return address for the four register arguments. <code>RAX</code> carries the return value. Callee-saved: <code>RBX</code>, <code>RBP</code>, <code>RDI</code>, <code>RSI</code>, <code>R12--R15</code>.</p>
+</div>
+<div class="admonition example box-example kind-example">
+<p class="admonition-title">Example 21.1 (Function Prologue and Epilogue)</p>
+<div class="language-c highlight"><pre><span></span><code><span class="p">;</span><span class="w"> </span><span class="n">Function</span><span class="w"> </span><span class="nf">prologue</span><span class="w"> </span><span class="p">(</span><span class="n">standard</span><span class="w"> </span><span class="n">frame</span><span class="w"> </span><span class="n">setup</span><span class="p">)</span>
+<span class="n">push</span><span class="w">    </span><span class="n">rbp</span><span class="w">              </span><span class="p">;</span><span class="w"> </span><span class="n">save</span><span class="w"> </span><span class="n">caller</span><span class="err">'</span><span class="n">s</span><span class="w"> </span><span class="n">base</span><span class="w"> </span><span class="n">pointer</span>
+<span class="n">mov</span><span class="w">     </span><span class="n">rbp</span><span class="p">,</span><span class="w"> </span><span class="n">rsp</span><span class="w">         </span><span class="p">;</span><span class="w"> </span><span class="n">establish</span><span class="w"> </span><span class="n">new</span><span class="w"> </span><span class="n">stack</span><span class="w"> </span><span class="n">frame</span>
+<span class="n">sub</span><span class="w">     </span><span class="n">rsp</span><span class="p">,</span><span class="w"> </span><span class="mh">0x40</span><span class="w">        </span><span class="p">;</span><span class="w"> </span><span class="n">allocate</span><span class="w"> </span><span class="mi">64</span><span class="w"> </span><span class="n">bytes</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">local</span><span class="w"> </span><span class="n">storage</span>
+<span class="p">;</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="n">function</span><span class="w"> </span><span class="n">body</span><span class="w"> </span><span class="p">...</span>
+
+<span class="p">;</span><span class="w"> </span><span class="n">Function</span><span class="w"> </span><span class="nf">epilogue</span><span class="w"> </span><span class="p">(</span><span class="n">frame</span><span class="w"> </span><span class="n">teardown</span><span class="p">)</span>
+<span class="n">mov</span><span class="w">     </span><span class="n">rsp</span><span class="p">,</span><span class="w"> </span><span class="n">rbp</span><span class="w">         </span><span class="p">;</span><span class="w"> </span><span class="n">restore</span><span class="w"> </span><span class="n">stack</span><span class="w"> </span><span class="n">pointer</span>
+<span class="n">pop</span><span class="w">     </span><span class="n">rbp</span><span class="w">              </span><span class="p">;</span><span class="w"> </span><span class="n">restore</span><span class="w"> </span><span class="n">caller</span><span class="err">'</span><span class="n">s</span><span class="w"> </span><span class="n">base</span><span class="w"> </span><span class="n">pointer</span>
+<span class="n">ret</span><span class="w">                      </span><span class="p">;</span><span class="w"> </span><span class="n">pop</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">address</span><span class="p">,</span><span class="w"> </span><span class="n">jump</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">caller</span>
+
+<span class="p">;</span><span class="w"> </span><span class="n">Leaf</span><span class="w"> </span><span class="nf">function</span><span class="w"> </span><span class="p">(</span><span class="n">no</span><span class="w"> </span><span class="n">local</span><span class="w"> </span><span class="n">variables</span><span class="p">,</span><span class="w"> </span><span class="n">no</span><span class="w"> </span><span class="n">calls</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="n">omits</span><span class="w"> </span><span class="n">frame</span><span class="w"> </span><span class="n">setup</span>
+<span class="p">;</span><span class="w"> </span><span class="n">Common</span><span class="w"> </span><span class="n">in</span><span class="w"> </span><span class="n">highly</span><span class="w"> </span><span class="n">optimised</span><span class="w"> </span><span class="n">or</span><span class="w"> </span><span class="n">obfuscated</span><span class="w"> </span><span class="n">code</span>
+</code></pre></div>
+</div>
+<h2 id="sec-disassembly-decompilation"><span class="secnum">21.2</span> Disassembly vs. Decompilation<a class="headerlink" href="#sec-disassembly-decompilation" title="Permanent link">&para;</a></h2>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 21.3 (Disassembly)</p>
+<p>Disassembly converts machine code bytes into human-readable assembly mnemonics. It operates at the instruction level and is always possible for any binary. Linear-sweep disassembly (objdump) decodes bytes sequentially; recursive-descent disassembly (IDA, Ghidra) follows control flow and handles indirect jumps more accurately.</p>
+</div>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 21.4 (Decompilation)</p>
+<p>Decompilation reconstructs high-level language constructs (C pseudocode) from disassembly by inferring variable types, data structures, loops, and function signatures. Output quality depends on compiler optimisation level and obfuscation. IDA Pro’s Hex-Rays decompiler and Ghidra’s built-in decompiler are the two most capable tools.</p>
+</div>
+<h3 id="2121-ida-pro-vs-ghidra-vs-binary-ninja"><span class="secnum">21.2.1</span> IDA Pro vs. Ghidra vs. Binary Ninja<a class="headerlink" href="#2121-ida-pro-vs-ghidra-vs-binary-ninja" title="Permanent link">&para;</a></h3>
+<p>Choosing a disassembler shapes your entire workflow, so it is worth understanding the trade-offs before committing to one.</p>
+<p><strong>IDA Pro</strong> remains the industry benchmark. Its processor module library covers obscure embedded architectures (AVR, MIPS microcontrollers, obscure DSPs) that the others lack, and its autoanalysis heuristics—FLIRT signature matching, stack variable naming, struct propagation—are the most mature. The Hex-Rays decompiler plug-in produces the cleanest pseudo-C output for x86-64 and ARM64 and supports interactive type-editing that propagates across the database. The downside is cost: a floating IDA Pro licence with Hex-Rays runs tens of thousands of dollars per seat, which puts it out of reach for individuals and small teams.</p>
+<p><strong>Ghidra</strong>, released by the NSA in 2019, closed most of that gap for free. Its built-in decompiler handles most common architectures well, and the collaborative server mode—a feature IDA lacks natively—lets a team share an analysis database in real time, which is invaluable for large firmware images. The extension API (Java and Python) is well-documented, and community plugins now cover everything from YARA scanning to Golang symbol recovery. The main practical complaint is the Java runtime: startup is slower than IDA’s, and the GUI can feel sluggish on large binaries.</p>
+<p><strong>Binary Ninja</strong> occupies a middle ground. Its API is the most developer-friendly of the three—a clean Python/Rust API with a headless mode that makes it easy to write analysis scripts that run in CI without a GUI. It introduces a multi-level intermediate language (LLIL, MLIL, HLIL) that progressively lifts machine code toward high-level constructs, giving scripted analyses stable representations to work against. It’s the tool of choice when you need to automate triage over hundreds of firmware samples rather than deeply analyse a single binary.</p>
+<p>All three produce decompiled pseudo-C output, support YARA-based search, and can import type information from PDB or DWARF. For most practitioners the realistic choice is Ghidra for daily use supplemented by a trial or team IDA licence for cases where Hex-Rays quality matters.</p>
+<div class="tbl" id="tab-re-tools">
+<div class="tbl-caption"><strong>Table 21.1.</strong> Reverse engineering tool comparison</div>
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Tool</strong></th>
+<th style="text-align: left;"><strong>Platform</strong></th>
+<th style="text-align: left;"><strong>Cost</strong></th>
+<th style="text-align: left;"><strong>Decompiler</strong></th>
+<th style="text-align: left;"><strong>Strengths</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">IDA Pro</td>
+<td style="text-align: left;">Win/Lin/Mac</td>
+<td style="text-align: left;">Commercial</td>
+<td style="text-align: left;">Hex-Rays (extra)</td>
+<td style="text-align: left;">Industry standard; scripting; FLIRT</td>
+</tr>
+<tr>
+<td style="text-align: left;">Ghidra</td>
+<td style="text-align: left;">All</td>
+<td style="text-align: left;">Free (NSA)</td>
+<td style="text-align: left;">Built-in</td>
+<td style="text-align: left;">Open-source; team collab; plugins</td>
+</tr>
+<tr>
+<td style="text-align: left;">Binary Ninja</td>
+<td style="text-align: left;">Win/Lin/Mac</td>
+<td style="text-align: left;">Commercial</td>
+<td style="text-align: left;">Built-in</td>
+<td style="text-align: left;">Modern API; headless mode; MLIL</td>
+</tr>
+<tr>
+<td style="text-align: left;">Hopper</td>
+<td style="text-align: left;">Mac/Linux</td>
+<td style="text-align: left;">Commercial</td>
+<td style="text-align: left;">Built-in</td>
+<td style="text-align: left;">Lightweight; good for macOS/iOS</td>
+</tr>
+<tr>
+<td style="text-align: left;">Radare2</td>
+<td style="text-align: left;">All</td>
+<td style="text-align: left;">Free</td>
+<td style="text-align: left;">r2dec/rz-ghidra</td>
+<td style="text-align: left;">CLI; scriptable; CTF-friendly</td>
+</tr>
+<tr>
+<td style="text-align: left;">x64dbg</td>
+<td style="text-align: left;">Windows</td>
+<td style="text-align: left;">Free</td>
+<td style="text-align: left;">No (debugger)</td>
+<td style="text-align: left;">Best Windows debugger; plugin-rich</td>
+</tr>
+</tbody>
+</table>
+</div></div>
+<h2 id="sec-re-static"><span class="secnum">21.3</span> Static Analysis Techniques<a class="headerlink" href="#sec-re-static" title="Permanent link">&para;</a></h2>
+<div class="admonition info box-keybox kind-concept">
+<p class="admonition-title">Static Analysis Workflow</p>
+<ol>
+<li>
+<p><strong>Import analysis</strong>: identify DLLs and API calls; network functions (<code>WSAConnect</code>, <code>InternetOpenA</code>) indicate C2; crypto functions (<code>CryptEncrypt</code>) indicate payload encryption.</p>
+</li>
+<li>
+<p><strong>String references</strong>: locate plaintext IoCs (URLs, registry keys, mutex names, error messages).</p>
+</li>
+<li>
+<p><strong>Cross-references (XREFs)</strong>: find all callers of a function or all references to a string/global variable.</p>
+</li>
+<li>
+<p><strong>Control flow graph (CFG)</strong>: visualise conditional branches and loops to understand decision logic.</p>
+</li>
+<li>
+<p><strong>Function signatures</strong>: use FLIRT (IDA) or Ghidra’s Function ID to auto-name statically linked library code.</p>
+</li>
+</ol>
+</div>
+<p>Static analysis is the starting point for any sample. It costs nothing—no sandbox, no network access, no risk of detonating a live payload—and often reveals the majority of what you need to know before a single instruction executes.</p>
+<h3 id="2131-binary-diffing"><span class="secnum">21.3.1</span> Binary Diffing<a class="headerlink" href="#2131-binary-diffing" title="Permanent link">&para;</a></h3>
+<p>When a vendor ships a security patch, the fixed binary is often public before most operators have deployed it. <strong>BinDiff</strong> (Google) and <strong>Diaphora</strong> (an open-source alternative that runs inside IDA and Ghidra) compare two binary versions function-by-function, scoring structural similarity using isomorphic subgraph matching on the control flow graph. Functions that changed between the pre-patch and post-patch builds surface immediately—the changed function is almost always where the vulnerability lived.</p>
+<p>The workflow is straightforward: open both binaries in IDA, export the <code>.i64</code> database files, then run BinDiff to produce a ranked similarity report. Functions scoring below around 0.8 similarity warrant close inspection. Diffing against a build that includes public debug symbols (PDB files or split DWARF) has a secondary benefit: BinDiff matches named functions from the debug build against the stripped release binary, letting you propagate names like <code>handle_request</code> or <code>parse_header</code> across without manually identifying each one. This dramatically reduces the time spent on standard library routines—once <code>memcpy</code> or <code>sprintf</code> is named, you can skip those call sites and focus on application logic.</p>
+<p>Diaphora extends BinDiff’s approach with heuristics such as cyclomatic complexity matching, prime hash comparison of basic-block mnemonics, and pseudo-code diffing. It exports results as an SQLite database, which makes scripted querying straightforward. For CTF patch-diffing challenges, Diaphora’s <code>SAME_MD_INDEX</code> category (identical basic-block hash sequences) lets you skip unmodified functions entirely.</p>
+<h2 id="sec-re-dynamic"><span class="secnum">21.4</span> Dynamic Analysis with Debuggers<a class="headerlink" href="#sec-re-dynamic" title="Permanent link">&para;</a></h2>
+<p>Where static analysis answers <em>what</em> is in the binary, dynamic analysis answers <em>how</em> it behaves. A debugger lets you pause execution at any instruction, inspect register state and memory, and patch values on the fly.</p>
+<div class="language-bash highlight"><pre><span></span><code><span class="c1"># Install GEF (GDB Enhanced Features)</span>
+pip3<span class="w"> </span>install<span class="w"> </span>gef
+<span class="nb">echo</span><span class="w"> </span><span class="s2">"source /path/to/gef.py"</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>~/.gdbinit
+
+<span class="c1"># Attach to running process</span>
+gdb<span class="w"> </span>-p<span class="w"> </span><span class="k">$(</span>pgrep<span class="w"> </span>malware_sample<span class="k">)</span>
+
+<span class="c1"># Set breakpoint at function entry by name or address</span>
+<span class="o">(</span>gdb<span class="o">)</span><span class="w"> </span><span class="k">break</span><span class="w"> </span>*0x401337
+<span class="o">(</span>gdb<span class="o">)</span><span class="w"> </span><span class="k">break</span><span class="w"> </span>malloc
+
+<span class="c1"># Run and examine state at breakpoint</span>
+<span class="o">(</span>gdb<span class="o">)</span><span class="w"> </span>run
+<span class="o">(</span>gdb<span class="o">)</span><span class="w"> </span>info<span class="w"> </span>registers<span class="w">          </span><span class="c1"># show all registers</span>
+<span class="o">(</span>gdb<span class="o">)</span><span class="w"> </span>x/20wx<span class="w"> </span><span class="nv">$rsp</span><span class="w">             </span><span class="c1"># hex dump 20 words from stack pointer</span>
+<span class="o">(</span>gdb<span class="o">)</span><span class="w"> </span>x/s<span class="w"> </span><span class="nv">$rdi</span><span class="w">                </span><span class="c1"># print string at RDI (first argument)</span>
+
+<span class="c1"># Step through code</span>
+<span class="o">(</span>gdb<span class="o">)</span><span class="w"> </span>ni<span class="w">    </span><span class="c1"># next instruction (step over calls)</span>
+<span class="o">(</span>gdb<span class="o">)</span><span class="w"> </span>si<span class="w">    </span><span class="c1"># step into calls</span>
+<span class="o">(</span>gdb<span class="o">)</span><span class="w"> </span>finish<span class="w"> </span><span class="c1"># run until return from current function</span>
+
+<span class="c1"># GEF: enhanced heap and memory views</span>
+<span class="o">(</span>gdb<span class="o">)</span><span class="w"> </span>heap<span class="w"> </span>chunks<span class="w">             </span><span class="c1"># display heap allocations</span>
+<span class="o">(</span>gdb<span class="o">)</span><span class="w"> </span>pattern<span class="w"> </span>create<span class="w"> </span><span class="m">200</span><span class="w">      </span><span class="c1"># generate cyclic pattern for offset finding</span>
+</code></pre></div>
+<h2 id="sec-anti-analysis"><span class="secnum">21.5</span> Anti-Analysis Techniques<a class="headerlink" href="#sec-anti-analysis" title="Permanent link">&para;</a></h2>
+<p>Most production malware includes some form of anti-analysis. The analyst’s job is to recognise these obstacles and bypass them without spending more time than the sample is worth.</p>
+<h3 id="2151-anti-disassembly"><span class="secnum">21.5.1</span> Anti-Disassembly<a class="headerlink" href="#2151-anti-disassembly" title="Permanent link">&para;</a></h3>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 21.5 (Opaque Predicates)</p>
+<p>Opaque predicates are conditional branches whose outcome is always known to the author (always-true or always-false) but appears data-dependent to a static analyser. The false branch is filled with junk bytes that cause disassemblers to misinterpret subsequent legitimate code. A typical example: <code>cmp eax, eax; jz legitimate_code</code> with garbage bytes between the <code>jz</code> and <code>legitimate_code</code>.</p>
+</div>
+<h3 id="2152-anti-debugging"><span class="secnum">21.5.2</span> Anti-Debugging<a class="headerlink" href="#2152-anti-debugging" title="Permanent link">&para;</a></h3>
+<div class="language-c highlight"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;windows.h&gt;</span>
+
+<span class="c1">// Technique 1: IsDebuggerPresent API check</span>
+<span class="n">BOOL</span><span class="w"> </span><span class="nf">check_debugger_api</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">IsDebuggerPresent</span><span class="p">();</span><span class="w">  </span><span class="c1">// returns TRUE if debugger attached</span>
+<span class="p">}</span>
+
+<span class="c1">// Technique 2: PEB.BeingDebugged flag (same as above, lower level)</span>
+<span class="n">BOOL</span><span class="w"> </span><span class="nf">check_peb</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// Reads PEB!BeingDebugged at offset 0x2 (x64: gs:[0x60]+2)</span>
+<span class="w">    </span><span class="n">BOOL</span><span class="w"> </span><span class="n">dbg</span><span class="p">;</span>
+<span class="w">    </span><span class="n">__asm__</span><span class="w"> </span><span class="p">(</span>
+<span class="w">        </span><span class="s">"movq</span>
+<span class="w">        </span><span class="s">"movzbl 0x2(</span>
+<span class="w">        </span><span class="o">:</span><span class="w"> </span><span class="s">"=r"</span><span class="p">(</span><span class="n">dbg</span><span class="p">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="s">"rax"</span>
+<span class="w">    </span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">dbg</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// Technique 3: Timing check (RDTSC delta)</span>
+<span class="n">BOOL</span><span class="w"> </span><span class="n">check_timing</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">t1</span><span class="p">,</span><span class="w"> </span><span class="n">t2</span><span class="p">;</span>
+<span class="w">    </span><span class="n">__asm__</span><span class="w"> </span><span class="k">volatile</span><span class="w"> </span><span class="p">(</span><span class="s">"rdtsc"</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="s">"=A"</span><span class="p">(</span><span class="n">t1</span><span class="p">));</span>
+<span class="w">    </span><span class="c1">// ... perform some work ...</span>
+<span class="w">    </span><span class="n">__asm__</span><span class="w"> </span><span class="k">volatile</span><span class="w"> </span><span class="p">(</span><span class="s">"rdtsc"</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="s">"=A"</span><span class="p">(</span><span class="n">t2</span><span class="p">));</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="n">t2</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">t1</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">1000000ULL</span><span class="p">;</span><span class="w">  </span><span class="c1">// threshold exceeded -&gt; debugger</span>
+<span class="p">}</span>
+
+<span class="cm">/* -------------------------------------------------------</span>
+<span class="cm">   BYPASS: In x64dbg, set software breakpoint at the</span>
+<span class="cm">   IsDebuggerPresent call, then:</span>
+<span class="cm">   Option A: after call returns, manually set RAX = 0</span>
+<span class="cm">   Option B: NOP out the conditional jump that follows:</span>
+<span class="cm">             JNZ 0x401234  -&gt;  NOP NOP (0x90 0x90)</span>
+<span class="cm">   Option C: Use ScyllaHide plugin (hides debugger</span>
+<span class="cm">             from all common detection methods)</span>
+<span class="cm">   ------------------------------------------------------- */</span>
+</code></pre></div>
+<h4 id="deeper-anti-debugging-techniques-and-bypasses">Deeper Anti-Debugging Techniques and Bypasses<a class="headerlink" href="#deeper-anti-debugging-techniques-and-bypasses" title="Permanent link">&para;</a></h4>
+<p>The <code>IsDebuggerPresent()</code> API call is just the surface of a much larger catalogue. Experienced malware authors layer multiple checks so that disabling one leaves others intact.</p>
+<p>The <strong>NtGlobalFlag</strong> check reads a DWORD at offset <code>0xBC</code> from the Process Environment Block (PEB). Under a debugger, Windows sets flags <code>0x70</code> (heap tail checking, free checking, and parameter checking), whereas a non-debugged process has this field set to zero. Reading it with inline assembly is a single instruction and adds no import entry that a scanner would flag.</p>
+<p><strong>Timing checks</strong> exploit the fact that a debugger introduces measurable latency. The <code>RDTSC</code> instruction reads the processor’s timestamp counter, which increments billions of times per second. Malware calls <code>RDTSC</code> twice around a trivial code block, subtracts the values, and treats a delta above a threshold as evidence of single-stepping. On a modern CPU without a debugger, a handful of instructions completes in under 100 cycles; a human single-stepping in x64dbg takes millions.</p>
+<p><strong>Exception-based detection</strong> places a deliberate <code>INT3</code> (opcode <code>0xCC</code>) in the code stream. Under normal execution, the CPU raises an exception that the application’s own vectored exception handler catches and handles—execution continues normally. If a debugger is attached, it intercepts the <code>INT3</code> first and pauses execution, which the exception handler detects because the exception never arrived.</p>
+<p>Bypassing these requires more than NOPing a single check:</p>
+<ul>
+<li>
+<p><strong>Hardware breakpoints</strong> (DR0–DR3 registers) do not modify the code stream, so they avoid <code>INT3</code>-based detection and do not affect timing checks the way software breakpoints do.</p>
+</li>
+<li>
+<p><strong>ScyllaHide</strong> is an x64dbg plugin that patches the TEB, PEB, and relevant kernel structures to hide the debugger from <code>IsDebuggerPresent</code>, NtGlobalFlag, <code>NtQueryInformationProcess</code>, heap flags, and several other common check points simultaneously. It also spoofs the RDTSC delta to a plausible non-debugged value.</p>
+</li>
+<li>
+<p>For samples that check their own code bytes for <code>0xCC</code> (software breakpoint bytes), hardware breakpoints combined with ScyllaHide cover the typical attack surface.</p>
+</li>
+</ul>
+<h3 id="2153-anti-vm-detection"><span class="secnum">21.5.3</span> Anti-VM Detection<a class="headerlink" href="#2153-anti-vm-detection" title="Permanent link">&para;</a></h3>
+<div class="language-c highlight"><pre><span></span><code><span class="c1">// Check for VMware registry key</span>
+<span class="n">BOOL</span><span class="w"> </span><span class="nf">check_vmware_registry</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">HKEY</span><span class="w"> </span><span class="n">hKey</span><span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">RegOpenKeyExA</span><span class="p">(</span><span class="n">HKEY_LOCAL_MACHINE</span><span class="p">,</span>
+<span class="w">        </span><span class="s">"SOFTWARE</span><span class="se">\\</span><span class="s">VMware, Inc.</span><span class="se">\\</span><span class="s">VMware Tools"</span><span class="p">,</span>
+<span class="w">        </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">KEY_READ</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">hKey</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">ERROR_SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// Check CPUID hypervisor bit (bit 31 of ECX with leaf 1)</span>
+<span class="n">BOOL</span><span class="w"> </span><span class="nf">check_hypervisor_bit</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">ecx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">__asm__</span><span class="w"> </span><span class="p">(</span><span class="s">"cpuid"</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="s">"=c"</span><span class="p">(</span><span class="n">ecx</span><span class="p">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="s">"a"</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="s">"ebx"</span><span class="p">,</span><span class="w"> </span><span class="s">"edx"</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="n">ecx</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="mi">31</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w">  </span><span class="c1">// hypervisor present bit</span>
+<span class="p">}</span>
+<span class="cm">/* Bypass: patch conditional jump; or run on bare metal;</span>
+<span class="cm">   or use al-khaser sandbox detection bypass tools */</span>
+</code></pre></div>
+<h2 id="sec-symbolic-exec-angr"><span class="secnum">21.6</span> Symbolic Execution with angr<a class="headerlink" href="#sec-symbolic-exec-angr" title="Permanent link">&para;</a></h2>
+<p>Static analysis tells you what code exists; dynamic debugging tells you what one execution path does. <strong>Symbolic execution</strong> explores <em>all</em> feasible execution paths simultaneously by treating program inputs as symbolic variables rather than concrete values. At each conditional branch, the engine forks into two states—one where the condition is true, one where it is false—and a constraint solver (typically Z3) accumulates the path conditions that must hold for each state to be reachable.</p>
+<p><strong>angr</strong> is the dominant Python-based symbolic execution framework for binary analysis. Its <code>Project</code> object loads an ELF, PE, or raw binary; a <code>SimulationManager</code> then drives exploration across states.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">angr</span><span class="o">,</span><span class="w"> </span><span class="nn">claripy</span>
+
+<span class="c1"># Load a 64-bit ELF (disable auto-loading of shared libs for speed)</span>
+<span class="n">project</span> <span class="o">=</span> <span class="n">angr</span><span class="o">.</span><span class="n">Project</span><span class="p">(</span><span class="s1">'./crackme'</span><span class="p">,</span> <span class="n">auto_load_libs</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="c1"># Create a symbolic stdin: 16 symbolic bytes labelled 'flag'</span>
+<span class="n">flag_chars</span> <span class="o">=</span> <span class="p">[</span><span class="n">claripy</span><span class="o">.</span><span class="n">BVS</span><span class="p">(</span><span class="sa">f</span><span class="s1">'flag_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">'</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">16</span><span class="p">)]</span>
+<span class="n">flag</span>       <span class="o">=</span> <span class="n">claripy</span><span class="o">.</span><span class="n">Concat</span><span class="p">(</span><span class="o">*</span><span class="n">flag_chars</span><span class="p">)</span>
+
+<span class="c1"># Constrain to printable ASCII (optional, reduces search space)</span>
+<span class="n">state</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">factory</span><span class="o">.</span><span class="n">entry_state</span><span class="p">(</span><span class="n">stdin</span><span class="o">=</span><span class="n">angr</span><span class="o">.</span><span class="n">SimFile</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s1">'stdin'</span><span class="p">,</span> <span class="n">content</span><span class="o">=</span><span class="n">flag</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">16</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">flag_chars</span><span class="p">:</span>
+    <span class="n">state</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">ch</span> <span class="o">&gt;=</span> <span class="mh">0x20</span><span class="p">,</span> <span class="n">ch</span> <span class="o">&lt;=</span> <span class="mh">0x7e</span><span class="p">)</span>
+
+<span class="n">simgr</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">factory</span><span class="o">.</span><span class="n">simulation_manager</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+
+<span class="c1"># explore(find=...) halts states that reach the target address</span>
+<span class="c1"># explore(avoid=...) prunes states that reach the failure path</span>
+<span class="n">simgr</span><span class="o">.</span><span class="n">explore</span><span class="p">(</span><span class="n">find</span><span class="o">=</span><span class="mh">0x401234</span><span class="p">,</span> <span class="n">avoid</span><span class="o">=</span><span class="p">[</span><span class="mh">0x401500</span><span class="p">,</span> <span class="mh">0x401600</span><span class="p">])</span>
+
+<span class="k">if</span> <span class="n">simgr</span><span class="o">.</span><span class="n">found</span><span class="p">:</span>
+    <span class="n">winning_state</span> <span class="o">=</span> <span class="n">simgr</span><span class="o">.</span><span class="n">found</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="c1"># Evaluate the symbolic stdin to get the concrete solution</span>
+    <span class="n">solution</span> <span class="o">=</span> <span class="n">winning_state</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="n">flag</span><span class="p">,</span> <span class="n">cast_to</span><span class="o">=</span><span class="nb">bytes</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"[+] Solution: </span><span class="si">{</span><span class="n">solution</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</code></pre></div>
+<p>The <code>explore</code> API drives the simulation manager until at least one state reaches the <code>find</code> address (success) while pruning any state that steps into an <code>avoid</code> address (failure path, e.g., a “Wrong password!” print). In a CTF crackme, this pattern typically solves the challenge in seconds—the solver produces the exact byte sequence that satisfies every branch condition on the path to the success print.</p>
+<h3 id="2161-state-explosion-and-veritesting"><span class="secnum">21.6.1</span> State Explosion and Veritesting<a class="headerlink" href="#2161-state-explosion-and-veritesting" title="Permanent link">&para;</a></h3>
+<p>The fundamental weakness of symbolic execution is <strong>path explosion</strong>: a loop that iterates <span class="arithmatex">\(n\)</span> times with a branch inside doubles the state count on each iteration, producing <span class="arithmatex">\(2^{n}\)</span> states. A simple 32-iteration loop generates over four billion states, which exhausts both time and memory.</p>
+<p><strong>Veritesting</strong> (Avgerinos et al., 2014) mitigates this by automatically merging paths that reconverge after a conditional block. Instead of maintaining separate states for both branches of an <code>if/else</code>, Veritesting encodes the branch outcome as a conditional expression in the single merged state’s constraint set, then splits again only when paths truly diverge into irreconcilable control flow. angr implements Veritesting via the <code>veritesting=True</code> option on the simulation manager.</p>
+<p>Other practical mitigations include <strong>under-constrained symbolic execution</strong>—running a single function in isolation with unconstrained inputs—and <strong>concolic execution</strong> (SAGE, DART), which runs concrete inputs through the binary while simultaneously tracking symbolic constraints, using coverage gaps to generate new concrete test cases. For large real-world binaries, these hybrid approaches are often more productive than pure symbolic exploration.</p>
+<h2 id="sec-unpacking"><span class="secnum">21.7</span> Unpacking: Finding the OEP<a class="headerlink" href="#sec-unpacking" title="Permanent link">&para;</a></h2>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 21.6 (Original Entry Point (OEP))</p>
+<p>Packers encrypt or compress the original executable and add a stub that decompresses/decrypts the payload at runtime before transferring control to the OEP. Finding the OEP is the key step in unpacking:</p>
+<ol>
+<li>
+<p>Load packed binary in x64dbg; note entry point (packer stub).</p>
+</li>
+<li>
+<p>Set hardware breakpoint on memory write to <code>.text</code> section (will trigger during decompression).</p>
+</li>
+<li>
+<p>Allow packer to run until decompression completes.</p>
+</li>
+<li>
+<p>At OEP, the code resembles a normal function prologue.</p>
+</li>
+<li>
+<p>Dump process memory and fix import table with Scylla plugin.</p>
+</li>
+</ol>
+</div>
+<h3 id="2171-packer-analysis-and-import-reconstruction"><span class="secnum">21.7.1</span> Packer Analysis and Import Reconstruction<a class="headerlink" href="#2171-packer-analysis-and-import-reconstruction" title="Permanent link">&para;</a></h3>
+<p>Understanding the packer is as important as finding the OEP. Every packed binary follows the same high-level pattern: a <em>stub</em> runs first, it decompresses or decrypts the original code into a new memory region, then it transfers control to the OEP. What varies is the complexity of the stub.</p>
+<p><strong>UPX</strong> is trivially unpacked—the command <code>upx -d target.exe</code> restores the original binary in seconds. UPX is so well-known that antivirus products flag it immediately; any sample using UPX is usually the outer layer of a multi-stage dropper, not the final payload.</p>
+<p>Custom packers require manual analysis. The tell-tale signs at load time are: the binary has few or no readable imports (often only <code>LoadLibrary</code> and <code>GetProcAddress</code>), the PE sections have names like <code>.mpress</code>, <code>.pack</code>, or randomised strings, and the entry point sits in a section marked with execute, read, and write permissions—unusual for legitimate code because writable executable memory is a red flag. The stub uses <code>VirtualAlloc</code> to allocate the unpacked region, writes the decompressed PE into it, then patches its own import table by calling <code>GetProcAddress</code> for each imported function before jumping to the OEP.</p>
+<p>The unpacking workflow in x64dbg proceeds as follows. After attaching, set a hardware breakpoint (<code>ba w4</code>) on the beginning of the <code>.text</code> section—this fires when the stub writes the decompressed code. Allow execution to continue; the breakpoint will trigger mid-decompression. Step through until the decompression loop finishes and the stub performs a long jump (<code>jmp eax</code> or <code>push eax; ret</code>) into the freshly written region—that target address is the OEP.</p>
+<p><strong>Import reconstruction</strong> is the final step. The unpacked image in memory has a valid code section but a broken or empty import table, because the original Import Address Table (IAT) was stripped. The <strong>Scylla</strong> plugin for x64dbg handles this automatically: point it at the OEP, click “IAT Autosearch”, and it walks the code looking for indirect calls through a table of function pointers, then resolves each pointer back to the originating DLL export. “Dump” writes the unpacked PE to disk and “Fix Dump” patches the import table into the new file, producing a fully functional reconstructed binary that IDA or Ghidra can analyse without the packer stub overhead.</p>
+<p>Recognising the decompression algorithm helps predict what to expect. LZ-family (LZMA, aPLib) produce expanding output; AES-CBC decryption produces equal-size output with a 16-byte-aligned ciphertext block. Entropy scanning (<code>detect-it-easy</code>, <code>PEiD</code>) gives a quick fingerprint before you invest time in manual analysis.</p>
+<h2 id="sec-deobfuscation"><span class="secnum">21.8</span> Deobfuscation: XOR Decoding<a class="headerlink" href="#sec-deobfuscation" title="Permanent link">&para;</a></h2>
+<p>XOR encoding is the most common obfuscation primitive in malware. It’s fast to implement, trivially reversible, and works on any payload. Frequency analysis cracks single-byte and short repeating keys in seconds.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">find_xor_key</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">key_length</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Recover repeating XOR key using frequency analysis.</span>
+<span class="sd">    Assumes the plaintext is ASCII with high frequency of 0x00 / spaces.</span>
+<span class="sd">    """</span>
+    <span class="n">key</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">(</span><span class="n">key_length</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">key_length</span><span class="p">):</span>
+        <span class="c1"># Collect every key_length-th byte</span>
+        <span class="n">chunk</span> <span class="o">=</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">key_length</span><span class="p">))</span>
+        <span class="c1"># Most frequent byte XOR'd with 0x00 gives the key byte</span>
+        <span class="n">freq</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">256</span><span class="p">),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">b</span><span class="p">:</span> <span class="n">chunk</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="nb">bytes</span><span class="p">([</span><span class="n">b</span><span class="p">])))</span>
+        <span class="n">key</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">freq</span>  <span class="c1"># assuming plaintext 0x00 most common (or use ' ')</span>
+    <span class="k">return</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">xor_decode</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+    <span class="k">return</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">b</span> <span class="o">^</span> <span class="n">key</span><span class="p">[</span><span class="n">i</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s2">"rb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">payload</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+    <span class="c1"># Try known key lengths (1-16 bytes)</span>
+    <span class="k">for</span> <span class="n">klen</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">17</span><span class="p">):</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="n">find_xor_key</span><span class="p">(</span><span class="n">payload</span><span class="p">,</span> <span class="n">klen</span><span class="p">)</span>
+        <span class="n">decoded</span> <span class="o">=</span> <span class="n">xor_decode</span><span class="p">(</span><span class="n">payload</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+        <span class="n">printable</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">32</span> <span class="o">&lt;=</span> <span class="n">b</span> <span class="o">&lt;</span> <span class="mi">127</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">decoded</span><span class="p">)</span>
+        <span class="n">score</span> <span class="o">=</span> <span class="n">printable</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">decoded</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">score</span> <span class="o">&gt;</span> <span class="mf">0.80</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Key length </span><span class="si">{</span><span class="n">klen</span><span class="si">}</span><span class="s2">: key=</span><span class="si">{</span><span class="n">key</span><span class="o">.</span><span class="n">hex</span><span class="p">()</span><span class="si">}</span><span class="s2"> score=</span><span class="si">{</span><span class="n">score</span><span class="si">:</span><span class="s2">.2</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">"decoded_</span><span class="si">{</span><span class="n">klen</span><span class="si">}</span><span class="s2">.bin"</span><span class="p">,</span> <span class="s2">"wb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">out</span><span class="p">:</span>
+                <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">decoded</span><span class="p">)</span>
+</code></pre></div>
+<h2 id="sec-re-crypto"><span class="secnum">21.9</span> Recognising Crypto in Binaries<a class="headerlink" href="#sec-re-crypto" title="Permanent link">&para;</a></h2>
+<p>Cryptographic algorithms leave distinctive fingerprints: lookup tables, characteristic constants, and arithmetic patterns. Knowing these lets an analyst quickly identify what a binary is encrypting, and with what.</p>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 21.7 (AES S-Box Constant)</p>
+<p>AES is identified in binaries by the presence of its S-box lookup table, which begins with the bytes <code>0x63, 0x7C, 0x77, 0x7B, 0xF2, 0x6B, 0x6F, 0xC5, 0x30, 0x01</code>. Search for this byte sequence in IDA/Ghidra to locate the AES implementation; surrounding code reveals the key schedule and modes in use.</p>
+</div>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 21.8 (RSA Identification)</p>
+<p>RSA is commonly identified by the public exponent 65537 (0x10001) as an immediate value or embedded constant, and by large modular exponentiation loops. The Montgomery multiplication algorithm and Barrett reduction are characteristic code patterns. High-entropy 256- or 512-byte buffers adjacent to these constants are likely RSA key material.</p>
+</div>
+<h2 id="sec-re-workflow-diagram"><span class="secnum">21.10</span> RE Workflow Diagram<a class="headerlink" href="#sec-re-workflow-diagram" title="Permanent link">&para;</a></h2>
+<figure class="fig fig-diagram" id="fig-re-workflow">
+<img class="tikz" src="img/tikz-def2b5885bdf.svg" alt="Reverse engineering workflow from binary sample to documented findings." loading="lazy" width="316" height="348">
+<figcaption><strong>Figure 21.1.</strong> Reverse engineering workflow from binary sample to documented findings.</figcaption>
+</figure>
+<h2 id="sec-re-exercises"><span class="secnum">21.11</span> Exercises<a class="headerlink" href="#sec-re-exercises" title="Permanent link">&para;</a></h2>
+<div class="admonition example box-exercise kind-example">
+<p class="admonition-title">Exercise 21.1</p>
+<p>A binary sample passes control to a function containing the following assembly sequence before performing sensitive operations:</p>
+<div class="language-c highlight"><pre><span></span><code><span class="n">call</span><span class="w"> </span><span class="n">IsDebuggerPresent</span>
+<span class="n">test</span><span class="w"> </span><span class="n">eax</span><span class="p">,</span><span class="w"> </span><span class="n">eax</span>
+<span class="n">jnz</span><span class="w">  </span><span class="mh">0x401500</span><span class="w">    </span><span class="p">;</span><span class="w"> </span><span class="n">jumps</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">exit</span><span class="p">()</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">debugger</span><span class="w"> </span><span class="n">detected</span>
+<span class="p">;</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="n">sensitive</span><span class="w"> </span><span class="n">payload</span><span class="w"> </span><span class="n">code</span><span class="w"> </span><span class="n">at</span><span class="w"> </span><span class="mh">0x4014A0</span><span class="w"> </span><span class="p">...</span>
+</code></pre></div>
+<p>Identify the anti-debugging technique being used. Describe three distinct methods to bypass this check in x64dbg without modifying the sample on disk. What is the difference between a software breakpoint and a hardware breakpoint, and why might a hardware breakpoint evade the timing-based variant of this check?</p>
+</div>
+<div class="admonition example box-exercise kind-example">
+<p class="admonition-title">Exercise 21.2</p>
+<p>A malware sample contains an encrypted payload. Static analysis reveals a loop that XORs each byte of a 512-byte buffer with a cycling key, reading key bytes from a 4-byte array at <code>0x403010</code>. Write a Python script that takes the encrypted buffer (extracted as a binary file) and automatically determines the most likely 4-byte XOR key using frequency analysis, then decodes and writes the plaintext payload. What assumptions does your frequency analysis rely on?</p>
+</div>
+<div class="admonition example box-exercise kind-example">
+<p class="admonition-title">Exercise 21.3</p>
+<p>Describe the process of finding the Original Entry Point (OEP) of a UPX-packed PE binary using x64dbg. Include: the initial state when the packed binary loads, the specific technique used to identify when decompression is complete, the characteristic assembly instructions that identify the OEP in a MSVC-compiled binary, and the steps required to dump and reconstruct a working import table using the Scylla plugin.</p>
+</div>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button type="button" class="md-top md-icon" data-md-component="top" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+Back to top
+</button>
+</main>
+<footer class="md-footer">
+<nav class="md-footer__inner md-grid" aria-label="Footer" >
+<a href="ch20-malware-analysis.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: 20. Malware Analysis">
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</div>
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Previous
+</span>
+<div class="md-ellipsis">
+20. Malware Analysis
+</div>
+</div>
+</a>
+<a href="ch22-digital-forensics.html" class="md-footer__link md-footer__link--next" aria-label="Next: 22. Digital Forensics">
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Next
+</span>
+<div class="md-ellipsis">
+22. Digital Forensics
+</div>
+</div>
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+</div>
+</a>
+</nav>
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+The Open Book Project &middot;
+<a href="../../about.html">About this library</a> &middot;
+<a href="../../publish.html">Publish your book</a> &middot;
+© The authors of the books
+</div>
+Made with
+<a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+Material for MkDocs
+</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "navigation.prune", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "toc.follow", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+<script src="../../assets/mathjax.js"></script>
+<script src="../../assets/viz.js"></script>
+<script src="../../assets/remote.js"></script>
+<script src="../../assets/scans.js"></script>
+<script src="../../assets/reader.js"></script>
+<script src="../../assets/app.js"></script>
+<script src="../../assets/slides.js"></script>
+<script src="../../assets/speak.js"></script>
+<script src="../../assets/quiz.js"></script>
+<script>
+    /* offline reading: the service worker at the site root (its scope is the whole site) */
+    if ("serviceWorker" in navigator && window.isSecureContext) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register(new URL("../../sw.js", location.href).href).catch(function () {});
+      });
+    }
+  </script>
+</body>
+</html>

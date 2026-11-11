@@ -1,0 +1,1083 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="description" content="The Open Book Project: books on computer science, quantum computing, cyber security, science, the social sciences, university courses and languages, read page by page like an e-book, online or offline.">
+<meta name="author" content="The Open Book Project">
+<link rel="canonical" href="https://open-book-project.github.io/cyber/post_quantum_cryptography/ch06-hybrid-cryptography.html">
+<link rel="prev" href="ch05-pqc-migration-strategy.html">
+<link rel="next" href="ch07-pqc-testing-and-validation.html">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap"></noscript>
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Open Book">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="application-name" content="Open Book"><script src="../../assets/library-data.js"></script><script>
+    (function () {
+      var X = window.XMLHttpRequest, open, gate = new Promise(function (r) { open = r; });
+      if (!X) return;
+      var open0 = X.prototype.open, send0 = X.prototype.send;
+      X.prototype.open = function (method, url) {
+        this.__pkIndex = /\/search\/search_index\.json(\?|#|$)/.test(String(url));
+        return open0.apply(this, arguments);
+      };
+      X.prototype.send = function () {
+        if (!this.__pkIndex) return send0.apply(this, arguments);
+        var xhr = this, args = arguments;
+        gate.then(function () { send0.apply(xhr, args); });
+      };
+      function wake() { open(); }
+      document.addEventListener("focusin", function (e) { if (e.target && e.target.closest && e.target.closest(".md-search")) wake(); });
+      document.addEventListener("click", function (e) { if (e.target && e.target.closest && e.target.closest('label[for="__search"], .md-search')) wake(); }, true);
+      document.addEventListener("keydown", function (e) {
+        var k = e.key;
+        if ((k === "/" || k === "s" || k === "f" || k === "S" || k === "F") && !(e.target && e.target.closest && e.target.closest("input, textarea, [contenteditable]"))) wake();
+      }, true);
+      if (/[?&]q=/.test(location.search)) wake();
+    })();
+  </script><script>
+    try {
+      if ((window.matchMedia && (matchMedia("(display-mode: standalone)").matches || matchMedia("(display-mode: fullscreen)").matches)) || navigator.standalone === true) {
+        document.documentElement.className += " bjp-standalone";
+      }
+    } catch (e) { /* not an installed app */ }
+    /* the books of a subject or of the whole library as covers or as a list (assets/app.js): the reader's choice */
+    try {
+      var bv = localStorage.getItem("bjp.view");
+      if (bv === "list" || (bv !== "grid" && /\/books\.html$/.test(location.pathname))) document.documentElement.className += " bjp-view-list";
+    } catch (e) { /* no storage: covers */ }
+  </script>
+<script>
+    /* a book opened from its cover on the shelf: the page stays blank, in the cover's colour, until the reader is up */
+    try {
+      var cv = sessionStorage.getItem("bjp.reader.cover");
+      if (cv && sessionStorage.getItem("bjp.reader.open") === "1") {
+        var c = JSON.parse(cv), de = document.documentElement;
+        de.className += " bjp-booting";
+        if (c && /^#[0-9a-f]{3,8}$/i.test(c.bg || "")) de.style.background = c.bg;
+        setTimeout(function () { de.classList.remove("bjp-booting"); de.style.background = ""; }, 3000);
+      }
+    } catch (e) { /* no session storage: the page simply opens as usual */ }
+  </script>
+<title>6. Hybrid Cryptography - The Open Book Project</title>
+<link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+<link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+<link rel="stylesheet" href="../../assets/extra.css">
+<link rel="stylesheet" href="../../assets/reader.css">
+<link rel="stylesheet" href="../../assets/viz.css">
+<link rel="stylesheet" href="../../assets/app.css">
+<link rel="stylesheet" href="../../assets/theme.css">
+<link rel="stylesheet" href="../../assets/slides.css">
+<link rel="stylesheet" href="../../assets/remote.css">
+<link rel="stylesheet" href="../../assets/scans.css">
+<link rel="stylesheet" href="../../assets/speak.css">
+<link rel="stylesheet" href="../../assets/quiz.css">
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+<input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+<input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a href="#61-rationale-for-hybrid-cryptography" class="md-skip">
+Skip to content
+</a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav class="md-header__inner md-grid" aria-label="Header">
+<a href="../../index.html" title="The Open Book Project" class="md-header__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+The Open Book Project
+</span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+6. Hybrid Cryptography
+</span>
+</div>
+</div>
+</div><a href="../../index.html" class="bjp-libbtn" aria-label="Library: all books" title="Library: all books">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V5h4v15M8 20V9h4v11M14 20L12.6 6l3.8-.8 3 14.2M3 20h18"/></svg><span>Library</span>
+</a>
+<a href="../../subjects/index.html" class="pk-catbtn" aria-haspopup="true" aria-expanded="false" title="Browse the books by category">
+<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><circle cx="17" cy="7" r="3.6"/><path d="M7 13.4l3.9 6.8H3.1z"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg><span>Categories</span>
+</a>
+<form class="md-header__option" data-md-component="palette">
+<input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+<label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+</label>
+<input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+<label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+<label class="md-search__icon md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</label>
+<nav class="md-search__options" aria-label="Search">
+<button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+Initializing search
+</div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--primary bjp-nav bjp-nav--book" aria-label="Navigation" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a href="../../index.html" title="The Open Book Project" class="md-nav__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+The Open Book Project
+</label>
+<ul class="md-nav__list" data-md-scrollfix>
+<li class="md-nav__item bjp-nav-all">
+<a href="../../index.html" class="md-nav__link" aria-label="All books: back to the library">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+<span class="md-ellipsis">All books</span>
+</a>
+</li>
+<li class="md-nav__item bjp-nav-book" role="presentation"><span class="bjp-nav-head">Post-Quantum Cryptography</span></li>
+<li class="md-nav__item">
+<a href="index.html" class="md-nav__link">
+<span class="md-ellipsis">
+Overview and preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch01-foundations-of-post-quantum-cryptography.html" class="md-nav__link">
+<span class="md-ellipsis">
+1. Foundations of Post-Quantum Cryptography
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch02-pqc-algorithm-families.html" class="md-nav__link">
+<span class="md-ellipsis">
+2. PQC Algorithm Families
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch03-nist-pqc-standards.html" class="md-nav__link">
+<span class="md-ellipsis">
+3. NIST PQC Standards
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch04-pqc-implementation.html" class="md-nav__link">
+<span class="md-ellipsis">
+4. PQC Implementation
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch05-pqc-migration-strategy.html" class="md-nav__link">
+<span class="md-ellipsis">
+5. PQC Migration Strategy
+</span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+6. Hybrid Cryptography
+</span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a href="ch06-hybrid-cryptography.html" class="md-nav__link md-nav__link--active">
+<span class="md-ellipsis">
+6. Hybrid Cryptography
+</span>
+</a>
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#61-rationale-for-hybrid-cryptography" class="md-nav__link">
+<span class="md-ellipsis">
+6.1 Rationale for Hybrid Cryptography
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#62-generic-hybrid-kem-construction" class="md-nav__link">
+<span class="md-ellipsis">
+6.2 Generic Hybrid KEM Construction
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#63-x25519mlkem768-the-recommended-hybrid" class="md-nav__link">
+<span class="md-ellipsis">
+6.3 X25519MLKEM768 — The Recommended Hybrid
+</span>
+</a>
+<nav class="md-nav" aria-label="6.3 X25519MLKEM768 — The Recommended Hybrid">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#631-tls-overhead-analysis" class="md-nav__link">
+<span class="md-ellipsis">
+6.3.1 TLS Overhead Analysis
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#632-deployment-status" class="md-nav__link">
+<span class="md-ellipsis">
+6.3.2 Deployment Status
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#64-deployed-hybrid-protocols" class="md-nav__link">
+<span class="md-ellipsis">
+6.4 Deployed Hybrid Protocols
+</span>
+</a>
+<nav class="md-nav" aria-label="6.4 Deployed Hybrid Protocols">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#641-signals-pqxdh-post-quantum-extended-diffie-hellman" class="md-nav__link">
+<span class="md-ellipsis">
+6.4.1 Signal’s PQXDH (Post-Quantum Extended Diffie-Hellman)
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#642-apple-imessage-pq3-2024" class="md-nav__link">
+<span class="md-ellipsis">
+6.4.2 Apple iMessage PQ3 (2024)
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#643-meta-messenger-e2ee" class="md-nav__link">
+<span class="md-ellipsis">
+6.4.3 Meta Messenger E2EE
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#65-hybrid-signatures" class="md-nav__link">
+<span class="md-ellipsis">
+6.5 Hybrid Signatures
+</span>
+</a>
+<nav class="md-nav" aria-label="6.5 Hybrid Signatures">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#651-composite-signatures-x509" class="md-nav__link">
+<span class="md-ellipsis">
+6.5.1 Composite Signatures (X.509)
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#652-concatenated-hybrid-signatures" class="md-nav__link">
+<span class="md-ellipsis">
+6.5.2 Concatenated Hybrid Signatures
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#66-hybrid-kdf-security-analysis" class="md-nav__link">
+<span class="md-ellipsis">
+6.6 Hybrid KDF Security Analysis
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#67-ietf-standards-for-hybrid-pqc" class="md-nav__link">
+<span class="md-ellipsis">
+6.7 IETF Standards for Hybrid PQC
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#68-when-to-use-pure-pqc-vs-hybrid" class="md-nav__link">
+<span class="md-ellipsis">
+6.8 When to Use Pure PQC vs Hybrid
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#69-summary" class="md-nav__link">
+<span class="md-ellipsis">
+6.9 Summary
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="ch07-pqc-testing-and-validation.html" class="md-nav__link">
+<span class="md-ellipsis">
+7. PQC Testing and Validation
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch08-side-channel-attacks-and-countermeasures.html" class="md-nav__link">
+<span class="md-ellipsis">
+8. Side-Channel Attacks and Countermeasures
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch09-pqc-applications-and-national-solutions.html" class="md-nav__link">
+<span class="md-ellipsis">
+9. PQC Applications and National Solutions
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch10-pqc-research-and-open-problems.html" class="md-nav__link">
+<span class="md-ellipsis">
+10. PQC Research and Open Problems
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#61-rationale-for-hybrid-cryptography" class="md-nav__link">
+<span class="md-ellipsis">
+6.1 Rationale for Hybrid Cryptography
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#62-generic-hybrid-kem-construction" class="md-nav__link">
+<span class="md-ellipsis">
+6.2 Generic Hybrid KEM Construction
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#63-x25519mlkem768-the-recommended-hybrid" class="md-nav__link">
+<span class="md-ellipsis">
+6.3 X25519MLKEM768 — The Recommended Hybrid
+</span>
+</a>
+<nav class="md-nav" aria-label="6.3 X25519MLKEM768 — The Recommended Hybrid">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#631-tls-overhead-analysis" class="md-nav__link">
+<span class="md-ellipsis">
+6.3.1 TLS Overhead Analysis
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#632-deployment-status" class="md-nav__link">
+<span class="md-ellipsis">
+6.3.2 Deployment Status
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#64-deployed-hybrid-protocols" class="md-nav__link">
+<span class="md-ellipsis">
+6.4 Deployed Hybrid Protocols
+</span>
+</a>
+<nav class="md-nav" aria-label="6.4 Deployed Hybrid Protocols">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#641-signals-pqxdh-post-quantum-extended-diffie-hellman" class="md-nav__link">
+<span class="md-ellipsis">
+6.4.1 Signal’s PQXDH (Post-Quantum Extended Diffie-Hellman)
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#642-apple-imessage-pq3-2024" class="md-nav__link">
+<span class="md-ellipsis">
+6.4.2 Apple iMessage PQ3 (2024)
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#643-meta-messenger-e2ee" class="md-nav__link">
+<span class="md-ellipsis">
+6.4.3 Meta Messenger E2EE
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#65-hybrid-signatures" class="md-nav__link">
+<span class="md-ellipsis">
+6.5 Hybrid Signatures
+</span>
+</a>
+<nav class="md-nav" aria-label="6.5 Hybrid Signatures">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#651-composite-signatures-x509" class="md-nav__link">
+<span class="md-ellipsis">
+6.5.1 Composite Signatures (X.509)
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#652-concatenated-hybrid-signatures" class="md-nav__link">
+<span class="md-ellipsis">
+6.5.2 Concatenated Hybrid Signatures
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#66-hybrid-kdf-security-analysis" class="md-nav__link">
+<span class="md-ellipsis">
+6.6 Hybrid KDF Security Analysis
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#67-ietf-standards-for-hybrid-pqc" class="md-nav__link">
+<span class="md-ellipsis">
+6.7 IETF Standards for Hybrid PQC
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#68-when-to-use-pure-pqc-vs-hybrid" class="md-nav__link">
+<span class="md-ellipsis">
+6.8 When to Use Pure PQC vs Hybrid
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#69-summary" class="md-nav__link">
+<span class="md-ellipsis">
+6.9 Summary
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="ch-hybrid">Chapter 6: Hybrid Cryptography<a class="headerlink" href="#ch-hybrid" title="Permanent link">&para;</a></h1>
+<h2 id="61-rationale-for-hybrid-cryptography"><span class="secnum">6.1</span> Rationale for Hybrid Cryptography<a class="headerlink" href="#61-rationale-for-hybrid-cryptography" title="Permanent link">&para;</a></h2>
+<p>Hybrid cryptography combines a classical algorithm with a post-quantum algorithm in a single key exchange or signature scheme. The core security argument:</p>
+<div class="admonition info box-keybox kind-concept">
+<p class="admonition-title">Hybrid Security Guarantee</p>
+<p>A hybrid scheme is secure if <strong>either</strong> the classical <strong>or</strong> the PQC component is secure. If a breakthrough attack on MLWE is found, the classical ECDH component maintains security against classical attackers. If a CRQC becomes available, the PQC component maintains security against quantum attackers. This “belt and suspenders” approach is the recommended transition strategy.</p>
+</div>
+<figure class="fig fig-diagram" id="fig-hybrid_kem">
+<img class="tikz" src="img/tikz-5016c90253d5.svg" alt="Hybrid KEM construction: combining classical and PQC shared secrets via KDF." loading="lazy" width="296" height="126">
+<figcaption><strong>Figure 6.1.</strong> Hybrid KEM construction: combining classical and PQC shared secrets via KDF.</figcaption>
+</figure>
+<h2 id="62-generic-hybrid-kem-construction"><span class="secnum">6.2</span> Generic Hybrid KEM Construction<a class="headerlink" href="#62-generic-hybrid-kem-construction" title="Permanent link">&para;</a></h2>
+<p>The standard hybrid KEM construction follows RFC 9180 (HPKE) combined with IETF draft for hybrid PQC:</p>
+<div class="admonition info box-keybox kind-concept">
+<p class="admonition-title">Algorithm: Hybrid KEM Construction</p>
+<ol>
+<li>
+<p><strong>KeyGen:</strong></p>
+</li>
+<li>
+<p><span class="arithmatex">\((ek_1, dk_1) \leftarrow \text{KEM}_1\text{.KeyGen}()\)</span> <em>// Classical (e.g., X25519)</em></p>
+</li>
+<li>
+<p><span class="arithmatex">\((ek_2, dk_2) \leftarrow \text{KEM}_2\text{.KeyGen}()\)</span> <em>// PQC (e.g., ML-KEM-768)</em></p>
+</li>
+<li>
+<p><strong>return</strong> <span class="arithmatex">\((ek = ek_1 \| ek_2, \; dk = dk_1 \| dk_2)\)</span></p>
+</li>
+<li>
+<p><strong>Encapsulate<span class="arithmatex">\((ek)\)</span>:</strong></p>
+</li>
+<li>
+<p><span class="arithmatex">\((K_1, ct_1) \leftarrow \text{KEM}_1\text{.Encaps}(ek_1)\)</span></p>
+</li>
+<li>
+<p><span class="arithmatex">\((K_2, ct_2) \leftarrow \text{KEM}_2\text{.Encaps}(ek_2)\)</span></p>
+</li>
+<li>
+<p><span class="arithmatex">\(K \leftarrow \text{HKDF-SHA256}(K_1 \| K_2, ct_1 \| ct_2 \| ek)\)</span></p>
+</li>
+<li>
+<p><strong>return</strong> <span class="arithmatex">\((K, \; ct = ct_1 \| ct_2)\)</span></p>
+</li>
+<li>
+<p><strong>Decapsulate<span class="arithmatex">\((dk, ct)\)</span>:</strong></p>
+</li>
+<li>
+<p><span class="arithmatex">\(K_1 \leftarrow \text{KEM}_1\text{.Decaps}(dk_1, ct_1)\)</span></p>
+</li>
+<li>
+<p><span class="arithmatex">\(K_2 \leftarrow \text{KEM}_2\text{.Decaps}(dk_2, ct_2)\)</span></p>
+</li>
+<li>
+<p><span class="arithmatex">\(K \leftarrow \text{HKDF-SHA256}(K_1 \| K_2, ct_1 \| ct_2 \| ek)\)</span></p>
+</li>
+<li>
+<p><strong>return</strong> <span class="arithmatex">\(K\)</span></p>
+</li>
+</ol>
+</div>
+<p>The KDF combiner ensures that the combined key <span class="arithmatex">\(K\)</span> is indistinguishable from random if <strong>either</strong> <span class="arithmatex">\(K_1\)</span> or <span class="arithmatex">\(K_2\)</span> is a uniformly random string. This provides the hybrid security guarantee.</p>
+<h2 id="63-x25519mlkem768-the-recommended-hybrid"><span class="secnum">6.3</span> X25519MLKEM768 — The Recommended Hybrid<a class="headerlink" href="#63-x25519mlkem768-the-recommended-hybrid" title="Permanent link">&para;</a></h2>
+<p>X25519MLKEM768 is the specific hybrid KEM standardized in IETF drafts and already deployed by major browsers and CDNs:</p>
+<div class="tbl" id="tab-x25519mlkem768_sizes">
+<div class="tbl-caption"><strong>Table 6.1.</strong> X25519MLKEM768 Key Sizes</div>
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Component</strong></th>
+<th style="text-align: left;"><strong>Element</strong></th>
+<th style="text-align: left;"><strong>Classical</strong></th>
+<th style="text-align: left;"><strong>PQC / Total</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">X25519</td>
+<td style="text-align: left;">Public key</td>
+<td style="text-align: left;">32 bytes</td>
+<td style="text-align: left;">—</td>
+</tr>
+<tr>
+<td style="text-align: left;">ML-KEM-768</td>
+<td style="text-align: left;">Encapsulation key</td>
+<td style="text-align: left;">—</td>
+<td style="text-align: left;">1184 bytes</td>
+</tr>
+<tr>
+<td style="text-align: left;">Combined</td>
+<td style="text-align: left;">Public key total</td>
+<td style="text-align: left;">32 B</td>
+<td style="text-align: left;">1216 bytes</td>
+</tr>
+<tr>
+<td style="text-align: left;">X25519</td>
+<td style="text-align: left;">Ciphertext</td>
+<td style="text-align: left;">32 bytes</td>
+<td style="text-align: left;">—</td>
+</tr>
+<tr>
+<td style="text-align: left;">ML-KEM-768</td>
+<td style="text-align: left;">Ciphertext</td>
+<td style="text-align: left;">—</td>
+<td style="text-align: left;">1088 bytes</td>
+</tr>
+<tr>
+<td style="text-align: left;">Combined</td>
+<td style="text-align: left;">Ciphertext total</td>
+<td style="text-align: left;">32 B</td>
+<td style="text-align: left;">1120 bytes</td>
+</tr>
+<tr>
+<td style="text-align: left;">Combined</td>
+<td style="text-align: left;">Shared secret</td>
+<td style="text-align: left;">32+32 B</td>
+<td style="text-align: left;">32 B (after KDF)</td>
+</tr>
+</tbody>
+</table>
+</div></div>
+<h3 id="631-tls-overhead-analysis"><span class="secnum">6.3.1</span> TLS Overhead Analysis<a class="headerlink" href="#631-tls-overhead-analysis" title="Permanent link">&para;</a></h3>
+<div class="tbl" id="tab-tls_overhead">
+<div class="tbl-caption"><strong>Table 6.2.</strong> TLS 1.3 Key Exchange Overhead: Classical vs Hybrid vs PQC</div>
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Method</strong></th>
+<th style="text-align: left;"><strong>ClientHello (B)</strong></th>
+<th style="text-align: left;"><strong>ServerHello (B)</strong></th>
+<th style="text-align: left;"><strong>Extra RTT</strong></th>
+<th style="text-align: left;"><strong>Security</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">X25519 (classical)</td>
+<td style="text-align: left;">32</td>
+<td style="text-align: left;">32</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">Classical only</td>
+</tr>
+<tr>
+<td style="text-align: left;">X25519MLKEM768 (hybrid)</td>
+<td style="text-align: left;">1216</td>
+<td style="text-align: left;">1120</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">Classical + PQC</td>
+</tr>
+<tr>
+<td style="text-align: left;">ML-KEM-768 (pure PQC)</td>
+<td style="text-align: left;">1184</td>
+<td style="text-align: left;">1088</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">PQC only</td>
+</tr>
+</tbody>
+</table>
+</div></div>
+<p>The additional overhead of X25519MLKEM768 over classical X25519 is <span class="arithmatex">\(\sim\)</span>2 KB per TLS handshake, adding negligible latency (<span class="arithmatex">\(&lt;\)</span>1ms) on modern networks.</p>
+<h3 id="632-deployment-status"><span class="secnum">6.3.2</span> Deployment Status<a class="headerlink" href="#632-deployment-status" title="Permanent link">&para;</a></h3>
+<div class="tbl" id="tab-hybrid_deployment">
+<div class="tbl-caption"><strong>Table 6.3.</strong> X25519MLKEM768 Deployment Status (2025)</div>
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Product</strong></th>
+<th style="text-align: left;"><strong>Status</strong></th>
+<th style="text-align: left;"><strong>Notes</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Google Chrome 131+</td>
+<td style="text-align: left;">Deployed</td>
+<td style="text-align: left;">Default since Chrome 131 (Nov 2024)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Mozilla Firefox 132+</td>
+<td style="text-align: left;">Deployed</td>
+<td style="text-align: left;">Enabled by default</td>
+</tr>
+<tr>
+<td style="text-align: left;">Cloudflare CDN</td>
+<td style="text-align: left;">Deployed</td>
+<td style="text-align: left;"><span class="math inline">\(&gt;\)</span>50% of TLS connections use PQC key exchange</td>
+</tr>
+<tr>
+<td style="text-align: left;">Apple Safari</td>
+<td style="text-align: left;">Announced</td>
+<td style="text-align: left;">PQ3 for iMessage; TLS hybrid coming</td>
+</tr>
+<tr>
+<td style="text-align: left;">AWS (CloudFront)</td>
+<td style="text-align: left;">Deployed</td>
+<td style="text-align: left;">X25519MLKEM768 on edge</td>
+</tr>
+<tr>
+<td style="text-align: left;">Microsoft Azure</td>
+<td style="text-align: left;">In progress</td>
+<td style="text-align: left;">Azure load balancer PQC roadmap</td>
+</tr>
+</tbody>
+</table>
+</div></div>
+<h2 id="64-deployed-hybrid-protocols"><span class="secnum">6.4</span> Deployed Hybrid Protocols<a class="headerlink" href="#64-deployed-hybrid-protocols" title="Permanent link">&para;</a></h2>
+<h3 id="641-signals-pqxdh-post-quantum-extended-diffie-hellman"><span class="secnum">6.4.1</span> Signal’s PQXDH (Post-Quantum Extended Diffie-Hellman)<a class="headerlink" href="#641-signals-pqxdh-post-quantum-extended-diffie-hellman" title="Permanent link">&para;</a></h3>
+<p>Signal Protocol adopted PQXDH (2023) as the first widely deployed PQC messaging protocol:</p>
+<ol>
+<li>
+<p><strong>Pre-key bundle</strong>: Each device publishes an ML-KEM-1024 encapsulation key alongside classical X25519 keys.</p>
+</li>
+<li>
+<p><strong>Initial message</strong>: Sender encapsulates to both the classical X25519 and ML-KEM-1024 keys.</p>
+</li>
+<li>
+<p><strong>Key derivation</strong>: Combined shared secret via HKDF, then used to initialize Double Ratchet.</p>
+</li>
+<li>
+<p><strong>Forward secrecy</strong>: Post-quantum forward secrecy is achieved by the ephemeral ML-KEM key per session.</p>
+</li>
+</ol>
+<h3 id="642-apple-imessage-pq3-2024"><span class="secnum">6.4.2</span> Apple iMessage PQ3 (2024)<a class="headerlink" href="#642-apple-imessage-pq3-2024" title="Permanent link">&para;</a></h3>
+<p>Apple’s PQ3 protocol for iMessage provides post-quantum protection at security level 3 (highest level Apple has deployed):</p>
+<ul>
+<li>
+<p>ML-KEM-768 hybrid key exchange for initial session establishment.</p>
+</li>
+<li>
+<p>Periodic ML-KEM re-keying to limit exposure of stored messages.</p>
+</li>
+<li>
+<p>ML-DSA-65 for device identity authentication.</p>
+</li>
+<li>
+<p>Backward-compatible with existing iMessage infrastructure.</p>
+</li>
+<li>
+<p>Deployed February 2024, protecting over 1 billion iMessage users.</p>
+</li>
+</ul>
+<h3 id="643-meta-messenger-e2ee"><span class="secnum">6.4.3</span> Meta Messenger E2EE<a class="headerlink" href="#643-meta-messenger-e2ee" title="Permanent link">&para;</a></h3>
+<p>Meta’s end-to-end encrypted Messenger (2024) uses hybrid PQC:</p>
+<ul>
+<li>
+<p><strong>Key exchange</strong>: X25519 + CRYSTALS-Kyber (predecessor to ML-KEM) hybrid.</p>
+</li>
+<li>
+<p><strong>Authentication</strong>: ECDSA + ML-DSA hybrid signatures for device keys.</p>
+</li>
+</ul>
+<h2 id="65-hybrid-signatures"><span class="secnum">6.5</span> Hybrid Signatures<a class="headerlink" href="#65-hybrid-signatures" title="Permanent link">&para;</a></h2>
+<p>Hybrid signatures combine classical and PQC signature schemes for the transition period:</p>
+<h3 id="651-composite-signatures-x509"><span class="secnum">6.5.1</span> Composite Signatures (X.509)<a class="headerlink" href="#651-composite-signatures-x509" title="Permanent link">&para;</a></h3>
+<p>The IETF “composite crypto” drafts define hybrid X.509 certificates with dual signatures:</p>
+<div class="language-text highlight"><pre><span></span><code># Generate composite keypair: ML-DSA-65 + ECDSA P-384
+openssl genpkey -algorithm id-MLDSA65-ECDSA-P384-SHA384 \
+    -out composite_key.pem \
+    -provider oqsprovider -provider default
+
+# Self-signed composite certificate
+openssl req -new -x509 \
+    -key composite_key.pem \
+    -out composite_cert.pem \
+    -days 3650 \
+    -subj "/CN=Hybrid PQC Server" \
+    -provider oqsprovider -provider default
+
+# The certificate contains TWO signature values:
+# 1. ML-DSA-65 signature (PQC-resistant)
+# 2. ECDSA-P384 signature (classical, for legacy compatibility)
+openssl x509 -in composite_cert.pem -text | grep "Signature Algorithm"
+</code></pre></div>
+<h3 id="652-concatenated-hybrid-signatures"><span class="secnum">6.5.2</span> Concatenated Hybrid Signatures<a class="headerlink" href="#652-concatenated-hybrid-signatures" title="Permanent link">&para;</a></h3>
+<p>An alternative approach concatenates the two signatures:</p>
+<div class="arithmatex">\[\sigma_{\text{hybrid}} = \sigma_{\text{classical}} \| \sigma_{\text{PQC}} \| \text{len}(\sigma_{\text{classical}})\]</div>
+<p>Verification requires <strong>both</strong> signatures to be valid (OR semantics provide security if either is secure against its threat model).</p>
+<h2 id="66-hybrid-kdf-security-analysis"><span class="secnum">6.6</span> Hybrid KDF Security Analysis<a class="headerlink" href="#66-hybrid-kdf-security-analysis" title="Permanent link">&para;</a></h2>
+<p>The security of the hybrid KDF combiner depends on the construction:</p>
+<div class="tbl" id="tab-hybrid_combiners">
+<div class="tbl-caption"><strong>Table 6.4.</strong> Hybrid Combiner Options</div>
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Combiner</strong></th>
+<th style="text-align: left;"><strong>Construction</strong></th>
+<th style="text-align: left;"><strong>Security</strong></th>
+<th style="text-align: left;"><strong>Standard</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">XOR</td>
+<td style="text-align: left;"><span class="math inline">\(K = K_1 \oplus K_2\)</span></td>
+<td style="text-align: left;">Weak; only safe if both uniform</td>
+<td style="text-align: left;">Avoid</td>
+</tr>
+<tr>
+<td style="text-align: left;">Concatenation+KDF</td>
+<td style="text-align: left;"><span class="math inline">\(K = \text{HKDF}(K_1 \| K_2, …)\)</span></td>
+<td style="text-align: left;">Strong</td>
+<td style="text-align: left;">IETF draft</td>
+</tr>
+<tr>
+<td style="text-align: left;">Split KDF</td>
+<td style="text-align: left;"><span class="math inline">\(K_1' = \text{KDF}(K_1), K_2' = \text{KDF}(K_2), K = K_1' \oplus K_2'\)</span></td>
+<td style="text-align: left;">Strong</td>
+<td style="text-align: left;">RFC 8470</td>
+</tr>
+</tbody>
+</table>
+</div></div>
+<div class="admonition note box-notebox kind-note">
+<p class="admonition-title">HKDF Hybrid Combiner Best Practice</p>
+<p>Use: <span class="arithmatex">\(K = \text{HKDF}(K_1 \| K_2, \; ct_1 \| ct_2 \| ek_1 \| ek_2, \;\text{“hybrid-kem”})\)</span></p>
+<p>Including the ciphertexts and public keys in the HKDF info field prevents “ciphertext binding” attacks where an adversary substitutes part of the hybrid ciphertext.</p>
+</div>
+<h2 id="67-ietf-standards-for-hybrid-pqc"><span class="secnum">6.7</span> IETF Standards for Hybrid PQC<a class="headerlink" href="#67-ietf-standards-for-hybrid-pqc" title="Permanent link">&para;</a></h2>
+<div class="tbl" id="tab-ietf_hybrid">
+<div class="tbl-caption"><strong>Table 6.5.</strong> IETF Hybrid PQC Drafts and RFCs (2024–2025)</div>
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Draft/RFC</strong></th>
+<th style="text-align: left;"><strong>Scope</strong></th>
+<th style="text-align: left;"><strong>Description</strong></th>
+<th style="text-align: left;"><strong>Status</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">draft-ietf-tls-mlkem</td>
+<td style="text-align: left;">TLS</td>
+<td style="text-align: left;">ML-KEM in TLS 1.3</td>
+<td style="text-align: left;">Active</td>
+</tr>
+<tr>
+<td style="text-align: left;">draft-ietf-tls-hybrid-design</td>
+<td style="text-align: left;">TLS</td>
+<td style="text-align: left;">Hybrid key exchange design</td>
+<td style="text-align: left;">Active</td>
+</tr>
+<tr>
+<td style="text-align: left;">RFC 9151</td>
+<td style="text-align: left;">TLS</td>
+<td style="text-align: left;">Classic-hybrid ECDH-KEM for TLS</td>
+<td style="text-align: left;">Published</td>
+</tr>
+<tr>
+<td style="text-align: left;">draft-ietf-pquip-pqc-engineers</td>
+<td style="text-align: left;">General</td>
+<td style="text-align: left;">PQC for engineers</td>
+<td style="text-align: left;">Active</td>
+</tr>
+<tr>
+<td style="text-align: left;">draft-ietf-lamps-pq-composite-kem</td>
+<td style="text-align: left;">X.509</td>
+<td style="text-align: left;">Composite PQC KEMs for X.509</td>
+<td style="text-align: left;">Active</td>
+</tr>
+<tr>
+<td style="text-align: left;">draft-ietf-lamps-pq-composite-sigs</td>
+<td style="text-align: left;">X.509</td>
+<td style="text-align: left;">Composite PQC signatures</td>
+<td style="text-align: left;">Active</td>
+</tr>
+<tr>
+<td style="text-align: left;">draft-ietf-openpgp-pqc</td>
+<td style="text-align: left;">OpenPGP</td>
+<td style="text-align: left;">ML-KEM + ML-DSA in PGP</td>
+<td style="text-align: left;">Active</td>
+</tr>
+</tbody>
+</table>
+</div></div>
+<h2 id="68-when-to-use-pure-pqc-vs-hybrid"><span class="secnum">6.8</span> When to Use Pure PQC vs Hybrid<a class="headerlink" href="#68-when-to-use-pure-pqc-vs-hybrid" title="Permanent link">&para;</a></h2>
+<div class="tbl" id="tab-hybrid_vs_pure">
+<div class="tbl-caption"><strong>Table 6.6.</strong> Hybrid vs Pure PQC Selection Guide</div>
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Scenario</strong></th>
+<th style="text-align: left;"><strong>Hybrid PQC</strong></th>
+<th style="text-align: left;"><strong>Pure PQC</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Transition period (now–2030)</td>
+<td style="text-align: left;">Recommended for most</td>
+<td style="text-align: left;">Consider for new greenfield systems</td>
+</tr>
+<tr>
+<td style="text-align: left;">Maximum classical compatibility</td>
+<td style="text-align: left;">Required</td>
+<td style="text-align: left;">Not suitable</td>
+</tr>
+<tr>
+<td style="text-align: left;">Bandwidth-critical (IoT)</td>
+<td style="text-align: left;">May be too large</td>
+<td style="text-align: left;">Preferred (smaller)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Classified systems (NSA CNSA 2.0)</td>
+<td style="text-align: left;">Acceptable</td>
+<td style="text-align: left;">Required eventually</td>
+</tr>
+<tr>
+<td style="text-align: left;">FIPS compliance</td>
+<td style="text-align: left;">Check FIPS 140-3 status</td>
+<td style="text-align: left;">Preferred post-2025</td>
+</tr>
+<tr>
+<td style="text-align: left;">Long-lived root CAs</td>
+<td style="text-align: left;">Composite certs</td>
+<td style="text-align: left;">Consider pure PQC</td>
+</tr>
+<tr>
+<td style="text-align: left;">Post-2030 deployments</td>
+<td style="text-align: left;">Sunset plan needed</td>
+<td style="text-align: left;">Recommended</td>
+</tr>
+</tbody>
+</table>
+</div></div>
+<h2 id="69-summary"><span class="secnum">6.9</span> Summary<a class="headerlink" href="#69-summary" title="Permanent link">&para;</a></h2>
+<ul>
+<li>
+<p>Hybrid cryptography provides a “belt and suspenders” security guarantee: secure if either component is secure.</p>
+</li>
+<li>
+<p>X25519MLKEM768 is the recommended hybrid KEM, already deployed in Chrome, Firefox, and Cloudflare.</p>
+</li>
+<li>
+<p>The TLS overhead of hybrid PQC is <span class="arithmatex">\(\sim\)</span>2 KB per handshake — negligible for most applications.</p>
+</li>
+<li>
+<p>Signal’s PQXDH and Apple’s PQ3 demonstrate successful large-scale hybrid PQC deployments.</p>
+</li>
+<li>
+<p>HKDF is the correct combiner for hybrid KEMs; XOR-only combiners are insecure.</p>
+</li>
+<li>
+<p>Composite X.509 certificates with dual signatures (classical + PQC) enable PKI migration without breaking legacy clients.</p>
+</li>
+<li>
+<p>Hybrid PQC is the recommended transition strategy for 2025–2030; pure PQC becomes the target post-2030.</p>
+</li>
+</ul>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button type="button" class="md-top md-icon" data-md-component="top" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+Back to top
+</button>
+</main>
+<footer class="md-footer">
+<nav class="md-footer__inner md-grid" aria-label="Footer" >
+<a href="ch05-pqc-migration-strategy.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: 5. PQC Migration Strategy">
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</div>
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Previous
+</span>
+<div class="md-ellipsis">
+5. PQC Migration Strategy
+</div>
+</div>
+</a>
+<a href="ch07-pqc-testing-and-validation.html" class="md-footer__link md-footer__link--next" aria-label="Next: 7. PQC Testing and Validation">
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Next
+</span>
+<div class="md-ellipsis">
+7. PQC Testing and Validation
+</div>
+</div>
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+</div>
+</a>
+</nav>
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+The Open Book Project &middot;
+<a href="../../about.html">About this library</a> &middot;
+<a href="../../publish.html">Publish your book</a> &middot;
+© The authors of the books
+</div>
+Made with
+<a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+Material for MkDocs
+</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "navigation.prune", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "toc.follow", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+<script src="../../assets/mathjax.js"></script>
+<script src="../../assets/viz.js"></script>
+<script src="../../assets/remote.js"></script>
+<script src="../../assets/scans.js"></script>
+<script src="../../assets/reader.js"></script>
+<script src="../../assets/app.js"></script>
+<script src="../../assets/slides.js"></script>
+<script src="../../assets/speak.js"></script>
+<script src="../../assets/quiz.js"></script>
+<script>
+    /* offline reading: the service worker at the site root (its scope is the whole site) */
+    if ("serviceWorker" in navigator && window.isSecureContext) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register(new URL("../../sw.js", location.href).href).catch(function () {});
+      });
+    }
+  </script>
+</body>
+</html>

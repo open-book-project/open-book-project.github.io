@@ -1,0 +1,1258 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="description" content="The Open Book Project: books on computer science, quantum computing, cyber security, science, the social sciences, university courses and languages, read page by page like an e-book, online or offline.">
+<meta name="author" content="The Open Book Project">
+<link rel="canonical" href="https://open-book-project.github.io/quantum/qml_theory_practice/ch02-quantum-computing-essentials.html">
+<link rel="prev" href="ch01-mathematical-prerequisites-for-qml.html">
+<link rel="next" href="ch03-quantum-information-theory-for-machine-learning.html">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap"></noscript>
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Open Book">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="application-name" content="Open Book"><script src="../../assets/library-data.js"></script><script>
+    (function () {
+      var X = window.XMLHttpRequest, open, gate = new Promise(function (r) { open = r; });
+      if (!X) return;
+      var open0 = X.prototype.open, send0 = X.prototype.send;
+      X.prototype.open = function (method, url) {
+        this.__pkIndex = /\/search\/search_index\.json(\?|#|$)/.test(String(url));
+        return open0.apply(this, arguments);
+      };
+      X.prototype.send = function () {
+        if (!this.__pkIndex) return send0.apply(this, arguments);
+        var xhr = this, args = arguments;
+        gate.then(function () { send0.apply(xhr, args); });
+      };
+      function wake() { open(); }
+      document.addEventListener("focusin", function (e) { if (e.target && e.target.closest && e.target.closest(".md-search")) wake(); });
+      document.addEventListener("click", function (e) { if (e.target && e.target.closest && e.target.closest('label[for="__search"], .md-search')) wake(); }, true);
+      document.addEventListener("keydown", function (e) {
+        var k = e.key;
+        if ((k === "/" || k === "s" || k === "f" || k === "S" || k === "F") && !(e.target && e.target.closest && e.target.closest("input, textarea, [contenteditable]"))) wake();
+      }, true);
+      if (/[?&]q=/.test(location.search)) wake();
+    })();
+  </script><script>
+    try {
+      if ((window.matchMedia && (matchMedia("(display-mode: standalone)").matches || matchMedia("(display-mode: fullscreen)").matches)) || navigator.standalone === true) {
+        document.documentElement.className += " bjp-standalone";
+      }
+    } catch (e) { /* not an installed app */ }
+    /* the books of a subject or of the whole library as covers or as a list (assets/app.js): the reader's choice */
+    try {
+      var bv = localStorage.getItem("bjp.view");
+      if (bv === "list" || (bv !== "grid" && /\/books\.html$/.test(location.pathname))) document.documentElement.className += " bjp-view-list";
+    } catch (e) { /* no storage: covers */ }
+  </script>
+<script>
+    /* a book opened from its cover on the shelf: the page stays blank, in the cover's colour, until the reader is up */
+    try {
+      var cv = sessionStorage.getItem("bjp.reader.cover");
+      if (cv && sessionStorage.getItem("bjp.reader.open") === "1") {
+        var c = JSON.parse(cv), de = document.documentElement;
+        de.className += " bjp-booting";
+        if (c && /^#[0-9a-f]{3,8}$/i.test(c.bg || "")) de.style.background = c.bg;
+        setTimeout(function () { de.classList.remove("bjp-booting"); de.style.background = ""; }, 3000);
+      }
+    } catch (e) { /* no session storage: the page simply opens as usual */ }
+  </script>
+<title>2. Quantum Computing Essentials - The Open Book Project</title>
+<link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+<link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+<link rel="stylesheet" href="../../assets/extra.css">
+<link rel="stylesheet" href="../../assets/reader.css">
+<link rel="stylesheet" href="../../assets/viz.css">
+<link rel="stylesheet" href="../../assets/app.css">
+<link rel="stylesheet" href="../../assets/theme.css">
+<link rel="stylesheet" href="../../assets/slides.css">
+<link rel="stylesheet" href="../../assets/remote.css">
+<link rel="stylesheet" href="../../assets/scans.css">
+<link rel="stylesheet" href="../../assets/speak.css">
+<link rel="stylesheet" href="../../assets/quiz.css">
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+<input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+<input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a href="#sec-qubits" class="md-skip">
+Skip to content
+</a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav class="md-header__inner md-grid" aria-label="Header">
+<a href="../../index.html" title="The Open Book Project" class="md-header__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+The Open Book Project
+</span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+2. Quantum Computing Essentials
+</span>
+</div>
+</div>
+</div><a href="../../index.html" class="bjp-libbtn" aria-label="Library: all books" title="Library: all books">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V5h4v15M8 20V9h4v11M14 20L12.6 6l3.8-.8 3 14.2M3 20h18"/></svg><span>Library</span>
+</a>
+<a href="../../subjects/index.html" class="pk-catbtn" aria-haspopup="true" aria-expanded="false" title="Browse the books by category">
+<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><circle cx="17" cy="7" r="3.6"/><path d="M7 13.4l3.9 6.8H3.1z"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg><span>Categories</span>
+</a>
+<form class="md-header__option" data-md-component="palette">
+<input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+<label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+</label>
+<input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+<label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+<label class="md-search__icon md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</label>
+<nav class="md-search__options" aria-label="Search">
+<button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+Initializing search
+</div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--primary bjp-nav bjp-nav--book" aria-label="Navigation" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a href="../../index.html" title="The Open Book Project" class="md-nav__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+The Open Book Project
+</label>
+<ul class="md-nav__list" data-md-scrollfix>
+<li class="md-nav__item bjp-nav-all">
+<a href="../../index.html" class="md-nav__link" aria-label="All books: back to the library">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+<span class="md-ellipsis">All books</span>
+</a>
+</li>
+<li class="md-nav__item bjp-nav-book" role="presentation"><span class="bjp-nav-head">Quantum Machine Learning</span></li>
+<li class="md-nav__item">
+<a href="index.html" class="md-nav__link">
+<span class="md-ellipsis">
+Overview and preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="notation-and-conventions.html" class="md-nav__link">
+<span class="md-ellipsis">
+Notation and Conventions
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="abbreviations-and-acronyms.html" class="md-nav__link">
+<span class="md-ellipsis">
+Abbreviations and Acronyms
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch01-mathematical-prerequisites-for-qml.html" class="md-nav__link">
+<span class="md-ellipsis">
+1. Mathematical Prerequisites for QML
+</span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+2. Quantum Computing Essentials
+</span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a href="ch02-quantum-computing-essentials.html" class="md-nav__link md-nav__link--active">
+<span class="md-ellipsis">
+2. Quantum Computing Essentials
+</span>
+</a>
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#sec-qubits" class="md-nav__link">
+<span class="md-ellipsis">
+2.1 From Bits to Qubits
+</span>
+</a>
+<nav class="md-nav" aria-label="2.1 From Bits to Qubits">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#211-the-qubit" class="md-nav__link">
+<span class="md-ellipsis">
+2.1.1 The Qubit
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#212-the-bloch-sphere" class="md-nav__link">
+<span class="md-ellipsis">
+2.1.2 The Bloch Sphere
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-quantum_gates" class="md-nav__link">
+<span class="md-ellipsis">
+2.2 Quantum Gates and Circuits
+</span>
+</a>
+<nav class="md-nav" aria-label="2.2 Quantum Gates and Circuits">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#221-single-qubit-gates" class="md-nav__link">
+<span class="md-ellipsis">
+2.2.1 Single-Qubit Gates
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#222-two-qubit-gates" class="md-nav__link">
+<span class="md-ellipsis">
+2.2.2 Two-Qubit Gates
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#223-quantum-circuits" class="md-nav__link">
+<span class="md-ellipsis">
+2.2.3 Quantum Circuits
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-measurement" class="md-nav__link">
+<span class="md-ellipsis">
+2.3 Quantum Measurement
+</span>
+</a>
+<nav class="md-nav" aria-label="2.3 Quantum Measurement">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#231-projective-measurements-and-the-born-rule" class="md-nav__link">
+<span class="md-ellipsis">
+2.3.1 Projective Measurements and the Born Rule
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#232-shot-noise-and-statistical-estimation" class="md-nav__link">
+<span class="md-ellipsis">
+2.3.2 Shot Noise and Statistical Estimation
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-entanglement" class="md-nav__link">
+<span class="md-ellipsis">
+2.4 Quantum Entanglement
+</span>
+</a>
+<nav class="md-nav" aria-label="2.4 Quantum Entanglement">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#241-bell-states" class="md-nav__link">
+<span class="md-ellipsis">
+2.4.1 Bell States
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#242-schmidt-decomposition-and-entanglement-entropy" class="md-nav__link">
+<span class="md-ellipsis">
+2.4.2 Schmidt Decomposition and Entanglement Entropy
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-density_matrices" class="md-nav__link">
+<span class="md-ellipsis">
+2.5 Density Matrices and Open Quantum Systems
+</span>
+</a>
+<nav class="md-nav" aria-label="2.5 Density Matrices and Open Quantum Systems">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#251-mixed-states" class="md-nav__link">
+<span class="md-ellipsis">
+2.5.1 Mixed States
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#252-quantum-channels" class="md-nav__link">
+<span class="md-ellipsis">
+2.5.2 Quantum Channels
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-quantum_algorithms" class="md-nav__link">
+<span class="md-ellipsis">
+2.6 Key Quantum Algorithms
+</span>
+</a>
+<nav class="md-nav" aria-label="2.6 Key Quantum Algorithms">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#261-grovers-search-algorithm" class="md-nav__link">
+<span class="md-ellipsis">
+2.6.1 Grover’s Search Algorithm
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#262-quantum-fourier-transform" class="md-nav__link">
+<span class="md-ellipsis">
+2.6.2 Quantum Fourier Transform
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#263-quantum-phase-estimation" class="md-nav__link">
+<span class="md-ellipsis">
+2.6.3 Quantum Phase Estimation
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#264-harrow-hassidim-lloyd-hhl-algorithm" class="md-nav__link">
+<span class="md-ellipsis">
+2.6.4 Harrow-Hassidim-Lloyd (HHL) Algorithm
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#27-chapter-summary" class="md-nav__link">
+<span class="md-ellipsis">
+2.7 Chapter Summary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#exercises" class="md-nav__link">
+<span class="md-ellipsis">
+Exercises
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="ch03-quantum-information-theory-for-machine-learning.html" class="md-nav__link">
+<span class="md-ellipsis">
+3. Quantum Information Theory for Machine Learning
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch04-machine-learning-foundations.html" class="md-nav__link">
+<span class="md-ellipsis">
+4. Machine Learning Foundations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch05-advanced-classical-machine-learning.html" class="md-nav__link">
+<span class="md-ellipsis">
+5. Advanced Classical Machine Learning
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch06-variational-quantum-circuits.html" class="md-nav__link">
+<span class="md-ellipsis">
+6. Variational Quantum Circuits
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch07-quantum-feature-maps-and-data-encoding.html" class="md-nav__link">
+<span class="md-ellipsis">
+7. Quantum Feature Maps and Data Encoding
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch08-quantum-kernel-methods.html" class="md-nav__link">
+<span class="md-ellipsis">
+8. Quantum Kernel Methods
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch09-quantum-support-vector-machines.html" class="md-nav__link">
+<span class="md-ellipsis">
+9. Quantum Support Vector Machines
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch10-quantum-neural-networks.html" class="md-nav__link">
+<span class="md-ellipsis">
+10. Quantum Neural Networks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch11-quantum-convolutional-neural-networks.html" class="md-nav__link">
+<span class="md-ellipsis">
+11. Quantum Convolutional Neural Networks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch12-quantum-recurrent-networks-and-qlstm.html" class="md-nav__link">
+<span class="md-ellipsis">
+12. Quantum Recurrent Networks and QLSTM
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch13-quantum-autoencoders.html" class="md-nav__link">
+<span class="md-ellipsis">
+13. Quantum Autoencoders
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch14-quantum-generative-models.html" class="md-nav__link">
+<span class="md-ellipsis">
+14. Quantum Generative Models
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch15-optimization-and-training-of-quantum-models.html" class="md-nav__link">
+<span class="md-ellipsis">
+15. Optimization and Training of Quantum Models
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch16-barren-plateaus-and-trainability-of-quantum.html" class="md-nav__link">
+<span class="md-ellipsis">
+16. Barren Plateaus and Trainability of Quantum Models
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch17-nisq-hardware-platforms.html" class="md-nav__link">
+<span class="md-ellipsis">
+17. NISQ Hardware Platforms
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch18-quantum-error-mitigation.html" class="md-nav__link">
+<span class="md-ellipsis">
+18. Quantum Error Mitigation
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch19-qml-for-quantum-chemistry-and-molecular.html" class="md-nav__link">
+<span class="md-ellipsis">
+19. QML for Quantum Chemistry and Molecular Simulation
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch20-qml-in-finance-and-optimization.html" class="md-nav__link">
+<span class="md-ellipsis">
+20. QML in Finance and Optimization
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch21-qml-in-healthcare-and-drug-discovery.html" class="md-nav__link">
+<span class="md-ellipsis">
+21. QML in Healthcare and Drug Discovery
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch22-qml-for-nlp-and-computer-vision.html" class="md-nav__link">
+<span class="md-ellipsis">
+22. QML for NLP and Computer Vision
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch23-quantum-advantage-theory-and-benchmarking.html" class="md-nav__link">
+<span class="md-ellipsis">
+23. Quantum Advantage Theory and Benchmarking
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch24-frontiers-and-future-directions-in-qml.html" class="md-nav__link">
+<span class="md-ellipsis">
+24. Frontiers and Future Directions in QML
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="python-environment-setup.html" class="md-nav__link">
+<span class="md-ellipsis">
+Python Environment Setup
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="pennylane-quick-reference.html" class="md-nav__link">
+<span class="md-ellipsis">
+PennyLane Quick Reference
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="qiskit-quick-reference.html" class="md-nav__link">
+<span class="md-ellipsis">
+Qiskit Quick Reference
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="mathematical-reference-tables.html" class="md-nav__link">
+<span class="md-ellipsis">
+Mathematical Reference Tables
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="quantum-gate-reference.html" class="md-nav__link">
+<span class="md-ellipsis">
+Quantum Gate Reference
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="benchmark-datasets-for-qml.html" class="md-nav__link">
+<span class="md-ellipsis">
+Benchmark Datasets for QML
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="selected-exercise-solutions.html" class="md-nav__link">
+<span class="md-ellipsis">
+Selected Exercise Solutions
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="bibliography.html" class="md-nav__link">
+<span class="md-ellipsis">
+References
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#sec-qubits" class="md-nav__link">
+<span class="md-ellipsis">
+2.1 From Bits to Qubits
+</span>
+</a>
+<nav class="md-nav" aria-label="2.1 From Bits to Qubits">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#211-the-qubit" class="md-nav__link">
+<span class="md-ellipsis">
+2.1.1 The Qubit
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#212-the-bloch-sphere" class="md-nav__link">
+<span class="md-ellipsis">
+2.1.2 The Bloch Sphere
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-quantum_gates" class="md-nav__link">
+<span class="md-ellipsis">
+2.2 Quantum Gates and Circuits
+</span>
+</a>
+<nav class="md-nav" aria-label="2.2 Quantum Gates and Circuits">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#221-single-qubit-gates" class="md-nav__link">
+<span class="md-ellipsis">
+2.2.1 Single-Qubit Gates
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#222-two-qubit-gates" class="md-nav__link">
+<span class="md-ellipsis">
+2.2.2 Two-Qubit Gates
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#223-quantum-circuits" class="md-nav__link">
+<span class="md-ellipsis">
+2.2.3 Quantum Circuits
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-measurement" class="md-nav__link">
+<span class="md-ellipsis">
+2.3 Quantum Measurement
+</span>
+</a>
+<nav class="md-nav" aria-label="2.3 Quantum Measurement">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#231-projective-measurements-and-the-born-rule" class="md-nav__link">
+<span class="md-ellipsis">
+2.3.1 Projective Measurements and the Born Rule
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#232-shot-noise-and-statistical-estimation" class="md-nav__link">
+<span class="md-ellipsis">
+2.3.2 Shot Noise and Statistical Estimation
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-entanglement" class="md-nav__link">
+<span class="md-ellipsis">
+2.4 Quantum Entanglement
+</span>
+</a>
+<nav class="md-nav" aria-label="2.4 Quantum Entanglement">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#241-bell-states" class="md-nav__link">
+<span class="md-ellipsis">
+2.4.1 Bell States
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#242-schmidt-decomposition-and-entanglement-entropy" class="md-nav__link">
+<span class="md-ellipsis">
+2.4.2 Schmidt Decomposition and Entanglement Entropy
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-density_matrices" class="md-nav__link">
+<span class="md-ellipsis">
+2.5 Density Matrices and Open Quantum Systems
+</span>
+</a>
+<nav class="md-nav" aria-label="2.5 Density Matrices and Open Quantum Systems">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#251-mixed-states" class="md-nav__link">
+<span class="md-ellipsis">
+2.5.1 Mixed States
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#252-quantum-channels" class="md-nav__link">
+<span class="md-ellipsis">
+2.5.2 Quantum Channels
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-quantum_algorithms" class="md-nav__link">
+<span class="md-ellipsis">
+2.6 Key Quantum Algorithms
+</span>
+</a>
+<nav class="md-nav" aria-label="2.6 Key Quantum Algorithms">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#261-grovers-search-algorithm" class="md-nav__link">
+<span class="md-ellipsis">
+2.6.1 Grover’s Search Algorithm
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#262-quantum-fourier-transform" class="md-nav__link">
+<span class="md-ellipsis">
+2.6.2 Quantum Fourier Transform
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#263-quantum-phase-estimation" class="md-nav__link">
+<span class="md-ellipsis">
+2.6.3 Quantum Phase Estimation
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#264-harrow-hassidim-lloyd-hhl-algorithm" class="md-nav__link">
+<span class="md-ellipsis">
+2.6.4 Harrow-Hassidim-Lloyd (HHL) Algorithm
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#27-chapter-summary" class="md-nav__link">
+<span class="md-ellipsis">
+2.7 Chapter Summary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#exercises" class="md-nav__link">
+<span class="md-ellipsis">
+Exercises
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="ch-quantum_computing">Chapter 2: Quantum Computing Essentials<a class="headerlink" href="#ch-quantum_computing" title="Permanent link">&para;</a></h1>
+<div class="admonition info box-bxkey kind-concept">
+<p><em>This chapter is the quantum core of the book. We build from first principles: the qubit as a physical two-level system, quantum gates as unitary transformations, measurement as the interface between quantum and classical worlds, entanglement as a uniquely quantum resource, and the density matrix formalism for noisy systems. We close with the key quantum algorithms — Grover, QFT, QPE, and HHL — whose efficiency advantages motivate the entire field of QML.</em></p>
+</div>
+<div class="admonition tip box-learningobjectives kind-teaching">
+<p class="admonition-title">Learning Objectives</p>
+<p>By the end of this chapter, you will be able to:</p>
+<ul>
+<li>
+<p>Represent quantum states as vectors and visualize them on the Bloch sphere</p>
+</li>
+<li>
+<p>Apply single- and multi-qubit quantum gates and compose quantum circuits</p>
+</li>
+<li>
+<p>Compute measurement probabilities using the Born rule</p>
+</li>
+<li>
+<p>Construct Bell states and analyze entanglement via Schmidt decomposition</p>
+</li>
+<li>
+<p>Work with density matrices for mixed states and quantum channels</p>
+</li>
+<li>
+<p>Trace through the key quantum algorithms: Grover, QFT, QPE, HHL</p>
+</li>
+</ul>
+</div>
+<h2 id="sec-qubits"><span class="secnum">2.1</span> From Bits to Qubits<a class="headerlink" href="#sec-qubits" title="Permanent link">&para;</a></h2>
+<h3 id="211-the-qubit"><span class="secnum">2.1.1</span> The Qubit<a class="headerlink" href="#211-the-qubit" title="Permanent link">&para;</a></h3>
+<p>A <strong>qubit</strong> (quantum bit) is a two-level quantum system. Unlike a classical bit that is either 0 or 1, a qubit can exist in any superposition: <span id="eq-qubit_state"></span></p>
+<div class="arithmatex">\[|\psi\rangle = \alpha|0\rangle + \beta|1\rangle, \quad \alpha,\beta \in \mathbb{C}, \quad |\alpha|^2 + |\beta|^2 = 1\tag{2.1}\]</div>
+<p>Physical realizations include: superconducting transmon qubits (IBM, Google), trapped ion qubits (IonQ, Quantinuum), photonic modes, nitrogen-vacancy centers.</p>
+<h3 id="212-the-bloch-sphere"><span class="secnum">2.1.2</span> The Bloch Sphere<a class="headerlink" href="#212-the-bloch-sphere" title="Permanent link">&para;</a></h3>
+<p>Every pure qubit state corresponds to a point on the unit sphere in <span class="arithmatex">\(\mathbb{R}^3\)</span>: <span id="eq-bloch_parameterization"></span></p>
+<div class="arithmatex">\[|\psi\rangle = \cos\frac{\theta}{2}|0\rangle + e^{i\phi}\sin\frac{\theta}{2}|1\rangle,
+\quad \theta \in [0,\pi],\; \phi \in [0,2\pi)\tag{2.2}\]</div>
+<p>Key states on the Bloch sphere:</p>
+<div class="arithmatex">\[\begin{align*}
+|0\rangle &amp;= \begin{pmatrix}1\\0\end{pmatrix} \;\text{(north pole)} &amp;
+|1\rangle &amp;= \begin{pmatrix}0\\1\end{pmatrix} \;\text{(south pole)} \\
+|+\rangle &amp;= \tfrac{1}{\sqrt{2}}\begin{pmatrix}1\\1\end{pmatrix} &amp;
+|-\rangle &amp;= \tfrac{1}{\sqrt{2}}\begin{pmatrix}1\\-1\end{pmatrix} \\
+|i\rangle &amp;= \tfrac{1}{\sqrt{2}}\begin{pmatrix}1\\i\end{pmatrix} &amp;
+|-i\rangle &amp;= \tfrac{1}{\sqrt{2}}\begin{pmatrix}1\\-i\end{pmatrix}
+\end{align*}\]</div>
+<figure class="fig fig-photo" id="fig-bloch_sphere">
+<img class="photo" src="img/fig_bloch_sphere.png" alt="The Bloch sphere. Every pure qubit state is a point on the sphere. |0\rangle is the north pole, |1\rangle the south pole. Rotations correspond to quantum gate operations. Mixed states lie in the…" loading="lazy" width="1400" height="1486">
+<figcaption><strong>Figure 2.1.</strong> The Bloch sphere. Every pure qubit state is a point on the sphere. <span class="math inline">\(|0\rangle\)</span> is the north pole, <span class="math inline">\(|1\rangle\)</span> the south pole. Rotations correspond to quantum gate operations. Mixed states lie in the interior (Bloch ball). <span class="credit">Figure drawn for this book</span></figcaption>
+</figure>
+<h2 id="sec-quantum_gates"><span class="secnum">2.2</span> Quantum Gates and Circuits<a class="headerlink" href="#sec-quantum_gates" title="Permanent link">&para;</a></h2>
+<h3 id="221-single-qubit-gates"><span class="secnum">2.2.1</span> Single-Qubit Gates<a class="headerlink" href="#221-single-qubit-gates" title="Permanent link">&para;</a></h3>
+<p>Quantum gates are unitary transformations. The <strong>Pauli gates</strong>:</p>
+<div class="arithmatex">\[X = \begin{pmatrix}0&amp;1\\1&amp;0\end{pmatrix}, \quad
+Y = \begin{pmatrix}0&amp;-i\\i&amp;0\end{pmatrix}, \quad
+Z = \begin{pmatrix}1&amp;0\\0&amp;-1\end{pmatrix}\]</div>
+<p>The <strong>Hadamard gate</strong> creates superposition: <span class="arithmatex">\(H = \tfrac{1}{\sqrt{2}}\begin{pmatrix}1&amp;1\\1&amp;-1\end{pmatrix}\)</span>. Action: <span class="arithmatex">\(H|0\rangle = |+\rangle\)</span>, <span class="arithmatex">\(H|1\rangle = |-\rangle\)</span>.</p>
+<p><strong>Phase gates</strong>:</p>
+<div class="arithmatex">\[S = \begin{pmatrix}1&amp;0\\0&amp;i\end{pmatrix}, \quad
+T = \begin{pmatrix}1&amp;0\\0&amp;e^{i\pi/4}\end{pmatrix}\]</div>
+<p><strong>Rotation gates</strong> (key for parameterized circuits): <span id="eq-rx_gate"></span></p>
+<div class="arithmatex">\[R_x(\theta) = e^{-i\theta X/2} = \begin{pmatrix}\cos\frac{\theta}{2} &amp; -i\sin\frac{\theta}{2}\\ -i\sin\frac{\theta}{2} &amp; \cos\frac{\theta}{2}\end{pmatrix}\tag{2.8}\]</div>
+<p>Similarly <span class="arithmatex">\(R_y(\theta) = e^{-i\theta Y/2}\)</span>, <span class="arithmatex">\(R_z(\theta) = e^{-i\theta Z/2}\)</span>.</p>
+<div class="admonition note box-notebox kind-note">
+<p class="admonition-title">Note</p>
+<p>Every single-qubit gate can be written as <span class="arithmatex">\(U = e^{i\alpha}R_z(\beta)R_y(\gamma)R_z(\delta)\)</span> for some angles — this is the <strong>ZYZ decomposition</strong>, which underlies universal quantum computation.</p>
+</div>
+<h3 id="222-two-qubit-gates"><span class="secnum">2.2.2</span> Two-Qubit Gates<a class="headerlink" href="#222-two-qubit-gates" title="Permanent link">&para;</a></h3>
+<div class="tbl" id="tab-two_qubit_gates">
+<div class="tbl-caption"><strong>Table 2.1.</strong> Common two-qubit gates used in QML circuits</div>
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Gate</strong></th>
+<th style="text-align: left;"><strong>Matrix (4×4)</strong></th>
+<th style="text-align: left;"><strong>Action</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">CNOT (CX)</td>
+<td style="text-align: left;"><span class="math inline">\(\begin{pmatrix}I &amp; 0\\ 0 &amp; X\end{pmatrix}\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(|c,t\rangle \mapsto |c, c\oplus t\rangle\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">CZ</td>
+<td style="text-align: left;"><span class="math inline">\(\text{diag}(1,1,1,-1)\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(|11\rangle \mapsto -|11\rangle\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">SWAP</td>
+<td style="text-align: left;">Swaps qubits</td>
+<td style="text-align: left;"><span class="math inline">\(|ab\rangle \mapsto |ba\rangle\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><span class="math inline">\(R_{ZZ}(\theta)\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(e^{-i\theta Z\otimes Z/2}\)</span></td>
+<td style="text-align: left;">Entangling rotation</td>
+</tr>
+</tbody>
+</table>
+</div></div>
+<h3 id="223-quantum-circuits"><span class="secnum">2.2.3</span> Quantum Circuits<a class="headerlink" href="#223-quantum-circuits" title="Permanent link">&para;</a></h3>
+<p>A <strong>quantum circuit</strong> is a sequence of gate operations on qubits. Circuit conventions: time flows left to right; each horizontal line is a qubit wire.</p>
+<div class="center">
+<div class="center">
+<p><img class="tikz" src="img/tikz-b1b39443bf68.svg" alt="image" loading="lazy" width="167" height="63"></p>
+</div>
+</div>
+<p><strong>Parameterized Quantum Circuits (PQCs)</strong> replace fixed angles with trainable parameters <span class="arithmatex">\(\boldsymbol{\theta}\)</span>. This is the foundation of variational QML algorithms.</p>
+<div class="admonition example box-solvedexample kind-example">
+<p class="admonition-title">Solved Example 2.1</p>
+<p><strong>Problem:</strong> Trace through the 2-qubit circuit: <span class="arithmatex">\(H\)</span> on qubit 0, CNOT with control 0 and target 1, starting from <span class="arithmatex">\(|00\rangle\)</span>.</p>
+<p><strong>Solution:</strong></p>
+<ol>
+<li>
+<p>Start: <span class="arithmatex">\(|00\rangle\)</span></p>
+</li>
+<li>
+<p>After <span class="arithmatex">\(H \otimes I\)</span>: <span class="arithmatex">\((H|0\rangle) \otimes |0\rangle = |+\rangle \otimes |0\rangle = \tfrac{1}{\sqrt{2}}(|00\rangle + |10\rangle)\)</span></p>
+</li>
+<li>
+<p>After CNOT: <span class="arithmatex">\(\text{CNOT}\)</span> flips target when control is <span class="arithmatex">\(|1\rangle\)</span>: <span class="arithmatex">\(\tfrac{1}{\sqrt{2}}(|00\rangle + |11\rangle) = |\Phi^+\rangle\)</span></p>
+</li>
+</ol>
+<p>Result: Bell state <span class="arithmatex">\(|\Phi^+\rangle\)</span> — this circuit creates <strong>maximal entanglement</strong>.</p>
+</div>
+<h2 id="sec-measurement"><span class="secnum">2.3</span> Quantum Measurement<a class="headerlink" href="#sec-measurement" title="Permanent link">&para;</a></h2>
+<h3 id="231-projective-measurements-and-the-born-rule"><span class="secnum">2.3.1</span> Projective Measurements and the Born Rule<a class="headerlink" href="#231-projective-measurements-and-the-born-rule" title="Permanent link">&para;</a></h3>
+<p>For a state <span class="arithmatex">\(|\psi\rangle\)</span> and observable <span class="arithmatex">\(\hat{O} = \sum_m o_m \Pi_m\)</span> (spectral decomposition): <span id="eq-born_rule"></span></p>
+<div class="arithmatex">\[P(\text{outcome}\; m) = \langle\psi|\Pi_m|\psi\rangle = \|\Pi_m|\psi\rangle\|^2\tag{2.9}\]</div>
+<p>Post-measurement state: <span class="arithmatex">\(\frac{\Pi_m|\psi\rangle}{\sqrt{\langle\psi|\Pi_m|\psi\rangle}}\)</span>.</p>
+<p><strong>Expectation value</strong>: <span id="eq-expectation_value"></span></p>
+<div class="arithmatex">\[\langle\hat{O}\rangle_\psi = \langle\psi|\hat{O}|\psi\rangle = \sum_m o_m P(m)\tag{2.10}\]</div>
+<h3 id="232-shot-noise-and-statistical-estimation"><span class="secnum">2.3.2</span> Shot Noise and Statistical Estimation<a class="headerlink" href="#232-shot-noise-and-statistical-estimation" title="Permanent link">&para;</a></h3>
+<p>A single measurement samples a random outcome. To estimate <span class="arithmatex">\(\langle\hat{O}\rangle\)</span> to precision <span class="arithmatex">\(\epsilon\)</span> with confidence <span class="arithmatex">\(1-\delta\)</span>: <span id="eq-shot_noise"></span></p>
+<div class="arithmatex">\[N_{\text{shots}} = O\!\left(\frac{\text{Var}[\hat{O}]}{\epsilon^2} \log\frac{1}{\delta}\right) = O\!\left(\frac{1}{\epsilon^2}\log\frac{1}{\delta}\right)\tag{2.11}\]</div>
+<p>since <span class="arithmatex">\(\|\hat{O}\| \leq 1\)</span> for Pauli observables. This <span class="arithmatex">\(1/\epsilon^2\)</span> scaling is a fundamental cost of quantum computation.</p>
+<h2 id="sec-entanglement"><span class="secnum">2.4</span> Quantum Entanglement<a class="headerlink" href="#sec-entanglement" title="Permanent link">&para;</a></h2>
+<h3 id="241-bell-states"><span class="secnum">2.4.1</span> Bell States<a class="headerlink" href="#241-bell-states" title="Permanent link">&para;</a></h3>
+<p>The four <strong>Bell states</strong> form a maximally entangled orthonormal basis for two qubits: <span id="eq-bell_phi_plus"></span></p>
+<div class="arithmatex">\[\begin{align*}
+|\Phi^+\rangle &amp;= \tfrac{1}{\sqrt{2}}(|00\rangle+|11\rangle) \\
+|\Phi^-\rangle &amp;= \tfrac{1}{\sqrt{2}}(|00\rangle-|11\rangle) \\
+|\Psi^+\rangle &amp;= \tfrac{1}{\sqrt{2}}(|01\rangle+|10\rangle) \\
+|\Psi^-\rangle &amp;= \tfrac{1}{\sqrt{2}}(|01\rangle-|10\rangle)
+\end{align*}\]</div>
+<p>None of these can be written as <span class="arithmatex">\(|\psi_A\rangle \otimes |\psi_B\rangle\)</span>.</p>
+<h3 id="242-schmidt-decomposition-and-entanglement-entropy"><span class="secnum">2.4.2</span> Schmidt Decomposition and Entanglement Entropy<a class="headerlink" href="#242-schmidt-decomposition-and-entanglement-entropy" title="Permanent link">&para;</a></h3>
+<div class="admonition info box-theorem kind-concept">
+<p class="admonition-title">Theorem 2.1 (Schmidt Decomposition)</p>
+<p>For any pure state <span class="arithmatex">\(|\psi\rangle \in \mathcal{H}_A \otimes \mathcal{H}_B\)</span>, there exist orthonormal bases <span class="arithmatex">\(\{|u_i\rangle\}\)</span> and <span class="arithmatex">\(\{|v_i\rangle\}\)</span> and non-negative Schmidt coefficients <span class="arithmatex">\(\{s_i\}\)</span> with <span class="arithmatex">\(\sum_i s_i^2 = 1\)</span> such that: <span id="eq-schmidt_decomp"></span></p>
+<div class="arithmatex">\[|\psi\rangle = \sum_{i=1}^r s_i |u_i\rangle \otimes |v_i\rangle\tag{2.16}\]</div>
+</div>
+<p>The <strong>Schmidt rank</strong> <span class="arithmatex">\(r\)</span> is the number of non-zero <span class="arithmatex">\(s_i\)</span>. The state is a product state iff <span class="arithmatex">\(r=1\)</span>. <strong>Entanglement entropy</strong>: <span id="eq-entanglement_entropy"></span></p>
+<div class="arithmatex">\[E(|\psi\rangle) = -\sum_i s_i^2 \log_2 s_i^2 = S(\rho_A)\tag{2.17}\]</div>
+<p>where <span class="arithmatex">\(\rho_A = \text{Tr}_B[|\psi\rangle\langle\psi|]\)</span> is the reduced density matrix.</p>
+<h2 id="sec-density_matrices"><span class="secnum">2.5</span> Density Matrices and Open Quantum Systems<a class="headerlink" href="#sec-density_matrices" title="Permanent link">&para;</a></h2>
+<h3 id="251-mixed-states"><span class="secnum">2.5.1</span> Mixed States<a class="headerlink" href="#251-mixed-states" title="Permanent link">&para;</a></h3>
+<p>A <strong>density matrix</strong> <span class="arithmatex">\(\rho\)</span> describes both pure states (<span class="arithmatex">\(\rho = |\psi\rangle\langle\psi|\)</span>) and mixed states (probabilistic mixtures): <span id="eq-density_matrix"></span></p>
+<div class="arithmatex">\[\rho = \sum_k p_k |\psi_k\rangle\langle\psi_k|, \quad p_k \geq 0, \; \sum_k p_k = 1\tag{2.18}\]</div>
+<p>Properties: <span class="arithmatex">\(\rho = \rho^\dagger\)</span> (Hermitian), <span class="arithmatex">\(\text{Tr}[\rho] = 1\)</span> (normalized), <span class="arithmatex">\(\rho \geq 0\)</span> (positive semidefinite). Pure state iff <span class="arithmatex">\(\text{Tr}[\rho^2] = 1\)</span>.</p>
+<p>Expectation value of <span class="arithmatex">\(\hat{O}\)</span>: <span class="arithmatex">\(\langle\hat{O}\rangle_\rho = \text{Tr}[\hat{O}\rho]\)</span>.</p>
+<h3 id="252-quantum-channels"><span class="secnum">2.5.2</span> Quantum Channels<a class="headerlink" href="#252-quantum-channels" title="Permanent link">&para;</a></h3>
+<p>A <strong>quantum channel</strong> <span class="arithmatex">\(\mathcal{E}\)</span> is a completely positive trace-preserving (CPTP) map. <strong>Kraus representation</strong>: <span id="eq-kraus"></span></p>
+<div class="arithmatex">\[\mathcal{E}(\rho) = \sum_k K_k \rho K_k^\dagger, \quad \sum_k K_k^\dagger K_k = I\tag{2.19}\]</div>
+<p>Key channels for QML:</p>
+<ul>
+<li>
+<p><strong>Depolarizing</strong>: <span class="arithmatex">\(\mathcal{E}_p(\rho) = (1-p)\rho + \frac{p}{3}(X\rho X + Y\rho Y + Z\rho Z)\)</span></p>
+</li>
+<li>
+<p><strong>Amplitude damping</strong>: <span class="arithmatex">\(K_0 = \begin{pmatrix}1&amp;0\\0&amp;\sqrt{1-\gamma}\end{pmatrix}\)</span>, <span class="arithmatex">\(K_1 = \begin{pmatrix}0&amp;\sqrt{\gamma}\\0&amp;0\end{pmatrix}\)</span></p>
+</li>
+<li>
+<p><strong>Phase damping</strong>: <span class="arithmatex">\(K_0 = |0\rangle\langle0| + \sqrt{1-\gamma}|1\rangle\langle1|\)</span>, <span class="arithmatex">\(K_1 = \sqrt{\gamma}|1\rangle\langle1|\)</span></p>
+</li>
+</ul>
+<h2 id="sec-quantum_algorithms"><span class="secnum">2.6</span> Key Quantum Algorithms<a class="headerlink" href="#sec-quantum_algorithms" title="Permanent link">&para;</a></h2>
+<h3 id="261-grovers-search-algorithm"><span class="secnum">2.6.1</span> Grover’s Search Algorithm<a class="headerlink" href="#261-grovers-search-algorithm" title="Permanent link">&para;</a></h3>
+<p><strong>Problem</strong>: Find a marked element <span class="arithmatex">\(w\)</span> in an unsorted database of <span class="arithmatex">\(N=2^n\)</span> items. Classical: <span class="arithmatex">\(O(N)\)</span> queries. Grover: <span class="arithmatex">\(O(\sqrt{N})\)</span> queries.</p>
+<div class="admonition example box-algorithmbox kind-example">
+<p class="admonition-title">Algorithm: Grover’s Search Algorithm</p>
+<p><strong>Input:</strong> Oracle <span class="arithmatex">\(O_w\)</span>: <span class="arithmatex">\(|x\rangle \mapsto (-1)^{f(x)}|x\rangle\)</span> where <span class="arithmatex">\(f(x)=[x=w]\)</span>.<br> <strong>Output:</strong> Marked item <span class="arithmatex">\(w\)</span> with high probability.</p>
+<ol>
+<li>
+<p>Prepare uniform superposition: <span class="arithmatex">\(|s\rangle = H^{\otimes n}|0\rangle = \tfrac{1}{\sqrt{N}}\sum_x|x\rangle\)</span></p>
+</li>
+<li>
+<p>Repeat <span class="arithmatex">\(R = \lfloor\frac{\pi}{4}\sqrt{N}\rfloor\)</span> times:</p>
+<ol>
+<li>
+<p>Apply oracle <span class="arithmatex">\(O_w\)</span> (phase flip on <span class="arithmatex">\(|w\rangle\)</span>)</p>
+</li>
+<li>
+<p>Apply diffusion <span class="arithmatex">\(D = 2|s\rangle\langle s| - I\)</span> (inversion about mean)</p>
+</li>
+</ol>
+</li>
+<li>
+<p>Measure in computational basis</p>
+</li>
+</ol>
+<p><strong>Success probability</strong>: <span class="arithmatex">\(\geq 1/2\)</span> after <span class="arithmatex">\(\lfloor\frac{\pi}{4}\sqrt{N}\rfloor\)</span> iterations.</p>
+</div>
+<figure class="fig fig-photo" id="fig-grover_amplitudes">
+<img class="photo" src="img/fig_grover_amplitudes.png" alt="Grover’s algorithm on N=4 states. Left: uniform superposition. Middle: after oracle (phase flip on target |2\rangle). Right: after diffusion (amplitude amplification). After one iteration for N=4,…" loading="lazy" width="1400" height="469">
+<figcaption><strong>Figure 2.2.</strong> Grover’s algorithm on <span class="math inline">\(N=4\)</span> states. Left: uniform superposition. Middle: after oracle (phase flip on target <span class="math inline">\(|2\rangle\)</span>). Right: after diffusion (amplitude amplification). After one iteration for <span class="math inline">\(N=4\)</span>, the marked state has probability <span class="math inline">\(1.0\)</span>. <span class="credit">Figure drawn for this book</span></figcaption>
+</figure>
+<h3 id="262-quantum-fourier-transform"><span class="secnum">2.6.2</span> Quantum Fourier Transform<a class="headerlink" href="#262-quantum-fourier-transform" title="Permanent link">&para;</a></h3>
+<p>The QFT implements the DFT on quantum states: <span id="eq-qft_action"></span></p>
+<div class="arithmatex">\[\text{QFT}|j\rangle = \frac{1}{\sqrt{N}} \sum_{k=0}^{N-1} e^{2\pi ijk/N} |k\rangle\tag{2.20}\]</div>
+<p>Circuit: <span class="arithmatex">\(O(n^2)\)</span> gates for <span class="arithmatex">\(n\)</span> qubits (vs. classical FFT: <span class="arithmatex">\(O(N\log N)\)</span>).</p>
+<div class="center">
+<div class="center">
+<p><img class="tikz" src="img/tikz-85391143bb65.svg" alt="image" loading="lazy" width="232" height="91"></p>
+</div>
+</div>
+<p>where <span class="arithmatex">\(R_k = \begin{pmatrix}1&amp;0\\0&amp;e^{2\pi i/2^k}\end{pmatrix}\)</span>.</p>
+<h3 id="263-quantum-phase-estimation"><span class="secnum">2.6.3</span> Quantum Phase Estimation<a class="headerlink" href="#263-quantum-phase-estimation" title="Permanent link">&para;</a></h3>
+<p><strong>Problem</strong>: Given unitary <span class="arithmatex">\(U\)</span> and eigenstate <span class="arithmatex">\(|u\rangle\)</span> (<span class="arithmatex">\(U|u\rangle=e^{2\pi i\phi}|u\rangle\)</span>), estimate <span class="arithmatex">\(\phi\)</span> to <span class="arithmatex">\(n\)</span> bits of precision.</p>
+<div class="admonition example box-algorithmbox kind-example">
+<p class="admonition-title">Algorithm: Quantum Phase Estimation (QPE)</p>
+<p><strong>Input:</strong> Unitary <span class="arithmatex">\(U\)</span>, eigenstate <span class="arithmatex">\(|u\rangle\)</span>, precision <span class="arithmatex">\(n\)</span>.<br> <strong>Output:</strong> <span class="arithmatex">\(n\)</span>-bit estimate <span class="arithmatex">\(\tilde{\phi}\)</span> of <span class="arithmatex">\(\phi\)</span>.</p>
+<ol>
+<li>
+<p>Prepare <span class="arithmatex">\(n\)</span> ancilla qubits in <span class="arithmatex">\(H^{\otimes n}|0\rangle\)</span> (uniform superposition)</p>
+</li>
+<li>
+<p>Apply controlled-<span class="arithmatex">\(U^{2^k}\)</span> gates: <span class="arithmatex">\(|k\rangle|u\rangle \mapsto e^{2\pi i k\phi}|k\rangle|u\rangle\)</span></p>
+</li>
+<li>
+<p>Apply inverse QFT to ancilla register</p>
+</li>
+<li>
+<p>Measure ancilla to obtain <span class="arithmatex">\(\tilde{\phi}\)</span></p>
+</li>
+</ol>
+<p><strong>Complexity:</strong> <span class="arithmatex">\(O(n^2 + n \cdot T_U)\)</span> gates where <span class="arithmatex">\(T_U\)</span> is oracle complexity.</p>
+</div>
+<h3 id="264-harrow-hassidim-lloyd-hhl-algorithm"><span class="secnum">2.6.4</span> Harrow-Hassidim-Lloyd (HHL) Algorithm<a class="headerlink" href="#264-harrow-hassidim-lloyd-hhl-algorithm" title="Permanent link">&para;</a></h3>
+<p><strong>Problem</strong>: Solve <span class="arithmatex">\(A\mathbf{x} = \mathbf{b}\)</span> and output quantum state <span class="arithmatex">\(|x\rangle \propto A^{-1}|b\rangle\)</span>.</p>
+<p><strong>Complexity</strong> (under ideal conditions): <span class="arithmatex">\(O(\log(N) \cdot \kappa^2 / \epsilon)\)</span> vs. classical <span class="arithmatex">\(O(N\kappa)\)</span>, where <span class="arithmatex">\(\kappa\)</span> is the condition number. <strong>Exponential speedup in <span class="arithmatex">\(N\)</span></strong> — the basis of quantum speedups in ML (quantum PCA, quantum recommendation systems).</p>
+<div class="admonition warning box-warningbox kind-safety">
+<p class="admonition-title">Warning</p>
+<p>The HHL speedup requires: (1) efficient quantum RAM (qRAM) for loading <span class="arithmatex">\(|b\rangle\)</span>, (2) sparse/structured <span class="arithmatex">\(A\)</span>, (3) only need quantum state <span class="arithmatex">\(|x\rangle\)</span> (not all components of the classical solution vector). These conditions are stringent and not met in most practical ML settings — see <a href="ch23-quantum-advantage-theory-and-benchmarking.html#ch-quantum_advantage_theory">Chapter 23</a> for the dequantization discussion.</p>
+</div>
+<div class="language-text highlight"><pre><span></span><code>import pennylane as qml
+import numpy as np
+
+# Create a device (quantum simulator)
+dev = qml.device("default.qubit", wires=2)
+
+@qml.qnode(dev)
+def bell_state_circuit():
+    """Prepares the Bell state |Phi+&gt;."""
+    qml.Hadamard(wires=0)
+    qml.CNOT(wires=[0, 1])
+    return qml.state()
+
+@qml.qnode(dev)
+def grover_2qubit():
+    """Grover search for |11&gt; in 2-qubit space (N=4)."""
+    # Initialize superposition
+    qml.Hadamard(wires=0)
+    qml.Hadamard(wires=1)
+    # Oracle: phase flip |11&gt;
+    qml.CZ(wires=[0, 1])
+    # Diffusion: 2|s&gt;&lt;s| - I
+    qml.Hadamard(wires=0); qml.Hadamard(wires=1)
+    qml.PauliZ(wires=0); qml.PauliZ(wires=1)
+    qml.CZ(wires=[0, 1])
+    qml.PauliZ(wires=0); qml.PauliZ(wires=1)
+    qml.Hadamard(wires=0); qml.Hadamard(wires=1)
+    return qml.probs(wires=[0, 1])
+
+print("Bell state:", bell_state_circuit())
+probs = grover_2qubit()
+print(f"Grover probs: {probs}")  # |11&gt; should have prob ~1.0
+</code></pre></div>
+<h2 id="27-chapter-summary"><span class="secnum">2.7</span> Chapter Summary<a class="headerlink" href="#27-chapter-summary" title="Permanent link">&para;</a></h2>
+<div class="admonition note box-chaptersummary kind-plain">
+<p class="admonition-title">Chapter Summary</p>
+<ul>
+<li>
+<p>A <strong>qubit</strong> is a two-level quantum system described by a normalized vector in <span class="arithmatex">\(\mathbb{C}^2\)</span>. The Bloch sphere provides geometric intuition.</p>
+</li>
+<li>
+<p><strong>Quantum gates</strong> are unitaries. Single-qubit: Paulis, <span class="arithmatex">\(H\)</span>, <span class="arithmatex">\(S\)</span>, <span class="arithmatex">\(T\)</span>, rotations <span class="arithmatex">\(R_x, R_y, R_z\)</span>. Two-qubit: CNOT, CZ, SWAP.</p>
+</li>
+<li>
+<p><strong>Born rule</strong>: <span class="arithmatex">\(P(m) = \text{Tr}[\Pi_m \rho]\)</span>. Shot noise requires <span class="arithmatex">\(O(1/\epsilon^2)\)</span> measurements.</p>
+</li>
+<li>
+<p><strong>Entanglement</strong>: Bell states, Schmidt decomposition, entanglement entropy. Entanglement is a resource for quantum speedups.</p>
+</li>
+<li>
+<p><strong>Density matrices</strong>: Generalize pure states to mixed states/open systems. Quantum channels (CPTP maps) model noise via Kraus operators.</p>
+</li>
+<li>
+<p><strong>Key algorithms</strong>: Grover (<span class="arithmatex">\(O(\sqrt{N})\)</span> search), QFT (<span class="arithmatex">\(O(n^2)\)</span> circuit), QPE (phase estimation), HHL (linear systems with exponential speedup under caveats).</p>
+</li>
+</ul>
+</div>
+<h2 id="exercises">Exercises<a class="headerlink" href="#exercises" title="Permanent link">&para;</a></h2>
+<div class="admonition note box-exercisebox kind-plain">
+<p class="admonition-title">Exercises</p>
+<p><strong>Exercise .</strong> Show that the Hadamard gate <span class="arithmatex">\(H\)</span> is both Hermitian (<span class="arithmatex">\(H=H^\dagger\)</span>) and unitary (<span class="arithmatex">\(HH^\dagger=I\)</span>). What does this tell us about its eigenvalues?</p>
+<p><strong>Exercise .</strong> For <span class="arithmatex">\(|\psi\rangle = \frac{\sqrt{3}}{2}|0\rangle + \frac{1}{2}|1\rangle\)</span>, find the probability of measuring <span class="arithmatex">\(|0\rangle\)</span> and <span class="arithmatex">\(|1\rangle\)</span>. What are the Bloch sphere angles <span class="arithmatex">\(\theta\)</span> and <span class="arithmatex">\(\phi\)</span>?</p>
+<p><strong>Exercise .</strong> Show that <span class="arithmatex">\(R_z(\phi)R_x(\theta) \neq R_x(\theta)R_z(\phi)\)</span> in general. (Quantum gates do <strong>not</strong> generally commute.)</p>
+<p><strong>Exercise .</strong> Prepare all four Bell states using quantum circuits. Start from <span class="arithmatex">\(|00\rangle\)</span> for each. Show the circuit and verify with matrix multiplication.</p>
+<p><strong>Exercise .</strong> For the state <span class="arithmatex">\(|\psi\rangle = \frac{1}{2}|00\rangle + \frac{\sqrt{3}}{2}|11\rangle\)</span>, compute the Schmidt decomposition and the entanglement entropy.</p>
+<p><strong>Exercise .</strong> Prove that the depolarizing channel <span class="arithmatex">\(\mathcal{E}_p(\rho) = (1-p)\rho + \frac{p}{3}(X\rho X+Y\rho Y+Z\rho Z)\)</span> sends any state to the maximally mixed state <span class="arithmatex">\(I/2\)</span> when <span class="arithmatex">\(p=3/4\)</span>.</p>
+<p><strong>Exercise .</strong> Derive the number of iterations <span class="arithmatex">\(R = \lfloor\frac{\pi}{4}\sqrt{N}\rfloor\)</span> needed for Grover’s algorithm. <em>Hint</em>: Model the algorithm as rotation in a 2D subspace spanned by <span class="arithmatex">\(|w\rangle\)</span> and the uniform superposition orthogonal to <span class="arithmatex">\(|w\rangle\)</span>.</p>
+<p><strong>Exercise .</strong> Show that the QFT on 1 qubit is the Hadamard gate. Show that the QFT on 2 qubits requires the circuit: <span class="arithmatex">\(H\)</span> on qubit 0, controlled-<span class="arithmatex">\(R_2\)</span> with target 0 and control 1, <span class="arithmatex">\(H\)</span> on qubit 1, SWAP. Verify by multiplying out the matrices.</p>
+<p><strong>Exercise .</strong> Using PennyLane, implement Grover’s algorithm for <span class="arithmatex">\(n=3\)</span> qubits searching for <span class="arithmatex">\(|101\rangle\)</span>. Plot the probability of measuring the target state as a function of iteration count.</p>
+<p><strong>Exercise .</strong> The <strong>no-cloning theorem</strong> states there is no unitary <span class="arithmatex">\(U\)</span> such that <span class="arithmatex">\(U(|\psi\rangle \otimes |0\rangle) = |\psi\rangle \otimes |\psi\rangle\)</span> for all <span class="arithmatex">\(|\psi\rangle\)</span>. Prove this. What implications does it have for quantum error correction?</p>
+</div>
+<div class="admonition note box-furtherreading kind-plain">
+<p class="admonition-title">Further Reading</p>
+<ul>
+<li>
+<p>Nielsen &amp; Chuang (<a href="bibliography.html#ref-Nielsen2000">Nielsen and Chuang 2000</a>) — the definitive reference for quantum computing</p>
+</li>
+<li>
+<p>Preskill’s lecture notes (<a href="bibliography.html#ref-Preskill_lectures">Preskill 2022</a>) — free online, comprehensive</p>
+</li>
+<li>
+<p>IBM Qiskit Textbook (<code>qiskit.org/learn</code>) — interactive online version</p>
+</li>
+<li>
+<p>PennyLane Codebook (<code>pennylane.ai/codebook</code>) — interactive QML exercises</p>
+</li>
+<li>
+<p>Wilde, <em>Quantum Information Theory</em> (<a href="bibliography.html#ref-Wilde2013">Wilde 2013</a>) — for deeper channels</p>
+</li>
+</ul>
+</div>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button type="button" class="md-top md-icon" data-md-component="top" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+Back to top
+</button>
+</main>
+<footer class="md-footer">
+<nav class="md-footer__inner md-grid" aria-label="Footer" >
+<a href="ch01-mathematical-prerequisites-for-qml.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: 1. Mathematical Prerequisites for QML">
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</div>
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Previous
+</span>
+<div class="md-ellipsis">
+1. Mathematical Prerequisites for QML
+</div>
+</div>
+</a>
+<a href="ch03-quantum-information-theory-for-machine-learning.html" class="md-footer__link md-footer__link--next" aria-label="Next: 3. Quantum Information Theory for Machine Learning">
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Next
+</span>
+<div class="md-ellipsis">
+3. Quantum Information Theory for Machine Learning
+</div>
+</div>
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+</div>
+</a>
+</nav>
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+The Open Book Project &middot;
+<a href="../../about.html">About this library</a> &middot;
+<a href="../../publish.html">Publish your book</a> &middot;
+© The authors of the books
+</div>
+Made with
+<a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+Material for MkDocs
+</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "navigation.prune", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "toc.follow", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+<script src="../../assets/mathjax.js"></script>
+<script src="../../assets/viz.js"></script>
+<script src="../../assets/remote.js"></script>
+<script src="../../assets/scans.js"></script>
+<script src="../../assets/reader.js"></script>
+<script src="../../assets/app.js"></script>
+<script src="../../assets/slides.js"></script>
+<script src="../../assets/speak.js"></script>
+<script src="../../assets/quiz.js"></script>
+<script>
+    /* offline reading: the service worker at the site root (its scope is the whole site) */
+    if ("serviceWorker" in navigator && window.isSecureContext) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register(new URL("../../sw.js", location.href).href).catch(function () {});
+      });
+    }
+  </script>
+</body>
+</html>

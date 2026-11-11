@@ -1,0 +1,1102 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="description" content="The Open Book Project: books on computer science, quantum computing, cyber security, science, the social sciences, university courses and languages, read page by page like an e-book, online or offline.">
+<meta name="author" content="The Open Book Project">
+<link rel="canonical" href="https://open-book-project.github.io/cyber/security_systems_engineering/ch03-public-key-cryptography.html">
+<link rel="prev" href="ch02-symmetric-cryptography.html">
+<link rel="next" href="ch04-cryptographic-hash-functions-and-macs.html">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap"></noscript>
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Open Book">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="application-name" content="Open Book"><script src="../../assets/library-data.js"></script><script>
+    (function () {
+      var X = window.XMLHttpRequest, open, gate = new Promise(function (r) { open = r; });
+      if (!X) return;
+      var open0 = X.prototype.open, send0 = X.prototype.send;
+      X.prototype.open = function (method, url) {
+        this.__pkIndex = /\/search\/search_index\.json(\?|#|$)/.test(String(url));
+        return open0.apply(this, arguments);
+      };
+      X.prototype.send = function () {
+        if (!this.__pkIndex) return send0.apply(this, arguments);
+        var xhr = this, args = arguments;
+        gate.then(function () { send0.apply(xhr, args); });
+      };
+      function wake() { open(); }
+      document.addEventListener("focusin", function (e) { if (e.target && e.target.closest && e.target.closest(".md-search")) wake(); });
+      document.addEventListener("click", function (e) { if (e.target && e.target.closest && e.target.closest('label[for="__search"], .md-search')) wake(); }, true);
+      document.addEventListener("keydown", function (e) {
+        var k = e.key;
+        if ((k === "/" || k === "s" || k === "f" || k === "S" || k === "F") && !(e.target && e.target.closest && e.target.closest("input, textarea, [contenteditable]"))) wake();
+      }, true);
+      if (/[?&]q=/.test(location.search)) wake();
+    })();
+  </script><script>
+    try {
+      if ((window.matchMedia && (matchMedia("(display-mode: standalone)").matches || matchMedia("(display-mode: fullscreen)").matches)) || navigator.standalone === true) {
+        document.documentElement.className += " bjp-standalone";
+      }
+    } catch (e) { /* not an installed app */ }
+    /* the books of a subject or of the whole library as covers or as a list (assets/app.js): the reader's choice */
+    try {
+      var bv = localStorage.getItem("bjp.view");
+      if (bv === "list" || (bv !== "grid" && /\/books\.html$/.test(location.pathname))) document.documentElement.className += " bjp-view-list";
+    } catch (e) { /* no storage: covers */ }
+  </script>
+<script>
+    /* a book opened from its cover on the shelf: the page stays blank, in the cover's colour, until the reader is up */
+    try {
+      var cv = sessionStorage.getItem("bjp.reader.cover");
+      if (cv && sessionStorage.getItem("bjp.reader.open") === "1") {
+        var c = JSON.parse(cv), de = document.documentElement;
+        de.className += " bjp-booting";
+        if (c && /^#[0-9a-f]{3,8}$/i.test(c.bg || "")) de.style.background = c.bg;
+        setTimeout(function () { de.classList.remove("bjp-booting"); de.style.background = ""; }, 3000);
+      }
+    } catch (e) { /* no session storage: the page simply opens as usual */ }
+  </script>
+<title>3. Public-Key Cryptography - The Open Book Project</title>
+<link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+<link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+<link rel="stylesheet" href="../../assets/extra.css">
+<link rel="stylesheet" href="../../assets/reader.css">
+<link rel="stylesheet" href="../../assets/viz.css">
+<link rel="stylesheet" href="../../assets/app.css">
+<link rel="stylesheet" href="../../assets/theme.css">
+<link rel="stylesheet" href="../../assets/slides.css">
+<link rel="stylesheet" href="../../assets/remote.css">
+<link rel="stylesheet" href="../../assets/scans.css">
+<link rel="stylesheet" href="../../assets/speak.css">
+<link rel="stylesheet" href="../../assets/quiz.css">
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+<input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+<input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a href="#sec-rsa" class="md-skip">
+Skip to content
+</a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav class="md-header__inner md-grid" aria-label="Header">
+<a href="../../index.html" title="The Open Book Project" class="md-header__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+The Open Book Project
+</span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+3. Public-Key Cryptography
+</span>
+</div>
+</div>
+</div><a href="../../index.html" class="bjp-libbtn" aria-label="Library: all books" title="Library: all books">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V5h4v15M8 20V9h4v11M14 20L12.6 6l3.8-.8 3 14.2M3 20h18"/></svg><span>Library</span>
+</a>
+<a href="../../subjects/index.html" class="pk-catbtn" aria-haspopup="true" aria-expanded="false" title="Browse the books by category">
+<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><circle cx="17" cy="7" r="3.6"/><path d="M7 13.4l3.9 6.8H3.1z"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg><span>Categories</span>
+</a>
+<form class="md-header__option" data-md-component="palette">
+<input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+<label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+</label>
+<input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+<label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+<label class="md-search__icon md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</label>
+<nav class="md-search__options" aria-label="Search">
+<button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+Initializing search
+</div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--primary bjp-nav bjp-nav--book" aria-label="Navigation" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a href="../../index.html" title="The Open Book Project" class="md-nav__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+The Open Book Project
+</label>
+<ul class="md-nav__list" data-md-scrollfix>
+<li class="md-nav__item bjp-nav-all">
+<a href="../../index.html" class="md-nav__link" aria-label="All books: back to the library">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+<span class="md-ellipsis">All books</span>
+</a>
+</li>
+<li class="md-nav__item bjp-nav-book" role="presentation"><span class="bjp-nav-head">Security Systems Engineering</span></li>
+<li class="md-nav__item">
+<a href="index.html" class="md-nav__link">
+<span class="md-ellipsis">
+Overview and preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="notation-and-conventions.html" class="md-nav__link">
+<span class="md-ellipsis">
+Notation and Conventions
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch01-mathematical-foundations-of-cryptography.html" class="md-nav__link">
+<span class="md-ellipsis">
+1. Mathematical Foundations of Cryptography
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch02-symmetric-cryptography.html" class="md-nav__link">
+<span class="md-ellipsis">
+2. Symmetric Cryptography
+</span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+3. Public-Key Cryptography
+</span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a href="ch03-public-key-cryptography.html" class="md-nav__link md-nav__link--active">
+<span class="md-ellipsis">
+3. Public-Key Cryptography
+</span>
+</a>
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#sec-rsa" class="md-nav__link">
+<span class="md-ellipsis">
+3.1 RSA
+</span>
+</a>
+<nav class="md-nav" aria-label="3.1 RSA">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#311-key-generation-and-core-operations" class="md-nav__link">
+<span class="md-ellipsis">
+3.1.1 Key Generation and Core Operations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#312-rsa-padding-schemes" class="md-nav__link">
+<span class="md-ellipsis">
+3.1.2 RSA Padding Schemes
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#313-rsa-key-size-recommendations" class="md-nav__link">
+<span class="md-ellipsis">
+3.1.3 RSA Key Size Recommendations
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-dh" class="md-nav__link">
+<span class="md-ellipsis">
+3.2 Diffie-Hellman Key Exchange
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-ec-schemes" class="md-nav__link">
+<span class="md-ellipsis">
+3.3 Elliptic Curve Schemes
+</span>
+</a>
+<nav class="md-nav" aria-label="3.3 Elliptic Curve Schemes">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#331-ecdsa-elliptic-curve-digital-signature-algorithm" class="md-nav__link">
+<span class="md-ellipsis">
+3.3.1 ECDSA (Elliptic Curve Digital Signature Algorithm)
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#332-eddsa-edwards-curve-digital-signature-algorithm" class="md-nav__link">
+<span class="md-ellipsis">
+3.3.2 EdDSA (Edwards-Curve Digital Signature Algorithm)
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#333-x25519-ecdh-with-curve25519" class="md-nav__link">
+<span class="md-ellipsis">
+3.3.3 X25519 (ECDH with Curve25519)
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-elgamal" class="md-nav__link">
+<span class="md-ellipsis">
+3.4 ElGamal Encryption
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#35-rsa-vs-ecc-comparison" class="md-nav__link">
+<span class="md-ellipsis">
+3.5 RSA vs ECC Comparison
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#36-hybrid-encryption" class="md-nav__link">
+<span class="md-ellipsis">
+3.6 Hybrid Encryption
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#exercises" class="md-nav__link">
+<span class="md-ellipsis">
+Exercises
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="ch04-cryptographic-hash-functions-and-macs.html" class="md-nav__link">
+<span class="md-ellipsis">
+4. Cryptographic Hash Functions and MACs
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch05-key-management-and-public-key-infrastructure.html" class="md-nav__link">
+<span class="md-ellipsis">
+5. Key Management and Public Key Infrastructure
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch06-cryptographic-protocols-and-security-proofs.html" class="md-nav__link">
+<span class="md-ellipsis">
+6. Cryptographic Protocols and Security Proofs
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch07-quantum-cryptography-and-post-quantum-migration.html" class="md-nav__link">
+<span class="md-ellipsis">
+7. Quantum Cryptography and Post-Quantum Migration
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch08-network-security-fundamentals.html" class="md-nav__link">
+<span class="md-ellipsis">
+8. Network Security Fundamentals
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch09-firewalls-ids-and-ips.html" class="md-nav__link">
+<span class="md-ellipsis">
+9. Firewalls, IDS, and IPS
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch10-network-protocol-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+10. Network Protocol Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch11-web-application-security-fundamentals.html" class="md-nav__link">
+<span class="md-ellipsis">
+11. Web Application Security Fundamentals
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch12-authentication-authorization-and-access-control.html" class="md-nav__link">
+<span class="md-ellipsis">
+12. Authentication, Authorization, and Access Control
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch13-api-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+13. API Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch14-side-channel-attacks.html" class="md-nav__link">
+<span class="md-ellipsis">
+14. Side-Channel Attacks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch15-hardware-tamper-protection.html" class="md-nav__link">
+<span class="md-ellipsis">
+15. Hardware Tamper Protection
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch16-transport-layer-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+16. Transport Layer Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch17-ssh-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+17. SSH Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch18-email-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+18. Email Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch19-advanced-network-protocol-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+19. Advanced Network Protocol Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch20-malware-analysis.html" class="md-nav__link">
+<span class="md-ellipsis">
+20. Malware Analysis
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch21-reverse-engineering.html" class="md-nav__link">
+<span class="md-ellipsis">
+21. Reverse Engineering
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch22-digital-forensics.html" class="md-nav__link">
+<span class="md-ellipsis">
+22. Digital Forensics
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch23-vulnerability-research-and-fuzzing.html" class="md-nav__link">
+<span class="md-ellipsis">
+23. Vulnerability Research and Fuzzing
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch24-exploit-development-fundamentals.html" class="md-nav__link">
+<span class="md-ellipsis">
+24. Exploit Development Fundamentals
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch25-security-architecture-and-design.html" class="md-nav__link">
+<span class="md-ellipsis">
+25. Security Architecture and Design
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch26-cloud-native-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+26. Cloud-Native Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch27-human-factors-in-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+27. Human Factors in Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch28-artificial-intelligence-and-machine-learning.html" class="md-nav__link">
+<span class="md-ellipsis">
+28. Artificial Intelligence and Machine Learning Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch29-iot-industrial-control-systems-and-the-emerging.html" class="md-nav__link">
+<span class="md-ellipsis">
+29. IoT, Industrial Control Systems, and the Emerging Threat Horizon
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="app-a-mathematical-reference.html" class="md-nav__link">
+<span class="md-ellipsis">
+Appendix A. Mathematical Reference
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="app-b-security-tools-reference.html" class="md-nav__link">
+<span class="md-ellipsis">
+Appendix B. Security Tools Reference
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="app-c-selected-exercise-solutions.html" class="md-nav__link">
+<span class="md-ellipsis">
+Appendix C. Selected Exercise Solutions
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="bibliography.html" class="md-nav__link">
+<span class="md-ellipsis">
+References
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#sec-rsa" class="md-nav__link">
+<span class="md-ellipsis">
+3.1 RSA
+</span>
+</a>
+<nav class="md-nav" aria-label="3.1 RSA">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#311-key-generation-and-core-operations" class="md-nav__link">
+<span class="md-ellipsis">
+3.1.1 Key Generation and Core Operations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#312-rsa-padding-schemes" class="md-nav__link">
+<span class="md-ellipsis">
+3.1.2 RSA Padding Schemes
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#313-rsa-key-size-recommendations" class="md-nav__link">
+<span class="md-ellipsis">
+3.1.3 RSA Key Size Recommendations
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-dh" class="md-nav__link">
+<span class="md-ellipsis">
+3.2 Diffie-Hellman Key Exchange
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-ec-schemes" class="md-nav__link">
+<span class="md-ellipsis">
+3.3 Elliptic Curve Schemes
+</span>
+</a>
+<nav class="md-nav" aria-label="3.3 Elliptic Curve Schemes">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#331-ecdsa-elliptic-curve-digital-signature-algorithm" class="md-nav__link">
+<span class="md-ellipsis">
+3.3.1 ECDSA (Elliptic Curve Digital Signature Algorithm)
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#332-eddsa-edwards-curve-digital-signature-algorithm" class="md-nav__link">
+<span class="md-ellipsis">
+3.3.2 EdDSA (Edwards-Curve Digital Signature Algorithm)
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#333-x25519-ecdh-with-curve25519" class="md-nav__link">
+<span class="md-ellipsis">
+3.3.3 X25519 (ECDH with Curve25519)
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-elgamal" class="md-nav__link">
+<span class="md-ellipsis">
+3.4 ElGamal Encryption
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#35-rsa-vs-ecc-comparison" class="md-nav__link">
+<span class="md-ellipsis">
+3.5 RSA vs ECC Comparison
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#36-hybrid-encryption" class="md-nav__link">
+<span class="md-ellipsis">
+3.6 Hybrid Encryption
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#exercises" class="md-nav__link">
+<span class="md-ellipsis">
+Exercises
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="ch-pkc">Chapter 3: Public-Key Cryptography<a class="headerlink" href="#ch-pkc" title="Permanent link">&para;</a></h1>
+<p>Public-key (asymmetric) cryptography uses mathematically linked key pairs: a <em>public key</em> for encryption or signature verification, and a <em>private key</em> for decryption or signing. It solves the key distribution problem that makes symmetric cryptography awkward at scale.</p>
+<p>Before public-key cryptography, every pair of communicating parties needed to securely exchange a shared secret out-of-band — by courier, phone, or in person. For <span class="arithmatex">\(n\)</span> parties, that’s <span class="arithmatex">\(O(n^2)\)</span> pairwise secrets to manage. Public-key cryptography collapses this: each party publishes one public key, and anyone can now initiate a secure channel with them without any prior coordination. The tradeoff is speed — asymmetric operations are roughly 1000x slower than AES, which is why real protocols use public-key crypto only to bootstrap a symmetric session key, then switch to symmetric encryption for bulk data.</p>
+<h2 id="sec-rsa"><span class="secnum">3.1</span> RSA<a class="headerlink" href="#sec-rsa" title="Permanent link">&para;</a></h2>
+<h3 id="311-key-generation-and-core-operations"><span class="secnum">3.1.1</span> Key Generation and Core Operations<a class="headerlink" href="#311-key-generation-and-core-operations" title="Permanent link">&para;</a></h3>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 3.1 (RSA Key Generation)</p>
+<ol>
+<li>
+<p>Choose large random primes <span class="arithmatex">\(p, q\)</span> (each <span class="arithmatex">\(\sim k/2\)</span> bits); set <span class="arithmatex">\(n = pq\)</span>.</p>
+</li>
+<li>
+<p>Compute <span class="arithmatex">\(\lambda(n) = \mathrm{lcm}(p-1, q-1)\)</span> (Carmichael’s totient).</p>
+</li>
+<li>
+<p>Choose <span class="arithmatex">\(e\)</span> with <span class="arithmatex">\(1 &lt; e &lt; \lambda(n)\)</span> and <span class="arithmatex">\(\gcd(e, \lambda(n)) = 1\)</span>; typically <span class="arithmatex">\(e = 65537\)</span>.</p>
+</li>
+<li>
+<p>Compute <span class="arithmatex">\(d \equiv e^{-1} \pmod{\lambda(n)}\)</span> via extended Euclidean algorithm.</p>
+</li>
+<li>
+<p><strong>Public key:</strong> <span class="arithmatex">\((n, e)\)</span>. <strong>Private key:</strong> <span class="arithmatex">\((n, d)\)</span> (with <span class="arithmatex">\(p, q\)</span> for CRT optimization).</p>
+</li>
+</ol>
+</div>
+<p><strong>Encryption:</strong> <span class="arithmatex">\(c = m^e \bmod n\)</span> <strong>Decryption:</strong> <span class="arithmatex">\(m = c^d \bmod n\)</span></p>
+<p>The choice <span class="arithmatex">\(e = 65537 = 2^{16} + 1\)</span> is near-universal in practice. It has only two set bits in binary, which minimizes the number of multiplications in the square-and-multiply exponentiation. More importantly, <span class="arithmatex">\(e = 3\)</span> (the smallest valid choice) creates dangerous edge cases: for messages <span class="arithmatex">\(m &lt; n^{1/3}\)</span>, the ciphertext <span class="arithmatex">\(c = m^3 \bmod n = m^3\)</span> doesn’t even reduce modulo <span class="arithmatex">\(n\)</span>, leaking <span class="arithmatex">\(m\)</span> by simply taking the cube root of <span class="arithmatex">\(c\)</span> over the integers. <span class="arithmatex">\(e = 65537\)</span> avoids all such small-exponent pathologies.</p>
+<div class="admonition info box-theorem kind-concept">
+<p class="admonition-title">Theorem 3.1 (RSA Correctness)</p>
+<p>If <span class="arithmatex">\(\gcd(m, n) = 1\)</span> (true with overwhelming probability for random <span class="arithmatex">\(m\)</span>):</p>
+<div class="arithmatex">\[(m^e)^d = m^{ed} \equiv m \pmod{n}\]</div>
+<p>since <span class="arithmatex">\(ed \equiv 1 \pmod{\lambda(n)}\)</span>, so <span class="arithmatex">\(m^{ed} = m^{1 + k\lambda(n)} = m \cdot (m^{\lambda(n)})^k \equiv m \cdot 1 \equiv m\)</span>.</p>
+</div>
+<div class="admonition example box-example kind-example">
+<p class="admonition-title">Example 3.1 (RSA with Small Numbers)</p>
+<div id="ex-rsa-small"></div>
+<p>Let <span class="arithmatex">\(p = 11\)</span>, <span class="arithmatex">\(q = 13\)</span>, so <span class="arithmatex">\(n = 143\)</span>, <span class="arithmatex">\(\lambda(n) = \mathrm{lcm}(10, 12) = 60\)</span>.</p>
+<p>Choose <span class="arithmatex">\(e = 7\)</span> (since <span class="arithmatex">\(\gcd(7, 60) = 1\)</span>). Then <span class="arithmatex">\(d = 7^{-1} \bmod 60 = 43\)</span> (check: <span class="arithmatex">\(7 \times 43 = 301 = 5 \times 60 + 1\)</span>).</p>
+<p>Encrypt <span class="arithmatex">\(m = 9\)</span>: <span class="arithmatex">\(c = 9^7 \bmod 143 = 9\)</span>.</p>
+<p>Decrypt: <span class="arithmatex">\(c^d = 9^{43} \bmod 143 = 9\)</span>. ✓</p>
+</div>
+<h3 id="312-rsa-padding-schemes"><span class="secnum">3.1.2</span> RSA Padding Schemes<a class="headerlink" href="#312-rsa-padding-schemes" title="Permanent link">&para;</a></h3>
+<div class="admonition warning box-warningbox kind-safety">
+<p class="admonition-title">Textbook RSA is Insecure</p>
+<p>Unpadded RSA has multiple vulnerabilities: small message exponent attacks, multiplicative homomorphism (given <span class="arithmatex">\(c_1 = m_1^e\)</span> and <span class="arithmatex">\(c_2 = m_2^e\)</span>, compute <span class="arithmatex">\(c_1 c_2 = (m_1 m_2)^e\)</span>), and chosen-ciphertext attacks. Always use proper padding.</p>
+</div>
+<p>The multiplicative homomorphism of textbook RSA is a particularly sharp pitfall in practice. A TLS server that decrypts under RSA and returns different error messages for different failure modes is a decryption oracle. The Bleichenbacher 1998 attack exploits PKCS#1 v1.5 padding errors in exactly this way: the server reveals whether the decrypted plaintext starts with the two bytes <code>0x00 0x02</code>, which is enough of a one-bit oracle to reconstruct the full plaintext after about <span class="arithmatex">\(10^6\)</span> queries. The ROBOT attack in 2017 showed this vulnerability was still present in major TLS implementations, including some from F5 and Citrix, nearly two decades after it was first documented.</p>
+<p><strong>RSAES-OAEP (RFC 8017):</strong> For encryption.</p>
+<div class="arithmatex">\[\text{OAEP encode: } M \to \mathrm{EM} = (DB \oplus \mathrm{mask}_1 \| \mathrm{seed} \oplus \mathrm{mask}_2)\]</div>
+<p>where masks are derived from a mask generation function (MGF1-SHA-256). OAEP is IND-CCA2 secure in the random oracle model.</p>
+<p><strong>RSASSA-PSS:</strong> For signatures. Probabilistic; provably secure; recommended over PKCS#1 v1.5.</p>
+<p><strong>PKCS#1 v1.5:</strong> Legacy; vulnerable to Bleichenbacher’s 1998 padding oracle attack (ROBOT attack, 2017 — still present in <span class="arithmatex">\(27\%\)</span> of top-million domains). <strong>Avoid for new systems.</strong></p>
+<p>OAEP works by randomizing the message before the RSA operation using a hash-based mask. The randomization means identical messages produce different ciphertexts on each encryption (no determinism), which breaks the multiplicative structure that textbook RSA leaks. The MGF1 function serves as a random oracle in the security proof, which is why OAEP’s security only holds in the random oracle model — a limitation worth knowing but not usually a practical concern with SHA-256 as the underlying hash.</p>
+<h3 id="313-rsa-key-size-recommendations"><span class="secnum">3.1.3</span> RSA Key Size Recommendations<a class="headerlink" href="#313-rsa-key-size-recommendations" title="Permanent link">&para;</a></h3>
+<div class="center">
+<div class="tbl">
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Modulus</th>
+<th style="text-align: left;">Classical Security</th>
+<th style="text-align: left;">Quantum Security</th>
+<th style="text-align: left;">Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">1024 bits</td>
+<td style="text-align: left;"><span class="math inline">\(&lt; 80\)</span> bits</td>
+<td style="text-align: left;">Broken</td>
+<td style="text-align: left;">Deprecated</td>
+</tr>
+<tr>
+<td style="text-align: left;">2048 bits</td>
+<td style="text-align: left;">112 bits</td>
+<td style="text-align: left;">Broken</td>
+<td style="text-align: left;">Minimum; avoid for new deployments</td>
+</tr>
+<tr>
+<td style="text-align: left;">3072 bits</td>
+<td style="text-align: left;">128 bits</td>
+<td style="text-align: left;">Broken</td>
+<td style="text-align: left;">Acceptable to 2030</td>
+</tr>
+<tr>
+<td style="text-align: left;">4096 bits</td>
+<td style="text-align: left;">140 bits</td>
+<td style="text-align: left;">Broken</td>
+<td style="text-align: left;">Recommended now</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>RSA offers no quantum resistance. Shor’s algorithm factors <span class="arithmatex">\(n\)</span> in polynomial time on a quantum computer, recovering <span class="arithmatex">\(p\)</span> and <span class="arithmatex">\(q\)</span> and thus the private key <span class="arithmatex">\(d\)</span>. No key size makes RSA quantum-safe — this is fundamental, not fixable by using larger keys. Organizations planning for long-term data confidentiality (data encrypted today that must remain secret past 2030) should begin transitioning to post-quantum algorithms (ML-KEM, ML-DSA) now. “Harvest now, decrypt later” attacks are a real threat: adversaries can store today’s RSA-encrypted traffic and decrypt it retroactively once quantum computers mature.</p>
+<h2 id="sec-dh"><span class="secnum">3.2</span> Diffie-Hellman Key Exchange<a class="headerlink" href="#sec-dh" title="Permanent link">&para;</a></h2>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 3.2 (Finite-Field DH (FFDH))</p>
+<p>Let <span class="arithmatex">\(p\)</span> be a prime, <span class="arithmatex">\(g\)</span> a generator of <span class="arithmatex">\(\mathbb{Z}_p^*\)</span>. Alice and Bob exchange:</p>
+<ol>
+<li>
+<p>Alice: <span class="arithmatex">\(a \leftarrow_\$ [2, p-2]\)</span>; send <span class="arithmatex">\(A = g^a \bmod p\)</span>.</p>
+</li>
+<li>
+<p>Bob: <span class="arithmatex">\(b \leftarrow_\$ [2, p-2]\)</span>; send <span class="arithmatex">\(B = g^b \bmod p\)</span>.</p>
+</li>
+<li>
+<p>Shared secret: <span class="arithmatex">\(S = A^b \bmod p = B^a \bmod p = g^{ab} \bmod p\)</span>.</p>
+</li>
+</ol>
+</div>
+<p>DH solves a subtle but profound problem: two parties who have never met can establish a shared secret over a public channel, even with a passive eavesdropper recording every message. The insight is that the eavesdropper sees <span class="arithmatex">\(g^a\)</span> and <span class="arithmatex">\(g^b\)</span>, but computing <span class="arithmatex">\(g^{ab}\)</span> from those two values is the CDH problem — believed hard in properly chosen groups. Neither party ever transmits their secret exponent <span class="arithmatex">\(a\)</span> or <span class="arithmatex">\(b\)</span>; they only transmit the one-way images.</p>
+<div class="admonition info box-keybox kind-concept">
+<p class="admonition-title">DH Group Requirements</p>
+<p>The DH group must be large enough to resist index calculus. NIST recommends:</p>
+<ul>
+<li>
+<p>RFC 3526 groups: Group 14 (2048-bit) minimum; Group 15/16 (3072/4096-bit) preferred.</p>
+</li>
+<li>
+<p>RFC 7919 FFDHE groups: pre-standardized for TLS 1.3.</p>
+</li>
+<li>
+<p>Avoid: groups <span class="arithmatex">\(&lt; 2048\)</span> bits, Oakley Group 1/2, non-standard custom groups.</p>
+</li>
+</ul>
+</div>
+<p>The group choice matters beyond just the prime size. Using a custom non-standard group is dangerous because the group might have weak structure: a small order, a smooth order (whose factorization has many small prime factors), or a subgroup of known discrete logarithm. RFC 7919’s named groups were specifically chosen with large safe-prime orders to resist these attacks. Any implementation that allows configuring an arbitrary DH group should be treated as a security defect.</p>
+<div class="admonition warning box-attackbox kind-safety">
+<p class="admonition-title">Logjam Attack (2015)</p>
+<p>Researchers showed that 512-bit DH (export-grade) could be broken in hours using number field sieve precomputation. Many TLS servers were downgraded to 512-bit DH via FREAK-like negotiation. State-level adversaries could precompute logs for common 768/1024-bit groups used by millions of servers.</p>
+<p><strong>Defense:</strong> Disable DHE <span class="arithmatex">\(&lt;\)</span> 2048-bit; prefer ECDHE; use RFC 7919 named groups.</p>
+</div>
+<h2 id="sec-ec-schemes"><span class="secnum">3.3</span> Elliptic Curve Schemes<a class="headerlink" href="#sec-ec-schemes" title="Permanent link">&para;</a></h2>
+<h3 id="331-ecdsa-elliptic-curve-digital-signature-algorithm"><span class="secnum">3.3.1</span> ECDSA (Elliptic Curve Digital Signature Algorithm)<a class="headerlink" href="#331-ecdsa-elliptic-curve-digital-signature-algorithm" title="Permanent link">&para;</a></h3>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 3.3 (ECDSA)</p>
+<p>Parameters: curve <span class="arithmatex">\(E\)</span>, generator <span class="arithmatex">\(G\)</span> of prime order <span class="arithmatex">\(n\)</span>, hash function <span class="arithmatex">\(H\)</span>.</p>
+<p><strong>Key generation:</strong> <span class="arithmatex">\(d \leftarrow_\$ [1, n-1]\)</span>; <span class="arithmatex">\(Q = dG\)</span> (public key).</p>
+<p><strong>Signing</strong> message <span class="arithmatex">\(m\)</span>:</p>
+<ol>
+<li>
+<p><span class="arithmatex">\(k \leftarrow_\$ [1, n-1]\)</span> (ephemeral, random, unique per signature)</p>
+</li>
+<li>
+<p><span class="arithmatex">\(R = kG\)</span>; <span class="arithmatex">\(r = R_x \bmod n\)</span> (x-coordinate of <span class="arithmatex">\(R\)</span>)</p>
+</li>
+<li>
+<p><span class="arithmatex">\(s = k^{-1}(H(m) + r \cdot d) \bmod n\)</span></p>
+</li>
+<li>
+<p>Signature: <span class="arithmatex">\((r, s)\)</span></p>
+</li>
+</ol>
+<p><strong>Verification</strong> of <span class="arithmatex">\((r, s)\)</span> on message <span class="arithmatex">\(m\)</span>:</p>
+<ol>
+<li>
+<p><span class="arithmatex">\(w = s^{-1} \bmod n\)</span></p>
+</li>
+<li>
+<p><span class="arithmatex">\(u_1 = H(m) \cdot w \bmod n\)</span>; <span class="arithmatex">\(u_2 = r \cdot w \bmod n\)</span></p>
+</li>
+<li>
+<p><span class="arithmatex">\((x, y) = u_1 G + u_2 Q\)</span></p>
+</li>
+<li>
+<p>Valid if <span class="arithmatex">\(x \equiv r \pmod{n}\)</span></p>
+</li>
+</ol>
+</div>
+<p>The verification step works because expanding <span class="arithmatex">\(u_1 G + u_2 Q = H(m) w G + r w (dG) = w(H(m) + rd) G = (w \cdot ks) G = k G = R\)</span>. The signer picks a random <span class="arithmatex">\(k\)</span>, computes a “commitment” <span class="arithmatex">\(R = kG\)</span>, then reveals <span class="arithmatex">\(r = R_x\)</span> (a one-way image of the commitment) and a response <span class="arithmatex">\(s\)</span> that ties <span class="arithmatex">\(r\)</span> to the message and private key. A verifier who knows the public key <span class="arithmatex">\(Q = dG\)</span> can reconstruct <span class="arithmatex">\(R\)</span> without knowing <span class="arithmatex">\(k\)</span> or <span class="arithmatex">\(d\)</span>, because the math collapses correctly.</p>
+<div class="admonition warning box-warningbox kind-safety">
+<p class="admonition-title">ECDSA Nonce Reuse — Catastrophic</p>
+<p>If the ephemeral key <span class="arithmatex">\(k\)</span> is reused for two signatures <span class="arithmatex">\((r, s_1)\)</span> and <span class="arithmatex">\((r, s_2)\)</span> on messages <span class="arithmatex">\(m_1, m_2\)</span>:</p>
+<div class="arithmatex">\[s_1 - s_2 = k^{-1}(H(m_1) - H(m_2)) \bmod n\]</div>
+<p>From this, <span class="arithmatex">\(k\)</span> can be recovered, and then the private key:</p>
+<div class="arithmatex">\[d = r^{-1}(s_1 k - H(m_1)) \bmod n\]</div>
+<p><strong>Real-world impact:</strong> Sony PlayStation 3 (2010) — static <span class="arithmatex">\(k = 1\)</span> used for all firmware signatures, secret key extracted; Bitcoin wallets with weak RNG compromised; HTTPS servers with broken PRNG exposed private keys.</p>
+</div>
+<p>The PlayStation 3 break is a textbook example of catastrophic nonce failure. Sony used <span class="arithmatex">\(k = 1\)</span> in their ECDSA implementation, which meant every firmware signature had the same value of <span class="arithmatex">\(r = G_x \bmod n\)</span>. Two signatures with the same <span class="arithmatex">\(r\)</span> immediately reveals <span class="arithmatex">\(k = 1\)</span> from the signature equation, and then <span class="arithmatex">\(d\)</span> follows by simple arithmetic. The entire firmware signing key was recovered from just two signatures, and custom firmware could be signed as if it were official Sony software. This failure cost Sony control over their console security and was entirely avoidable.</p>
+<h3 id="332-eddsa-edwards-curve-digital-signature-algorithm"><span class="secnum">3.3.2</span> EdDSA (Edwards-Curve Digital Signature Algorithm)<a class="headerlink" href="#332-eddsa-edwards-curve-digital-signature-algorithm" title="Permanent link">&para;</a></h3>
+<p>EdDSA (RFC 8032) addresses ECDSA’s nonce-sensitivity by deriving <span class="arithmatex">\(k\)</span> deterministically:</p>
+<div class="arithmatex">\[k = H(b_{\text{prefix}} \| m) \bmod \ell\]</div>
+<p>where <span class="arithmatex">\(b_{\text{prefix}}\)</span> is part of the private key. Because <span class="arithmatex">\(k\)</span> depends on both key and message, reuse is structurally impossible.</p>
+<p>The deterministic nonce derivation is the key design win: signing the same message twice always produces the same signature, because <span class="arithmatex">\(k\)</span> is determined by the combination of private key and message. There’s no external randomness to fail. EdDSA also doesn’t require an inverse modulo <span class="arithmatex">\(n\)</span> during signing — the signature computation is a scalar multiplication and a few additions, which is simpler to implement correctly. The simpler implementation path means fewer opportunities for side-channel leakage through timing differences.</p>
+<p><strong>Ed25519</strong> (Curve25519 + SHA-512):</p>
+<ul>
+<li>
+<p><span class="arithmatex">\(\sim 128\)</span>-bit security; 64-byte signatures; 32-byte public key</p>
+</li>
+<li>
+<p>Constant-time operations: resistant to timing side-channels</p>
+</li>
+<li>
+<p><span class="arithmatex">\(\sim 70{,}000\)</span> verifications/second on modern hardware</p>
+</li>
+<li>
+<p>Used in: SSH (host keys), TLS 1.3, Tor, Signal, Age encryption</p>
+</li>
+</ul>
+<div class="language-python highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">cryptography.hazmat.primitives.asymmetric.ed25519</span><span class="w"> </span><span class="kn">import</span> <span class="n">Ed25519PrivateKey</span>
+
+<span class="c1"># Key generation</span>
+<span class="n">private_key</span> <span class="o">=</span> <span class="n">Ed25519PrivateKey</span><span class="o">.</span><span class="n">generate</span><span class="p">()</span>
+<span class="n">public_key</span> <span class="o">=</span> <span class="n">private_key</span><span class="o">.</span><span class="n">public_key</span><span class="p">()</span>
+
+<span class="c1"># Sign</span>
+<span class="n">message</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">"This message is authenticated"</span>
+<span class="n">signature</span> <span class="o">=</span> <span class="n">private_key</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>  <span class="c1"># 64 bytes</span>
+
+<span class="c1"># Verify (raises InvalidSignature on failure)</span>
+<span class="n">public_key</span><span class="o">.</span><span class="n">verify</span><span class="p">(</span><span class="n">signature</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
+
+<span class="c1"># Serialize public key (32 bytes)</span>
+<span class="n">pub_bytes</span> <span class="o">=</span> <span class="n">public_key</span><span class="o">.</span><span class="n">public_bytes_raw</span><span class="p">()</span>
+</code></pre></div>
+<h3 id="333-x25519-ecdh-with-curve25519"><span class="secnum">3.3.3</span> X25519 (ECDH with Curve25519)<a class="headerlink" href="#333-x25519-ecdh-with-curve25519" title="Permanent link">&para;</a></h3>
+<p>X25519 (RFC 7748) is the Diffie-Hellman function on Curve25519, using the Montgomery ladder for constant-time scalar multiplication:</p>
+<div class="language-python highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">cryptography.hazmat.primitives.asymmetric.x25519</span><span class="w"> </span><span class="kn">import</span> <span class="n">X25519PrivateKey</span>
+
+<span class="c1"># Alice</span>
+<span class="n">alice_private</span> <span class="o">=</span> <span class="n">X25519PrivateKey</span><span class="o">.</span><span class="n">generate</span><span class="p">()</span>
+<span class="n">alice_public</span> <span class="o">=</span> <span class="n">alice_private</span><span class="o">.</span><span class="n">public_key</span><span class="p">()</span>
+
+<span class="c1"># Bob</span>
+<span class="n">bob_private</span> <span class="o">=</span> <span class="n">X25519PrivateKey</span><span class="o">.</span><span class="n">generate</span><span class="p">()</span>
+<span class="n">bob_public</span> <span class="o">=</span> <span class="n">bob_private</span><span class="o">.</span><span class="n">public_key</span><span class="p">()</span>
+
+<span class="c1"># Shared secret computation</span>
+<span class="n">alice_shared</span> <span class="o">=</span> <span class="n">alice_private</span><span class="o">.</span><span class="n">exchange</span><span class="p">(</span><span class="n">bob_public</span><span class="p">)</span>  <span class="c1"># 32 bytes</span>
+<span class="n">bob_shared</span> <span class="o">=</span> <span class="n">bob_private</span><span class="o">.</span><span class="n">exchange</span><span class="p">(</span><span class="n">alice_public</span><span class="p">)</span>    <span class="c1"># 32 bytes</span>
+<span class="k">assert</span> <span class="n">alice_shared</span> <span class="o">==</span> <span class="n">bob_shared</span>
+
+<span class="c1"># Derive actual key via HKDF (raw shared secret is NOT a key --- must be hashed)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cryptography.hazmat.primitives.kdf.hkdf</span><span class="w"> </span><span class="kn">import</span> <span class="n">HKDF</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cryptography.hazmat.primitives</span><span class="w"> </span><span class="kn">import</span> <span class="n">hashes</span>
+<span class="n">derived_key</span> <span class="o">=</span> <span class="n">HKDF</span><span class="p">(</span>
+    <span class="n">algorithm</span><span class="o">=</span><span class="n">hashes</span><span class="o">.</span><span class="n">SHA256</span><span class="p">(),</span>
+    <span class="n">length</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span>
+    <span class="n">salt</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">info</span><span class="o">=</span><span class="sa">b</span><span class="s2">"handshake"</span>
+<span class="p">)</span><span class="o">.</span><span class="n">derive</span><span class="p">(</span><span class="n">alice_shared</span><span class="p">)</span>
+</code></pre></div>
+<p>The comment in the code about hashing the raw shared secret before use is not optional. The raw X25519 output is a group element, not uniformly random — it lives in a specific subgroup and has algebraic structure. Passing it through HKDF removes that structure and produces a uniformly distributed key. Skipping this step can leak information about the shared secret or produce keys with predictable bias.</p>
+<h2 id="sec-elgamal"><span class="secnum">3.4</span> ElGamal Encryption<a class="headerlink" href="#sec-elgamal" title="Permanent link">&para;</a></h2>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 3.4 (ElGamal)</p>
+<p>Group <span class="arithmatex">\(G\)</span> of prime order <span class="arithmatex">\(q\)</span>, generator <span class="arithmatex">\(g\)</span>. Secret key <span class="arithmatex">\(x\)</span>; public key <span class="arithmatex">\(h = g^x\)</span>.</p>
+<p><strong>Encrypt</strong> <span class="arithmatex">\(m \in G\)</span>: choose <span class="arithmatex">\(r \leftarrow_\$ [1, q-1]\)</span>; ciphertext <span class="arithmatex">\(= (g^r, m \cdot h^r)\)</span>.</p>
+<p><strong>Decrypt</strong> <span class="arithmatex">\((c_1, c_2)\)</span>: <span class="arithmatex">\(m = c_2 \cdot (c_1^x)^{-1} = c_2 \cdot h^{-r}\)</span>.</p>
+</div>
+<p>ElGamal encryption is semantically secure under the DDH assumption: an adversary who can’t distinguish <span class="arithmatex">\(g^{ab}\)</span> from a random group element also can’t distinguish encryptions of different messages. The ciphertext <span class="arithmatex">\((g^r, m \cdot h^r)\)</span> hides <span class="arithmatex">\(m\)</span> because the masking value <span class="arithmatex">\(h^r = g^{xr}\)</span> is computationally indistinguishable from random, which means <span class="arithmatex">\(m \cdot h^r\)</span> reveals nothing about <span class="arithmatex">\(m\)</span> to an observer who doesn’t know <span class="arithmatex">\(x\)</span> or <span class="arithmatex">\(r\)</span>.</p>
+<p>ElGamal on elliptic curves underlies ECIES (Elliptic Curve Integrated Encryption Scheme), the EC analog used in many protocols.</p>
+<h2 id="35-rsa-vs-ecc-comparison"><span class="secnum">3.5</span> RSA vs ECC Comparison<a class="headerlink" href="#35-rsa-vs-ecc-comparison" title="Permanent link">&para;</a></h2>
+<p>ECC provides equivalent security with much smaller keys, resulting in faster operations and smaller certificates. The table below maps security levels across algorithm families.</p>
+<div class="center">
+<div class="tbl">
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Security</strong></th>
+<th style="text-align: left;"><strong>RSA/DH</strong></th>
+<th style="text-align: left;"><strong>ECC</strong></th>
+<th style="text-align: left;"><strong>AES</strong></th>
+<th style="text-align: left;"><strong>SHA</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">80 bits</td>
+<td style="text-align: left;">1024 bits</td>
+<td style="text-align: left;">160 bits</td>
+<td style="text-align: left;">80 bits</td>
+<td style="text-align: left;">160 bits</td>
+</tr>
+<tr>
+<td style="text-align: left;">112 bits</td>
+<td style="text-align: left;">2048 bits</td>
+<td style="text-align: left;">224 bits</td>
+<td style="text-align: left;">112 bits</td>
+<td style="text-align: left;">224 bits</td>
+</tr>
+<tr>
+<td style="text-align: left;">128 bits</td>
+<td style="text-align: left;">3072 bits</td>
+<td style="text-align: left;">256 bits</td>
+<td style="text-align: left;">128 bits</td>
+<td style="text-align: left;">256 bits</td>
+</tr>
+<tr>
+<td style="text-align: left;">192 bits</td>
+<td style="text-align: left;">7680 bits</td>
+<td style="text-align: left;">384 bits</td>
+<td style="text-align: left;">192 bits</td>
+<td style="text-align: left;">384 bits</td>
+</tr>
+<tr>
+<td style="text-align: left;">256 bits</td>
+<td style="text-align: left;">15360 bits</td>
+<td style="text-align: left;">512 bits</td>
+<td style="text-align: left;">256 bits</td>
+<td style="text-align: left;">512 bits</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>The key size difference isn’t just about storage — it directly affects performance. Generating an RSA-3072 key pair is noticeably slower than generating an ECDSA P-256 key pair, and RSA signature verification at equivalent security levels is considerably slower than Ed25519 verification. On constrained devices (smart cards, IoT sensors, embedded controllers), this matters enormously: an Ed25519 verify might take milliseconds while RSA-3072 verify takes seconds. The size difference also affects TLS handshake latency: smaller certificates mean fewer packets, which matters on high-latency mobile connections.</p>
+<h2 id="36-hybrid-encryption"><span class="secnum">3.6</span> Hybrid Encryption<a class="headerlink" href="#36-hybrid-encryption" title="Permanent link">&para;</a></h2>
+<p>Public-key encryption is orders of magnitude slower than symmetric encryption and can’t encrypt arbitrary-length messages efficiently. <em>Hybrid encryption</em> solves both:</p>
+<ol>
+<li>
+<p>Generate random symmetric key <span class="arithmatex">\(K\)</span> (e.g., 256-bit AES key).</p>
+</li>
+<li>
+<p>Encrypt <span class="arithmatex">\(K\)</span> with recipient’s public key: <span class="arithmatex">\(C_K = \mathrm{RSAES\text{-}OAEP}(pk, K)\)</span>.</p>
+</li>
+<li>
+<p>Encrypt message with <span class="arithmatex">\(K\)</span>: <span class="arithmatex">\(C_M = \mathrm{AES\text{-}256\text{-}GCM}(K, M)\)</span>.</p>
+</li>
+<li>
+<p>Send <span class="arithmatex">\((C_K, C_M)\)</span>.</p>
+</li>
+</ol>
+<p>This is the basis of TLS, PGP, CMS (S/MIME), and virtually all asymmetric encryption in practice. Modern KEM+DEM (Key Encapsulation Mechanism + Data Encapsulation Mechanism) formalizes this construction.</p>
+<p>The KEM/DEM split is more than organizational convenience. A KEM produces a key and an encapsulation; a DEM encrypts data under that key. Separating these two functions allows you to swap out the KEM independently of the DEM — exactly the kind of modularity needed for post-quantum migration. NIST’s ML-KEM (FIPS 203) is a post-quantum KEM designed to be a drop-in replacement for ECDH/RSA key encapsulation: swap the KEM, keep the AES-GCM DEM, and the system gains quantum resistance without redesigning the bulk encryption layer.</p>
+<h2 id="exercises">Exercises<a class="headerlink" href="#exercises" title="Permanent link">&para;</a></h2>
+<div class="admonition example box-exercise kind-example">
+<p class="admonition-title">Exercise 3.1</p>
+<p>Generate an RSA-2048 key pair in Python (using the <code>cryptography</code> library). Encrypt a 32-byte random message with OAEP-SHA256. Decrypt and verify. Time the operations.</p>
+</div>
+<div class="admonition example box-exercise kind-example">
+<p class="admonition-title">Exercise 3.2</p>
+<p>Explain the Bleichenbacher attack on PKCS#1 v1.5 RSA encryption. Why does the oracle (invalid padding <span class="arithmatex">\(\to\)</span> error response) allow the attacker to decrypt any ciphertext?</p>
+</div>
+<div class="admonition example box-exercise kind-example">
+<p class="admonition-title">Exercise 3.3 (ECDSA Nonce Recovery)</p>
+<p>Suppose an ECDSA signer uses the same <span class="arithmatex">\(k\)</span> for two messages with hashes <span class="arithmatex">\(h_1 = 10\)</span> and <span class="arithmatex">\(h_2 = 20\)</span>, over a group of order <span class="arithmatex">\(n = 37\)</span>, yielding <span class="arithmatex">\(r = 13\)</span>, <span class="arithmatex">\(s_1 = 15\)</span>, <span class="arithmatex">\(s_2 = 25\)</span>. Recover <span class="arithmatex">\(k\)</span> and the private key <span class="arithmatex">\(d\)</span>.</p>
+</div>
+<div class="admonition example box-exercise kind-example">
+<p class="admonition-title">Exercise 3.4</p>
+<p>Compare ECDSA and EdDSA: which is more resistant to implementation errors? Which provides stronger security guarantees? Why does EdDSA derive <span class="arithmatex">\(k\)</span> deterministically?</p>
+</div>
+<div class="admonition example box-exercise kind-example">
+<p class="admonition-title">Exercise 3.5</p>
+<p>Implement a hybrid encryption scheme in Python: use X25519 for key agreement, HKDF-SHA256 for key derivation, and AES-256-GCM for symmetric encryption. Document each step.</p>
+</div>
+<div class="admonition example box-exercise kind-example">
+<p class="admonition-title">Exercise 3.6</p>
+<p>A certificate authority uses RSA-1024 as its signing key in a legacy system. A security team proposes migrating to (a) RSA-4096, (b) ECDSA P-256, (c) Ed25519. Compare these options on: security level, signature size, verification speed, and post-quantum considerations.</p>
+</div>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button type="button" class="md-top md-icon" data-md-component="top" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+Back to top
+</button>
+</main>
+<footer class="md-footer">
+<nav class="md-footer__inner md-grid" aria-label="Footer" >
+<a href="ch02-symmetric-cryptography.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: 2. Symmetric Cryptography">
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</div>
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Previous
+</span>
+<div class="md-ellipsis">
+2. Symmetric Cryptography
+</div>
+</div>
+</a>
+<a href="ch04-cryptographic-hash-functions-and-macs.html" class="md-footer__link md-footer__link--next" aria-label="Next: 4. Cryptographic Hash Functions and MACs">
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Next
+</span>
+<div class="md-ellipsis">
+4. Cryptographic Hash Functions and MACs
+</div>
+</div>
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+</div>
+</a>
+</nav>
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+The Open Book Project &middot;
+<a href="../../about.html">About this library</a> &middot;
+<a href="../../publish.html">Publish your book</a> &middot;
+© The authors of the books
+</div>
+Made with
+<a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+Material for MkDocs
+</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "navigation.prune", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "toc.follow", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+<script src="../../assets/mathjax.js"></script>
+<script src="../../assets/viz.js"></script>
+<script src="../../assets/remote.js"></script>
+<script src="../../assets/scans.js"></script>
+<script src="../../assets/reader.js"></script>
+<script src="../../assets/app.js"></script>
+<script src="../../assets/slides.js"></script>
+<script src="../../assets/speak.js"></script>
+<script src="../../assets/quiz.js"></script>
+<script>
+    /* offline reading: the service worker at the site root (its scope is the whole site) */
+    if ("serviceWorker" in navigator && window.isSecureContext) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register(new URL("../../sw.js", location.href).href).catch(function () {});
+      });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,965 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="description" content="The Open Book Project: books on computer science, quantum computing, cyber security, science, the social sciences, university courses and languages, read page by page like an e-book, online or offline.">
+<meta name="author" content="The Open Book Project">
+<link rel="canonical" href="https://open-book-project.github.io/quantum/qml_theory_practice/ch05-advanced-classical-machine-learning.html">
+<link rel="prev" href="ch04-machine-learning-foundations.html">
+<link rel="next" href="ch06-variational-quantum-circuits.html">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap"></noscript>
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Open Book">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="application-name" content="Open Book"><script src="../../assets/library-data.js"></script><script>
+    (function () {
+      var X = window.XMLHttpRequest, open, gate = new Promise(function (r) { open = r; });
+      if (!X) return;
+      var open0 = X.prototype.open, send0 = X.prototype.send;
+      X.prototype.open = function (method, url) {
+        this.__pkIndex = /\/search\/search_index\.json(\?|#|$)/.test(String(url));
+        return open0.apply(this, arguments);
+      };
+      X.prototype.send = function () {
+        if (!this.__pkIndex) return send0.apply(this, arguments);
+        var xhr = this, args = arguments;
+        gate.then(function () { send0.apply(xhr, args); });
+      };
+      function wake() { open(); }
+      document.addEventListener("focusin", function (e) { if (e.target && e.target.closest && e.target.closest(".md-search")) wake(); });
+      document.addEventListener("click", function (e) { if (e.target && e.target.closest && e.target.closest('label[for="__search"], .md-search')) wake(); }, true);
+      document.addEventListener("keydown", function (e) {
+        var k = e.key;
+        if ((k === "/" || k === "s" || k === "f" || k === "S" || k === "F") && !(e.target && e.target.closest && e.target.closest("input, textarea, [contenteditable]"))) wake();
+      }, true);
+      if (/[?&]q=/.test(location.search)) wake();
+    })();
+  </script><script>
+    try {
+      if ((window.matchMedia && (matchMedia("(display-mode: standalone)").matches || matchMedia("(display-mode: fullscreen)").matches)) || navigator.standalone === true) {
+        document.documentElement.className += " bjp-standalone";
+      }
+    } catch (e) { /* not an installed app */ }
+    /* the books of a subject or of the whole library as covers or as a list (assets/app.js): the reader's choice */
+    try {
+      var bv = localStorage.getItem("bjp.view");
+      if (bv === "list" || (bv !== "grid" && /\/books\.html$/.test(location.pathname))) document.documentElement.className += " bjp-view-list";
+    } catch (e) { /* no storage: covers */ }
+  </script>
+<script>
+    /* a book opened from its cover on the shelf: the page stays blank, in the cover's colour, until the reader is up */
+    try {
+      var cv = sessionStorage.getItem("bjp.reader.cover");
+      if (cv && sessionStorage.getItem("bjp.reader.open") === "1") {
+        var c = JSON.parse(cv), de = document.documentElement;
+        de.className += " bjp-booting";
+        if (c && /^#[0-9a-f]{3,8}$/i.test(c.bg || "")) de.style.background = c.bg;
+        setTimeout(function () { de.classList.remove("bjp-booting"); de.style.background = ""; }, 3000);
+      }
+    } catch (e) { /* no session storage: the page simply opens as usual */ }
+  </script>
+<title>5. Advanced Classical Machine Learning - The Open Book Project</title>
+<link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+<link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+<link rel="stylesheet" href="../../assets/extra.css">
+<link rel="stylesheet" href="../../assets/reader.css">
+<link rel="stylesheet" href="../../assets/viz.css">
+<link rel="stylesheet" href="../../assets/app.css">
+<link rel="stylesheet" href="../../assets/theme.css">
+<link rel="stylesheet" href="../../assets/slides.css">
+<link rel="stylesheet" href="../../assets/remote.css">
+<link rel="stylesheet" href="../../assets/scans.css">
+<link rel="stylesheet" href="../../assets/speak.css">
+<link rel="stylesheet" href="../../assets/quiz.css">
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+<input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+<input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a href="#sec-gaussian_processes" class="md-skip">
+Skip to content
+</a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav class="md-header__inner md-grid" aria-label="Header">
+<a href="../../index.html" title="The Open Book Project" class="md-header__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+The Open Book Project
+</span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+5. Advanced Classical Machine Learning
+</span>
+</div>
+</div>
+</div><a href="../../index.html" class="bjp-libbtn" aria-label="Library: all books" title="Library: all books">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V5h4v15M8 20V9h4v11M14 20L12.6 6l3.8-.8 3 14.2M3 20h18"/></svg><span>Library</span>
+</a>
+<a href="../../subjects/index.html" class="pk-catbtn" aria-haspopup="true" aria-expanded="false" title="Browse the books by category">
+<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><circle cx="17" cy="7" r="3.6"/><path d="M7 13.4l3.9 6.8H3.1z"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg><span>Categories</span>
+</a>
+<form class="md-header__option" data-md-component="palette">
+<input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+<label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+</label>
+<input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+<label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+<label class="md-search__icon md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</label>
+<nav class="md-search__options" aria-label="Search">
+<button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+Initializing search
+</div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--primary bjp-nav bjp-nav--book" aria-label="Navigation" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a href="../../index.html" title="The Open Book Project" class="md-nav__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+The Open Book Project
+</label>
+<ul class="md-nav__list" data-md-scrollfix>
+<li class="md-nav__item bjp-nav-all">
+<a href="../../index.html" class="md-nav__link" aria-label="All books: back to the library">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+<span class="md-ellipsis">All books</span>
+</a>
+</li>
+<li class="md-nav__item bjp-nav-book" role="presentation"><span class="bjp-nav-head">Quantum Machine Learning</span></li>
+<li class="md-nav__item">
+<a href="index.html" class="md-nav__link">
+<span class="md-ellipsis">
+Overview and preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="notation-and-conventions.html" class="md-nav__link">
+<span class="md-ellipsis">
+Notation and Conventions
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="abbreviations-and-acronyms.html" class="md-nav__link">
+<span class="md-ellipsis">
+Abbreviations and Acronyms
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch01-mathematical-prerequisites-for-qml.html" class="md-nav__link">
+<span class="md-ellipsis">
+1. Mathematical Prerequisites for QML
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch02-quantum-computing-essentials.html" class="md-nav__link">
+<span class="md-ellipsis">
+2. Quantum Computing Essentials
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch03-quantum-information-theory-for-machine-learning.html" class="md-nav__link">
+<span class="md-ellipsis">
+3. Quantum Information Theory for Machine Learning
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch04-machine-learning-foundations.html" class="md-nav__link">
+<span class="md-ellipsis">
+4. Machine Learning Foundations
+</span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+5. Advanced Classical Machine Learning
+</span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a href="ch05-advanced-classical-machine-learning.html" class="md-nav__link md-nav__link--active">
+<span class="md-ellipsis">
+5. Advanced Classical Machine Learning
+</span>
+</a>
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#sec-gaussian_processes" class="md-nav__link">
+<span class="md-ellipsis">
+5.1 Gaussian Processes
+</span>
+</a>
+<nav class="md-nav" aria-label="5.1 Gaussian Processes">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#511-gp-prior-and-posterior" class="md-nav__link">
+<span class="md-ellipsis">
+5.1.1 GP Prior and Posterior
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-bayesian_ml" class="md-nav__link">
+<span class="md-ellipsis">
+5.2 Bayesian Machine Learning and Variational Inference
+</span>
+</a>
+<nav class="md-nav" aria-label="5.2 Bayesian Machine Learning and Variational Inference">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#521-variational-inference-and-elbo" class="md-nav__link">
+<span class="md-ellipsis">
+5.2.1 Variational Inference and ELBO
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#522-variational-autoencoders" class="md-nav__link">
+<span class="md-ellipsis">
+5.2.2 Variational Autoencoders
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-gnn" class="md-nav__link">
+<span class="md-ellipsis">
+5.3 Graph Neural Networks
+</span>
+</a>
+<nav class="md-nav" aria-label="5.3 Graph Neural Networks">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#531-message-passing-neural-networks" class="md-nav__link">
+<span class="md-ellipsis">
+5.3.1 Message Passing Neural Networks
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-rl" class="md-nav__link">
+<span class="md-ellipsis">
+5.4 Reinforcement Learning
+</span>
+</a>
+<nav class="md-nav" aria-label="5.4 Reinforcement Learning">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#541-markov-decision-processes" class="md-nav__link">
+<span class="md-ellipsis">
+5.4.1 Markov Decision Processes
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#542-policy-gradient-reinforce" class="md-nav__link">
+<span class="md-ellipsis">
+5.4.2 Policy Gradient (REINFORCE)
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-dim_reduction" class="md-nav__link">
+<span class="md-ellipsis">
+5.5 Dimensionality Reduction
+</span>
+</a>
+<nav class="md-nav" aria-label="5.5 Dimensionality Reduction">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#551-t-sne-and-umap" class="md-nav__link">
+<span class="md-ellipsis">
+5.5.1 t-SNE and UMAP
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#56-chapter-summary" class="md-nav__link">
+<span class="md-ellipsis">
+5.6 Chapter Summary
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="ch06-variational-quantum-circuits.html" class="md-nav__link">
+<span class="md-ellipsis">
+6. Variational Quantum Circuits
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch07-quantum-feature-maps-and-data-encoding.html" class="md-nav__link">
+<span class="md-ellipsis">
+7. Quantum Feature Maps and Data Encoding
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch08-quantum-kernel-methods.html" class="md-nav__link">
+<span class="md-ellipsis">
+8. Quantum Kernel Methods
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch09-quantum-support-vector-machines.html" class="md-nav__link">
+<span class="md-ellipsis">
+9. Quantum Support Vector Machines
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch10-quantum-neural-networks.html" class="md-nav__link">
+<span class="md-ellipsis">
+10. Quantum Neural Networks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch11-quantum-convolutional-neural-networks.html" class="md-nav__link">
+<span class="md-ellipsis">
+11. Quantum Convolutional Neural Networks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch12-quantum-recurrent-networks-and-qlstm.html" class="md-nav__link">
+<span class="md-ellipsis">
+12. Quantum Recurrent Networks and QLSTM
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch13-quantum-autoencoders.html" class="md-nav__link">
+<span class="md-ellipsis">
+13. Quantum Autoencoders
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch14-quantum-generative-models.html" class="md-nav__link">
+<span class="md-ellipsis">
+14. Quantum Generative Models
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch15-optimization-and-training-of-quantum-models.html" class="md-nav__link">
+<span class="md-ellipsis">
+15. Optimization and Training of Quantum Models
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch16-barren-plateaus-and-trainability-of-quantum.html" class="md-nav__link">
+<span class="md-ellipsis">
+16. Barren Plateaus and Trainability of Quantum Models
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch17-nisq-hardware-platforms.html" class="md-nav__link">
+<span class="md-ellipsis">
+17. NISQ Hardware Platforms
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch18-quantum-error-mitigation.html" class="md-nav__link">
+<span class="md-ellipsis">
+18. Quantum Error Mitigation
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch19-qml-for-quantum-chemistry-and-molecular.html" class="md-nav__link">
+<span class="md-ellipsis">
+19. QML for Quantum Chemistry and Molecular Simulation
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch20-qml-in-finance-and-optimization.html" class="md-nav__link">
+<span class="md-ellipsis">
+20. QML in Finance and Optimization
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch21-qml-in-healthcare-and-drug-discovery.html" class="md-nav__link">
+<span class="md-ellipsis">
+21. QML in Healthcare and Drug Discovery
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch22-qml-for-nlp-and-computer-vision.html" class="md-nav__link">
+<span class="md-ellipsis">
+22. QML for NLP and Computer Vision
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch23-quantum-advantage-theory-and-benchmarking.html" class="md-nav__link">
+<span class="md-ellipsis">
+23. Quantum Advantage Theory and Benchmarking
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch24-frontiers-and-future-directions-in-qml.html" class="md-nav__link">
+<span class="md-ellipsis">
+24. Frontiers and Future Directions in QML
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="python-environment-setup.html" class="md-nav__link">
+<span class="md-ellipsis">
+Python Environment Setup
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="pennylane-quick-reference.html" class="md-nav__link">
+<span class="md-ellipsis">
+PennyLane Quick Reference
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="qiskit-quick-reference.html" class="md-nav__link">
+<span class="md-ellipsis">
+Qiskit Quick Reference
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="mathematical-reference-tables.html" class="md-nav__link">
+<span class="md-ellipsis">
+Mathematical Reference Tables
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="quantum-gate-reference.html" class="md-nav__link">
+<span class="md-ellipsis">
+Quantum Gate Reference
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="benchmark-datasets-for-qml.html" class="md-nav__link">
+<span class="md-ellipsis">
+Benchmark Datasets for QML
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="selected-exercise-solutions.html" class="md-nav__link">
+<span class="md-ellipsis">
+Selected Exercise Solutions
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="bibliography.html" class="md-nav__link">
+<span class="md-ellipsis">
+References
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#sec-gaussian_processes" class="md-nav__link">
+<span class="md-ellipsis">
+5.1 Gaussian Processes
+</span>
+</a>
+<nav class="md-nav" aria-label="5.1 Gaussian Processes">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#511-gp-prior-and-posterior" class="md-nav__link">
+<span class="md-ellipsis">
+5.1.1 GP Prior and Posterior
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-bayesian_ml" class="md-nav__link">
+<span class="md-ellipsis">
+5.2 Bayesian Machine Learning and Variational Inference
+</span>
+</a>
+<nav class="md-nav" aria-label="5.2 Bayesian Machine Learning and Variational Inference">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#521-variational-inference-and-elbo" class="md-nav__link">
+<span class="md-ellipsis">
+5.2.1 Variational Inference and ELBO
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#522-variational-autoencoders" class="md-nav__link">
+<span class="md-ellipsis">
+5.2.2 Variational Autoencoders
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-gnn" class="md-nav__link">
+<span class="md-ellipsis">
+5.3 Graph Neural Networks
+</span>
+</a>
+<nav class="md-nav" aria-label="5.3 Graph Neural Networks">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#531-message-passing-neural-networks" class="md-nav__link">
+<span class="md-ellipsis">
+5.3.1 Message Passing Neural Networks
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-rl" class="md-nav__link">
+<span class="md-ellipsis">
+5.4 Reinforcement Learning
+</span>
+</a>
+<nav class="md-nav" aria-label="5.4 Reinforcement Learning">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#541-markov-decision-processes" class="md-nav__link">
+<span class="md-ellipsis">
+5.4.1 Markov Decision Processes
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#542-policy-gradient-reinforce" class="md-nav__link">
+<span class="md-ellipsis">
+5.4.2 Policy Gradient (REINFORCE)
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-dim_reduction" class="md-nav__link">
+<span class="md-ellipsis">
+5.5 Dimensionality Reduction
+</span>
+</a>
+<nav class="md-nav" aria-label="5.5 Dimensionality Reduction">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#551-t-sne-and-umap" class="md-nav__link">
+<span class="md-ellipsis">
+5.5.1 t-SNE and UMAP
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#56-chapter-summary" class="md-nav__link">
+<span class="md-ellipsis">
+5.6 Chapter Summary
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="ch-advanced_classical_ml">Chapter 5: Advanced Classical Machine Learning<a class="headerlink" href="#ch-advanced_classical_ml" title="Permanent link">&para;</a></h1>
+<div class="admonition info box-bxkey kind-concept">
+<p><em>This chapter bridges classical and quantum ML by examining advanced classical techniques whose structure or limitations motivate quantum approaches. Gaussian processes motivate quantum kernel methods; reinforcement learning grounds quantum RL; graph neural networks connect to quantum graph algorithms; Bayesian deep learning relates to quantum Bayesian inference.</em></p>
+</div>
+<div class="admonition tip box-learningobjectives kind-teaching">
+<p class="admonition-title">Learning Objectives</p>
+<p>By the end of this chapter, you will be able to:</p>
+<ul>
+<li>
+<p>Apply Gaussian Processes for regression and classification</p>
+</li>
+<li>
+<p>Understand variational inference and the ELBO</p>
+</li>
+<li>
+<p>Work with Graph Neural Networks via message passing</p>
+</li>
+<li>
+<p>Formulate MDPs and derive policy gradient algorithms</p>
+</li>
+<li>
+<p>Identify classical techniques that motivate quantum extensions</p>
+</li>
+</ul>
+</div>
+<h2 id="sec-gaussian_processes"><span class="secnum">5.1</span> Gaussian Processes<a class="headerlink" href="#sec-gaussian_processes" title="Permanent link">&para;</a></h2>
+<h3 id="511-gp-prior-and-posterior"><span class="secnum">5.1.1</span> GP Prior and Posterior<a class="headerlink" href="#511-gp-prior-and-posterior" title="Permanent link">&para;</a></h3>
+<p>A <strong>Gaussian Process</strong> <span class="arithmatex">\(f\sim\mathcal{GP}(\mu,k)\)</span> is a distribution over functions such that any finite collection has a joint Gaussian distribution:</p>
+<div class="arithmatex">\[\mathbf{f} = [f(\mathbf{x}_1),…,f(\mathbf{x}_N)]^\top \sim \mathcal{N}(\boldsymbol{\mu}, \mathbf{K})\]</div>
+<p>where <span class="arithmatex">\(\mathbf{K}_{ij} = k(\mathbf{x}_i,\mathbf{x}_j)\)</span> (kernel/covariance matrix).</p>
+<p><strong>GP Regression</strong> (Gaussian likelihood <span class="arithmatex">\(y_i = f(\mathbf{x}_i) + \varepsilon_i\)</span>, <span class="arithmatex">\(\varepsilon_i\sim\mathcal{N}(0,\sigma_n^2)\)</span>):</p>
+<p>Posterior predictive: <span id="eq-gp_posterior_mean"></span><span id="eq-gp_posterior_var"></span></p>
+<div class="arithmatex">\[\begin{align*}
+p(f_* | \mathbf{x}_*, \mathcal{D}) &amp;= \mathcal{N}(\mu_*, \sigma_*^2) \\
+\mu_* &amp;= k_*^\top(\mathbf{K}+\sigma_n^2\mathbf{I})^{-1}\mathbf{y} \\
+\sigma_*^2 &amp;= k_{**} - k_*^\top(\mathbf{K}+\sigma_n^2\mathbf{I})^{-1}k_*
+\end{align*}\]</div>
+<p>where <span class="arithmatex">\(k_* = [k(\mathbf{x}_*,\mathbf{x}_1),…]^\top\)</span> and <span class="arithmatex">\(k_{**}=k(\mathbf{x}_*,\mathbf{x}_*)\)</span>.</p>
+<div class="admonition note box-notebox kind-note">
+<p class="admonition-title">Note</p>
+<p>GP regression requires inverting an <span class="arithmatex">\(N\times N\)</span> matrix: <span class="arithmatex">\(O(N^3)\)</span> time and <span class="arithmatex">\(O(N^2)\)</span> memory. For large <span class="arithmatex">\(N\)</span>, sparse GPs, inducing points, or quantum-enhanced kernel evaluation may help. See <a href="ch08-quantum-kernel-methods.html#ch-quantum_kernel_methods">Chapter 8</a> for the connection.</p>
+</div>
+<div class="admonition example box-solvedexample kind-example">
+<p class="admonition-title">Solved Example 5.1</p>
+<p><strong>Problem:</strong> GP regression with <span class="arithmatex">\(k(\mathbf{x},\mathbf{x}') = e^{-(x-x')^2}\)</span>, <span class="arithmatex">\(\sigma_n^2=0.01\)</span>, training data <span class="arithmatex">\(\{(0,1),(1,0.5),(2,0)\}\)</span>. Predict <span class="arithmatex">\(f(1.5)\)</span>.</p>
+<p><strong>Solution:</strong> <span class="arithmatex">\(\mathbf{K} = \begin{pmatrix}1 &amp; e^{-1} &amp; e^{-4}\\ e^{-1} &amp; 1 &amp; e^{-1}\\ e^{-4} &amp; e^{-1} &amp; 1\end{pmatrix} \approx \begin{pmatrix}1&amp;0.368&amp;0.018\\0.368&amp;1&amp;0.368\\0.018&amp;0.368&amp;1\end{pmatrix}\)</span></p>
+<p><span class="arithmatex">\(k_* = [e^{-2.25}, e^{-0.25}, e^{-0.25}]^\top \approx [0.105, 0.779, 0.779]^\top\)</span></p>
+<p><span class="arithmatex">\(\mu_{1.5} = k_*^\top(\mathbf{K}+0.01I)^{-1}[1, 0.5, 0]^\top \approx 0.26\)</span> (computed numerically).</p>
+</div>
+<h2 id="sec-bayesian_ml"><span class="secnum">5.2</span> Bayesian Machine Learning and Variational Inference<a class="headerlink" href="#sec-bayesian_ml" title="Permanent link">&para;</a></h2>
+<h3 id="521-variational-inference-and-elbo"><span class="secnum">5.2.1</span> Variational Inference and ELBO<a class="headerlink" href="#521-variational-inference-and-elbo" title="Permanent link">&para;</a></h3>
+<p>For a model <span class="arithmatex">\(p(\mathbf{x},\mathbf{z})\)</span> with latent <span class="arithmatex">\(\mathbf{z}\)</span>, the exact posterior <span class="arithmatex">\(p(\mathbf{z}|\mathbf{x})\)</span> is often intractable. <strong>Variational inference</strong> approximates it with <span class="arithmatex">\(q_\phi(\mathbf{z})\)</span>: <span id="eq-elbo"></span></p>
+<div class="arithmatex">\[\log p(\mathbf{x}) = \underbrace{\mathbb{E}_{q_\phi}\!\left[\log\frac{p(\mathbf{x},\mathbf{z})}{q_\phi(\mathbf{z})}\right]}_{\text{ELBO}(\phi)} + D_{\text{KL}}(q_\phi\|p(\mathbf{z}|\mathbf{x}))\tag{5.5}\]</div>
+<p>Maximizing the ELBO (Evidence Lower BOund) minimizes the KL divergence.</p>
+<h3 id="522-variational-autoencoders"><span class="secnum">5.2.2</span> Variational Autoencoders<a class="headerlink" href="#522-variational-autoencoders" title="Permanent link">&para;</a></h3>
+<p>A VAE has encoder <span class="arithmatex">\(q_\phi(\mathbf{z}|\mathbf{x})\)</span> and decoder <span class="arithmatex">\(p_\theta(\mathbf{x}|\mathbf{z})\)</span>: <span id="eq-vae_loss"></span></p>
+<div class="arithmatex">\[\mathcal{L}_{\text{VAE}} = -\mathbb{E}_{q_\phi(\mathbf{z}|\mathbf{x})}[\log p_\theta(\mathbf{x}|\mathbf{z})] + D_{\text{KL}}(q_\phi(\mathbf{z}|\mathbf{x}) \| p(\mathbf{z}))\tag{5.6}\]</div>
+<p>The <strong>reparameterization trick</strong>: <span class="arithmatex">\(\mathbf{z} = \boldsymbol{\mu}_\phi + \boldsymbol{\sigma}_\phi \odot \boldsymbol{\varepsilon}\)</span>, <span class="arithmatex">\(\boldsymbol{\varepsilon}\sim\mathcal{N}(0,I)\)</span>, enables gradient flow through sampling.</p>
+<div class="admonition info box-importantbox kind-concept">
+<p class="admonition-title">Important</p>
+<p>The ELBO structure directly parallels the training objective of <strong>quantum Boltzmann machines</strong> and <strong>quantum VAEs</strong>. Replacing the classical Gaussian latent with a quantum state produces the quantum generative models studied in <a href="ch14-quantum-generative-models.html#ch-quantum_generative_models">Chapter 14</a>.</p>
+</div>
+<h2 id="sec-gnn"><span class="secnum">5.3</span> Graph Neural Networks<a class="headerlink" href="#sec-gnn" title="Permanent link">&para;</a></h2>
+<h3 id="531-message-passing-neural-networks"><span class="secnum">5.3.1</span> Message Passing Neural Networks<a class="headerlink" href="#531-message-passing-neural-networks" title="Permanent link">&para;</a></h3>
+<p>A graph <span class="arithmatex">\(G=(V,E)\)</span> with node features <span class="arithmatex">\(\mathbf{h}_v^{(0)}=\mathbf{x}_v\)</span>. <strong>Message passing</strong> for layer <span class="arithmatex">\(\ell\)</span>: <span id="eq-mpnn_msg"></span><span id="eq-mpnn_update"></span></p>
+<div class="arithmatex">\[\begin{align*}
+\mathbf{m}_v^{(\ell)} &amp;= \text{AGG}\!\left(\{\text{MSG}^{(\ell)}(\mathbf{h}_v^{(\ell-1)}, \mathbf{h}_u^{(\ell-1)}, e_{uv}) : u\in\mathcal{N}(v)\}\right) \\
+\mathbf{h}_v^{(\ell)} &amp;= \text{UPDATE}^{(\ell)}(\mathbf{h}_v^{(\ell-1)}, \mathbf{m}_v^{(\ell)})
+\end{align*}\]</div>
+<p>After <span class="arithmatex">\(L\)</span> layers, readout: <span class="arithmatex">\(\mathbf{h}_G = \text{READOUT}(\{\mathbf{h}_v^{(L)}\}_{v\in V})\)</span>.</p>
+<p><strong>GCN</strong> (Kipf &amp; Welling, 2017): <span class="arithmatex">\(\mathbf{H}^{(\ell+1)} = \sigma(\tilde{D}^{-1/2}\tilde{A}\tilde{D}^{-1/2}\mathbf{H}^{(\ell)}\mathbf{W}^{(\ell)})\)</span>, where <span class="arithmatex">\(\tilde{A} = A + I\)</span> (self-loops), <span class="arithmatex">\(\tilde{D}\)</span> is diagonal degree matrix.</p>
+<div class="admonition note box-notebox kind-note">
+<p class="admonition-title">Note</p>
+<p>Quantum graph neural networks replace classical message passing with quantum operations on graph states. The graph structure maps to qubit connectivity, and quantum entanglement encodes graph topology. See <a href="ch19-qml-for-quantum-chemistry-and-molecular.html#ch-qml_chemistry">Chapter 19</a>.</p>
+</div>
+<h2 id="sec-rl"><span class="secnum">5.4</span> Reinforcement Learning<a class="headerlink" href="#sec-rl" title="Permanent link">&para;</a></h2>
+<h3 id="541-markov-decision-processes"><span class="secnum">5.4.1</span> Markov Decision Processes<a class="headerlink" href="#541-markov-decision-processes" title="Permanent link">&para;</a></h3>
+<p>An MDP is <span class="arithmatex">\((\mathcal{S}, \mathcal{A}, P, R, \gamma)\)</span>:</p>
+<ul>
+<li>
+<p>States <span class="arithmatex">\(s\in\mathcal{S}\)</span>, Actions <span class="arithmatex">\(a\in\mathcal{A}\)</span></p>
+</li>
+<li>
+<p>Transition <span class="arithmatex">\(P(s'|s,a)\)</span>, Reward <span class="arithmatex">\(R(s,a)\)</span>, Discount <span class="arithmatex">\(\gamma\in[0,1)\)</span></p>
+</li>
+</ul>
+<p><strong>Value function</strong>: <span class="arithmatex">\(V^\pi(s) = \mathbb{E}_\pi\!\left[\sum_{t=0}^\infty \gamma^t R(s_t,a_t)|s_0=s\right]\)</span>. <strong>Bellman equation</strong>: <span class="arithmatex">\(V^\pi(s) = \sum_a\pi(a|s)\sum_{s'}P(s'|s,a)[R(s,a)+\gamma V^\pi(s')]\)</span>.</p>
+<h3 id="542-policy-gradient-reinforce"><span class="secnum">5.4.2</span> Policy Gradient (REINFORCE)<a class="headerlink" href="#542-policy-gradient-reinforce" title="Permanent link">&para;</a></h3>
+<p>For a parameterized policy <span class="arithmatex">\(\pi_\theta\)</span>, the <strong>policy gradient theorem</strong>: <span id="eq-policy_gradient"></span></p>
+<div class="arithmatex">\[\nabla_\theta J(\theta) = \mathbb{E}_{\pi_\theta}\!\left[\nabla_\theta\log\pi_\theta(a|s)\cdot Q^{\pi_\theta}(s,a)\right]\tag{5.9}\]</div>
+<div class="admonition example box-algorithmbox kind-example">
+<p class="admonition-title">Algorithm: REINFORCE Algorithm</p>
+<ol>
+<li>
+<p>For each episode: collect trajectory <span class="arithmatex">\(\tau = (s_0,a_0,r_0,…,s_T)\)</span> using <span class="arithmatex">\(\pi_\theta\)</span></p>
+</li>
+<li>
+<p>Compute returns <span class="arithmatex">\(G_t = \sum_{k=t}^T \gamma^{k-t}r_k\)</span></p>
+</li>
+<li>
+<p>Update: <span class="arithmatex">\(\theta \leftarrow \theta + \eta\sum_t G_t \nabla_\theta\log\pi_\theta(a_t|s_t)\)</span></p>
+</li>
+</ol>
+</div>
+<div class="admonition success box-tipbox kind-insight">
+<p class="admonition-title">Tip</p>
+<p>Quantum reinforcement learning (QRL) replaces the classical policy network with a parameterized quantum circuit <span class="arithmatex">\(U(\boldsymbol{\theta})\)</span>. The policy gradient theorem applies directly — swap out the neural network for a PQC and use the parameter shift rule for gradients.</p>
+</div>
+<h2 id="sec-dim_reduction"><span class="secnum">5.5</span> Dimensionality Reduction<a class="headerlink" href="#sec-dim_reduction" title="Permanent link">&para;</a></h2>
+<h3 id="551-t-sne-and-umap"><span class="secnum">5.5.1</span> t-SNE and UMAP<a class="headerlink" href="#551-t-sne-and-umap" title="Permanent link">&para;</a></h3>
+<p><strong>t-SNE</strong> (van der Maaten &amp; Hinton, 2008) minimizes KL divergence between high-dimensional Gaussian similarities and low-dimensional Student-<span class="arithmatex">\(t\)</span> similarities: <span id="eq-tsne"></span></p>
+<div class="arithmatex">\[\mathcal{L}_{\text{t-SNE}} = \sum_{i\neq j} p_{ij}\log\frac{p_{ij}}{q_{ij}}\tag{5.10}\]</div>
+<p><strong>UMAP</strong> uses topological data analysis (Riemannian manifold approximation) and is faster than t-SNE for large datasets.</p>
+<div class="language-text highlight"><pre><span></span><code>import numpy as np
+from scipy.optimize import minimize
+
+def rbf_kernel(X1, X2, length_scale=1.0, variance=1.0):
+    """RBF kernel matrix."""
+    diffs = X1[:, None, :] - X2[None, :, :]
+    sq_dists = np.sum(diffs**2, axis=-1)
+    return variance * np.exp(-0.5 * sq_dists / length_scale**2)
+
+class GaussianProcessRegressor:
+    def __init__(self, kernel=rbf_kernel, noise=1e-3):
+        self.kernel = kernel
+        self.noise = noise
+
+    def fit(self, X_train, y_train):
+        self.X_train = X_train
+        self.y_train = y_train
+        K = self.kernel(X_train, X_train)
+        self.K_inv = np.linalg.inv(K + self.noise * np.eye(len(X_train)))
+        self.alpha = self.K_inv @ y_train
+
+    def predict(self, X_test, return_std=True):
+        K_star = self.kernel(X_test, self.X_train)
+        mean = K_star @ self.alpha
+        if return_std:
+            K_ss = self.kernel(X_test, X_test)
+            cov = K_ss - K_star @ self.K_inv @ K_star.T
+            return mean, np.sqrt(np.diag(cov))
+        return mean
+
+# Usage
+X_train = np.array([[0.0], [1.0], [2.0]])
+y_train = np.array([1.0, 0.5, 0.0])
+gp = GaussianProcessRegressor()
+gp.fit(X_train, y_train)
+X_test = np.linspace(-0.5, 2.5, 50).reshape(-1, 1)
+mu, sigma = gp.predict(X_test)
+print(f"Prediction at x=1.5: {gp.predict(np.array([[1.5]]))[0][0]:.3f}")
+</code></pre></div>
+<h2 id="56-chapter-summary"><span class="secnum">5.6</span> Chapter Summary<a class="headerlink" href="#56-chapter-summary" title="Permanent link">&para;</a></h2>
+<div class="admonition note box-chaptersummary kind-plain">
+<p class="admonition-title">Chapter Summary</p>
+<ul>
+<li>
+<p><strong>Gaussian Processes</strong>: Bayesian non-parametric regression via kernel matrices. GP prediction requires <span class="arithmatex">\(O(N^3)\)</span> – quantum speedup via quantum kernels.</p>
+</li>
+<li>
+<p><strong>Variational inference</strong>: ELBO framework for approximate Bayesian inference. Foundation for VAEs and quantum Boltzmann machines.</p>
+</li>
+<li>
+<p><strong>GNNs</strong>: Message passing over graph topology – quantum analogue uses quantum entanglement to encode graph structure.</p>
+</li>
+<li>
+<p><strong>Reinforcement learning</strong>: Policy gradient theorem applies to quantum policies via parameter shift rule.</p>
+</li>
+<li>
+<p><strong>Dimensionality reduction</strong>: t-SNE/UMAP as classical baselines for comparing against quantum circuit-based dimensionality reduction.</p>
+</li>
+</ul>
+</div>
+<div class="admonition note box-exercisebox kind-plain">
+<p class="admonition-title">Exercises</p>
+<p><strong>Exercise .</strong> Derive the GP posterior mean and variance in equations <a href="#eq-gp_posterior_mean">(5.3)</a> and <a href="#eq-gp_posterior_var">(5.4)</a> from the joint Gaussian conditioning formula.</p>
+<p><strong>Exercise .</strong> Show that maximizing the ELBO is equivalent to minimizing <span class="arithmatex">\(D_{\text{KL}}(q_\phi(\mathbf{z})\|p(\mathbf{z}|\mathbf{x}))\)</span>.</p>
+<p><strong>Exercise .</strong> For the GCN update rule, show that when <span class="arithmatex">\(A\)</span> is the adjacency matrix of a complete graph (<span class="arithmatex">\(K_n\)</span>), the layer reduces to a global averaging plus self-loop term.</p>
+<p><strong>Exercise .</strong> Implement a 2-layer GCN using NumPy (no frameworks) for node classification on the Karate Club graph. Report accuracy.</p>
+</div>
+<div class="admonition note box-furtherreading kind-plain">
+<p class="admonition-title">Further Reading</p>
+<ul>
+<li>
+<p>Rasmussen &amp; Williams, <em>Gaussian Processes for Machine Learning</em> (<a href="bibliography.html#ref-Rasmussen2006">Rasmussen and Williams 2006</a>) (free online)</p>
+</li>
+<li>
+<p>Kipf &amp; Welling (2017), <em>Semi-supervised classification with GCNs</em> (<a href="bibliography.html#ref-Kipf2017">Kipf and Welling 2017</a>)</p>
+</li>
+<li>
+<p>Sutton &amp; Barto, <em>Reinforcement Learning: An Introduction</em> (<a href="bibliography.html#ref-Sutton2018">Sutton and Barto 2018</a>)</p>
+</li>
+</ul>
+</div>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button type="button" class="md-top md-icon" data-md-component="top" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+Back to top
+</button>
+</main>
+<footer class="md-footer">
+<nav class="md-footer__inner md-grid" aria-label="Footer" >
+<a href="ch04-machine-learning-foundations.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: 4. Machine Learning Foundations">
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</div>
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Previous
+</span>
+<div class="md-ellipsis">
+4. Machine Learning Foundations
+</div>
+</div>
+</a>
+<a href="ch06-variational-quantum-circuits.html" class="md-footer__link md-footer__link--next" aria-label="Next: 6. Variational Quantum Circuits">
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Next
+</span>
+<div class="md-ellipsis">
+6. Variational Quantum Circuits
+</div>
+</div>
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+</div>
+</a>
+</nav>
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+The Open Book Project &middot;
+<a href="../../about.html">About this library</a> &middot;
+<a href="../../publish.html">Publish your book</a> &middot;
+© The authors of the books
+</div>
+Made with
+<a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+Material for MkDocs
+</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "navigation.prune", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "toc.follow", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+<script src="../../assets/mathjax.js"></script>
+<script src="../../assets/viz.js"></script>
+<script src="../../assets/remote.js"></script>
+<script src="../../assets/scans.js"></script>
+<script src="../../assets/reader.js"></script>
+<script src="../../assets/app.js"></script>
+<script src="../../assets/slides.js"></script>
+<script src="../../assets/speak.js"></script>
+<script src="../../assets/quiz.js"></script>
+<script>
+    /* offline reading: the service worker at the site root (its scope is the whole site) */
+    if ("serviceWorker" in navigator && window.isSecureContext) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register(new URL("../../sw.js", location.href).href).catch(function () {});
+      });
+    }
+  </script>
+</body>
+</html>

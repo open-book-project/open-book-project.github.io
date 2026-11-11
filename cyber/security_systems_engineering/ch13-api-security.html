@@ -1,0 +1,1221 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="description" content="The Open Book Project: books on computer science, quantum computing, cyber security, science, the social sciences, university courses and languages, read page by page like an e-book, online or offline.">
+<meta name="author" content="The Open Book Project">
+<link rel="canonical" href="https://open-book-project.github.io/cyber/security_systems_engineering/ch13-api-security.html">
+<link rel="prev" href="ch12-authentication-authorization-and-access-control.html">
+<link rel="next" href="ch14-side-channel-attacks.html">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap"></noscript>
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Open Book">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="application-name" content="Open Book"><script src="../../assets/library-data.js"></script><script>
+    (function () {
+      var X = window.XMLHttpRequest, open, gate = new Promise(function (r) { open = r; });
+      if (!X) return;
+      var open0 = X.prototype.open, send0 = X.prototype.send;
+      X.prototype.open = function (method, url) {
+        this.__pkIndex = /\/search\/search_index\.json(\?|#|$)/.test(String(url));
+        return open0.apply(this, arguments);
+      };
+      X.prototype.send = function () {
+        if (!this.__pkIndex) return send0.apply(this, arguments);
+        var xhr = this, args = arguments;
+        gate.then(function () { send0.apply(xhr, args); });
+      };
+      function wake() { open(); }
+      document.addEventListener("focusin", function (e) { if (e.target && e.target.closest && e.target.closest(".md-search")) wake(); });
+      document.addEventListener("click", function (e) { if (e.target && e.target.closest && e.target.closest('label[for="__search"], .md-search')) wake(); }, true);
+      document.addEventListener("keydown", function (e) {
+        var k = e.key;
+        if ((k === "/" || k === "s" || k === "f" || k === "S" || k === "F") && !(e.target && e.target.closest && e.target.closest("input, textarea, [contenteditable]"))) wake();
+      }, true);
+      if (/[?&]q=/.test(location.search)) wake();
+    })();
+  </script><script>
+    try {
+      if ((window.matchMedia && (matchMedia("(display-mode: standalone)").matches || matchMedia("(display-mode: fullscreen)").matches)) || navigator.standalone === true) {
+        document.documentElement.className += " bjp-standalone";
+      }
+    } catch (e) { /* not an installed app */ }
+    /* the books of a subject or of the whole library as covers or as a list (assets/app.js): the reader's choice */
+    try {
+      var bv = localStorage.getItem("bjp.view");
+      if (bv === "list" || (bv !== "grid" && /\/books\.html$/.test(location.pathname))) document.documentElement.className += " bjp-view-list";
+    } catch (e) { /* no storage: covers */ }
+  </script>
+<script>
+    /* a book opened from its cover on the shelf: the page stays blank, in the cover's colour, until the reader is up */
+    try {
+      var cv = sessionStorage.getItem("bjp.reader.cover");
+      if (cv && sessionStorage.getItem("bjp.reader.open") === "1") {
+        var c = JSON.parse(cv), de = document.documentElement;
+        de.className += " bjp-booting";
+        if (c && /^#[0-9a-f]{3,8}$/i.test(c.bg || "")) de.style.background = c.bg;
+        setTimeout(function () { de.classList.remove("bjp-booting"); de.style.background = ""; }, 3000);
+      }
+    } catch (e) { /* no session storage: the page simply opens as usual */ }
+  </script>
+<title>13. API Security - The Open Book Project</title>
+<link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+<link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+<link rel="stylesheet" href="../../assets/extra.css">
+<link rel="stylesheet" href="../../assets/reader.css">
+<link rel="stylesheet" href="../../assets/viz.css">
+<link rel="stylesheet" href="../../assets/app.css">
+<link rel="stylesheet" href="../../assets/theme.css">
+<link rel="stylesheet" href="../../assets/slides.css">
+<link rel="stylesheet" href="../../assets/remote.css">
+<link rel="stylesheet" href="../../assets/scans.css">
+<link rel="stylesheet" href="../../assets/speak.css">
+<link rel="stylesheet" href="../../assets/quiz.css">
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+<input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+<input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a href="#131-rest-api-security-principles" class="md-skip">
+Skip to content
+</a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav class="md-header__inner md-grid" aria-label="Header">
+<a href="../../index.html" title="The Open Book Project" class="md-header__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+The Open Book Project
+</span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+13. API Security
+</span>
+</div>
+</div>
+</div><a href="../../index.html" class="bjp-libbtn" aria-label="Library: all books" title="Library: all books">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V5h4v15M8 20V9h4v11M14 20L12.6 6l3.8-.8 3 14.2M3 20h18"/></svg><span>Library</span>
+</a>
+<a href="../../subjects/index.html" class="pk-catbtn" aria-haspopup="true" aria-expanded="false" title="Browse the books by category">
+<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><circle cx="17" cy="7" r="3.6"/><path d="M7 13.4l3.9 6.8H3.1z"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg><span>Categories</span>
+</a>
+<form class="md-header__option" data-md-component="palette">
+<input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+<label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+</label>
+<input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+<label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+<label class="md-search__icon md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</label>
+<nav class="md-search__options" aria-label="Search">
+<button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+Initializing search
+</div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--primary bjp-nav bjp-nav--book" aria-label="Navigation" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a href="../../index.html" title="The Open Book Project" class="md-nav__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+The Open Book Project
+</label>
+<ul class="md-nav__list" data-md-scrollfix>
+<li class="md-nav__item bjp-nav-all">
+<a href="../../index.html" class="md-nav__link" aria-label="All books: back to the library">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+<span class="md-ellipsis">All books</span>
+</a>
+</li>
+<li class="md-nav__item bjp-nav-book" role="presentation"><span class="bjp-nav-head">Security Systems Engineering</span></li>
+<li class="md-nav__item">
+<a href="index.html" class="md-nav__link">
+<span class="md-ellipsis">
+Overview and preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="notation-and-conventions.html" class="md-nav__link">
+<span class="md-ellipsis">
+Notation and Conventions
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch01-mathematical-foundations-of-cryptography.html" class="md-nav__link">
+<span class="md-ellipsis">
+1. Mathematical Foundations of Cryptography
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch02-symmetric-cryptography.html" class="md-nav__link">
+<span class="md-ellipsis">
+2. Symmetric Cryptography
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch03-public-key-cryptography.html" class="md-nav__link">
+<span class="md-ellipsis">
+3. Public-Key Cryptography
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch04-cryptographic-hash-functions-and-macs.html" class="md-nav__link">
+<span class="md-ellipsis">
+4. Cryptographic Hash Functions and MACs
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch05-key-management-and-public-key-infrastructure.html" class="md-nav__link">
+<span class="md-ellipsis">
+5. Key Management and Public Key Infrastructure
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch06-cryptographic-protocols-and-security-proofs.html" class="md-nav__link">
+<span class="md-ellipsis">
+6. Cryptographic Protocols and Security Proofs
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch07-quantum-cryptography-and-post-quantum-migration.html" class="md-nav__link">
+<span class="md-ellipsis">
+7. Quantum Cryptography and Post-Quantum Migration
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch08-network-security-fundamentals.html" class="md-nav__link">
+<span class="md-ellipsis">
+8. Network Security Fundamentals
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch09-firewalls-ids-and-ips.html" class="md-nav__link">
+<span class="md-ellipsis">
+9. Firewalls, IDS, and IPS
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch10-network-protocol-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+10. Network Protocol Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch11-web-application-security-fundamentals.html" class="md-nav__link">
+<span class="md-ellipsis">
+11. Web Application Security Fundamentals
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch12-authentication-authorization-and-access-control.html" class="md-nav__link">
+<span class="md-ellipsis">
+12. Authentication, Authorization, and Access Control
+</span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+13. API Security
+</span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a href="ch13-api-security.html" class="md-nav__link md-nav__link--active">
+<span class="md-ellipsis">
+13. API Security
+</span>
+</a>
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#131-rest-api-security-principles" class="md-nav__link">
+<span class="md-ellipsis">
+13.1 REST API Security Principles
+</span>
+</a>
+<nav class="md-nav" aria-label="13.1 REST API Security Principles">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1311-authentication-and-authorization" class="md-nav__link">
+<span class="md-ellipsis">
+13.1.1 Authentication and Authorization
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1312-rate-limiting" class="md-nav__link">
+<span class="md-ellipsis">
+13.1.2 Rate Limiting
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#132-owasp-api-security-top-10-2023" class="md-nav__link">
+<span class="md-ellipsis">
+13.2 OWASP API Security Top 10 (2023)
+</span>
+</a>
+<nav class="md-nav" aria-label="13.2 OWASP API Security Top 10 (2023)">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1321-bola-api1-and-mass-assignment-api3" class="md-nav__link">
+<span class="md-ellipsis">
+13.2.1 BOLA (API1) and Mass Assignment (API3)
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#133-graphql-security" class="md-nav__link">
+<span class="md-ellipsis">
+13.3 GraphQL Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#134-rest-vs-graphql-vs-grpc-security-comparison" class="md-nav__link">
+<span class="md-ellipsis">
+13.4 REST vs GraphQL vs gRPC Security Comparison
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#135-api-gateway-security" class="md-nav__link">
+<span class="md-ellipsis">
+13.5 API Gateway Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#136-server-side-request-forgery-ssrf" class="md-nav__link">
+<span class="md-ellipsis">
+13.6 Server-Side Request Forgery (SSRF)
+</span>
+</a>
+<nav class="md-nav" aria-label="13.6 Server-Side Request Forgery (SSRF)">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1361-aws-imdsv1-exploitation" class="md-nav__link">
+<span class="md-ellipsis">
+13.6.1 AWS IMDSv1 Exploitation
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1362-ssrf-filter-bypasses" class="md-nav__link">
+<span class="md-ellipsis">
+13.6.2 SSRF Filter Bypasses
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#137-api-key-management-and-hmac-signing" class="md-nav__link">
+<span class="md-ellipsis">
+13.7 API Key Management and HMAC Signing
+</span>
+</a>
+<nav class="md-nav" aria-label="13.7 API Key Management and HMAC Signing">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1371-api-key-best-practices" class="md-nav__link">
+<span class="md-ellipsis">
+13.7.1 API Key Best Practices
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1372-hmac-request-signing" class="md-nav__link">
+<span class="md-ellipsis">
+13.7.2 HMAC Request Signing
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#138-python-fastapi-jwt-bearer-authentication" class="md-nav__link">
+<span class="md-ellipsis">
+13.8 Python FastAPI: JWT Bearer Authentication
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#139-exercises" class="md-nav__link">
+<span class="md-ellipsis">
+13.9 Exercises
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="ch14-side-channel-attacks.html" class="md-nav__link">
+<span class="md-ellipsis">
+14. Side-Channel Attacks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch15-hardware-tamper-protection.html" class="md-nav__link">
+<span class="md-ellipsis">
+15. Hardware Tamper Protection
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch16-transport-layer-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+16. Transport Layer Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch17-ssh-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+17. SSH Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch18-email-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+18. Email Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch19-advanced-network-protocol-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+19. Advanced Network Protocol Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch20-malware-analysis.html" class="md-nav__link">
+<span class="md-ellipsis">
+20. Malware Analysis
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch21-reverse-engineering.html" class="md-nav__link">
+<span class="md-ellipsis">
+21. Reverse Engineering
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch22-digital-forensics.html" class="md-nav__link">
+<span class="md-ellipsis">
+22. Digital Forensics
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch23-vulnerability-research-and-fuzzing.html" class="md-nav__link">
+<span class="md-ellipsis">
+23. Vulnerability Research and Fuzzing
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch24-exploit-development-fundamentals.html" class="md-nav__link">
+<span class="md-ellipsis">
+24. Exploit Development Fundamentals
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch25-security-architecture-and-design.html" class="md-nav__link">
+<span class="md-ellipsis">
+25. Security Architecture and Design
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch26-cloud-native-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+26. Cloud-Native Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch27-human-factors-in-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+27. Human Factors in Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch28-artificial-intelligence-and-machine-learning.html" class="md-nav__link">
+<span class="md-ellipsis">
+28. Artificial Intelligence and Machine Learning Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch29-iot-industrial-control-systems-and-the-emerging.html" class="md-nav__link">
+<span class="md-ellipsis">
+29. IoT, Industrial Control Systems, and the Emerging Threat Horizon
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="app-a-mathematical-reference.html" class="md-nav__link">
+<span class="md-ellipsis">
+Appendix A. Mathematical Reference
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="app-b-security-tools-reference.html" class="md-nav__link">
+<span class="md-ellipsis">
+Appendix B. Security Tools Reference
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="app-c-selected-exercise-solutions.html" class="md-nav__link">
+<span class="md-ellipsis">
+Appendix C. Selected Exercise Solutions
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="bibliography.html" class="md-nav__link">
+<span class="md-ellipsis">
+References
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#131-rest-api-security-principles" class="md-nav__link">
+<span class="md-ellipsis">
+13.1 REST API Security Principles
+</span>
+</a>
+<nav class="md-nav" aria-label="13.1 REST API Security Principles">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1311-authentication-and-authorization" class="md-nav__link">
+<span class="md-ellipsis">
+13.1.1 Authentication and Authorization
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1312-rate-limiting" class="md-nav__link">
+<span class="md-ellipsis">
+13.1.2 Rate Limiting
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#132-owasp-api-security-top-10-2023" class="md-nav__link">
+<span class="md-ellipsis">
+13.2 OWASP API Security Top 10 (2023)
+</span>
+</a>
+<nav class="md-nav" aria-label="13.2 OWASP API Security Top 10 (2023)">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1321-bola-api1-and-mass-assignment-api3" class="md-nav__link">
+<span class="md-ellipsis">
+13.2.1 BOLA (API1) and Mass Assignment (API3)
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#133-graphql-security" class="md-nav__link">
+<span class="md-ellipsis">
+13.3 GraphQL Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#134-rest-vs-graphql-vs-grpc-security-comparison" class="md-nav__link">
+<span class="md-ellipsis">
+13.4 REST vs GraphQL vs gRPC Security Comparison
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#135-api-gateway-security" class="md-nav__link">
+<span class="md-ellipsis">
+13.5 API Gateway Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#136-server-side-request-forgery-ssrf" class="md-nav__link">
+<span class="md-ellipsis">
+13.6 Server-Side Request Forgery (SSRF)
+</span>
+</a>
+<nav class="md-nav" aria-label="13.6 Server-Side Request Forgery (SSRF)">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1361-aws-imdsv1-exploitation" class="md-nav__link">
+<span class="md-ellipsis">
+13.6.1 AWS IMDSv1 Exploitation
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1362-ssrf-filter-bypasses" class="md-nav__link">
+<span class="md-ellipsis">
+13.6.2 SSRF Filter Bypasses
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#137-api-key-management-and-hmac-signing" class="md-nav__link">
+<span class="md-ellipsis">
+13.7 API Key Management and HMAC Signing
+</span>
+</a>
+<nav class="md-nav" aria-label="13.7 API Key Management and HMAC Signing">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1371-api-key-best-practices" class="md-nav__link">
+<span class="md-ellipsis">
+13.7.1 API Key Best Practices
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1372-hmac-request-signing" class="md-nav__link">
+<span class="md-ellipsis">
+13.7.2 HMAC Request Signing
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#138-python-fastapi-jwt-bearer-authentication" class="md-nav__link">
+<span class="md-ellipsis">
+13.8 Python FastAPI: JWT Bearer Authentication
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#139-exercises" class="md-nav__link">
+<span class="md-ellipsis">
+13.9 Exercises
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="ch-api-security">Chapter 13: API Security<a class="headerlink" href="#ch-api-security" title="Permanent link">&para;</a></h1>
+<p>Application Programming Interfaces are the connective tissue of modern software. REST, GraphQL, and gRPC APIs expose business logic and data to web clients, mobile apps, and partner integrations—making them a primary attack surface. This chapter surveys the OWASP API Security Top 10, examines SSRF in depth, and covers API design patterns that reduce risk.</p>
+<h2 id="131-rest-api-security-principles"><span class="secnum">13.1</span> REST API Security Principles<a class="headerlink" href="#131-rest-api-security-principles" title="Permanent link">&para;</a></h2>
+<h3 id="1311-authentication-and-authorization"><span class="secnum">13.1.1</span> Authentication and Authorization<a class="headerlink" href="#1311-authentication-and-authorization" title="Permanent link">&para;</a></h3>
+<p>APIs authenticate callers using one of several credential types:</p>
+<div class="center">
+<div class="tbl">
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Credential Type</strong></th>
+<th style="text-align: left;"><strong>Transport</strong></th>
+<th style="text-align: left;"><strong>Notes</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">API Key</td>
+<td style="text-align: left;">Header / query param</td>
+<td style="text-align: left;">Simple; no expiry by default</td>
+</tr>
+<tr>
+<td style="text-align: left;">Bearer Token (JWT)</td>
+<td style="text-align: left;">Authorization header</td>
+<td style="text-align: left;">Stateless; must verify signature</td>
+</tr>
+<tr>
+<td style="text-align: left;">OAuth 2.0 Access Token</td>
+<td style="text-align: left;">Authorization header</td>
+<td style="text-align: left;">Scoped; short-lived</td>
+</tr>
+<tr>
+<td style="text-align: left;">Mutual TLS (mTLS)</td>
+<td style="text-align: left;">TLS handshake</td>
+<td style="text-align: left;">Strong; client cert required</td>
+</tr>
+<tr>
+<td style="text-align: left;">HMAC Signature</td>
+<td style="text-align: left;">Custom header</td>
+<td style="text-align: left;">Request integrity + auth</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<h3 id="1312-rate-limiting"><span class="secnum">13.1.2</span> Rate Limiting<a class="headerlink" href="#1312-rate-limiting" title="Permanent link">&para;</a></h3>
+<p>Rate limiting defends against brute-force, enumeration, and denial-of-service attacks. Common strategies include fixed-window, sliding-window, and token-bucket algorithms. Apply limits per user, per IP, and per endpoint.</p>
+<p>Understanding the algorithm differences matters for choosing the right one. The <strong>token bucket</strong> algorithm maintains a conceptual bucket that fills with tokens at a fixed rate (e.g., 10 tokens per second) up to a maximum capacity. Each request consumes one token. If the bucket is empty, the request is rejected. The key property is that it allows bursts up to the bucket capacity while enforcing an average rate over time—a client can spend their whole bucket in a fraction of a second, which is useful for interactive applications that need occasional high-speed access but shouldn’t be able to sustain it. Implementations need only track two values per client: current token count and last refill timestamp.</p>
+<p>The <strong>leaky bucket</strong> (or leaky bucket as a queue) enforces a strictly constant output rate regardless of input bursts. Incoming requests queue up, and the queue drains at a fixed rate. Excess requests that would overflow the queue are dropped. Leaky bucket smooths traffic completely, which suits network bandwidth shaping but can feel punishing for API users who expect to handle short bursts. For most REST APIs, token bucket is the better choice because it allows the burst headroom that legitimate clients need during page loads or batch operations.</p>
+<p>The <strong>sliding window</strong> algorithm is a middle ground: it tracks requests across a rolling time window rather than a fixed one. Fixed windows have a well-known boundary attack where a client sends half their limit at the end of one window and half at the start of the next, doubling their effective rate at the boundary. Sliding windows close that gap. HTTP headers like <code>X-RateLimit-Limit</code>, <code>X-RateLimit-Remaining</code>, and <code>X-RateLimit-Reset</code> should always accompany rate limit responses so clients can backoff gracefully rather than hammering the server until they hit a 429.</p>
+<h2 id="132-owasp-api-security-top-10-2023"><span class="secnum">13.2</span> OWASP API Security Top 10 (2023)<a class="headerlink" href="#132-owasp-api-security-top-10-2023" title="Permanent link">&para;</a></h2>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 13.1 (OWASP API Security Top 10)</p>
+<p>The OWASP API Security Top 10 (2023 edition) catalogues the most critical API vulnerabilities observed in production systems. Each entry describes a class of flaw, its exploitability, and recommended controls.</p>
+</div>
+<div class="center">
+<div class="tbl">
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>ID</strong></th>
+<th style="text-align: left;"><strong>Name</strong></th>
+<th style="text-align: left;"><strong>Description</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">API1</td>
+<td style="text-align: left;">Broken Object Level Auth (BOLA)</td>
+<td style="text-align: left;">Accessing objects owned by other users</td>
+</tr>
+<tr>
+<td style="text-align: left;">API2</td>
+<td style="text-align: left;">Broken Authentication</td>
+<td style="text-align: left;">Weak credentials, missing MFA</td>
+</tr>
+<tr>
+<td style="text-align: left;">API3</td>
+<td style="text-align: left;">Broken Object Property Level Auth</td>
+<td style="text-align: left;">Exposing/updating sensitive fields</td>
+</tr>
+<tr>
+<td style="text-align: left;">API4</td>
+<td style="text-align: left;">Unrestricted Resource Consumption</td>
+<td style="text-align: left;">Missing rate limits; DoS</td>
+</tr>
+<tr>
+<td style="text-align: left;">API5</td>
+<td style="text-align: left;">Broken Function Level Auth (BFLA)</td>
+<td style="text-align: left;">Accessing admin functions as user</td>
+</tr>
+<tr>
+<td style="text-align: left;">API6</td>
+<td style="text-align: left;">Unrestricted Business Flows</td>
+<td style="text-align: left;">Bypassing workflow logic</td>
+</tr>
+<tr>
+<td style="text-align: left;">API7</td>
+<td style="text-align: left;">Server Side Request Forgery (SSRF)</td>
+<td style="text-align: left;">Fetching internal resources via API</td>
+</tr>
+<tr>
+<td style="text-align: left;">API8</td>
+<td style="text-align: left;">Security Misconfiguration</td>
+<td style="text-align: left;">Open CORS, verbose errors, debug on</td>
+</tr>
+<tr>
+<td style="text-align: left;">API9</td>
+<td style="text-align: left;">Improper Inventory Management</td>
+<td style="text-align: left;">Forgotten / shadow APIs</td>
+</tr>
+<tr>
+<td style="text-align: left;">API10</td>
+<td style="text-align: left;">Unsafe Consumption of Third-Party APIs</td>
+<td style="text-align: left;">Trusting external API output unsafely</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<h3 id="1321-bola-api1-and-mass-assignment-api3"><span class="secnum">13.2.1</span> BOLA (API1) and Mass Assignment (API3)<a class="headerlink" href="#1321-bola-api1-and-mass-assignment-api3" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">flask</span><span class="w"> </span><span class="kn">import</span> <span class="n">Flask</span><span class="p">,</span> <span class="n">jsonify</span><span class="p">,</span> <span class="n">g</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="c1"># VULNERABLE: BOLA - no ownership check</span>
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">'/api/orders/&lt;int:order_id&gt;'</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">'GET'</span><span class="p">])</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_order_vulnerable</span><span class="p">(</span><span class="n">order_id</span><span class="p">):</span>
+    <span class="n">order</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">find_order</span><span class="p">(</span><span class="n">order_id</span><span class="p">)</span>        <span class="c1"># Any user can fetch!</span>
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">order</span><span class="p">)</span>
+
+<span class="c1"># SECURE: enforce object-level authorization</span>
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">'/api/orders/&lt;int:order_id&gt;'</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">'GET'</span><span class="p">])</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_order_secure</span><span class="p">(</span><span class="n">order_id</span><span class="p">):</span>
+    <span class="n">order</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">find_order</span><span class="p">(</span><span class="n">order_id</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">order</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">order</span><span class="p">[</span><span class="s1">'user_id'</span><span class="p">]</span> <span class="o">!=</span> <span class="n">g</span><span class="o">.</span><span class="n">current_user</span><span class="p">[</span><span class="s1">'id'</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s1">'error'</span><span class="p">:</span> <span class="s1">'Not found'</span><span class="p">}),</span> <span class="mi">404</span>
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">order</span><span class="p">)</span>
+
+<span class="c1"># VULNERABLE: Mass Assignment - client sets 'is_admin'</span>
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">'/api/users/me'</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">'PUT'</span><span class="p">])</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">update_user_vulnerable</span><span class="p">():</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">update_user</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">current_user</span><span class="p">[</span><span class="s1">'id'</span><span class="p">],</span> <span class="o">**</span><span class="n">data</span><span class="p">)</span>  <span class="c1"># Dangerous!</span>
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s1">'status'</span><span class="p">:</span> <span class="s1">'updated'</span><span class="p">})</span>
+
+<span class="c1"># SECURE: allowlist updatable fields</span>
+<span class="n">UPDATABLE_FIELDS</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'display_name'</span><span class="p">,</span> <span class="s1">'email'</span><span class="p">,</span> <span class="s1">'bio'</span><span class="p">}</span>
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">'/api/users/me'</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">'PUT'</span><span class="p">])</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">update_user_secure</span><span class="p">():</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+    <span class="n">safe</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">UPDATABLE_FIELDS</span><span class="p">}</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">update_user</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">current_user</span><span class="p">[</span><span class="s1">'id'</span><span class="p">],</span> <span class="o">**</span><span class="n">safe</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s1">'status'</span><span class="p">:</span> <span class="s1">'updated'</span><span class="p">})</span>
+</code></pre></div>
+<h2 id="133-graphql-security"><span class="secnum">13.3</span> GraphQL Security<a class="headerlink" href="#133-graphql-security" title="Permanent link">&para;</a></h2>
+<p>GraphQL’s flexibility introduces security challenges not present in REST APIs. Where REST exposes a fixed set of endpoints with defined shapes, GraphQL lets clients compose arbitrary queries, which shifts the surface area in ways that catch developers off-guard.</p>
+<div class="admonition warning box-warningbox kind-safety">
+<p class="admonition-title">GraphQL Introspection Disclosure</p>
+<p>GraphQL introspection allows clients to query the full schema. In production, introspection should be disabled or restricted to authenticated users—it reveals all types, fields, and mutations to an attacker doing reconnaissance.</p>
+</div>
+<p>Introspection abuse is frequently the first step of a GraphQL attack, not the attack itself. An attacker issues an introspection query to get the full schema, then examines it for hidden or undocumented mutations (like <code>updateUserRole</code>), fields marked as admin-only in comments but not actually guarded by authorization checks, and relationships between types that suggest BOLA opportunities. Tools like <code>graphql-voyager</code> and <code>InQL</code> visualise and scan GraphQL schemas automatically. Disabling introspection makes reconnaissance harder but doesn’t fix authorization holes—a determined attacker will fuzz field names from common conventions anyway. So disable introspection and fix authorization; don’t treat them as alternatives.</p>
+<div class="admonition warning box-attackbox kind-safety">
+<p class="admonition-title">GraphQL DoS via Deep Nesting</p>
+<p>GraphQL allows recursive queries. An attacker submits a deeply nested query that causes exponential resolver calls: <code>{ user { friends { friends { friends {...} } } } }</code>. Defences: enforce maximum query depth (e.g., 10 levels), maximum query complexity, and query timeout.</p>
+</div>
+<p>Depth limiting alone isn’t sufficient because a query can be wide instead of deep: requesting a hundred top-level fields or a list of a million items via <code>first: 1000000</code> both cause server-side exhaustion without deep nesting. A proper defence assigns a cost score to each field and list argument—a field costs 1, and a paginated list multiplies the field cost by the requested page size—and rejects queries whose total complexity exceeds a threshold before any resolvers run. The <code>graphql-cost-analysis</code> and <code>graphql-query-complexity</code> libraries implement this pattern. Aliases are another GraphQL feature that multiplies work: <code>alias1: expensiveField, alias2: expensiveField, ...</code> evaluates the same expensive resolver many times under different names, potentially bypassing naive per-field rate limits.</p>
+<h2 id="134-rest-vs-graphql-vs-grpc-security-comparison"><span class="secnum">13.4</span> REST vs GraphQL vs gRPC Security Comparison<a class="headerlink" href="#134-rest-vs-graphql-vs-grpc-security-comparison" title="Permanent link">&para;</a></h2>
+<div class="center">
+<div class="tbl">
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Property</strong></th>
+<th style="text-align: left;"><strong>REST</strong></th>
+<th style="text-align: left;"><strong>GraphQL</strong></th>
+<th style="text-align: left;"><strong>gRPC</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Auth mechanism</td>
+<td style="text-align: left;">JWT / OAuth2 / API key</td>
+<td style="text-align: left;">JWT / OAuth2</td>
+<td style="text-align: left;">mTLS / OAuth2</td>
+</tr>
+<tr>
+<td style="text-align: left;">Input validation</td>
+<td style="text-align: left;">Schema (OpenAPI)</td>
+<td style="text-align: left;">Schema + custom rules</td>
+<td style="text-align: left;">Protobuf types</td>
+</tr>
+<tr>
+<td style="text-align: left;">BOLA risk</td>
+<td style="text-align: left;">High (path params)</td>
+<td style="text-align: left;">High (resolver args)</td>
+<td style="text-align: left;">Medium</td>
+</tr>
+<tr>
+<td style="text-align: left;">Introspection</td>
+<td style="text-align: left;">OpenAPI optional</td>
+<td style="text-align: left;">Enabled by default</td>
+<td style="text-align: left;">Reflection optional</td>
+</tr>
+<tr>
+<td style="text-align: left;">DoS via query complexity</td>
+<td style="text-align: left;">Low</td>
+<td style="text-align: left;">High (nested queries)</td>
+<td style="text-align: left;">Medium (streaming)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Transport</td>
+<td style="text-align: left;">HTTP/1.1 or HTTP/2</td>
+<td style="text-align: left;">HTTP/1.1 or HTTP/2</td>
+<td style="text-align: left;">HTTP/2 only</td>
+</tr>
+<tr>
+<td style="text-align: left;">Rate limiting</td>
+<td style="text-align: left;">Standard</td>
+<td style="text-align: left;">Per-query complexity</td>
+<td style="text-align: left;">Per-RPC or streaming</td>
+</tr>
+<tr>
+<td style="text-align: left;">Error verbosity</td>
+<td style="text-align: left;">Configurable</td>
+<td style="text-align: left;">Errors in JSON body</td>
+<td style="text-align: left;">gRPC status codes</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<h2 id="135-api-gateway-security"><span class="secnum">13.5</span> API Gateway Security<a class="headerlink" href="#135-api-gateway-security" title="Permanent link">&para;</a></h2>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 13.2 (API Gateway)</p>
+<p>An API gateway is a reverse proxy that centralises cross-cutting concerns: authentication, rate limiting, TLS termination, request logging, and routing. Examples include AWS API Gateway, Kong, Apigee, and Nginx.</p>
+</div>
+<div class="center">
+<div class="center">
+<p><img class="tikz" src="img/tikz-bc340b4752a5.svg" alt="image" loading="lazy" width="451" height="126"></p>
+</div>
+</div>
+<p>The gateway enforces: IP allowlisting, JWT signature validation (delegating to the IDP), request size limits, and per-client rate limits. Backend services trust only requests arriving via the gateway and verify the forwarded identity claim.</p>
+<h2 id="136-server-side-request-forgery-ssrf"><span class="secnum">13.6</span> Server-Side Request Forgery (SSRF)<a class="headerlink" href="#136-server-side-request-forgery-ssrf" title="Permanent link">&para;</a></h2>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 13.3 (SSRF)</p>
+<p>Server-Side Request Forgery (SSRF) occurs when an attacker can cause the server to issue HTTP requests to an attacker-controlled destination. The server’s network position gives access to internal services, cloud metadata endpoints, and localhost ports inaccessible to the attacker directly.</p>
+</div>
+<h3 id="1361-aws-imdsv1-exploitation"><span class="secnum">13.6.1</span> AWS IMDSv1 Exploitation<a class="headerlink" href="#1361-aws-imdsv1-exploitation" title="Permanent link">&para;</a></h3>
+<div class="admonition warning box-attackbox kind-safety">
+<p class="admonition-title">SSRF to AWS Instance Metadata</p>
+<p>The AWS EC2 Instance Metadata Service (IMDSv1) is accessible at <code>169.254.169.254</code>. An SSRF vulnerability lets an attacker steal IAM credentials:</p>
+<div class="language-bash highlight"><pre><span></span><code><span class="c1"># Attacker-controlled payload --- server fetches this URL</span>
+curl<span class="w"> </span>http://169.254.169.254/latest/meta-data/iam/security-credentials/
+<span class="c1"># Returns: role name, then:</span>
+curl<span class="w"> </span>http://169.254.169.254/latest/meta-data/iam/security-credentials/MyRole
+<span class="c1"># Returns: AccessKeyId, SecretAccessKey, Token (valid ~6 hours)</span>
+</code></pre></div>
+<p>Mitigations: enforce IMDSv2 (token-required PUT before GET); block <code>169.254.0.0/16</code> in egress firewall; use instance profiles only when needed.</p>
+</div>
+<h3 id="1362-ssrf-filter-bypasses"><span class="secnum">13.6.2</span> SSRF Filter Bypasses<a class="headerlink" href="#1362-ssrf-filter-bypasses" title="Permanent link">&para;</a></h3>
+<p>Naive SSRF filters block strings like <code>169.254.169.254</code> but can be bypassed:</p>
+<div class="center">
+<div class="tbl">
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Bypass Technique</strong></th>
+<th style="text-align: left;"><strong>Example</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Decimal IP</td>
+<td style="text-align: left;"><code>http://2852039166/</code></td>
+</tr>
+<tr>
+<td style="text-align: left;">Octal IP</td>
+<td style="text-align: left;"><code>http://0251.0376.0251.0376/</code></td>
+</tr>
+<tr>
+<td style="text-align: left;">IPv6 loopback</td>
+<td style="text-align: left;"><code>http://[::1]/</code></td>
+</tr>
+<tr>
+<td style="text-align: left;">IPv6 mapped</td>
+<td style="text-align: left;"><code>http://[::ffff:169.254.169.254]/</code></td>
+</tr>
+<tr>
+<td style="text-align: left;">DNS rebinding</td>
+<td style="text-align: left;">Resolve to public IP; rotate to internal</td>
+</tr>
+<tr>
+<td style="text-align: left;">URL redirect</td>
+<td style="text-align: left;"><code>https://trusted.example/?url=http://internal/</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>Defence: use an allowlist of permitted egress destinations; resolve and validate the IP after DNS resolution; reject private RFC 1918 and link-local ranges.</p>
+<p><strong>DNS rebinding</strong> is the most dangerous SSRF filter bypass and the one most commonly missed. The attack works in two phases. First, the attacker’s domain resolves to a legitimate public IP (to pass the server’s allowlist or IP blocklist check). The server fetches the URL, the DNS response is cached, and everything looks fine. Second, after a very short TTL expires, the attacker’s DNS server rotates the same domain to resolve to <code>127.0.0.1</code> or an internal IP. When the server makes a follow-up request—or even on retry after a redirect—the hostname now resolves to the internal address. Naive SSRF defences that check the hostname at request construction time are vulnerable; the correct fix is to resolve the hostname to an IP, check that IP against the blocklist, <em>then</em> make the connection to that specific IP rather than re-resolving the hostname.</p>
+<p>Cloud metadata endpoints deserve special mention because the consequences of reaching them are so severe. AWS IMDSv2 requires a <code>PUT</code> request with a custom header to obtain a session token before the metadata service will respond—a pure GET-based SSRF can’t satisfy this requirement. GCP metadata at <code>http://metadata.google.internal/</code> is protected by a required <code>Metadata-Flavor: Google</code> header. Azure IMDS at <code>http://169.254.169.254/metadata/instance</code> requires <code>Metadata: true</code>. Critically, these required headers must be set by the attacker through the SSRF vector, which means SSRF via a simple URL fetch (image fetcher, PDF generator, webhook tester) can only reach the older, unprotected IMDSv1 endpoints. IMDSv1 must be explicitly disabled—it’s off by default on new AWS accounts, but many existing deployments still have it enabled from before that change.</p>
+<h2 id="137-api-key-management-and-hmac-signing"><span class="secnum">13.7</span> API Key Management and HMAC Signing<a class="headerlink" href="#137-api-key-management-and-hmac-signing" title="Permanent link">&para;</a></h2>
+<h3 id="1371-api-key-best-practices"><span class="secnum">13.7.1</span> API Key Best Practices<a class="headerlink" href="#1371-api-key-best-practices" title="Permanent link">&para;</a></h3>
+<div class="admonition info box-keybox kind-concept">
+<p class="admonition-title">API Key Hygiene</p>
+<ul>
+<li>
+<p>Scope keys to minimum required permissions (least privilege).</p>
+</li>
+<li>
+<p>Store keys in a secrets manager (AWS Secrets Manager, HashiCorp Vault), never in source code or environment variables of shared systems.</p>
+</li>
+<li>
+<p>Rotate keys automatically on a defined schedule and immediately on suspected exposure.</p>
+</li>
+<li>
+<p>Log every API key usage with timestamp and source IP.</p>
+</li>
+</ul>
+</div>
+<h3 id="1372-hmac-request-signing"><span class="secnum">13.7.2</span> HMAC Request Signing<a class="headerlink" href="#1372-hmac-request-signing" title="Permanent link">&para;</a></h3>
+<p>AWS Signature Version 4 style signing authenticates every request, preventing replay attacks via a request timestamp and verifying request integrity.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">hmac</span><span class="o">,</span><span class="w"> </span><span class="nn">hashlib</span><span class="o">,</span><span class="w"> </span><span class="nn">datetime</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">sign_request</span><span class="p">(</span><span class="n">method</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">body</span><span class="p">,</span> <span class="n">secret_key</span><span class="p">,</span> <span class="n">access_key</span><span class="p">):</span>
+    <span class="n">timestamp</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">'</span>
+    <span class="n">date_stamp</span> <span class="o">=</span> <span class="n">timestamp</span><span class="p">[:</span><span class="mi">8</span><span class="p">]</span>
+
+    <span class="c1"># Canonical request</span>
+    <span class="n">payload_hash</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">(</span><span class="n">body</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
+    <span class="n">canonical</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="se">\n</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="se">\n\n</span><span class="s2">"</span> \
+                <span class="sa">f</span><span class="s2">"host:api.example.com</span><span class="se">\n</span><span class="s2">x-amz-date:</span><span class="si">{</span><span class="n">timestamp</span><span class="si">}</span><span class="se">\n\n</span><span class="s2">"</span> \
+                <span class="sa">f</span><span class="s2">"host;x-amz-date</span><span class="se">\n</span><span class="si">{</span><span class="n">payload_hash</span><span class="si">}</span><span class="s2">"</span>
+
+    <span class="c1"># String to sign</span>
+    <span class="n">string_to_sign</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">"AWS4-HMAC-SHA256</span><span class="se">\n</span><span class="si">{</span><span class="n">timestamp</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span>
+                      <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">date_stamp</span><span class="si">}</span><span class="s2">/us-east-1/execute-api/aws4_request</span><span class="se">\n</span><span class="s2">"</span>
+                      <span class="o">+</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">(</span><span class="n">canonical</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">())</span>
+
+    <span class="c1"># Derived signing key</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">hmac_sha256</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">hmac</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">encode</span><span class="p">(),</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">)</span><span class="o">.</span><span class="n">digest</span><span class="p">()</span>
+
+    <span class="n">signing_key</span> <span class="o">=</span> <span class="n">hmac_sha256</span><span class="p">(</span>
+        <span class="n">hmac_sha256</span><span class="p">(</span>
+            <span class="n">hmac_sha256</span><span class="p">(</span>
+                <span class="n">hmac_sha256</span><span class="p">(</span><span class="sa">f</span><span class="s2">"AWS4</span><span class="si">{</span><span class="n">secret_key</span><span class="si">}</span><span class="s2">"</span><span class="o">.</span><span class="n">encode</span><span class="p">(),</span> <span class="n">date_stamp</span><span class="p">),</span>
+                <span class="s1">'us-east-1'</span><span class="p">),</span>
+            <span class="s1">'execute-api'</span><span class="p">),</span>
+        <span class="s1">'aws4_request'</span><span class="p">)</span>
+
+    <span class="n">signature</span> <span class="o">=</span> <span class="n">hmac</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">signing_key</span><span class="p">,</span>
+                         <span class="n">string_to_sign</span><span class="o">.</span><span class="n">encode</span><span class="p">(),</span>
+                         <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">)</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">timestamp</span><span class="p">,</span> <span class="n">signature</span>
+</code></pre></div>
+<h2 id="138-python-fastapi-jwt-bearer-authentication"><span class="secnum">13.8</span> Python FastAPI: JWT Bearer Authentication<a class="headerlink" href="#138-python-fastapi-jwt-bearer-authentication" title="Permanent link">&para;</a></h2>
+<div class="language-python highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">fastapi</span><span class="w"> </span><span class="kn">import</span> <span class="n">FastAPI</span><span class="p">,</span> <span class="n">Depends</span><span class="p">,</span> <span class="n">HTTPException</span><span class="p">,</span> <span class="n">status</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">fastapi.security</span><span class="w"> </span><span class="kn">import</span> <span class="n">HTTPBearer</span><span class="p">,</span> <span class="n">HTTPAuthorizationCredentials</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">jwt</span>   <span class="c1"># PyJWT</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">FastAPI</span><span class="p">()</span>
+<span class="n">bearer_scheme</span> <span class="o">=</span> <span class="n">HTTPBearer</span><span class="p">()</span>
+<span class="n">PUBLIC_KEY</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'rsa_public.pem'</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<span class="n">ALGORITHM</span> <span class="o">=</span> <span class="s1">'RS256'</span>          <span class="c1"># Pin algorithm --- never read from token</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">get_current_user</span><span class="p">(</span>
+    <span class="n">creds</span><span class="p">:</span> <span class="n">HTTPAuthorizationCredentials</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">bearer_scheme</span><span class="p">)</span>
+<span class="p">):</span>
+    <span class="n">token</span> <span class="o">=</span> <span class="n">creds</span><span class="o">.</span><span class="n">credentials</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">payload</span> <span class="o">=</span> <span class="n">jwt</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">PUBLIC_KEY</span><span class="p">,</span>
+                             <span class="n">algorithms</span><span class="o">=</span><span class="p">[</span><span class="n">ALGORITHM</span><span class="p">],</span>
+                             <span class="n">audience</span><span class="o">=</span><span class="s1">'my-api'</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">jwt</span><span class="o">.</span><span class="n">ExpiredSignatureError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="mi">401</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="s1">'Token expired'</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">jwt</span><span class="o">.</span><span class="n">InvalidTokenError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="mi">401</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">payload</span>
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'/api/profile'</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">read_profile</span><span class="p">(</span><span class="n">user</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">get_current_user</span><span class="p">)):</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s1">'sub'</span><span class="p">:</span> <span class="n">user</span><span class="p">[</span><span class="s1">'sub'</span><span class="p">],</span> <span class="s1">'email'</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'email'</span><span class="p">)}</span>
+</code></pre></div>
+<h2 id="139-exercises"><span class="secnum">13.9</span> Exercises<a class="headerlink" href="#139-exercises" title="Permanent link">&para;</a></h2>
+<div class="admonition example box-exercise kind-example">
+<p class="admonition-title">Exercise 13.1</p>
+<p>Design a rate limiting strategy for a public REST API that serves both anonymous users and authenticated users. Specify: (a) the rate limit tiers (requests per minute) for each user class; (b) how you identify anonymous users fairly without exposing fingerprinting privacy risks; (c) how the API communicates rate-limit status to clients (HTTP headers); (d) the algorithm (token bucket vs sliding window) and your justification.</p>
+</div>
+<div class="admonition example box-exercise kind-example">
+<p class="admonition-title">Exercise 13.2</p>
+<p>A developer presents the following API endpoint for code review: <code>GET /api/admin/users?role=admin</code>. The endpoint requires a JWT but does not check the user’s role. Identify which OWASP API Security category applies, explain the impact, and rewrite the endpoint handler in Python (Flask or FastAPI) to fix the vulnerability.</p>
+</div>
+<div class="admonition example box-exercise kind-example">
+<p class="admonition-title">Exercise 13.3</p>
+<p>Explain the SSRF attack chain from initial vulnerability to IAM credential theft on AWS. For each step, state the attacker’s action and the server’s response. Then describe three independent controls that would break the chain at different points.</p>
+</div>
+<div class="admonition example box-exercise kind-example">
+<p class="admonition-title">Exercise 13.4</p>
+<p>A GraphQL API exposes a <code>Post</code> type with a <code>comments</code> field, which itself has a <code>replies</code> field, which has a <code>comments</code> field, and so on. Write the most destructive query an attacker could submit. Calculate the number of resolver invocations for depth <span class="arithmatex">\(d\)</span> if each node has <span class="arithmatex">\(n\)</span> children. Propose a query complexity scoring formula and a safe maximum complexity threshold.</p>
+</div>
+<div class="admonition example box-exercise kind-example">
+<p class="admonition-title">Exercise 13.5</p>
+<p>Review the HMAC signing code in <a href="#ch-api-security">Section 13</a>. (a) What attack does the timestamp prevent? (b) What is the recommended clock skew tolerance? (c) If the <code>x-amz-date</code> header is omitted from the signed headers, what new attack becomes possible? (d) How does AWS SigV4 protect against a path traversal attack via the canonical request?</p>
+</div>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button type="button" class="md-top md-icon" data-md-component="top" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+Back to top
+</button>
+</main>
+<footer class="md-footer">
+<nav class="md-footer__inner md-grid" aria-label="Footer" >
+<a href="ch12-authentication-authorization-and-access-control.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: 12. Authentication, Authorization, and Access Control">
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</div>
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Previous
+</span>
+<div class="md-ellipsis">
+12. Authentication, Authorization, and Access Control
+</div>
+</div>
+</a>
+<a href="ch14-side-channel-attacks.html" class="md-footer__link md-footer__link--next" aria-label="Next: 14. Side-Channel Attacks">
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Next
+</span>
+<div class="md-ellipsis">
+14. Side-Channel Attacks
+</div>
+</div>
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+</div>
+</a>
+</nav>
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+The Open Book Project &middot;
+<a href="../../about.html">About this library</a> &middot;
+<a href="../../publish.html">Publish your book</a> &middot;
+© The authors of the books
+</div>
+Made with
+<a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+Material for MkDocs
+</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "navigation.prune", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "toc.follow", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+<script src="../../assets/mathjax.js"></script>
+<script src="../../assets/viz.js"></script>
+<script src="../../assets/remote.js"></script>
+<script src="../../assets/scans.js"></script>
+<script src="../../assets/reader.js"></script>
+<script src="../../assets/app.js"></script>
+<script src="../../assets/slides.js"></script>
+<script src="../../assets/speak.js"></script>
+<script src="../../assets/quiz.js"></script>
+<script>
+    /* offline reading: the service worker at the site root (its scope is the whole site) */
+    if ("serviceWorker" in navigator && window.isSecureContext) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register(new URL("../../sw.js", location.href).href).catch(function () {});
+      });
+    }
+  </script>
+</body>
+</html>

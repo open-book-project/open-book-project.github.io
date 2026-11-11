@@ -1,0 +1,1163 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="description" content="The Open Book Project: books on computer science, quantum computing, cyber security, science, the social sciences, university courses and languages, read page by page like an e-book, online or offline.">
+<meta name="author" content="The Open Book Project">
+<link rel="canonical" href="https://open-book-project.github.io/cyber/security_systems_engineering/ch05-key-management-and-public-key-infrastructure.html">
+<link rel="prev" href="ch04-cryptographic-hash-functions-and-macs.html">
+<link rel="next" href="ch06-cryptographic-protocols-and-security-proofs.html">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap"></noscript>
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Open Book">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="application-name" content="Open Book"><script src="../../assets/library-data.js"></script><script>
+    (function () {
+      var X = window.XMLHttpRequest, open, gate = new Promise(function (r) { open = r; });
+      if (!X) return;
+      var open0 = X.prototype.open, send0 = X.prototype.send;
+      X.prototype.open = function (method, url) {
+        this.__pkIndex = /\/search\/search_index\.json(\?|#|$)/.test(String(url));
+        return open0.apply(this, arguments);
+      };
+      X.prototype.send = function () {
+        if (!this.__pkIndex) return send0.apply(this, arguments);
+        var xhr = this, args = arguments;
+        gate.then(function () { send0.apply(xhr, args); });
+      };
+      function wake() { open(); }
+      document.addEventListener("focusin", function (e) { if (e.target && e.target.closest && e.target.closest(".md-search")) wake(); });
+      document.addEventListener("click", function (e) { if (e.target && e.target.closest && e.target.closest('label[for="__search"], .md-search')) wake(); }, true);
+      document.addEventListener("keydown", function (e) {
+        var k = e.key;
+        if ((k === "/" || k === "s" || k === "f" || k === "S" || k === "F") && !(e.target && e.target.closest && e.target.closest("input, textarea, [contenteditable]"))) wake();
+      }, true);
+      if (/[?&]q=/.test(location.search)) wake();
+    })();
+  </script><script>
+    try {
+      if ((window.matchMedia && (matchMedia("(display-mode: standalone)").matches || matchMedia("(display-mode: fullscreen)").matches)) || navigator.standalone === true) {
+        document.documentElement.className += " bjp-standalone";
+      }
+    } catch (e) { /* not an installed app */ }
+    /* the books of a subject or of the whole library as covers or as a list (assets/app.js): the reader's choice */
+    try {
+      var bv = localStorage.getItem("bjp.view");
+      if (bv === "list" || (bv !== "grid" && /\/books\.html$/.test(location.pathname))) document.documentElement.className += " bjp-view-list";
+    } catch (e) { /* no storage: covers */ }
+  </script>
+<script>
+    /* a book opened from its cover on the shelf: the page stays blank, in the cover's colour, until the reader is up */
+    try {
+      var cv = sessionStorage.getItem("bjp.reader.cover");
+      if (cv && sessionStorage.getItem("bjp.reader.open") === "1") {
+        var c = JSON.parse(cv), de = document.documentElement;
+        de.className += " bjp-booting";
+        if (c && /^#[0-9a-f]{3,8}$/i.test(c.bg || "")) de.style.background = c.bg;
+        setTimeout(function () { de.classList.remove("bjp-booting"); de.style.background = ""; }, 3000);
+      }
+    } catch (e) { /* no session storage: the page simply opens as usual */ }
+  </script>
+<title>5. Key Management and Public Key Infrastructure - The Open Book Project</title>
+<link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+<link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+<link rel="stylesheet" href="../../assets/extra.css">
+<link rel="stylesheet" href="../../assets/reader.css">
+<link rel="stylesheet" href="../../assets/viz.css">
+<link rel="stylesheet" href="../../assets/app.css">
+<link rel="stylesheet" href="../../assets/theme.css">
+<link rel="stylesheet" href="../../assets/slides.css">
+<link rel="stylesheet" href="../../assets/remote.css">
+<link rel="stylesheet" href="../../assets/scans.css">
+<link rel="stylesheet" href="../../assets/speak.css">
+<link rel="stylesheet" href="../../assets/quiz.css">
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+<input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+<input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a href="#sec-key-lifecycle" class="md-skip">
+Skip to content
+</a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav class="md-header__inner md-grid" aria-label="Header">
+<a href="../../index.html" title="The Open Book Project" class="md-header__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+The Open Book Project
+</span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+5. Key Management and Public Key Infrastructure
+</span>
+</div>
+</div>
+</div><a href="../../index.html" class="bjp-libbtn" aria-label="Library: all books" title="Library: all books">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V5h4v15M8 20V9h4v11M14 20L12.6 6l3.8-.8 3 14.2M3 20h18"/></svg><span>Library</span>
+</a>
+<a href="../../subjects/index.html" class="pk-catbtn" aria-haspopup="true" aria-expanded="false" title="Browse the books by category">
+<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><circle cx="17" cy="7" r="3.6"/><path d="M7 13.4l3.9 6.8H3.1z"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg><span>Categories</span>
+</a>
+<form class="md-header__option" data-md-component="palette">
+<input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+<label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+</label>
+<input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+<label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+<label class="md-search__icon md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</label>
+<nav class="md-search__options" aria-label="Search">
+<button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+Initializing search
+</div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--primary bjp-nav bjp-nav--book" aria-label="Navigation" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a href="../../index.html" title="The Open Book Project" class="md-nav__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+The Open Book Project
+</label>
+<ul class="md-nav__list" data-md-scrollfix>
+<li class="md-nav__item bjp-nav-all">
+<a href="../../index.html" class="md-nav__link" aria-label="All books: back to the library">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+<span class="md-ellipsis">All books</span>
+</a>
+</li>
+<li class="md-nav__item bjp-nav-book" role="presentation"><span class="bjp-nav-head">Security Systems Engineering</span></li>
+<li class="md-nav__item">
+<a href="index.html" class="md-nav__link">
+<span class="md-ellipsis">
+Overview and preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="notation-and-conventions.html" class="md-nav__link">
+<span class="md-ellipsis">
+Notation and Conventions
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch01-mathematical-foundations-of-cryptography.html" class="md-nav__link">
+<span class="md-ellipsis">
+1. Mathematical Foundations of Cryptography
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch02-symmetric-cryptography.html" class="md-nav__link">
+<span class="md-ellipsis">
+2. Symmetric Cryptography
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch03-public-key-cryptography.html" class="md-nav__link">
+<span class="md-ellipsis">
+3. Public-Key Cryptography
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch04-cryptographic-hash-functions-and-macs.html" class="md-nav__link">
+<span class="md-ellipsis">
+4. Cryptographic Hash Functions and MACs
+</span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+5. Key Management and Public Key Infrastructure
+</span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a href="ch05-key-management-and-public-key-infrastructure.html" class="md-nav__link md-nav__link--active">
+<span class="md-ellipsis">
+5. Key Management and Public Key Infrastructure
+</span>
+</a>
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#sec-key-lifecycle" class="md-nav__link">
+<span class="md-ellipsis">
+5.1 Key Management Lifecycle
+</span>
+</a>
+<nav class="md-nav" aria-label="5.1 Key Management Lifecycle">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#511-secure-key-generation" class="md-nav__link">
+<span class="md-ellipsis">
+5.1.1 Secure Key Generation
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#512-envelope-encryption-and-key-hierarchy" class="md-nav__link">
+<span class="md-ellipsis">
+5.1.2 Envelope Encryption and Key Hierarchy
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-pki" class="md-nav__link">
+<span class="md-ellipsis">
+5.2 Public Key Infrastructure (PKI)
+</span>
+</a>
+<nav class="md-nav" aria-label="5.2 Public Key Infrastructure (PKI)">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#521-pki-hierarchy" class="md-nav__link">
+<span class="md-ellipsis">
+5.2.1 PKI Hierarchy
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#522-certificate-validation-chain-of-trust" class="md-nav__link">
+<span class="md-ellipsis">
+5.2.2 Certificate Validation — Chain of Trust
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#523-certificate-revocation" class="md-nav__link">
+<span class="md-ellipsis">
+5.2.3 Certificate Revocation
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#524-certificate-transparency-ct" class="md-nav__link">
+<span class="md-ellipsis">
+5.2.4 Certificate Transparency (CT)
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-hsm" class="md-nav__link">
+<span class="md-ellipsis">
+5.3 Hardware Security Modules (HSMs)
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-secret-sharing" class="md-nav__link">
+<span class="md-ellipsis">
+5.4 Secret Sharing
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#55-key-rotation-and-crypto-agility" class="md-nav__link">
+<span class="md-ellipsis">
+5.5 Key Rotation and Crypto-Agility
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#exercises" class="md-nav__link">
+<span class="md-ellipsis">
+Exercises
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="ch06-cryptographic-protocols-and-security-proofs.html" class="md-nav__link">
+<span class="md-ellipsis">
+6. Cryptographic Protocols and Security Proofs
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch07-quantum-cryptography-and-post-quantum-migration.html" class="md-nav__link">
+<span class="md-ellipsis">
+7. Quantum Cryptography and Post-Quantum Migration
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch08-network-security-fundamentals.html" class="md-nav__link">
+<span class="md-ellipsis">
+8. Network Security Fundamentals
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch09-firewalls-ids-and-ips.html" class="md-nav__link">
+<span class="md-ellipsis">
+9. Firewalls, IDS, and IPS
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch10-network-protocol-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+10. Network Protocol Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch11-web-application-security-fundamentals.html" class="md-nav__link">
+<span class="md-ellipsis">
+11. Web Application Security Fundamentals
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch12-authentication-authorization-and-access-control.html" class="md-nav__link">
+<span class="md-ellipsis">
+12. Authentication, Authorization, and Access Control
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch13-api-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+13. API Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch14-side-channel-attacks.html" class="md-nav__link">
+<span class="md-ellipsis">
+14. Side-Channel Attacks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch15-hardware-tamper-protection.html" class="md-nav__link">
+<span class="md-ellipsis">
+15. Hardware Tamper Protection
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch16-transport-layer-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+16. Transport Layer Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch17-ssh-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+17. SSH Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch18-email-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+18. Email Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch19-advanced-network-protocol-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+19. Advanced Network Protocol Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch20-malware-analysis.html" class="md-nav__link">
+<span class="md-ellipsis">
+20. Malware Analysis
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch21-reverse-engineering.html" class="md-nav__link">
+<span class="md-ellipsis">
+21. Reverse Engineering
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch22-digital-forensics.html" class="md-nav__link">
+<span class="md-ellipsis">
+22. Digital Forensics
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch23-vulnerability-research-and-fuzzing.html" class="md-nav__link">
+<span class="md-ellipsis">
+23. Vulnerability Research and Fuzzing
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch24-exploit-development-fundamentals.html" class="md-nav__link">
+<span class="md-ellipsis">
+24. Exploit Development Fundamentals
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch25-security-architecture-and-design.html" class="md-nav__link">
+<span class="md-ellipsis">
+25. Security Architecture and Design
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch26-cloud-native-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+26. Cloud-Native Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch27-human-factors-in-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+27. Human Factors in Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch28-artificial-intelligence-and-machine-learning.html" class="md-nav__link">
+<span class="md-ellipsis">
+28. Artificial Intelligence and Machine Learning Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch29-iot-industrial-control-systems-and-the-emerging.html" class="md-nav__link">
+<span class="md-ellipsis">
+29. IoT, Industrial Control Systems, and the Emerging Threat Horizon
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="app-a-mathematical-reference.html" class="md-nav__link">
+<span class="md-ellipsis">
+Appendix A. Mathematical Reference
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="app-b-security-tools-reference.html" class="md-nav__link">
+<span class="md-ellipsis">
+Appendix B. Security Tools Reference
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="app-c-selected-exercise-solutions.html" class="md-nav__link">
+<span class="md-ellipsis">
+Appendix C. Selected Exercise Solutions
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="bibliography.html" class="md-nav__link">
+<span class="md-ellipsis">
+References
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#sec-key-lifecycle" class="md-nav__link">
+<span class="md-ellipsis">
+5.1 Key Management Lifecycle
+</span>
+</a>
+<nav class="md-nav" aria-label="5.1 Key Management Lifecycle">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#511-secure-key-generation" class="md-nav__link">
+<span class="md-ellipsis">
+5.1.1 Secure Key Generation
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#512-envelope-encryption-and-key-hierarchy" class="md-nav__link">
+<span class="md-ellipsis">
+5.1.2 Envelope Encryption and Key Hierarchy
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-pki" class="md-nav__link">
+<span class="md-ellipsis">
+5.2 Public Key Infrastructure (PKI)
+</span>
+</a>
+<nav class="md-nav" aria-label="5.2 Public Key Infrastructure (PKI)">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#521-pki-hierarchy" class="md-nav__link">
+<span class="md-ellipsis">
+5.2.1 PKI Hierarchy
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#522-certificate-validation-chain-of-trust" class="md-nav__link">
+<span class="md-ellipsis">
+5.2.2 Certificate Validation — Chain of Trust
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#523-certificate-revocation" class="md-nav__link">
+<span class="md-ellipsis">
+5.2.3 Certificate Revocation
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#524-certificate-transparency-ct" class="md-nav__link">
+<span class="md-ellipsis">
+5.2.4 Certificate Transparency (CT)
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-hsm" class="md-nav__link">
+<span class="md-ellipsis">
+5.3 Hardware Security Modules (HSMs)
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-secret-sharing" class="md-nav__link">
+<span class="md-ellipsis">
+5.4 Secret Sharing
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#55-key-rotation-and-crypto-agility" class="md-nav__link">
+<span class="md-ellipsis">
+5.5 Key Rotation and Crypto-Agility
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#exercises" class="md-nav__link">
+<span class="md-ellipsis">
+Exercises
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="ch-pki">Chapter 5: Key Management and Public Key Infrastructure<a class="headerlink" href="#ch-pki" title="Permanent link">&para;</a></h1>
+<p>Cryptographic algorithms provide security only when keys are properly managed. Weak generation, improper storage, or absent rotation negates the strongest algorithms. This chapter covers the full key lifecycle, the PKI trust hierarchy, HSMs, secret sharing, and crypto-agility.</p>
+<h2 id="sec-key-lifecycle"><span class="secnum">5.1</span> Key Management Lifecycle<a class="headerlink" href="#sec-key-lifecycle" title="Permanent link">&para;</a></h2>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 5.1 (Key Management Lifecycle)</p>
+<p>The cryptographic key lifecycle consists of stages:</p>
+<ol>
+<li>
+<p><strong>Generation:</strong> Create key using cryptographically secure random source</p>
+</li>
+<li>
+<p><strong>Distribution:</strong> Securely deliver key to authorized parties</p>
+</li>
+<li>
+<p><strong>Storage:</strong> Protect key at rest against unauthorized access</p>
+</li>
+<li>
+<p><strong>Usage:</strong> Apply key for cryptographic operations</p>
+</li>
+<li>
+<p><strong>Rotation:</strong> Replace key periodically or on compromise</p>
+</li>
+<li>
+<p><strong>Revocation:</strong> Invalidate key before normal expiry if compromised</p>
+</li>
+<li>
+<p><strong>Destruction:</strong> Securely delete key material (zeroization)</p>
+</li>
+</ol>
+</div>
+<p>Every stage of the lifecycle is a potential failure point. Attackers don’t need to break AES-256 if they can steal the key from memory, predict it from a weak PRNG, or recover it from a disk because it was never properly zeroed. In practice, the most common key management failures are mundane: keys stored in environment variables committed to Git repos, hardcoded in application source, or written to log files during debugging. No amount of algorithm strength compensates for these operational mistakes.</p>
+<h3 id="511-secure-key-generation"><span class="secnum">5.1.1</span> Secure Key Generation<a class="headerlink" href="#511-secure-key-generation" title="Permanent link">&para;</a></h3>
+<p>Keys must be generated from a cryptographically secure pseudorandom number generator (CSPRNG):</p>
+<div class="language-python highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">secrets</span>
+
+<span class="c1"># OS CSPRNG (reads /dev/urandom on Linux, CryptGenRandom on Windows)</span>
+<span class="n">aes_key</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">urandom</span><span class="p">(</span><span class="mi">32</span><span class="p">)</span>           <span class="c1"># 256-bit AES key</span>
+<span class="n">hmac_key</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">urandom</span><span class="p">(</span><span class="mi">32</span><span class="p">)</span>          <span class="c1"># 256-bit HMAC key</span>
+
+<span class="c1"># secrets module (Python 3.6+): cryptographically secure</span>
+<span class="n">token</span> <span class="o">=</span> <span class="n">secrets</span><span class="o">.</span><span class="n">token_bytes</span><span class="p">(</span><span class="mi">32</span><span class="p">)</span>    <span class="c1"># 256 random bits</span>
+<span class="n">hex_token</span> <span class="o">=</span> <span class="n">secrets</span><span class="o">.</span><span class="n">token_hex</span><span class="p">(</span><span class="mi">32</span><span class="p">)</span>  <span class="c1"># 64-hex-char token</span>
+<span class="n">url_safe</span> <span class="o">=</span> <span class="n">secrets</span><span class="o">.</span><span class="n">token_urlsafe</span><span class="p">(</span><span class="mi">32</span><span class="p">)</span>
+
+<span class="c1"># WRONG: Do NOT use random module for cryptographic keys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">random</span>
+<span class="c1"># bad_key = random.randbytes(32)   # Predictable! MT random is not secure</span>
+</code></pre></div>
+<div class="admonition warning box-warningbox kind-safety">
+<p class="admonition-title">Entropy Sources</p>
+<p>A CSPRNG is only as secure as its seed. Common failures:</p>
+<ul>
+<li>
+<p>Debian OpenSSL bug (2008): patch accidentally zeroed PID-based seed — only <span class="arithmatex">\(32{,}767\)</span> possible keys for 1024-bit RSA</p>
+</li>
+<li>
+<p>Android SecureRandom bug (2013): insufficient entropy at boot — Bitcoin wallet keys predictable</p>
+</li>
+<li>
+<p>Virtual machines: entropy starvation at boot — wait for <span class="arithmatex">\(\texttt{/dev/random}\)</span> to accumulate entropy</p>
+</li>
+</ul>
+<p>Modern Linux <span class="arithmatex">\(\texttt{getrandom()}\)</span> syscall blocks until sufficient entropy; <span class="arithmatex">\(\texttt{/dev/urandom}\)</span> does not block.</p>
+</div>
+<p>The Debian OpenSSL bug is worth studying in detail because it shows how a well-intentioned change can have catastrophic consequences. A developer trying to fix a Valgrind warning about reading uninitialized memory commented out two lines that contributed to the entropy pool. The result was that RSA keys generated on Debian-based systems for two years depended on only 15 bits of process ID. An attacker could enumerate all 32,767 possible keys and break any RSA, DSA, or ECDSA key generated on those systems. The fix required regenerating every affected key — a massive operational undertaking that many administrators delayed or skipped.</p>
+<h3 id="512-envelope-encryption-and-key-hierarchy"><span class="secnum">5.1.2</span> Envelope Encryption and Key Hierarchy<a class="headerlink" href="#512-envelope-encryption-and-key-hierarchy" title="Permanent link">&para;</a></h3>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 5.2 (Key Hierarchy)</p>
+<p>A key hierarchy wraps lower-level keys with higher-level keys:</p>
+<ul>
+<li>
+<p><strong>Root Key / Master Key:</strong> Top-level; never leaves HSM; used only to encrypt other keys</p>
+</li>
+<li>
+<p><strong>Key Encryption Key (KEK):</strong> Encrypts data encryption keys; rotated less frequently</p>
+</li>
+<li>
+<p><strong>Data Encryption Key (DEK):</strong> Used for bulk data encryption; rotated frequently</p>
+</li>
+</ul>
+</div>
+<figure class="fig fig-diagram">
+<img class="tikz" src="img/tikz-80331611967f.svg" alt="Key hierarchy. The root key never touches application servers; compromise of a DEK does not expose the KEK or Root Key." loading="lazy" width="347" height="126">
+<figcaption><strong>Figure 5.1.</strong> Key hierarchy. The root key never touches application servers; compromise of a DEK does not expose the KEK or Root Key.</figcaption>
+</figure>
+<p>The hierarchy exists to limit blast radius. If a single DEK is compromised — say, extracted from a running server’s memory — only the data encrypted under that specific DEK is exposed. The KEK and Root Key remain safe. When the compromise is detected, you can revoke and replace that DEK, re-encrypt the affected data under a new DEK, and the rest of the system keeps running. Without a hierarchy, a single compromised key could expose all encrypted data.</p>
+<div class="admonition example box-example kind-example">
+<p class="admonition-title">Example 5.1 (AWS KMS Envelope Encryption)</p>
+<ol>
+<li>
+<p>Root key (Customer Master Key, CMK) stored in AWS KMS HSM — never exportable.</p>
+</li>
+<li>
+<p>Application calls <span class="arithmatex">\(\texttt{GenerateDataKey}(CMK)\)</span> and receives plaintext DEK + encrypted DEK.</p>
+</li>
+<li>
+<p>Application encrypts data with plaintext DEK (in-memory); immediately discards plaintext DEK.</p>
+</li>
+<li>
+<p>Application stores data alongside encrypted DEK (ciphertext envelope).</p>
+</li>
+<li>
+<p>To decrypt: call <span class="arithmatex">\(\texttt{Decrypt}(CMK, \text{encrypted DEK})\)</span> to get plaintext DEK, then decrypt data.</p>
+</li>
+</ol>
+<p>Key rotation: call <span class="arithmatex">\(\texttt{ReEncrypt}\)</span> to re-wrap existing DEKs with new CMK — no re-encryption of data required.</p>
+</div>
+<h2 id="sec-pki"><span class="secnum">5.2</span> Public Key Infrastructure (PKI)<a class="headerlink" href="#sec-pki" title="Permanent link">&para;</a></h2>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 5.3 (X.509 Certificate)</p>
+<p>An X.509 certificate binds a public key to an identity, digitally signed by a Certificate Authority:</p>
+<ul>
+<li>
+<p><strong>Subject:</strong> Identity (Common Name, Organization, Country, SANs)</p>
+</li>
+<li>
+<p><strong>Public Key:</strong> Subject’s public key (RSA/ECDSA/Ed25519)</p>
+</li>
+<li>
+<p><strong>Issuer:</strong> CA that signed this certificate</p>
+</li>
+<li>
+<p><strong>Validity:</strong> Not-Before and Not-After dates</p>
+</li>
+<li>
+<p><strong>Serial Number:</strong> Unique within issuing CA</p>
+</li>
+<li>
+<p><strong>Extensions:</strong> Subject Alternative Names, Key Usage, Basic Constraints</p>
+</li>
+<li>
+<p><strong>Signature:</strong> CA’s digital signature over all fields</p>
+</li>
+</ul>
+</div>
+<p>X.509 certificates are the web’s identity infrastructure, but they’re frequently misunderstood. A certificate doesn’t prove that a website is trustworthy or legitimate — it proves only that a CA was convinced, at issuance time, that the subject controlled the listed domain names or had the listed identity. A phishing site can have a perfectly valid TLS certificate for its fake domain, which is why the browser padlock has always meant “encrypted connection,” not “safe site.” Domain Validated (DV) certificates in particular require only proof of domain control, which is easily automated and doesn’t verify the site’s purpose.</p>
+<h3 id="521-pki-hierarchy"><span class="secnum">5.2.1</span> PKI Hierarchy<a class="headerlink" href="#521-pki-hierarchy" title="Permanent link">&para;</a></h3>
+<figure class="fig fig-diagram">
+<img class="tikz" src="img/tikz-3c258725cbcc.svg" alt="PKI hierarchy. Root CA private key kept offline; intermediates sign end-entity (leaf) certificates." loading="lazy" width="385" height="97">
+<figcaption><strong>Figure 5.2.</strong> PKI hierarchy. Root CA private key kept offline; intermediates sign end-entity (leaf) certificates.</figcaption>
+</figure>
+<div class="admonition info box-keybox kind-concept">
+<p class="admonition-title">Why Offline Root CA?</p>
+<p>The Root CA’s private key is the foundation of all trust. Compromising it invalidates every certificate in the hierarchy. Keeping the Root CA air-gapped means it’s only brought online for rare operations, such as signing a new intermediate CA certificate. Day-to-day issuance uses intermediate CAs; their compromise is contained.</p>
+</div>
+<p>“Offline” means literally offline: the Root CA HSM is stored in a physical vault, powered down, and brought out only for ceremonial key signings. Major public CAs document their Root CA ceremonies in detail, with notaries, external auditors, and on-camera key ceremonies. The entire process is designed around the assumption that the Root CA could be physically attacked or compromised, so its contact with networked systems is minimized to near-zero. When DigiNotar was compromised in 2011, an attacker who gained access to their online infrastructure was able to issue fraudulent certificates for Google, Yahoo, and others — the damage was possible precisely because the signing infrastructure had insufficient air-gap protection.</p>
+<h3 id="522-certificate-validation-chain-of-trust"><span class="secnum">5.2.2</span> Certificate Validation — Chain of Trust<a class="headerlink" href="#522-certificate-validation-chain-of-trust" title="Permanent link">&para;</a></h3>
+<p>A browser validates a server certificate by:</p>
+<ol>
+<li>
+<p>Parse server’s certificate chain (leaf + intermediates)</p>
+</li>
+<li>
+<p>Verify each certificate’s signature using issuer’s public key</p>
+</li>
+<li>
+<p>Verify each certificate’s validity period, key usage, basic constraints</p>
+</li>
+<li>
+<p>Verify root CA is in trusted root store (OS/browser maintained)</p>
+</li>
+<li>
+<p>Check Certificate Revocation: OCSP or CRL</p>
+</li>
+<li>
+<p>Verify hostname matches Subject/SANs (HTTPS: <code>example.com</code>)</p>
+</li>
+</ol>
+<p>Step 5 (revocation checking) is the weakest link in practice. Most browsers implement “soft fail” for OCSP: if the OCSP responder is unreachable (due to network issues, DoS, or CA outage), the browser proceeds anyway. This means an attacker who can block OCSP traffic effectively makes revocation invisible, turning revocation into a false sense of security rather than an actual control. Chrome moved to CRLite (a probabilistic bloom filter of revoked certificates distributed as browser updates) partly to address this reliability problem.</p>
+<h3 id="523-certificate-revocation"><span class="secnum">5.2.3</span> Certificate Revocation<a class="headerlink" href="#523-certificate-revocation" title="Permanent link">&para;</a></h3>
+<div class="center">
+<div class="tbl">
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Mechanism</th>
+<th style="text-align: left;">Description</th>
+<th style="text-align: left;">Limitation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">CRL (RFC 5280)</td>
+<td style="text-align: left;">Signed list of revoked serials</td>
+<td style="text-align: left;">Stale; large files</td>
+</tr>
+<tr>
+<td style="text-align: left;">OCSP (RFC 6960)</td>
+<td style="text-align: left;">Real-time per-cert status query</td>
+<td style="text-align: left;">Privacy leak; CA availability</td>
+</tr>
+<tr>
+<td style="text-align: left;">OCSP Stapling</td>
+<td style="text-align: left;">Server prefetches OCSP response</td>
+<td style="text-align: left;">Only current session</td>
+</tr>
+<tr>
+<td style="text-align: left;">CRLite / OCSP Must-Staple</td>
+<td style="text-align: left;">Compressed CRL in browser</td>
+<td style="text-align: left;">Limited adoption</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>OCSP stapling is a meaningful improvement over raw OCSP: the server fetches its own OCSP response and staples it to the TLS handshake, so clients don’t need to contact the CA. This eliminates the privacy leak (the CA learning which clients are visiting which sites), removes the CA as a reliability dependency, and prevents the soft-fail attack. OCSP Must-Staple (an X.509 extension that tells browsers to reject the certificate if no stapled response is present) would close the loop entirely, but adoption has been slow because it adds operational complexity for certificate operators.</p>
+<h3 id="524-certificate-transparency-ct"><span class="secnum">5.2.4</span> Certificate Transparency (CT)<a class="headerlink" href="#524-certificate-transparency-ct" title="Permanent link">&para;</a></h3>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 5.4 (Certificate Transparency (RFC 9162))</p>
+<p>CT requires CAs to log every issued certificate to publicly auditable, append-only logs. Browsers require:</p>
+<ul>
+<li>
+<p>At least 2 Signed Certificate Timestamps (SCTs) from different CT logs</p>
+</li>
+<li>
+<p>SCT embedded in certificate, TLS extension, or OCSP response</p>
+</li>
+</ul>
+<p>CT lets domain owners monitor for misissuance — rogue certificates for their domain.</p>
+</div>
+<p>CT logs use a Merkle hash tree structure to provide tamper evidence: appending a new certificate extends the tree, and the log operator must provide a consistency proof showing the new tree is a superset of the old one. Any retrospective deletion or modification of a logged certificate would require changing the tree root, which is publicly signed by the log operator. Multiple independent logs make it infeasible for even a colluding log operator and CA to silently remove evidence of misissuance — at least one log will have the record.</p>
+<div class="admonition warning box-attackbox kind-safety">
+<p class="admonition-title">BGP Hijack to Obtain DV Certificate (2018)</p>
+<p>An attacker hijacked BGP routes for an IP prefix, then passed ACME HTTP-01 domain validation for that IP range, obtaining a legitimate DV certificate for <code>example.com</code>. CT logs detected the misissuance within minutes. Certificate Transparency enables detection but not prevention.</p>
+<p><strong>Mitigations:</strong> DNSSEC + CAA records; multi-perspective validation (Let’s Encrypt validates from 4+ locations since 2020).</p>
+</div>
+<h2 id="sec-hsm"><span class="secnum">5.3</span> Hardware Security Modules (HSMs)<a class="headerlink" href="#sec-hsm" title="Permanent link">&para;</a></h2>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 5.5 (HSM)</p>
+<p>A Hardware Security Module is a tamper-resistant hardware device that:</p>
+<ul>
+<li>
+<p>Generates and stores cryptographic keys in hardware</p>
+</li>
+<li>
+<p>Performs cryptographic operations internally (key never leaves HSM in plaintext)</p>
+</li>
+<li>
+<p>Detects and responds to physical tampering (key zeroization)</p>
+</li>
+<li>
+<p>Meets FIPS 140-3 or Common Criteria certification requirements</p>
+</li>
+</ul>
+</div>
+<p>An HSM’s fundamental promise is that the private key never exists outside the HSM boundary in plaintext form. When you ask an HSM to sign data, it performs the computation internally and returns only the signature — the private key never leaves. This property is what makes HSMs valuable for CA signing keys and payment credentials: even a fully compromised operating system can’t extract the key, because the key only ever lives in the HSM’s own tamper-resistant storage. An attacker who compromises a server using an HSM can at most request signatures, not steal the key itself.</p>
+<div class="center">
+<div class="tbl">
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Use Case</th>
+<th style="text-align: left;">HSM Type</th>
+<th style="text-align: left;">Example Products</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">PKI Root CA</td>
+<td style="text-align: left;">Network HSM / offline USB HSM</td>
+<td style="text-align: left;">Thales Luna, Entrust nShield</td>
+</tr>
+<tr>
+<td style="text-align: left;">TLS private keys</td>
+<td style="text-align: left;">Network HSM</td>
+<td style="text-align: left;">AWS CloudHSM, Google Cloud HSM</td>
+</tr>
+<tr>
+<td style="text-align: left;">Payment (PINs)</td>
+<td style="text-align: left;">PCI-HSM</td>
+<td style="text-align: left;">Thales payShield, Utimaco SecurityServer</td>
+</tr>
+<tr>
+<td style="text-align: left;">Code signing</td>
+<td style="text-align: left;">USB token</td>
+<td style="text-align: left;">Yubikey (FIPS), SafeNet eToken</td>
+</tr>
+<tr>
+<td style="text-align: left;">IoT key injection</td>
+<td style="text-align: left;">Manufacturing HSM</td>
+<td style="text-align: left;">nCipher nShield Connect</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p><strong>FIPS 140-3 Levels:</strong></p>
+<ol>
+<li>
+<p>Level 1: Software only; no physical protection</p>
+</li>
+<li>
+<p>Level 2: Tamper-evident labels; RBAC</p>
+</li>
+<li>
+<p>Level 3: Tamper-resistant; key zeroization on tamper detection</p>
+</li>
+<li>
+<p>Level 4: Complete physical protection; environmental attack response</p>
+</li>
+</ol>
+<p>Level 4 is genuinely impressive engineering. These devices monitor for unusual temperature, voltage, radiation, and physical pressure; detect epoxy-removal attempts; and respond by actively zeroizing all key material within microseconds of detecting an anomaly. An attacker who drills into a Level 4 HSM triggers key destruction before the drill reaches the secure element. In practice, most commercial deployments use Level 3, which provides strong physical protection at a reasonable cost; Level 4 is reserved for the most sensitive government and financial applications.</p>
+<p>In practice, HSM operations add latency: a typical network HSM signing operation takes 1–5ms, compared to microseconds for an in-memory software operation. For TLS termination serving millions of connections per second, this latency matters. The standard architectural pattern is to store the TLS private key in the HSM but generate ephemeral session keys in software — the HSM only participates in the initial handshake, after which the session runs on symmetric keys in software. This preserves the key protection benefit while keeping bulk encryption throughput high.</p>
+<h2 id="sec-secret-sharing"><span class="secnum">5.4</span> Secret Sharing<a class="headerlink" href="#sec-secret-sharing" title="Permanent link">&para;</a></h2>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 5.6 (Shamir’s Secret Sharing)</p>
+<p>A <span class="arithmatex">\((t, n)\)</span> threshold scheme splits a secret <span class="arithmatex">\(S\)</span> into <span class="arithmatex">\(n\)</span> shares such that any <span class="arithmatex">\(t\)</span> shares recover <span class="arithmatex">\(S\)</span>, but any <span class="arithmatex">\(t-1\)</span> shares reveal nothing about <span class="arithmatex">\(S\)</span>.</p>
+<p><strong>Construction (over <span class="arithmatex">\(\mathbb{F}_p\)</span> for prime <span class="arithmatex">\(p &gt; S\)</span>):</strong></p>
+<ol>
+<li>
+<p>Choose random polynomial <span class="arithmatex">\(f(x) = S + a_1 x + a_2 x^2 + \cdots + a_{t-1} x^{t-1}\)</span> over <span class="arithmatex">\(\mathbb{F}_p\)</span></p>
+</li>
+<li>
+<p>Shares: <span class="arithmatex">\((i, f(i))\)</span> for <span class="arithmatex">\(i = 1, …, n\)</span></p>
+</li>
+<li>
+<p>Reconstruction: Lagrange interpolation on any <span class="arithmatex">\(t\)</span> shares recovers <span class="arithmatex">\(f(0) = S\)</span></p>
+</li>
+</ol>
+</div>
+<p>Shamir’s scheme provides <em>information-theoretic</em> security: even an unbounded adversary who has <span class="arithmatex">\(t-1\)</span> shares learns nothing about <span class="arithmatex">\(S\)</span>. This is stronger than computational security and doesn’t depend on any hardness assumption. The reason is that for any value <span class="arithmatex">\(v\)</span>, there exists exactly one polynomial of degree <span class="arithmatex">\(t-1\)</span> through the <span class="arithmatex">\(t-1\)</span> known points that has <span class="arithmatex">\(f(0) = v\)</span> — so all values of <span class="arithmatex">\(S\)</span> are equally consistent with the observed shares, giving zero information to an adversary.</p>
+<div class="admonition example box-example kind-example">
+<p class="admonition-title">Example 5.2 (<span class="math inline">\((2, 3)\)</span>-Threshold Secret Sharing)</p>
+<div id="ex-shamir"></div>
+<p>Recover secret from shares with <span class="arithmatex">\(p = 17\)</span>.</p>
+<p>Shares: <span class="arithmatex">\((1, 5)\)</span>, <span class="arithmatex">\((2, 3)\)</span>, <span class="arithmatex">\((3, 1)\)</span>. Use Lagrange interpolation on the first two:</p>
+<div class="arithmatex">\[f(x) = 5 \cdot \frac{x - 2}{1 - 2} + 3 \cdot \frac{x - 1}{2 - 1} = -5(x-2) + 3(x-1) = -2x + 7\]</div>
+<p>Secret: <span class="arithmatex">\(f(0) = 7\)</span>.</p>
+<div class="admonition tip box-solutionbox kind-teaching">
+<p><strong>Solution.</strong> Verify: <span class="arithmatex">\(f(1) = -2 + 7 = 5\)</span> ✓, <span class="arithmatex">\(f(2) = -4 + 7 = 3\)</span> ✓, <span class="arithmatex">\(f(3) = -6 + 7 = 1\)</span> ✓.</p>
+<p>Secret = <span class="arithmatex">\(7\)</span>.</p>
+</div>
+</div>
+<p><strong>Applications:</strong></p>
+<ul>
+<li>
+<p>Root CA key protection: <span class="arithmatex">\((3, 5)\)</span> — 3 of 5 key custodians required</p>
+</li>
+<li>
+<p>HSM quorum for key recovery</p>
+</li>
+<li>
+<p>Bitcoin BIP-39/SLIP-39 wallet seed backup</p>
+</li>
+<li>
+<p>Secure multi-party computation (MPC) protocols</p>
+</li>
+</ul>
+<p>Real-world secret sharing deployments require careful operational procedures beyond the mathematics. Shares are typically printed on smart cards or written on paper and distributed to custodians in sealed envelopes. The custodians must be geographically distributed (so a single physical disaster can’t destroy quorum), belong to different organizational units (preventing insider collusion), and have clear documented procedures for convening a key ceremony. When Amazon, Google, or a major CA performs a root key ceremony, the share distribution and access controls are audited by external parties.</p>
+<h2 id="55-key-rotation-and-crypto-agility"><span class="secnum">5.5</span> Key Rotation and Crypto-Agility<a class="headerlink" href="#55-key-rotation-and-crypto-agility" title="Permanent link">&para;</a></h2>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 5.7 (Crypto-Agility)</p>
+<p>A system is crypto-agile if cryptographic algorithms can be swapped without architectural changes — by configuration, negotiation, or API-level abstraction. This is essential for post-quantum migration.</p>
+</div>
+<p>Crypto-agility is the difference between a smooth post-quantum migration and an emergency rearchitecture project. Systems that hardcode algorithm choices into wire formats, database schemas, or key derivation logic can’t adapt without breaking changes. TLS demonstrates good agility: algorithm negotiation is built into the handshake, so transitioning from RSA to ECDSA to ML-DSA requires server and client updates but no protocol redesign. By contrast, systems that embed “SHA1WithRSA” literally in their certificate parsing code or that assume 128-byte signature buffers will need painful, risky rewrites to support ML-DSA’s larger signatures (2420 bytes for ML-DSA-44).</p>
+<p><strong>Key rotation best practices:</strong></p>
+<div class="center">
+<div class="tbl">
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Key Type</th>
+<th style="text-align: left;">Rotation Frequency</th>
+<th style="text-align: left;">Rationale</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">TLS certificate (public CA)</td>
+<td style="text-align: left;">90 days</td>
+<td style="text-align: left;">Let’s Encrypt default; limits exposure</td>
+</tr>
+<tr>
+<td style="text-align: left;">TLS certificate (internal)</td>
+<td style="text-align: left;">1 year</td>
+<td style="text-align: left;">Operational overhead vs. exposure</td>
+</tr>
+<tr>
+<td style="text-align: left;">SSH host key</td>
+<td style="text-align: left;">Every 1-2 years</td>
+<td style="text-align: left;">Or after suspected compromise</td>
+</tr>
+<tr>
+<td style="text-align: left;">DKIM signing key</td>
+<td style="text-align: left;">Quarterly</td>
+<td style="text-align: left;">Limits exposure window</td>
+</tr>
+<tr>
+<td style="text-align: left;">KMS data encryption key</td>
+<td style="text-align: left;">Annually</td>
+<td style="text-align: left;">AWS default auto-rotation</td>
+</tr>
+<tr>
+<td style="text-align: left;">API keys / tokens</td>
+<td style="text-align: left;">Per-session or 24h</td>
+<td style="text-align: left;">JWTs: short-lived; refresh tokens: rotate on use</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>Automated rotation is the only reliable rotation. Manual rotation processes get missed during vacations, org changes, or urgent incidents — the certificate that expired over Christmas weekend while the team was on holiday is a cliché because it happens constantly. Let’s Encrypt’s 90-day certificate lifetime was chosen specifically to force automation: manually renewing every 90 days is painful enough that operators build automation, and once automation exists, rotating more frequently is essentially free. Organizations using longer certificate lifetimes are often implicitly admitting that their renewal process is manual.</p>
+<h2 id="exercises">Exercises<a class="headerlink" href="#exercises" title="Permanent link">&para;</a></h2>
+<div class="admonition example box-exercise kind-example">
+<p class="admonition-title">Exercise 5.1</p>
+<p>Implement Shamir’s <span class="arithmatex">\((3, 5)\)</span> secret sharing in Python. Generate shares for secret <span class="arithmatex">\(S = 42\)</span> over <span class="arithmatex">\(\mathbb{F}_{97}\)</span>. Demonstrate reconstruction from any 3 shares. Show that 2 shares reveal nothing (compute the distribution of <span class="arithmatex">\(f(0)\)</span> given only 2 shares).</p>
+</div>
+<div class="admonition example box-exercise kind-example">
+<p class="admonition-title">Exercise 5.2</p>
+<p>Inspect a TLS certificate from <code>github.com</code> using <code>openssl s_client -connect github.com:443</code> or Python <code>ssl</code> module. Identify: issuer, subject, SANs, key type, validity period, CT SCTs, and OCSP URL.</p>
+</div>
+<div class="admonition example box-exercise kind-example">
+<p class="admonition-title">Exercise 5.3</p>
+<p>Explain why Certificate Transparency does not prevent the issuance of fraudulent certificates but does enable detection. Design a monitoring workflow for an organization to detect unauthorized certificates for their domains.</p>
+</div>
+<div class="admonition example box-exercise kind-example">
+<p class="admonition-title">Exercise 5.4</p>
+<p>An organization uses a 2048-bit RSA key for their Root CA, created in 2010. List all migration steps required to: (a) rekey to ECDSA P-384, (b) plan for post-quantum migration to ML-DSA, (c) maintain operational continuity during transition.</p>
+</div>
+<div class="admonition example box-exercise kind-example">
+<p class="admonition-title">Exercise 5.5</p>
+<p>Design a key management policy for a healthcare application storing encrypted PHI (Protected Health Information). Address: key types and hierarchy, storage location, rotation schedule, emergency recovery, and compliance with HIPAA Technical Safeguards.</p>
+</div>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button type="button" class="md-top md-icon" data-md-component="top" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+Back to top
+</button>
+</main>
+<footer class="md-footer">
+<nav class="md-footer__inner md-grid" aria-label="Footer" >
+<a href="ch04-cryptographic-hash-functions-and-macs.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: 4. Cryptographic Hash Functions and MACs">
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</div>
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Previous
+</span>
+<div class="md-ellipsis">
+4. Cryptographic Hash Functions and MACs
+</div>
+</div>
+</a>
+<a href="ch06-cryptographic-protocols-and-security-proofs.html" class="md-footer__link md-footer__link--next" aria-label="Next: 6. Cryptographic Protocols and Security Proofs">
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Next
+</span>
+<div class="md-ellipsis">
+6. Cryptographic Protocols and Security Proofs
+</div>
+</div>
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+</div>
+</a>
+</nav>
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+The Open Book Project &middot;
+<a href="../../about.html">About this library</a> &middot;
+<a href="../../publish.html">Publish your book</a> &middot;
+© The authors of the books
+</div>
+Made with
+<a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+Material for MkDocs
+</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "navigation.prune", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "toc.follow", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+<script src="../../assets/mathjax.js"></script>
+<script src="../../assets/viz.js"></script>
+<script src="../../assets/remote.js"></script>
+<script src="../../assets/scans.js"></script>
+<script src="../../assets/reader.js"></script>
+<script src="../../assets/app.js"></script>
+<script src="../../assets/slides.js"></script>
+<script src="../../assets/speak.js"></script>
+<script src="../../assets/quiz.js"></script>
+<script>
+    /* offline reading: the service worker at the site root (its scope is the whole site) */
+    if ("serviceWorker" in navigator && window.isSecureContext) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register(new URL("../../sw.js", location.href).href).catch(function () {});
+      });
+    }
+  </script>
+</body>
+</html>

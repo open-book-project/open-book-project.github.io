@@ -1,0 +1,1121 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="description" content="The Open Book Project: books on computer science, quantum computing, cyber security, science, the social sciences, university courses and languages, read page by page like an e-book, online or offline.">
+<meta name="author" content="The Open Book Project">
+<link rel="canonical" href="https://open-book-project.github.io/cyber/security_systems_engineering/ch04-cryptographic-hash-functions-and-macs.html">
+<link rel="prev" href="ch03-public-key-cryptography.html">
+<link rel="next" href="ch05-key-management-and-public-key-infrastructure.html">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap"></noscript>
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Open Book">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="application-name" content="Open Book"><script src="../../assets/library-data.js"></script><script>
+    (function () {
+      var X = window.XMLHttpRequest, open, gate = new Promise(function (r) { open = r; });
+      if (!X) return;
+      var open0 = X.prototype.open, send0 = X.prototype.send;
+      X.prototype.open = function (method, url) {
+        this.__pkIndex = /\/search\/search_index\.json(\?|#|$)/.test(String(url));
+        return open0.apply(this, arguments);
+      };
+      X.prototype.send = function () {
+        if (!this.__pkIndex) return send0.apply(this, arguments);
+        var xhr = this, args = arguments;
+        gate.then(function () { send0.apply(xhr, args); });
+      };
+      function wake() { open(); }
+      document.addEventListener("focusin", function (e) { if (e.target && e.target.closest && e.target.closest(".md-search")) wake(); });
+      document.addEventListener("click", function (e) { if (e.target && e.target.closest && e.target.closest('label[for="__search"], .md-search')) wake(); }, true);
+      document.addEventListener("keydown", function (e) {
+        var k = e.key;
+        if ((k === "/" || k === "s" || k === "f" || k === "S" || k === "F") && !(e.target && e.target.closest && e.target.closest("input, textarea, [contenteditable]"))) wake();
+      }, true);
+      if (/[?&]q=/.test(location.search)) wake();
+    })();
+  </script><script>
+    try {
+      if ((window.matchMedia && (matchMedia("(display-mode: standalone)").matches || matchMedia("(display-mode: fullscreen)").matches)) || navigator.standalone === true) {
+        document.documentElement.className += " bjp-standalone";
+      }
+    } catch (e) { /* not an installed app */ }
+    /* the books of a subject or of the whole library as covers or as a list (assets/app.js): the reader's choice */
+    try {
+      var bv = localStorage.getItem("bjp.view");
+      if (bv === "list" || (bv !== "grid" && /\/books\.html$/.test(location.pathname))) document.documentElement.className += " bjp-view-list";
+    } catch (e) { /* no storage: covers */ }
+  </script>
+<script>
+    /* a book opened from its cover on the shelf: the page stays blank, in the cover's colour, until the reader is up */
+    try {
+      var cv = sessionStorage.getItem("bjp.reader.cover");
+      if (cv && sessionStorage.getItem("bjp.reader.open") === "1") {
+        var c = JSON.parse(cv), de = document.documentElement;
+        de.className += " bjp-booting";
+        if (c && /^#[0-9a-f]{3,8}$/i.test(c.bg || "")) de.style.background = c.bg;
+        setTimeout(function () { de.classList.remove("bjp-booting"); de.style.background = ""; }, 3000);
+      }
+    } catch (e) { /* no session storage: the page simply opens as usual */ }
+  </script>
+<title>4. Cryptographic Hash Functions and MACs - The Open Book Project</title>
+<link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+<link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+<link rel="stylesheet" href="../../assets/extra.css">
+<link rel="stylesheet" href="../../assets/reader.css">
+<link rel="stylesheet" href="../../assets/viz.css">
+<link rel="stylesheet" href="../../assets/app.css">
+<link rel="stylesheet" href="../../assets/theme.css">
+<link rel="stylesheet" href="../../assets/slides.css">
+<link rel="stylesheet" href="../../assets/remote.css">
+<link rel="stylesheet" href="../../assets/scans.css">
+<link rel="stylesheet" href="../../assets/speak.css">
+<link rel="stylesheet" href="../../assets/quiz.css">
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+<input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+<input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a href="#sec-hash-functions" class="md-skip">
+Skip to content
+</a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav class="md-header__inner md-grid" aria-label="Header">
+<a href="../../index.html" title="The Open Book Project" class="md-header__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+The Open Book Project
+</span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+4. Cryptographic Hash Functions and MACs
+</span>
+</div>
+</div>
+</div><a href="../../index.html" class="bjp-libbtn" aria-label="Library: all books" title="Library: all books">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V5h4v15M8 20V9h4v11M14 20L12.6 6l3.8-.8 3 14.2M3 20h18"/></svg><span>Library</span>
+</a>
+<a href="../../subjects/index.html" class="pk-catbtn" aria-haspopup="true" aria-expanded="false" title="Browse the books by category">
+<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><circle cx="17" cy="7" r="3.6"/><path d="M7 13.4l3.9 6.8H3.1z"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg><span>Categories</span>
+</a>
+<form class="md-header__option" data-md-component="palette">
+<input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+<label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+</label>
+<input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+<label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+<label class="md-search__icon md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</label>
+<nav class="md-search__options" aria-label="Search">
+<button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+Initializing search
+</div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--primary bjp-nav bjp-nav--book" aria-label="Navigation" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a href="../../index.html" title="The Open Book Project" class="md-nav__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+The Open Book Project
+</label>
+<ul class="md-nav__list" data-md-scrollfix>
+<li class="md-nav__item bjp-nav-all">
+<a href="../../index.html" class="md-nav__link" aria-label="All books: back to the library">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+<span class="md-ellipsis">All books</span>
+</a>
+</li>
+<li class="md-nav__item bjp-nav-book" role="presentation"><span class="bjp-nav-head">Security Systems Engineering</span></li>
+<li class="md-nav__item">
+<a href="index.html" class="md-nav__link">
+<span class="md-ellipsis">
+Overview and preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="notation-and-conventions.html" class="md-nav__link">
+<span class="md-ellipsis">
+Notation and Conventions
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch01-mathematical-foundations-of-cryptography.html" class="md-nav__link">
+<span class="md-ellipsis">
+1. Mathematical Foundations of Cryptography
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch02-symmetric-cryptography.html" class="md-nav__link">
+<span class="md-ellipsis">
+2. Symmetric Cryptography
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch03-public-key-cryptography.html" class="md-nav__link">
+<span class="md-ellipsis">
+3. Public-Key Cryptography
+</span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+4. Cryptographic Hash Functions and MACs
+</span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a href="ch04-cryptographic-hash-functions-and-macs.html" class="md-nav__link md-nav__link--active">
+<span class="md-ellipsis">
+4. Cryptographic Hash Functions and MACs
+</span>
+</a>
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#sec-hash-functions" class="md-nav__link">
+<span class="md-ellipsis">
+4.1 Cryptographic Hash Functions
+</span>
+</a>
+<nav class="md-nav" aria-label="4.1 Cryptographic Hash Functions">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#411-the-sha-family" class="md-nav__link">
+<span class="md-ellipsis">
+4.1.1 The SHA Family
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#412-the-birthday-attack" class="md-nav__link">
+<span class="md-ellipsis">
+4.1.2 The Birthday Attack
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#413-length-extension-attacks" class="md-nav__link">
+<span class="md-ellipsis">
+4.1.3 Length Extension Attacks
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-mac" class="md-nav__link">
+<span class="md-ellipsis">
+4.2 Message Authentication Codes (MACs)
+</span>
+</a>
+<nav class="md-nav" aria-label="4.2 Message Authentication Codes (MACs)">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#421-hmac" class="md-nav__link">
+<span class="md-ellipsis">
+4.2.1 HMAC
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#422-cmac-cipher-based-mac" class="md-nav__link">
+<span class="md-ellipsis">
+4.2.2 CMAC (Cipher-Based MAC)
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#423-poly1305" class="md-nav__link">
+<span class="md-ellipsis">
+4.2.3 Poly1305
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-kdf" class="md-nav__link">
+<span class="md-ellipsis">
+4.3 Key Derivation Functions (KDFs)
+</span>
+</a>
+<nav class="md-nav" aria-label="4.3 Key Derivation Functions (KDFs)">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#431-hkdf-rfc-5869" class="md-nav__link">
+<span class="md-ellipsis">
+4.3.1 HKDF (RFC 5869)
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#432-password-based-kdfs" class="md-nav__link">
+<span class="md-ellipsis">
+4.3.2 Password-Based KDFs
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#44-commitment-schemes" class="md-nav__link">
+<span class="md-ellipsis">
+4.4 Commitment Schemes
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#exercises" class="md-nav__link">
+<span class="md-ellipsis">
+Exercises
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="ch05-key-management-and-public-key-infrastructure.html" class="md-nav__link">
+<span class="md-ellipsis">
+5. Key Management and Public Key Infrastructure
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch06-cryptographic-protocols-and-security-proofs.html" class="md-nav__link">
+<span class="md-ellipsis">
+6. Cryptographic Protocols and Security Proofs
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch07-quantum-cryptography-and-post-quantum-migration.html" class="md-nav__link">
+<span class="md-ellipsis">
+7. Quantum Cryptography and Post-Quantum Migration
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch08-network-security-fundamentals.html" class="md-nav__link">
+<span class="md-ellipsis">
+8. Network Security Fundamentals
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch09-firewalls-ids-and-ips.html" class="md-nav__link">
+<span class="md-ellipsis">
+9. Firewalls, IDS, and IPS
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch10-network-protocol-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+10. Network Protocol Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch11-web-application-security-fundamentals.html" class="md-nav__link">
+<span class="md-ellipsis">
+11. Web Application Security Fundamentals
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch12-authentication-authorization-and-access-control.html" class="md-nav__link">
+<span class="md-ellipsis">
+12. Authentication, Authorization, and Access Control
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch13-api-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+13. API Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch14-side-channel-attacks.html" class="md-nav__link">
+<span class="md-ellipsis">
+14. Side-Channel Attacks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch15-hardware-tamper-protection.html" class="md-nav__link">
+<span class="md-ellipsis">
+15. Hardware Tamper Protection
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch16-transport-layer-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+16. Transport Layer Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch17-ssh-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+17. SSH Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch18-email-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+18. Email Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch19-advanced-network-protocol-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+19. Advanced Network Protocol Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch20-malware-analysis.html" class="md-nav__link">
+<span class="md-ellipsis">
+20. Malware Analysis
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch21-reverse-engineering.html" class="md-nav__link">
+<span class="md-ellipsis">
+21. Reverse Engineering
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch22-digital-forensics.html" class="md-nav__link">
+<span class="md-ellipsis">
+22. Digital Forensics
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch23-vulnerability-research-and-fuzzing.html" class="md-nav__link">
+<span class="md-ellipsis">
+23. Vulnerability Research and Fuzzing
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch24-exploit-development-fundamentals.html" class="md-nav__link">
+<span class="md-ellipsis">
+24. Exploit Development Fundamentals
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch25-security-architecture-and-design.html" class="md-nav__link">
+<span class="md-ellipsis">
+25. Security Architecture and Design
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch26-cloud-native-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+26. Cloud-Native Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch27-human-factors-in-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+27. Human Factors in Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch28-artificial-intelligence-and-machine-learning.html" class="md-nav__link">
+<span class="md-ellipsis">
+28. Artificial Intelligence and Machine Learning Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch29-iot-industrial-control-systems-and-the-emerging.html" class="md-nav__link">
+<span class="md-ellipsis">
+29. IoT, Industrial Control Systems, and the Emerging Threat Horizon
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="app-a-mathematical-reference.html" class="md-nav__link">
+<span class="md-ellipsis">
+Appendix A. Mathematical Reference
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="app-b-security-tools-reference.html" class="md-nav__link">
+<span class="md-ellipsis">
+Appendix B. Security Tools Reference
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="app-c-selected-exercise-solutions.html" class="md-nav__link">
+<span class="md-ellipsis">
+Appendix C. Selected Exercise Solutions
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="bibliography.html" class="md-nav__link">
+<span class="md-ellipsis">
+References
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#sec-hash-functions" class="md-nav__link">
+<span class="md-ellipsis">
+4.1 Cryptographic Hash Functions
+</span>
+</a>
+<nav class="md-nav" aria-label="4.1 Cryptographic Hash Functions">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#411-the-sha-family" class="md-nav__link">
+<span class="md-ellipsis">
+4.1.1 The SHA Family
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#412-the-birthday-attack" class="md-nav__link">
+<span class="md-ellipsis">
+4.1.2 The Birthday Attack
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#413-length-extension-attacks" class="md-nav__link">
+<span class="md-ellipsis">
+4.1.3 Length Extension Attacks
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-mac" class="md-nav__link">
+<span class="md-ellipsis">
+4.2 Message Authentication Codes (MACs)
+</span>
+</a>
+<nav class="md-nav" aria-label="4.2 Message Authentication Codes (MACs)">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#421-hmac" class="md-nav__link">
+<span class="md-ellipsis">
+4.2.1 HMAC
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#422-cmac-cipher-based-mac" class="md-nav__link">
+<span class="md-ellipsis">
+4.2.2 CMAC (Cipher-Based MAC)
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#423-poly1305" class="md-nav__link">
+<span class="md-ellipsis">
+4.2.3 Poly1305
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-kdf" class="md-nav__link">
+<span class="md-ellipsis">
+4.3 Key Derivation Functions (KDFs)
+</span>
+</a>
+<nav class="md-nav" aria-label="4.3 Key Derivation Functions (KDFs)">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#431-hkdf-rfc-5869" class="md-nav__link">
+<span class="md-ellipsis">
+4.3.1 HKDF (RFC 5869)
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#432-password-based-kdfs" class="md-nav__link">
+<span class="md-ellipsis">
+4.3.2 Password-Based KDFs
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#44-commitment-schemes" class="md-nav__link">
+<span class="md-ellipsis">
+4.4 Commitment Schemes
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#exercises" class="md-nav__link">
+<span class="md-ellipsis">
+Exercises
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="ch-hash-mac">Chapter 4: Cryptographic Hash Functions and MACs<a class="headerlink" href="#ch-hash-mac" title="Permanent link">&para;</a></h1>
+<p>Hash functions appear in nearly every cryptographic protocol — digital signatures, message authentication, key derivation, commitment schemes, and data integrity checks all depend on them. This chapter covers the security properties they must satisfy, the main algorithm families, and the MAC constructions built on top of them.</p>
+<h2 id="sec-hash-functions"><span class="secnum">4.1</span> Cryptographic Hash Functions<a class="headerlink" href="#sec-hash-functions" title="Permanent link">&para;</a></h2>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 4.1 (Cryptographic Hash Function)</p>
+<p>A hash function <span class="arithmatex">\(H: \{0,1\}^* \to \{0,1\}^n\)</span> must satisfy:</p>
+<ol>
+<li>
+<p><strong>Preimage resistance:</strong> Given <span class="arithmatex">\(y\)</span>, hard to find <span class="arithmatex">\(x\)</span> with <span class="arithmatex">\(H(x) = y\)</span>. (One-way)</p>
+</li>
+<li>
+<p><strong>Second preimage resistance:</strong> Given <span class="arithmatex">\(x\)</span>, hard to find <span class="arithmatex">\(x' \neq x\)</span> with <span class="arithmatex">\(H(x') = H(x)\)</span>.</p>
+</li>
+<li>
+<p><strong>Collision resistance:</strong> Hard to find any <span class="arithmatex">\(x \neq x'\)</span> with <span class="arithmatex">\(H(x) = H(x')\)</span>.</p>
+</li>
+</ol>
+<p>Collision resistance <span class="arithmatex">\(\Rightarrow\)</span> second preimage resistance <span class="arithmatex">\(\Rightarrow\)</span> preimage resistance (for fixed output length).</p>
+</div>
+<p>The three properties serve different protocol roles. Preimage resistance is what makes password hashing useful: you can store <span class="arithmatex">\(H(\text{password})\)</span> without storing the password, and a database leak doesn’t immediately hand attackers the passwords. Second preimage resistance is what digital signatures rely on: if an attacker can find a different document with the same hash as the one you signed, they can forge your signature on their document. Collision resistance is the strongest property and is what certificate authorities need: if MD5 has collisions, two different certificate requests could hash to the same value, allowing a fraudulent certificate to carry a legitimate CA signature.</p>
+<h3 id="411-the-sha-family"><span class="secnum">4.1.1</span> The SHA Family<a class="headerlink" href="#411-the-sha-family" title="Permanent link">&para;</a></h3>
+<h4 id="sha-256-sha-2">SHA-256 (SHA-2)<a class="headerlink" href="#sha-256-sha-2" title="Permanent link">&para;</a></h4>
+<p>SHA-256 uses the Merkle-Damgård construction with Davies-Meyer compression function:</p>
+<figure class="fig fig-diagram" id="fig-merkle-damgard">
+<img class="tikz" src="img/tikz-32cf3de14e21.svg" alt="Merkle-Damgård construction used by SHA-256. The message is padded, split into 512-bit blocks, and processed through compression function f iteratively." loading="lazy" width="451" height="97">
+<figcaption><strong>Figure 4.1.</strong> Merkle-Damgård construction used by SHA-256. The message is padded, split into 512-bit blocks, and processed through compression function <span class="math inline">\(f\)</span> iteratively.</figcaption>
+</figure>
+<p>SHA-256 constants: 8 initial hash values from fractional parts of square roots of the first 8 primes; 64 round constants from fractional parts of cube roots of the first 64 primes.</p>
+<p><strong>Round function:</strong> <span class="arithmatex">\(\Sigma_0, \Sigma_1\)</span> (rotation-based), <span class="arithmatex">\(\text{Ch}\)</span> (choice), <span class="arithmatex">\(\text{Maj}\)</span> (majority) functions operating on 32-bit words.</p>
+<p>The rotation-based operations in SHA-256 are designed to spread individual bit changes across the entire 256-bit state within a small number of rounds — the avalanche property. A single flipped input bit should, after a few rounds, have changed approximately half the output bits in an unpredictable pattern. The SHA-2 designers chose specific rotation amounts to maximize this diffusion based on algebraic and differential analysis of candidate designs. SHA-256 processes each 512-bit message block through 64 rounds before producing an intermediate hash value, ensuring any local correlation between input and output is destroyed.</p>
+<h4 id="sha-3-keccak">SHA-3 (Keccak)<a class="headerlink" href="#sha-3-keccak" title="Permanent link">&para;</a></h4>
+<p>SHA-3 uses the <em>sponge construction</em> — fundamentally different from Merkle-Damgård:</p>
+<ul>
+<li>
+<p><strong>State:</strong> <span class="arithmatex">\(1600\)</span>-bit permutation state (for SHA3-256)</p>
+</li>
+<li>
+<p><strong>Absorb:</strong> XOR message blocks into <em>rate</em> portion of state; apply Keccak-<span class="arithmatex">\(f[1600]\)</span> permutation</p>
+</li>
+<li>
+<p><strong>Squeeze:</strong> Extract output from rate portion of state</p>
+</li>
+<li>
+<p>Properties: Resistant to length-extension attacks (SHA-2 is vulnerable); SHAKE-128/256 provides variable-length output (XOF)</p>
+</li>
+</ul>
+<p>The sponge construction’s security argument is cleaner than Merkle-Damgård’s. If the inner permutation is modeled as a random permutation, the sponge is provably indistinguishable from a random oracle, with security bounded by the capacity (the hidden portion of the state). For SHA3-256, the state is 1600 bits split into 1088-bit rate and 512-bit capacity; the 512-bit capacity gives 256 bits of security against collision attacks. By contrast, Merkle-Damgård’s security relies on the compression function being collision resistant, which is a stronger and less elegant assumption.</p>
+<p>SHA-3 wasn’t adopted because SHA-2 was broken — SHA-2 remains secure. NIST ran the SHA-3 competition (2007–2012) as insurance: if weaknesses were found in SHA-2’s Merkle-Damgård structure, the cryptographic community would already have a tested, analyzed alternative. Keccak won the competition. Having SHA-3 available has already proven valuable for protocols that need length-extension immunity or variable-length output (SHAKE variants), which SHA-2 can’t provide natively.</p>
+<div class="center">
+<div class="tbl">
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Algorithm</th>
+<th style="text-align: left;">Output</th>
+<th style="text-align: left;">Block</th>
+<th style="text-align: left;">Security</th>
+<th style="text-align: left;">Vulnerable to Extension</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">MD5</td>
+<td style="text-align: left;">128 bits</td>
+<td style="text-align: left;">512 bits</td>
+<td style="text-align: left;">Broken</td>
+<td style="text-align: left;">Yes</td>
+</tr>
+<tr>
+<td style="text-align: left;">SHA-1</td>
+<td style="text-align: left;">160 bits</td>
+<td style="text-align: left;">512 bits</td>
+<td style="text-align: left;">Broken (2017)</td>
+<td style="text-align: left;">Yes</td>
+</tr>
+<tr>
+<td style="text-align: left;">SHA-256</td>
+<td style="text-align: left;">256 bits</td>
+<td style="text-align: left;">512 bits</td>
+<td style="text-align: left;">128 bits</td>
+<td style="text-align: left;">Yes</td>
+</tr>
+<tr>
+<td style="text-align: left;">SHA-384</td>
+<td style="text-align: left;">384 bits</td>
+<td style="text-align: left;">1024 bits</td>
+<td style="text-align: left;">192 bits</td>
+<td style="text-align: left;">No (truncated)</td>
+</tr>
+<tr>
+<td style="text-align: left;">SHA-512</td>
+<td style="text-align: left;">512 bits</td>
+<td style="text-align: left;">1024 bits</td>
+<td style="text-align: left;">256 bits</td>
+<td style="text-align: left;">Yes</td>
+</tr>
+<tr>
+<td style="text-align: left;">SHA3-256</td>
+<td style="text-align: left;">256 bits</td>
+<td style="text-align: left;">Sponge</td>
+<td style="text-align: left;">128 bits</td>
+<td style="text-align: left;">No</td>
+</tr>
+<tr>
+<td style="text-align: left;">SHA3-512</td>
+<td style="text-align: left;">512 bits</td>
+<td style="text-align: left;">Sponge</td>
+<td style="text-align: left;">256 bits</td>
+<td style="text-align: left;">No</td>
+</tr>
+<tr>
+<td style="text-align: left;">BLAKE2b</td>
+<td style="text-align: left;">512 bits</td>
+<td style="text-align: left;">1024 bits</td>
+<td style="text-align: left;">256 bits</td>
+<td style="text-align: left;">No (keyed)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<h3 id="412-the-birthday-attack"><span class="secnum">4.1.2</span> The Birthday Attack<a class="headerlink" href="#412-the-birthday-attack" title="Permanent link">&para;</a></h3>
+<div class="admonition info box-theorem kind-concept">
+<p class="admonition-title">Theorem 4.1 (Birthday Bound)</p>
+<p>In a group of <span class="arithmatex">\(k\)</span> people, the probability that two share a birthday exceeds <span class="arithmatex">\(50\%\)</span> when <span class="arithmatex">\(k \approx 1.17\sqrt{N}\)</span> (where <span class="arithmatex">\(N\)</span> is the number of possible birthdays). For hash functions with <span class="arithmatex">\(n\)</span>-bit output, collisions are expected after approximately <span class="arithmatex">\(2^{n/2}\)</span> evaluations.</p>
+</div>
+<p>The birthday attack works because you’re not looking for one specific collision — you’re looking for any collision among the hashes you’ve computed. With <span class="arithmatex">\(2^{n/2}\)</span> hashes stored, there are roughly <span class="arithmatex">\(2^n/2\)</span> pairs, and by the birthday bound the expected number of collisions among them is around one. This is a much weaker requirement than finding a preimage (which would take <span class="arithmatex">\(2^n\)</span> evaluations), and it’s why a 128-bit hash provides only 64-bit collision resistance.</p>
+<p>In practice, birthday attacks enable chosen-prefix collisions, which are more powerful than simple collisions. In a chosen-prefix collision, the attacker can pick <em>two different meaningful prefixes</em> <span class="arithmatex">\(P_1\)</span> and <span class="arithmatex">\(P_2\)</span>, then find suffixes <span class="arithmatex">\(S_1\)</span> and <span class="arithmatex">\(S_2\)</span> such that <span class="arithmatex">\(H(P_1 \| S_1) = H(P_2 \| S_2)\)</span>. This is what made the 2008 MD5 rogue CA certificate attack practical: the attacker built two certificate requests with different legitimacy but the same hash, causing the CA’s signature on the legitimate one to also validate the fraudulent one.</p>
+<div class="admonition example box-example kind-example">
+<p class="admonition-title">Example 4.1 (Birthday Attack on MD5)</p>
+<p>MD5 produces 128-bit output. A birthday attack requires approximately <span class="arithmatex">\(2^{64}\)</span> hash evaluations, which is feasible with modern GPU clusters. The 2008 Chosen-Prefix Collision Attack required only <span class="arithmatex">\(2^{49}\)</span> operations and was used to forge a rogue CA certificate.</p>
+<p><strong>SHAttered (2017):</strong> Google and CWI Amsterdam produced the first practical SHA-1 collision: two different PDF files with identical SHA-1 hash. The attack required <span class="arithmatex">\(2^{63.1}\)</span> SHA-1 compressions. SHA-1 is now completely deprecated.</p>
+</div>
+<h3 id="413-length-extension-attacks"><span class="secnum">4.1.3</span> Length Extension Attacks<a class="headerlink" href="#413-length-extension-attacks" title="Permanent link">&para;</a></h3>
+<div class="admonition warning box-attackbox kind-safety">
+<p class="admonition-title">Length Extension Attack on SHA-256</p>
+<p>For Merkle-Damgård hash functions (SHA-256, SHA-512):</p>
+<p>If <span class="arithmatex">\(H(m)\)</span> is known, an attacker can compute <span class="arithmatex">\(H(m \| \text{padding} \| m')\)</span> for any <span class="arithmatex">\(m'\)</span> without knowing <span class="arithmatex">\(m\)</span>.</p>
+<p><strong>Impact:</strong> APIs using <span class="arithmatex">\(\mathrm{HMAC} = H(k \| m)\)</span> are vulnerable: the attacker extends a forged message.</p>
+<p><strong>Real-world:</strong> Flickr API (2009), many web APIs using improper MAC construction.</p>
+<p><strong>Defense:</strong> Use HMAC (which wraps the key in two hash computations) or SHA-3.</p>
+</div>
+<p>The length extension attack exploits the fact that the Merkle-Damgård final hash state is exactly the input you’d need to continue hashing. If you see <span class="arithmatex">\(H(m)\)</span>, you know the internal state of the hash function after processing <span class="arithmatex">\(m\)</span> (plus padding), and you can resume hashing from there without knowing <span class="arithmatex">\(m\)</span>. This is why <span class="arithmatex">\(H(k \| m)\)</span> as a MAC is broken: the attacker computes <span class="arithmatex">\(H(k \| m \| \text{padding} \| m')\)</span> from just the hash output and their chosen <span class="arithmatex">\(m'\)</span>, without ever knowing <span class="arithmatex">\(k\)</span>. The attack is algebraically clean and requires zero cryptanalysis of the hash function itself.</p>
+<h2 id="sec-mac"><span class="secnum">4.2</span> Message Authentication Codes (MACs)<a class="headerlink" href="#sec-mac" title="Permanent link">&para;</a></h2>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 4.2 (MAC)</p>
+<p>A MAC scheme <span class="arithmatex">\((\mathsf{Gen}, \text{Mac}, \text{Vrfy})\)</span>:</p>
+<ul>
+<li>
+<p><span class="arithmatex">\(\mathsf{Gen}(1^\lambda) \to K\)</span>: generates key <span class="arithmatex">\(K\)</span></p>
+</li>
+<li>
+<p><span class="arithmatex">\(\text{Mac}(K, m) \to t\)</span>: produces tag <span class="arithmatex">\(t\)</span> for message <span class="arithmatex">\(m\)</span></p>
+</li>
+<li>
+<p><span class="arithmatex">\(\text{Vrfy}(K, m, t) \to \{0,1\}\)</span>: verifies tag</p>
+</li>
+</ul>
+<p>Security: existential unforgeability under chosen-message attack (EU-CMA).</p>
+</div>
+<p>A MAC is a keyed hash: only parties with the shared key can produce valid tags. Unlike a digital signature, MAC verification is symmetric — the same key creates and verifies the tag, so MACs can’t provide non-repudiation (either party could have created the tag). For communication between two parties sharing a symmetric key (like TLS session parties), MACs are the right tool; for proving to a third party who created a message, digital signatures are needed.</p>
+<h3 id="421-hmac"><span class="secnum">4.2.1</span> HMAC<a class="headerlink" href="#421-hmac" title="Permanent link">&para;</a></h3>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 4.3 (HMAC Construction (RFC 2104))</p>
+<div class="arithmatex">\[\mathrm{HMAC}(K, m) = H\bigl((K' \oplus \texttt{opad}) \| H((K' \oplus \texttt{ipad}) \| m)\bigr)\]</div>
+<p>where <span class="arithmatex">\(K'\)</span> is <span class="arithmatex">\(K\)</span> padded to block size, <span class="arithmatex">\(\texttt{opad} = \texttt{0x5c...5c}\)</span>, <span class="arithmatex">\(\texttt{ipad} = \texttt{0x36...36}\)</span>.</p>
+</div>
+<p>HMAC-SHA256 is PRF-secure under the assumption that the underlying compression function is a PRF. It’s immune to length-extension attacks.</p>
+<p>The double-hash structure is specifically what kills length extension. The inner hash <span class="arithmatex">\(H(\text{ipad} \| K \| m)\)</span> produces an intermediate value that an attacker can’t extend from, because to compute <span class="arithmatex">\(H(\text{opad} \| K \| \cdot)\)</span> they’d need to know <span class="arithmatex">\(K\)</span>. Even if the inner hash had a length-extension vulnerability, the outer hash prevents it from being exploited. The ipad and opad constants aren’t arbitrary: they ensure the inner and outer keys are different (XOR difference is <span class="arithmatex">\(\texttt{0x6a...6a}\)</span>), so an attacker can’t correlate the two hash evaluations.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">hmac</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">hashlib</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+
+<span class="n">key</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">urandom</span><span class="p">(</span><span class="mi">32</span><span class="p">)</span>      <span class="c1"># 256-bit key</span>
+<span class="n">message</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">"Authenticated message"</span>
+
+<span class="n">tag</span> <span class="o">=</span> <span class="n">hmac</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">)</span><span class="o">.</span><span class="n">digest</span><span class="p">()</span>  <span class="c1"># 32-byte tag</span>
+
+<span class="c1"># Verify (constant-time comparison to prevent timing oracle)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">verify_mac</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">tag</span><span class="p">):</span>
+    <span class="n">expected</span> <span class="o">=</span> <span class="n">hmac</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">)</span><span class="o">.</span><span class="n">digest</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">hmac</span><span class="o">.</span><span class="n">compare_digest</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">tag</span><span class="p">)</span>  <span class="c1"># Constant-time</span>
+
+<span class="k">assert</span> <span class="n">verify_mac</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">tag</span><span class="p">)</span>
+</code></pre></div>
+<div class="admonition warning box-warningbox kind-safety">
+<p class="admonition-title">Timing Oracle Attack on MAC Verification</p>
+<p>A non-constant-time comparison (e.g., Python <code>==</code> or C <code>strcmp</code>) leaks the position of the first byte mismatch. An attacker can forge a valid MAC byte-by-byte with <span class="arithmatex">\(O(256n)\)</span> queries (where <span class="arithmatex">\(n\)</span> is MAC length in bytes). <strong>Always use</strong> <code>hmac.compare_digest()</code> or equivalent constant-time comparison.</p>
+</div>
+<p>The timing oracle attack on MAC verification is a subtle but real threat. A <code>strcmp</code>-style comparison returns immediately when it finds the first mismatching byte, so a comparison that takes slightly longer has more matching leading bytes. With enough measurements (to average out network jitter and clock noise), an attacker can determine the correct MAC one byte at a time: try all 256 values for byte 0, pick the one that takes longest, move to byte 1, and repeat. This is practical against local services with low timing noise. <code>hmac.compare_digest()</code> compares all bytes regardless of where the first mismatch is, returning in constant time.</p>
+<h3 id="422-cmac-cipher-based-mac"><span class="secnum">4.2.2</span> CMAC (Cipher-Based MAC)<a class="headerlink" href="#422-cmac-cipher-based-mac" title="Permanent link">&para;</a></h3>
+<p>CMAC (NIST SP 800-38B) uses AES as a block cipher MAC:</p>
+<ul>
+<li>
+<p>Process message blocks through CBC-like mode with XOR tweaks <span class="arithmatex">\(L\)</span>, <span class="arithmatex">\(2L\)</span></p>
+</li>
+<li>
+<p>Sub-key generation: <span class="arithmatex">\(L = E_K(0^n)\)</span>; <span class="arithmatex">\(K_1 = 2L\)</span>; <span class="arithmatex">\(K_2 = 4L\)</span> (in <span class="arithmatex">\(\mathbb{F}_{2^n}\)</span>)</p>
+</li>
+<li>
+<p>Tag = final CBC-MAC block XORed with appropriate sub-key</p>
+</li>
+<li>
+<p>Used in: IPsec (RFC 4493), S/MIME, NIST protocols</p>
+</li>
+</ul>
+<h3 id="423-poly1305"><span class="secnum">4.2.3</span> Poly1305<a class="headerlink" href="#423-poly1305" title="Permanent link">&para;</a></h3>
+<p>Polynomial MAC used with ChaCha20:</p>
+<div class="arithmatex">\[\text{Poly1305}(r, s, m) = \left(\sum_{i=1}^{\lceil |m|/16 \rceil} m_i \cdot r^i + s\right) \bmod (2^{130} - 5)\]</div>
+<p>Properties: <span class="arithmatex">\(r, s\)</span> are 128-bit one-time keys; <span class="arithmatex">\(r\)</span> is clamped to reduce bias; <span class="arithmatex">\(2^{130}-5\)</span> is a pseudo-Mersenne prime for efficient arithmetic. Provided as ChaCha20-Poly1305 in TLS 1.3 (RFC 8439).</p>
+<p>Poly1305 is a one-time MAC: the key pair <span class="arithmatex">\((r, s)\)</span> must never be reused. In ChaCha20-Poly1305, the MAC key is derived from the ChaCha20 keystream so it’s automatically fresh with each nonce; this is why nonce reuse in ChaCha20-Poly1305 is catastrophic — it not only reuses the encryption keystream, it also reuses the MAC key, breaking authentication as well. The pseudo-Mersenne prime <span class="arithmatex">\(2^{130} - 5\)</span> enables fast reduction on 64-bit hardware by exploiting the structure of the modulus in ways that a random prime wouldn’t support.</p>
+<h2 id="sec-kdf"><span class="secnum">4.3</span> Key Derivation Functions (KDFs)<a class="headerlink" href="#sec-kdf" title="Permanent link">&para;</a></h2>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 4.4 (Key Derivation Function)</p>
+<p>A KDF derives one or more cryptographic keys from a source of keying material (IKM) and optional context/salt:</p>
+<div class="arithmatex">\[\text{KDF}(\text{IKM}, \text{salt}, \text{info}) \to (K_1, K_2, …)\]</div>
+</div>
+<p>KDFs serve a purpose distinct from hash functions: they turn potentially weak or structured keying material into strong, uniformly distributed keys. A Diffie-Hellman shared secret, for example, is a group element with algebraic structure — it’s not simply random bits. Passing it through HKDF removes the structure and produces output indistinguishable from random, regardless of the DH group’s specific structure. Similarly, a user’s password has low entropy and predictable patterns; a password-based KDF adds a work factor to slow brute-force attacks before producing the actual encryption key.</p>
+<h3 id="431-hkdf-rfc-5869"><span class="secnum">4.3.1</span> HKDF (RFC 5869)<a class="headerlink" href="#431-hkdf-rfc-5869" title="Permanent link">&para;</a></h3>
+<p>Two-phase construction:</p>
+<ol>
+<li>
+<p><strong>Extract:</strong> <span class="arithmatex">\(\text{PRK} = \mathrm{HMAC}(\text{salt}, \text{IKM})\)</span> — concentrate entropy</p>
+</li>
+<li>
+<p><strong>Expand:</strong> <span class="arithmatex">\(K_i = \mathrm{HMAC}(\text{PRK}, K_{i-1} \| \text{info} \| i)\)</span> — expand to needed length</p>
+</li>
+</ol>
+<p>HKDF is used in TLS 1.3’s key schedule, the Signal protocol, and WhatsApp E2EE.</p>
+<p>The Extract-then-Expand structure handles two different problems separately. Extract takes potentially non-uniform input (a DH output, a password hash, a hardware random value) and produces a uniformly distributed pseudo-random key (PRK) of fixed size. Expand then stretches that PRK into however many key bytes the protocol needs, binding different keys to different <code>info</code> strings so the encryption key, the MAC key, and the IV are all cryptographically independent even though they came from the same PRK. Using the same <code>info</code> string for two different keys would be a subtle but serious mistake — they’d be derived identically.</p>
+<h3 id="432-password-based-kdfs"><span class="secnum">4.3.2</span> Password-Based KDFs<a class="headerlink" href="#432-password-based-kdfs" title="Permanent link">&para;</a></h3>
+<p>Password-based KDFs intentionally incorporate significant computational cost (work factor) to slow brute-force attacks:</p>
+<div class="center">
+<div class="tbl">
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">KDF</th>
+<th style="text-align: left;">Algorithm</th>
+<th style="text-align: left;">Memory</th>
+<th style="text-align: left;">Parallelism</th>
+<th style="text-align: left;">Use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">PBKDF2</td>
+<td style="text-align: left;">HMAC-SHA</td>
+<td style="text-align: left;">Low</td>
+<td style="text-align: left;">No</td>
+<td style="text-align: left;">Legacy; TLS 1.2 PRF</td>
+</tr>
+<tr>
+<td style="text-align: left;">bcrypt</td>
+<td style="text-align: left;">Blowfish</td>
+<td style="text-align: left;">Fixed 4KB</td>
+<td style="text-align: left;">No</td>
+<td style="text-align: left;">Unix passwords</td>
+</tr>
+<tr>
+<td style="text-align: left;">scrypt</td>
+<td style="text-align: left;">SHA + block mix</td>
+<td style="text-align: left;">High (tunable)</td>
+<td style="text-align: left;">No</td>
+<td style="text-align: left;">Password hashing</td>
+</tr>
+<tr>
+<td style="text-align: left;">Argon2id</td>
+<td style="text-align: left;">Blake2</td>
+<td style="text-align: left;">High (tunable)</td>
+<td style="text-align: left;">Yes</td>
+<td style="text-align: left;">NIST recommended</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>The memory-hard requirement in scrypt and Argon2 is specifically designed to defeat GPU and ASIC attacks. A modern GPU can hash billions of PBKDF2-SHA256 iterations per second, because each hash computation is independent and fits entirely in a GPU core’s registers and cache. Memory-hard functions require gigabytes of memory access with sequential read-write patterns that can’t be trivially parallelized across thousands of GPU cores — GPU memory bandwidth becomes the bottleneck, not arithmetic throughput. This levels the playing field between attackers with specialized hardware and defenders using commodity server hardware.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">argon2</span><span class="w"> </span><span class="kn">import</span> <span class="n">PasswordHasher</span>
+
+<span class="n">ph</span> <span class="o">=</span> <span class="n">PasswordHasher</span><span class="p">(</span>
+    <span class="n">time_cost</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>        <span class="c1"># Number of iterations</span>
+    <span class="n">memory_cost</span><span class="o">=</span><span class="mi">65536</span><span class="p">,</span>  <span class="c1"># 64 MB memory</span>
+    <span class="n">parallelism</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>      <span class="c1"># Parallel threads</span>
+    <span class="n">hash_len</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span>        <span class="c1"># Output length</span>
+    <span class="n">salt_len</span><span class="o">=</span><span class="mi">16</span>         <span class="c1"># Salt length</span>
+<span class="p">)</span>
+
+<span class="c1"># Hash password (includes random salt automatically)</span>
+<span class="n">password</span> <span class="o">=</span> <span class="s2">"correct-horse-battery-staple"</span>
+<span class="n">hash_value</span> <span class="o">=</span> <span class="n">ph</span><span class="o">.</span><span class="n">hash</span><span class="p">(</span><span class="n">password</span><span class="p">)</span>
+<span class="c1"># e.g.: $argon2id$v=19$m=65536,t=3,p=4$...</span>
+
+<span class="c1"># Verify (raises VerifyMismatchError on failure)</span>
+<span class="n">ph</span><span class="o">.</span><span class="n">verify</span><span class="p">(</span><span class="n">hash_value</span><span class="p">,</span> <span class="n">password</span><span class="p">)</span>  <span class="c1"># True</span>
+
+<span class="c1"># Check if rehash needed (parameters changed)</span>
+<span class="k">if</span> <span class="n">ph</span><span class="o">.</span><span class="n">check_needs_rehash</span><span class="p">(</span><span class="n">hash_value</span><span class="p">):</span>
+    <span class="n">hash_value</span> <span class="o">=</span> <span class="n">ph</span><span class="o">.</span><span class="n">hash</span><span class="p">(</span><span class="n">password</span><span class="p">)</span>  <span class="c1"># Re-hash with updated parameters</span>
+</code></pre></div>
+<div class="admonition info box-keybox kind-concept">
+<p class="admonition-title">Password Storage Best Practices</p>
+<ul>
+<li>
+<p>Use Argon2id (NIST SP 800-63B recommends) with <span class="arithmatex">\(\geq 64\)</span>MB memory</p>
+</li>
+<li>
+<p>Never store plaintext passwords; never use MD5 or SHA alone</p>
+</li>
+<li>
+<p>Always use random salt (<span class="arithmatex">\(\geq 16\)</span> bytes, unique per password)</p>
+</li>
+<li>
+<p>Server-side secret key (pepper): <span class="arithmatex">\(H(\text{pepper} \| \text{hash})\)</span> — protects against DB leak</p>
+</li>
+<li>
+<p>Have I Been Pwned API: check new passwords against known breach lists</p>
+</li>
+</ul>
+</div>
+<p>Salting is non-negotiable for password hashing. Without a unique salt per password, an attacker who obtains the password database can precompute hashes for all common passwords once (a rainbow table), then look up every hash in the table simultaneously — attacking millions of accounts at the cost of one computation. With a unique random salt, precomputation doesn’t work: the attacker must hash each candidate password combined with each user’s salt separately, making the attack scale linearly with the number of users. The salt doesn’t need to be secret; it just needs to be unique.</p>
+<h2 id="44-commitment-schemes"><span class="secnum">4.4</span> Commitment Schemes<a class="headerlink" href="#44-commitment-schemes" title="Permanent link">&para;</a></h2>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 4.5 (Commitment Scheme)</p>
+<p>A commitment scheme lets a prover <em>commit</em> to a value without revealing it, then <em>open</em> the commitment later:</p>
+<ul>
+<li>
+<p><span class="arithmatex">\(\text{Commit}(m; r) \to c\)</span>: binding (cannot open to different value) and hiding (no info revealed)</p>
+</li>
+<li>
+<p><span class="arithmatex">\(\text{Open}(c, m, r)\)</span>: verifier checks <span class="arithmatex">\(c = \text{Commit}(m; r)\)</span></p>
+</li>
+</ul>
+<p>Simple hash commitment: <span class="arithmatex">\(c = H(r \| m)\)</span> where <span class="arithmatex">\(r\)</span> is a random 256-bit nonce. Hiding follows from <span class="arithmatex">\(H\)</span>’s output revealing nothing about <span class="arithmatex">\(m\)</span>; binding follows from <span class="arithmatex">\(H\)</span>’s collision resistance.</p>
+</div>
+<p>The random nonce <span class="arithmatex">\(r\)</span> is what makes the commitment hiding. Without <span class="arithmatex">\(r\)</span>, an attacker could brute-force small message spaces: if the committed message is a price from &#36;1 to &#36;100, they just hash all 100 values and compare. With a 256-bit random nonce, the effective message space is <span class="arithmatex">\(2^{256}\)</span> regardless of how small <span class="arithmatex">\(m\)</span> is. This is why hash commitments always include randomness — they’re not just hashing the message, they’re hashing the message with a randomly chosen blinding factor.</p>
+<p>Commitment schemes underlie auction protocols, coin flipping, zero-knowledge proofs, and blockchain applications.</p>
+<h2 id="exercises">Exercises<a class="headerlink" href="#exercises" title="Permanent link">&para;</a></h2>
+<div class="admonition example box-exercise kind-example">
+<p class="admonition-title">Exercise 4.1</p>
+<p>Compute SHA-256 of the empty string and of <code>&quot;abc&quot;</code> using Python. Verify against NIST test vectors.</p>
+</div>
+<div class="admonition example box-exercise kind-example">
+<p class="admonition-title">Exercise 4.2</p>
+<p>Implement a length-extension attack against <span class="arithmatex">\(H(K \| m)\)</span> where <span class="arithmatex">\(H\)</span> is SHA-256. Given the hash of <code>K || &quot;original&quot;</code> (assume <span class="arithmatex">\(|K| = 32\)</span> bytes), compute the hash of <code>K || &quot;original&quot; || padding || &quot;appended&quot;</code> without knowing <span class="arithmatex">\(K\)</span>.</p>
+</div>
+<div class="admonition example box-exercise kind-example">
+<p class="admonition-title">Exercise 4.3</p>
+<p>Prove that HMAC is secure assuming the underlying hash function’s compression function is a PRF. Why does the double application of the hash prevent length extension?</p>
+</div>
+<div class="admonition example box-exercise kind-example">
+<p class="admonition-title">Exercise 4.4</p>
+<p>A web application stores passwords as <span class="arithmatex">\(\text{SHA-256}(\text{password})\)</span> without salt. Explain: (a) why this is vulnerable to precomputation (rainbow tables), (b) why the lack of salt enables multi-target attacks, (c) how Argon2id with unique salt addresses both issues.</p>
+</div>
+<div class="admonition example box-exercise kind-example">
+<p class="admonition-title">Exercise 4.5</p>
+<p>Design a secure commit-reveal protocol for a two-party coin flip over the internet using hash commitments. Prove it is fair (neither party can bias the result after seeing the other’s commitment).</p>
+</div>
+<div class="admonition example box-exercise kind-example">
+<p class="admonition-title">Exercise 4.6 (Argon2 Tuning)</p>
+<p>You must select Argon2id parameters for a web login system. Your goals: (a) at most 500ms authentication time on server hardware, (b) resist GPU-based offline attack requiring <span class="arithmatex">\(&gt; 2^{50}\)</span> hash attempts. Discuss how you would tune time_cost, memory_cost, and parallelism.</p>
+</div>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button type="button" class="md-top md-icon" data-md-component="top" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+Back to top
+</button>
+</main>
+<footer class="md-footer">
+<nav class="md-footer__inner md-grid" aria-label="Footer" >
+<a href="ch03-public-key-cryptography.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: 3. Public-Key Cryptography">
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</div>
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Previous
+</span>
+<div class="md-ellipsis">
+3. Public-Key Cryptography
+</div>
+</div>
+</a>
+<a href="ch05-key-management-and-public-key-infrastructure.html" class="md-footer__link md-footer__link--next" aria-label="Next: 5. Key Management and Public Key Infrastructure">
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Next
+</span>
+<div class="md-ellipsis">
+5. Key Management and Public Key Infrastructure
+</div>
+</div>
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+</div>
+</a>
+</nav>
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+The Open Book Project &middot;
+<a href="../../about.html">About this library</a> &middot;
+<a href="../../publish.html">Publish your book</a> &middot;
+© The authors of the books
+</div>
+Made with
+<a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+Material for MkDocs
+</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "navigation.prune", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "toc.follow", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+<script src="../../assets/mathjax.js"></script>
+<script src="../../assets/viz.js"></script>
+<script src="../../assets/remote.js"></script>
+<script src="../../assets/scans.js"></script>
+<script src="../../assets/reader.js"></script>
+<script src="../../assets/app.js"></script>
+<script src="../../assets/slides.js"></script>
+<script src="../../assets/speak.js"></script>
+<script src="../../assets/quiz.js"></script>
+<script>
+    /* offline reading: the service worker at the site root (its scope is the whole site) */
+    if ("serviceWorker" in navigator && window.isSecureContext) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register(new URL("../../sw.js", location.href).href).catch(function () {});
+      });
+    }
+  </script>
+</body>
+</html>

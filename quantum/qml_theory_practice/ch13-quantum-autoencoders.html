@@ -1,0 +1,1023 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="description" content="The Open Book Project: books on computer science, quantum computing, cyber security, science, the social sciences, university courses and languages, read page by page like an e-book, online or offline.">
+<meta name="author" content="The Open Book Project">
+<link rel="canonical" href="https://open-book-project.github.io/quantum/qml_theory_practice/ch13-quantum-autoencoders.html">
+<link rel="prev" href="ch12-quantum-recurrent-networks-and-qlstm.html">
+<link rel="next" href="ch14-quantum-generative-models.html">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap"></noscript>
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Open Book">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="application-name" content="Open Book"><script src="../../assets/library-data.js"></script><script>
+    (function () {
+      var X = window.XMLHttpRequest, open, gate = new Promise(function (r) { open = r; });
+      if (!X) return;
+      var open0 = X.prototype.open, send0 = X.prototype.send;
+      X.prototype.open = function (method, url) {
+        this.__pkIndex = /\/search\/search_index\.json(\?|#|$)/.test(String(url));
+        return open0.apply(this, arguments);
+      };
+      X.prototype.send = function () {
+        if (!this.__pkIndex) return send0.apply(this, arguments);
+        var xhr = this, args = arguments;
+        gate.then(function () { send0.apply(xhr, args); });
+      };
+      function wake() { open(); }
+      document.addEventListener("focusin", function (e) { if (e.target && e.target.closest && e.target.closest(".md-search")) wake(); });
+      document.addEventListener("click", function (e) { if (e.target && e.target.closest && e.target.closest('label[for="__search"], .md-search')) wake(); }, true);
+      document.addEventListener("keydown", function (e) {
+        var k = e.key;
+        if ((k === "/" || k === "s" || k === "f" || k === "S" || k === "F") && !(e.target && e.target.closest && e.target.closest("input, textarea, [contenteditable]"))) wake();
+      }, true);
+      if (/[?&]q=/.test(location.search)) wake();
+    })();
+  </script><script>
+    try {
+      if ((window.matchMedia && (matchMedia("(display-mode: standalone)").matches || matchMedia("(display-mode: fullscreen)").matches)) || navigator.standalone === true) {
+        document.documentElement.className += " bjp-standalone";
+      }
+    } catch (e) { /* not an installed app */ }
+    /* the books of a subject or of the whole library as covers or as a list (assets/app.js): the reader's choice */
+    try {
+      var bv = localStorage.getItem("bjp.view");
+      if (bv === "list" || (bv !== "grid" && /\/books\.html$/.test(location.pathname))) document.documentElement.className += " bjp-view-list";
+    } catch (e) { /* no storage: covers */ }
+  </script>
+<script>
+    /* a book opened from its cover on the shelf: the page stays blank, in the cover's colour, until the reader is up */
+    try {
+      var cv = sessionStorage.getItem("bjp.reader.cover");
+      if (cv && sessionStorage.getItem("bjp.reader.open") === "1") {
+        var c = JSON.parse(cv), de = document.documentElement;
+        de.className += " bjp-booting";
+        if (c && /^#[0-9a-f]{3,8}$/i.test(c.bg || "")) de.style.background = c.bg;
+        setTimeout(function () { de.classList.remove("bjp-booting"); de.style.background = ""; }, 3000);
+      }
+    } catch (e) { /* no session storage: the page simply opens as usual */ }
+  </script>
+<title>13. Quantum Autoencoders - The Open Book Project</title>
+<link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+<link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+<link rel="stylesheet" href="../../assets/extra.css">
+<link rel="stylesheet" href="../../assets/reader.css">
+<link rel="stylesheet" href="../../assets/viz.css">
+<link rel="stylesheet" href="../../assets/app.css">
+<link rel="stylesheet" href="../../assets/theme.css">
+<link rel="stylesheet" href="../../assets/slides.css">
+<link rel="stylesheet" href="../../assets/remote.css">
+<link rel="stylesheet" href="../../assets/scans.css">
+<link rel="stylesheet" href="../../assets/speak.css">
+<link rel="stylesheet" href="../../assets/quiz.css">
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+<input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+<input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a href="#sec-classical_ae" class="md-skip">
+Skip to content
+</a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav class="md-header__inner md-grid" aria-label="Header">
+<a href="../../index.html" title="The Open Book Project" class="md-header__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+The Open Book Project
+</span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+13. Quantum Autoencoders
+</span>
+</div>
+</div>
+</div><a href="../../index.html" class="bjp-libbtn" aria-label="Library: all books" title="Library: all books">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V5h4v15M8 20V9h4v11M14 20L12.6 6l3.8-.8 3 14.2M3 20h18"/></svg><span>Library</span>
+</a>
+<a href="../../subjects/index.html" class="pk-catbtn" aria-haspopup="true" aria-expanded="false" title="Browse the books by category">
+<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><circle cx="17" cy="7" r="3.6"/><path d="M7 13.4l3.9 6.8H3.1z"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg><span>Categories</span>
+</a>
+<form class="md-header__option" data-md-component="palette">
+<input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+<label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+</label>
+<input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+<label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+<label class="md-search__icon md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</label>
+<nav class="md-search__options" aria-label="Search">
+<button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+Initializing search
+</div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--primary bjp-nav bjp-nav--book" aria-label="Navigation" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a href="../../index.html" title="The Open Book Project" class="md-nav__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+The Open Book Project
+</label>
+<ul class="md-nav__list" data-md-scrollfix>
+<li class="md-nav__item bjp-nav-all">
+<a href="../../index.html" class="md-nav__link" aria-label="All books: back to the library">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+<span class="md-ellipsis">All books</span>
+</a>
+</li>
+<li class="md-nav__item bjp-nav-book" role="presentation"><span class="bjp-nav-head">Quantum Machine Learning</span></li>
+<li class="md-nav__item">
+<a href="index.html" class="md-nav__link">
+<span class="md-ellipsis">
+Overview and preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="notation-and-conventions.html" class="md-nav__link">
+<span class="md-ellipsis">
+Notation and Conventions
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="abbreviations-and-acronyms.html" class="md-nav__link">
+<span class="md-ellipsis">
+Abbreviations and Acronyms
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch01-mathematical-prerequisites-for-qml.html" class="md-nav__link">
+<span class="md-ellipsis">
+1. Mathematical Prerequisites for QML
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch02-quantum-computing-essentials.html" class="md-nav__link">
+<span class="md-ellipsis">
+2. Quantum Computing Essentials
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch03-quantum-information-theory-for-machine-learning.html" class="md-nav__link">
+<span class="md-ellipsis">
+3. Quantum Information Theory for Machine Learning
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch04-machine-learning-foundations.html" class="md-nav__link">
+<span class="md-ellipsis">
+4. Machine Learning Foundations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch05-advanced-classical-machine-learning.html" class="md-nav__link">
+<span class="md-ellipsis">
+5. Advanced Classical Machine Learning
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch06-variational-quantum-circuits.html" class="md-nav__link">
+<span class="md-ellipsis">
+6. Variational Quantum Circuits
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch07-quantum-feature-maps-and-data-encoding.html" class="md-nav__link">
+<span class="md-ellipsis">
+7. Quantum Feature Maps and Data Encoding
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch08-quantum-kernel-methods.html" class="md-nav__link">
+<span class="md-ellipsis">
+8. Quantum Kernel Methods
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch09-quantum-support-vector-machines.html" class="md-nav__link">
+<span class="md-ellipsis">
+9. Quantum Support Vector Machines
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch10-quantum-neural-networks.html" class="md-nav__link">
+<span class="md-ellipsis">
+10. Quantum Neural Networks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch11-quantum-convolutional-neural-networks.html" class="md-nav__link">
+<span class="md-ellipsis">
+11. Quantum Convolutional Neural Networks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch12-quantum-recurrent-networks-and-qlstm.html" class="md-nav__link">
+<span class="md-ellipsis">
+12. Quantum Recurrent Networks and QLSTM
+</span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+13. Quantum Autoencoders
+</span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a href="ch13-quantum-autoencoders.html" class="md-nav__link md-nav__link--active">
+<span class="md-ellipsis">
+13. Quantum Autoencoders
+</span>
+</a>
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#sec-classical_ae" class="md-nav__link">
+<span class="md-ellipsis">
+13.1 Classical Autoencoders: A Brief Review
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-qae_architecture" class="md-nav__link">
+<span class="md-ellipsis">
+13.2 Quantum Autoencoder Architecture
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-qae_training" class="md-nav__link">
+<span class="md-ellipsis">
+13.3 Training Objectives
+</span>
+</a>
+<nav class="md-nav" aria-label="13.3 Training Objectives">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1331-fidelity-based-loss" class="md-nav__link">
+<span class="md-ellipsis">
+13.3.1 Fidelity-Based Loss
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1332-swap-test-fidelity" class="md-nav__link">
+<span class="md-ellipsis">
+13.3.2 SWAP-Test Fidelity
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1333-hilbertschmidt-inner-product-mixed-states" class="md-nav__link">
+<span class="md-ellipsis">
+13.3.3 Hilbert–Schmidt Inner Product (Mixed States)
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-qae_ansatz" class="md-nav__link">
+<span class="md-ellipsis">
+13.4 Encoder Ansatz Design
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-qae_denoising" class="md-nav__link">
+<span class="md-ellipsis">
+13.5 Quantum State Denoising
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-qae_anomaly" class="md-nav__link">
+<span class="md-ellipsis">
+13.6 Anomaly Detection with QAE
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-qae_implementation" class="md-nav__link">
+<span class="md-ellipsis">
+13.7 Implementation
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-qae_limits" class="md-nav__link">
+<span class="md-ellipsis">
+13.8 Information-Theoretic Limits
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#139-chapter-summary" class="md-nav__link">
+<span class="md-ellipsis">
+13.9 Chapter Summary
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="ch14-quantum-generative-models.html" class="md-nav__link">
+<span class="md-ellipsis">
+14. Quantum Generative Models
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch15-optimization-and-training-of-quantum-models.html" class="md-nav__link">
+<span class="md-ellipsis">
+15. Optimization and Training of Quantum Models
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch16-barren-plateaus-and-trainability-of-quantum.html" class="md-nav__link">
+<span class="md-ellipsis">
+16. Barren Plateaus and Trainability of Quantum Models
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch17-nisq-hardware-platforms.html" class="md-nav__link">
+<span class="md-ellipsis">
+17. NISQ Hardware Platforms
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch18-quantum-error-mitigation.html" class="md-nav__link">
+<span class="md-ellipsis">
+18. Quantum Error Mitigation
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch19-qml-for-quantum-chemistry-and-molecular.html" class="md-nav__link">
+<span class="md-ellipsis">
+19. QML for Quantum Chemistry and Molecular Simulation
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch20-qml-in-finance-and-optimization.html" class="md-nav__link">
+<span class="md-ellipsis">
+20. QML in Finance and Optimization
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch21-qml-in-healthcare-and-drug-discovery.html" class="md-nav__link">
+<span class="md-ellipsis">
+21. QML in Healthcare and Drug Discovery
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch22-qml-for-nlp-and-computer-vision.html" class="md-nav__link">
+<span class="md-ellipsis">
+22. QML for NLP and Computer Vision
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch23-quantum-advantage-theory-and-benchmarking.html" class="md-nav__link">
+<span class="md-ellipsis">
+23. Quantum Advantage Theory and Benchmarking
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch24-frontiers-and-future-directions-in-qml.html" class="md-nav__link">
+<span class="md-ellipsis">
+24. Frontiers and Future Directions in QML
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="python-environment-setup.html" class="md-nav__link">
+<span class="md-ellipsis">
+Python Environment Setup
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="pennylane-quick-reference.html" class="md-nav__link">
+<span class="md-ellipsis">
+PennyLane Quick Reference
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="qiskit-quick-reference.html" class="md-nav__link">
+<span class="md-ellipsis">
+Qiskit Quick Reference
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="mathematical-reference-tables.html" class="md-nav__link">
+<span class="md-ellipsis">
+Mathematical Reference Tables
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="quantum-gate-reference.html" class="md-nav__link">
+<span class="md-ellipsis">
+Quantum Gate Reference
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="benchmark-datasets-for-qml.html" class="md-nav__link">
+<span class="md-ellipsis">
+Benchmark Datasets for QML
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="selected-exercise-solutions.html" class="md-nav__link">
+<span class="md-ellipsis">
+Selected Exercise Solutions
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="bibliography.html" class="md-nav__link">
+<span class="md-ellipsis">
+References
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#sec-classical_ae" class="md-nav__link">
+<span class="md-ellipsis">
+13.1 Classical Autoencoders: A Brief Review
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-qae_architecture" class="md-nav__link">
+<span class="md-ellipsis">
+13.2 Quantum Autoencoder Architecture
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-qae_training" class="md-nav__link">
+<span class="md-ellipsis">
+13.3 Training Objectives
+</span>
+</a>
+<nav class="md-nav" aria-label="13.3 Training Objectives">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1331-fidelity-based-loss" class="md-nav__link">
+<span class="md-ellipsis">
+13.3.1 Fidelity-Based Loss
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1332-swap-test-fidelity" class="md-nav__link">
+<span class="md-ellipsis">
+13.3.2 SWAP-Test Fidelity
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1333-hilbertschmidt-inner-product-mixed-states" class="md-nav__link">
+<span class="md-ellipsis">
+13.3.3 Hilbert–Schmidt Inner Product (Mixed States)
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-qae_ansatz" class="md-nav__link">
+<span class="md-ellipsis">
+13.4 Encoder Ansatz Design
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-qae_denoising" class="md-nav__link">
+<span class="md-ellipsis">
+13.5 Quantum State Denoising
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-qae_anomaly" class="md-nav__link">
+<span class="md-ellipsis">
+13.6 Anomaly Detection with QAE
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-qae_implementation" class="md-nav__link">
+<span class="md-ellipsis">
+13.7 Implementation
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-qae_limits" class="md-nav__link">
+<span class="md-ellipsis">
+13.8 Information-Theoretic Limits
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#139-chapter-summary" class="md-nav__link">
+<span class="md-ellipsis">
+13.9 Chapter Summary
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="ch-qae">Chapter 13: Quantum Autoencoders<a class="headerlink" href="#ch-qae" title="Permanent link">&para;</a></h1>
+<div class="admonition info box-bxkey kind-concept">
+<p><em>Autoencoders learn compact representations of data by compressing it through a bottleneck and reconstructing the original. Quantum autoencoders (QAEs) generalize this to quantum states: a parameterized quantum circuit compresses an <span class="arithmatex">\(n\)</span>-qubit state into <span class="arithmatex">\(k &lt; n\)</span> qubits (latent space), discarding the rest, and a decoder recovers the original state. Applications span quantum state compression, noise filtering, anomaly detection, and quantum memory.</em></p>
+</div>
+<div class="admonition tip box-learningobjectives kind-teaching">
+<p class="admonition-title">Learning Objectives</p>
+<p>By the end of this chapter, you will be able to:</p>
+<ul>
+<li>
+<p>Explain the quantum autoencoder architecture of Romero et al. (2017)</p>
+</li>
+<li>
+<p>Derive the SWAP-test and Hilbert–Schmidt inner product training objectives</p>
+</li>
+<li>
+<p>Implement a QAE in PennyLane for pure-state compression</p>
+</li>
+<li>
+<p>Apply QAEs to denoising and anomaly detection on quantum states</p>
+</li>
+<li>
+<p>Analyse the information-theoretic limits of quantum data compression</p>
+</li>
+</ul>
+</div>
+<h2 id="sec-classical_ae"><span class="secnum">13.1</span> Classical Autoencoders: A Brief Review<a class="headerlink" href="#sec-classical_ae" title="Permanent link">&para;</a></h2>
+<p>A classical autoencoder comprises an encoder <span class="arithmatex">\(f_\phi:\mathbb{R}^n\to\mathbb{R}^k\)</span> and a decoder <span class="arithmatex">\(g_\psi:\mathbb{R}^k\to\mathbb{R}^n\)</span> (<span class="arithmatex">\(k &lt; n\)</span>), trained to minimise the reconstruction loss:</p>
+<div id="eq-ae_loss"></div>
+<div class="arithmatex">\[\mathcal{L}_{\text{AE}} = \mathbb{E}_x\bigl[\|x - g_\psi(f_\phi(x))\|^2\bigr]\tag{13.1}\]</div>
+<p>The bottleneck forces the network to learn a low-dimensional latent representation <span class="arithmatex">\(z = f_\phi(x)\in\mathbb{R}^k\)</span> capturing the essential structure of the data distribution.</p>
+<p><strong>Variational autoencoders</strong> (VAEs) extend this by learning a latent distribution <span class="arithmatex">\(q_\phi(z|x)\approx p(z|x)\)</span>, enabling generative sampling. Quantum analogues of both exist; this chapter focuses on the compression/ denoising variant.</p>
+<h2 id="sec-qae_architecture"><span class="secnum">13.2</span> Quantum Autoencoder Architecture<a class="headerlink" href="#sec-qae_architecture" title="Permanent link">&para;</a></h2>
+<div class="admonition info box-definitionbox kind-concept">
+<p class="admonition-title">Definition: Quantum Autoencoder (Romero et al., 2017)</p>
+<p>A <strong>quantum autoencoder</strong> (QAE) for <span class="arithmatex">\(n\)</span>-qubit input states consists of:</p>
+<ol>
+<li>
+<p><strong>Encoder</strong>: parameterized unitary <span class="arithmatex">\(U(\boldsymbol{\theta})\)</span> acting on <span class="arithmatex">\(n\)</span> qubits.</p>
+</li>
+<li>
+<p><strong>Latent space</strong>: <span class="arithmatex">\(k\)</span> qubits retained (the “latent” register).</p>
+</li>
+<li>
+<p><strong>Trash register</strong>: <span class="arithmatex">\(n-k\)</span> qubits discarded (traced out).</p>
+</li>
+<li>
+<p><strong>Decoder</strong>: <span class="arithmatex">\(U^\dagger(\boldsymbol{\theta})\)</span> – the inverse encoder acting on latent + <span class="arithmatex">\(n-k\)</span> reference qubits.</p>
+</li>
+</ol>
+</div>
+<p>The key insight of Romero et al. (<a href="bibliography.html#ref-Romero2017QAE">Romero et al. 2017</a>): the decoder need not be separately parameterized – it is simply the conjugate transpose of the encoder <span class="arithmatex">\(U^\dagger\)</span>. This makes the QAE symmetric.</p>
+<p><strong>Architecture diagram</strong> (for <span class="arithmatex">\(n=3\)</span>, <span class="arithmatex">\(k=1\)</span>):</p>
+<div class="center">
+<div class="center">
+<p><img class="tikz" src="img/tikz-9b0c9c282081.svg" alt="image" loading="lazy" width="156" height="95"></p>
+</div>
+</div>
+<p>After encoding, the trash qubits should be in a <em>fixed</em> reference state <span class="arithmatex">\(|0\rangle^{\otimes(n-k)}\)</span> for perfect compression. The training objective maximises the overlap between the trash qubits and <span class="arithmatex">\(|0\rangle\)</span>.</p>
+<h2 id="sec-qae_training"><span class="secnum">13.3</span> Training Objectives<a class="headerlink" href="#sec-qae_training" title="Permanent link">&para;</a></h2>
+<h3 id="1331-fidelity-based-loss"><span class="secnum">13.3.1</span> Fidelity-Based Loss<a class="headerlink" href="#1331-fidelity-based-loss" title="Permanent link">&para;</a></h3>
+<p>For a pure input state <span class="arithmatex">\(|\psi\rangle\)</span>, after encoding:</p>
+<div class="arithmatex">\[U(\boldsymbol{\theta})|\psi\rangle|\mathbf{0}\rangle
+= |\phi_{\text{latent}}\rangle \otimes |\text{trash}\rangle\]</div>
+<p><strong>Training objective</strong>: maximise the overlap of the trash register with the reference state <span class="arithmatex">\(|0\rangle^{\otimes(n-k)}\)</span>:</p>
+<div id="eq-qae_loss"></div>
+<div class="arithmatex">\[\mathcal{L}_{\text{QAE}} = 1 - \bigl|\langle 0|^{\otimes(n-k)}\,\rho_{\text{trash}}\,|0\rangle^{\otimes(n-k)}\bigr|\tag{13.3}\]</div>
+<p>where <span class="arithmatex">\(\rho_{\text{trash}} = \mathrm{Tr}_{\text{latent}}[U|\psi\rangle\langle\psi|U^\dagger]\)</span>.</p>
+<h3 id="1332-swap-test-fidelity"><span class="secnum">13.3.2</span> SWAP-Test Fidelity<a class="headerlink" href="#1332-swap-test-fidelity" title="Permanent link">&para;</a></h3>
+<p>An alternative formulation uses the SWAP test to measure fidelity between the original input and the reconstructed output:</p>
+<div class="arithmatex">\[F(\rho, \sigma) = \mathrm{Tr}[\rho\sigma] = \langle\psi|U^\dagger\Pi_{\text{ref}}U|\psi\rangle\]</div>
+<p>where <span class="arithmatex">\(\Pi_{\text{ref}} = |0\rangle\langle 0|^{\otimes(n-k)}\otimes I_k\)</span>.</p>
+<div class="center">
+<div class="center">
+<p><img class="tikz" src="img/tikz-f835998f33ac.svg" alt="image" loading="lazy" width="203" height="64"></p>
+</div>
+</div>
+<p>The SWAP-test ancilla measurement yields probability <span class="arithmatex">\(P(0) = \frac{1}{2}(1 + \langle\psi|\sigma|\psi\rangle)\)</span>, so <span class="arithmatex">\(F = 2P(0) - 1\)</span>.</p>
+<h3 id="1333-hilbertschmidt-inner-product-mixed-states"><span class="secnum">13.3.3</span> Hilbert–Schmidt Inner Product (Mixed States)<a class="headerlink" href="#1333-hilbertschmidt-inner-product-mixed-states" title="Permanent link">&para;</a></h3>
+<p>For mixed-state inputs <span class="arithmatex">\(\rho\)</span> (e.g. noisy states):</p>
+<div id="eq-qae_hs"></div>
+<div class="arithmatex">\[\mathcal{L}_{\text{HS}} = 1 - \mathrm{Tr}[\rho\,\sigma]\tag{13.5}\]</div>
+<p>where <span class="arithmatex">\(\sigma = \mathcal{D}\circ\mathcal{E}(\rho)\)</span> is the decoded state after encoding. This is estimated via the destructive SWAP test.</p>
+<div class="admonition example box-solvedexample kind-example">
+<p class="admonition-title">Solved Example 13.1</p>
+<p><strong>Problem:</strong> For a 3-qubit QAE compressing to 1 qubit, what is the maximum compression ratio, and what is the information-theoretic requirement on the input ensemble for perfect compression?</p>
+<p><strong>Solution:</strong> Compression ratio <span class="arithmatex">\(= n/k = 3/1 = 3\times\)</span>. The input space is <span class="arithmatex">\(2^3=8\)</span>-dimensional, the latent space is <span class="arithmatex">\(2^1=2\)</span>-dimensional.</p>
+<p>By Schumacher compression (<a href="bibliography.html#ref-Schumacher1995">Schumacher 1995</a>), perfect quantum compression to <span class="arithmatex">\(k\)</span> qubits is possible if and only if the input ensemble <span class="arithmatex">\(\{p_i, |\psi_i\rangle\}\)</span> has von Neumann entropy <span class="arithmatex">\(S(\rho) \leq k\)</span> qubits, where <span class="arithmatex">\(\rho = \sum_i p_i |\psi_i\rangle\langle\psi_i|\)</span>.</p>
+<p>If <span class="arithmatex">\(S(\rho) &gt; k\)</span>, information is necessarily lost. The QAE loss equals <span class="arithmatex">\(S(\rho) - k\)</span> qubits of lost information in the optimal case.</p>
+<p>For a 3-qubit maximally mixed state <span class="arithmatex">\(\rho = I/8\)</span>, <span class="arithmatex">\(S(\rho) = 3\)</span> bits, so compression to 1 qubit necessarily loses 2 qubits of information – perfect reconstruction is impossible.</p>
+</div>
+<h2 id="sec-qae_ansatz"><span class="secnum">13.4</span> Encoder Ansatz Design<a class="headerlink" href="#sec-qae_ansatz" title="Permanent link">&para;</a></h2>
+<p>The encoder <span class="arithmatex">\(U(\boldsymbol{\theta})\)</span> must be expressive enough to learn the optimal compression. Common choices:</p>
+<div class="admonition example box-algorithmbox kind-example">
+<p class="admonition-title">Algorithm: QAE Encoder Ansatz</p>
+<ol>
+<li>
+<p><strong>Strongly entangling layers</strong>: <span class="arithmatex">\(L\)</span> layers of single-qubit rotations + CNOT ladders. Parameters: <span class="arithmatex">\(3Ln\)</span> per layer.</p>
+</li>
+<li>
+<p><strong>Hardware-efficient ansatz</strong>: matches device connectivity.</p>
+</li>
+<li>
+<p><strong>Problem-inspired</strong>: exploit known structure (e.g. translation invariance for periodic quantum states).</p>
+</li>
+</ol>
+<p><strong>Circuit depth</strong>: For <span class="arithmatex">\(n\)</span>-qubit inputs, <span class="arithmatex">\(O(n^2)\)</span> two-qubit gates suffice to implement any unitary (via KAK decomposition).</p>
+</div>
+<h2 id="sec-qae_denoising"><span class="secnum">13.5</span> Quantum State Denoising<a class="headerlink" href="#sec-qae_denoising" title="Permanent link">&para;</a></h2>
+<p>A QAE trained on pure states can act as a <strong>quantum denoiser</strong>: given a noisy state <span class="arithmatex">\(\mathcal{N}(\rho)\)</span> (depolarizing, dephasing, amplitude damping), the encoder finds a latent representation that filters out noise.</p>
+<p><strong>Procedure</strong>:</p>
+<ol>
+<li>
+<p>Prepare training pairs: <span class="arithmatex">\((|\psi_i\rangle,\, \mathcal{N}(|\psi_i\rangle))\)</span></p>
+</li>
+<li>
+<p>Train QAE to compress <span class="arithmatex">\(\mathcal{N}(|\psi_i\rangle)\)</span> and reconstruct <span class="arithmatex">\(|\psi_i\rangle\)</span></p>
+</li>
+<li>
+<p>At inference: apply encoder + decoder to noisy input</p>
+</li>
+</ol>
+<div class="admonition note box-notebox kind-note">
+<p class="admonition-title">Note</p>
+<p>Quantum state denoising via QAE differs from quantum error <em>correction</em> (QEC): QEC uses syndrome measurements and is exact; QAE denoising is variational and approximate but works on NISQ hardware without ancilla overhead.</p>
+</div>
+<h2 id="sec-qae_anomaly"><span class="secnum">13.6</span> Anomaly Detection with QAE<a class="headerlink" href="#sec-qae_anomaly" title="Permanent link">&para;</a></h2>
+<figure class="fig fig-photo" id="fig-qae_training">
+<img class="photo" src="img/fig_qae_training.png" alt="Left: Reconstruction fidelity vs training epochs for four QAE compression configurations. Right: ROC curves for anomaly detection, comparing the QAE (AUC \approx 0.91) with a classical autoencoder…" loading="lazy" width="1400" height="561">
+<figcaption><strong>Figure 13.1.</strong> Left: Reconstruction fidelity vs training epochs for four QAE compression configurations. Right: ROC curves for anomaly detection, comparing the QAE (AUC <span class="math inline">\(\approx 0.91\)</span>) with a classical autoencoder and random baseline. <span class="credit">Figure drawn for this book</span></figcaption>
+</figure>
+<p>A QAE trained on “normal” quantum states will reconstruct normal states well but fail on anomalous ones. The reconstruction error serves as an anomaly score:</p>
+<div id="eq-qae_anomaly"></div>
+<div class="arithmatex">\[\text{score}(|\psi\rangle) = 1 - F(|\psi\rangle,\, \mathcal{D}(\mathcal{E}(|\psi\rangle)))\tag{13.6}\]</div>
+<p><strong>Applications</strong>:</p>
+<ul>
+<li>
+<p>Quantum hardware calibration: detect drifting qubits via state anomaly</p>
+</li>
+<li>
+<p>Quantum chemistry: identify anomalous molecular configurations</p>
+</li>
+<li>
+<p>Quantum communication: detect eavesdropping via state perturbation detection</p>
+</li>
+</ul>
+<h2 id="sec-qae_implementation"><span class="secnum">13.7</span> Implementation<a class="headerlink" href="#sec-qae_implementation" title="Permanent link">&para;</a></h2>
+<div class="language-text highlight"><pre><span></span><code>import pennylane as qml
+import numpy as np
+import torch
+import torch.nn as nn
+
+# QAE: 4 qubits -&gt; 2 qubit latent space
+n_qubits = 4
+n_latent = 2
+n_trash  = n_qubits - n_latent  # 2 trash qubits
+n_layers = 3
+
+dev = qml.device("default.qubit", wires=n_qubits)
+
+@qml.qnode(dev, interface="torch", diff_method="parameter-shift")
+def qae_circuit(state_params, enc_weights):
+    """
+    QAE circuit: encode target state, apply encoder U(theta),
+    measure fidelity of trash qubits with |0&gt;.
+    state_params: angles for preparing input state
+    enc_weights:  encoder ansatz parameters shape (n_layers, n_qubits, 3)
+    """
+    # Prepare input state (angle encoding)
+    qml.AngleEmbedding(state_params, wires=range(n_qubits), rotation='Y')
+    # Encoder: strongly entangling layers
+    qml.StronglyEntanglingLayers(enc_weights, wires=range(n_qubits))
+    # Measure trash qubits (want them to be |0&gt;)
+    return [qml.expval(qml.PauliZ(i)) for i in range(n_latent, n_qubits)]
+
+def qae_loss(state_params, enc_weights):
+    """
+    Loss = 1 - fidelity_of_trash_with_0.
+    expval PauliZ = 1 if |0&gt;, -1 if |1&gt;.
+    Fidelity with |0&gt; = (1 + &lt;Z&gt;) / 2 for each qubit.
+    """
+    z_vals = qae_circuit(state_params, enc_weights)
+    fidels = [(1 + z) / 2 for z in z_vals]
+    avg_fid = sum(fidels) / n_trash
+    return 1 - avg_fid
+
+@qml.qnode(dev, interface="torch")
+def full_autoencoder(state_params, enc_weights):
+    """Encode + decode (U^dag) to reconstruct original state."""
+    # Prepare input
+    qml.AngleEmbedding(state_params, wires=range(n_qubits), rotation='Y')
+    # Encode
+    qml.StronglyEntanglingLayers(enc_weights, wires=range(n_qubits))
+    # Reset trash qubits (set to |0&gt; reference)
+    for w in range(n_latent, n_qubits):
+        qml.PauliX(w)  # simple reset approximation
+        qml.PauliX(w)
+    # Decode = U^dagger
+    qml.adjoint(qml.StronglyEntanglingLayers)(enc_weights,
+                                              wires=range(n_qubits))
+    return qml.state()
+
+# Training
+weight_shape = (n_layers, n_qubits, 3)
+enc_weights = torch.tensor(
+    np.random.uniform(-np.pi, np.pi, weight_shape),
+    dtype=torch.float32, requires_grad=True
+)
+
+# Training data: 20 random 4-qubit states (described by 4 angle params each)
+np.random.seed(42)
+train_states = torch.tensor(
+    np.random.uniform(0, np.pi, (20, n_qubits)), dtype=torch.float32
+)
+
+optimizer = torch.optim.Adam([enc_weights], lr=0.05)
+
+print("Training QAE...")
+for epoch in range(100):
+    total_loss = 0.0
+    optimizer.zero_grad()
+    for s in train_states:
+        loss = qae_loss(s, enc_weights)
+        total_loss += loss
+    total_loss = total_loss / len(train_states)
+    total_loss.backward()
+    optimizer.step()
+    if (epoch + 1)
+        print(f"Epoch {epoch+1:3d} | Loss: {total_loss.item():.4f} "
+              f"| Fidelity: {1-total_loss.item():.4f}")
+
+# Evaluate compression fidelity on new state
+test_state = torch.tensor([0.8, 1.2, 0.4, 1.7])
+loss_val = qae_loss(test_state, enc_weights)
+print(f"\nTest compression fidelity: {1 - loss_val.item():.4f}")
+
+# Anomaly detection demo
+normal_state  = torch.tensor([0.9, 1.1, 0.5, 1.6])
+anomaly_state = torch.tensor([np.pi, np.pi, np.pi, np.pi])  # distinct
+score_normal  = qae_loss(normal_state,  enc_weights).item()
+score_anomaly = qae_loss(anomaly_state, enc_weights).item()
+print(f"Anomaly score (normal):  {score_normal:.4f}")
+print(f"Anomaly score (anomaly): {score_anomaly:.4f}")
+</code></pre></div>
+<h2 id="sec-qae_limits"><span class="secnum">13.8</span> Information-Theoretic Limits<a class="headerlink" href="#sec-qae_limits" title="Permanent link">&para;</a></h2>
+<div class="admonition info box-definitionbox kind-concept">
+<p class="admonition-title">Definition: Schumacher Compression</p>
+<p>For an ensemble <span class="arithmatex">\(\{p_i, |\psi_i\rangle\}\)</span> with density matrix <span class="arithmatex">\(\rho = \sum_i p_i|\psi_i\rangle\langle\psi_i|\)</span>, Schumacher’s quantum source coding theorem (<a href="bibliography.html#ref-Schumacher1995">Schumacher 1995</a>) states:</p>
+<p>The minimum number of qubits required for reliable compression is <span class="arithmatex">\(S(\rho) = -\mathrm{Tr}[\rho\log_2\rho]\)</span> (von Neumann entropy).</p>
+<p>A QAE achieves this limit when <span class="arithmatex">\(U(\boldsymbol{\theta})\)</span> converges to the optimal compression unitary that maps the principal eigenvectors of <span class="arithmatex">\(\rho\)</span> to the latent register and discards the rest.</p>
+</div>
+<div class="admonition success box-tipbox kind-insight">
+<p class="admonition-title">Tip</p>
+<p>The QAE encoder finds, via gradient descent, an approximation to the <em>typical subspace</em> of the input ensemble – the quantum analogue of Shannon’s typical sequences. The latent register spans the most probable subspace of <span class="arithmatex">\(\rho\)</span>.</p>
+</div>
+<h2 id="139-chapter-summary"><span class="secnum">13.9</span> Chapter Summary<a class="headerlink" href="#139-chapter-summary" title="Permanent link">&para;</a></h2>
+<div class="admonition note box-chaptersummary kind-plain">
+<p class="admonition-title">Chapter Summary</p>
+<ul>
+<li>
+<p><strong>QAE architecture</strong>: Encoder <span class="arithmatex">\(U(\boldsymbol{\theta})\)</span> compresses <span class="arithmatex">\(n\)</span> qubits to <span class="arithmatex">\(k\)</span> latent qubits; decoder is <span class="arithmatex">\(U^\dagger\)</span>. Symmetric by design.</p>
+</li>
+<li>
+<p><strong>Training</strong>: Maximise fidelity of trash register with <span class="arithmatex">\(|0\rangle\)</span> via SWAP test or Pauli-Z expectation values. Gradient via PSR.</p>
+</li>
+<li>
+<p><strong>Denoising</strong>: Train on noisy/clean pairs; reconstruction error filters noise from quantum states.</p>
+</li>
+<li>
+<p><strong>Anomaly detection</strong>: High reconstruction error <span class="arithmatex">\(\Rightarrow\)</span> anomalous state. Useful for hardware calibration and security.</p>
+</li>
+<li>
+<p><strong>Fundamental limits</strong>: Schumacher’s theorem gives the von Neumann entropy as the minimal qubit compression bound.</p>
+</li>
+</ul>
+</div>
+<div class="admonition note box-exercisebox kind-plain">
+<p class="admonition-title">Exercises</p>
+<p><strong>Exercise .</strong> Explain why the QAE decoder is simply <span class="arithmatex">\(U^\dagger(\boldsymbol{\theta})\)</span> and not a separately parameterized circuit. What condition on the input ensemble allows this to work?</p>
+<p><strong>Exercise .</strong> For a 4-qubit QAE compressing to 2 qubits, derive the maximum number of linearly independent input states that can be perfectly compressed. How does this relate to the Hilbert-space dimension?</p>
+<p><strong>Exercise .</strong> Implement a quantum state denoiser using the QAE above: generate 50 random 2-qubit pure states, apply depolarizing noise (<span class="arithmatex">\(p=0.1\)</span>), train the QAE to reconstruct the clean states, and plot reconstruction fidelity vs. noise strength.</p>
+</div>
+<div class="admonition note box-furtherreading kind-plain">
+<p class="admonition-title">Further Reading</p>
+<ul>
+<li>
+<p>Romero et al. (2017) (<a href="bibliography.html#ref-Romero2017QAE">Romero et al. 2017</a>) — original QAE proposal</p>
+</li>
+<li>
+<p>Schumacher (1995) (<a href="bibliography.html#ref-Schumacher1995">Schumacher 1995</a>) — quantum source coding theorem</p>
+</li>
+<li>
+<p>Pepper et al. (2019) — QAE for mixed states and denoising</p>
+</li>
+<li>
+<p>Cao &amp; Babbush (2024) — QAE benchmarks on near-term hardware</p>
+</li>
+</ul>
+</div>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button type="button" class="md-top md-icon" data-md-component="top" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+Back to top
+</button>
+</main>
+<footer class="md-footer">
+<nav class="md-footer__inner md-grid" aria-label="Footer" >
+<a href="ch12-quantum-recurrent-networks-and-qlstm.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: 12. Quantum Recurrent Networks and QLSTM">
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</div>
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Previous
+</span>
+<div class="md-ellipsis">
+12. Quantum Recurrent Networks and QLSTM
+</div>
+</div>
+</a>
+<a href="ch14-quantum-generative-models.html" class="md-footer__link md-footer__link--next" aria-label="Next: 14. Quantum Generative Models">
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Next
+</span>
+<div class="md-ellipsis">
+14. Quantum Generative Models
+</div>
+</div>
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+</div>
+</a>
+</nav>
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+The Open Book Project &middot;
+<a href="../../about.html">About this library</a> &middot;
+<a href="../../publish.html">Publish your book</a> &middot;
+© The authors of the books
+</div>
+Made with
+<a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+Material for MkDocs
+</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "navigation.prune", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "toc.follow", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+<script src="../../assets/mathjax.js"></script>
+<script src="../../assets/viz.js"></script>
+<script src="../../assets/remote.js"></script>
+<script src="../../assets/scans.js"></script>
+<script src="../../assets/reader.js"></script>
+<script src="../../assets/app.js"></script>
+<script src="../../assets/slides.js"></script>
+<script src="../../assets/speak.js"></script>
+<script src="../../assets/quiz.js"></script>
+<script>
+    /* offline reading: the service worker at the site root (its scope is the whole site) */
+    if ("serviceWorker" in navigator && window.isSecureContext) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register(new URL("../../sw.js", location.href).href).catch(function () {});
+      });
+    }
+  </script>
+</body>
+</html>

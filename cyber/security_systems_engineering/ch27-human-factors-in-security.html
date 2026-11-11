@@ -1,0 +1,1302 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="description" content="The Open Book Project: books on computer science, quantum computing, cyber security, science, the social sciences, university courses and languages, read page by page like an e-book, online or offline.">
+<meta name="author" content="The Open Book Project">
+<link rel="canonical" href="https://open-book-project.github.io/cyber/security_systems_engineering/ch27-human-factors-in-security.html">
+<link rel="prev" href="ch26-cloud-native-security.html">
+<link rel="next" href="ch28-artificial-intelligence-and-machine-learning.html">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap"></noscript>
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Open Book">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="application-name" content="Open Book"><script src="../../assets/library-data.js"></script><script>
+    (function () {
+      var X = window.XMLHttpRequest, open, gate = new Promise(function (r) { open = r; });
+      if (!X) return;
+      var open0 = X.prototype.open, send0 = X.prototype.send;
+      X.prototype.open = function (method, url) {
+        this.__pkIndex = /\/search\/search_index\.json(\?|#|$)/.test(String(url));
+        return open0.apply(this, arguments);
+      };
+      X.prototype.send = function () {
+        if (!this.__pkIndex) return send0.apply(this, arguments);
+        var xhr = this, args = arguments;
+        gate.then(function () { send0.apply(xhr, args); });
+      };
+      function wake() { open(); }
+      document.addEventListener("focusin", function (e) { if (e.target && e.target.closest && e.target.closest(".md-search")) wake(); });
+      document.addEventListener("click", function (e) { if (e.target && e.target.closest && e.target.closest('label[for="__search"], .md-search')) wake(); }, true);
+      document.addEventListener("keydown", function (e) {
+        var k = e.key;
+        if ((k === "/" || k === "s" || k === "f" || k === "S" || k === "F") && !(e.target && e.target.closest && e.target.closest("input, textarea, [contenteditable]"))) wake();
+      }, true);
+      if (/[?&]q=/.test(location.search)) wake();
+    })();
+  </script><script>
+    try {
+      if ((window.matchMedia && (matchMedia("(display-mode: standalone)").matches || matchMedia("(display-mode: fullscreen)").matches)) || navigator.standalone === true) {
+        document.documentElement.className += " bjp-standalone";
+      }
+    } catch (e) { /* not an installed app */ }
+    /* the books of a subject or of the whole library as covers or as a list (assets/app.js): the reader's choice */
+    try {
+      var bv = localStorage.getItem("bjp.view");
+      if (bv === "list" || (bv !== "grid" && /\/books\.html$/.test(location.pathname))) document.documentElement.className += " bjp-view-list";
+    } catch (e) { /* no storage: covers */ }
+  </script>
+<script>
+    /* a book opened from its cover on the shelf: the page stays blank, in the cover's colour, until the reader is up */
+    try {
+      var cv = sessionStorage.getItem("bjp.reader.cover");
+      if (cv && sessionStorage.getItem("bjp.reader.open") === "1") {
+        var c = JSON.parse(cv), de = document.documentElement;
+        de.className += " bjp-booting";
+        if (c && /^#[0-9a-f]{3,8}$/i.test(c.bg || "")) de.style.background = c.bg;
+        setTimeout(function () { de.classList.remove("bjp-booting"); de.style.background = ""; }, 3000);
+      }
+    } catch (e) { /* no session storage: the page simply opens as usual */ }
+  </script>
+<title>27. Human Factors in Security - The Open Book Project</title>
+<link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+<link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+<link rel="stylesheet" href="../../assets/extra.css">
+<link rel="stylesheet" href="../../assets/reader.css">
+<link rel="stylesheet" href="../../assets/viz.css">
+<link rel="stylesheet" href="../../assets/app.css">
+<link rel="stylesheet" href="../../assets/theme.css">
+<link rel="stylesheet" href="../../assets/slides.css">
+<link rel="stylesheet" href="../../assets/remote.css">
+<link rel="stylesheet" href="../../assets/scans.css">
+<link rel="stylesheet" href="../../assets/speak.css">
+<link rel="stylesheet" href="../../assets/quiz.css">
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+<input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+<input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a href="#sec-social-engineering" class="md-skip">
+Skip to content
+</a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav class="md-header__inner md-grid" aria-label="Header">
+<a href="../../index.html" title="The Open Book Project" class="md-header__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+The Open Book Project
+</span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+27. Human Factors in Security
+</span>
+</div>
+</div>
+</div><a href="../../index.html" class="bjp-libbtn" aria-label="Library: all books" title="Library: all books">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V5h4v15M8 20V9h4v11M14 20L12.6 6l3.8-.8 3 14.2M3 20h18"/></svg><span>Library</span>
+</a>
+<a href="../../subjects/index.html" class="pk-catbtn" aria-haspopup="true" aria-expanded="false" title="Browse the books by category">
+<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><circle cx="17" cy="7" r="3.6"/><path d="M7 13.4l3.9 6.8H3.1z"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg><span>Categories</span>
+</a>
+<form class="md-header__option" data-md-component="palette">
+<input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+<label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+</label>
+<input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+<label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+<label class="md-search__icon md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</label>
+<nav class="md-search__options" aria-label="Search">
+<button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+Initializing search
+</div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--primary bjp-nav bjp-nav--book" aria-label="Navigation" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a href="../../index.html" title="The Open Book Project" class="md-nav__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+The Open Book Project
+</label>
+<ul class="md-nav__list" data-md-scrollfix>
+<li class="md-nav__item bjp-nav-all">
+<a href="../../index.html" class="md-nav__link" aria-label="All books: back to the library">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+<span class="md-ellipsis">All books</span>
+</a>
+</li>
+<li class="md-nav__item bjp-nav-book" role="presentation"><span class="bjp-nav-head">Security Systems Engineering</span></li>
+<li class="md-nav__item">
+<a href="index.html" class="md-nav__link">
+<span class="md-ellipsis">
+Overview and preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="notation-and-conventions.html" class="md-nav__link">
+<span class="md-ellipsis">
+Notation and Conventions
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch01-mathematical-foundations-of-cryptography.html" class="md-nav__link">
+<span class="md-ellipsis">
+1. Mathematical Foundations of Cryptography
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch02-symmetric-cryptography.html" class="md-nav__link">
+<span class="md-ellipsis">
+2. Symmetric Cryptography
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch03-public-key-cryptography.html" class="md-nav__link">
+<span class="md-ellipsis">
+3. Public-Key Cryptography
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch04-cryptographic-hash-functions-and-macs.html" class="md-nav__link">
+<span class="md-ellipsis">
+4. Cryptographic Hash Functions and MACs
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch05-key-management-and-public-key-infrastructure.html" class="md-nav__link">
+<span class="md-ellipsis">
+5. Key Management and Public Key Infrastructure
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch06-cryptographic-protocols-and-security-proofs.html" class="md-nav__link">
+<span class="md-ellipsis">
+6. Cryptographic Protocols and Security Proofs
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch07-quantum-cryptography-and-post-quantum-migration.html" class="md-nav__link">
+<span class="md-ellipsis">
+7. Quantum Cryptography and Post-Quantum Migration
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch08-network-security-fundamentals.html" class="md-nav__link">
+<span class="md-ellipsis">
+8. Network Security Fundamentals
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch09-firewalls-ids-and-ips.html" class="md-nav__link">
+<span class="md-ellipsis">
+9. Firewalls, IDS, and IPS
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch10-network-protocol-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+10. Network Protocol Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch11-web-application-security-fundamentals.html" class="md-nav__link">
+<span class="md-ellipsis">
+11. Web Application Security Fundamentals
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch12-authentication-authorization-and-access-control.html" class="md-nav__link">
+<span class="md-ellipsis">
+12. Authentication, Authorization, and Access Control
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch13-api-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+13. API Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch14-side-channel-attacks.html" class="md-nav__link">
+<span class="md-ellipsis">
+14. Side-Channel Attacks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch15-hardware-tamper-protection.html" class="md-nav__link">
+<span class="md-ellipsis">
+15. Hardware Tamper Protection
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch16-transport-layer-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+16. Transport Layer Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch17-ssh-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+17. SSH Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch18-email-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+18. Email Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch19-advanced-network-protocol-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+19. Advanced Network Protocol Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch20-malware-analysis.html" class="md-nav__link">
+<span class="md-ellipsis">
+20. Malware Analysis
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch21-reverse-engineering.html" class="md-nav__link">
+<span class="md-ellipsis">
+21. Reverse Engineering
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch22-digital-forensics.html" class="md-nav__link">
+<span class="md-ellipsis">
+22. Digital Forensics
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch23-vulnerability-research-and-fuzzing.html" class="md-nav__link">
+<span class="md-ellipsis">
+23. Vulnerability Research and Fuzzing
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch24-exploit-development-fundamentals.html" class="md-nav__link">
+<span class="md-ellipsis">
+24. Exploit Development Fundamentals
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch25-security-architecture-and-design.html" class="md-nav__link">
+<span class="md-ellipsis">
+25. Security Architecture and Design
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch26-cloud-native-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+26. Cloud-Native Security
+</span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+27. Human Factors in Security
+</span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a href="ch27-human-factors-in-security.html" class="md-nav__link md-nav__link--active">
+<span class="md-ellipsis">
+27. Human Factors in Security
+</span>
+</a>
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#sec-social-engineering" class="md-nav__link">
+<span class="md-ellipsis">
+27.1 Social Engineering: Psychological Foundations
+</span>
+</a>
+<nav class="md-nav" aria-label="27.1 Social Engineering: Psychological Foundations">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#2711-vishing-voice-phishing-in-depth" class="md-nav__link">
+<span class="md-ellipsis">
+27.1.1 Vishing: Voice Phishing in Depth
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-phishing" class="md-nav__link">
+<span class="md-ellipsis">
+27.2 Phishing Attack Taxonomy
+</span>
+</a>
+<nav class="md-nav" aria-label="27.2 Phishing Attack Taxonomy">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#2721-evilginx2-reverse-proxy-phishing-for-mfa-bypass" class="md-nav__link">
+<span class="md-ellipsis">
+27.2.1 Evilginx2: Reverse Proxy Phishing for MFA Bypass
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2722-spear-phishing-vs-whaling" class="md-nav__link">
+<span class="md-ellipsis">
+27.2.2 Spear-Phishing vs. Whaling
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-bec" class="md-nav__link">
+<span class="md-ellipsis">
+27.3 Business Email Compromise (BEC)
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-physical-se" class="md-nav__link">
+<span class="md-ellipsis">
+27.4 Pre-texting and Physical Social Engineering
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-awareness" class="md-nav__link">
+<span class="md-ellipsis">
+27.5 Security Awareness Programme Design
+</span>
+</a>
+<nav class="md-nav" aria-label="27.5 Security Awareness Programme Design">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#2751-measuring-training-effectiveness" class="md-nav__link">
+<span class="md-ellipsis">
+27.5.1 Measuring Training Effectiveness
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-insider-threats" class="md-nav__link">
+<span class="md-ellipsis">
+27.6 Insider Threats
+</span>
+</a>
+<nav class="md-nav" aria-label="27.6 Insider Threats">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#2761-data-loss-prevention" class="md-nav__link">
+<span class="md-ellipsis">
+27.6.1 Data Loss Prevention
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-osint" class="md-nav__link">
+<span class="md-ellipsis">
+27.7 OSINT: Open Source Intelligence
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-deepfakes" class="md-nav__link">
+<span class="md-ellipsis">
+27.8 Deep Fakes and AI-Enhanced Social Engineering
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-cognitive-bias" class="md-nav__link">
+<span class="md-ellipsis">
+27.9 Cognitive Biases in Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-phishing-killchain" class="md-nav__link">
+<span class="md-ellipsis">
+27.10 Phishing Kill Chain
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-se-table" class="md-nav__link">
+<span class="md-ellipsis">
+27.11 Social Engineering Attacks and Countermeasures
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-security-culture" class="md-nav__link">
+<span class="md-ellipsis">
+27.12 Security Culture
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#exercises" class="md-nav__link">
+<span class="md-ellipsis">
+Exercises
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="ch28-artificial-intelligence-and-machine-learning.html" class="md-nav__link">
+<span class="md-ellipsis">
+28. Artificial Intelligence and Machine Learning Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch29-iot-industrial-control-systems-and-the-emerging.html" class="md-nav__link">
+<span class="md-ellipsis">
+29. IoT, Industrial Control Systems, and the Emerging Threat Horizon
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="app-a-mathematical-reference.html" class="md-nav__link">
+<span class="md-ellipsis">
+Appendix A. Mathematical Reference
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="app-b-security-tools-reference.html" class="md-nav__link">
+<span class="md-ellipsis">
+Appendix B. Security Tools Reference
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="app-c-selected-exercise-solutions.html" class="md-nav__link">
+<span class="md-ellipsis">
+Appendix C. Selected Exercise Solutions
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="bibliography.html" class="md-nav__link">
+<span class="md-ellipsis">
+References
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#sec-social-engineering" class="md-nav__link">
+<span class="md-ellipsis">
+27.1 Social Engineering: Psychological Foundations
+</span>
+</a>
+<nav class="md-nav" aria-label="27.1 Social Engineering: Psychological Foundations">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#2711-vishing-voice-phishing-in-depth" class="md-nav__link">
+<span class="md-ellipsis">
+27.1.1 Vishing: Voice Phishing in Depth
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-phishing" class="md-nav__link">
+<span class="md-ellipsis">
+27.2 Phishing Attack Taxonomy
+</span>
+</a>
+<nav class="md-nav" aria-label="27.2 Phishing Attack Taxonomy">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#2721-evilginx2-reverse-proxy-phishing-for-mfa-bypass" class="md-nav__link">
+<span class="md-ellipsis">
+27.2.1 Evilginx2: Reverse Proxy Phishing for MFA Bypass
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2722-spear-phishing-vs-whaling" class="md-nav__link">
+<span class="md-ellipsis">
+27.2.2 Spear-Phishing vs. Whaling
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-bec" class="md-nav__link">
+<span class="md-ellipsis">
+27.3 Business Email Compromise (BEC)
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-physical-se" class="md-nav__link">
+<span class="md-ellipsis">
+27.4 Pre-texting and Physical Social Engineering
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-awareness" class="md-nav__link">
+<span class="md-ellipsis">
+27.5 Security Awareness Programme Design
+</span>
+</a>
+<nav class="md-nav" aria-label="27.5 Security Awareness Programme Design">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#2751-measuring-training-effectiveness" class="md-nav__link">
+<span class="md-ellipsis">
+27.5.1 Measuring Training Effectiveness
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-insider-threats" class="md-nav__link">
+<span class="md-ellipsis">
+27.6 Insider Threats
+</span>
+</a>
+<nav class="md-nav" aria-label="27.6 Insider Threats">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#2761-data-loss-prevention" class="md-nav__link">
+<span class="md-ellipsis">
+27.6.1 Data Loss Prevention
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-osint" class="md-nav__link">
+<span class="md-ellipsis">
+27.7 OSINT: Open Source Intelligence
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-deepfakes" class="md-nav__link">
+<span class="md-ellipsis">
+27.8 Deep Fakes and AI-Enhanced Social Engineering
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-cognitive-bias" class="md-nav__link">
+<span class="md-ellipsis">
+27.9 Cognitive Biases in Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-phishing-killchain" class="md-nav__link">
+<span class="md-ellipsis">
+27.10 Phishing Kill Chain
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-se-table" class="md-nav__link">
+<span class="md-ellipsis">
+27.11 Social Engineering Attacks and Countermeasures
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-security-culture" class="md-nav__link">
+<span class="md-ellipsis">
+27.12 Security Culture
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#exercises" class="md-nav__link">
+<span class="md-ellipsis">
+Exercises
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="ch-human-factor-security">Chapter 27: Human Factors in Security<a class="headerlink" href="#ch-human-factor-security" title="Permanent link">&para;</a></h1>
+<p>Technology alone cannot secure an organisation. Humans are simultaneously the most critical link in the security chain and its most exploited weakness. Attackers who invest in understanding psychology, organisational culture, and cognitive bias can bypass even the most sophisticated technical controls. Understanding the human factor is therefore as essential to security engineering as mastering cryptography or exploit development.</p>
+<p>This chapter covers the psychology of manipulation, attack taxonomies, practical defences, and the cognitive biases that make all of us easier targets than we care to admit.</p>
+<h2 id="sec-social-engineering"><span class="secnum">27.1</span> Social Engineering: Psychological Foundations<a class="headerlink" href="#sec-social-engineering" title="Permanent link">&para;</a></h2>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 27.1 (Social Engineering)</p>
+<p><strong>Social engineering</strong> is the manipulation of individuals into performing actions or divulging information that furthers an attacker’s goals, exploiting psychological tendencies rather than technical vulnerabilities.</p>
+</div>
+<p>Robert Cialdini’s six principles of influence underpin most social engineering attacks:</p>
+<div class="center">
+<div class="tbl">
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Principle</strong></th>
+<th style="text-align: left;"><strong>Description</strong></th>
+<th style="text-align: left;"><strong>Attack Example</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Authority</td>
+<td style="text-align: left;">People comply with perceived authority figures</td>
+<td style="text-align: left;">Attacker poses as CEO demanding urgent wire transfer</td>
+</tr>
+<tr>
+<td style="text-align: left;">Social Proof</td>
+<td style="text-align: left;">People follow what others appear to do</td>
+<td style="text-align: left;">“Everyone in your team already signed off on this”</td>
+</tr>
+<tr>
+<td style="text-align: left;">Scarcity/Urgency</td>
+<td style="text-align: left;">Rare or time-limited items drive action</td>
+<td style="text-align: left;">“The account will be locked in 10 minutes”</td>
+</tr>
+<tr>
+<td style="text-align: left;">Reciprocity</td>
+<td style="text-align: left;">People feel obligated to return favours</td>
+<td style="text-align: left;">Send unsolicited gift, then request sensitive data</td>
+</tr>
+<tr>
+<td style="text-align: left;">Liking</td>
+<td style="text-align: left;">People comply with those they like</td>
+<td style="text-align: left;">Build rapport on LinkedIn before attacking</td>
+</tr>
+<tr>
+<td style="text-align: left;">Commitment</td>
+<td style="text-align: left;">People honour prior commitments</td>
+<td style="text-align: left;">Get small “yes” answers leading to bigger requests</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<h3 id="2711-vishing-voice-phishing-in-depth"><span class="secnum">27.1.1</span> Vishing: Voice Phishing in Depth<a class="headerlink" href="#2711-vishing-voice-phishing-in-depth" title="Permanent link">&para;</a></h3>
+<p>Vishing exploits the human tendency to trust a voice on the phone more than an email, because voice conveys urgency, authority, and personality in ways that text can’t replicate. A skilled visher researches their target before calling: LinkedIn reveals the victim’s job title, team structure, and manager’s name; the company website discloses internal project names and the names of executives; job postings reveal the technology stack and internal team names. Armed with this OSINT, the attacker can open a call with specific, accurate details that make the impersonation instantly plausible.</p>
+<p>Caller ID spoofing makes this worse. Services like SpoofCard or SpoofTel (and many of their successors) let anyone present an arbitrary number as their caller ID. An attacker can appear to be calling from the organisation’s own IT helpdesk number, from a major bank’s fraud line, or from a government agency. Most people treat caller ID as a reliable authentication mechanism because in normal daily life it almost is—but it was never designed to be.</p>
+<p>The Twitter breach in July 2020 is the canonical corporate vishing case. The attackers—later identified as teenagers operating independently—called Twitter employees, impersonating Twitter’s IT department. They claimed there was a VPN issue affecting the employee’s account and walked the victim through a credential reset process that handed over the credentials to the attacker’s fake internal VPN portal. With those credentials, the attackers accessed Twitter’s internal admin tools and hijacked high-profile accounts (Barack Obama, Joe Biden, Elon Musk, Apple) to run a Bitcoin scam. The attack required zero technical exploitation of Twitter’s systems; it relied entirely on social engineering over the phone.</p>
+<p>The most effective procedural control is an <strong>out-of-band verification callback</strong>. When any sensitive request arrives via phone—a password reset, a wire transfer authorisation, access to a privileged system—the correct response is to hang up and call back on a number that you independently verify (from the company directory, not from a number provided by the caller). This defeats spoofed caller ID because the callback originates from the victim’s own dialling decision. Some organisations establish a shared code-word system for internal calls: IT helpdesk calls start with a pre-established code word that changes weekly. This doesn’t scale to external callers but works for internal impersonation scenarios. FIDO2 hardware tokens also help: if your helpdesk can only authenticate you by having you tap your YubiKey on their portal rather than read a code over the phone, there’s nothing a vishers can steal in a phone call.</p>
+<h2 id="sec-phishing"><span class="secnum">27.2</span> Phishing Attack Taxonomy<a class="headerlink" href="#sec-phishing" title="Permanent link">&para;</a></h2>
+<dl>
+<dt>Phishing</dt>
+<dd>Bulk, low-personalisation email lures directing victims to credential-harvesting pages.</dd>
+<dt>Spear Phishing</dt>
+<dd>Highly targeted email using personal details (name, role, recent activity) gathered via OSINT. Success rates are significantly higher than bulk phishing.</dd>
+<dt>Whaling</dt>
+<dd>Spear phishing targeting senior executives (C-suite, board); often precedes Business Email Compromise.</dd>
+<dt>Vishing (Voice Phishing)</dt>
+<dd>Phone-based social engineering; attackers impersonate IT support, banks, or government agencies.</dd>
+<dt>Smishing (SMS Phishing)</dt>
+<dd>SMS-based lures; often contain shortened URLs to mobile-optimised credential harvesting pages.</dd>
+</dl>
+<h3 id="2721-evilginx2-reverse-proxy-phishing-for-mfa-bypass"><span class="secnum">27.2.1</span> Evilginx2: Reverse Proxy Phishing for MFA Bypass<a class="headerlink" href="#2721-evilginx2-reverse-proxy-phishing-for-mfa-bypass" title="Permanent link">&para;</a></h3>
+<p>Modern phishing kits use reverse-proxy architectures to capture session cookies and bypass time-based MFA:</p>
+<figure class="fig fig-diagram" id="fig-evilginx">
+<img class="tikz" src="img/tikz-ef03f56aa2ea.svg" alt="Evilginx2 adversary-in-the-middle phishing (MFA bypass)" loading="lazy" width="349" height="94">
+<figcaption><strong>Figure 27.1.</strong> Evilginx2 adversary-in-the-middle phishing (MFA bypass)</figcaption>
+</figure>
+<div class="admonition info box-keybox kind-concept">
+<p class="admonition-title">Phishing-Resistant MFA</p>
+<p>Passkeys (FIDO2/WebAuthn) and hardware security keys (YubiKey) are bound to the origin domain. An Evilginx2 proxy on a different domain cannot relay a WebAuthn assertion; the authentication simply fails. FIDO2 is the only widely deployed phishing-resistant MFA.</p>
+</div>
+<h3 id="2722-spear-phishing-vs-whaling"><span class="secnum">27.2.2</span> Spear-Phishing vs. Whaling<a class="headerlink" href="#2722-spear-phishing-vs-whaling" title="Permanent link">&para;</a></h3>
+<p>Bulk phishing is a volume game—send a million emails and expect a small percentage to click. Spear-phishing inverts this: a small number of highly targeted emails with a high success rate per email, justified by the value of the specific target. The extra investment goes into research.</p>
+<p>A spear-phishing email targeting a software engineer might reference a recent pull request they made, a conference talk they gave, or a specific tool their team adopted (all discoverable from GitHub, Twitter, and LinkedIn). It might arrive from a spoofed address that looks like a colleague’s or a vendor’s. The payload—a malicious attachment, a credential-harvesting link to a fake Okta login page, a request for a sensitive action—arrives inside what looks like a completely normal professional communication. Response rates on well-crafted spear-phishing emails can exceed 30%, compared to under 5% for bulk campaigns.</p>
+<p><strong>Whaling</strong> is spear-phishing aimed at executives—the C-suite, board members, or other high-value individuals whose authority can authorise large financial transactions or access sensitive data. The most common whaling scenario is <strong>CFO fraud</strong>: an email that appears to come from the CEO (spoofed sender, or a lookalike domain like <code>ceo-company.com</code> instead of <code>company.com</code>) instructs the CFO or financial controller to process an urgent wire transfer to a new supplier, before an acquisition closes, to complete a regulatory payment. The urgency and the executive’s authority combine to short-circuit normal approval processes.</p>
+<p>OSINT sources enable all of this targeting: LinkedIn provides job titles, reporting structures, and tenure; the company website lists executives by name and often includes biographical details; social media reveals personal interests, travel plans, and family connections that a creative attacker can weave into a pretext; and job postings reveal the internal tool stack (“experience with ServiceNow and Workday required” tells an attacker which platforms to impersonate).</p>
+<p>Defences are both technical and procedural. On the technical side:</p>
+<ul>
+<li>
+<p><strong>DMARC <code>p=reject</code></strong> on all domains the organisation owns, including parked domains that have never sent legitimate email—parked domains with no DMARC record are trivially spoofable.</p>
+</li>
+<li>
+<p><strong>Lookalike domain monitoring</strong>: Services like DomainTools Iris, Bolster, or simple DNSTWIST scans alert you when domains similar to yours are registered.</p>
+</li>
+<li>
+<p><strong>Email header analysis</strong>: Train staff to check the actual <code>From:</code> header, not just the display name shown in email clients.</p>
+</li>
+</ul>
+<p>On the procedural side, <strong>dual approval for wire transfers</strong> is the single most effective control for CFO fraud: any transfer above a threshold requires a second authoriser, with the confirmation conducted over a separate channel (phone call to a pre-verified number, not a reply to the same email thread). No amount of urgency language in an email should override a dual-approval policy; building a culture where that policy is non-negotiable—even for the CEO—is the real challenge.</p>
+<h2 id="sec-bec"><span class="secnum">27.3</span> Business Email Compromise (BEC)<a class="headerlink" href="#sec-bec" title="Permanent link">&para;</a></h2>
+<p>Business Email Compromise is one of the costliest cyber crimes:</p>
+<div class="center">
+<div class="tbl">
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>BEC Type</strong></th>
+<th style="text-align: left;"><strong>Description</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">CEO Fraud</td>
+<td style="text-align: left;">Attacker spoofs or compromises CEO email; instructs finance staff to transfer funds urgently to attacker-controlled account</td>
+</tr>
+<tr>
+<td style="text-align: left;">Invoice Fraud</td>
+<td style="text-align: left;">Attacker intercepts legitimate vendor invoice and changes bank details; payment diverted</td>
+</tr>
+<tr>
+<td style="text-align: left;">Account Takeover</td>
+<td style="text-align: left;">Compromised employee email account used to conduct BEC internally; high trust, difficult to detect</td>
+</tr>
+<tr>
+<td style="text-align: left;">Attorney Impersonation</td>
+<td style="text-align: left;">Pose as legal counsel during a sensitive transaction</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>The FBI IC3 2023 report cited BEC losses of approximately &#36;2.9 billion in the USA alone, making it the highest-loss category in the report.</p>
+<p>Mitigations: DMARC/DKIM/SPF enforcement, dual-approval for large transfers, out-of-band verification for wire transfer requests, and training employees to verify any financial request received via email by telephone.</p>
+<h2 id="sec-physical-se"><span class="secnum">27.4</span> Pre-texting and Physical Social Engineering<a class="headerlink" href="#sec-physical-se" title="Permanent link">&para;</a></h2>
+<dl>
+<dt>Pre-texting</dt>
+<dd>Constructing a convincing false identity or backstory before initiating an attack. OSINT sources used: LinkedIn, company website, social media, public records, press releases.</dd>
+<dt>Tailgating/Piggybacking</dt>
+<dd>Following an authorised person through a controlled access point without presenting credentials.</dd>
+<dt>Dumpster Diving</dt>
+<dd>Recovering discarded documents (org charts, network diagrams, credentials) from waste bins; physical document shredding is the countermeasure.</dd>
+<dt>USB Drop Attacks</dt>
+<dd>Leaving infected USB drives in car parks, lobbies, or toilets; human curiosity drives insertion into corporate workstations.</dd>
+<dt>Impersonation</dt>
+<dd>Wearing a uniform (delivery driver, facilities worker, IT contractor) combined with confident body language defeats most informal access controls.</dd>
+</dl>
+<h2 id="sec-awareness"><span class="secnum">27.5</span> Security Awareness Programme Design<a class="headerlink" href="#sec-awareness" title="Permanent link">&para;</a></h2>
+<p>Effective security awareness programmes combine simulated attacks with targeted training and measurable improvement goals.</p>
+<div class="language-bash highlight"><pre><span></span><code><span class="c1"># Start GoPhish server</span>
+./gophish<span class="w"> </span><span class="p">&amp;</span>
+
+<span class="c1"># API: create sending profile</span>
+curl<span class="w"> </span>-s<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>https://localhost:3333/api/smtp/<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$API_KEY</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{"name":"Corp Relay","host":"smtp.corp.com:587",...}'</span>
+
+<span class="c1"># Launch campaign and track:</span>
+<span class="c1">#   - click_rate     (</span>
+<span class="c1">#   - submit_rate    (</span>
+<span class="c1">#   - report_rate    (</span>
+</code></pre></div>
+<p>Key programme metrics:</p>
+<div class="center">
+<div class="tbl">
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Metric</strong></th>
+<th style="text-align: left;"><strong>Target</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Phishing click rate</td>
+<td style="text-align: left;"><span class="math inline">\(&lt;5\%\)</span> after training</td>
+</tr>
+<tr>
+<td style="text-align: left;">Credential submission rate</td>
+<td style="text-align: left;"><span class="math inline">\(&lt;1\%\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">Phishing report rate</td>
+<td style="text-align: left;"><span class="math inline">\(&gt;40\%\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">Mean time to report</td>
+<td style="text-align: left;"><span class="math inline">\(&lt;10\)</span> minutes</td>
+</tr>
+<tr>
+<td style="text-align: left;">Training completion rate</td>
+<td style="text-align: left;"><span class="math inline">\(&gt;95\%\)</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>Programme design principles:</p>
+<ul>
+<li>
+<p><strong>Frequency</strong>: Monthly simulations; avoid predictable schedules.</p>
+</li>
+<li>
+<p><strong>Targeted training</strong>: Users who fall for simulations receive immediate, contextual micro-training—not just a generic video.</p>
+</li>
+<li>
+<p><strong>Gamification</strong>: Leaderboards, rewards for reporting; avoids shaming individuals publicly.</p>
+</li>
+<li>
+<p><strong>Role-based content</strong>: Finance staff need BEC training; executives need whaling and deepfake threat awareness.</p>
+</li>
+</ul>
+<h3 id="2751-measuring-training-effectiveness"><span class="secnum">27.5.1</span> Measuring Training Effectiveness<a class="headerlink" href="#2751-measuring-training-effectiveness" title="Permanent link">&para;</a></h3>
+<p>Phishing simulation click rates are the most commonly reported metric in security awareness programmes, but they’re also the most easily gamed and misinterpreted. An organisation that runs only obvious simulations—an email with poor grammar, a suspicious sender domain, a generic “Your account has been compromised” subject line—will report a low click rate that reflects the simulation quality, not the organisation’s actual resilience to real targeted attacks.</p>
+<p>A better approach is to treat the simulation programme the same way you’d treat a penetration test: the goal is to find the gaps, not to report a good number. Mix simulation difficulty levels: send some easy, obviously suspicious emails alongside well-crafted spear-phishing scenarios that reference real internal projects and colleagues’ names. Report both click rates separately. The harder simulations reveal the true risk surface.</p>
+<p><strong>Time-to-report</strong> is arguably a better headline metric than click rate. If a user clicks a link but immediately reports the simulation to the security team, the real-world outcome of a similar attack would be early detection and rapid response—much better than a user who doesn’t click but also doesn’t report the suspicious email at all. A culture where reporting is the expected response, regardless of whether you clicked, is more valuable than a culture optimised for non-clicking.</p>
+<p>The biggest programme design mistake is using punitive consequences for clicking. When employees fear punishment for reporting that they clicked a suspicious link, they hide it. In a real incident, that silence is dangerous: the window for containment closes while the employee waits to see if anything bad happens. Security programmes that treat simulation clicks as learning opportunities rather than failures see significantly higher self-reporting rates for real suspicious activity.</p>
+<p><strong>Security champions programmes</strong> embed security-minded individuals inside development, operations, and business teams rather than centralising all security expertise in the security team. A security champion is a developer or analyst who has received additional training, has a direct line to the security team, and acts as a first point of contact for security questions in their immediate team. Champions aren’t expected to be security experts—they’re force multipliers who know when to escalate. The model scales security culture in a way that a small, centralised security team cannot: a 6-person security team can’t personally engage with 200 developers daily, but 20 champions distributed across those teams can.</p>
+<h2 id="sec-insider-threats"><span class="secnum">27.6</span> Insider Threats<a class="headerlink" href="#sec-insider-threats" title="Permanent link">&para;</a></h2>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 27.2 (Insider Threat)</p>
+<p>An <strong>insider threat</strong> is a security risk originating from individuals within the organisation (employees, contractors, former employees) who have legitimate access to systems and data.</p>
+</div>
+<p>Three insider threat categories:</p>
+<dl>
+<dt>Malicious Insider</dt>
+<dd>Intentional data theft, sabotage, or fraud for financial gain, revenge, or espionage. Example: Edward Snowden.</dd>
+<dt>Negligent Insider</dt>
+<dd>Accidental data exposure via misconfiguration, sending data to the wrong recipient, or falling for phishing. This represents the majority of insider incidents.</dd>
+<dt>Compromised Insider</dt>
+<dd>Legitimate account taken over by an external threat actor; the account behaves maliciously while appearing legitimate.</dd>
+</dl>
+<p>Technical controls for insider threat detection:</p>
+<ul>
+<li>
+<p><strong>DLP (Data Loss Prevention)</strong>: Monitor and block exfiltration via email, USB, cloud upload; classify data and apply policy.</p>
+</li>
+<li>
+<p><strong>UEBA (User and Entity Behaviour Analytics)</strong>: Baseline normal behaviour; alert on deviations (unusual hours, large transfers, access to new resources).</p>
+</li>
+<li>
+<p><strong>Least Privilege + Separation of Duties</strong>: Limit the blast radius of any single compromised account; require dual authorisation for high-value actions.</p>
+</li>
+<li>
+<p><strong>Privileged Access Management (PAM)</strong>: Vault admin credentials; session recording; just-in-time access for privileged tasks.</p>
+</li>
+</ul>
+<h3 id="2761-data-loss-prevention"><span class="secnum">27.6.1</span> Data Loss Prevention<a class="headerlink" href="#2761-data-loss-prevention" title="Permanent link">&para;</a></h3>
+<p>Data Loss Prevention (DLP) tools attempt to prevent sensitive data from leaving the organisation’s control. The category splits into two deployment modes that address different exfiltration paths.</p>
+<p><strong>Endpoint DLP</strong> runs as an agent on workstations and laptops. It intercepts file operations: copying to USB drives, uploading to cloud storage (Dropbox, Google Drive, personal OneDrive), printing, emailing as attachments, or pasting into web forms. When a file matching a sensitive data pattern (SSN, credit card number, internal classification label, source code fingerprint) is involved in one of these operations, the DLP agent can block the action, log it, or prompt the user for a business justification before allowing it.</p>
+<p><strong>Network DLP</strong> inspects content at egress—typically at the email gateway or a web proxy—using deep packet inspection and content analysis. Regular expression patterns match credit card numbers (Luhn-validated), social security numbers, IBAN bank account numbers, and document metadata fingerprints. Network DLP is effective for email-based exfiltration but struggles with encrypted channels (HTTPS, which is nearly everything now) unless the proxy performs TLS inspection.</p>
+<p>The <strong>false positive problem</strong> is DLP’s greatest operational challenge. Content-matching patterns that are broad enough to catch exfiltration are also broad enough to match legitimate work: a developer sharing a test dataset containing dummy PII, a finance analyst sending a quarterly report with revenue figures, a recruiter emailing a spreadsheet of salary data. If the DLP policy blocks or even just alerts on all of these, the security team drowns in noise and users find workarounds (personal email, personal devices) that bypass the tool entirely.</p>
+<p>A risk-based approach works better in practice than pure content matching. Rather than blocking every instance of a credit card number leaving the network, alert on <em>unusual volume</em>: a user who uploads 10 MB to a cloud storage service is different from one who uploads 10 GB. A user accessing a document repository at 2 AM on a weekend is anomalous regardless of what they transfer. Combining DLP content signals with UEBA behavioural signals (high volume, unusual time, access to new resources, proximity to a resignation date or a performance review) produces actionable alerts instead of noise. The DLP tool’s role shifts from a blocklist to a data enrichment source feeding the UEBA engine.</p>
+<h2 id="sec-osint"><span class="secnum">27.7</span> OSINT: Open Source Intelligence<a class="headerlink" href="#sec-osint" title="Permanent link">&para;</a></h2>
+<p>Attackers collect publicly available information before and during operations:</p>
+<div class="language-bash highlight"><pre><span></span><code>theHarvester<span class="w"> </span>-d<span class="w"> </span>targetcorp.com<span class="w"> </span>-b<span class="w"> </span>google,linkedin,shodan<span class="w"> </span>-l<span class="w"> </span><span class="m">200</span>
+
+<span class="c1"># Shodan: find internet-exposed services for a domain</span>
+shodan<span class="w"> </span>search<span class="w"> </span><span class="s2">"hostname:targetcorp.com"</span><span class="w"> </span>--fields<span class="w"> </span>ip_str,port,product
+
+<span class="c1"># LinkedIn reconnaissance (manual): enumerate employees,</span>
+<span class="c1"># roles, technology stack from job postings and profiles</span>
+</code></pre></div>
+<p>OSINT defence strategies:</p>
+<ul>
+<li>
+<p>Remove personal email addresses from public websites; use role accounts.</p>
+</li>
+<li>
+<p>Scrub metadata from published documents (<code>exiftool -all= file.pdf</code>).</p>
+</li>
+<li>
+<p>Monitor for brand impersonation and typosquatted domains.</p>
+</li>
+<li>
+<p>Limit technology stack disclosure in job postings.</p>
+</li>
+<li>
+<p>Provide executives with digital footprint reduction guidance.</p>
+</li>
+</ul>
+<h2 id="sec-deepfakes"><span class="secnum">27.8</span> Deep Fakes and AI-Enhanced Social Engineering<a class="headerlink" href="#sec-deepfakes" title="Permanent link">&para;</a></h2>
+<p>Generative AI has sharply lowered the cost and raised the realism of social engineering attacks:</p>
+<dl>
+<dt>Voice Cloning in Vishing</dt>
+<dd>Real-time or recorded voice synthesis from short audio samples; used in CEO fraud telephone calls. A 2019 case involved a cloned CEO voice used to authorise a &#36;243,000 transfer.</dd>
+<dt>Video Deep Fakes for Identity Verification Bypass</dt>
+<dd>Synthetic face video used to defeat liveness detection in KYC (Know Your Customer) processes.</dd>
+<dt>AI-Generated Spear Phishing</dt>
+<dd>LLMs generate grammatically perfect, culturally appropriate, highly personalised phishing emails at scale; this eliminates the “poor grammar” heuristic from user training.</dd>
+</dl>
+<div class="admonition warning box-warningbox kind-safety">
+<p class="admonition-title">Detection Challenges</p>
+<p>Deep fake detection tools have high false-positive rates and are consistently outpaced by improvements in generation quality. Procedural mitigations are more reliable: establish out-of-band verification procedures for all high-value requests, regardless of how convincing the voice or video appears.</p>
+</div>
+<h2 id="sec-cognitive-bias"><span class="secnum">27.9</span> Cognitive Biases in Security<a class="headerlink" href="#sec-cognitive-bias" title="Permanent link">&para;</a></h2>
+<p>Security decision-making is distorted by systematic cognitive biases:</p>
+<div class="center">
+<div class="tbl">
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Bias</strong></th>
+<th style="text-align: left;"><strong>Effect</strong></th>
+<th style="text-align: left;"><strong>Security Implication</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Optimism Bias</td>
+<td style="text-align: left;">“It won’t happen to us”</td>
+<td style="text-align: left;">Under-investment in controls</td>
+</tr>
+<tr>
+<td style="text-align: left;">Normalcy Bias</td>
+<td style="text-align: left;">Dismiss warning signs as routine</td>
+<td style="text-align: left;">Delayed incident response</td>
+</tr>
+<tr>
+<td style="text-align: left;">Authority Bias</td>
+<td style="text-align: left;">Comply without questioning authority</td>
+<td style="text-align: left;">BEC, vishing susceptibility</td>
+</tr>
+<tr>
+<td style="text-align: left;">Automation Bias</td>
+<td style="text-align: left;">Over-trust automated alerts</td>
+<td style="text-align: left;">Alert fatigue; ignore true positives</td>
+</tr>
+<tr>
+<td style="text-align: left;">Confirmation Bias</td>
+<td style="text-align: left;">Seek information confirming beliefs</td>
+<td style="text-align: left;">Miss attacker indicators</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<h2 id="sec-phishing-killchain"><span class="secnum">27.10</span> Phishing Kill Chain<a class="headerlink" href="#sec-phishing-killchain" title="Permanent link">&para;</a></h2>
+<figure class="fig fig-diagram" id="fig-phishing-killchain">
+<img class="tikz" src="img/tikz-85a841563ec8.svg" alt="Phishing attack kill chain" loading="lazy" width="339" height="86">
+<figcaption><strong>Figure 27.2.</strong> Phishing attack kill chain</figcaption>
+</figure>
+<h2 id="sec-se-table"><span class="secnum">27.11</span> Social Engineering Attacks and Countermeasures<a class="headerlink" href="#sec-se-table" title="Permanent link">&para;</a></h2>
+<div class="center">
+<div class="tbl">
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Attack</strong></th>
+<th style="text-align: left;"><strong>Mechanism</strong></th>
+<th style="text-align: left;"><strong>Countermeasures</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Spear Phishing</td>
+<td style="text-align: left;">Personalised email with malicious link/attachment</td>
+<td style="text-align: left;">FIDO2 MFA; email gateway; user training</td>
+</tr>
+<tr>
+<td style="text-align: left;">Vishing</td>
+<td style="text-align: left;">Phone impersonation of IT/bank</td>
+<td style="text-align: left;">Call-back verification; no OTP over phone</td>
+</tr>
+<tr>
+<td style="text-align: left;">BEC</td>
+<td style="text-align: left;">Compromised or spoofed exec email</td>
+<td style="text-align: left;">DMARC; dual approval; out-of-band verify</td>
+</tr>
+<tr>
+<td style="text-align: left;">Tailgating</td>
+<td style="text-align: left;">Follow through controlled door</td>
+<td style="text-align: left;">Mantrap; guard challenge; badge culture</td>
+</tr>
+<tr>
+<td style="text-align: left;">USB Drop</td>
+<td style="text-align: left;">Infected USB found in car park</td>
+<td style="text-align: left;">Disable autorun; USB port lockdown; training</td>
+</tr>
+<tr>
+<td style="text-align: left;">Pretexting</td>
+<td style="text-align: left;">False identity before attack</td>
+<td style="text-align: left;">Identity verification procedures; awareness</td>
+</tr>
+<tr>
+<td style="text-align: left;">Deep Fake Vishing</td>
+<td style="text-align: left;">AI-cloned voice CEO fraud</td>
+<td style="text-align: left;">Out-of-band verification code word</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<h2 id="sec-security-culture"><span class="secnum">27.12</span> Security Culture<a class="headerlink" href="#sec-security-culture" title="Permanent link">&para;</a></h2>
+<p>Security culture is the aggregate of behaviours, norms, and attitudes that determine how security decisions get made when no one is watching and no policy explicitly covers the situation. You can’t patch human psychology, but you can design systems and environments that make secure behaviour the path of least resistance.</p>
+<p>The most effective security improvements aren’t training programmes—they’re product and process design changes that eliminate the need for users to make security decisions at all. Consider password management: the average user has dozens of accounts. Expecting them to memorise unique, high-entropy passwords for each one is not a realistic security model. A <strong>password manager</strong> eliminates that cognitive burden entirely; the user needs to remember one strong master password, and the manager handles the rest. Adoption friction (installing an extension, importing existing credentials, getting used to the workflow) is real but manageable with a good rollout. The alternative—password reuse and weak passwords—is far more dangerous.</p>
+<p><strong>Single Sign-On (SSO)</strong> reduces password fatigue by consolidating authentication to a small number of providers (your corporate IdP) rather than requiring a separate account for every SaaS tool. Fewer authentication events mean fewer phishing opportunities, fewer password resets, and simpler MFA management. The security benefit is real, but SSO also introduces a high-value target: compromise of the IdP yields access to all connected applications. This makes the IdP’s own MFA posture critically important, which is why investing in phishing-resistant authentication (FIDO2) for the IdP is a high-leverage security decision.</p>
+<p>Hardware tokens—specifically <strong>FIDO2/WebAuthn</strong> security keys like YubiKey or Google Titan—are meaningfully more usable than TOTP authenticator apps for users who are already comfortable with physical keys (which is most people, since they carry house and car keys daily). The user experience is simple: tap the key. There’s no code to read and type within a 30-second window, no app to open, no number to match. The security benefit—phishing resistance by design, since the WebAuthn assertion is bound to the origin domain—is also substantially better than TOTP. The barrier to adoption is cost and distribution logistics, not usability.</p>
+<p>The design principle unifying all of this is <strong>secure defaults</strong>. Systems should be secure out of the box without requiring users to understand the security implications of their choices. S3 buckets should default to private, not public. Password fields should default to strong requirements, not “minimum 6 characters.” New accounts should default to MFA-required. When users have to actively opt into security settings, many won’t—not because they don’t care, but because the task seems low priority until something goes wrong. Secure defaults shift the burden of decision from every individual user to the system designers who make the choice once.</p>
+<div class="center">
+<div class="tbl">
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Problem</strong></th>
+<th style="text-align: left;"><strong>Training-Based Response</strong></th>
+<th style="text-align: left;"><strong>Design-Based Response</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Password reuse</td>
+<td style="text-align: left;">Remind users to use unique passwords</td>
+<td style="text-align: left;">Deploy a password manager; enforce via IdP</td>
+</tr>
+<tr>
+<td style="text-align: left;">Phishing clicks</td>
+<td style="text-align: left;">Run phishing simulations; train non-clickers</td>
+<td style="text-align: left;">Enforce FIDO2 MFA; make clicking harmless</td>
+</tr>
+<tr>
+<td style="text-align: left;">Shadow IT</td>
+<td style="text-align: left;">Policy against unapproved tools</td>
+<td style="text-align: left;">Approve useful tools quickly; reduce friction</td>
+</tr>
+<tr>
+<td style="text-align: left;">Shared accounts</td>
+<td style="text-align: left;">Policy prohibiting sharing credentials</td>
+<td style="text-align: left;">Ensure every user has an individual account via SSO</td>
+</tr>
+<tr>
+<td style="text-align: left;">Sensitive data in email</td>
+<td style="text-align: left;">Classify and label data; train users</td>
+<td style="text-align: left;">DLP; defaults prevent attaching classified files</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>The goal isn’t to create a workforce that’s perfectly trained in security theory. It’s to create an environment where the secure option is also the easiest option—and when it isn’t, to understand why and fix the environment, not blame the user.</p>
+<h2 id="exercises">Exercises<a class="headerlink" href="#exercises" title="Permanent link">&para;</a></h2>
+<div class="admonition example box-exercise kind-example">
+<p class="admonition-title">Exercise 27.1</p>
+<p>Design a 12-month security awareness programme for an organisation of 500 employees spanning finance, engineering, and executive functions. Specify: (a) phishing simulation frequency and scenario types, (b) role-based training modules, (c) metrics and improvement targets, (d) escalation process for repeat clickers, and (e) how you would report programme effectiveness to senior leadership.</p>
+</div>
+<div class="admonition example box-exercise kind-example">
+<p class="admonition-title">Exercise 27.2</p>
+<p>A financial institution’s finance manager receives a phone call from a caller who sounds exactly like the CFO, requesting an urgent wire transfer of &#36;500,000. The caller correctly identifies a recent internal project and the manager’s name. Identify: (a) which Cialdini principles are being exploited, (b) what technical controls failed or were absent, (c) what procedural controls would prevent this attack, and (d) how the organisation should respond if the transfer has already been sent.</p>
+</div>
+<div class="admonition example box-exercise kind-example">
+<p class="admonition-title">Exercise 27.3</p>
+<p>Explain how an attacker would use optimism bias, normalcy bias, and authority bias in a targeted spear-phishing campaign against a healthcare organisation. For each bias, describe a training or procedural intervention that reduces its effect.</p>
+</div>
+<div class="admonition example box-exercise kind-example">
+<p class="admonition-title">Exercise 27.4</p>
+<p>Describe an insider threat detection programme for a software company with 200 engineers who have access to source code repositories. Address: (a) data classification and DLP controls, (b) UEBA baseline and alert criteria, (c) separation of duties for production deployments, and (d) privacy considerations when monitoring employee activity.</p>
+</div>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button type="button" class="md-top md-icon" data-md-component="top" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+Back to top
+</button>
+</main>
+<footer class="md-footer">
+<nav class="md-footer__inner md-grid" aria-label="Footer" >
+<a href="ch26-cloud-native-security.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: 26. Cloud-Native Security">
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</div>
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Previous
+</span>
+<div class="md-ellipsis">
+26. Cloud-Native Security
+</div>
+</div>
+</a>
+<a href="ch28-artificial-intelligence-and-machine-learning.html" class="md-footer__link md-footer__link--next" aria-label="Next: 28. Artificial Intelligence and Machine Learning Security">
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Next
+</span>
+<div class="md-ellipsis">
+28. Artificial Intelligence and Machine Learning Security
+</div>
+</div>
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+</div>
+</a>
+</nav>
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+The Open Book Project &middot;
+<a href="../../about.html">About this library</a> &middot;
+<a href="../../publish.html">Publish your book</a> &middot;
+© The authors of the books
+</div>
+Made with
+<a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+Material for MkDocs
+</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "navigation.prune", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "toc.follow", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+<script src="../../assets/mathjax.js"></script>
+<script src="../../assets/viz.js"></script>
+<script src="../../assets/remote.js"></script>
+<script src="../../assets/scans.js"></script>
+<script src="../../assets/reader.js"></script>
+<script src="../../assets/app.js"></script>
+<script src="../../assets/slides.js"></script>
+<script src="../../assets/speak.js"></script>
+<script src="../../assets/quiz.js"></script>
+<script>
+    /* offline reading: the service worker at the site root (its scope is the whole site) */
+    if ("serviceWorker" in navigator && window.isSecureContext) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register(new URL("../../sw.js", location.href).href).catch(function () {});
+      });
+    }
+  </script>
+</body>
+</html>

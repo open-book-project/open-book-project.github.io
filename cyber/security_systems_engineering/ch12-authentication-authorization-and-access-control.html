@@ -1,0 +1,1115 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="description" content="The Open Book Project: books on computer science, quantum computing, cyber security, science, the social sciences, university courses and languages, read page by page like an e-book, online or offline.">
+<meta name="author" content="The Open Book Project">
+<link rel="canonical" href="https://open-book-project.github.io/cyber/security_systems_engineering/ch12-authentication-authorization-and-access-control.html">
+<link rel="prev" href="ch11-web-application-security-fundamentals.html">
+<link rel="next" href="ch13-api-security.html">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap"></noscript>
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Open Book">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="application-name" content="Open Book"><script src="../../assets/library-data.js"></script><script>
+    (function () {
+      var X = window.XMLHttpRequest, open, gate = new Promise(function (r) { open = r; });
+      if (!X) return;
+      var open0 = X.prototype.open, send0 = X.prototype.send;
+      X.prototype.open = function (method, url) {
+        this.__pkIndex = /\/search\/search_index\.json(\?|#|$)/.test(String(url));
+        return open0.apply(this, arguments);
+      };
+      X.prototype.send = function () {
+        if (!this.__pkIndex) return send0.apply(this, arguments);
+        var xhr = this, args = arguments;
+        gate.then(function () { send0.apply(xhr, args); });
+      };
+      function wake() { open(); }
+      document.addEventListener("focusin", function (e) { if (e.target && e.target.closest && e.target.closest(".md-search")) wake(); });
+      document.addEventListener("click", function (e) { if (e.target && e.target.closest && e.target.closest('label[for="__search"], .md-search')) wake(); }, true);
+      document.addEventListener("keydown", function (e) {
+        var k = e.key;
+        if ((k === "/" || k === "s" || k === "f" || k === "S" || k === "F") && !(e.target && e.target.closest && e.target.closest("input, textarea, [contenteditable]"))) wake();
+      }, true);
+      if (/[?&]q=/.test(location.search)) wake();
+    })();
+  </script><script>
+    try {
+      if ((window.matchMedia && (matchMedia("(display-mode: standalone)").matches || matchMedia("(display-mode: fullscreen)").matches)) || navigator.standalone === true) {
+        document.documentElement.className += " bjp-standalone";
+      }
+    } catch (e) { /* not an installed app */ }
+    /* the books of a subject or of the whole library as covers or as a list (assets/app.js): the reader's choice */
+    try {
+      var bv = localStorage.getItem("bjp.view");
+      if (bv === "list" || (bv !== "grid" && /\/books\.html$/.test(location.pathname))) document.documentElement.className += " bjp-view-list";
+    } catch (e) { /* no storage: covers */ }
+  </script>
+<script>
+    /* a book opened from its cover on the shelf: the page stays blank, in the cover's colour, until the reader is up */
+    try {
+      var cv = sessionStorage.getItem("bjp.reader.cover");
+      if (cv && sessionStorage.getItem("bjp.reader.open") === "1") {
+        var c = JSON.parse(cv), de = document.documentElement;
+        de.className += " bjp-booting";
+        if (c && /^#[0-9a-f]{3,8}$/i.test(c.bg || "")) de.style.background = c.bg;
+        setTimeout(function () { de.classList.remove("bjp-booting"); de.style.background = ""; }, 3000);
+      }
+    } catch (e) { /* no session storage: the page simply opens as usual */ }
+  </script>
+<title>12. Authentication, Authorization, and Access Control - The Open Book Project</title>
+<link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+<link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+<link rel="stylesheet" href="../../assets/extra.css">
+<link rel="stylesheet" href="../../assets/reader.css">
+<link rel="stylesheet" href="../../assets/viz.css">
+<link rel="stylesheet" href="../../assets/app.css">
+<link rel="stylesheet" href="../../assets/theme.css">
+<link rel="stylesheet" href="../../assets/slides.css">
+<link rel="stylesheet" href="../../assets/remote.css">
+<link rel="stylesheet" href="../../assets/scans.css">
+<link rel="stylesheet" href="../../assets/speak.css">
+<link rel="stylesheet" href="../../assets/quiz.css">
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+<input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+<input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a href="#121-the-aaa-framework" class="md-skip">
+Skip to content
+</a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav class="md-header__inner md-grid" aria-label="Header">
+<a href="../../index.html" title="The Open Book Project" class="md-header__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+The Open Book Project
+</span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+12. Authentication, Authorization, and Access Control
+</span>
+</div>
+</div>
+</div><a href="../../index.html" class="bjp-libbtn" aria-label="Library: all books" title="Library: all books">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V5h4v15M8 20V9h4v11M14 20L12.6 6l3.8-.8 3 14.2M3 20h18"/></svg><span>Library</span>
+</a>
+<a href="../../subjects/index.html" class="pk-catbtn" aria-haspopup="true" aria-expanded="false" title="Browse the books by category">
+<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><circle cx="17" cy="7" r="3.6"/><path d="M7 13.4l3.9 6.8H3.1z"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg><span>Categories</span>
+</a>
+<form class="md-header__option" data-md-component="palette">
+<input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+<label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+</label>
+<input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+<label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+<label class="md-search__icon md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</label>
+<nav class="md-search__options" aria-label="Search">
+<button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+Initializing search
+</div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--primary bjp-nav bjp-nav--book" aria-label="Navigation" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a href="../../index.html" title="The Open Book Project" class="md-nav__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+The Open Book Project
+</label>
+<ul class="md-nav__list" data-md-scrollfix>
+<li class="md-nav__item bjp-nav-all">
+<a href="../../index.html" class="md-nav__link" aria-label="All books: back to the library">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+<span class="md-ellipsis">All books</span>
+</a>
+</li>
+<li class="md-nav__item bjp-nav-book" role="presentation"><span class="bjp-nav-head">Security Systems Engineering</span></li>
+<li class="md-nav__item">
+<a href="index.html" class="md-nav__link">
+<span class="md-ellipsis">
+Overview and preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="notation-and-conventions.html" class="md-nav__link">
+<span class="md-ellipsis">
+Notation and Conventions
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch01-mathematical-foundations-of-cryptography.html" class="md-nav__link">
+<span class="md-ellipsis">
+1. Mathematical Foundations of Cryptography
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch02-symmetric-cryptography.html" class="md-nav__link">
+<span class="md-ellipsis">
+2. Symmetric Cryptography
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch03-public-key-cryptography.html" class="md-nav__link">
+<span class="md-ellipsis">
+3. Public-Key Cryptography
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch04-cryptographic-hash-functions-and-macs.html" class="md-nav__link">
+<span class="md-ellipsis">
+4. Cryptographic Hash Functions and MACs
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch05-key-management-and-public-key-infrastructure.html" class="md-nav__link">
+<span class="md-ellipsis">
+5. Key Management and Public Key Infrastructure
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch06-cryptographic-protocols-and-security-proofs.html" class="md-nav__link">
+<span class="md-ellipsis">
+6. Cryptographic Protocols and Security Proofs
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch07-quantum-cryptography-and-post-quantum-migration.html" class="md-nav__link">
+<span class="md-ellipsis">
+7. Quantum Cryptography and Post-Quantum Migration
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch08-network-security-fundamentals.html" class="md-nav__link">
+<span class="md-ellipsis">
+8. Network Security Fundamentals
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch09-firewalls-ids-and-ips.html" class="md-nav__link">
+<span class="md-ellipsis">
+9. Firewalls, IDS, and IPS
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch10-network-protocol-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+10. Network Protocol Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch11-web-application-security-fundamentals.html" class="md-nav__link">
+<span class="md-ellipsis">
+11. Web Application Security Fundamentals
+</span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+12. Authentication, Authorization, and Access Control
+</span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a href="ch12-authentication-authorization-and-access-control.html" class="md-nav__link md-nav__link--active">
+<span class="md-ellipsis">
+12. Authentication, Authorization, and Access Control
+</span>
+</a>
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#121-the-aaa-framework" class="md-nav__link">
+<span class="md-ellipsis">
+12.1 The AAA Framework
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#122-password-authentication" class="md-nav__link">
+<span class="md-ellipsis">
+12.2 Password Authentication
+</span>
+</a>
+<nav class="md-nav" aria-label="12.2 Password Authentication">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1221-password-hashing-bcrypt-and-argon2" class="md-nav__link">
+<span class="md-ellipsis">
+12.2.1 Password Hashing: bcrypt and Argon2
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1222-credential-stuffing" class="md-nav__link">
+<span class="md-ellipsis">
+12.2.2 Credential Stuffing
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#123-multi-factor-authentication" class="md-nav__link">
+<span class="md-ellipsis">
+12.3 Multi-Factor Authentication
+</span>
+</a>
+<nav class="md-nav" aria-label="12.3 Multi-Factor Authentication">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1231-totp-time-based-one-time-passwords" class="md-nav__link">
+<span class="md-ellipsis">
+12.3.1 TOTP: Time-Based One-Time Passwords
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1232-fido2-and-webauthn" class="md-nav__link">
+<span class="md-ellipsis">
+12.3.2 FIDO2 and WebAuthn
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#124-oauth-20-and-openid-connect" class="md-nav__link">
+<span class="md-ellipsis">
+12.4 OAuth 2.0 and OpenID Connect
+</span>
+</a>
+<nav class="md-nav" aria-label="12.4 OAuth 2.0 and OpenID Connect">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1241-oauth-20-authorization-code-flow" class="md-nav__link">
+<span class="md-ellipsis">
+12.4.1 OAuth 2.0 Authorization Code Flow
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1242-pkce-proof-key-for-code-exchange" class="md-nav__link">
+<span class="md-ellipsis">
+12.4.2 PKCE: Proof Key for Code Exchange
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1243-openid-connect-and-jwt-structure" class="md-nav__link">
+<span class="md-ellipsis">
+12.4.3 OpenID Connect and JWT Structure
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#125-jwt-attacks" class="md-nav__link">
+<span class="md-ellipsis">
+12.5 JWT Attacks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#126-saml-and-xml-attacks" class="md-nav__link">
+<span class="md-ellipsis">
+12.6 SAML and XML Attacks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#127-access-control-models" class="md-nav__link">
+<span class="md-ellipsis">
+12.7 Access Control Models
+</span>
+</a>
+<nav class="md-nav" aria-label="12.7 Access Control Models">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1271-privilege-escalation" class="md-nav__link">
+<span class="md-ellipsis">
+12.7.1 Privilege Escalation
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#128-broken-access-control-and-idor" class="md-nav__link">
+<span class="md-ellipsis">
+12.8 Broken Access Control and IDOR
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#129-session-management" class="md-nav__link">
+<span class="md-ellipsis">
+12.9 Session Management
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1210-zero-trust-identity" class="md-nav__link">
+<span class="md-ellipsis">
+12.10 Zero Trust Identity
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1211-exercises" class="md-nav__link">
+<span class="md-ellipsis">
+12.11 Exercises
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="ch13-api-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+13. API Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch14-side-channel-attacks.html" class="md-nav__link">
+<span class="md-ellipsis">
+14. Side-Channel Attacks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch15-hardware-tamper-protection.html" class="md-nav__link">
+<span class="md-ellipsis">
+15. Hardware Tamper Protection
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch16-transport-layer-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+16. Transport Layer Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch17-ssh-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+17. SSH Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch18-email-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+18. Email Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch19-advanced-network-protocol-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+19. Advanced Network Protocol Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch20-malware-analysis.html" class="md-nav__link">
+<span class="md-ellipsis">
+20. Malware Analysis
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch21-reverse-engineering.html" class="md-nav__link">
+<span class="md-ellipsis">
+21. Reverse Engineering
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch22-digital-forensics.html" class="md-nav__link">
+<span class="md-ellipsis">
+22. Digital Forensics
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch23-vulnerability-research-and-fuzzing.html" class="md-nav__link">
+<span class="md-ellipsis">
+23. Vulnerability Research and Fuzzing
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch24-exploit-development-fundamentals.html" class="md-nav__link">
+<span class="md-ellipsis">
+24. Exploit Development Fundamentals
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch25-security-architecture-and-design.html" class="md-nav__link">
+<span class="md-ellipsis">
+25. Security Architecture and Design
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch26-cloud-native-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+26. Cloud-Native Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch27-human-factors-in-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+27. Human Factors in Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch28-artificial-intelligence-and-machine-learning.html" class="md-nav__link">
+<span class="md-ellipsis">
+28. Artificial Intelligence and Machine Learning Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch29-iot-industrial-control-systems-and-the-emerging.html" class="md-nav__link">
+<span class="md-ellipsis">
+29. IoT, Industrial Control Systems, and the Emerging Threat Horizon
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="app-a-mathematical-reference.html" class="md-nav__link">
+<span class="md-ellipsis">
+Appendix A. Mathematical Reference
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="app-b-security-tools-reference.html" class="md-nav__link">
+<span class="md-ellipsis">
+Appendix B. Security Tools Reference
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="app-c-selected-exercise-solutions.html" class="md-nav__link">
+<span class="md-ellipsis">
+Appendix C. Selected Exercise Solutions
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="bibliography.html" class="md-nav__link">
+<span class="md-ellipsis">
+References
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#121-the-aaa-framework" class="md-nav__link">
+<span class="md-ellipsis">
+12.1 The AAA Framework
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#122-password-authentication" class="md-nav__link">
+<span class="md-ellipsis">
+12.2 Password Authentication
+</span>
+</a>
+<nav class="md-nav" aria-label="12.2 Password Authentication">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1221-password-hashing-bcrypt-and-argon2" class="md-nav__link">
+<span class="md-ellipsis">
+12.2.1 Password Hashing: bcrypt and Argon2
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1222-credential-stuffing" class="md-nav__link">
+<span class="md-ellipsis">
+12.2.2 Credential Stuffing
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#123-multi-factor-authentication" class="md-nav__link">
+<span class="md-ellipsis">
+12.3 Multi-Factor Authentication
+</span>
+</a>
+<nav class="md-nav" aria-label="12.3 Multi-Factor Authentication">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1231-totp-time-based-one-time-passwords" class="md-nav__link">
+<span class="md-ellipsis">
+12.3.1 TOTP: Time-Based One-Time Passwords
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1232-fido2-and-webauthn" class="md-nav__link">
+<span class="md-ellipsis">
+12.3.2 FIDO2 and WebAuthn
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#124-oauth-20-and-openid-connect" class="md-nav__link">
+<span class="md-ellipsis">
+12.4 OAuth 2.0 and OpenID Connect
+</span>
+</a>
+<nav class="md-nav" aria-label="12.4 OAuth 2.0 and OpenID Connect">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1241-oauth-20-authorization-code-flow" class="md-nav__link">
+<span class="md-ellipsis">
+12.4.1 OAuth 2.0 Authorization Code Flow
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1242-pkce-proof-key-for-code-exchange" class="md-nav__link">
+<span class="md-ellipsis">
+12.4.2 PKCE: Proof Key for Code Exchange
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1243-openid-connect-and-jwt-structure" class="md-nav__link">
+<span class="md-ellipsis">
+12.4.3 OpenID Connect and JWT Structure
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#125-jwt-attacks" class="md-nav__link">
+<span class="md-ellipsis">
+12.5 JWT Attacks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#126-saml-and-xml-attacks" class="md-nav__link">
+<span class="md-ellipsis">
+12.6 SAML and XML Attacks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#127-access-control-models" class="md-nav__link">
+<span class="md-ellipsis">
+12.7 Access Control Models
+</span>
+</a>
+<nav class="md-nav" aria-label="12.7 Access Control Models">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1271-privilege-escalation" class="md-nav__link">
+<span class="md-ellipsis">
+12.7.1 Privilege Escalation
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#128-broken-access-control-and-idor" class="md-nav__link">
+<span class="md-ellipsis">
+12.8 Broken Access Control and IDOR
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#129-session-management" class="md-nav__link">
+<span class="md-ellipsis">
+12.9 Session Management
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1210-zero-trust-identity" class="md-nav__link">
+<span class="md-ellipsis">
+12.10 Zero Trust Identity
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1211-exercises" class="md-nav__link">
+<span class="md-ellipsis">
+12.11 Exercises
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="ch-authn-authz">Chapter 12: Authentication, Authorization, and Access Control<a class="headerlink" href="#ch-authn-authz" title="Permanent link">&para;</a></h1>
+<p>Modern security systems rest on three pillars: verifying <em>who</em> a user is, determining <em>what</em> they’re allowed to do, and recording <em>what</em> they did. This chapter examines each pillar along with the protocols and attacks surrounding them.</p>
+<h2 id="121-the-aaa-framework"><span class="secnum">12.1</span> The AAA Framework<a class="headerlink" href="#121-the-aaa-framework" title="Permanent link">&para;</a></h2>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 12.1 (Authentication, Authorization, and Accounting)</p>
+<p><strong>Authentication</strong> (AuthN) verifies the identity of a principal. <strong>Authorization</strong> (AuthZ) determines which resources and actions an authenticated principal may access. <strong>Accounting</strong> (Audit) records principal actions for forensic analysis and compliance.</p>
+</div>
+<p>Authentication factors fall into three categories:</p>
+<div class="center">
+<div class="tbl">
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Factor</strong></th>
+<th style="text-align: left;"><strong>Type</strong></th>
+<th style="text-align: left;"><strong>Examples</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Something you know</td>
+<td style="text-align: left;">Knowledge</td>
+<td style="text-align: left;">Password, PIN, security question</td>
+</tr>
+<tr>
+<td style="text-align: left;">Something you have</td>
+<td style="text-align: left;">Possession</td>
+<td style="text-align: left;">Hardware token, smart card, phone</td>
+</tr>
+<tr>
+<td style="text-align: left;">Something you are</td>
+<td style="text-align: left;">Inherence</td>
+<td style="text-align: left;">Fingerprint, face, retina, voice</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<h2 id="122-password-authentication"><span class="secnum">12.2</span> Password Authentication<a class="headerlink" href="#122-password-authentication" title="Permanent link">&para;</a></h2>
+<h3 id="1221-password-hashing-bcrypt-and-argon2"><span class="secnum">12.2.1</span> Password Hashing: bcrypt and Argon2<a class="headerlink" href="#1221-password-hashing-bcrypt-and-argon2" title="Permanent link">&para;</a></h3>
+<p>Storing plaintext or MD5/SHA-1 passwords is a serious vulnerability. Modern systems use <em>adaptive password hashing</em> algorithms that are deliberately slow and memory-hard.</p>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 12.2 (Adaptive Password Hash)</p>
+<p>An adaptive password hash function incorporates a <em>cost factor</em> that can be increased as hardware becomes faster, keeping brute-force attacks economically infeasible. It also incorporates a random <em>salt</em> to prevent precomputation (rainbow table) attacks.</p>
+</div>
+<div class="center">
+<div class="tbl">
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Algorithm</strong></th>
+<th style="text-align: left;"><strong>Memory-Hard</strong></th>
+<th style="text-align: left;"><strong>Parallelism</strong></th>
+<th style="text-align: left;"><strong>NIST Recommended</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">MD5 (legacy)</td>
+<td style="text-align: left;">No</td>
+<td style="text-align: left;">Yes</td>
+<td style="text-align: left;">No</td>
+</tr>
+<tr>
+<td style="text-align: left;">bcrypt</td>
+<td style="text-align: left;">No</td>
+<td style="text-align: left;">No</td>
+<td style="text-align: left;">Acceptable</td>
+</tr>
+<tr>
+<td style="text-align: left;">scrypt</td>
+<td style="text-align: left;">Yes</td>
+<td style="text-align: left;">Limited</td>
+<td style="text-align: left;">Acceptable</td>
+</tr>
+<tr>
+<td style="text-align: left;">Argon2id</td>
+<td style="text-align: left;">Yes</td>
+<td style="text-align: left;">Configurable</td>
+<td style="text-align: left;">✓</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="admonition info box-keybox kind-concept">
+<p class="admonition-title">NIST SP 800-63B Password Guidance</p>
+<p>NIST SP 800-63B (2024 revision) recommends: minimum 8-character passwords (64+ preferred); no mandatory periodic rotation unless compromise is suspected; check against breached-password lists (Have I Been Pwned corpus); no complexity rules that produce predictable substitutions (e.g., <code>P@ssw0rd</code>); allow all printable ASCII and Unicode characters.</p>
+</div>
+<h3 id="1222-credential-stuffing"><span class="secnum">12.2.2</span> Credential Stuffing<a class="headerlink" href="#1222-credential-stuffing" title="Permanent link">&para;</a></h3>
+<div class="admonition warning box-attackbox kind-safety">
+<p class="admonition-title">Credential Stuffing</p>
+<p>Attackers use leaked username/password pairs from one breach to attack other services, exploiting password reuse. Defences include: breach monitoring (HaveIBeenPwned API), rate limiting, CAPTCHA, device fingerprinting, and multi-factor authentication.</p>
+</div>
+<h2 id="123-multi-factor-authentication"><span class="secnum">12.3</span> Multi-Factor Authentication<a class="headerlink" href="#123-multi-factor-authentication" title="Permanent link">&para;</a></h2>
+<h3 id="1231-totp-time-based-one-time-passwords"><span class="secnum">12.3.1</span> TOTP: Time-Based One-Time Passwords<a class="headerlink" href="#1231-totp-time-based-one-time-passwords" title="Permanent link">&para;</a></h3>
+<p>RFC 6238 defines TOTP as an extension of HOTP (RFC 4226) that uses the current Unix time rather than a counter. The shared secret and time window produce a short-lived code. The 30-second window exists to tolerate clock drift between the user’s device and the server—in practice most implementations also accept codes from the adjacent windows (<code>valid_window=1</code>) to handle users who generate a code just as the window expires. That tolerance creates a 60-second replay window, which is why servers should record the last accepted code and reject it if presented again within the same window.</p>
+<div class="arithmatex">\[\begin{align*}
+T &amp;= \left\lfloor \frac{\text{Unix time}}{30} \right\rfloor \\
+\text{HOTP}(K, T) &amp;= \text{Truncate}\!\left(\text{HMAC-SHA1}(K, T)\right) \bmod 10^6
+\end{align*}\]</div>
+<div class="language-python highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">pyotp</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+
+<span class="c1"># Provision: share base32 secret with user (shown in QR code)</span>
+<span class="n">secret</span> <span class="o">=</span> <span class="s1">'JBSWY3DPEHPK3PXP'</span>
+<span class="n">totp</span> <span class="o">=</span> <span class="n">pyotp</span><span class="o">.</span><span class="n">TOTP</span><span class="p">(</span><span class="n">secret</span><span class="p">)</span>
+
+<span class="c1"># Generate current code (valid for 30-second window)</span>
+<span class="n">current_code</span> <span class="o">=</span> <span class="n">totp</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Current OTP: </span><span class="si">{</span><span class="n">current_code</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+<span class="c1"># Verify a user-supplied code (allows 1 window drift)</span>
+<span class="n">user_input</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">"Enter OTP: "</span><span class="p">)</span>
+<span class="n">valid</span> <span class="o">=</span> <span class="n">totp</span><span class="o">.</span><span class="n">verify</span><span class="p">(</span><span class="n">user_input</span><span class="p">,</span> <span class="n">valid_window</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Valid: </span><span class="si">{</span><span class="n">valid</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+<span class="c1"># Provisioning URI for QR code generation</span>
+<span class="n">uri</span> <span class="o">=</span> <span class="n">totp</span><span class="o">.</span><span class="n">provisioning_uri</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'alice@example.com'</span><span class="p">,</span>
+                            <span class="n">issuer_name</span><span class="o">=</span><span class="s1">'MyApp'</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span>
+</code></pre></div>
+<h3 id="1232-fido2-and-webauthn"><span class="secnum">12.3.2</span> FIDO2 and WebAuthn<a class="headerlink" href="#1232-fido2-and-webauthn" title="Permanent link">&para;</a></h3>
+<p>FIDO2 consists of the W3C WebAuthn API and the FIDO CTAP2 protocol. Credentials are public-key pairs where the private key never leaves the authenticator. Authentication proves possession of the private key via a challenge-response signature.</p>
+<div class="admonition info box-keybox kind-concept">
+<p class="admonition-title">WebAuthn Advantages</p>
+<p>WebAuthn credentials are <em>origin-bound</em>: the relying party ID is cryptographically bound to the credential, making phishing attacks that use lookalike domains ineffective. Passkeys extend WebAuthn by syncing credentials across devices via cloud keychain.</p>
+</div>
+<p>TOTP codes are fundamentally phishable: nothing stops a real-time phishing proxy from relaying the victim’s code to the legitimate site before it expires. Attacker-in-the-middle toolkits like Evilginx2 do exactly this, harvesting both the session cookie and the TOTP code in one automated flow. FIDO2/WebAuthn is the only widely deployed MFA mechanism that is phishing-resistant by design—the origin binding means a credential registered at <code>bank.example</code> simply can’t be used at <code>bank-secure.attacker.example</code>.</p>
+<p>SIM-swapping is the other dominant attack on TOTP and SMS-based MFA. An attacker calls the victim’s mobile carrier, impersonates the victim (often with data from previous breaches or social engineering), and convinces the carrier to port the number to a new SIM the attacker controls. From that point the attacker receives all SMS codes and TOTP is not involved at all. High-profile SIM-swap attacks have hit Twitter’s internal tooling (2020), cryptocurrency exchange accounts, and even journalists. FIDO2 hardware tokens are immune to SIM-swapping because they don’t involve telephony. For TOTP, the only mitigations are carrier-level port freeze requests and pushing users toward hardware tokens instead of authenticator apps.</p>
+<h2 id="124-oauth-20-and-openid-connect"><span class="secnum">12.4</span> OAuth 2.0 and OpenID Connect<a class="headerlink" href="#124-oauth-20-and-openid-connect" title="Permanent link">&para;</a></h2>
+<h3 id="1241-oauth-20-authorization-code-flow"><span class="secnum">12.4.1</span> OAuth 2.0 Authorization Code Flow<a class="headerlink" href="#1241-oauth-20-authorization-code-flow" title="Permanent link">&para;</a></h3>
+<p>OAuth 2.0 (RFC 6749) delegates <em>authorization</em>—not authentication—to an Authorization Server. The Authorization Code flow is the recommended pattern for confidential clients. The word “authorization” is load-bearing here: OAuth tells you what a user has granted permission to do, not who that user is. Using an access token to determine identity is a common mistake that leads to account takeover when tokens are issued to multiple clients—OIDC’s ID token is the correct mechanism for identity assertions.</p>
+<div class="center">
+<div class="center">
+<p><img class="tikz" src="img/tikz-1904253fdef2.svg" alt="image" loading="lazy" width="304" height="109"></p>
+</div>
+</div>
+<h3 id="1242-pkce-proof-key-for-code-exchange"><span class="secnum">12.4.2</span> PKCE: Proof Key for Code Exchange<a class="headerlink" href="#1242-pkce-proof-key-for-code-exchange" title="Permanent link">&para;</a></h3>
+<p>PKCE (RFC 7636) prevents authorization code interception attacks in public clients (mobile apps, SPAs). The client generates a <code>code_verifier</code> (random 43–128 chars), computes <code>code_challenge = BASE64URL(SHA-256(code_verifier))</code>, and sends the challenge in the authorization request. The token endpoint then verifies the verifier.</p>
+<p>The intuition behind PKCE is straightforward: an attacker who intercepts the authorization code (via a malicious app registered on the same custom URI scheme, or via a compromised redirect URI) can’t exchange it for a token without also knowing the <code>code_verifier</code> that was generated in the same session on the legitimate device. The verifier never travels in the redirect, so intercepting the redirect is useless. PKCE was originally designed for public clients that can’t hold a client secret securely, but RFC 9700 recommends it for <em>all</em> clients including confidential server-side apps. Even when a client secret exists, PKCE adds a second factor specific to that authorization request, preventing code injection attacks where an attacker tricks the server into accepting a stolen code mid-flow.</p>
+<div class="admonition warning box-warningbox kind-safety">
+<p class="admonition-title">Implicit Flow Deprecated</p>
+<p>The OAuth 2.0 Implicit flow (response_type=token) is deprecated per RFC 9700. Access tokens in URL fragments are exposed in browser history and referrer headers. All new deployments must use Authorization Code with PKCE.</p>
+</div>
+<p>The implicit flow’s fundamental flaw isn’t just history and referrer leakage—it’s that access tokens appear in URLs, which means they end up in server access logs, browser history sync, and any browser extension that can read URLs. These tokens have no code verifier binding, so anyone who captures the token from any of those sources gets full access. The flow was designed for browser-based apps that couldn’t do a back-channel token request in the pre-CORS era; that constraint no longer exists, removing the only rationale for its use.</p>
+<h3 id="1243-openid-connect-and-jwt-structure"><span class="secnum">12.4.3</span> OpenID Connect and JWT Structure<a class="headerlink" href="#1243-openid-connect-and-jwt-structure" title="Permanent link">&para;</a></h3>
+<p>OpenID Connect (OIDC) adds an <em>ID token</em> (a signed JWT) on top of OAuth 2.0, enabling authentication. A JWT has three Base64URL-encoded parts separated by dots:</p>
+<div class="arithmatex">\[\underbrace{\texttt{eyJhbGciOiJSUzI1NiJ9}}_{\text{Header}}
+\texttt{.}
+\underbrace{\texttt{eyJzdWIiOiJ1c2VyMTIzIn0}}_{\text{Payload (claims)}}
+\texttt{.}
+\underbrace{\texttt{&lt;signature&gt;}}_{\text{Signature}}\]</div>
+<p>Standard OIDC claims include <code>sub</code> (subject), <code>iss</code> (issuer), <code>aud</code> (audience), <code>exp</code> (expiry), <code>iat</code> (issued-at), and <code>nonce</code>.</p>
+<h2 id="125-jwt-attacks"><span class="secnum">12.5</span> JWT Attacks<a class="headerlink" href="#125-jwt-attacks" title="Permanent link">&para;</a></h2>
+<div class="admonition warning box-attackbox kind-safety">
+<p class="admonition-title">Algorithm Confusion: alg=none and RS256 <span class="math inline">\(\to\)</span> HS256</p>
+<p><strong>alg=none:</strong> Some libraries accept JWTs with <code>&quot;alg&quot;:&quot;none&quot;</code> and no signature, treating them as valid. Defence: reject tokens where alg is not in an explicit allowlist.</p>
+<p><strong>RS256 <span class="arithmatex">\(\to\)</span> HS256:</strong> If the server uses the RSA public key as the HMAC secret when alg=HS256 is supplied, an attacker can forge tokens using the (public) key. Defence: pin the expected algorithm server-side; never derive the verification key from the token header.</p>
+</div>
+<p>The RS256<span class="arithmatex">\(\to\)</span>HS256 confusion attack deserves more detail because it surprises even experienced developers. In RS256, the server signs with an RSA private key and verifies with the public key—and the public key is, by definition, public. A vulnerable JWT library selects the verification algorithm from the token’s own <code>alg</code> header. An attacker changes that header to <code>HS256</code>, then signs the token with the server’s RSA <em>public</em> key (which the attacker has). When the vulnerable library verifies, it reads <code>alg=HS256</code> and computes <code>HMAC-SHA256(token, publicKey)</code>, which matches exactly—so verification succeeds. The attacker has produced a token claiming any identity they want. The fix is one line: <code>algorithms=[’RS256’]</code> passed to the decode call. Never let the token header dictate which algorithm you use; that field is attacker-controlled.</p>
+<p>The <code>alg:none</code> attack exploits a misguided feature in early JWT specifications that allowed unsigned tokens for internal messaging. Some libraries implemented it as a valid algorithm value, meaning a token with <code>&quot;alg&quot;:&quot;none&quot;</code> and an empty signature field passes “verification.” Real-world exploits of both attacks appeared in Auth0’s legacy sdk, the python-jose library, and numerous custom JWT implementations. Check your library’s changelog for CVEs mentioning “algorithm confusion” before trusting it in production.</p>
+<div class="admonition warning box-attackbox kind-safety">
+<p class="admonition-title">kid Injection</p>
+<p>The JWT <code>kid</code> (key ID) header parameter may be used to look up a key in a database. If unsanitised, an attacker can inject SQL: <code>&quot;kid&quot;:&quot;’ UNION SELECT ’attacker_key’ --&quot;</code>. Defence: validate <code>kid</code> against a strict allowlist; use parameterised queries.</p>
+</div>
+<h2 id="126-saml-and-xml-attacks"><span class="secnum">12.6</span> SAML and XML Attacks<a class="headerlink" href="#126-saml-and-xml-attacks" title="Permanent link">&para;</a></h2>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 12.3 (SAML Assertion)</p>
+<p>Security Assertion Markup Language (SAML) 2.0 uses XML documents called <em>assertions</em> signed by an Identity Provider (IdP) to convey authentication and attribute statements to a Service Provider (SP).</p>
+</div>
+<div class="admonition warning box-attackbox kind-safety">
+<p class="admonition-title">XML Signature Wrapping (XSW)</p>
+<p>XSW attacks exploit the gap between which element is <em>signed</em> and which is <em>processed</em>. An attacker duplicates the signed element, injects a malicious clone elsewhere in the XML tree, and tricks the SP into processing the unsigned clone while the signature validates over the legitimate copy. Mitigation: validate that the signed element is the one actually consumed; use strict XML canonicalisation.</p>
+</div>
+<h2 id="127-access-control-models"><span class="secnum">12.7</span> Access Control Models<a class="headerlink" href="#127-access-control-models" title="Permanent link">&para;</a></h2>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 12.4 (RBAC, ABAC, and ReBAC)</p>
+<p><strong>Role-Based Access Control (RBAC):</strong> permissions assigned to roles; users assigned to roles. Simple and auditable but coarse-grained. <strong>Attribute-Based Access Control (ABAC):</strong> policies evaluate subject, resource, and environment attributes. Expressive but complex. <strong>Relationship-Based Access Control (ReBAC):</strong> access determined by graph relationships between users and objects (e.g., Google Zanzibar, “user X owns document Y”).</p>
+</div>
+<h3 id="1271-privilege-escalation"><span class="secnum">12.7.1</span> Privilege Escalation<a class="headerlink" href="#1271-privilege-escalation" title="Permanent link">&para;</a></h3>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 12.5 (Privilege Escalation)</p>
+<p><strong>Vertical privilege escalation</strong>: a lower-privileged user gains higher-privileged capabilities (e.g., a regular user becomes an admin). <strong>Horizontal privilege escalation</strong>: a user accesses resources belonging to another user of the same privilege level (also called IDOR — Insecure Direct Object Reference).</p>
+</div>
+<h2 id="128-broken-access-control-and-idor"><span class="secnum">12.8</span> Broken Access Control and IDOR<a class="headerlink" href="#128-broken-access-control-and-idor" title="Permanent link">&para;</a></h2>
+<p>Broken Access Control is the OWASP Top 10 #1 vulnerability (2021–2025). A classic form is IDOR:</p>
+<div class="language-python highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">flask</span><span class="w"> </span><span class="kn">import</span> <span class="n">Flask</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">jsonify</span><span class="p">,</span> <span class="n">g</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="c1"># VULNERABLE: no ownership check</span>
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">'/api/invoice/&lt;int:invoice_id&gt;'</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_invoice_bad</span><span class="p">(</span><span class="n">invoice_id</span><span class="p">):</span>
+    <span class="n">invoice</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s1">'SELECT * FROM invoices WHERE id = ?'</span><span class="p">,</span>
+                       <span class="n">invoice_id</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">invoice</span><span class="p">)</span>   <span class="c1"># Any user can fetch any invoice!</span>
+
+<span class="c1"># SECURE: verify authenticated user owns the resource</span>
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">'/api/invoice/&lt;int:invoice_id&gt;'</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_invoice_good</span><span class="p">(</span><span class="n">invoice_id</span><span class="p">):</span>
+    <span class="n">user_id</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">current_user</span><span class="p">[</span><span class="s1">'id'</span><span class="p">]</span>
+    <span class="n">invoice</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">query</span><span class="p">(</span>
+        <span class="s1">'SELECT * FROM invoices WHERE id = ? AND owner_id = ?'</span><span class="p">,</span>
+        <span class="n">invoice_id</span><span class="p">,</span> <span class="n">user_id</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">invoice</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s1">'error'</span><span class="p">:</span> <span class="s1">'Not found'</span><span class="p">}),</span> <span class="mi">404</span>
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">invoice</span><span class="p">)</span>
+</code></pre></div>
+<h2 id="129-session-management"><span class="secnum">12.9</span> Session Management<a class="headerlink" href="#129-session-management" title="Permanent link">&para;</a></h2>
+<div class="admonition info box-keybox kind-concept">
+<p class="admonition-title">Secure Cookie Attributes</p>
+<ul>
+<li>
+<p><code>HttpOnly</code> — prevents JavaScript access; mitigates XSS-based session theft.</p>
+</li>
+<li>
+<p><code>Secure</code> — cookie transmitted only over HTTPS.</p>
+</li>
+<li>
+<p><code>SameSite=Strict</code> — cookie not sent on cross-site requests; prevents CSRF.</p>
+</li>
+<li>
+<p><code>__Host-</code> prefix — cookie scoped to the exact host, no subdomains.</p>
+</li>
+</ul>
+</div>
+<div class="admonition warning box-attackbox kind-safety">
+<p class="admonition-title">Session Fixation</p>
+<p>An attacker sets a known session ID on the victim’s browser (e.g., via URL parameter or cross-subdomain cookie), then waits for the victim to authenticate. The server elevates the fixed session, giving the attacker an authenticated session. Defence: <em>regenerate the session ID on every privilege change</em>, including login.</p>
+</div>
+<p>Session fixation and session hijacking are often confused but differ in when the attacker acquires the session token. In <strong>hijacking</strong>, the attacker steals a session that is already authenticated—typically via XSS, network sniffing on HTTP, or a predictable session ID. In <strong>fixation</strong>, the attacker plants a known session ID <em>before</em> authentication; they don’t need to steal anything because they already know the value. The defence for hijacking is making tokens hard to steal (HttpOnly, Secure, short lifetime, binding to IP or User-Agent). The defence for fixation is simpler and more reliable: always issue a brand-new session ID the moment the authentication state changes. Flask’s <code>session.regenerate()</code>, Django’s <code>request.session.cycle_key()</code>, and Spring Security’s <code>sessionFixation().newSession()</code> all do this. Most modern frameworks do it automatically, but custom session implementations frequently forget it.</p>
+<p>Session hijacking remains relevant even with HttpOnly cookies because XSS can make authenticated requests in the context of the victim’s session without needing to read the cookie. Attackers exfiltrate data or perform actions—they don’t need the token string itself. This is why XSS mitigation (CSP, output encoding) and session security are complementary layers, not alternatives.</p>
+<h2 id="1210-zero-trust-identity"><span class="secnum">12.10</span> Zero Trust Identity<a class="headerlink" href="#1210-zero-trust-identity" title="Permanent link">&para;</a></h2>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 12.6 (Zero Trust)</p>
+<p>Zero Trust (NIST SP 800-207) assumes no implicit trust based on network location. Every access request is evaluated against identity, device posture, and context <em>continuously</em>, not just at login. The principle: “never trust, always verify.”</p>
+</div>
+<p>Key Zero Trust controls include continuous risk scoring, device health attestation (via TPM or MDM), just-in-time privilege, and microsegmentation of workloads.</p>
+<h2 id="1211-exercises"><span class="secnum">12.11</span> Exercises<a class="headerlink" href="#1211-exercises" title="Permanent link">&para;</a></h2>
+<div class="admonition example box-exercise kind-example">
+<p class="admonition-title">Exercise 12.1</p>
+<p>Implement a Python TOTP provisioning and verification service. Your implementation must: (a) generate a random base32 secret and return a QR-code URI; (b) verify a supplied 6-digit code with a <span class="arithmatex">\(\pm 1\)</span> window tolerance; (c) enforce rate limiting so that no more than 5 verification attempts are allowed per 30-second window. Explain how the time window tolerance creates a replay window and how to minimise it.</p>
+</div>
+<div class="admonition example box-exercise kind-example">
+<p class="admonition-title">Exercise 12.2</p>
+<p>Analyse the OAuth 2.0 authorization code flow threat model. For each of the following adversary capabilities, state whether the flow is vulnerable with and without PKCE, and explain the mechanism of attack or defence: (a) attacker can intercept the redirect URI on a mobile device; (b) attacker controls a malicious app registered on the same custom URI scheme; (c) attacker can read the victim’s browser history.</p>
+</div>
+<div class="admonition example box-exercise kind-example">
+<p class="admonition-title">Exercise 12.3</p>
+<p>A web application exposes <code>GET /api/ users/ {id}/ documents</code>. An authenticated user with ID 42 discovers they can access documents for user ID 43 by modifying the path. (a) Classify this vulnerability. (b) Write a Flask route that correctly prevents this. (c) Describe how automated IDOR scanning tools detect such endpoints.</p>
+</div>
+<div class="admonition example box-exercise kind-example">
+<p class="admonition-title">Exercise 12.4</p>
+<p>Explain the JWT RS256<span class="arithmatex">\(\to\)</span>HS256 algorithm confusion attack in detail. Include: (a) the attacker’s step-by-step procedure to forge a token; (b) why the server accepts the forged token in the vulnerable case; (c) two distinct code-level defences a JWT library should implement.</p>
+</div>
+<div class="admonition example box-exercise kind-example">
+<p class="admonition-title">Exercise 12.5</p>
+<p>A security engineer wants to enforce MFA for all administrative actions but allow password-only for read operations. Design an ABAC policy schema (as JSON or pseudocode) that expresses this requirement. Your schema should include subject attributes, resource attributes, and environment attributes (e.g., <code>mfa_verified</code>, <code>action</code>, <code>resource_sensitivity</code>).</p>
+</div>
+<div class="admonition example box-exercise kind-example">
+<p class="admonition-title">Exercise 12.6</p>
+<p>Describe the XML Signature Wrapping attack against a SAML Service Provider. Draw a simplified XML tree before and after the attack, indicating which element is signed and which element the vulnerable SP processes. Propose a concrete mitigation at the XML parsing layer.</p>
+</div>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button type="button" class="md-top md-icon" data-md-component="top" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+Back to top
+</button>
+</main>
+<footer class="md-footer">
+<nav class="md-footer__inner md-grid" aria-label="Footer" >
+<a href="ch11-web-application-security-fundamentals.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: 11. Web Application Security Fundamentals">
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</div>
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Previous
+</span>
+<div class="md-ellipsis">
+11. Web Application Security Fundamentals
+</div>
+</div>
+</a>
+<a href="ch13-api-security.html" class="md-footer__link md-footer__link--next" aria-label="Next: 13. API Security">
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Next
+</span>
+<div class="md-ellipsis">
+13. API Security
+</div>
+</div>
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+</div>
+</a>
+</nav>
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+The Open Book Project &middot;
+<a href="../../about.html">About this library</a> &middot;
+<a href="../../publish.html">Publish your book</a> &middot;
+© The authors of the books
+</div>
+Made with
+<a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+Material for MkDocs
+</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "navigation.prune", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "toc.follow", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+<script src="../../assets/mathjax.js"></script>
+<script src="../../assets/viz.js"></script>
+<script src="../../assets/remote.js"></script>
+<script src="../../assets/scans.js"></script>
+<script src="../../assets/reader.js"></script>
+<script src="../../assets/app.js"></script>
+<script src="../../assets/slides.js"></script>
+<script src="../../assets/speak.js"></script>
+<script src="../../assets/quiz.js"></script>
+<script>
+    /* offline reading: the service worker at the site root (its scope is the whole site) */
+    if ("serviceWorker" in navigator && window.isSecureContext) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register(new URL("../../sw.js", location.href).href).catch(function () {});
+      });
+    }
+  </script>
+</body>
+</html>

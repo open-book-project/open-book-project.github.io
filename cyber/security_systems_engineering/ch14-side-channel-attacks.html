@@ -1,0 +1,1084 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="description" content="The Open Book Project: books on computer science, quantum computing, cyber security, science, the social sciences, university courses and languages, read page by page like an e-book, online or offline.">
+<meta name="author" content="The Open Book Project">
+<link rel="canonical" href="https://open-book-project.github.io/cyber/security_systems_engineering/ch14-side-channel-attacks.html">
+<link rel="prev" href="ch13-api-security.html">
+<link rel="next" href="ch15-hardware-tamper-protection.html">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap"></noscript>
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Open Book">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="application-name" content="Open Book"><script src="../../assets/library-data.js"></script><script>
+    (function () {
+      var X = window.XMLHttpRequest, open, gate = new Promise(function (r) { open = r; });
+      if (!X) return;
+      var open0 = X.prototype.open, send0 = X.prototype.send;
+      X.prototype.open = function (method, url) {
+        this.__pkIndex = /\/search\/search_index\.json(\?|#|$)/.test(String(url));
+        return open0.apply(this, arguments);
+      };
+      X.prototype.send = function () {
+        if (!this.__pkIndex) return send0.apply(this, arguments);
+        var xhr = this, args = arguments;
+        gate.then(function () { send0.apply(xhr, args); });
+      };
+      function wake() { open(); }
+      document.addEventListener("focusin", function (e) { if (e.target && e.target.closest && e.target.closest(".md-search")) wake(); });
+      document.addEventListener("click", function (e) { if (e.target && e.target.closest && e.target.closest('label[for="__search"], .md-search')) wake(); }, true);
+      document.addEventListener("keydown", function (e) {
+        var k = e.key;
+        if ((k === "/" || k === "s" || k === "f" || k === "S" || k === "F") && !(e.target && e.target.closest && e.target.closest("input, textarea, [contenteditable]"))) wake();
+      }, true);
+      if (/[?&]q=/.test(location.search)) wake();
+    })();
+  </script><script>
+    try {
+      if ((window.matchMedia && (matchMedia("(display-mode: standalone)").matches || matchMedia("(display-mode: fullscreen)").matches)) || navigator.standalone === true) {
+        document.documentElement.className += " bjp-standalone";
+      }
+    } catch (e) { /* not an installed app */ }
+    /* the books of a subject or of the whole library as covers or as a list (assets/app.js): the reader's choice */
+    try {
+      var bv = localStorage.getItem("bjp.view");
+      if (bv === "list" || (bv !== "grid" && /\/books\.html$/.test(location.pathname))) document.documentElement.className += " bjp-view-list";
+    } catch (e) { /* no storage: covers */ }
+  </script>
+<script>
+    /* a book opened from its cover on the shelf: the page stays blank, in the cover's colour, until the reader is up */
+    try {
+      var cv = sessionStorage.getItem("bjp.reader.cover");
+      if (cv && sessionStorage.getItem("bjp.reader.open") === "1") {
+        var c = JSON.parse(cv), de = document.documentElement;
+        de.className += " bjp-booting";
+        if (c && /^#[0-9a-f]{3,8}$/i.test(c.bg || "")) de.style.background = c.bg;
+        setTimeout(function () { de.classList.remove("bjp-booting"); de.style.background = ""; }, 3000);
+      }
+    } catch (e) { /* no session storage: the page simply opens as usual */ }
+  </script>
+<title>14. Side-Channel Attacks - The Open Book Project</title>
+<link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+<link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+<link rel="stylesheet" href="../../assets/extra.css">
+<link rel="stylesheet" href="../../assets/reader.css">
+<link rel="stylesheet" href="../../assets/viz.css">
+<link rel="stylesheet" href="../../assets/app.css">
+<link rel="stylesheet" href="../../assets/theme.css">
+<link rel="stylesheet" href="../../assets/slides.css">
+<link rel="stylesheet" href="../../assets/remote.css">
+<link rel="stylesheet" href="../../assets/scans.css">
+<link rel="stylesheet" href="../../assets/speak.css">
+<link rel="stylesheet" href="../../assets/quiz.css">
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+<input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+<input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a href="#141-side-channel-attack-taxonomy" class="md-skip">
+Skip to content
+</a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav class="md-header__inner md-grid" aria-label="Header">
+<a href="../../index.html" title="The Open Book Project" class="md-header__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+The Open Book Project
+</span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+14. Side-Channel Attacks
+</span>
+</div>
+</div>
+</div><a href="../../index.html" class="bjp-libbtn" aria-label="Library: all books" title="Library: all books">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V5h4v15M8 20V9h4v11M14 20L12.6 6l3.8-.8 3 14.2M3 20h18"/></svg><span>Library</span>
+</a>
+<a href="../../subjects/index.html" class="pk-catbtn" aria-haspopup="true" aria-expanded="false" title="Browse the books by category">
+<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><circle cx="17" cy="7" r="3.6"/><path d="M7 13.4l3.9 6.8H3.1z"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg><span>Categories</span>
+</a>
+<form class="md-header__option" data-md-component="palette">
+<input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+<label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+</label>
+<input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+<label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+<label class="md-search__icon md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</label>
+<nav class="md-search__options" aria-label="Search">
+<button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+Initializing search
+</div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--primary bjp-nav bjp-nav--book" aria-label="Navigation" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a href="../../index.html" title="The Open Book Project" class="md-nav__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+The Open Book Project
+</label>
+<ul class="md-nav__list" data-md-scrollfix>
+<li class="md-nav__item bjp-nav-all">
+<a href="../../index.html" class="md-nav__link" aria-label="All books: back to the library">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+<span class="md-ellipsis">All books</span>
+</a>
+</li>
+<li class="md-nav__item bjp-nav-book" role="presentation"><span class="bjp-nav-head">Security Systems Engineering</span></li>
+<li class="md-nav__item">
+<a href="index.html" class="md-nav__link">
+<span class="md-ellipsis">
+Overview and preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="notation-and-conventions.html" class="md-nav__link">
+<span class="md-ellipsis">
+Notation and Conventions
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch01-mathematical-foundations-of-cryptography.html" class="md-nav__link">
+<span class="md-ellipsis">
+1. Mathematical Foundations of Cryptography
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch02-symmetric-cryptography.html" class="md-nav__link">
+<span class="md-ellipsis">
+2. Symmetric Cryptography
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch03-public-key-cryptography.html" class="md-nav__link">
+<span class="md-ellipsis">
+3. Public-Key Cryptography
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch04-cryptographic-hash-functions-and-macs.html" class="md-nav__link">
+<span class="md-ellipsis">
+4. Cryptographic Hash Functions and MACs
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch05-key-management-and-public-key-infrastructure.html" class="md-nav__link">
+<span class="md-ellipsis">
+5. Key Management and Public Key Infrastructure
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch06-cryptographic-protocols-and-security-proofs.html" class="md-nav__link">
+<span class="md-ellipsis">
+6. Cryptographic Protocols and Security Proofs
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch07-quantum-cryptography-and-post-quantum-migration.html" class="md-nav__link">
+<span class="md-ellipsis">
+7. Quantum Cryptography and Post-Quantum Migration
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch08-network-security-fundamentals.html" class="md-nav__link">
+<span class="md-ellipsis">
+8. Network Security Fundamentals
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch09-firewalls-ids-and-ips.html" class="md-nav__link">
+<span class="md-ellipsis">
+9. Firewalls, IDS, and IPS
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch10-network-protocol-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+10. Network Protocol Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch11-web-application-security-fundamentals.html" class="md-nav__link">
+<span class="md-ellipsis">
+11. Web Application Security Fundamentals
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch12-authentication-authorization-and-access-control.html" class="md-nav__link">
+<span class="md-ellipsis">
+12. Authentication, Authorization, and Access Control
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch13-api-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+13. API Security
+</span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+14. Side-Channel Attacks
+</span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a href="ch14-side-channel-attacks.html" class="md-nav__link md-nav__link--active">
+<span class="md-ellipsis">
+14. Side-Channel Attacks
+</span>
+</a>
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#141-side-channel-attack-taxonomy" class="md-nav__link">
+<span class="md-ellipsis">
+14.1 Side-Channel Attack Taxonomy
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#142-timing-attacks" class="md-nav__link">
+<span class="md-ellipsis">
+14.2 Timing Attacks
+</span>
+</a>
+<nav class="md-nav" aria-label="14.2 Timing Attacks">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1421-variable-time-string-comparison" class="md-nav__link">
+<span class="md-ellipsis">
+14.2.1 Variable-Time String Comparison
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#143-power-analysis-attacks" class="md-nav__link">
+<span class="md-ellipsis">
+14.3 Power Analysis Attacks
+</span>
+</a>
+<nav class="md-nav" aria-label="14.3 Power Analysis Attacks">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1431-simple-power-analysis-spa" class="md-nav__link">
+<span class="md-ellipsis">
+14.3.1 Simple Power Analysis (SPA)
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1432-differential-power-analysis-dpa" class="md-nav__link">
+<span class="md-ellipsis">
+14.3.2 Differential Power Analysis (DPA)
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1433-dpa-attack-steps-against-aes" class="md-nav__link">
+<span class="md-ellipsis">
+14.3.3 DPA Attack Steps Against AES
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1434-correlation-power-analysis-cpa" class="md-nav__link">
+<span class="md-ellipsis">
+14.3.4 Correlation Power Analysis (CPA)
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#144-cache-side-channel-attacks" class="md-nav__link">
+<span class="md-ellipsis">
+14.4 Cache Side-Channel Attacks
+</span>
+</a>
+<nav class="md-nav" aria-label="14.4 Cache Side-Channel Attacks">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1441-flushreload" class="md-nav__link">
+<span class="md-ellipsis">
+14.4.1 Flush+Reload
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1442-spectre-cve-2017-5753" class="md-nav__link">
+<span class="md-ellipsis">
+14.4.2 Spectre (CVE-2017-5753)
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1443-meltdown-cve-2017-5754" class="md-nav__link">
+<span class="md-ellipsis">
+14.4.3 Meltdown (CVE-2017-5754)
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#145-tempest-and-electromagnetic-attacks" class="md-nav__link">
+<span class="md-ellipsis">
+14.5 TEMPEST and Electromagnetic Attacks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#146-fault-injection" class="md-nav__link">
+<span class="md-ellipsis">
+14.6 Fault Injection
+</span>
+</a>
+<nav class="md-nav" aria-label="14.6 Fault Injection">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1461-rowhammer-dram-attacks" class="md-nav__link">
+<span class="md-ellipsis">
+14.6.1 Rowhammer DRAM Attacks
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#147-countermeasures" class="md-nav__link">
+<span class="md-ellipsis">
+14.7 Countermeasures
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#148-exercises" class="md-nav__link">
+<span class="md-ellipsis">
+14.8 Exercises
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="ch15-hardware-tamper-protection.html" class="md-nav__link">
+<span class="md-ellipsis">
+15. Hardware Tamper Protection
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch16-transport-layer-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+16. Transport Layer Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch17-ssh-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+17. SSH Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch18-email-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+18. Email Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch19-advanced-network-protocol-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+19. Advanced Network Protocol Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch20-malware-analysis.html" class="md-nav__link">
+<span class="md-ellipsis">
+20. Malware Analysis
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch21-reverse-engineering.html" class="md-nav__link">
+<span class="md-ellipsis">
+21. Reverse Engineering
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch22-digital-forensics.html" class="md-nav__link">
+<span class="md-ellipsis">
+22. Digital Forensics
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch23-vulnerability-research-and-fuzzing.html" class="md-nav__link">
+<span class="md-ellipsis">
+23. Vulnerability Research and Fuzzing
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch24-exploit-development-fundamentals.html" class="md-nav__link">
+<span class="md-ellipsis">
+24. Exploit Development Fundamentals
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch25-security-architecture-and-design.html" class="md-nav__link">
+<span class="md-ellipsis">
+25. Security Architecture and Design
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch26-cloud-native-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+26. Cloud-Native Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch27-human-factors-in-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+27. Human Factors in Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch28-artificial-intelligence-and-machine-learning.html" class="md-nav__link">
+<span class="md-ellipsis">
+28. Artificial Intelligence and Machine Learning Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch29-iot-industrial-control-systems-and-the-emerging.html" class="md-nav__link">
+<span class="md-ellipsis">
+29. IoT, Industrial Control Systems, and the Emerging Threat Horizon
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="app-a-mathematical-reference.html" class="md-nav__link">
+<span class="md-ellipsis">
+Appendix A. Mathematical Reference
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="app-b-security-tools-reference.html" class="md-nav__link">
+<span class="md-ellipsis">
+Appendix B. Security Tools Reference
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="app-c-selected-exercise-solutions.html" class="md-nav__link">
+<span class="md-ellipsis">
+Appendix C. Selected Exercise Solutions
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="bibliography.html" class="md-nav__link">
+<span class="md-ellipsis">
+References
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#141-side-channel-attack-taxonomy" class="md-nav__link">
+<span class="md-ellipsis">
+14.1 Side-Channel Attack Taxonomy
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#142-timing-attacks" class="md-nav__link">
+<span class="md-ellipsis">
+14.2 Timing Attacks
+</span>
+</a>
+<nav class="md-nav" aria-label="14.2 Timing Attacks">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1421-variable-time-string-comparison" class="md-nav__link">
+<span class="md-ellipsis">
+14.2.1 Variable-Time String Comparison
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#143-power-analysis-attacks" class="md-nav__link">
+<span class="md-ellipsis">
+14.3 Power Analysis Attacks
+</span>
+</a>
+<nav class="md-nav" aria-label="14.3 Power Analysis Attacks">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1431-simple-power-analysis-spa" class="md-nav__link">
+<span class="md-ellipsis">
+14.3.1 Simple Power Analysis (SPA)
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1432-differential-power-analysis-dpa" class="md-nav__link">
+<span class="md-ellipsis">
+14.3.2 Differential Power Analysis (DPA)
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1433-dpa-attack-steps-against-aes" class="md-nav__link">
+<span class="md-ellipsis">
+14.3.3 DPA Attack Steps Against AES
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1434-correlation-power-analysis-cpa" class="md-nav__link">
+<span class="md-ellipsis">
+14.3.4 Correlation Power Analysis (CPA)
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#144-cache-side-channel-attacks" class="md-nav__link">
+<span class="md-ellipsis">
+14.4 Cache Side-Channel Attacks
+</span>
+</a>
+<nav class="md-nav" aria-label="14.4 Cache Side-Channel Attacks">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1441-flushreload" class="md-nav__link">
+<span class="md-ellipsis">
+14.4.1 Flush+Reload
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1442-spectre-cve-2017-5753" class="md-nav__link">
+<span class="md-ellipsis">
+14.4.2 Spectre (CVE-2017-5753)
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1443-meltdown-cve-2017-5754" class="md-nav__link">
+<span class="md-ellipsis">
+14.4.3 Meltdown (CVE-2017-5754)
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#145-tempest-and-electromagnetic-attacks" class="md-nav__link">
+<span class="md-ellipsis">
+14.5 TEMPEST and Electromagnetic Attacks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#146-fault-injection" class="md-nav__link">
+<span class="md-ellipsis">
+14.6 Fault Injection
+</span>
+</a>
+<nav class="md-nav" aria-label="14.6 Fault Injection">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1461-rowhammer-dram-attacks" class="md-nav__link">
+<span class="md-ellipsis">
+14.6.1 Rowhammer DRAM Attacks
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#147-countermeasures" class="md-nav__link">
+<span class="md-ellipsis">
+14.7 Countermeasures
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#148-exercises" class="md-nav__link">
+<span class="md-ellipsis">
+14.8 Exercises
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="ch-side-channel">Chapter 14: Side-Channel Attacks<a class="headerlink" href="#ch-side-channel" title="Permanent link">&para;</a></h1>
+<p>A cryptographic algorithm may be mathematically sound yet leak its secrets through physical observables: execution time, power consumption, electromagnetic radiation, acoustic noise, or cache behaviour. These <em>side channels</em> bypass formal security proofs, which assume a black-box adversary with access only to inputs and outputs. This chapter surveys the principal side-channel categories and their countermeasures.</p>
+<h2 id="141-side-channel-attack-taxonomy"><span class="secnum">14.1</span> Side-Channel Attack Taxonomy<a class="headerlink" href="#141-side-channel-attack-taxonomy" title="Permanent link">&para;</a></h2>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 14.1 (Side-Channel Attack)</p>
+<p>A <strong>side-channel attack</strong> exploits information leaked by the physical implementation of a cryptographic system rather than weaknesses in the underlying algorithm. The leaked information is called the <em>side channel</em>.</p>
+</div>
+<div class="center">
+<div class="tbl">
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Category</strong></th>
+<th style="text-align: left;"><strong>Observable</strong></th>
+<th style="text-align: left;"><strong>Examples</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Timing</td>
+<td style="text-align: left;">Execution time</td>
+<td style="text-align: left;">Kocher RSA, cache hit/miss</td>
+</tr>
+<tr>
+<td style="text-align: left;">Power (SPA)</td>
+<td style="text-align: left;">Single power trace</td>
+<td style="text-align: left;">RSA square-and-multiply</td>
+</tr>
+<tr>
+<td style="text-align: left;">Power (DPA)</td>
+<td style="text-align: left;">Statistical analysis of many traces</td>
+<td style="text-align: left;">AES S-box correlation</td>
+</tr>
+<tr>
+<td style="text-align: left;">Electromagnetic</td>
+<td style="text-align: left;">EM field emitted by chip</td>
+<td style="text-align: left;">TEMPEST, EM-DPA</td>
+</tr>
+<tr>
+<td style="text-align: left;">Cache</td>
+<td style="text-align: left;">Cache state / timing</td>
+<td style="text-align: left;">Flush+Reload, Spectre</td>
+</tr>
+<tr>
+<td style="text-align: left;">Acoustic</td>
+<td style="text-align: left;">Sound from capacitors, coils</td>
+<td style="text-align: left;">RSA acoustic attack</td>
+</tr>
+<tr>
+<td style="text-align: left;">Fault Injection</td>
+<td style="text-align: left;">Induced computational errors</td>
+<td style="text-align: left;">Voltage glitch, laser</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<h2 id="142-timing-attacks"><span class="secnum">14.2</span> Timing Attacks<a class="headerlink" href="#142-timing-attacks" title="Permanent link">&para;</a></h2>
+<div class="admonition info box-theorem kind-concept">
+<p class="admonition-title">Theorem 14.1 (Kocher Timing Attack (1996))</p>
+<p>Paul Kocher demonstrated that RSA private key bits can be recovered by measuring the time taken to perform modular exponentiation for chosen ciphertexts. Even nanosecond-level timing differences, measured over many trials, reveal whether a “square-and-multiply” step includes the multiply (bit = 1) or not (bit = 0).</p>
+</div>
+<p>The attack works because standard binary exponentiation has a data-dependent branch: <span class="arithmatex">\(m^d \bmod n\)</span> processes each bit of <span class="arithmatex">\(d\)</span>, squaring for every bit and multiplying only when the bit is 1. That timing difference is measurable.</p>
+<p>In a TLS context, timing attacks on the server’s private-key operations are particularly dangerous because an attacker can trigger thousands of handshakes from the internet without any privileged access. The ROBOT attack (2018) revived Bleichenbacher’s original 1998 timing oracle against RSA PKCS#1 v1.5 padding in TLS, affecting implementations in F5, Cisco, Citrix, and others. The attacker sends crafted TLS ClientKeyExchange messages and measures response timing (or error type) to determine whether the padding was valid. Given enough queries, the attacker decrypts the premaster secret from previously recorded TLS sessions. The lesson is that even a timing difference measured over a network—with jitter, retransmissions, and variable server load—can be exploited at scale.</p>
+<p>Constant-time comparisons matter not just for HMAC verification but wherever secret data influences a conditional. Password hashing functions deliberately produce fixed-time output for exactly this reason, but developers often then compare the resulting hash strings with <code>==</code> and undo that protection. Even <code>len()</code> checks before a constant-time comparison can leak information: returning early because “the token has the wrong length” reveals how long the expected token is. The correct approach is to always run <code>hmac.compare_digest()</code> on the full outputs, accepting that a wrong-length input will simply not match.</p>
+<h3 id="1421-variable-time-string-comparison"><span class="secnum">14.2.1</span> Variable-Time String Comparison<a class="headerlink" href="#1421-variable-time-string-comparison" title="Permanent link">&para;</a></h3>
+<p>A common programming error: comparing secret values (tokens, MACs) with ordinary equality operators, which short-circuit on the first mismatched byte.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">hmac</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+
+<span class="n">secret_token</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">'supersecret_api_token_abc123'</span>
+
+<span class="c1"># VULNERABLE: early exit on first differing byte</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">verify_token_bad</span><span class="p">(</span><span class="n">user_token</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">user_token</span> <span class="o">==</span> <span class="n">secret_token</span>   <span class="c1"># Variable-time!</span>
+
+<span class="c1"># SECURE: constant-time comparison --- no early exit</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">verify_token_good</span><span class="p">(</span><span class="n">user_token</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="c1"># hmac.compare_digest is guaranteed constant-time in CPython</span>
+    <span class="k">return</span> <span class="n">hmac</span><span class="o">.</span><span class="n">compare_digest</span><span class="p">(</span><span class="n">user_token</span><span class="p">,</span> <span class="n">secret_token</span><span class="p">)</span>
+
+<span class="c1"># Demonstration of timing oracle (conceptual)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">measure_compare</span><span class="p">(</span><span class="n">guess</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter_ns</span><span class="p">()</span>
+    <span class="n">verify_token_bad</span><span class="p">(</span><span class="n">guess</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter_ns</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span>
+
+<span class="c1"># An attacker can enumerate byte-by-byte using timing measurements</span>
+</code></pre></div>
+<div class="admonition info box-keybox kind-concept">
+<p class="admonition-title">Always Use Constant-Time Comparison</p>
+<p>In Python use <code>hmac.compare_digest()</code>. In C use <code>CRYPTO_memcmp()</code> (OpenSSL) or <code>timingsafe_bcmp()</code> (BSD). Never use <code>memcmp()</code> or string equality for secret comparison.</p>
+</div>
+<h2 id="143-power-analysis-attacks"><span class="secnum">14.3</span> Power Analysis Attacks<a class="headerlink" href="#143-power-analysis-attacks" title="Permanent link">&para;</a></h2>
+<h3 id="1431-simple-power-analysis-spa"><span class="secnum">14.3.1</span> Simple Power Analysis (SPA)<a class="headerlink" href="#1431-simple-power-analysis-spa" title="Permanent link">&para;</a></h3>
+<p>SPA examines a single power trace to extract secret information. In RSA with binary exponentiation, the trace shows a distinct pattern for each “square” and “square-and-multiply” pair, directly revealing key bits.</p>
+<p>The distinction between SPA and DPA is not just about how many traces you need—it reflects a fundamentally different threat model. SPA requires that the secret-dependent operations produce a visually distinguishable signal in a <em>single</em> trace. This is realistic when the operations are coarse-grained and have very different power profiles: a modular multiply takes far longer and consumes more power than a mere square, so RSA key bits are directly readable. SPA countermeasures focus on making all code paths consume identical power and take identical time regardless of the secret—so-called <em>regular</em> implementations.</p>
+<p>DPA is far more powerful because it extracts secrets statistically, using many traces to average out noise. An implementation that adds random jitter, randomises memory access patterns, or uses balanced logic gates can defeat SPA entirely yet still be vulnerable to DPA—the attacker simply collects more traces and averages out the randomness. Defeating DPA requires <em>masking</em>: the intermediate values that correlate with the key are XOR-masked with a fresh random value every computation, so the raw power value at any moment is uncorrelated with the key byte. First-order DPA requires only one unmasked value in a trace; first-order masking defeats this by ensuring every intermediate result is always the XOR of the real value with an independent random mask. Second-order DPA then targets the combination of two such masked values—the mask and the masked result—by using a second-order statistical analysis, which is why high-security implementations use higher-order masking schemes.</p>
+<h3 id="1432-differential-power-analysis-dpa"><span class="secnum">14.3.2</span> Differential Power Analysis (DPA)<a class="headerlink" href="#1432-differential-power-analysis-dpa" title="Permanent link">&para;</a></h3>
+<p>To understand DPA, start with the physical intuition: CMOS circuits draw more current when they switch more bits. This leads to a workable model of power consumption.</p>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 14.2 (Hamming Weight Power Model)</p>
+<p>The <strong>Hamming weight model</strong> assumes that the instantaneous power consumption of a CMOS gate is proportional to the number of 1-bits in the value being processed:</p>
+<div class="arithmatex">\[P_{\text{measured}} \approx \alpha \cdot \mathrm{HW}(v) + P_{\text{noise}}\]</div>
+<p>where <span class="arithmatex">\(\mathrm{HW}(v) = \sum_{i} v_i\)</span> is the Hamming weight of intermediate value <span class="arithmatex">\(v\)</span> and <span class="arithmatex">\(\alpha\)</span> is a device-dependent constant.</p>
+</div>
+<p>DPA, introduced by Kocher, Jaffe, and Jun (1999), uses statistical analysis of many power traces to overcome measurement noise. Given the model above, the attack proceeds as follows.</p>
+<h3 id="1433-dpa-attack-steps-against-aes"><span class="secnum">14.3.3</span> DPA Attack Steps Against AES<a class="headerlink" href="#1433-dpa-attack-steps-against-aes" title="Permanent link">&para;</a></h3>
+<ol>
+<li>
+<p><strong>Collect traces</strong>: encrypt <span class="arithmatex">\(N\)</span> known plaintexts <span class="arithmatex">\(p_1, …, p_N\)</span>; record power trace <span class="arithmatex">\(T_i(t)\)</span> for each.</p>
+</li>
+<li>
+<p><strong>Choose intermediate value</strong>: select a one-byte AES S-box output <span class="arithmatex">\(v_{k}(p_i) = \mathrm{SBox}(p_i[b] \oplus k[b])\)</span> for byte <span class="arithmatex">\(b\)</span> and key guess <span class="arithmatex">\(k\)</span>.</p>
+</li>
+<li>
+<p><strong>Hypothetical power</strong>: compute <span class="arithmatex">\(H_{k,i} = \mathrm{HW}(v_{k}(p_i))\)</span> for all <span class="arithmatex">\(N\)</span> traces and all 256 key guesses <span class="arithmatex">\(k \in \{0,…,255\}\)</span>.</p>
+</li>
+<li>
+<p><strong>Correlate</strong>: compute Pearson correlation <span class="arithmatex">\(\rho_k(t)\)</span> between <span class="arithmatex">\(\{H_{k,i}\}_{i=1}^N\)</span> and <span class="arithmatex">\(\{T_i(t)\}_{i=1}^N\)</span> for each time sample <span class="arithmatex">\(t\)</span>.</p>
+</li>
+<li>
+<p><strong>Identify key</strong>: the key guess <span class="arithmatex">\(k^*\)</span> that maximises <span class="arithmatex">\(\max_t |\rho_k(t)|\)</span> is the correct key byte.</p>
+</li>
+</ol>
+<div class="center">
+<div class="center">
+<p><img class="tikz" src="img/tikz-810f804c158d.svg" alt="image" loading="lazy" width="259" height="120"></p>
+</div>
+</div>
+<h3 id="1434-correlation-power-analysis-cpa"><span class="secnum">14.3.4</span> Correlation Power Analysis (CPA)<a class="headerlink" href="#1434-correlation-power-analysis-cpa" title="Permanent link">&para;</a></h3>
+<p>CPA is a refinement of DPA that uses Pearson’s linear correlation coefficient rather than a difference-of-means statistic, achieving better key recovery with fewer traces—typically hundreds rather than thousands for AES-128.</p>
+<h2 id="144-cache-side-channel-attacks"><span class="secnum">14.4</span> Cache Side-Channel Attacks<a class="headerlink" href="#144-cache-side-channel-attacks" title="Permanent link">&para;</a></h2>
+<h3 id="1441-flushreload"><span class="secnum">14.4.1</span> Flush+Reload<a class="headerlink" href="#1441-flushreload" title="Permanent link">&para;</a></h3>
+<p>Flush+Reload exploits shared memory (e.g., shared libraries) between attacker and victim. The attacker flushes a cache line using <code>clflush</code>, waits for the victim to execute, then times a reload. A fast reload indicates the victim accessed that address.</p>
+<h3 id="1442-spectre-cve-2017-5753"><span class="secnum">14.4.2</span> Spectre (CVE-2017-5753)<a class="headerlink" href="#1442-spectre-cve-2017-5753" title="Permanent link">&para;</a></h3>
+<div class="admonition warning box-attackbox kind-safety">
+<p class="admonition-title">Spectre: Branch Predictor Poisoning</p>
+<p>Spectre mistrains the CPU’s branch predictor to speculatively execute code that accesses out-of-bounds memory. Although the out-of-bounds access is architecturally squashed, the <em>cache state</em> it creates is observable via a timing side channel.</p>
+<ol>
+<li>
+<p>Attacker mistrains branch predictor to predict “branch taken.”</p>
+</li>
+<li>
+<p>Victim runs code with bounds check: <code>if (x &lt; array_len) val = array[x];</code>.</p>
+</li>
+<li>
+<p>CPU speculatively executes with attacker-controlled <span class="arithmatex">\(x\)</span> beyond <code>array_len</code>.</p>
+</li>
+<li>
+<p>Speculative load brings <code>secret[i]</code> into cache via <code>side_channel[val * 512]</code>.</p>
+</li>
+<li>
+<p>Branch resolves as not-taken; results discarded, but cache state persists.</p>
+</li>
+<li>
+<p>Attacker measures timing of <code>side_channel[0..255 * 512]</code> to recover <code>val</code>.</p>
+</li>
+</ol>
+</div>
+<h3 id="1443-meltdown-cve-2017-5754"><span class="secnum">14.4.3</span> Meltdown (CVE-2017-5754)<a class="headerlink" href="#1443-meltdown-cve-2017-5754" title="Permanent link">&para;</a></h3>
+<p>Meltdown exploits out-of-order execution to read kernel memory from user space before the CPU enforces privilege checks. It’s mitigated by Kernel Page-Table Isolation (KPTI), which maps kernel memory out of the user-space page table.</p>
+<p>The microarchitectural mechanism behind Spectre is worth understanding in detail because it explains why software mitigations are so difficult. Modern CPUs use a <em>branch predictor</em> to guess which way a conditional branch will go before the condition has been evaluated. The CPU then speculatively executes instructions along the predicted path while the actual evaluation completes in parallel. If the prediction was correct, the speculative results commit and execution continues with no delay. If the prediction was wrong, the results are discarded—but crucially, any <em>microarchitectural</em> side effects (such as cache line loads) are not reversed. Spectre variant 1 mistrains this predictor deliberately: by repeatedly executing the victim’s bounds-checked code with values that make the branch predictably take the “in-bounds” path, the attacker conditions the predictor. Then the attacker supplies an out-of-bounds index. The predictor speculatively takes the “in-bounds” path and loads secret memory before the bounds check fails. The secret value ends up encoding itself in the cache state, where the attacker reads it via a Flush+Reload timing channel.</p>
+<p>The reason Spectre is so hard to fully mitigate is that it exploits a fundamental performance optimisation. KPTI (which mitigates Meltdown) doesn’t help for Spectre because the out-of-bounds access happens within a single privilege domain. Compiler mitigations insert <code>lfence</code> barriers that serialise instruction execution, preventing speculative execution from crossing the barrier—but every such barrier has a measurable performance cost, and inserting them conservatively enough to be safe while not throttling performance is an ongoing engineering problem. Retpoline replaces indirect branches with a construct that prevents speculative execution of attacker-chosen target addresses, which closes Spectre variant 2 (branch target injection) but not variant 1.</p>
+<h2 id="145-tempest-and-electromagnetic-attacks"><span class="secnum">14.5</span> TEMPEST and Electromagnetic Attacks<a class="headerlink" href="#145-tempest-and-electromagnetic-attacks" title="Permanent link">&para;</a></h2>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 14.3 (TEMPEST / Van Eck Phreaking)</p>
+<p><strong>TEMPEST</strong> is the US government codename for standards governing compromising electromagnetic emanations. <strong>Van Eck phreaking</strong> (1985) demonstrated that CRT monitor signals could be reconstructed from their electromagnetic emissions at distance. Modern variants target LCD data cables, keyboards, and cryptographic chips.</p>
+</div>
+<p>EMSEC (Emission Security) standards (NATO SDIP-27, NIST SP 800-53 PE-19) define shielding requirements and inspection zones (Zones 0–2) based on threat distance.</p>
+<h2 id="146-fault-injection"><span class="secnum">14.6</span> Fault Injection<a class="headerlink" href="#146-fault-injection" title="Permanent link">&para;</a></h2>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 14.4 (Fault Injection)</p>
+<p><strong>Fault injection</strong> deliberately induces transient hardware faults—via voltage glitching, clock glitching, or focused laser pulses—to corrupt computations. Targets include: secure boot signature verification (skip check), AES key schedule (differential fault analysis), and PIN verification (force accept).</p>
+</div>
+<h3 id="1461-rowhammer-dram-attacks"><span class="secnum">14.6.1</span> Rowhammer DRAM Attacks<a class="headerlink" href="#1461-rowhammer-dram-attacks" title="Permanent link">&para;</a></h3>
+<div class="admonition warning box-attackbox kind-safety">
+<p class="admonition-title">Rowhammer</p>
+<p>DRAM cells in adjacent rows electrically interfere. Repeatedly accessing (“hammering”) two aggressor rows causes bit flips in the victim row between them. Demonstrated attacks flip page table entries (PTEs) to escalate privileges. Mitigations: ECC memory, Target Row Refresh (TRR), LPDDR4X mitigations, and kernel-level access throttling.</p>
+</div>
+<h2 id="147-countermeasures"><span class="secnum">14.7</span> Countermeasures<a class="headerlink" href="#147-countermeasures" title="Permanent link">&para;</a></h2>
+<div class="center">
+<div class="tbl">
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Attack</strong></th>
+<th style="text-align: left;"><strong>Countermeasure</strong></th>
+<th style="text-align: left;"><strong>Mechanism</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Timing (software)</td>
+<td style="text-align: left;">Constant-time algorithms</td>
+<td style="text-align: left;">No data-dependent branches or memory accesses</td>
+</tr>
+<tr>
+<td style="text-align: left;">SPA / DPA</td>
+<td style="text-align: left;">Masking</td>
+<td style="text-align: left;">XOR intermediate values with random mask <span class="math inline">\(r\)</span>; unmask at output</td>
+</tr>
+<tr>
+<td style="text-align: left;">DPA (RSA)</td>
+<td style="text-align: left;">RSA blinding</td>
+<td style="text-align: left;">Compute <span class="math inline">\((r^e \cdot m)^d \bmod n\)</span>, divide by <span class="math inline">\(r\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">Cache attacks</td>
+<td style="text-align: left;">Cache partitioning / flush</td>
+<td style="text-align: left;">Flush cache between security domains</td>
+</tr>
+<tr>
+<td style="text-align: left;">Spectre</td>
+<td style="text-align: left;">Retpoline / LFENCE</td>
+<td style="text-align: left;">Prevent speculative indirect branches</td>
+</tr>
+<tr>
+<td style="text-align: left;">Fault injection</td>
+<td style="text-align: left;">Redundant computation</td>
+<td style="text-align: left;">Compute twice; compare; abort on mismatch</td>
+</tr>
+<tr>
+<td style="text-align: left;">Rowhammer</td>
+<td style="text-align: left;">ECC DRAM</td>
+<td style="text-align: left;">Error-correcting codes detect/correct single-bit flips</td>
+</tr>
+<tr>
+<td style="text-align: left;">TEMPEST</td>
+<td style="text-align: left;">Shielding / distance</td>
+<td style="text-align: left;">Faraday cage; TEMPEST-certified hardware</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<h2 id="148-exercises"><span class="secnum">14.8</span> Exercises<a class="headerlink" href="#148-exercises" title="Permanent link">&para;</a></h2>
+<div class="admonition example box-exercise kind-example">
+<p class="admonition-title">Exercise 14.1</p>
+<p>Describe a complete DPA attack against the first round of AES-128 encryption. (a) State the intermediate value you target and why byte 0 of the AES S-box is a good choice. (b) Write pseudocode for the correlation step. (c) How many power traces are typically required for a successful attack against an unprotected hardware implementation? (d) How does first-order masking raise the number of required traces?</p>
+</div>
+<div class="admonition example box-exercise kind-example">
+<p class="admonition-title">Exercise 14.2</p>
+<p>The following Python function compares a user-supplied HMAC against a stored HMAC:</p>
+<div class="language-python highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">check_mac</span><span class="p">(</span><span class="n">user_mac</span><span class="p">,</span> <span class="n">expected_mac</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">user_mac</span> <span class="o">==</span> <span class="n">expected_mac</span>
+</code></pre></div>
+<p>(a) Explain the timing oracle this creates. (b) Describe how an attacker with 10,000 queries can recover the expected MAC byte-by-byte. (c) What is the correct fix? (d) Under what conditions does the fix fail to be constant-time at the CPU instruction level?</p>
+</div>
+<div class="admonition example box-exercise kind-example">
+<p class="admonition-title">Exercise 14.3</p>
+<p>Explain the Spectre variant 1 attack (bounds-check bypass). (a) Draw the speculative execution flow, marking which instructions execute architecturally and which execute only speculatively. (b) Explain how the cache state encodes the secret value. (c) Describe the Flush+Reload method used to decode the cache state. (d) Why does inserting <code>lfence</code> after the bounds check mitigate the attack?</p>
+</div>
+<div class="admonition example box-exercise kind-example">
+<p class="admonition-title">Exercise 14.4</p>
+<p>A secure boot implementation checks a firmware image signature before loading it. An attacker applies a brief voltage glitch during the signature verification routine, causing the comparison to return “equal” regardless of the actual signature. (a) What class of attack is this? (b) Propose three independent hardware countermeasures a chip designer could implement. (c) How does a redundant-execution countermeasure defend against a single glitch but fail against two precisely timed glitches?</p>
+</div>
+<div class="admonition example box-exercise kind-example">
+<p class="admonition-title">Exercise 14.5</p>
+<p>Rowhammer bit flips have been used to escalate privileges on Linux systems. (a) Explain the memory layout that makes a page-table entry (PTE) flip useful. (b) How does ECC DRAM mitigate single-bit Rowhammer flips? (c) Why is ECC insufficient against a double-sided Rowhammer attack that induces multiple flips? (d) List two OS-level mitigations that do not require specialised hardware.</p>
+</div>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button type="button" class="md-top md-icon" data-md-component="top" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+Back to top
+</button>
+</main>
+<footer class="md-footer">
+<nav class="md-footer__inner md-grid" aria-label="Footer" >
+<a href="ch13-api-security.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: 13. API Security">
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</div>
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Previous
+</span>
+<div class="md-ellipsis">
+13. API Security
+</div>
+</div>
+</a>
+<a href="ch15-hardware-tamper-protection.html" class="md-footer__link md-footer__link--next" aria-label="Next: 15. Hardware Tamper Protection">
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Next
+</span>
+<div class="md-ellipsis">
+15. Hardware Tamper Protection
+</div>
+</div>
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+</div>
+</a>
+</nav>
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+The Open Book Project &middot;
+<a href="../../about.html">About this library</a> &middot;
+<a href="../../publish.html">Publish your book</a> &middot;
+© The authors of the books
+</div>
+Made with
+<a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+Material for MkDocs
+</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "navigation.prune", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "toc.follow", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+<script src="../../assets/mathjax.js"></script>
+<script src="../../assets/viz.js"></script>
+<script src="../../assets/remote.js"></script>
+<script src="../../assets/scans.js"></script>
+<script src="../../assets/reader.js"></script>
+<script src="../../assets/app.js"></script>
+<script src="../../assets/slides.js"></script>
+<script src="../../assets/speak.js"></script>
+<script src="../../assets/quiz.js"></script>
+<script>
+    /* offline reading: the service worker at the site root (its scope is the whole site) */
+    if ("serviceWorker" in navigator && window.isSecureContext) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register(new URL("../../sw.js", location.href).href).catch(function () {});
+      });
+    }
+  </script>
+</body>
+</html>

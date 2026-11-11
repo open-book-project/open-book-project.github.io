@@ -1,0 +1,1415 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="description" content="The Open Book Project: books on computer science, quantum computing, cyber security, science, the social sciences, university courses and languages, read page by page like an e-book, online or offline.">
+<meta name="author" content="The Open Book Project">
+<link rel="canonical" href="https://open-book-project.github.io/cyber/security_systems_engineering/ch29-iot-industrial-control-systems-and-the-emerging.html">
+<link rel="prev" href="ch28-artificial-intelligence-and-machine-learning.html">
+<link rel="next" href="app-a-mathematical-reference.html">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap"></noscript>
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Open Book">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="application-name" content="Open Book"><script src="../../assets/library-data.js"></script><script>
+    (function () {
+      var X = window.XMLHttpRequest, open, gate = new Promise(function (r) { open = r; });
+      if (!X) return;
+      var open0 = X.prototype.open, send0 = X.prototype.send;
+      X.prototype.open = function (method, url) {
+        this.__pkIndex = /\/search\/search_index\.json(\?|#|$)/.test(String(url));
+        return open0.apply(this, arguments);
+      };
+      X.prototype.send = function () {
+        if (!this.__pkIndex) return send0.apply(this, arguments);
+        var xhr = this, args = arguments;
+        gate.then(function () { send0.apply(xhr, args); });
+      };
+      function wake() { open(); }
+      document.addEventListener("focusin", function (e) { if (e.target && e.target.closest && e.target.closest(".md-search")) wake(); });
+      document.addEventListener("click", function (e) { if (e.target && e.target.closest && e.target.closest('label[for="__search"], .md-search')) wake(); }, true);
+      document.addEventListener("keydown", function (e) {
+        var k = e.key;
+        if ((k === "/" || k === "s" || k === "f" || k === "S" || k === "F") && !(e.target && e.target.closest && e.target.closest("input, textarea, [contenteditable]"))) wake();
+      }, true);
+      if (/[?&]q=/.test(location.search)) wake();
+    })();
+  </script><script>
+    try {
+      if ((window.matchMedia && (matchMedia("(display-mode: standalone)").matches || matchMedia("(display-mode: fullscreen)").matches)) || navigator.standalone === true) {
+        document.documentElement.className += " bjp-standalone";
+      }
+    } catch (e) { /* not an installed app */ }
+    /* the books of a subject or of the whole library as covers or as a list (assets/app.js): the reader's choice */
+    try {
+      var bv = localStorage.getItem("bjp.view");
+      if (bv === "list" || (bv !== "grid" && /\/books\.html$/.test(location.pathname))) document.documentElement.className += " bjp-view-list";
+    } catch (e) { /* no storage: covers */ }
+  </script>
+<script>
+    /* a book opened from its cover on the shelf: the page stays blank, in the cover's colour, until the reader is up */
+    try {
+      var cv = sessionStorage.getItem("bjp.reader.cover");
+      if (cv && sessionStorage.getItem("bjp.reader.open") === "1") {
+        var c = JSON.parse(cv), de = document.documentElement;
+        de.className += " bjp-booting";
+        if (c && /^#[0-9a-f]{3,8}$/i.test(c.bg || "")) de.style.background = c.bg;
+        setTimeout(function () { de.classList.remove("bjp-booting"); de.style.background = ""; }, 3000);
+      }
+    } catch (e) { /* no session storage: the page simply opens as usual */ }
+  </script>
+<title>29. IoT, Industrial Control Systems, and the Emerging Threat Horizon - The Open Book Project</title>
+<link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+<link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+<link rel="stylesheet" href="../../assets/extra.css">
+<link rel="stylesheet" href="../../assets/reader.css">
+<link rel="stylesheet" href="../../assets/viz.css">
+<link rel="stylesheet" href="../../assets/app.css">
+<link rel="stylesheet" href="../../assets/theme.css">
+<link rel="stylesheet" href="../../assets/slides.css">
+<link rel="stylesheet" href="../../assets/remote.css">
+<link rel="stylesheet" href="../../assets/scans.css">
+<link rel="stylesheet" href="../../assets/speak.css">
+<link rel="stylesheet" href="../../assets/quiz.css">
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+<input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+<input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a href="#sec-iot-attack-surface" class="md-skip">
+Skip to content
+</a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav class="md-header__inner md-grid" aria-label="Header">
+<a href="../../index.html" title="The Open Book Project" class="md-header__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+The Open Book Project
+</span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+29. IoT, Industrial Control Systems, and the Emerging Threat Horizon
+</span>
+</div>
+</div>
+</div><a href="../../index.html" class="bjp-libbtn" aria-label="Library: all books" title="Library: all books">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V5h4v15M8 20V9h4v11M14 20L12.6 6l3.8-.8 3 14.2M3 20h18"/></svg><span>Library</span>
+</a>
+<a href="../../subjects/index.html" class="pk-catbtn" aria-haspopup="true" aria-expanded="false" title="Browse the books by category">
+<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><circle cx="17" cy="7" r="3.6"/><path d="M7 13.4l3.9 6.8H3.1z"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg><span>Categories</span>
+</a>
+<form class="md-header__option" data-md-component="palette">
+<input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+<label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+</label>
+<input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+<label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+<label class="md-search__icon md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</label>
+<nav class="md-search__options" aria-label="Search">
+<button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+Initializing search
+</div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--primary bjp-nav bjp-nav--book" aria-label="Navigation" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a href="../../index.html" title="The Open Book Project" class="md-nav__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+The Open Book Project
+</label>
+<ul class="md-nav__list" data-md-scrollfix>
+<li class="md-nav__item bjp-nav-all">
+<a href="../../index.html" class="md-nav__link" aria-label="All books: back to the library">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+<span class="md-ellipsis">All books</span>
+</a>
+</li>
+<li class="md-nav__item bjp-nav-book" role="presentation"><span class="bjp-nav-head">Security Systems Engineering</span></li>
+<li class="md-nav__item">
+<a href="index.html" class="md-nav__link">
+<span class="md-ellipsis">
+Overview and preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="notation-and-conventions.html" class="md-nav__link">
+<span class="md-ellipsis">
+Notation and Conventions
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch01-mathematical-foundations-of-cryptography.html" class="md-nav__link">
+<span class="md-ellipsis">
+1. Mathematical Foundations of Cryptography
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch02-symmetric-cryptography.html" class="md-nav__link">
+<span class="md-ellipsis">
+2. Symmetric Cryptography
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch03-public-key-cryptography.html" class="md-nav__link">
+<span class="md-ellipsis">
+3. Public-Key Cryptography
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch04-cryptographic-hash-functions-and-macs.html" class="md-nav__link">
+<span class="md-ellipsis">
+4. Cryptographic Hash Functions and MACs
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch05-key-management-and-public-key-infrastructure.html" class="md-nav__link">
+<span class="md-ellipsis">
+5. Key Management and Public Key Infrastructure
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch06-cryptographic-protocols-and-security-proofs.html" class="md-nav__link">
+<span class="md-ellipsis">
+6. Cryptographic Protocols and Security Proofs
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch07-quantum-cryptography-and-post-quantum-migration.html" class="md-nav__link">
+<span class="md-ellipsis">
+7. Quantum Cryptography and Post-Quantum Migration
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch08-network-security-fundamentals.html" class="md-nav__link">
+<span class="md-ellipsis">
+8. Network Security Fundamentals
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch09-firewalls-ids-and-ips.html" class="md-nav__link">
+<span class="md-ellipsis">
+9. Firewalls, IDS, and IPS
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch10-network-protocol-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+10. Network Protocol Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch11-web-application-security-fundamentals.html" class="md-nav__link">
+<span class="md-ellipsis">
+11. Web Application Security Fundamentals
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch12-authentication-authorization-and-access-control.html" class="md-nav__link">
+<span class="md-ellipsis">
+12. Authentication, Authorization, and Access Control
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch13-api-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+13. API Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch14-side-channel-attacks.html" class="md-nav__link">
+<span class="md-ellipsis">
+14. Side-Channel Attacks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch15-hardware-tamper-protection.html" class="md-nav__link">
+<span class="md-ellipsis">
+15. Hardware Tamper Protection
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch16-transport-layer-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+16. Transport Layer Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch17-ssh-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+17. SSH Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch18-email-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+18. Email Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch19-advanced-network-protocol-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+19. Advanced Network Protocol Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch20-malware-analysis.html" class="md-nav__link">
+<span class="md-ellipsis">
+20. Malware Analysis
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch21-reverse-engineering.html" class="md-nav__link">
+<span class="md-ellipsis">
+21. Reverse Engineering
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch22-digital-forensics.html" class="md-nav__link">
+<span class="md-ellipsis">
+22. Digital Forensics
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch23-vulnerability-research-and-fuzzing.html" class="md-nav__link">
+<span class="md-ellipsis">
+23. Vulnerability Research and Fuzzing
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch24-exploit-development-fundamentals.html" class="md-nav__link">
+<span class="md-ellipsis">
+24. Exploit Development Fundamentals
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch25-security-architecture-and-design.html" class="md-nav__link">
+<span class="md-ellipsis">
+25. Security Architecture and Design
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch26-cloud-native-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+26. Cloud-Native Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch27-human-factors-in-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+27. Human Factors in Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch28-artificial-intelligence-and-machine-learning.html" class="md-nav__link">
+<span class="md-ellipsis">
+28. Artificial Intelligence and Machine Learning Security
+</span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+29. IoT, Industrial Control Systems, and the Emerging Threat Horizon
+</span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a href="ch29-iot-industrial-control-systems-and-the-emerging.html" class="md-nav__link md-nav__link--active">
+<span class="md-ellipsis">
+29. IoT, Industrial Control Systems, and the Emerging Threat Horizon
+</span>
+</a>
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#sec-iot-attack-surface" class="md-nav__link">
+<span class="md-ellipsis">
+29.1 IoT Attack Surface
+</span>
+</a>
+<nav class="md-nav" aria-label="29.1 IoT Attack Surface">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#2911-iot-firmware-security-in-practice" class="md-nav__link">
+<span class="md-ellipsis">
+29.1.1 IoT Firmware Security in Practice
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-mirai" class="md-nav__link">
+<span class="md-ellipsis">
+29.2 Mirai Botnet: Case Study
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-firmware-security" class="md-nav__link">
+<span class="md-ellipsis">
+29.3 Firmware Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-ics-security" class="md-nav__link">
+<span class="md-ellipsis">
+29.4 ICS/OT Security
+</span>
+</a>
+<nav class="md-nav" aria-label="29.4 ICS/OT Security">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#2941-the-purdue-model" class="md-nav__link">
+<span class="md-ellipsis">
+29.4.1 The Purdue Model
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2942-stuxnet-the-first-known-cyber-weapon" class="md-nav__link">
+<span class="md-ellipsis">
+29.4.2 Stuxnet: The First Known Cyber Weapon
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2943-ot-monitoring" class="md-nav__link">
+<span class="md-ellipsis">
+29.4.3 OT Monitoring
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2944-otics-protocol-security" class="md-nav__link">
+<span class="md-ellipsis">
+29.4.4 OT/ICS Protocol Security
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-pqc-iot" class="md-nav__link">
+<span class="md-ellipsis">
+29.5 Post-Quantum Migration for IoT
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-web3-security" class="md-nav__link">
+<span class="md-ellipsis">
+29.6 Blockchain and Web3 Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-5g-security" class="md-nav__link">
+<span class="md-ellipsis">
+29.7 5G Security
+</span>
+</a>
+<nav class="md-nav" aria-label="29.7 5G Security">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#2971-5g-network-slicing-and-residual-threats" class="md-nav__link">
+<span class="md-ellipsis">
+29.7.1 5G Network Slicing and Residual Threats
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-supply-chain-iot" class="md-nav__link">
+<span class="md-ellipsis">
+29.8 Supply Chain Attacks: SolarWinds and XZ Utils
+</span>
+</a>
+<nav class="md-nav" aria-label="29.8 Supply Chain Attacks: SolarWinds and XZ Utils">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#2981-hardware-supply-chain-attacks" class="md-nav__link">
+<span class="md-ellipsis">
+29.8.1 Hardware Supply Chain Attacks
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-emerging-threats" class="md-nav__link">
+<span class="md-ellipsis">
+29.9 Emerging Threat Timeline
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-satellite-security" class="md-nav__link">
+<span class="md-ellipsis">
+29.10 Space and Satellite Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-quantum-safe-iot" class="md-nav__link">
+<span class="md-ellipsis">
+29.11 Quantum-Safe IoT
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#exercises" class="md-nav__link">
+<span class="md-ellipsis">
+Exercises
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="app-a-mathematical-reference.html" class="md-nav__link">
+<span class="md-ellipsis">
+Appendix A. Mathematical Reference
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="app-b-security-tools-reference.html" class="md-nav__link">
+<span class="md-ellipsis">
+Appendix B. Security Tools Reference
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="app-c-selected-exercise-solutions.html" class="md-nav__link">
+<span class="md-ellipsis">
+Appendix C. Selected Exercise Solutions
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="bibliography.html" class="md-nav__link">
+<span class="md-ellipsis">
+References
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#sec-iot-attack-surface" class="md-nav__link">
+<span class="md-ellipsis">
+29.1 IoT Attack Surface
+</span>
+</a>
+<nav class="md-nav" aria-label="29.1 IoT Attack Surface">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#2911-iot-firmware-security-in-practice" class="md-nav__link">
+<span class="md-ellipsis">
+29.1.1 IoT Firmware Security in Practice
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-mirai" class="md-nav__link">
+<span class="md-ellipsis">
+29.2 Mirai Botnet: Case Study
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-firmware-security" class="md-nav__link">
+<span class="md-ellipsis">
+29.3 Firmware Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-ics-security" class="md-nav__link">
+<span class="md-ellipsis">
+29.4 ICS/OT Security
+</span>
+</a>
+<nav class="md-nav" aria-label="29.4 ICS/OT Security">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#2941-the-purdue-model" class="md-nav__link">
+<span class="md-ellipsis">
+29.4.1 The Purdue Model
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2942-stuxnet-the-first-known-cyber-weapon" class="md-nav__link">
+<span class="md-ellipsis">
+29.4.2 Stuxnet: The First Known Cyber Weapon
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2943-ot-monitoring" class="md-nav__link">
+<span class="md-ellipsis">
+29.4.3 OT Monitoring
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2944-otics-protocol-security" class="md-nav__link">
+<span class="md-ellipsis">
+29.4.4 OT/ICS Protocol Security
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-pqc-iot" class="md-nav__link">
+<span class="md-ellipsis">
+29.5 Post-Quantum Migration for IoT
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-web3-security" class="md-nav__link">
+<span class="md-ellipsis">
+29.6 Blockchain and Web3 Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-5g-security" class="md-nav__link">
+<span class="md-ellipsis">
+29.7 5G Security
+</span>
+</a>
+<nav class="md-nav" aria-label="29.7 5G Security">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#2971-5g-network-slicing-and-residual-threats" class="md-nav__link">
+<span class="md-ellipsis">
+29.7.1 5G Network Slicing and Residual Threats
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-supply-chain-iot" class="md-nav__link">
+<span class="md-ellipsis">
+29.8 Supply Chain Attacks: SolarWinds and XZ Utils
+</span>
+</a>
+<nav class="md-nav" aria-label="29.8 Supply Chain Attacks: SolarWinds and XZ Utils">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#2981-hardware-supply-chain-attacks" class="md-nav__link">
+<span class="md-ellipsis">
+29.8.1 Hardware Supply Chain Attacks
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-emerging-threats" class="md-nav__link">
+<span class="md-ellipsis">
+29.9 Emerging Threat Timeline
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-satellite-security" class="md-nav__link">
+<span class="md-ellipsis">
+29.10 Space and Satellite Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-quantum-safe-iot" class="md-nav__link">
+<span class="md-ellipsis">
+29.11 Quantum-Safe IoT
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#exercises" class="md-nav__link">
+<span class="md-ellipsis">
+Exercises
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="ch-iot-emerging-threats">Chapter 29: IoT, Industrial Control Systems, and the Emerging Threat Horizon<a class="headerlink" href="#ch-iot-emerging-threats" title="Permanent link">&para;</a></h1>
+<p>The Internet of Things connects billions of resource-constrained devices to global networks; Industrial Control Systems govern critical infrastructure; and the horizon beyond holds quantum computers, AI-generated malware, and supply-chain attacks whose sophistication eclipses most of what came before. This chapter surveys the attack surface of embedded and operational technology, connects historical incidents to current defensive guidance, and prepares the security engineer for the challenges of the next decade.</p>
+<h2 id="sec-iot-attack-surface"><span class="secnum">29.1</span> IoT Attack Surface<a class="headerlink" href="#sec-iot-attack-surface" title="Permanent link">&para;</a></h2>
+<figure class="fig fig-diagram" id="fig-iot-attack-surface">
+<img class="tikz" src="img/tikz-224475cc20c2.svg" alt="IoT attack surface: six threat entry points" loading="lazy" width="337" height="163">
+<figcaption><strong>Figure 29.1.</strong> IoT attack surface: six threat entry points</figcaption>
+</figure>
+<p>Key IoT vulnerabilities:</p>
+<ul>
+<li>
+<p><strong>Default Credentials</strong>: Factory-default usernames and passwords rarely changed; trivially exploited (see Mirai botnet).</p>
+</li>
+<li>
+<p><strong>Insecure Firmware</strong>: No signature verification; update channel over HTTP; debugging interfaces (UART, JTAG) exposed.</p>
+</li>
+<li>
+<p><strong>Insecure Protocols</strong>: MQTT with no authentication; CoAP without DTLS; Zigbee pairing without channel encryption.</p>
+</li>
+<li>
+<p><strong>Physical Access</strong>: UART console accessible on PCB; JTAG debug port enables full firmware extraction; no secure boot.</p>
+</li>
+<li>
+<p><strong>Supply Chain</strong>: Counterfeit components; malicious firmware injected by ODM; compromised build environment.</p>
+</li>
+</ul>
+<h3 id="2911-iot-firmware-security-in-practice"><span class="secnum">29.1.1</span> IoT Firmware Security in Practice<a class="headerlink" href="#2911-iot-firmware-security-in-practice" title="Permanent link">&para;</a></h3>
+<p>Most IoT devices run a stripped Linux kernel with BusyBox—a single binary that packs dozens of Unix utilities (<code>sh</code>, <code>wget</code>, <code>ifconfig</code>, <code>netstat</code>) into a few hundred kilobytes. This is why IoT devices are so attractive to botnet operators: the tools needed to scan the internet, fetch a payload, and establish persistence are already on the device.</p>
+<p>Firmware images for IoT devices are frequently available without authentication. Vendors publish them on their support pages for firmware updates; sometimes they can be extracted directly from the device’s flash chip using a SOIC-8 clip and a bus pirate or dedicated flash programmer. This accessibility enables security research—and attacker reconnaissance—at scale.</p>
+<p><strong>Binwalk</strong> is the standard tool for firmware analysis. It scans a firmware binary for recognisable magic bytes (gzip headers, JFFS2/SquashFS filesystem signatures, LZMA compressed data) and extracts the embedded components. A typical run reveals a SquashFS root filesystem containing the vendor’s application code, configuration files, and—frequently—hardcoded credentials, private keys, or debug backdoors left in production builds.</p>
+<div class="language-bash highlight"><pre><span></span><code><span class="c1"># Install binwalk and extraction dependencies</span>
+apt-get<span class="w"> </span>install<span class="w"> </span>binwalk<span class="w"> </span>squashfs-tools
+
+<span class="c1"># Scan firmware image for embedded file signatures</span>
+binwalk<span class="w"> </span>router-firmware-v2.4.1.bin
+
+<span class="c1"># Extract all identified components</span>
+binwalk<span class="w"> </span>-e<span class="w"> </span>router-firmware-v2.4.1.bin
+<span class="c1"># Creates _router-firmware-v2.4.1.bin.extracted/</span>
+
+<span class="c1"># Scan extracted filesystem for sensitive strings</span>
+firmwalker.sh<span class="w"> </span>_router-firmware-v2.4.1.bin.extracted/squashfs-root/
+
+<span class="c1"># Manual checks for common issues</span>
+grep<span class="w"> </span>-r<span class="w"> </span><span class="s2">"password"</span><span class="w"> </span>_router-firmware/squashfs-root/etc/<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--include<span class="o">=</span><span class="s2">"*.conf"</span><span class="w"> </span>--include<span class="o">=</span><span class="s2">"*.cfg"</span>
+
+<span class="c1"># Find hardcoded private keys</span>
+grep<span class="w"> </span>-r<span class="w"> </span><span class="s2">"BEGIN.*PRIVATE KEY"</span><span class="w"> </span>_router-firmware/squashfs-root/
+grep<span class="w"> </span>-r<span class="w"> </span><span class="s2">"BEGIN.*RSA"</span><span class="w"> </span>_router-firmware/squashfs-root/
+
+<span class="c1"># Find listening services</span>
+grep<span class="w"> </span>-r<span class="w"> </span><span class="s2">"telnetd\|dropbear\|sshd"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>_router-firmware/squashfs-root/etc/init.d/
+</code></pre></div>
+<p><strong>Firmwalker</strong> automates many of these searches: it scans an extracted filesystem for passwords in configuration files, private SSL/TLS keys, telnet and SSH service configurations, email addresses, IP addresses, and common backdoor strings. A five-minute firmwalker run on a vendor’s firmware image often reveals more about the device’s security posture than a week of network testing.</p>
+<p>Hardcoded credentials remain the most common and most severe IoT vulnerability class. The Mirai botnet used a list of 61 default credential pairs harvested from IoT vendor documentation and firmware analysis—pairs like <code>admin/admin</code>, <code>root/xc3511</code>, <code>guest/12345</code>—and achieved a 1.2 Tbps DDoS attack by exploiting the fact that millions of devices ship with these credentials unchanged. Regulatory pressure is finally addressing this: the UK Product Security and Telecommunications Infrastructure (PSTI) Act 2022 prohibits universal default passwords in consumer IoT products sold in the UK, requiring each device to have a unique default password or to force a password change on first use. The US Cyber Trust Mark programme for IoT devices similarly addresses credential hygiene as a baseline requirement.</p>
+<h2 id="sec-mirai"><span class="secnum">29.2</span> Mirai Botnet: Case Study<a class="headerlink" href="#sec-mirai" title="Permanent link">&para;</a></h2>
+<div class="admonition warning box-attackbox kind-safety">
+<p class="admonition-title">Mirai Botnet (2016)</p>
+<p>Mirai was a botnet targeting Linux-based IoT devices (cameras, DVRs, routers) running BusyBox. Its propagation mechanism:</p>
+<ol>
+<li>
+<p>Scan the internet for Telnet (port 23) with a hardcoded list of approximately 60 default username/password pairs.</p>
+</li>
+<li>
+<p>Upon successful login, report the victim to a loader server.</p>
+</li>
+<li>
+<p>Loader pushes a platform-appropriate Mirai binary; binary joins the botnet.</p>
+</li>
+<li>
+<p>Command-and-Control (C2) issues DDoS commands: TCP SYN flood, UDP flood, HTTP flood.</p>
+</li>
+</ol>
+<p>Peak attack: <strong>1.2 Tbps</strong> against Dyn DNS (October 2016), disrupting Twitter, Netflix, Reddit, and GitHub.</p>
+</div>
+<p>Mirai’s lessons remain applicable today:</p>
+<ul>
+<li>
+<p>ISP-side BCP38 ingress filtering prevents IP spoofing used in reflection attacks.</p>
+</li>
+<li>
+<p>Regulatory requirements for unique default credentials per device (UK PSTI Act 2022) directly address the root cause.</p>
+</li>
+<li>
+<p>Network-level segmentation of IoT devices onto isolated VLANs with no internet access unless explicitly required limits botnet utility.</p>
+</li>
+</ul>
+<h2 id="sec-firmware-security"><span class="secnum">29.3</span> Firmware Security<a class="headerlink" href="#sec-firmware-security" title="Permanent link">&para;</a></h2>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 29.1 (Secure Boot)</p>
+<p><strong>Secure boot</strong> ensures that only firmware cryptographically signed by a trusted key executes during device startup. The chain of trust begins in immutable ROM (the Root of Trust), which verifies the bootloader signature, which in turn verifies the OS kernel.</p>
+</div>
+<div class="center">
+<div class="tbl">
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Control</strong></th>
+<th style="text-align: left;"><strong>Mechanism</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Secure Boot</td>
+<td style="text-align: left;">ECDSA-P256 signature on firmware image; verified by ROM bootloader</td>
+</tr>
+<tr>
+<td style="text-align: left;">Anti-Rollback</td>
+<td style="text-align: left;">Monotonic counter in OTP fuses; firmware version embedded; old firmware rejected</td>
+</tr>
+<tr>
+<td style="text-align: left;">Firmware Encryption</td>
+<td style="text-align: left;">AES-256 encryption of firmware image stored in flash; decryption key in secure element</td>
+</tr>
+<tr>
+<td style="text-align: left;">SUIT Manifest</td>
+<td style="text-align: left;">RFC 9124 manifest describes expected digest, version, and installation conditions; parsed before any write</td>
+</tr>
+<tr>
+<td style="text-align: left;">Secure OTA</td>
+<td style="text-align: left;">TLS 1.3 update channel; SUIT manifest verification before flash write; canary value preserved</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="language-c highlight"><pre><span></span><code><span class="cm">/* Pseudocode: SUIT manifest verification before OTA apply */</span>
+<span class="n">suit_manifest_t</span><span class="w"> </span><span class="n">manifest</span><span class="p">;</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">suit_parse</span><span class="p">(</span><span class="n">manifest_cbor</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">manifest</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">SUIT_OK</span><span class="p">)</span>
+<span class="w">    </span><span class="n">abort_update</span><span class="p">(</span><span class="s">"Manifest parse failed"</span><span class="p">);</span>
+
+<span class="cm">/* Verify authentication wrapper: COSE_Sign1 with vendor key */</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">suit_authenticate</span><span class="p">(</span><span class="o">&amp;</span><span class="n">manifest</span><span class="p">,</span><span class="w"> </span><span class="n">vendor_public_key</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">SUIT_OK</span><span class="p">)</span>
+<span class="w">    </span><span class="n">abort_update</span><span class="p">(</span><span class="s">"Signature verification failed"</span><span class="p">);</span>
+
+<span class="cm">/* Check version is newer than installed firmware */</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">manifest</span><span class="p">.</span><span class="n">version</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">current_firmware_version</span><span class="p">())</span>
+<span class="w">    </span><span class="n">abort_update</span><span class="p">(</span><span class="s">"Anti-rollback: version not newer"</span><span class="p">);</span>
+
+<span class="cm">/* Verify payload digest (SHA-256) before flashing */</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">sha256_verify</span><span class="p">(</span><span class="n">manifest</span><span class="p">.</span><span class="n">digest</span><span class="p">,</span><span class="w"> </span><span class="n">firmware_blob</span><span class="p">))</span>
+<span class="w">    </span><span class="n">abort_update</span><span class="p">(</span><span class="s">"Payload digest mismatch"</span><span class="p">);</span>
+
+<span class="n">apply_firmware</span><span class="p">(</span><span class="n">firmware_blob</span><span class="p">);</span>
+</code></pre></div>
+<h2 id="sec-ics-security"><span class="secnum">29.4</span> ICS/OT Security<a class="headerlink" href="#sec-ics-security" title="Permanent link">&para;</a></h2>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 29.2 (Industrial Control System)</p>
+<p>An <strong>Industrial Control System (ICS)</strong> encompasses the hardware and software used to monitor and control industrial processes: Programmable Logic Controllers (PLCs), SCADA systems, Distributed Control Systems (DCS), and Human-Machine Interfaces (HMIs).</p>
+</div>
+<h3 id="2941-the-purdue-model"><span class="secnum">29.4.1</span> The Purdue Model<a class="headerlink" href="#2941-the-purdue-model" title="Permanent link">&para;</a></h3>
+<p>The Purdue Enterprise Reference Architecture organises ICS networks into hierarchical levels:</p>
+<div class="center">
+<div class="tbl">
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Level</strong></th>
+<th style="text-align: left;"><strong>Name</strong></th>
+<th style="text-align: left;"><strong>Components</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">Field Level</td>
+<td style="text-align: left;">Sensors, actuators, motors</td>
+</tr>
+<tr>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">Control Level</td>
+<td style="text-align: left;">PLCs, RTUs, DCS controllers</td>
+</tr>
+<tr>
+<td style="text-align: left;">2</td>
+<td style="text-align: left;">Supervisory Level</td>
+<td style="text-align: left;">SCADA servers, HMIs</td>
+</tr>
+<tr>
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">Operations Level</td>
+<td style="text-align: left;">Historian, engineering workstations</td>
+</tr>
+<tr>
+<td style="text-align: left;">3.5</td>
+<td style="text-align: left;">DMZ</td>
+<td style="text-align: left;">Data diode, jump server (IT/OT boundary)</td>
+</tr>
+<tr>
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">Business Level</td>
+<td style="text-align: left;">ERP, corporate IT network</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>The IT/OT boundary (Level 3.5 DMZ) is the critical control point. Colonial Pipeline (2021) was compromised via the IT network; the OT network was shut down proactively due to fear of lateral movement, not direct OT compromise.</p>
+<h3 id="2942-stuxnet-the-first-known-cyber-weapon"><span class="secnum">29.4.2</span> Stuxnet: The First Known Cyber Weapon<a class="headerlink" href="#2942-stuxnet-the-first-known-cyber-weapon" title="Permanent link">&para;</a></h3>
+<div class="admonition warning box-attackbox kind-safety">
+<p class="admonition-title">Stuxnet Analysis</p>
+<p>Stuxnet (2010, attributed to US/Israel Operation Olympic Games) targeted Siemens S7-315 PLCs controlling uranium enrichment centrifuges at Natanz, Iran.</p>
+<ul>
+<li>
+<p><strong>Delivery</strong>: USB drive; spread via four Windows zero-days.</p>
+</li>
+<li>
+<p><strong>Targeting</strong>: Activated only on Siemens Step 7 systems with specific VFD drive configuration (matched the Natanz profile).</p>
+</li>
+<li>
+<p><strong>Payload</strong>: Modified centrifuge spin speeds (destructive) while reporting normal values to operators (deception).</p>
+</li>
+<li>
+<p><strong>Signed Drivers</strong>: Used stolen Realtek and JMicron certificates for kernel-mode driver signing.</p>
+</li>
+<li>
+<p><strong>Significance</strong>: The first publicly known cyberweapon causing physical destruction; demonstrated that ICS networks are targetable regardless of air-gap; permanently altered geopolitical norms around cyber operations.</p>
+</li>
+</ul>
+</div>
+<h3 id="2943-ot-monitoring"><span class="secnum">29.4.3</span> OT Monitoring<a class="headerlink" href="#2943-ot-monitoring" title="Permanent link">&para;</a></h3>
+<div class="admonition info box-keybox kind-concept">
+<p class="admonition-title">Passive Monitoring Only in OT</p>
+<p>Active scanning in OT environments (e.g., running Nmap against a PLC) can crash or disrupt the controller. OT-specific monitoring platforms (Dragos, Claroty, Nozomi Networks) use passive network taps and protocol dissection to provide asset inventory and anomaly detection without generating any traffic.</p>
+</div>
+<h3 id="2944-otics-protocol-security"><span class="secnum">29.4.4</span> OT/ICS Protocol Security<a class="headerlink" href="#2944-otics-protocol-security" title="Permanent link">&para;</a></h3>
+<p>Operational technology (OT) networks run on protocols designed decades ago for reliability and determinism in isolated industrial environments. Security was an afterthought at best, and often not a thought at all.</p>
+<p><strong>Modbus TCP</strong> (the most widely deployed SCADA protocol, originally Modbus RTU from 1979) has no authentication, no authorisation, and no encryption. Any device on the network that can reach a Modbus server can read any register and write to any coil—including the register values that control physical actuators like valves, pumps, and motor drives. Wrapping Modbus in a TLS tunnel requires replacing protocol stacks on potentially thousands of PLCs and RTUs that have no firmware update capability, which is why Modbus remains unencrypted in the vast majority of deployed installations.</p>
+<p><strong>DNP3</strong> (Distributed Network Protocol 3) is common in electrical utility SCADA systems. A Secure Authentication extension (DNP3-SA, IEEE 1815) adds HMAC-based authentication to critical operations, but adoption is incomplete: legacy outstations (remote terminal units) predate the extension and can’t be easily upgraded.</p>
+<p><strong>IEC 61850</strong> is the modern standard for substation automation, designed with GOOSE (Generic Object Oriented Substation Event) messages for time-critical protection signalling over Ethernet. GOOSE has authentication support in the latest edition, but not encryption—the latency requirements for protection relay coordination (millisecond-level) are difficult to meet with full cryptographic processing on embedded hardware.</p>
+<p>The <strong>Purdue Model</strong> (formalised as ISA/IEC 62443) addresses this by focusing on network segmentation rather than protocol hardening. If Modbus devices live entirely within Level 1–2 and can’t be reached from corporate IT or the internet, the lack of authentication is less critical. The DMZ at Level 3.5 is the boundary that matters most, and controlling what crosses it—via data diodes for unidirectional replication, application-layer gateways that translate and inspect protocol content, and strict allowlists of permitted communications—is the practical security posture for most OT environments.</p>
+<p>Stuxnet demonstrated the most uncomfortable fact about OT security: even physical isolation (air-gapping) doesn’t guarantee protection if the threat model includes USB drives, compromised laptop computers used for engineering work, or insider access. The Natanz enrichment facility was air-gapped; Stuxnet crossed the gap via infected USB drives used by contractors. The lesson isn’t that air-gaps are useless—they meaningfully raise the attack cost—but that they’re not a complete security strategy.</p>
+<p>OT security faces a patching problem that IT security doesn’t. In IT, “apply the patch” is the default response to a disclosed vulnerability. In OT:</p>
+<ul>
+<li>
+<p>Firmware updates to PLCs require vendor validation and qualification testing—the vendor must certify that the update doesn’t alter control behaviour.</p>
+</li>
+<li>
+<p>Production systems run continuously; a maintenance window to patch a running centrifuge system or a water treatment pump is scheduled in advance, sometimes months out.</p>
+</li>
+<li>
+<p>SCADA systems are designed for 20–30 year operational lifetimes. Embedded components running Windows XP or a 2005 Linux kernel may never receive security patches because the vendor is no longer operational or no longer supports that product generation.</p>
+</li>
+</ul>
+<p>This means compensating controls—network segmentation, monitoring, whitelisting, and physical access controls—carry more weight in OT than they do in IT, where patching is a realistic primary control.</p>
+<h2 id="sec-pqc-iot"><span class="secnum">29.5</span> Post-Quantum Migration for IoT<a class="headerlink" href="#sec-pqc-iot" title="Permanent link">&para;</a></h2>
+<p>NIST finalised three post-quantum cryptography standards in 2024: CRYSTALS-Kyber (FIPS 203 / ML-KEM), CRYSTALS-Dilithium (FIPS 204 / ML-DSA), and SPHINCS+ (FIPS 205 / SLH-DSA). IoT devices present unique challenges for migration:</p>
+<div class="center">
+<div class="tbl">
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Constraint</strong></th>
+<th style="text-align: left;"><strong>Challenge</strong></th>
+<th style="text-align: left;"><strong>Solution</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">RAM (<span class="math inline">\(&lt;\)</span> 32 KB)</td>
+<td style="text-align: left;">ML-KEM-512 requires <span class="math inline">\(\approx\)</span> 1.6 KB stack</td>
+<td style="text-align: left;">Stack-efficient implementation; ASCON for symmetric</td>
+</tr>
+<tr>
+<td style="text-align: left;">Flash (<span class="math inline">\(&lt;\)</span> 128 KB)</td>
+<td style="text-align: left;">ML-DSA signatures are 2.4 KB</td>
+<td style="text-align: left;">SLH-DSA (hash-based) for code signing; smaller key/sig</td>
+</tr>
+<tr>
+<td style="text-align: left;">CPU (8/16-bit MCU)</td>
+<td style="text-align: left;">Lattice arithmetic is compute-intensive</td>
+<td style="text-align: left;">Hardware acceleration or hybrid ECC + KEM</td>
+</tr>
+<tr>
+<td style="text-align: left;">Lifetime <span class="math inline">\(&gt;\)</span> 10 yr</td>
+<td style="text-align: left;">Algorithms must survive cryptographic advances</td>
+<td style="text-align: left;">Agility: parameterise algorithm in SUIT manifest</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p><strong>XMSS</strong> (eXtended Merkle Signature Scheme, RFC 8391) is a stateful hash-based signature scheme suited for firmware signing where a small, fixed number of signatures are needed and state can be maintained securely (e.g., in a Hardware Security Module or OTP counter).</p>
+<h2 id="sec-web3-security"><span class="secnum">29.6</span> Blockchain and Web3 Security<a class="headerlink" href="#sec-web3-security" title="Permanent link">&para;</a></h2>
+<div class="center">
+<div class="tbl">
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Vulnerability</strong></th>
+<th style="text-align: left;"><strong>Description</strong></th>
+<th style="text-align: left;"><strong>Example</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Reentrancy</td>
+<td style="text-align: left;">Recursive external call before state update; classic DAO hack pattern</td>
+<td style="text-align: left;">The DAO hack (2016, $60M)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Integer Overflow</td>
+<td style="text-align: left;">Unchecked arithmetic in Solidity <span class="math inline">\(&lt;\)</span> 0.8 wraps silently</td>
+<td style="text-align: left;">BECToken batch overflow</td>
+</tr>
+<tr>
+<td style="text-align: left;">Access Control</td>
+<td style="text-align: left;"><code>onlyOwner</code> missing; <code>initialize()</code> callable by anyone</td>
+<td style="text-align: left;">Parity Multisig freeze</td>
+</tr>
+<tr>
+<td style="text-align: left;">Flash Loan Attacks</td>
+<td style="text-align: left;">Uncollateralised loan within one transaction exploits price oracle</td>
+<td style="text-align: left;">Multiple DeFi protocols</td>
+</tr>
+<tr>
+<td style="text-align: left;">Bridge Vulnerabilities</td>
+<td style="text-align: left;">Cross-chain bridges hold large locked assets; complex validator logic</td>
+<td style="text-align: left;">Ronin Bridge ($625M, 2022)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Rug Pull</td>
+<td style="text-align: left;">Developers drain liquidity pool; <code>mint()</code> with no cap</td>
+<td style="text-align: left;">Numerous DeFi tokens</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="language-bash highlight"><pre><span></span><code>//<span class="w"> </span>VULNERABLE:<span class="w"> </span>state<span class="w"> </span>update<span class="w"> </span>after<span class="w"> </span>external<span class="w"> </span>call
+<span class="k">function</span><span class="w"> </span>withdraw<span class="o">(</span>uint<span class="w"> </span>amount<span class="o">)</span><span class="w"> </span>external<span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>require<span class="o">(</span>balance<span class="o">[</span>msg.sender<span class="o">]</span><span class="w"> </span>&gt;<span class="o">=</span><span class="w"> </span>amount<span class="o">)</span><span class="p">;</span>
+<span class="w">    </span><span class="o">(</span>bool<span class="w"> </span>success,<span class="o">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>msg.sender.call<span class="o">{</span>value:<span class="w"> </span>amount<span class="o">}(</span><span class="s2">""</span><span class="o">)</span><span class="p">;</span><span class="w"> </span>//<span class="w"> </span>external<span class="w"> </span>call
+<span class="w">    </span>require<span class="o">(</span>success<span class="o">)</span><span class="p">;</span>
+<span class="w">    </span>balance<span class="o">[</span>msg.sender<span class="o">]</span><span class="w"> </span>-<span class="o">=</span><span class="w"> </span>amount<span class="p">;</span><span class="w">  </span>//<span class="w"> </span>state<span class="w"> </span>updated<span class="w"> </span>AFTER<span class="w"> </span>call:<span class="w"> </span>reentrancy!
+<span class="o">}</span>
+
+//<span class="w"> </span>FIXED:<span class="w"> </span>Checks-Effects-Interactions<span class="w"> </span>pattern
+<span class="k">function</span><span class="w"> </span>withdraw<span class="o">(</span>uint<span class="w"> </span>amount<span class="o">)</span><span class="w"> </span>external<span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>require<span class="o">(</span>balance<span class="o">[</span>msg.sender<span class="o">]</span><span class="w"> </span>&gt;<span class="o">=</span><span class="w"> </span>amount<span class="o">)</span><span class="p">;</span><span class="w">  </span>//<span class="w"> </span>Check
+<span class="w">    </span>balance<span class="o">[</span>msg.sender<span class="o">]</span><span class="w"> </span>-<span class="o">=</span><span class="w"> </span>amount<span class="p">;</span><span class="w">            </span>//<span class="w"> </span>Effect<span class="w"> </span><span class="o">(</span>state<span class="w"> </span>update<span class="w"> </span>first<span class="o">)</span>
+<span class="w">    </span><span class="o">(</span>bool<span class="w"> </span>success,<span class="o">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>msg.sender.call<span class="o">{</span>value:<span class="w"> </span>amount<span class="o">}(</span><span class="s2">""</span><span class="o">)</span><span class="p">;</span><span class="w">  </span>//<span class="w"> </span>Interaction
+<span class="w">    </span>require<span class="o">(</span>success<span class="o">)</span><span class="p">;</span>
+<span class="o">}</span>
+</code></pre></div>
+<h2 id="sec-5g-security"><span class="secnum">29.7</span> 5G Security<a class="headerlink" href="#sec-5g-security" title="Permanent link">&para;</a></h2>
+<p>5G improves subscriber privacy and authentication over 4G LTE in several concrete ways:</p>
+<dl>
+<dt>SUCI (Subscription Concealed Identifier)</dt>
+<dd>The subscriber’s permanent identifier (SUPI / IMSI) is encrypted with the home network’s public key before transmission to the gNB; prevents IMSI catchers (stingrays) from harvesting subscriber identities.</dd>
+<dt>5G-AKA Protocol</dt>
+<dd>Mutual authentication between UE and home network; derives session keys (KAUSF, KSEAF, KAMF) through a HKDF-based key hierarchy; gNB does not learn the session root key.</dd>
+<dt>Network Slice Isolation</dt>
+<dd>Logical slices must be isolated at the packet core level; a compromise of one slice must not yield access to another; validated via 3GPP TS 33.501.</dd>
+<dt>Residual Threats</dt>
+<dd>SS7/Diameter vulnerabilities in roaming interfaces remain; IMSI catchers now require radio downgrade attacks; protocol fuzzing of 5G NAS layer is an active research area.</dd>
+</dl>
+<h3 id="2971-5g-network-slicing-and-residual-threats"><span class="secnum">29.7.1</span> 5G Network Slicing and Residual Threats<a class="headerlink" href="#2971-5g-network-slicing-and-residual-threats" title="Permanent link">&para;</a></h3>
+<p>5G’s network slicing capability creates multiple virtual networks on top of shared physical infrastructure—a mobile operator can run a slice for IoT devices (low bandwidth, high device count), a slice for enterprise private networks (guaranteed latency), and a slice for consumer broadband (high throughput), all on the same radio access network and core infrastructure. The isolation between slices relies on software enforcement in the 5G core (5GC), specifically in the Session Management Function (SMF) and User Plane Function (UPF).</p>
+<p>The critical word is “software enforcement.” Unlike physical network separation, slice isolation depends on correct implementation of the 5G core, proper configuration of QoS and traffic steering policies, and the absence of bugs in the inter-slice firewall logic. Academic researchers have demonstrated inter-slice attacks on 5G testbeds where a compromised or malicious UE in one slice could generate traffic that leaked into another slice’s UPF queue. These are not yet confirmed at-scale field attacks, but they’re a genuine research concern as 5G private networks become critical enterprise infrastructure.</p>
+<p>More practically dangerous today are attacks exploiting the <strong>legacy interconnect infrastructure</strong> that 5G must maintain for global roaming. 5G is not deployed in isolation—when a 5G subscriber roams internationally, their traffic may traverse SS7 links to reach their home network for authentication and charging. SS7 (Signalling System 7), designed in 1975, has no authentication on its inter-carrier messages: a network with access to the SS7 interconnect can send any message on behalf of any operator, enabling location tracking, SMS interception, and call redirection against any subscriber worldwide. The Diameter protocol (used in 4G) has similar vulnerabilities. Interconnect firewalls deployed by operators filter known-bad SS7 message patterns, but they’re a cat-and-mouse game against motivated actors with legitimate SS7 access (which includes hundreds of telecoms operators globally).</p>
+<p><strong>IMSI catchers</strong> (commercially known as StingRays, or by their technical name IMSI catchers / false base stations) exploit a different residual vulnerability. 5G devices prioritise connecting to 5G cells, but radio coverage is incomplete in many areas. A device that can’t reach a 5G base station will fall back to 4G or even 2G, depending on what’s available. An attacker operating a fake 2G base station can force 4G/5G capable devices to downgrade, and 2G GSM has no mutual authentication—the phone authenticates to the network but the network doesn’t authenticate to the phone. This allows a fake 2G base station to intercept calls and SMS messages. The 5G SUCI mechanism (encrypting the subscriber identity before it’s transmitted) doesn’t help if the device has already downgraded to 2G. Defenders: FIDO2 for application-layer authentication is immune to SS7/IMSI-catcher attacks because the WebAuthn assertion never travels over the cellular authentication channel.</p>
+<h2 id="sec-supply-chain-iot"><span class="secnum">29.8</span> Supply Chain Attacks: SolarWinds and XZ Utils<a class="headerlink" href="#sec-supply-chain-iot" title="Permanent link">&para;</a></h2>
+<div class="admonition warning box-attackbox kind-safety">
+<p class="admonition-title">XZ Utils Backdoor (2024)</p>
+<p>In early 2024, a malicious maintainer using the alias “Jia Tan” (active since 2021) obtained commit rights to the <code>xz</code> compression library. Over several months, Jia Tan introduced an obfuscated backdoor into the <code>liblzma</code> build system.</p>
+<ul>
+<li>
+<p><strong>Target</strong>: Systems running <code>systemd</code>-patched <code>sshd</code> that linked against <code>liblzma</code>.</p>
+</li>
+<li>
+<p><strong>Mechanism</strong>: A shared library injected via <code>LD_PRELOAD</code> into <code>sshd</code> intercepted RSA key decryption; it allowed the attacker to authenticate without a valid private key using a specially crafted public key.</p>
+</li>
+<li>
+<p><strong>Detection</strong>: Andres Freund (Microsoft) noticed a 500ms SSH login latency anomaly on a Debian unstable system; CPU profiling revealed <code>liblzma</code> consuming unexpected cycles.</p>
+</li>
+<li>
+<p><strong>Severity</strong>: Had it reached stable distributions, it would have constituted a near-universal SSH backdoor on Linux servers.</p>
+</li>
+<li>
+<p><strong>Lessons</strong>: Long-term trust-building by a malicious maintainer; reproducible builds; SBOM tracking; binary transparency logs.</p>
+</li>
+</ul>
+</div>
+<h3 id="2981-hardware-supply-chain-attacks"><span class="secnum">29.8.1</span> Hardware Supply Chain Attacks<a class="headerlink" href="#2981-hardware-supply-chain-attacks" title="Permanent link">&para;</a></h3>
+<p>Software supply chain attacks are well-understood and increasingly defended. Hardware supply chain attacks are harder to detect, harder to remediate, and operate in a world where the public evidence base is thin—partly because confirmed cases are classified, and partly because hardware implant detection requires specialised inspection capabilities most organisations don’t have.</p>
+<p>The public debate was sharpened by Bloomberg Businessweek’s October 2018 article claiming that servers manufactured by Supermicro for Amazon Web Services and Apple contained malicious microchips implanted during manufacturing in China, allowing remote access to the server’s baseboard management controller. Amazon, Apple, and Supermicro issued detailed denials; no independent technical evidence has been publicly confirmed. The article remains disputed. What the episode did accomplish was forcing boardroom-level awareness of hardware supply chain risk and prompting US government agencies to issue guidance on supply chain risk management (NIST SP 800-161).</p>
+<p>What <em>is</em> confirmed from the Snowden documents is the NSA’s TAO (Tailored Access Operations) division operated a programme called <code>COTTONMOUTH</code>—a USB hardware implant that fit inside a standard USB connector housing and provided radio frequency covert channel capability. The leaked ANT catalogue (2013) showed over a dozen hardware implant products for servers, networking equipment, and peripherals. These weren’t theoretical; they were operational tools with order numbers and pricing.</p>
+<p>The practical defence posture for most organisations does not include hardware teardown inspection—that’s reserved for extremely high-security deployments (intelligence agencies, nuclear command and control). For everyone else, the effective controls are:</p>
+<dl>
+<dt>Hardware Bill of Materials (HBOM)</dt>
+<dd>Analogous to SBOM for software, an HBOM documents the components of a hardware device: PCB manufacturer, component suppliers, assembly location. Knowing where each component came from is prerequisite to detecting unexpected substitutions.</dd>
+<dt>Component Authenticity Verification</dt>
+<dd>IEEE 802.1AR defines <strong>IDevID</strong> (Initial Device Identifier): an X.509 certificate provisioned in the device at manufacturing time, signed by the manufacturer’s CA, and stored in tamper-resistant hardware (a secure element or TPM). An IDevID lets you verify that the device in your rack is the device the manufacturer produced, not a counterfeit. This is becoming standard in enterprise networking equipment (Cisco, Juniper) and server platforms.</dd>
+<dt>Trusted Platform Modules and Firmware Attestation</dt>
+<dd>TPM-based attestation (UEFI Secure Boot measurement chains, Platform Certificate Authority) lets the server prove to a remote verifier that its firmware is unmodified. A hardware implant that modifies boot firmware would alter the TPM’s PCR measurements and fail attestation. This doesn’t catch implants below the BIOS (in the PCB itself) but covers a large class of firmware-level supply chain attacks.</dd>
+<dt>Supply Chain Diversity</dt>
+<dd>For critical infrastructure, dual-sourcing from manufacturers in different geopolitical jurisdictions reduces the risk that a single nation-state compromise of a supplier affects all deployed hardware.</dd>
+</dl>
+<h2 id="sec-emerging-threats"><span class="secnum">29.9</span> Emerging Threat Timeline<a class="headerlink" href="#sec-emerging-threats" title="Permanent link">&para;</a></h2>
+<div class="center">
+<div class="tbl">
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Threat</strong></th>
+<th style="text-align: left;"><strong>Estimated Timeline</strong></th>
+<th style="text-align: left;"><strong>Preparation Status</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Cryptographically Relevant Quantum Computer (CRQC)</td>
+<td style="text-align: left;">2030–2035 estimate</td>
+<td style="text-align: left;">PQC standards finalised (FIPS 203/204/205); migration underway</td>
+</tr>
+<tr>
+<td style="text-align: left;">AI-Generated Malware (polymorphic, evasive)</td>
+<td style="text-align: left;">Now – 2026</td>
+<td style="text-align: left;">AV/EDR ML detection; behavioural heuristics</td>
+</tr>
+<tr>
+<td style="text-align: left;">Deepfake-Enabled Fraud at Scale</td>
+<td style="text-align: left;">Now – 2027</td>
+<td style="text-align: left;">FIDO2 adoption; out-of-band verification</td>
+</tr>
+<tr>
+<td style="text-align: left;">Autonomous AI Agents in Offensive Operations</td>
+<td style="text-align: left;">2026 – 2028</td>
+<td style="text-align: left;">Research stage; no deployed defences</td>
+</tr>
+<tr>
+<td style="text-align: left;">LLM-Assisted Vulnerability Discovery</td>
+<td style="text-align: left;">Now</td>
+<td style="text-align: left;">Defenders use same tools; race condition</td>
+</tr>
+<tr>
+<td style="text-align: left;">GPS/Timing Attack on IoT via Spoofing</td>
+<td style="text-align: left;">Now</td>
+<td style="text-align: left;">Authenticated PNT (M-Code GPS); software timing redundancy</td>
+</tr>
+<tr>
+<td style="text-align: left;">Smart Grid / Critical Infrastructure Ransomware</td>
+<td style="text-align: left;">Now</td>
+<td style="text-align: left;">ICS segmentation; OT monitoring; CISA advisories</td>
+</tr>
+<tr>
+<td style="text-align: left;">Satellite Command Link Compromise</td>
+<td style="text-align: left;">2025 – 2030</td>
+<td style="text-align: left;">CCSDS encryption standards; ground-segment hardening</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<h2 id="sec-satellite-security"><span class="secnum">29.10</span> Space and Satellite Security<a class="headerlink" href="#sec-satellite-security" title="Permanent link">&para;</a></h2>
+<p>Satellite systems present a distinct attack surface:</p>
+<ul>
+<li>
+<p><strong>Command Link</strong>: Telecommand uplinks must be authenticated (CCSDS 352.0-B-1 Security Layer) to prevent unauthorised manoeuvres.</p>
+</li>
+<li>
+<p><strong>GPS Spoofing</strong>: Counterfeit GPS signals affect IoT device clocks, financial transaction timestamps, and ADS-B aircraft position. Mitigation: multi-constellation receivers (GPS + Galileo + GLONASS); authenticated PNT for critical applications.</p>
+</li>
+<li>
+<p><strong>Ground Segment</strong>: Operations centres face standard IT threats; the Viasat KA-SAT wiper attack (February 2022, Ukraine) disrupted thousands of modems via ground-segment compromise.</p>
+</li>
+</ul>
+<h2 id="sec-quantum-safe-iot"><span class="secnum">29.11</span> Quantum-Safe IoT<a class="headerlink" href="#sec-quantum-safe-iot" title="Permanent link">&para;</a></h2>
+<p>IoT devices face a harder post-quantum migration than servers or cloud infrastructure, for reasons that are simultaneously obvious and underappreciated by the teams planning enterprise PQC migrations.</p>
+<p>The constraints are physical. A typical Cortex-M0+ microcontroller (common in sensors, wearables, and smart home devices) has 16–32 KB of SRAM and 256 KB of flash. A Cortex-M4 (mid-tier: industrial sensors, smart meters) has 192 KB to 1 MB of SRAM and 1–2 MB of flash. At the low end, 8-bit microcontrollers (ATmega, PIC) may have as little as 512 bytes of SRAM. Classical elliptic curve cryptography (ECDH P-256, ECDSA P-256) was engineered to be lightweight: the key exchange stack fits in under 4 KB. Post-quantum algorithms, built on lattice problems or hash functions, are larger.</p>
+<div class="center">
+<div class="tbl">
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Algorithm</strong></th>
+<th style="text-align: left;"><strong>Public Key</strong></th>
+<th style="text-align: left;"><strong>Ciphertext / Sig</strong></th>
+<th style="text-align: left;"><strong>Stack (Cortex-M4)</strong></th>
+<th style="text-align: left;"><strong>Time (M4 @ 64 MHz)</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">ECDH P-256</td>
+<td style="text-align: left;">64 B</td>
+<td style="text-align: left;">64 B</td>
+<td style="text-align: left;"><span class="math inline">\(\sim\)</span>2 KB</td>
+<td style="text-align: left;"><span class="math inline">\(\sim\)</span>10 ms</td>
+</tr>
+<tr>
+<td style="text-align: left;">ML-KEM-512</td>
+<td style="text-align: left;">800 B</td>
+<td style="text-align: left;">768 B</td>
+<td style="text-align: left;"><span class="math inline">\(\sim\)</span>1.6 KB</td>
+<td style="text-align: left;"><span class="math inline">\(\sim\)</span>2 ms</td>
+</tr>
+<tr>
+<td style="text-align: left;">ML-KEM-768</td>
+<td style="text-align: left;">1184 B</td>
+<td style="text-align: left;">1088 B</td>
+<td style="text-align: left;"><span class="math inline">\(\sim\)</span>2.1 KB</td>
+<td style="text-align: left;"><span class="math inline">\(\sim\)</span>3 ms</td>
+</tr>
+<tr>
+<td style="text-align: left;">ML-DSA-44</td>
+<td style="text-align: left;">1312 B</td>
+<td style="text-align: left;">2420 B</td>
+<td style="text-align: left;"><span class="math inline">\(\sim\)</span>8 KB</td>
+<td style="text-align: left;"><span class="math inline">\(\sim\)</span>8 ms</td>
+</tr>
+<tr>
+<td style="text-align: left;">SLH-DSA-128s</td>
+<td style="text-align: left;">32 B</td>
+<td style="text-align: left;">7856 B</td>
+<td style="text-align: left;"><span class="math inline">\(\sim\)</span>2 KB</td>
+<td style="text-align: left;"><span class="math inline">\(\sim\)</span>100 ms</td>
+</tr>
+<tr>
+<td style="text-align: left;">ECDSA P-256</td>
+<td style="text-align: left;">64 B</td>
+<td style="text-align: left;">64 B</td>
+<td style="text-align: left;"><span class="math inline">\(\sim\)</span>3 KB</td>
+<td style="text-align: left;"><span class="math inline">\(\sim\)</span>15 ms</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>The headline result: <strong>ML-KEM-512 on a Cortex-M4 is feasible</strong>. At approximately 1.6 KB stack and 2 ms per operation, it’s lighter than ECDH P-256 in both dimensions on that platform. This is a deliberate design goal of CRYSTALS-Kyber—the lattice operations map efficiently onto 32-bit multiply-and-accumulate instructions. For mid-tier IoT (smart meters, industrial sensors, medical devices), the PQC migration is an engineering project but not a fundamental constraint.</p>
+<p>The picture is different for 8-bit microcontrollers. ML-KEM’s polynomial arithmetic requires 256-coefficient polynomial multiplication in the NTT (Number Theoretic Transform) domain—workable on a 32-bit platform, but on an 8-bit MCU with 512 bytes of SRAM it’s simply not feasible. The NIST Lightweight Cryptography standardisation project addresses this case: <strong>Ascon</strong> (NIST SP 800-232, finalised 2023) is a family of authenticated encryption (AEAD) and hashing schemes designed for hardware implementations under 1000 gate equivalents and software implementations on 8-bit processors. Ascon-128 needs about 320 bytes of state and fits comfortably on microcontrollers where ML-KEM cannot. Ascon is a symmetric primitive, not a key exchange—it addresses the confidentiality and authentication of data in transit, but you still need an asymmetric scheme to establish the initial shared key.</p>
+<p>For firmware signing on constrained devices, where the key exchange happens offline (a developer signs firmware; the device verifies at boot) and the verification key is embedded in ROM, <strong>SLH-DSA</strong> (FIPS 205, hash-based) is attractive: the public key is only 32 bytes, the security relies only on hash function security (not lattice assumptions), and signature verification is faster than signing. The 7.8 KB signature size is large relative to a small firmware binary but acceptable when verification happens infrequently at boot time.</p>
+<p>The deepest problem for IoT PQC migration is not algorithm selection but <strong>firmware update infrastructure</strong>. Many deployed IoT devices have no over-the-air update mechanism, or have one that’s unsigned and unauthenticated (CVE-database entries for unsigned OTA are depressingly common). A device that can’t receive a firmware update can’t migrate to PQC algorithms—and if it’s using ECDH for TLS and will remain deployed for 15 years, it will be communicating with post-quantum attackers using pre-quantum key exchange. Crypto agility at design time—parameterising the algorithm suite in the SUIT firmware manifest so it can be updated independently of the application firmware—is the right approach, but it requires planning the architecture before devices ship.</p>
+<div class="admonition info box-keybox kind-concept">
+<p class="admonition-title">Harvest Now, Decrypt Later and IoT</p>
+<p>IoT devices with 10–20 year lifetimes face HNDL (Harvest Now, Decrypt Later) risk: traffic encrypted with ECDH today can be recorded by an adversary and decrypted in 2033–2035 if a cryptographically relevant quantum computer (CRQC) becomes available on that timeline. This is most acute for devices transmitting sensitive health, infrastructure, or financial data. Hybrid key exchange (combining classical ECDH with ML-KEM in a dual-PRF construction) provides protection against a future CRQC while maintaining security against classical attacks in the present, and adds only modest size overhead to the key exchange message.</p>
+</div>
+<h2 id="exercises">Exercises<a class="headerlink" href="#exercises" title="Permanent link">&para;</a></h2>
+<div class="admonition example box-exercise kind-example">
+<p class="admonition-title">Exercise 29.1</p>
+<p>Design a secure over-the-air (OTA) firmware update mechanism for a resource-constrained IoT device with 64 KB RAM, 512 KB flash, and a Cortex-M4 processor. Your design must address: (a) cryptographic algorithm selection (consider post-quantum readiness), (b) anti-rollback mechanism, (c) manifest format and verification steps, (d) failure recovery (power loss during update), and (e) key management for the signing key.</p>
+</div>
+<div class="admonition example box-exercise kind-example">
+<p class="admonition-title">Exercise 29.2</p>
+<p>Explain the significance of Stuxnet in the history of cyber conflict. Address: (a) the technical mechanisms that made it effective against an air-gapped OT environment, (b) the four Windows zero-days and how they enabled propagation, (c) the deception mechanism that hid the attack from operators, and (d) the geopolitical and legal norms that Stuxnet’s revelation altered.</p>
+</div>
+<div class="admonition example box-exercise kind-example">
+<p class="admonition-title">Exercise 29.3</p>
+<p>An organisation operates a water treatment SCADA system connected to a corporate IT network via a single firewall. Perform a threat analysis: (a) map the system to the Purdue model levels, (b) identify the three most critical attack paths, (c) propose network architecture changes to reduce risk, (d) specify what OT monitoring tools and methods are appropriate and why active scanning must be avoided.</p>
+</div>
+<div class="admonition example box-exercise kind-example">
+<p class="admonition-title">Exercise 29.4</p>
+<p>A post-quantum migration team must select algorithms for a fleet of IoT devices that will remain deployed for 15 years. The devices use TLS 1.3 for OTA updates and ECDSA for firmware signing. (a) Identify which algorithms are vulnerable to a CRQC and by what year they may be broken. (b) Recommend specific NIST PQC standards to replace each algorithm, justifying your choice based on device constraints. (c) Explain what “crypto agility” means and how it should be implemented in the SUIT firmware manifest to support future algorithm rotation.</p>
+</div>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button type="button" class="md-top md-icon" data-md-component="top" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+Back to top
+</button>
+</main>
+<footer class="md-footer">
+<nav class="md-footer__inner md-grid" aria-label="Footer" >
+<a href="ch28-artificial-intelligence-and-machine-learning.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: 28. Artificial Intelligence and Machine Learning Security">
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</div>
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Previous
+</span>
+<div class="md-ellipsis">
+28. Artificial Intelligence and Machine Learning Security
+</div>
+</div>
+</a>
+<a href="app-a-mathematical-reference.html" class="md-footer__link md-footer__link--next" aria-label="Next: Appendix A. Mathematical Reference">
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Next
+</span>
+<div class="md-ellipsis">
+Appendix A. Mathematical Reference
+</div>
+</div>
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+</div>
+</a>
+</nav>
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+The Open Book Project &middot;
+<a href="../../about.html">About this library</a> &middot;
+<a href="../../publish.html">Publish your book</a> &middot;
+© The authors of the books
+</div>
+Made with
+<a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+Material for MkDocs
+</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "navigation.prune", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "toc.follow", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+<script src="../../assets/mathjax.js"></script>
+<script src="../../assets/viz.js"></script>
+<script src="../../assets/remote.js"></script>
+<script src="../../assets/scans.js"></script>
+<script src="../../assets/reader.js"></script>
+<script src="../../assets/app.js"></script>
+<script src="../../assets/slides.js"></script>
+<script src="../../assets/speak.js"></script>
+<script src="../../assets/quiz.js"></script>
+<script>
+    /* offline reading: the service worker at the site root (its scope is the whole site) */
+    if ("serviceWorker" in navigator && window.isSecureContext) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register(new URL("../../sw.js", location.href).href).catch(function () {});
+      });
+    }
+  </script>
+</body>
+</html>

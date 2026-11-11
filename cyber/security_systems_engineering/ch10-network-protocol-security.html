@@ -1,0 +1,1067 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="description" content="The Open Book Project: books on computer science, quantum computing, cyber security, science, the social sciences, university courses and languages, read page by page like an e-book, online or offline.">
+<meta name="author" content="The Open Book Project">
+<link rel="canonical" href="https://open-book-project.github.io/cyber/security_systems_engineering/ch10-network-protocol-security.html">
+<link rel="prev" href="ch09-firewalls-ids-and-ips.html">
+<link rel="next" href="ch11-web-application-security-fundamentals.html">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap"></noscript>
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Open Book">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="application-name" content="Open Book"><script src="../../assets/library-data.js"></script><script>
+    (function () {
+      var X = window.XMLHttpRequest, open, gate = new Promise(function (r) { open = r; });
+      if (!X) return;
+      var open0 = X.prototype.open, send0 = X.prototype.send;
+      X.prototype.open = function (method, url) {
+        this.__pkIndex = /\/search\/search_index\.json(\?|#|$)/.test(String(url));
+        return open0.apply(this, arguments);
+      };
+      X.prototype.send = function () {
+        if (!this.__pkIndex) return send0.apply(this, arguments);
+        var xhr = this, args = arguments;
+        gate.then(function () { send0.apply(xhr, args); });
+      };
+      function wake() { open(); }
+      document.addEventListener("focusin", function (e) { if (e.target && e.target.closest && e.target.closest(".md-search")) wake(); });
+      document.addEventListener("click", function (e) { if (e.target && e.target.closest && e.target.closest('label[for="__search"], .md-search')) wake(); }, true);
+      document.addEventListener("keydown", function (e) {
+        var k = e.key;
+        if ((k === "/" || k === "s" || k === "f" || k === "S" || k === "F") && !(e.target && e.target.closest && e.target.closest("input, textarea, [contenteditable]"))) wake();
+      }, true);
+      if (/[?&]q=/.test(location.search)) wake();
+    })();
+  </script><script>
+    try {
+      if ((window.matchMedia && (matchMedia("(display-mode: standalone)").matches || matchMedia("(display-mode: fullscreen)").matches)) || navigator.standalone === true) {
+        document.documentElement.className += " bjp-standalone";
+      }
+    } catch (e) { /* not an installed app */ }
+    /* the books of a subject or of the whole library as covers or as a list (assets/app.js): the reader's choice */
+    try {
+      var bv = localStorage.getItem("bjp.view");
+      if (bv === "list" || (bv !== "grid" && /\/books\.html$/.test(location.pathname))) document.documentElement.className += " bjp-view-list";
+    } catch (e) { /* no storage: covers */ }
+  </script>
+<script>
+    /* a book opened from its cover on the shelf: the page stays blank, in the cover's colour, until the reader is up */
+    try {
+      var cv = sessionStorage.getItem("bjp.reader.cover");
+      if (cv && sessionStorage.getItem("bjp.reader.open") === "1") {
+        var c = JSON.parse(cv), de = document.documentElement;
+        de.className += " bjp-booting";
+        if (c && /^#[0-9a-f]{3,8}$/i.test(c.bg || "")) de.style.background = c.bg;
+        setTimeout(function () { de.classList.remove("bjp-booting"); de.style.background = ""; }, 3000);
+      }
+    } catch (e) { /* no session storage: the page simply opens as usual */ }
+  </script>
+<title>10. Network Protocol Security - The Open Book Project</title>
+<link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+<link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+<link rel="stylesheet" href="../../assets/extra.css">
+<link rel="stylesheet" href="../../assets/reader.css">
+<link rel="stylesheet" href="../../assets/viz.css">
+<link rel="stylesheet" href="../../assets/app.css">
+<link rel="stylesheet" href="../../assets/theme.css">
+<link rel="stylesheet" href="../../assets/slides.css">
+<link rel="stylesheet" href="../../assets/remote.css">
+<link rel="stylesheet" href="../../assets/scans.css">
+<link rel="stylesheet" href="../../assets/speak.css">
+<link rel="stylesheet" href="../../assets/quiz.css">
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+<input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+<input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a href="#101-dnssec-authenticating-the-domain-name-system" class="md-skip">
+Skip to content
+</a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav class="md-header__inner md-grid" aria-label="Header">
+<a href="../../index.html" title="The Open Book Project" class="md-header__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+The Open Book Project
+</span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+10. Network Protocol Security
+</span>
+</div>
+</div>
+</div><a href="../../index.html" class="bjp-libbtn" aria-label="Library: all books" title="Library: all books">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V5h4v15M8 20V9h4v11M14 20L12.6 6l3.8-.8 3 14.2M3 20h18"/></svg><span>Library</span>
+</a>
+<a href="../../subjects/index.html" class="pk-catbtn" aria-haspopup="true" aria-expanded="false" title="Browse the books by category">
+<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><circle cx="17" cy="7" r="3.6"/><path d="M7 13.4l3.9 6.8H3.1z"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg><span>Categories</span>
+</a>
+<form class="md-header__option" data-md-component="palette">
+<input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+<label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+</label>
+<input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+<label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+<label class="md-search__icon md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</label>
+<nav class="md-search__options" aria-label="Search">
+<button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+Initializing search
+</div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--primary bjp-nav bjp-nav--book" aria-label="Navigation" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a href="../../index.html" title="The Open Book Project" class="md-nav__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+The Open Book Project
+</label>
+<ul class="md-nav__list" data-md-scrollfix>
+<li class="md-nav__item bjp-nav-all">
+<a href="../../index.html" class="md-nav__link" aria-label="All books: back to the library">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+<span class="md-ellipsis">All books</span>
+</a>
+</li>
+<li class="md-nav__item bjp-nav-book" role="presentation"><span class="bjp-nav-head">Security Systems Engineering</span></li>
+<li class="md-nav__item">
+<a href="index.html" class="md-nav__link">
+<span class="md-ellipsis">
+Overview and preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="notation-and-conventions.html" class="md-nav__link">
+<span class="md-ellipsis">
+Notation and Conventions
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch01-mathematical-foundations-of-cryptography.html" class="md-nav__link">
+<span class="md-ellipsis">
+1. Mathematical Foundations of Cryptography
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch02-symmetric-cryptography.html" class="md-nav__link">
+<span class="md-ellipsis">
+2. Symmetric Cryptography
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch03-public-key-cryptography.html" class="md-nav__link">
+<span class="md-ellipsis">
+3. Public-Key Cryptography
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch04-cryptographic-hash-functions-and-macs.html" class="md-nav__link">
+<span class="md-ellipsis">
+4. Cryptographic Hash Functions and MACs
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch05-key-management-and-public-key-infrastructure.html" class="md-nav__link">
+<span class="md-ellipsis">
+5. Key Management and Public Key Infrastructure
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch06-cryptographic-protocols-and-security-proofs.html" class="md-nav__link">
+<span class="md-ellipsis">
+6. Cryptographic Protocols and Security Proofs
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch07-quantum-cryptography-and-post-quantum-migration.html" class="md-nav__link">
+<span class="md-ellipsis">
+7. Quantum Cryptography and Post-Quantum Migration
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch08-network-security-fundamentals.html" class="md-nav__link">
+<span class="md-ellipsis">
+8. Network Security Fundamentals
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch09-firewalls-ids-and-ips.html" class="md-nav__link">
+<span class="md-ellipsis">
+9. Firewalls, IDS, and IPS
+</span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+10. Network Protocol Security
+</span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a href="ch10-network-protocol-security.html" class="md-nav__link md-nav__link--active">
+<span class="md-ellipsis">
+10. Network Protocol Security
+</span>
+</a>
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#101-dnssec-authenticating-the-domain-name-system" class="md-nav__link">
+<span class="md-ellipsis">
+10.1 DNSSEC: Authenticating the Domain Name System
+</span>
+</a>
+<nav class="md-nav" aria-label="10.1 DNSSEC: Authenticating the Domain Name System">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1011-zskksk-split-and-the-chain-of-trust" class="md-nav__link">
+<span class="md-ellipsis">
+10.1.1 ZSK/KSK Split and the Chain of Trust
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1012-nsec3-authenticated-denial-of-existence" class="md-nav__link">
+<span class="md-ellipsis">
+10.1.2 NSEC3 Authenticated Denial of Existence
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1013-key-rollover" class="md-nav__link">
+<span class="md-ellipsis">
+10.1.3 Key Rollover
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#102-dns-privacy-doh-dot-and-odoh" class="md-nav__link">
+<span class="md-ellipsis">
+10.2 DNS Privacy: DoH, DoT, and ODoH
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#103-bgp-security-and-rpki" class="md-nav__link">
+<span class="md-ellipsis">
+10.3 BGP Security and RPKI
+</span>
+</a>
+<nav class="md-nav" aria-label="10.3 BGP Security and RPKI">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1031-what-rpki-validates-and-what-it-doesnt" class="md-nav__link">
+<span class="md-ellipsis">
+10.3.1 What RPKI Validates and What It Doesn’t
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#104-arp-spoofing-and-dynamic-arp-inspection" class="md-nav__link">
+<span class="md-ellipsis">
+10.4 ARP Spoofing and Dynamic ARP Inspection
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#105-ipv6-neighbor-discovery-security" class="md-nav__link">
+<span class="md-ellipsis">
+10.5 IPv6 Neighbor Discovery Security
+</span>
+</a>
+<nav class="md-nav" aria-label="10.5 IPv6 Neighbor Discovery Security">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1051-ra-guard-rfc-6105" class="md-nav__link">
+<span class="md-ellipsis">
+10.5.1 RA Guard (RFC 6105)
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1052-send-rfc-3971" class="md-nav__link">
+<span class="md-ellipsis">
+10.5.2 SEND (RFC 3971)
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1053-privacy-extensions-rfc-8981" class="md-nav__link">
+<span class="md-ellipsis">
+10.5.3 Privacy Extensions (RFC 8981)
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#106-wpa3-personal-saedragonfly-key-exchange" class="md-nav__link">
+<span class="md-ellipsis">
+10.6 WPA3-Personal: SAE/Dragonfly Key Exchange
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#107-icmp-security-policy" class="md-nav__link">
+<span class="md-ellipsis">
+10.7 ICMP Security Policy
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#108-protocol-security-deployment-status" class="md-nav__link">
+<span class="md-ellipsis">
+10.8 Protocol Security Deployment Status
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#109-exercises" class="md-nav__link">
+<span class="md-ellipsis">
+10.9 Exercises
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="ch11-web-application-security-fundamentals.html" class="md-nav__link">
+<span class="md-ellipsis">
+11. Web Application Security Fundamentals
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch12-authentication-authorization-and-access-control.html" class="md-nav__link">
+<span class="md-ellipsis">
+12. Authentication, Authorization, and Access Control
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch13-api-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+13. API Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch14-side-channel-attacks.html" class="md-nav__link">
+<span class="md-ellipsis">
+14. Side-Channel Attacks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch15-hardware-tamper-protection.html" class="md-nav__link">
+<span class="md-ellipsis">
+15. Hardware Tamper Protection
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch16-transport-layer-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+16. Transport Layer Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch17-ssh-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+17. SSH Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch18-email-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+18. Email Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch19-advanced-network-protocol-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+19. Advanced Network Protocol Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch20-malware-analysis.html" class="md-nav__link">
+<span class="md-ellipsis">
+20. Malware Analysis
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch21-reverse-engineering.html" class="md-nav__link">
+<span class="md-ellipsis">
+21. Reverse Engineering
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch22-digital-forensics.html" class="md-nav__link">
+<span class="md-ellipsis">
+22. Digital Forensics
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch23-vulnerability-research-and-fuzzing.html" class="md-nav__link">
+<span class="md-ellipsis">
+23. Vulnerability Research and Fuzzing
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch24-exploit-development-fundamentals.html" class="md-nav__link">
+<span class="md-ellipsis">
+24. Exploit Development Fundamentals
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch25-security-architecture-and-design.html" class="md-nav__link">
+<span class="md-ellipsis">
+25. Security Architecture and Design
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch26-cloud-native-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+26. Cloud-Native Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch27-human-factors-in-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+27. Human Factors in Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch28-artificial-intelligence-and-machine-learning.html" class="md-nav__link">
+<span class="md-ellipsis">
+28. Artificial Intelligence and Machine Learning Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch29-iot-industrial-control-systems-and-the-emerging.html" class="md-nav__link">
+<span class="md-ellipsis">
+29. IoT, Industrial Control Systems, and the Emerging Threat Horizon
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="app-a-mathematical-reference.html" class="md-nav__link">
+<span class="md-ellipsis">
+Appendix A. Mathematical Reference
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="app-b-security-tools-reference.html" class="md-nav__link">
+<span class="md-ellipsis">
+Appendix B. Security Tools Reference
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="app-c-selected-exercise-solutions.html" class="md-nav__link">
+<span class="md-ellipsis">
+Appendix C. Selected Exercise Solutions
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="bibliography.html" class="md-nav__link">
+<span class="md-ellipsis">
+References
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#101-dnssec-authenticating-the-domain-name-system" class="md-nav__link">
+<span class="md-ellipsis">
+10.1 DNSSEC: Authenticating the Domain Name System
+</span>
+</a>
+<nav class="md-nav" aria-label="10.1 DNSSEC: Authenticating the Domain Name System">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1011-zskksk-split-and-the-chain-of-trust" class="md-nav__link">
+<span class="md-ellipsis">
+10.1.1 ZSK/KSK Split and the Chain of Trust
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1012-nsec3-authenticated-denial-of-existence" class="md-nav__link">
+<span class="md-ellipsis">
+10.1.2 NSEC3 Authenticated Denial of Existence
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1013-key-rollover" class="md-nav__link">
+<span class="md-ellipsis">
+10.1.3 Key Rollover
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#102-dns-privacy-doh-dot-and-odoh" class="md-nav__link">
+<span class="md-ellipsis">
+10.2 DNS Privacy: DoH, DoT, and ODoH
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#103-bgp-security-and-rpki" class="md-nav__link">
+<span class="md-ellipsis">
+10.3 BGP Security and RPKI
+</span>
+</a>
+<nav class="md-nav" aria-label="10.3 BGP Security and RPKI">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1031-what-rpki-validates-and-what-it-doesnt" class="md-nav__link">
+<span class="md-ellipsis">
+10.3.1 What RPKI Validates and What It Doesn’t
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#104-arp-spoofing-and-dynamic-arp-inspection" class="md-nav__link">
+<span class="md-ellipsis">
+10.4 ARP Spoofing and Dynamic ARP Inspection
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#105-ipv6-neighbor-discovery-security" class="md-nav__link">
+<span class="md-ellipsis">
+10.5 IPv6 Neighbor Discovery Security
+</span>
+</a>
+<nav class="md-nav" aria-label="10.5 IPv6 Neighbor Discovery Security">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1051-ra-guard-rfc-6105" class="md-nav__link">
+<span class="md-ellipsis">
+10.5.1 RA Guard (RFC 6105)
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1052-send-rfc-3971" class="md-nav__link">
+<span class="md-ellipsis">
+10.5.2 SEND (RFC 3971)
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1053-privacy-extensions-rfc-8981" class="md-nav__link">
+<span class="md-ellipsis">
+10.5.3 Privacy Extensions (RFC 8981)
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#106-wpa3-personal-saedragonfly-key-exchange" class="md-nav__link">
+<span class="md-ellipsis">
+10.6 WPA3-Personal: SAE/Dragonfly Key Exchange
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#107-icmp-security-policy" class="md-nav__link">
+<span class="md-ellipsis">
+10.7 ICMP Security Policy
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#108-protocol-security-deployment-status" class="md-nav__link">
+<span class="md-ellipsis">
+10.8 Protocol Security Deployment Status
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#109-exercises" class="md-nav__link">
+<span class="md-ellipsis">
+10.9 Exercises
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="ch-network-protocol-security">Chapter 10: Network Protocol Security<a class="headerlink" href="#ch-network-protocol-security" title="Permanent link">&para;</a></h1>
+<p>This chapter examines security mechanisms built into foundational Internet protocols. We analyze where the original protocol designers made security trade-offs, how attackers exploit those gaps, and how modern extensions restore the integrity and confidentiality properties that were missing from early designs.</p>
+<p>The pattern repeats across protocols: DNS, BGP, ARP, and NDP were all designed before adversarial internet-scale deployment was a realistic concern. Each was later retrofitted with authentication extensions (DNSSEC, RPKI, DAI, SEND) that preserve backward compatibility at the cost of complexity. Understanding the original vulnerability and the retrofit’s limitations prepares practitioners to reason about which deployments actually close the attack surface versus which create a false sense of security.</p>
+<h2 id="101-dnssec-authenticating-the-domain-name-system"><span class="secnum">10.1</span> DNSSEC: Authenticating the Domain Name System<a class="headerlink" href="#101-dnssec-authenticating-the-domain-name-system" title="Permanent link">&para;</a></h2>
+<p>The Domain Name System was designed in the early 1980s with no authentication whatsoever. A resolver that receives a DNS response cannot distinguish a legitimate answer from a forged one injected by an on-path attacker—a vulnerability exploited in the Kaminsky attack of 2008, which could poison a caching resolver in under a minute.</p>
+<p>The Kaminsky attack works because DNS uses 16-bit transaction IDs (TXID) and UDP source port randomization as the only anti-spoofing mechanism. An attacker who can send forged responses faster than the legitimate nameserver can race to answer the resolver’s query. With a 16-bit TXID and a fixed source port, there are only 65,535 possible values: a fast attacker floods the resolver with all 65,535 forged responses, betting one will arrive and match the TXID before the legitimate answer. Kaminsky’s insight was that an attacker could cause the resolver to make many queries in rapid succession by querying random subdomains (each generates a new TXID), giving thousands of shots at the race without waiting for cache TTLs to expire. Modern resolvers use both source port randomization (extending the space to <span class="arithmatex">\(65535 \times 65535 \approx 2^{32}\)</span>) and 0x20 encoding (randomizing the case of query letters, since DNS is case-insensitive for resolution but case-preserving in the response, so a forged response must match the exact capitalization the resolver used). Even so, a 32-bit entropy space is vulnerable to off-path spoofing attacks from fast networks. DNSSEC is the only complete fix.</p>
+<p><strong>DNSSEC</strong> (DNS Security Extensions, RFC 4033–4035) retrofits public-key signatures onto DNS. Every zone operator generates a key pair; the public key is published as a <code>DNSKEY</code> record, and every resource record set (RRset) is signed, producing an <code>RRSIG</code> record.</p>
+<h3 id="1011-zskksk-split-and-the-chain-of-trust"><span class="secnum">10.1.1</span> ZSK/KSK Split and the Chain of Trust<a class="headerlink" href="#1011-zskksk-split-and-the-chain-of-trust" title="Permanent link">&para;</a></h3>
+<div class="admonition info box-keybox kind-concept">
+<p class="admonition-title">DNSSEC Key Hierarchy</p>
+<dl>
+<dt>KSK (Key Signing Key)</dt>
+<dd>Long-lived, high-value key. Used <em>only</em> to sign the DNSKEY RRset. Typically 2048-bit RSA or P-256 ECDSA.</dd>
+<dt>ZSK (Zone Signing Key)</dt>
+<dd>Shorter-lived key used to sign all other RRsets. Rolling ZSKs every 30–90 days limits exposure.</dd>
+<dt>DS record</dt>
+<dd>A hash of the child zone’s KSK, published by the <em>parent</em> zone, forming the chain of trust up to the root.</dd>
+</dl>
+</div>
+<p>The root zone’s KSK is the Trust Anchor. ICANN maintains an offline ceremony to sign the root KSK; the 2010 and 2018 key rollovers were broadcast publicly. A validator begins at a locally configured trust anchor (often the root), walks the DS chain downward, and verifies each <code>RRSIG</code> with the corresponding <code>DNSKEY</code>.</p>
+<p>The 2018 root KSK rollover highlighted an operational risk in DNSSEC: about 25 million resolvers worldwide had their trust anchor configured to the old KSK only and had not fetched the new one via RFC 5011 automatic rollover. Had ICANN not delayed the rollover, those resolvers would have started returning SERVFAIL for all DNSSEC-signed domains globally. A trust anchor is a hard dependency — if the validator’s configured trust anchor doesn’t match the current signed key at the root, <em>everything</em> under that zone appears forged. Operators who deploy DNSSEC validation must implement automated trust anchor updates and monitor for rollover events.</p>
+<p>DNSSEC also doesn’t protect the last mile between the recursive resolver and the client application. A validating recursive resolver at 8.8.8.8 performs full DNSSEC validation, but if your application sends its DNS query over plain UDP to the resolver, an attacker on your local network can still inject a forged response before it arrives. DNS-over-TLS or DNS-over-HTTPS between the client and the validating resolver closes this gap.</p>
+<figure class="fig fig-diagram">
+<img class="tikz" src="img/tikz-72b2b1c7141c.svg" alt="DNSSEC chain of trust from root to resource record." loading="lazy" width="168" height="151">
+<figcaption><strong>Figure 10.1.</strong> DNSSEC chain of trust from root to resource record.</figcaption>
+</figure>
+<h3 id="1012-nsec3-authenticated-denial-of-existence"><span class="secnum">10.1.2</span> NSEC3 Authenticated Denial of Existence<a class="headerlink" href="#1012-nsec3-authenticated-denial-of-existence" title="Permanent link">&para;</a></h3>
+<p>When a queried name does not exist, DNSSEC must prove that fact without leaking the full zone contents. <code>NSEC</code> records expose the sorted list of all names; <code>NSEC3</code> (RFC 5155) uses salted SHA-1 hashes of owner names to prevent zone enumeration while still allowing authenticated denial.</p>
+<h3 id="1013-key-rollover"><span class="secnum">10.1.3</span> Key Rollover<a class="headerlink" href="#1013-key-rollover" title="Permanent link">&para;</a></h3>
+<p>RFC 7583 defines the recommended ZSK pre-publish rollover: (1) publish new ZSK in DNSKEY RRset; (2) wait one TTL for caches to pick it up; (3) switch all signing to new ZSK; (4) wait one TTL; (5) remove old ZSK. KSK rollover additionally requires updating the DS record at the parent.</p>
+<h2 id="102-dns-privacy-doh-dot-and-odoh"><span class="secnum">10.2</span> DNS Privacy: DoH, DoT, and ODoH<a class="headerlink" href="#102-dns-privacy-doh-dot-and-odoh" title="Permanent link">&para;</a></h2>
+<p>Plain DNS leaks query contents to every hop between the client and resolver. Three standards address this:</p>
+<div class="tbl">
+<div class="tbl-caption"><strong>Table 10.1.</strong> DNS Privacy Protocol Comparison</div>
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Protocol</strong></th>
+<th style="text-align: left;"><strong>Port</strong></th>
+<th style="text-align: left;"><strong>RFC</strong></th>
+<th style="text-align: left;"><strong>Notes</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">DNS-over-TLS (DoT)</td>
+<td style="text-align: left;">853 TCP</td>
+<td style="text-align: left;">RFC 7858</td>
+<td style="text-align: left;">Easy to block; resolver sees client IP</td>
+</tr>
+<tr>
+<td style="text-align: left;">DNS-over-HTTPS (DoH)</td>
+<td style="text-align: left;">443 TCP</td>
+<td style="text-align: left;">RFC 8484</td>
+<td style="text-align: left;">Blends with web traffic; resolver sees IP</td>
+</tr>
+<tr>
+<td style="text-align: left;">Oblivious DoH (ODoH)</td>
+<td style="text-align: left;">443 TCP</td>
+<td style="text-align: left;">RFC 9230</td>
+<td style="text-align: left;">Proxy decouples IP from query content</td>
+</tr>
+<tr>
+<td style="text-align: left;">DNS-over-QUIC (DoQ)</td>
+<td style="text-align: left;">853 UDP</td>
+<td style="text-align: left;">RFC 9250</td>
+<td style="text-align: left;">Low latency; nascent deployment</td>
+</tr>
+</tbody>
+</table>
+</div></div>
+<p>ODoH introduces an <em>Oblivious Proxy</em> between client and target resolver. The client encrypts the DNS query for the target using HPKE; the proxy cannot read the query; the target cannot see the client IP. Combined with DNSSEC, ODoH provides both confidentiality and integrity.</p>
+<p>The threat model for DNS privacy protocols differs from DNSSEC’s. DNSSEC protects the <em>content</em> of DNS answers against forgery. DoT, DoH, and ODoH protect the <em>confidentiality</em> of DNS queries against eavesdroppers. These are orthogonal: you can have forged answers delivered confidentially (DoH without DNSSEC) or authentic answers delivered in plaintext (DNSSEC without DoT/DoH). A complete DNS security posture requires both. DoH also has an important operational impact: because it uses port 443 and looks like HTTPS traffic, enterprise firewalls can’t easily block it without also blocking legitimate web traffic, which means employees can bypass corporate DNS filtering using a hard-coded DoH resolver. Enterprise deployments therefore typically deploy canary DNS domains or TLS inspection to detect DoH usage that bypasses the corporate resolver.</p>
+<h2 id="103-bgp-security-and-rpki"><span class="secnum">10.3</span> BGP Security and RPKI<a class="headerlink" href="#103-bgp-security-and-rpki" title="Permanent link">&para;</a></h2>
+<p>The Border Gateway Protocol (BGP) was designed in 1989 with no authentication. Any autonomous system (AS) can announce any IP prefix, enabling <em>prefix hijacking</em> and <em>route leaks</em>.</p>
+<div class="admonition warning box-attackbox kind-safety">
+<p class="admonition-title">Pakistan Telecom BGP Hijack, 2008</p>
+<p>On 24 February 2008, Pakistan Telecom (AS17557) announced a more-specific <code>208.65.153.0/24</code> prefix that covered YouTube’s <code>208.65.152.0/22</code>. The announcement propagated globally within minutes, black-holing YouTube traffic for approximately 2 hours. No cryptographic authentication was required to make the announcement.</p>
+</div>
+<p><strong>RPKI</strong> (Resource Public Key Infrastructure, RFC 6480) binds IP address blocks to their legitimate holder via X.509 certificates rooted at the five Regional Internet Registries (RIRs). An operator creates a <strong>Route Origin Authorization (ROA)</strong>:</p>
+<div class="language-text highlight"><pre><span></span><code>Route Origin Authorization:
+  AS:        64496
+  Prefix:    192.0.2.0/24
+  Max-Length: 24
+  Not Before: 2024-01-01
+  Not After:  2025-01-01
+</code></pre></div>
+<p>Routers running an RPKI-to-Router (RTR) daemon obtain validated prefix-origin pairs and can set route preference: <em>Valid</em>, <em>Invalid</em>, or <em>NotFound</em>. BGPsec (RFC 8205) adds per-hop AS-path signatures but has seen limited deployment due to performance cost.</p>
+<h3 id="1031-what-rpki-validates-and-what-it-doesnt"><span class="secnum">10.3.1</span> What RPKI Validates and What It Doesn’t<a class="headerlink" href="#1031-what-rpki-validates-and-what-it-doesnt" title="Permanent link">&para;</a></h3>
+<p>RPKI with ROAs validates one thing precisely: that the AS announcing a prefix is authorized to originate it. It does <em>not</em> validate the AS path — the list of intermediate autonomous systems through which the announcement traveled. An attacker can take a legitimate ROA-valid origin announcement and prepend their own AS to the path (a route leak), and RPKI won’t flag it. They can also announce a more-specific prefix that overlaps with a ROA-covered block; if the ROA’s <code>max-length</code> field permits the more-specific announcement, RPKI marks it valid even though it causes traffic to divert.</p>
+<p>The <code>max-length</code> field is a common misconfiguration. Operators sometimes set it too permissively (e.g., <code>max-length: 32</code> for a /24 allocation), which means any more-specific prefix up to a /32 from that AS is RPKI-valid. An attacker who hijacks a host route inside that block gets a “Valid” RPKI result because the origin AS matches and the prefix length is within bounds. Correct ROA hygiene requires <code>max-length</code> to equal the actual prefix length of all announced prefixes, with separate ROAs for each aggregate and more-specific announcement that legitimately originates.</p>
+<p>Even with perfect ROA coverage, RPKI enforcement is uneven. Routers that receive an “Invalid” route can drop it (<em>route origin validation</em> in strict mode), prefer valid routes, or ignore the status entirely. As of 2024, roughly 50% of IPv4 prefixes have ROAs but enforcement by receiving ASes is far less consistent. A route marked Invalid by one AS’s RPKI validator may still be accepted by an AS that hasn’t enabled validation. BGPsec would close the AS-path gap but requires all ASes along a path to sign their announcements, and a single non-participating AS breaks the chain — which is why BGPsec deployment remains near zero despite years of standardization effort.</p>
+<h2 id="104-arp-spoofing-and-dynamic-arp-inspection"><span class="secnum">10.4</span> ARP Spoofing and Dynamic ARP Inspection<a class="headerlink" href="#104-arp-spoofing-and-dynamic-arp-inspection" title="Permanent link">&para;</a></h2>
+<p>ARP has no authentication. An attacker on the same Layer-2 segment can send gratuitous ARP replies, poisoning the ARP cache of victims and enabling man-in-the-middle attacks. ARP caches accept unsolicited replies — a host can send a gratuitous ARP (a reply with no corresponding request) and every device on the segment that receives it will update its cache. Tools like <code>arpspoof</code> and <code>ettercap</code> automate this: the attacker sends gratuitous ARPs claiming the gateway IP maps to the attacker’s MAC, then sends the same for the victim, positioning themselves between all gateway-bound traffic. Because ARP operates below the transport layer, TLS provides no protection against the man-in-the-middle position itself — but TLS certificate verification prevents the attacker from decrypting intercepted HTTPS traffic (assuming the victim doesn’t click through a certificate warning).</p>
+<p><strong>Dynamic ARP Inspection (DAI)</strong> is a Cisco IOS feature that validates ARP packets against the DHCP snooping binding table (IP <span class="arithmatex">\(\leftrightarrow\)</span> MAC <span class="arithmatex">\(\leftrightarrow\)</span> port):</p>
+<div class="language-text highlight"><pre><span></span><code>! Enable DHCP snooping globally
+ip dhcp snooping
+ip dhcp snooping vlan 10,20
+
+! Mark uplinks and server ports as trusted
+interface GigabitEthernet0/1
+ ip dhcp snooping trust
+ ip arp inspection trust
+
+! Enable DAI per VLAN
+ip arp inspection vlan 10,20
+
+! Rate-limit ARP on untrusted ports
+interface GigabitEthernet0/2
+ ip arp inspection limit rate 100
+</code></pre></div>
+<p>Packets with MAC-to-IP bindings not found in the snooping table are dropped and the port may be error-disabled.</p>
+<h2 id="105-ipv6-neighbor-discovery-security"><span class="secnum">10.5</span> IPv6 Neighbor Discovery Security<a class="headerlink" href="#105-ipv6-neighbor-discovery-security" title="Permanent link">&para;</a></h2>
+<p>IPv6 Neighbor Discovery Protocol (NDP) replaces ARP and adds router discovery, but inherits the same lack of authentication. Key threats include rogue Router Advertisements (RAs) that redirect all traffic through an attacker.</p>
+<h3 id="1051-ra-guard-rfc-6105"><span class="secnum">10.5.1</span> RA Guard (RFC 6105)<a class="headerlink" href="#1051-ra-guard-rfc-6105" title="Permanent link">&para;</a></h3>
+<p>Switches inspect incoming ICMPv6 packets and drop RA messages received on ports configured as <em>host-facing</em>. Only uplink ports designated as <em>router-facing</em> are permitted to forward RAs.</p>
+<h3 id="1052-send-rfc-3971"><span class="secnum">10.5.2</span> SEND (RFC 3971)<a class="headerlink" href="#1052-send-rfc-3971" title="Permanent link">&para;</a></h3>
+<p>Secure Neighbor Discovery uses <strong>Cryptographically Generated Addresses (CGA)</strong>: the lower 64 bits of an IPv6 address are derived from the node’s public key via SHA-1. Every NDP message is signed with the corresponding private key, preventing spoofing. Deployment is rare due to high computational overhead.</p>
+<h3 id="1053-privacy-extensions-rfc-8981"><span class="secnum">10.5.3</span> Privacy Extensions (RFC 8981)<a class="headerlink" href="#1053-privacy-extensions-rfc-8981" title="Permanent link">&para;</a></h3>
+<p>Nodes generate temporary, randomized interface identifiers for outbound connections, renewed periodically (default: 24 h preferred, 48 h valid). The stable address derived from EUI-64 or stable-opaque (RFC 7217) is used for inbound services.</p>
+<h2 id="106-wpa3-personal-saedragonfly-key-exchange"><span class="secnum">10.6</span> WPA3-Personal: SAE/Dragonfly Key Exchange<a class="headerlink" href="#106-wpa3-personal-saedragonfly-key-exchange" title="Permanent link">&para;</a></h2>
+<p>WPA2-Personal used the 4-way handshake with a Pre-Shared Key (PSK) that is vulnerable to offline dictionary attacks if the handshake is captured. WPA3-Personal replaces PSK with <strong>Simultaneous Authentication of Equals (SAE)</strong>, also known as Dragonfly (RFC 7664).</p>
+<div class="admonition info box-keybox kind-concept">
+<p class="admonition-title">SAE Handshake Steps</p>
+<ol>
+<li>
+<p>Both parties independently derive a <em>Password Element</em> (PE)—a point on an elliptic curve—from the password and their MAC addresses, using a deterministic hunting-and-pecking or hash-to-curve algorithm.</p>
+</li>
+<li>
+<p>Each party generates a random scalar <span class="arithmatex">\(r\)</span> and element <span class="arithmatex">\(E\)</span>, then sends a <strong>Commit</strong> message: <span class="arithmatex">\((scalar, element) = (r + mask \bmod q,\; -(mask \cdot PE))\)</span>.</p>
+</li>
+<li>
+<p>After receiving the peer’s Commit, each derives the shared secret <span class="arithmatex">\(K = (r_{self} + mask_{self})(r_{peer} \cdot PE + E_{peer})\)</span>.</p>
+</li>
+<li>
+<p>A <strong>Confirm</strong> message (HMAC of the transcript) proves knowledge of <span class="arithmatex">\(K\)</span> without revealing it.</p>
+</li>
+</ol>
+</div>
+<p>SAE provides <strong>forward secrecy</strong>: capturing the exchange does not allow offline password guessing because no verifier of the password is transmitted. WPA3 also mandates PMF (Protected Management Frames, 802.11w) to prevent deauthentication attacks.</p>
+<p>WPA2’s vulnerability to offline dictionary attacks was severe in practice. An attacker who captures the 4-way handshake (which <code>airodump-ng</code> and a deauthentication frame make trivially easy to collect) can test billions of password candidates offline using GPU-accelerated tools like <code>hashcat</code>. For an 8-character password from the printable ASCII alphabet, the full keyspace is about <span class="arithmatex">\(95^8 \approx 6 \times 10^{15}\)</span>; a modern GPU cluster running at <span class="arithmatex">\(10^{11}\)</span> tests per second searches it in under a day. SAE eliminates this attack entirely: every SAE exchange produces a unique shared secret derived from the ephemeral randomness, so captured SAE transcripts contain no offline-testable verifier. The only way to test a password guess is to attempt a new SAE handshake, which the access point rate-limits and can lock out after repeated failures.</p>
+<p>A known limitation of SAE is the Dragonblood vulnerability family (2019): timing and cache side-channel attacks against the hunting-and-pecking algorithm allowed offline password recovery from observed handshake timing. The fix was to replace hunting-and-pecking with a hash-to-curve algorithm that runs in constant time; updated implementations (WPA3 R2) are immune, but older devices that received no firmware update remain vulnerable.</p>
+<h2 id="107-icmp-security-policy"><span class="secnum">10.7</span> ICMP Security Policy<a class="headerlink" href="#107-icmp-security-policy" title="Permanent link">&para;</a></h2>
+<div class="tbl">
+<div class="tbl-caption"><strong>Table 10.2.</strong> Recommended ICMP Filtering Policy</div>
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Type</strong></th>
+<th style="text-align: left;"><strong>Name</strong></th>
+<th style="text-align: left;"><strong>Direction</strong></th>
+<th style="text-align: left;"><strong>Action</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">Echo Reply</td>
+<td style="text-align: left;">In</td>
+<td style="text-align: left;">Allow (if stateful)</td>
+</tr>
+<tr>
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">Destination Unreachable</td>
+<td style="text-align: left;">In</td>
+<td style="text-align: left;">Allow (needed for PMTUD)</td>
+</tr>
+<tr>
+<td style="text-align: left;">8</td>
+<td style="text-align: left;">Echo Request</td>
+<td style="text-align: left;">In</td>
+<td style="text-align: left;">Allow (selective) / Drop</td>
+</tr>
+<tr>
+<td style="text-align: left;">11</td>
+<td style="text-align: left;">Time Exceeded</td>
+<td style="text-align: left;">In</td>
+<td style="text-align: left;">Allow (traceroute)</td>
+</tr>
+<tr>
+<td style="text-align: left;">3/4</td>
+<td style="text-align: left;">Fragmentation Needed</td>
+<td style="text-align: left;">In</td>
+<td style="text-align: left;">Allow (PMTUD critical)</td>
+</tr>
+<tr>
+<td style="text-align: left;">5</td>
+<td style="text-align: left;">Redirect</td>
+<td style="text-align: left;">In</td>
+<td style="text-align: left;">Drop (potential attack)</td>
+</tr>
+<tr>
+<td style="text-align: left;">17</td>
+<td style="text-align: left;">Address Mask Request</td>
+<td style="text-align: left;">Both</td>
+<td style="text-align: left;">Drop (obsolete)</td>
+</tr>
+</tbody>
+</table>
+</div></div>
+<h2 id="108-protocol-security-deployment-status"><span class="secnum">10.8</span> Protocol Security Deployment Status<a class="headerlink" href="#108-protocol-security-deployment-status" title="Permanent link">&para;</a></h2>
+<div class="tbl">
+<div class="tbl-caption"><strong>Table 10.3.</strong> Protocol Security Extension Deployment Status (2024)</div>
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Protocol</strong></th>
+<th style="text-align: left;"><strong>Mechanism</strong></th>
+<th style="text-align: left;"><strong>Deployment</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">DNS</td>
+<td style="text-align: left;">DNSSEC</td>
+<td style="text-align: left;"><span class="math inline">\(\sim\)</span>35% of TLDs fully signed; patchy recursive validation</td>
+</tr>
+<tr>
+<td style="text-align: left;">DNS</td>
+<td style="text-align: left;">DoT / DoH</td>
+<td style="text-align: left;">Growing; major resolvers (1.1.1.1, 8.8.8.8) support both</td>
+</tr>
+<tr>
+<td style="text-align: left;">BGP</td>
+<td style="text-align: left;">RPKI</td>
+<td style="text-align: left;"><span class="math inline">\(\sim\)</span>50% of IPv4 prefixes have ROAs; enforcement varies</td>
+</tr>
+<tr>
+<td style="text-align: left;">BGP</td>
+<td style="text-align: left;">BGPsec</td>
+<td style="text-align: left;">Experimental only</td>
+</tr>
+<tr>
+<td style="text-align: left;">IPv6</td>
+<td style="text-align: left;">SEND</td>
+<td style="text-align: left;">Minimal; academic</td>
+</tr>
+<tr>
+<td style="text-align: left;">Wi-Fi</td>
+<td style="text-align: left;">WPA3</td>
+<td style="text-align: left;">Mandatory for Wi-Fi 6 (802.11ax) certification</td>
+</tr>
+<tr>
+<td style="text-align: left;">Email</td>
+<td style="text-align: left;">DNSSEC+DANE</td>
+<td style="text-align: left;"><span class="math inline">\(&lt;\)</span>5% of mail servers</td>
+</tr>
+</tbody>
+</table>
+</div></div>
+<h2 id="109-exercises"><span class="secnum">10.9</span> Exercises<a class="headerlink" href="#109-exercises" title="Permanent link">&para;</a></h2>
+<div class="admonition example box-exercise kind-example">
+<p class="admonition-title">Exercise 10.1</p>
+<p>A DNSSEC validator receives an <code>RRSIG</code> with a signature expiry timestamp in the past. The resolver’s system clock is accurate. Describe what the validator should do and explain the security consequence of accepting expired signatures.</p>
+</div>
+<div class="admonition example box-exercise kind-example">
+<p class="admonition-title">Exercise 10.2</p>
+<p>You are the network administrator for AS64497. You discover that a neighboring AS is announcing a more-specific prefix that overlaps with your legitimate <code>203.0.113.0/24</code> allocation. Describe two immediate technical actions and one long-term structural remedy.</p>
+</div>
+<div class="admonition example box-exercise kind-example">
+<p class="admonition-title">Exercise 10.3</p>
+<p>A penetration tester on a wired LAN segment captures an ARP exchange and observes that the victim’s ARP cache now maps the gateway IP to the attacker’s MAC. List the prerequisites for this attack, three artifacts a forensic analyst could find to prove it occurred, and the exact DAI configuration needed to prevent it.</p>
+</div>
+<div class="admonition example box-exercise kind-example">
+<p class="admonition-title">Exercise 10.4</p>
+<p>Compare the forward secrecy properties of WPA2-Personal (4-way handshake with PSK) and WPA3-Personal (SAE). Assume an attacker recorded 1,000 WPA2-Personal handshakes and 1,000 WPA3-Personal SAE exchanges using a password-length-8 dictionary. How many offline operations does each scenario require, and why?</p>
+</div>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button type="button" class="md-top md-icon" data-md-component="top" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+Back to top
+</button>
+</main>
+<footer class="md-footer">
+<nav class="md-footer__inner md-grid" aria-label="Footer" >
+<a href="ch09-firewalls-ids-and-ips.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: 9. Firewalls, IDS, and IPS">
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</div>
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Previous
+</span>
+<div class="md-ellipsis">
+9. Firewalls, IDS, and IPS
+</div>
+</div>
+</a>
+<a href="ch11-web-application-security-fundamentals.html" class="md-footer__link md-footer__link--next" aria-label="Next: 11. Web Application Security Fundamentals">
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Next
+</span>
+<div class="md-ellipsis">
+11. Web Application Security Fundamentals
+</div>
+</div>
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+</div>
+</a>
+</nav>
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+The Open Book Project &middot;
+<a href="../../about.html">About this library</a> &middot;
+<a href="../../publish.html">Publish your book</a> &middot;
+© The authors of the books
+</div>
+Made with
+<a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+Material for MkDocs
+</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "navigation.prune", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "toc.follow", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+<script src="../../assets/mathjax.js"></script>
+<script src="../../assets/viz.js"></script>
+<script src="../../assets/remote.js"></script>
+<script src="../../assets/scans.js"></script>
+<script src="../../assets/reader.js"></script>
+<script src="../../assets/app.js"></script>
+<script src="../../assets/slides.js"></script>
+<script src="../../assets/speak.js"></script>
+<script src="../../assets/quiz.js"></script>
+<script>
+    /* offline reading: the service worker at the site root (its scope is the whole site) */
+    if ("serviceWorker" in navigator && window.isSecureContext) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register(new URL("../../sw.js", location.href).href).catch(function () {});
+      });
+    }
+  </script>
+</body>
+</html>

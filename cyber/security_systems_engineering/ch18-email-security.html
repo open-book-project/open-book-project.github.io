@@ -1,0 +1,1171 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="description" content="The Open Book Project: books on computer science, quantum computing, cyber security, science, the social sciences, university courses and languages, read page by page like an e-book, online or offline.">
+<meta name="author" content="The Open Book Project">
+<link rel="canonical" href="https://open-book-project.github.io/cyber/security_systems_engineering/ch18-email-security.html">
+<link rel="prev" href="ch17-ssh-security.html">
+<link rel="next" href="ch19-advanced-network-protocol-security.html">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap"></noscript>
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Open Book">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="application-name" content="Open Book"><script src="../../assets/library-data.js"></script><script>
+    (function () {
+      var X = window.XMLHttpRequest, open, gate = new Promise(function (r) { open = r; });
+      if (!X) return;
+      var open0 = X.prototype.open, send0 = X.prototype.send;
+      X.prototype.open = function (method, url) {
+        this.__pkIndex = /\/search\/search_index\.json(\?|#|$)/.test(String(url));
+        return open0.apply(this, arguments);
+      };
+      X.prototype.send = function () {
+        if (!this.__pkIndex) return send0.apply(this, arguments);
+        var xhr = this, args = arguments;
+        gate.then(function () { send0.apply(xhr, args); });
+      };
+      function wake() { open(); }
+      document.addEventListener("focusin", function (e) { if (e.target && e.target.closest && e.target.closest(".md-search")) wake(); });
+      document.addEventListener("click", function (e) { if (e.target && e.target.closest && e.target.closest('label[for="__search"], .md-search')) wake(); }, true);
+      document.addEventListener("keydown", function (e) {
+        var k = e.key;
+        if ((k === "/" || k === "s" || k === "f" || k === "S" || k === "F") && !(e.target && e.target.closest && e.target.closest("input, textarea, [contenteditable]"))) wake();
+      }, true);
+      if (/[?&]q=/.test(location.search)) wake();
+    })();
+  </script><script>
+    try {
+      if ((window.matchMedia && (matchMedia("(display-mode: standalone)").matches || matchMedia("(display-mode: fullscreen)").matches)) || navigator.standalone === true) {
+        document.documentElement.className += " bjp-standalone";
+      }
+    } catch (e) { /* not an installed app */ }
+    /* the books of a subject or of the whole library as covers or as a list (assets/app.js): the reader's choice */
+    try {
+      var bv = localStorage.getItem("bjp.view");
+      if (bv === "list" || (bv !== "grid" && /\/books\.html$/.test(location.pathname))) document.documentElement.className += " bjp-view-list";
+    } catch (e) { /* no storage: covers */ }
+  </script>
+<script>
+    /* a book opened from its cover on the shelf: the page stays blank, in the cover's colour, until the reader is up */
+    try {
+      var cv = sessionStorage.getItem("bjp.reader.cover");
+      if (cv && sessionStorage.getItem("bjp.reader.open") === "1") {
+        var c = JSON.parse(cv), de = document.documentElement;
+        de.className += " bjp-booting";
+        if (c && /^#[0-9a-f]{3,8}$/i.test(c.bg || "")) de.style.background = c.bg;
+        setTimeout(function () { de.classList.remove("bjp-booting"); de.style.background = ""; }, 3000);
+      }
+    } catch (e) { /* no session storage: the page simply opens as usual */ }
+  </script>
+<title>18. Email Security - The Open Book Project</title>
+<link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+<link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+<link rel="stylesheet" href="../../assets/extra.css">
+<link rel="stylesheet" href="../../assets/reader.css">
+<link rel="stylesheet" href="../../assets/viz.css">
+<link rel="stylesheet" href="../../assets/app.css">
+<link rel="stylesheet" href="../../assets/theme.css">
+<link rel="stylesheet" href="../../assets/slides.css">
+<link rel="stylesheet" href="../../assets/remote.css">
+<link rel="stylesheet" href="../../assets/scans.css">
+<link rel="stylesheet" href="../../assets/speak.css">
+<link rel="stylesheet" href="../../assets/quiz.css">
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+<input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+<input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a href="#sec-email-architecture" class="md-skip">
+Skip to content
+</a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav class="md-header__inner md-grid" aria-label="Header">
+<a href="../../index.html" title="The Open Book Project" class="md-header__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+The Open Book Project
+</span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+18. Email Security
+</span>
+</div>
+</div>
+</div><a href="../../index.html" class="bjp-libbtn" aria-label="Library: all books" title="Library: all books">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V5h4v15M8 20V9h4v11M14 20L12.6 6l3.8-.8 3 14.2M3 20h18"/></svg><span>Library</span>
+</a>
+<a href="../../subjects/index.html" class="pk-catbtn" aria-haspopup="true" aria-expanded="false" title="Browse the books by category">
+<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><circle cx="17" cy="7" r="3.6"/><path d="M7 13.4l3.9 6.8H3.1z"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg><span>Categories</span>
+</a>
+<form class="md-header__option" data-md-component="palette">
+<input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+<label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+</label>
+<input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+<label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+<label class="md-search__icon md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</label>
+<nav class="md-search__options" aria-label="Search">
+<button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+Initializing search
+</div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--primary bjp-nav bjp-nav--book" aria-label="Navigation" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a href="../../index.html" title="The Open Book Project" class="md-nav__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+The Open Book Project
+</label>
+<ul class="md-nav__list" data-md-scrollfix>
+<li class="md-nav__item bjp-nav-all">
+<a href="../../index.html" class="md-nav__link" aria-label="All books: back to the library">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+<span class="md-ellipsis">All books</span>
+</a>
+</li>
+<li class="md-nav__item bjp-nav-book" role="presentation"><span class="bjp-nav-head">Security Systems Engineering</span></li>
+<li class="md-nav__item">
+<a href="index.html" class="md-nav__link">
+<span class="md-ellipsis">
+Overview and preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="notation-and-conventions.html" class="md-nav__link">
+<span class="md-ellipsis">
+Notation and Conventions
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch01-mathematical-foundations-of-cryptography.html" class="md-nav__link">
+<span class="md-ellipsis">
+1. Mathematical Foundations of Cryptography
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch02-symmetric-cryptography.html" class="md-nav__link">
+<span class="md-ellipsis">
+2. Symmetric Cryptography
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch03-public-key-cryptography.html" class="md-nav__link">
+<span class="md-ellipsis">
+3. Public-Key Cryptography
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch04-cryptographic-hash-functions-and-macs.html" class="md-nav__link">
+<span class="md-ellipsis">
+4. Cryptographic Hash Functions and MACs
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch05-key-management-and-public-key-infrastructure.html" class="md-nav__link">
+<span class="md-ellipsis">
+5. Key Management and Public Key Infrastructure
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch06-cryptographic-protocols-and-security-proofs.html" class="md-nav__link">
+<span class="md-ellipsis">
+6. Cryptographic Protocols and Security Proofs
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch07-quantum-cryptography-and-post-quantum-migration.html" class="md-nav__link">
+<span class="md-ellipsis">
+7. Quantum Cryptography and Post-Quantum Migration
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch08-network-security-fundamentals.html" class="md-nav__link">
+<span class="md-ellipsis">
+8. Network Security Fundamentals
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch09-firewalls-ids-and-ips.html" class="md-nav__link">
+<span class="md-ellipsis">
+9. Firewalls, IDS, and IPS
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch10-network-protocol-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+10. Network Protocol Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch11-web-application-security-fundamentals.html" class="md-nav__link">
+<span class="md-ellipsis">
+11. Web Application Security Fundamentals
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch12-authentication-authorization-and-access-control.html" class="md-nav__link">
+<span class="md-ellipsis">
+12. Authentication, Authorization, and Access Control
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch13-api-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+13. API Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch14-side-channel-attacks.html" class="md-nav__link">
+<span class="md-ellipsis">
+14. Side-Channel Attacks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch15-hardware-tamper-protection.html" class="md-nav__link">
+<span class="md-ellipsis">
+15. Hardware Tamper Protection
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch16-transport-layer-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+16. Transport Layer Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch17-ssh-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+17. SSH Security
+</span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+18. Email Security
+</span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a href="ch18-email-security.html" class="md-nav__link md-nav__link--active">
+<span class="md-ellipsis">
+18. Email Security
+</span>
+</a>
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#sec-email-architecture" class="md-nav__link">
+<span class="md-ellipsis">
+18.1 Email Architecture
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-smtp-tls" class="md-nav__link">
+<span class="md-ellipsis">
+18.2 SMTP Transport Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-spf" class="md-nav__link">
+<span class="md-ellipsis">
+18.3 Sender Policy Framework (SPF)
+</span>
+</a>
+<nav class="md-nav" aria-label="18.3 Sender Policy Framework (SPF)">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1831-spf-limitations-and-the-dmarc-bridge" class="md-nav__link">
+<span class="md-ellipsis">
+18.3.1 SPF Limitations and the DMARC Bridge
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-dkim" class="md-nav__link">
+<span class="md-ellipsis">
+18.4 DomainKeys Identified Mail (DKIM)
+</span>
+</a>
+<nav class="md-nav" aria-label="18.4 DomainKeys Identified Mail (DKIM)">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1841-dkim-replay-attacks-and-key-rotation" class="md-nav__link">
+<span class="md-ellipsis">
+18.4.1 DKIM Replay Attacks and Key Rotation
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-dmarc" class="md-nav__link">
+<span class="md-ellipsis">
+18.5 DMARC: Policy and Alignment
+</span>
+</a>
+<nav class="md-nav" aria-label="18.5 DMARC: Policy and Alignment">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1851-dmarc-reporting-and-policy-escalation" class="md-nav__link">
+<span class="md-ellipsis">
+18.5.1 DMARC Reporting and Policy Escalation
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-bimi" class="md-nav__link">
+<span class="md-ellipsis">
+18.6 BIMI: Brand Indicators for Message Identification
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-email-e2e" class="md-nav__link">
+<span class="md-ellipsis">
+18.7 End-to-End Encryption: S/MIME and PGP
+</span>
+</a>
+<nav class="md-nav" aria-label="18.7 End-to-End Encryption: S/MIME and PGP">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1871-smime" class="md-nav__link">
+<span class="md-ellipsis">
+18.7.1 S/MIME
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1872-pgpgpg" class="md-nav__link">
+<span class="md-ellipsis">
+18.7.2 PGP/GPG
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1873-why-end-to-end-email-encryption-has-low-adoption" class="md-nav__link">
+<span class="md-ellipsis">
+18.7.3 Why End-to-End Email Encryption Has Low Adoption
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1874-mta-sts-and-dane-for-smtp-transport-security" class="md-nav__link">
+<span class="md-ellipsis">
+18.7.4 MTA-STS and DANE for SMTP Transport Security
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-email-attacks" class="md-nav__link">
+<span class="md-ellipsis">
+18.8 Email Attack Landscape
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-email-forensics" class="md-nav__link">
+<span class="md-ellipsis">
+18.9 Email Forensics
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-email-exercises" class="md-nav__link">
+<span class="md-ellipsis">
+18.10 Exercises
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="ch19-advanced-network-protocol-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+19. Advanced Network Protocol Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch20-malware-analysis.html" class="md-nav__link">
+<span class="md-ellipsis">
+20. Malware Analysis
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch21-reverse-engineering.html" class="md-nav__link">
+<span class="md-ellipsis">
+21. Reverse Engineering
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch22-digital-forensics.html" class="md-nav__link">
+<span class="md-ellipsis">
+22. Digital Forensics
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch23-vulnerability-research-and-fuzzing.html" class="md-nav__link">
+<span class="md-ellipsis">
+23. Vulnerability Research and Fuzzing
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch24-exploit-development-fundamentals.html" class="md-nav__link">
+<span class="md-ellipsis">
+24. Exploit Development Fundamentals
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch25-security-architecture-and-design.html" class="md-nav__link">
+<span class="md-ellipsis">
+25. Security Architecture and Design
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch26-cloud-native-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+26. Cloud-Native Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch27-human-factors-in-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+27. Human Factors in Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch28-artificial-intelligence-and-machine-learning.html" class="md-nav__link">
+<span class="md-ellipsis">
+28. Artificial Intelligence and Machine Learning Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch29-iot-industrial-control-systems-and-the-emerging.html" class="md-nav__link">
+<span class="md-ellipsis">
+29. IoT, Industrial Control Systems, and the Emerging Threat Horizon
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="app-a-mathematical-reference.html" class="md-nav__link">
+<span class="md-ellipsis">
+Appendix A. Mathematical Reference
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="app-b-security-tools-reference.html" class="md-nav__link">
+<span class="md-ellipsis">
+Appendix B. Security Tools Reference
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="app-c-selected-exercise-solutions.html" class="md-nav__link">
+<span class="md-ellipsis">
+Appendix C. Selected Exercise Solutions
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="bibliography.html" class="md-nav__link">
+<span class="md-ellipsis">
+References
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#sec-email-architecture" class="md-nav__link">
+<span class="md-ellipsis">
+18.1 Email Architecture
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-smtp-tls" class="md-nav__link">
+<span class="md-ellipsis">
+18.2 SMTP Transport Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-spf" class="md-nav__link">
+<span class="md-ellipsis">
+18.3 Sender Policy Framework (SPF)
+</span>
+</a>
+<nav class="md-nav" aria-label="18.3 Sender Policy Framework (SPF)">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1831-spf-limitations-and-the-dmarc-bridge" class="md-nav__link">
+<span class="md-ellipsis">
+18.3.1 SPF Limitations and the DMARC Bridge
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-dkim" class="md-nav__link">
+<span class="md-ellipsis">
+18.4 DomainKeys Identified Mail (DKIM)
+</span>
+</a>
+<nav class="md-nav" aria-label="18.4 DomainKeys Identified Mail (DKIM)">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1841-dkim-replay-attacks-and-key-rotation" class="md-nav__link">
+<span class="md-ellipsis">
+18.4.1 DKIM Replay Attacks and Key Rotation
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-dmarc" class="md-nav__link">
+<span class="md-ellipsis">
+18.5 DMARC: Policy and Alignment
+</span>
+</a>
+<nav class="md-nav" aria-label="18.5 DMARC: Policy and Alignment">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1851-dmarc-reporting-and-policy-escalation" class="md-nav__link">
+<span class="md-ellipsis">
+18.5.1 DMARC Reporting and Policy Escalation
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-bimi" class="md-nav__link">
+<span class="md-ellipsis">
+18.6 BIMI: Brand Indicators for Message Identification
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-email-e2e" class="md-nav__link">
+<span class="md-ellipsis">
+18.7 End-to-End Encryption: S/MIME and PGP
+</span>
+</a>
+<nav class="md-nav" aria-label="18.7 End-to-End Encryption: S/MIME and PGP">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1871-smime" class="md-nav__link">
+<span class="md-ellipsis">
+18.7.1 S/MIME
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1872-pgpgpg" class="md-nav__link">
+<span class="md-ellipsis">
+18.7.2 PGP/GPG
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1873-why-end-to-end-email-encryption-has-low-adoption" class="md-nav__link">
+<span class="md-ellipsis">
+18.7.3 Why End-to-End Email Encryption Has Low Adoption
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1874-mta-sts-and-dane-for-smtp-transport-security" class="md-nav__link">
+<span class="md-ellipsis">
+18.7.4 MTA-STS and DANE for SMTP Transport Security
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-email-attacks" class="md-nav__link">
+<span class="md-ellipsis">
+18.8 Email Attack Landscape
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-email-forensics" class="md-nav__link">
+<span class="md-ellipsis">
+18.9 Email Forensics
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-email-exercises" class="md-nav__link">
+<span class="md-ellipsis">
+18.10 Exercises
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="ch-email-security">Chapter 18: Email Security<a class="headerlink" href="#ch-email-security" title="Permanent link">&para;</a></h1>
+<p>Email is the primary attack vector for initial access in the majority of breaches. Despite decades of patching, SMTP was designed without authentication or confidentiality. This chapter builds a complete picture of email security—from transport encryption and sender authentication to end-to-end encryption and forensic header analysis.</p>
+<h2 id="sec-email-architecture"><span class="secnum">18.1</span> Email Architecture<a class="headerlink" href="#sec-email-architecture" title="Permanent link">&para;</a></h2>
+<p>Understanding how a message flows through the email infrastructure is a prerequisite for understanding where attacks occur and where controls apply.</p>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 18.1 (Email Infrastructure Components)</p>
+<ul>
+<li>
+<p><strong>MUA</strong> (Mail User Agent) – Client software: Outlook, Thunderbird, Gmail web.</p>
+</li>
+<li>
+<p><strong>MSA</strong> (Mail Submission Agent) – Accepts mail from authenticated users; enforces policies; port 587 (STARTTLS) or 465 (SMTPS).</p>
+</li>
+<li>
+<p><strong>MTA</strong> (Mail Transfer Agent) – Routes mail between domains via SMTP (port 25); implements SPF/DKIM/DMARC checking.</p>
+</li>
+<li>
+<p><strong>MDA</strong> (Mail Delivery Agent) – Delivers to mailbox; runs spam/AV filters (SpamAssassin, ClamAV).</p>
+</li>
+<li>
+<p><strong>MRA</strong> (Mail Retrieval Agent) – Serves mail to MUA via IMAP (port 993 TLS) or POP3 (port 995 TLS).</p>
+</li>
+</ul>
+</div>
+<figure class="fig fig-diagram" id="fig-email-flow">
+<img class="tikz" src="img/tikz-2430a29ae724.svg" alt="Email flow with security controls applied at each hop." loading="lazy" width="451" height="69">
+<figcaption><strong>Figure 18.1.</strong> Email flow with security controls applied at each hop.</figcaption>
+</figure>
+<h2 id="sec-smtp-tls"><span class="secnum">18.2</span> SMTP Transport Security<a class="headerlink" href="#sec-smtp-tls" title="Permanent link">&para;</a></h2>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 18.2 (STARTTLS)</p>
+<p>STARTTLS is an <em>opportunistic</em> TLS upgrade mechanism. The receiving MTA advertises <code>STARTTLS</code> in its EHLO response; the sending MTA issues a <code>STARTTLS</code> command and upgrades to TLS. Because the initial negotiation is unencrypted, a man-in-the-middle can strip the <code>STARTTLS</code> capability (downgrade attack), causing fallback to plaintext delivery.</p>
+</div>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 18.3 (MTA-STS (RFC 8461))</p>
+<p>MTA Strict Transport Security publishes a DNS TXT record (<code>_mta-sts.example.com</code>) pointing to an HTTPS policy file that specifies: MX hostnames, TLS mode (<code>enforce</code> vs <code>testing</code>), and policy lifetime. Sending MTAs that support MTA-STS fetch this policy and refuse to deliver over plaintext, defeating STARTTLS stripping.</p>
+</div>
+<h2 id="sec-spf"><span class="secnum">18.3</span> Sender Policy Framework (SPF)<a class="headerlink" href="#sec-spf" title="Permanent link">&para;</a></h2>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 18.4 (SPF (RFC 7208))</p>
+<p>SPF lets domain owners specify which IP addresses are authorised to send email on behalf of their domain. The receiving MTA performs a DNS TXT lookup on the <code>MAIL FROM</code> domain and compares the connecting IP against the SPF record. SPF authenticates the <em>envelope sender</em>, not the <code>From:</code> header visible to the user.</p>
+</div>
+<div class="admonition example box-example kind-example">
+<p class="admonition-title">Example 18.1 (SPF Record Syntax)</p>
+<div class="language-bash highlight"><pre><span></span><code><span class="c1"># DNS TXT record for example.com</span>
+<span class="nv">v</span><span class="o">=</span>spf1<span class="w"> </span>ip4:203.0.113.0/24<span class="w"> </span>include:_spf.google.com<span class="w"> </span>-all
+
+<span class="c1"># Mechanisms:</span>
+<span class="c1"># ip4:203.0.113.0/24  -- authorise this IP range</span>
+<span class="c1"># include:_spf.google.com -- include Google's SPF record (for GSuite)</span>
+<span class="c1"># -all  -- hard fail all other senders (recommended)</span>
+<span class="c1"># ~all  -- soft fail (mark as spam, still deliver)</span>
+<span class="c1"># ?all  -- neutral (no policy, not recommended)</span>
+
+<span class="c1"># SPF lookup limit: maximum 10 DNS lookups per evaluation</span>
+<span class="c1"># Exceeding the limit causes "PermError" (treated as fail by strict receivers)</span>
+</code></pre></div>
+</div>
+<h3 id="1831-spf-limitations-and-the-dmarc-bridge"><span class="secnum">18.3.1</span> SPF Limitations and the DMARC Bridge<a class="headerlink" href="#1831-spf-limitations-and-the-dmarc-bridge" title="Permanent link">&para;</a></h3>
+<p>SPF has three fundamental weaknesses that practitioners need to understand before relying on it as a security control.</p>
+<div class="parahead">
+<p>Envelope sender vs. header sender.</p>
+</div>
+<p>SPF checks the <code>MAIL FROM</code> address (the envelope sender, also called the return-path), not the <code>From:</code> header that appears in the user’s inbox. These can be completely different domains. An attacker can send a message with <code>MAIL FROM: attacker@attacker.com</code> (which passes SPF for <code>attacker.com</code>) while setting <code>From: ceo@victim.com</code>. Most email clients display only the <code>From:</code> header. SPF passes, the message looks like it came from the victim’s CEO, and the user has no way to tell. This is display name spoofing exploited in every Business Email Compromise (BEC) campaign.</p>
+<div class="parahead">
+<p><code>+all</code> misconfiguration.</p>
+</div>
+<p><code>+all</code> means “any IP is authorised to send for this domain” — effectively disabling SPF. Surprisingly common in large organisations that use many third-party sending services and, rather than properly enumerate them, reach for <code>+all</code> to stop delivery failures. Any organisation with <code>+all</code> has no SPF protection at all. Auditing SPF records across a domain portfolio regularly is a basic hygiene task that turns up this misconfiguration repeatedly.</p>
+<div class="parahead">
+<p>The 10-lookup limit and SPF flattening.</p>
+</div>
+<p>RFC 7208 limits evaluation to 10 DNS lookups. The <code>include:</code> mechanism triggers one lookup per included record, and each included record may itself include further records. Large organisations that send through many SaaS platforms (Salesforce, Marketo, SendGrid, Mailchimp, a transactional email provider, a helpdesk platform) exhaust the 10-lookup limit easily. When a receiver hits <code>PermError</code> from exceeding the limit, strict receivers treat it as an SPF failure, causing legitimate mail to be rejected. The workaround is <em>SPF record flattening</em>: periodically resolving all <code>include:</code> chains to their constituent IP ranges and publishing them as static <code>ip4:</code> and <code>ip6:</code> ranges. This solves the lookup limit but requires automation to stay current as upstream providers rotate their IP ranges.</p>
+<div class="parahead">
+<p>DMARC as the bridge.</p>
+</div>
+<p>None of these SPF limitations matter as much when DMARC is in place. DMARC requires <em>alignment</em>: the domain in the SPF <code>MAIL FROM</code> (or the DKIM <code>d=</code> tag) must match the <code>From:</code> header domain. This closes the envelope-vs-header gap. An attacker whose SPF-passing <code>MAIL FROM</code> is <code>attacker.com</code> while the <code>From:</code> shows <code>victim.com</code> fails DMARC alignment on the SPF check. They would need both domains to match, which requires controlling the victim domain. DMARC does not fix the 10-lookup limit (you still need proper SPF), but it makes SPF’s authentication actually relevant to what the user sees.</p>
+<h2 id="sec-dkim"><span class="secnum">18.4</span> DomainKeys Identified Mail (DKIM)<a class="headerlink" href="#sec-dkim" title="Permanent link">&para;</a></h2>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 18.5 (DKIM (RFC 6376))</p>
+<p>DKIM lets a domain cryptographically sign outgoing messages. The signing MTA computes an RSA or Ed25519 signature over selected headers and the message body, inserting it as a <code>DKIM-Signature:</code> header. The receiving MTA retrieves the public key from DNS (<code>selector._domainkey.example.com</code>) and verifies the signature. DKIM survives SMTP relay hops because it’s embedded in the message itself.</p>
+</div>
+<div class="language-bash highlight"><pre><span></span><code><span class="c1"># DNS TXT record: selector._domainkey.example.com</span>
+<span class="nv">v</span><span class="o">=</span>DKIM1<span class="p">;</span><span class="w"> </span><span class="nv">k</span><span class="o">=</span>rsa<span class="p">;</span><span class="w"> </span><span class="nv">p</span><span class="o">=</span>MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA...
+
+<span class="c1"># DKIM-Signature header added by signing MTA:</span>
+DKIM-Signature:<span class="w"> </span><span class="nv">v</span><span class="o">=</span><span class="m">1</span><span class="p">;</span><span class="w"> </span><span class="nv">a</span><span class="o">=</span>rsa-sha256<span class="p">;</span><span class="w"> </span><span class="nv">c</span><span class="o">=</span>relaxed/relaxed<span class="p">;</span>
+<span class="w">  </span><span class="nv">d</span><span class="o">=</span>example.com<span class="p">;</span><span class="w"> </span><span class="nv">s</span><span class="o">=</span>mail2024<span class="p">;</span><span class="w"> </span><span class="nv">t</span><span class="o">=</span><span class="m">1700000000</span><span class="p">;</span>
+<span class="w">  </span><span class="nv">bh</span><span class="o">=</span>47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU<span class="o">=</span><span class="p">;</span>
+<span class="w">  </span><span class="nv">h</span><span class="o">=</span>From:To:Subject:Date:Message-ID<span class="p">;</span>
+<span class="w">  </span><span class="nv">b</span><span class="o">=</span>BASE64SIGNATURE...
+
+<span class="c1"># Verify DKIM signature with OpenDKIM tools:</span>
+opendkim-testmsg<span class="w"> </span>&lt;<span class="w"> </span>message.eml
+</code></pre></div>
+<div class="admonition warning box-warningbox kind-safety">
+<p class="admonition-title">DKIM Does Not Prevent Header Spoofing Alone</p>
+<p>DKIM verifies that the message was signed by <code>d=example.com</code> in the <code>DKIM-Signature</code> header, not necessarily by the <code>From:</code> domain. An attacker can obtain a valid DKIM signature for their own domain (e.g., <code>attacker.com</code>) while spoofing the <code>From:</code> field to show <code>ceo@example.com</code>. DMARC alignment closes this gap.</p>
+</div>
+<h3 id="1841-dkim-replay-attacks-and-key-rotation"><span class="secnum">18.4.1</span> DKIM Replay Attacks and Key Rotation<a class="headerlink" href="#1841-dkim-replay-attacks-and-key-rotation" title="Permanent link">&para;</a></h3>
+<p>A subtler attack against DKIM is the <em>replay attack</em>. DKIM signatures are valid for any recipient, any time, and any number of deliveries — there is nothing in the signature that ties it to a specific destination address or delivery timestamp. An attacker who receives a legitimately signed message (for example, by subscribing to a newsletter or sending a message to an organisation and receiving an auto-reply) can extract the DKIM-Signature header and resend the original message to thousands of different recipients. The signature remains valid. Receivers see a message with a perfect DKIM pass and are likely to trust it even if the content is spam or phishing.</p>
+<p>The <code>l=</code> body length limit tag makes this significantly worse. When present, <code>l=</code> tells the verifier to check only the first <em>N</em> bytes of the message body. A signer uses this to allow benign footer additions by mailing lists. But it also allows an attacker to append arbitrary content to the signed portion of the body — adding malicious links or payload below the signed content — while the DKIM signature still passes because the signed prefix is unchanged.</p>
+<div class="admonition warning box-warningbox kind-safety">
+<p class="admonition-title">Avoid the <code>l=</code> Tag</p>
+<p>The DKIM body length limit tag (<code>l=</code>) should never be used in new deployments. It was intended to accommodate mailing list footer additions but creates a trivial content-injection vector. If your signing configuration includes <code>l=</code>, remove it.</p>
+</div>
+<div class="parahead">
+<p>DKIM key rotation.</p>
+</div>
+<p>The DKIM private key is long-lived by default: some organisations run the same key for years. Key rotation is important for two reasons. First, if the private key is ever exposed (through a server compromise, a misconfigured backup, or a cloud storage misconfiguration), an attacker can sign arbitrary messages as your domain indefinitely. Second, replay attacks using old signed messages become less valuable when keys rotate and old selectors are revoked.</p>
+<p>The rotation procedure is: generate a new key pair, publish the public key under a new selector (e.g., <code>mail2025._domainkey.example.com</code>), configure the signing MTA to use the new selector, wait 48 hours for DNS TTLs to propagate, then retire the old selector by deleting or replacing its DNS record with a revoked key (<code>p=</code> empty means the key is revoked per RFC 6376). A rotation cycle of 90–180 days is common in practice, though shorter is better for high-security deployments.</p>
+<p>The private key itself should live in memory or a secrets manager, not on disk in plaintext. A DKIM private key written to <code>/etc/opendkim/keys/</code> with world-readable permissions has been exposed through countless server compromise write-ups. Use filesystem permissions (<code>chmod 600</code>), a dedicated service account, and ideally an HSM or cloud KMS for key storage.</p>
+<h2 id="sec-dmarc"><span class="secnum">18.5</span> DMARC: Policy and Alignment<a class="headerlink" href="#sec-dmarc" title="Permanent link">&para;</a></h2>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 18.6 (DMARC (RFC 7489))</p>
+<p>Domain-based Message Authentication, Reporting and Conformance ties together SPF and DKIM with two requirements: <em>policy</em> (what to do with failing messages) and <em>alignment</em> (the SPF/DKIM domain must match the <code>From:</code> header domain). DMARC passes if at least one of SPF-aligned or DKIM-aligned passes.</p>
+</div>
+<div class="language-bash highlight"><pre><span></span><code><span class="c1"># DNS TXT record: _dmarc.example.com</span>
+<span class="nv">v</span><span class="o">=</span>DMARC1<span class="p">;</span><span class="w"> </span><span class="nv">p</span><span class="o">=</span>reject<span class="p">;</span><span class="w"> </span><span class="nv">sp</span><span class="o">=</span>reject<span class="p">;</span><span class="w"> </span><span class="nv">adkim</span><span class="o">=</span>s<span class="p">;</span><span class="w"> </span><span class="nv">aspf</span><span class="o">=</span>s<span class="p">;</span>
+<span class="w">  </span><span class="nv">rua</span><span class="o">=</span>mailto:dmarc-agg@example.com<span class="p">;</span>
+<span class="w">  </span><span class="nv">ruf</span><span class="o">=</span>mailto:dmarc-fail@example.com<span class="p">;</span>
+<span class="w">  </span><span class="nv">fo</span><span class="o">=</span><span class="m">1</span><span class="p">;</span><span class="w"> </span><span class="nv">pct</span><span class="o">=</span><span class="m">100</span>
+
+<span class="c1"># Tags:</span>
+<span class="c1"># p=reject   -- reject messages failing DMARC (strictest)</span>
+<span class="c1"># p=quarantine -- deliver to spam folder</span>
+<span class="c1"># p=none     -- monitor only (do not take action)</span>
+<span class="c1"># adkim=s    -- strict DKIM alignment (must match From: domain exactly)</span>
+<span class="c1"># aspf=s     -- strict SPF alignment</span>
+<span class="c1"># rua=       -- aggregate report recipients (daily XML)</span>
+<span class="c1"># ruf=       -- forensic report recipients (per-failure)</span>
+<span class="c1"># pct=100    -- apply policy to 100</span>
+</code></pre></div>
+<h3 id="1851-dmarc-reporting-and-policy-escalation"><span class="secnum">18.5.1</span> DMARC Reporting and Policy Escalation<a class="headerlink" href="#1851-dmarc-reporting-and-policy-escalation" title="Permanent link">&para;</a></h3>
+<div class="parahead">
+<p>Aggregate reports (rua) vs. forensic reports (ruf).</p>
+</div>
+<p>The <code>rua=</code> tag specifies where receiving MTAs send <em>aggregate reports</em> — daily XML files summarising every message that claimed your domain, whether DMARC passed or failed, and the receiving MTA’s disposition. A typical aggregate report identifies that 1,400 messages from IP <code>203.0.113.50</code> with selector <code>mail2024</code> passed both SPF and DKIM, while 7 messages from IP <code>185.220.101.5</code> failed both, indicating spoofing attempts. Aggregate reports are invaluable for discovering legitimate sending sources you haven’t enumerated in SPF and for baselining your domain’s email activity.</p>
+<p>The <code>ruf=</code> tag specifies where receiving MTAs send <em>forensic reports</em> — per-message failure reports containing a copy of (or excerpt from) the failing message. Forensic reports let you see exactly what the spoofed message looked like. They are increasingly disabled by receivers for privacy reasons (they contain message content including potential PII), and many large providers such as Gmail no longer send them. Treat <code>ruf=</code> as supplemental intelligence rather than a primary monitoring channel.</p>
+<div class="parahead">
+<p>Policy escalation path.</p>
+</div>
+<p>Rolling out DMARC directly at <code>p=reject</code> on a large domain risks blocking legitimate mail from sending services you haven’t yet added to SPF or configured for DKIM. The standard escalation path is:</p>
+<ol>
+<li>
+<p><code>p=none; pct=100</code> — monitor only; no mail is blocked. Collect aggregate reports for 2–4 weeks to identify all legitimate sending sources.</p>
+</li>
+<li>
+<p><code>p=quarantine; pct=10</code> — quarantine 10% of failing mail. Gradually increase to <code>pct=100</code> over several weeks, watching for legitimate mail appearing in spam folders.</p>
+</li>
+<li>
+<p><code>p=reject; pct=100</code> — reject all failing mail. This is the target state; anything less gives spoofers a percentage-based escape.</p>
+</li>
+</ol>
+<p>Most organisations spend weeks or months at each stage, working through the long tail of forgotten transactional senders, CRM integrations, and DevOps alerting systems that send email. Tools like DMARC Analyzer, Valimail, and EasyDMARC parse aggregate reports and visualise sending sources, shortening this process considerably.</p>
+<div class="parahead">
+<p>Subdomain policy (<code>sp=</code>).</p>
+</div>
+<p>The <code>sp=</code> tag sets a separate DMARC policy for all subdomains of the organisational domain. Without it, subdomains inherit the parent <code>p=</code> policy by default. You might legitimately want <code>p=reject</code> on <code>example.com</code> but <code>p=none</code> on <code>test.example.com</code> — or more commonly, you want <code>sp=reject</code> to prevent attackers from exploiting an unmonitored subdomain (<code>legacy.example.com</code>) to impersonate the parent brand.</p>
+<div class="parahead">
+<p>BIMI: visual brand authentication.</p>
+</div>
+<p>Brand Indicators for Message Identification (BIMI) displays a verified brand logo in supporting email clients (Gmail, Apple Mail, Yahoo Mail) next to messages that pass DMARC. BIMI requires the domain to have <code>p=quarantine</code> or <code>p=reject</code> — <code>p=none</code> does not qualify. It also requires a Verified Mark Certificate (VMC) issued by an approved authority (DigiCert or Entrust), which in turn requires a registered trademark. The VMC validates that the brand displaying the logo owns the trademark for that logo, preventing competitors or impersonators from abusing the display mechanism. BIMI is therefore both a usability feature (users see a trusted logo) and a security control (the logo is gated behind strong authentication and legal trademark ownership).</p>
+<div class="tbl" id="tab-email-auth">
+<div class="tbl-caption"><strong>Table 18.1.</strong> Email authentication mechanisms comparison</div>
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Mechanism</strong></th>
+<th style="text-align: left;"><strong>Protects</strong></th>
+<th style="text-align: left;"><strong>Method</strong></th>
+<th style="text-align: left;"><strong>Survives Relay</strong></th>
+<th style="text-align: left;"><strong>Prevents Spoofing</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">SPF</td>
+<td style="text-align: left;">Envelope sender</td>
+<td style="text-align: left;">DNS IP list</td>
+<td style="text-align: left;">No (breaks at forward)</td>
+<td style="text-align: left;">Partial</td>
+</tr>
+<tr>
+<td style="text-align: left;">DKIM</td>
+<td style="text-align: left;">Signing domain</td>
+<td style="text-align: left;">Cryptographic sig</td>
+<td style="text-align: left;">Yes</td>
+<td style="text-align: left;">Partial</td>
+</tr>
+<tr>
+<td style="text-align: left;">DMARC</td>
+<td style="text-align: left;">From: header</td>
+<td style="text-align: left;">Policy + align</td>
+<td style="text-align: left;">Yes (with DKIM)</td>
+<td style="text-align: left;">Yes (with reject)</td>
+</tr>
+<tr>
+<td style="text-align: left;">BIMI</td>
+<td style="text-align: left;">Brand display</td>
+<td style="text-align: left;">Logo + DMARC</td>
+<td style="text-align: left;">Yes</td>
+<td style="text-align: left;">Visual only</td>
+</tr>
+</tbody>
+</table>
+</div></div>
+<h2 id="sec-bimi"><span class="secnum">18.6</span> BIMI: Brand Indicators for Message Identification<a class="headerlink" href="#sec-bimi" title="Permanent link">&para;</a></h2>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 18.7 (BIMI)</p>
+<p>BIMI displays a verified brand logo in supporting email clients (Gmail, Apple Mail, Yahoo) next to authenticated messages. It requires DMARC at <code>p=quarantine</code> or <code>p=reject</code> and a Verified Mark Certificate (VMC) issued by a qualified CA (DigiCert, Entrust). The logo URL is published as a DNS TXT record at <code>default._bimi.example.com</code>.</p>
+</div>
+<h2 id="sec-email-e2e"><span class="secnum">18.7</span> End-to-End Encryption: S/MIME and PGP<a class="headerlink" href="#sec-email-e2e" title="Permanent link">&para;</a></h2>
+<h3 id="1871-smime"><span class="secnum">18.7.1</span> S/MIME<a class="headerlink" href="#1871-smime" title="Permanent link">&para;</a></h3>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 18.8 (S/MIME)</p>
+<p>Secure/Multipurpose Internet Mail Extensions uses X.509 certificates and Cryptographic Message Syntax (CMS, RFC 5652) to provide message signing and encryption. The sender’s MUA signs the message with the sender’s private key; recipients encrypt using the recipient’s public key certificate. Enterprise deployments use an internal CA; individuals may obtain free certificates from Actalis or purchase from commercial CAs.</p>
+</div>
+<h3 id="1872-pgpgpg"><span class="secnum">18.7.2</span> PGP/GPG<a class="headerlink" href="#1872-pgpgpg" title="Permanent link">&para;</a></h3>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 18.9 (OpenPGP (RFC 4880))</p>
+<p>OpenPGP uses a <em>web of trust</em> model: users sign each other’s public keys, building a decentralised trust graph rather than relying on CAs. GPG (GNU Privacy Guard) is the reference implementation. Key distribution relies on key servers (<code>keys.openpgp.org</code>) or direct exchange. Practical challenges include key discovery, revocation distribution, and user experience.</p>
+</div>
+<div class="language-bash highlight"><pre><span></span><code><span class="c1"># Generate Ed25519 + Cv25519 key pair</span>
+gpg<span class="w"> </span>--full-generate-key<span class="w">  </span><span class="c1"># select EdDSA / Curve25519</span>
+
+<span class="c1"># Export public key for distribution</span>
+gpg<span class="w"> </span>--armor<span class="w"> </span>--export<span class="w"> </span>alice@example.com<span class="w"> </span>&gt;<span class="w"> </span>alice_pubkey.asc
+
+<span class="c1"># Upload to key server</span>
+gpg<span class="w"> </span>--keyserver<span class="w"> </span>hkps://keys.openpgp.org<span class="w"> </span>--send-keys<span class="w"> </span>&lt;KEYID&gt;
+
+<span class="c1"># Encrypt and sign a message for Bob</span>
+gpg<span class="w"> </span>--encrypt<span class="w"> </span>--sign<span class="w"> </span>--armor<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--recipient<span class="w"> </span>bob@example.com<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--local-user<span class="w"> </span>alice@example.com<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>message.txt
+
+<span class="c1"># Verify and decrypt</span>
+gpg<span class="w"> </span>--decrypt<span class="w"> </span>message.txt.asc
+</code></pre></div>
+<h3 id="1873-why-end-to-end-email-encryption-has-low-adoption"><span class="secnum">18.7.3</span> Why End-to-End Email Encryption Has Low Adoption<a class="headerlink" href="#1873-why-end-to-end-email-encryption-has-low-adoption" title="Permanent link">&para;</a></h3>
+<p>Despite existing since 1991 (PGP) and 1999 (S/MIME), end-to-end email encryption remains a niche tool used by security professionals and journalists rather than the general workforce. The reasons are structural, not technical.</p>
+<div class="parahead">
+<p>Key discovery.</p>
+</div>
+<p>Before encrypting a message to Bob, Alice must find Bob’s public key. PGP key servers have historically been plagued by certificate flooding attacks (2019 SKS poisoning attack), abandoned keys, and keys uploaded without the owner’s consent. WKD (Web Key Directory, RFC 7929) addresses this by hosting keys at <code>https://openpgpkey.example.com/.well-known/openpgpkey/example.com/hu/HASH</code>, allowing clients to discover keys via a canonical HTTPS endpoint under the domain owner’s control. S/MIME has a similar problem: enterprise deployments use internal CAs (which work inside the organisation) but an employee trying to encrypt a message to an external contact may find no S/MIME certificate at all.</p>
+<div class="parahead">
+<p>Key management burden.</p>
+</div>
+<p>Users must generate key pairs, protect private keys, back them up, and handle key expiry. When a laptop is lost or a phone is wiped, the private key may be gone and all encrypted email in the inbox becomes permanently inaccessible. Enterprise key escrow (where the organisation holds a copy of all private keys) solves the recovery problem but undermines the end-to-end model — IT can now read all encrypted mail.</p>
+<div class="parahead">
+<p>Metadata exposure.</p>
+</div>
+<p>Even with end-to-end content encryption, the email envelope remains visible: who emailed whom, when, and how frequently. This <em>traffic analysis</em> can reveal sensitive relationships (a journalist’s sources, an executive’s negotiating counterparties, a doctor’s patients) without decrypting a single message. PGP and S/MIME encrypt only the body and attachments; headers including <code>To:</code>, <code>From:</code>, <code>Subject:</code>, and <code>Date:</code> are always in plaintext. Some clients strip the subject line into an encrypted part, but this is not standardised.</p>
+<div class="parahead">
+<p>Web of trust vs. PKI.</p>
+</div>
+<p>PGP’s web of trust requires users to sign each other’s keys to build trust transitively. This works in communities where people meet in person at key-signing parties but fails for most business email. S/MIME relies on centralised CAs, which solves key discovery (the CA verifies email address ownership) but costs money per certificate and requires infrastructure to distribute CA roots to all correspondents’ clients.</p>
+<h3 id="1874-mta-sts-and-dane-for-smtp-transport-security"><span class="secnum">18.7.4</span> MTA-STS and DANE for SMTP Transport Security<a class="headerlink" href="#1874-mta-sts-and-dane-for-smtp-transport-security" title="Permanent link">&para;</a></h3>
+<p>End-to-end encryption is one layer of email security; transport encryption between mail servers is another. SMTP uses opportunistic STARTTLS by default, meaning a man-in-the-middle can strip the STARTTLS advertisement and receive the message in plaintext. Two standards address this.</p>
+<p><strong>MTA-STS (RFC 8461)</strong> lets a domain declare a strict TLS policy for inbound mail via an HTTPS-hosted policy file. The policy specifies which MX hostnames are expected and declares <code>mode: enforce</code>, meaning sending MTAs that support MTA-STS must refuse to deliver if TLS cannot be established with a valid certificate for the expected MX hostnames. The policy is cached by sending MTAs (for a configurable <code>max_age</code>) and updated periodically. A sending MTA that has cached an enforced policy will not fall back to plaintext even if an attacker strips STARTTLS on a later connection. MTA-STS requires no DNSSEC; it relies on the web PKI (the HTTPS certificate for the policy file) to authenticate the policy.</p>
+<p><strong>DANE/TLSA (RFC 7672)</strong> takes a different approach: it publishes the expected SMTP server certificate (or its hash) as a TLSA DNS record, secured by DNSSEC. When a sending MTA resolves the recipient’s MX record, it also fetches the TLSA record and compares the delivered certificate against the published hash. If they don’t match, the connection is refused. DANE/TLSA provides stronger security than MTA-STS because it chains to DNSSEC rather than the web PKI, but its deployment is limited by DNSSEC’s own patchy deployment. Postfix supports both MTA-STS (via the <code>postfix-mta-sts-resolver</code> daemon) and DANE (natively, with <code>smtp_dns_support_level = dnssec</code> and <code>smtp_tls_security_level = dane</code>).</p>
+<h2 id="sec-email-attacks"><span class="secnum">18.8</span> Email Attack Landscape<a class="headerlink" href="#sec-email-attacks" title="Permanent link">&para;</a></h2>
+<div class="admonition warning box-attackbox kind-safety">
+<p class="admonition-title">Business Email Compromise (BEC)</p>
+<p>BEC attacks impersonate executives or trusted vendors to trick employees into transferring funds or revealing credentials. Techniques include:</p>
+<ul>
+<li>
+<p><strong>Display name spoofing</strong>: <code>From: CEO &lt;ceo@gmail.com&gt;</code> – the display name matches but the domain does not.</p>
+</li>
+<li>
+<p><strong>Lookalike domains</strong>: <code>exarnple.com</code> (rn vs m), <code>example.co</code> (missing TLD character).</p>
+</li>
+<li>
+<p><strong>Account takeover</strong>: legitimate executive email account compromised; all authentication checks pass.</p>
+</li>
+</ul>
+<p>BEC caused &#36;2.9 billion in losses in 2023 (FBI IC3 report). Defences: out-of-band verification for wire transfers; DMARC reject on owned domains; anti-spoofing rules in email gateway; security awareness training.</p>
+</div>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 18.10 (IDN Homograph Attack)</p>
+<p>International Domain Names (IDN) allow Unicode characters in domain names, enabling registration of visually identical domains using characters from different scripts. Example: <code>аpple.com</code> using Cyrillic <code>а</code> (U+0430) instead of Latin <code>a</code> (U+0061) is rendered identically in many fonts. Browsers display the punycode form (<code>xn--pple-43d.com</code>) for suspicious mixed-script domains; email clients typically do not.</p>
+</div>
+<h2 id="sec-email-forensics"><span class="secnum">18.9</span> Email Forensics<a class="headerlink" href="#sec-email-forensics" title="Permanent link">&para;</a></h2>
+<div class="admonition example box-example kind-example">
+<p class="admonition-title">Example 18.2 (Reading Raw Email Headers)</p>
+<p>The <code>Received:</code> chain records each MTA hop in reverse chronological order (most recent first). Analysing the chain identifies the true origin.</p>
+<div class="language-bash highlight"><pre><span></span><code><span class="c1"># Fetch raw message with IMAP</span>
+openssl<span class="w"> </span>s_client<span class="w"> </span>-connect<span class="w"> </span>mail.example.com:993<span class="w"> </span>-quiet
+<span class="c1"># Then: a login user pass</span>
+<span class="c1">#       b select INBOX</span>
+<span class="c1">#       c fetch 1 rfc822</span>
+
+<span class="c1"># Verify DKIM signature from a saved .eml file</span>
+opendkim-testmsg<span class="w"> </span>&lt;<span class="w"> </span>suspicious.eml
+
+<span class="c1"># Parse with Python mail library</span>
+python3<span class="w"> </span>-c<span class="w"> </span><span class="s2">"</span>
+<span class="s2">import email, sys</span>
+<span class="s2">msg = email.message_from_file(open('suspicious.eml'))</span>
+<span class="s2">for h in msg.get_all('Received', []):</span>
+<span class="s2">    print('Received:', h[:120])</span>
+<span class="s2">print('DKIM-Sig:', msg.get('DKIM-Signature','MISSING')[:80])</span>
+<span class="s2">print('X-Originating-IP:', msg.get('X-Originating-IP','N/A'))</span>
+<span class="s2">"</span>
+</code></pre></div>
+</div>
+<div class="admonition info box-keybox kind-concept">
+<p class="admonition-title">DMARC Failure Diagnosis Checklist</p>
+<p>When a legitimate email fails DMARC:</p>
+<ol>
+<li>
+<p>Check if the sending service is listed in SPF (<code>dig TXT domain.com</code>).</p>
+</li>
+<li>
+<p>Verify the DKIM selector exists (<code>dig TXT selector._domainkey.domain.com</code>).</p>
+</li>
+<li>
+<p>Confirm alignment: does the DKIM <code>d=</code> or SPF envelope domain match the <code>From:</code> header domain?</p>
+</li>
+<li>
+<p>Check for email forwarding (SPF breaks at forwarders; DKIM survives if headers are not modified).</p>
+</li>
+<li>
+<p>Review aggregate DMARC reports (RUA) for failing sources.</p>
+</li>
+</ol>
+</div>
+<h2 id="sec-email-exercises"><span class="secnum">18.10</span> Exercises<a class="headerlink" href="#sec-email-exercises" title="Permanent link">&para;</a></h2>
+<div class="admonition example box-exercise kind-example">
+<p class="admonition-title">Exercise 18.1</p>
+<p>A company reports that emails sent from their marketing platform (<code>sendgrid.net</code>) are being rejected by recipients with a DMARC failure. Their <code>From:</code> domain is <code>example.com</code>, their SPF record is <code>v=spf1 mx -all</code>, and DMARC is set to <code>p=reject; adkim=s; aspf=s</code>. Diagnose the failure and describe all changes required in SPF, DKIM, and DMARC configuration to allow legitimate SendGrid email to pass.</p>
+</div>
+<div class="admonition example box-exercise kind-example">
+<p class="admonition-title">Exercise 18.2</p>
+<p>You are designing the email security architecture for a financial institution. The CISO requires protection against BEC, phishing, and domain spoofing. Design a layered defence including: DNS record configuration (SPF, DKIM, DMARC), gateway controls, look-alike domain monitoring, and employee training programme. Justify each control with reference to the specific attack it mitigates.</p>
+</div>
+<div class="admonition example box-exercise kind-example">
+<p class="admonition-title">Exercise 18.3</p>
+<p>The following raw email headers were extracted from a suspicious phishing message. Analyse the <code>Received:</code> chain to determine the true originating IP, evaluate whether SPF and DKIM passed or failed, and identify three indicators that the message is fraudulent:</p>
+<div class="language-bash highlight"><pre><span></span><code>From:<span class="w"> </span><span class="s2">"CEO John Smith"</span><span class="w"> </span>&lt;john.smith@example.com&gt;
+Return-Path:<span class="w"> </span>&lt;bounce@phishing-srv.ru&gt;
+Received:<span class="w"> </span>from<span class="w"> </span>phishing-srv.ru<span class="w"> </span><span class="o">(</span>phishing-srv.ru<span class="w"> </span><span class="o">[</span><span class="m">185</span>.220.101.5<span class="o">])</span>
+<span class="w">        </span>by<span class="w"> </span>mx.example.com<span class="w"> </span>with<span class="w"> </span>ESMTP<span class="w"> </span>id<span class="w"> </span>abc123
+Received:<span class="w"> </span>from<span class="w"> </span>localhost<span class="w"> </span><span class="o">(</span>localhost<span class="w"> </span><span class="o">[</span><span class="m">127</span>.0.0.1<span class="o">])</span>
+<span class="w">        </span>by<span class="w"> </span>phishing-srv.ru<span class="w"> </span><span class="o">(</span>Postfix<span class="o">)</span><span class="w"> </span>with<span class="w"> </span>ESMTP
+X-Originating-IP:<span class="w"> </span><span class="m">185</span>.220.101.5
+DKIM-Signature:<span class="w"> </span><span class="nv">v</span><span class="o">=</span><span class="m">1</span><span class="p">;</span><span class="w"> </span><span class="nv">d</span><span class="o">=</span>phishing-srv.ru<span class="p">;</span><span class="w"> </span><span class="nv">s</span><span class="o">=</span>mail<span class="p">;</span><span class="w"> </span>...
+Subject:<span class="w"> </span>URGENT:<span class="w"> </span>Wire<span class="w"> </span>Transfer<span class="w"> </span>Required<span class="w"> </span>Immediately
+</code></pre></div>
+</div>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button type="button" class="md-top md-icon" data-md-component="top" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+Back to top
+</button>
+</main>
+<footer class="md-footer">
+<nav class="md-footer__inner md-grid" aria-label="Footer" >
+<a href="ch17-ssh-security.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: 17. SSH Security">
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</div>
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Previous
+</span>
+<div class="md-ellipsis">
+17. SSH Security
+</div>
+</div>
+</a>
+<a href="ch19-advanced-network-protocol-security.html" class="md-footer__link md-footer__link--next" aria-label="Next: 19. Advanced Network Protocol Security">
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Next
+</span>
+<div class="md-ellipsis">
+19. Advanced Network Protocol Security
+</div>
+</div>
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+</div>
+</a>
+</nav>
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+The Open Book Project &middot;
+<a href="../../about.html">About this library</a> &middot;
+<a href="../../publish.html">Publish your book</a> &middot;
+© The authors of the books
+</div>
+Made with
+<a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+Material for MkDocs
+</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "navigation.prune", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "toc.follow", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+<script src="../../assets/mathjax.js"></script>
+<script src="../../assets/viz.js"></script>
+<script src="../../assets/remote.js"></script>
+<script src="../../assets/scans.js"></script>
+<script src="../../assets/reader.js"></script>
+<script src="../../assets/app.js"></script>
+<script src="../../assets/slides.js"></script>
+<script src="../../assets/speak.js"></script>
+<script src="../../assets/quiz.js"></script>
+<script>
+    /* offline reading: the service worker at the site root (its scope is the whole site) */
+    if ("serviceWorker" in navigator && window.isSecureContext) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register(new URL("../../sw.js", location.href).href).catch(function () {});
+      });
+    }
+  </script>
+</body>
+</html>

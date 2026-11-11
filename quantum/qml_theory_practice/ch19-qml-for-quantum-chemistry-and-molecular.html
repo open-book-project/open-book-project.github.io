@@ -1,0 +1,973 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="description" content="The Open Book Project: books on computer science, quantum computing, cyber security, science, the social sciences, university courses and languages, read page by page like an e-book, online or offline.">
+<meta name="author" content="The Open Book Project">
+<link rel="canonical" href="https://open-book-project.github.io/quantum/qml_theory_practice/ch19-qml-for-quantum-chemistry-and-molecular.html">
+<link rel="prev" href="ch18-quantum-error-mitigation.html">
+<link rel="next" href="ch20-qml-in-finance-and-optimization.html">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap"></noscript>
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Open Book">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="application-name" content="Open Book"><script src="../../assets/library-data.js"></script><script>
+    (function () {
+      var X = window.XMLHttpRequest, open, gate = new Promise(function (r) { open = r; });
+      if (!X) return;
+      var open0 = X.prototype.open, send0 = X.prototype.send;
+      X.prototype.open = function (method, url) {
+        this.__pkIndex = /\/search\/search_index\.json(\?|#|$)/.test(String(url));
+        return open0.apply(this, arguments);
+      };
+      X.prototype.send = function () {
+        if (!this.__pkIndex) return send0.apply(this, arguments);
+        var xhr = this, args = arguments;
+        gate.then(function () { send0.apply(xhr, args); });
+      };
+      function wake() { open(); }
+      document.addEventListener("focusin", function (e) { if (e.target && e.target.closest && e.target.closest(".md-search")) wake(); });
+      document.addEventListener("click", function (e) { if (e.target && e.target.closest && e.target.closest('label[for="__search"], .md-search')) wake(); }, true);
+      document.addEventListener("keydown", function (e) {
+        var k = e.key;
+        if ((k === "/" || k === "s" || k === "f" || k === "S" || k === "F") && !(e.target && e.target.closest && e.target.closest("input, textarea, [contenteditable]"))) wake();
+      }, true);
+      if (/[?&]q=/.test(location.search)) wake();
+    })();
+  </script><script>
+    try {
+      if ((window.matchMedia && (matchMedia("(display-mode: standalone)").matches || matchMedia("(display-mode: fullscreen)").matches)) || navigator.standalone === true) {
+        document.documentElement.className += " bjp-standalone";
+      }
+    } catch (e) { /* not an installed app */ }
+    /* the books of a subject or of the whole library as covers or as a list (assets/app.js): the reader's choice */
+    try {
+      var bv = localStorage.getItem("bjp.view");
+      if (bv === "list" || (bv !== "grid" && /\/books\.html$/.test(location.pathname))) document.documentElement.className += " bjp-view-list";
+    } catch (e) { /* no storage: covers */ }
+  </script>
+<script>
+    /* a book opened from its cover on the shelf: the page stays blank, in the cover's colour, until the reader is up */
+    try {
+      var cv = sessionStorage.getItem("bjp.reader.cover");
+      if (cv && sessionStorage.getItem("bjp.reader.open") === "1") {
+        var c = JSON.parse(cv), de = document.documentElement;
+        de.className += " bjp-booting";
+        if (c && /^#[0-9a-f]{3,8}$/i.test(c.bg || "")) de.style.background = c.bg;
+        setTimeout(function () { de.classList.remove("bjp-booting"); de.style.background = ""; }, 3000);
+      }
+    } catch (e) { /* no session storage: the page simply opens as usual */ }
+  </script>
+<title>19. QML for Quantum Chemistry and Molecular Simulation - The Open Book Project</title>
+<link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+<link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+<link rel="stylesheet" href="../../assets/extra.css">
+<link rel="stylesheet" href="../../assets/reader.css">
+<link rel="stylesheet" href="../../assets/viz.css">
+<link rel="stylesheet" href="../../assets/app.css">
+<link rel="stylesheet" href="../../assets/theme.css">
+<link rel="stylesheet" href="../../assets/slides.css">
+<link rel="stylesheet" href="../../assets/remote.css">
+<link rel="stylesheet" href="../../assets/scans.css">
+<link rel="stylesheet" href="../../assets/speak.css">
+<link rel="stylesheet" href="../../assets/quiz.css">
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+<input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+<input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a href="#sec-electronic_structure" class="md-skip">
+Skip to content
+</a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav class="md-header__inner md-grid" aria-label="Header">
+<a href="../../index.html" title="The Open Book Project" class="md-header__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+The Open Book Project
+</span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+19. QML for Quantum Chemistry and Molecular Simulation
+</span>
+</div>
+</div>
+</div><a href="../../index.html" class="bjp-libbtn" aria-label="Library: all books" title="Library: all books">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V5h4v15M8 20V9h4v11M14 20L12.6 6l3.8-.8 3 14.2M3 20h18"/></svg><span>Library</span>
+</a>
+<a href="../../subjects/index.html" class="pk-catbtn" aria-haspopup="true" aria-expanded="false" title="Browse the books by category">
+<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><circle cx="17" cy="7" r="3.6"/><path d="M7 13.4l3.9 6.8H3.1z"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg><span>Categories</span>
+</a>
+<form class="md-header__option" data-md-component="palette">
+<input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+<label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+</label>
+<input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+<label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+<label class="md-search__icon md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</label>
+<nav class="md-search__options" aria-label="Search">
+<button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+Initializing search
+</div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--primary bjp-nav bjp-nav--book" aria-label="Navigation" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a href="../../index.html" title="The Open Book Project" class="md-nav__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+The Open Book Project
+</label>
+<ul class="md-nav__list" data-md-scrollfix>
+<li class="md-nav__item bjp-nav-all">
+<a href="../../index.html" class="md-nav__link" aria-label="All books: back to the library">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+<span class="md-ellipsis">All books</span>
+</a>
+</li>
+<li class="md-nav__item bjp-nav-book" role="presentation"><span class="bjp-nav-head">Quantum Machine Learning</span></li>
+<li class="md-nav__item">
+<a href="index.html" class="md-nav__link">
+<span class="md-ellipsis">
+Overview and preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="notation-and-conventions.html" class="md-nav__link">
+<span class="md-ellipsis">
+Notation and Conventions
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="abbreviations-and-acronyms.html" class="md-nav__link">
+<span class="md-ellipsis">
+Abbreviations and Acronyms
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch01-mathematical-prerequisites-for-qml.html" class="md-nav__link">
+<span class="md-ellipsis">
+1. Mathematical Prerequisites for QML
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch02-quantum-computing-essentials.html" class="md-nav__link">
+<span class="md-ellipsis">
+2. Quantum Computing Essentials
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch03-quantum-information-theory-for-machine-learning.html" class="md-nav__link">
+<span class="md-ellipsis">
+3. Quantum Information Theory for Machine Learning
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch04-machine-learning-foundations.html" class="md-nav__link">
+<span class="md-ellipsis">
+4. Machine Learning Foundations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch05-advanced-classical-machine-learning.html" class="md-nav__link">
+<span class="md-ellipsis">
+5. Advanced Classical Machine Learning
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch06-variational-quantum-circuits.html" class="md-nav__link">
+<span class="md-ellipsis">
+6. Variational Quantum Circuits
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch07-quantum-feature-maps-and-data-encoding.html" class="md-nav__link">
+<span class="md-ellipsis">
+7. Quantum Feature Maps and Data Encoding
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch08-quantum-kernel-methods.html" class="md-nav__link">
+<span class="md-ellipsis">
+8. Quantum Kernel Methods
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch09-quantum-support-vector-machines.html" class="md-nav__link">
+<span class="md-ellipsis">
+9. Quantum Support Vector Machines
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch10-quantum-neural-networks.html" class="md-nav__link">
+<span class="md-ellipsis">
+10. Quantum Neural Networks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch11-quantum-convolutional-neural-networks.html" class="md-nav__link">
+<span class="md-ellipsis">
+11. Quantum Convolutional Neural Networks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch12-quantum-recurrent-networks-and-qlstm.html" class="md-nav__link">
+<span class="md-ellipsis">
+12. Quantum Recurrent Networks and QLSTM
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch13-quantum-autoencoders.html" class="md-nav__link">
+<span class="md-ellipsis">
+13. Quantum Autoencoders
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch14-quantum-generative-models.html" class="md-nav__link">
+<span class="md-ellipsis">
+14. Quantum Generative Models
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch15-optimization-and-training-of-quantum-models.html" class="md-nav__link">
+<span class="md-ellipsis">
+15. Optimization and Training of Quantum Models
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch16-barren-plateaus-and-trainability-of-quantum.html" class="md-nav__link">
+<span class="md-ellipsis">
+16. Barren Plateaus and Trainability of Quantum Models
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch17-nisq-hardware-platforms.html" class="md-nav__link">
+<span class="md-ellipsis">
+17. NISQ Hardware Platforms
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch18-quantum-error-mitigation.html" class="md-nav__link">
+<span class="md-ellipsis">
+18. Quantum Error Mitigation
+</span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+19. QML for Quantum Chemistry and Molecular Simulation
+</span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a href="ch19-qml-for-quantum-chemistry-and-molecular.html" class="md-nav__link md-nav__link--active">
+<span class="md-ellipsis">
+19. QML for Quantum Chemistry and Molecular Simulation
+</span>
+</a>
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#sec-electronic_structure" class="md-nav__link">
+<span class="md-ellipsis">
+19.1 The Electronic Structure Problem
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-second_quantization" class="md-nav__link">
+<span class="md-ellipsis">
+19.2 Second Quantization and Qubit Mappings
+</span>
+</a>
+<nav class="md-nav" aria-label="19.2 Second Quantization and Qubit Mappings">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1921-jordan-wigner-transform" class="md-nav__link">
+<span class="md-ellipsis">
+19.2.1 Jordan-Wigner Transform
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-vqe_chemistry" class="md-nav__link">
+<span class="md-ellipsis">
+19.3 VQE for Molecular Ground States
+</span>
+</a>
+<nav class="md-nav" aria-label="19.3 VQE for Molecular Ground States">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1931-uccsd-ansatz" class="md-nav__link">
+<span class="md-ellipsis">
+19.3.1 UCCSD Ansatz
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-qmlp" class="md-nav__link">
+<span class="md-ellipsis">
+19.4 Quantum ML Potentials
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-qml_molecular" class="md-nav__link">
+<span class="md-ellipsis">
+19.5 Quantum Kernels for Molecular Property Prediction
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-chemistry_implementation" class="md-nav__link">
+<span class="md-ellipsis">
+19.6 Implementation: VQE for H₂ and Molecular ML
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#197-chapter-summary" class="md-nav__link">
+<span class="md-ellipsis">
+19.7 Chapter Summary
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="ch20-qml-in-finance-and-optimization.html" class="md-nav__link">
+<span class="md-ellipsis">
+20. QML in Finance and Optimization
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch21-qml-in-healthcare-and-drug-discovery.html" class="md-nav__link">
+<span class="md-ellipsis">
+21. QML in Healthcare and Drug Discovery
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch22-qml-for-nlp-and-computer-vision.html" class="md-nav__link">
+<span class="md-ellipsis">
+22. QML for NLP and Computer Vision
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch23-quantum-advantage-theory-and-benchmarking.html" class="md-nav__link">
+<span class="md-ellipsis">
+23. Quantum Advantage Theory and Benchmarking
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch24-frontiers-and-future-directions-in-qml.html" class="md-nav__link">
+<span class="md-ellipsis">
+24. Frontiers and Future Directions in QML
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="python-environment-setup.html" class="md-nav__link">
+<span class="md-ellipsis">
+Python Environment Setup
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="pennylane-quick-reference.html" class="md-nav__link">
+<span class="md-ellipsis">
+PennyLane Quick Reference
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="qiskit-quick-reference.html" class="md-nav__link">
+<span class="md-ellipsis">
+Qiskit Quick Reference
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="mathematical-reference-tables.html" class="md-nav__link">
+<span class="md-ellipsis">
+Mathematical Reference Tables
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="quantum-gate-reference.html" class="md-nav__link">
+<span class="md-ellipsis">
+Quantum Gate Reference
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="benchmark-datasets-for-qml.html" class="md-nav__link">
+<span class="md-ellipsis">
+Benchmark Datasets for QML
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="selected-exercise-solutions.html" class="md-nav__link">
+<span class="md-ellipsis">
+Selected Exercise Solutions
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="bibliography.html" class="md-nav__link">
+<span class="md-ellipsis">
+References
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#sec-electronic_structure" class="md-nav__link">
+<span class="md-ellipsis">
+19.1 The Electronic Structure Problem
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-second_quantization" class="md-nav__link">
+<span class="md-ellipsis">
+19.2 Second Quantization and Qubit Mappings
+</span>
+</a>
+<nav class="md-nav" aria-label="19.2 Second Quantization and Qubit Mappings">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1921-jordan-wigner-transform" class="md-nav__link">
+<span class="md-ellipsis">
+19.2.1 Jordan-Wigner Transform
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-vqe_chemistry" class="md-nav__link">
+<span class="md-ellipsis">
+19.3 VQE for Molecular Ground States
+</span>
+</a>
+<nav class="md-nav" aria-label="19.3 VQE for Molecular Ground States">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1931-uccsd-ansatz" class="md-nav__link">
+<span class="md-ellipsis">
+19.3.1 UCCSD Ansatz
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-qmlp" class="md-nav__link">
+<span class="md-ellipsis">
+19.4 Quantum ML Potentials
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-qml_molecular" class="md-nav__link">
+<span class="md-ellipsis">
+19.5 Quantum Kernels for Molecular Property Prediction
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-chemistry_implementation" class="md-nav__link">
+<span class="md-ellipsis">
+19.6 Implementation: VQE for H₂ and Molecular ML
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#197-chapter-summary" class="md-nav__link">
+<span class="md-ellipsis">
+19.7 Chapter Summary
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="ch-quantum_chemistry">Chapter 19: QML for Quantum Chemistry and Molecular Simulation<a class="headerlink" href="#ch-quantum_chemistry" title="Permanent link">&para;</a></h1>
+<div id="ch-qml_chemistry"></div>
+<div class="admonition info box-bxkey kind-concept">
+<p><em>Quantum chemistry is the most mature application domain for quantum computing. The electronic structure problem — finding ground-state energies of molecules — is QMA-hard classically but solvable efficiently on a quantum computer. This chapter covers the second-quantized Hamiltonian, VQE for molecular energy surfaces, quantum machine learning potentials (QMLPs), and property prediction for drug discovery.</em></p>
+</div>
+<div class="admonition tip box-learningobjectives kind-teaching">
+<p class="admonition-title">Learning Objectives</p>
+<p>By the end of this chapter, you will be able to:</p>
+<ul>
+<li>
+<p>Construct a second-quantized molecular Hamiltonian using the Jordan-Wigner transform</p>
+</li>
+<li>
+<p>Implement VQE with UCCSD ansatz for H<span class="arithmatex">\(_2\)</span> and LiH</p>
+</li>
+<li>
+<p>Train a QML model to predict molecular potential energy surfaces</p>
+</li>
+<li>
+<p>Apply quantum kernels to molecular fingerprint classification</p>
+</li>
+<li>
+<p>Discuss the quantum advantage landscape for molecular simulation</p>
+</li>
+</ul>
+</div>
+<h2 id="sec-electronic_structure"><span class="secnum">19.1</span> The Electronic Structure Problem<a class="headerlink" href="#sec-electronic_structure" title="Permanent link">&para;</a></h2>
+<p>The <strong>electronic Schrödinger equation</strong> for a molecule with <span class="arithmatex">\(N_e\)</span> electrons and <span class="arithmatex">\(N_n\)</span> nuclei (in atomic units):</p>
+<div id="eq-schrodinger_molecular"></div>
+<div class="arithmatex">\[\hat{H}\Psi(\mathbf{r}_1,…,\mathbf{r}_{N_e}) = E\Psi\tag{19.1}\]</div>
+<div id="eq-electronic_hamiltonian"></div>
+<div class="arithmatex">\[\hat{H} = -\frac{1}{2}\sum_i\nabla_i^2
+- \sum_{i,A}\frac{Z_A}{|\mathbf{r}_i - \mathbf{R}_A|}
++ \sum_{i&lt;j}\frac{1}{|\mathbf{r}_i - \mathbf{r}_j|}\tag{19.2}\]</div>
+<p>(Born-Oppenheimer approximation: nuclei fixed at <span class="arithmatex">\(\mathbf{R}_A\)</span>.)</p>
+<p><strong>Complexity</strong>: Classical methods:</p>
+<ul>
+<li>
+<p>Hartree-Fock: <span class="arithmatex">\(O(N_e^4)\)</span> – mean-field, no correlation</p>
+</li>
+<li>
+<p>MP2: <span class="arithmatex">\(O(N_e^5)\)</span> – perturbative correlation</p>
+</li>
+<li>
+<p>CCSD(T): <span class="arithmatex">\(O(N_e^7)\)</span> – “gold standard,” limited to <span class="arithmatex">\(\sim50\)</span> electrons</p>
+</li>
+<li>
+<p>Full CI: <span class="arithmatex">\(O(\exp(N_e))\)</span> – exact, intractable</p>
+</li>
+</ul>
+<p>A quantum computer with <span class="arithmatex">\(O(N_e)\)</span> qubits can simulate the Hamiltonian efficiently via phase estimation or VQE.</p>
+<h2 id="sec-second_quantization"><span class="secnum">19.2</span> Second Quantization and Qubit Mappings<a class="headerlink" href="#sec-second_quantization" title="Permanent link">&para;</a></h2>
+<p>In second quantization, the molecular Hamiltonian is:</p>
+<div id="eq-second_quantized_H"></div>
+<div class="arithmatex">\[\hat{H} = \sum_{pq} h_{pq}\hat{a}_p^\dagger\hat{a}_q
++ \frac{1}{2}\sum_{pqrs} g_{pqrs}\hat{a}_p^\dagger\hat{a}_q^\dagger\hat{a}_r\hat{a}_s\tag{19.3}\]</div>
+<p>where <span class="arithmatex">\(\hat{a}_p^\dagger\)</span>, <span class="arithmatex">\(\hat{a}_p\)</span> are fermionic creation/annihilation operators, <span class="arithmatex">\(h_{pq}\)</span> are one-electron integrals, and <span class="arithmatex">\(g_{pqrs}\)</span> are two-electron integrals.</p>
+<h3 id="1921-jordan-wigner-transform"><span class="secnum">19.2.1</span> Jordan-Wigner Transform<a class="headerlink" href="#1921-jordan-wigner-transform" title="Permanent link">&para;</a></h3>
+<p>Maps fermionic operators to Pauli operators: <span id="eq-jordan_wigner"></span></p>
+<div class="arithmatex">\[\begin{align*}
+\hat{a}_p^\dagger &amp;= \left(\prod_{k&lt;p}Z_k\right)\otimes\frac{X_p - iY_p}{2} \\
+\hat{a}_p &amp;= \left(\prod_{k&lt;p}Z_k\right)\otimes\frac{X_p + iY_p}{2}
+\end{align*}\]</div>
+<p><strong>Result</strong>: The molecular Hamiltonian becomes a sum of Pauli strings: <span id="eq-pauli_hamiltonian"></span></p>
+<div class="arithmatex">\[\hat{H}_{\text{qubit}} = \sum_\alpha h_\alpha P_\alpha\tag{19.6}\]</div>
+<p>where <span class="arithmatex">\(P_\alpha\in\{I,X,Y,Z\}^{\otimes n}\)</span> are <span class="arithmatex">\(n\)</span>-qubit Pauli strings.</p>
+<div class="admonition example box-solvedexample kind-example">
+<p class="admonition-title">Solved Example 19.1</p>
+<p><strong>Problem:</strong> Write the Jordan-Wigner form of the number operator <span class="arithmatex">\(\hat{n}_0 = \hat{a}_0^\dagger\hat{a}_0\)</span> for orbital <span class="arithmatex">\(p=0\)</span>.</p>
+<p><strong>Solution:</strong> <span class="arithmatex">\(\hat{n}_0 = \hat{a}_0^\dagger\hat{a}_0 = \frac{X_0-iY_0}{2}\cdot\frac{X_0+iY_0}{2} = \frac{X_0^2 + iX_0Y_0 - iY_0X_0 + Y_0^2}{4}\)</span>.</p>
+<p>Using <span class="arithmatex">\(X^2=Y^2=I\)</span> and <span class="arithmatex">\(XY=-YX=iZ\)</span>: <span class="arithmatex">\(= \frac{2I + 2Z}{4} = \frac{I+Z}{2} = |0\rangle\langle0|\)</span>.</p>
+<p>This makes sense: <span class="arithmatex">\(\hat{n}_0\)</span> measures whether orbital 0 is occupied (<span class="arithmatex">\(|0\rangle\)</span> in JW convention means unoccupied, <span class="arithmatex">\(|1\rangle\)</span> means occupied). Wait — JW convention: <span class="arithmatex">\(|0\rangle\)</span> = unoccupied, <span class="arithmatex">\(|1\rangle\)</span> = occupied. So <span class="arithmatex">\(\hat{n}_0 = \frac{I-Z}{2} = |1\rangle\langle1|\)</span>. ✓</p>
+</div>
+<h2 id="sec-vqe_chemistry"><span class="secnum">19.3</span> VQE for Molecular Ground States<a class="headerlink" href="#sec-vqe_chemistry" title="Permanent link">&para;</a></h2>
+<h3 id="1931-uccsd-ansatz"><span class="secnum">19.3.1</span> UCCSD Ansatz<a class="headerlink" href="#1931-uccsd-ansatz" title="Permanent link">&para;</a></h3>
+<p>The <strong>Unitary Coupled Cluster Singles and Doubles</strong> (UCCSD) ansatz: <span id="eq-uccsd"></span></p>
+<div class="arithmatex">\[|\psi_{\text{UCCSD}}\rangle = e^{T-T^\dagger}|\text{HF}\rangle\tag{19.7}\]</div>
+<p>where <span class="arithmatex">\(T = T_1 + T_2\)</span> are the single and double excitation operators:</p>
+<div class="arithmatex">\[\begin{align*}
+T_1 &amp;= \sum_{ia} t_i^a\hat{a}_a^\dagger\hat{a}_i \\
+T_2 &amp;= \sum_{ijab} t_{ij}^{ab}\hat{a}_a^\dagger\hat{a}_b^\dagger\hat{a}_j\hat{a}_i
+\end{align*}\]</div>
+<p>Here <span class="arithmatex">\(i,j\)</span> are occupied and <span class="arithmatex">\(a,b\)</span> are virtual orbitals. The UCCSD ansatz is chemically motivated and hardware-implementable as a sequence of Givens rotations.</p>
+<h2 id="sec-qmlp"><span class="secnum">19.4</span> Quantum ML Potentials<a class="headerlink" href="#sec-qmlp" title="Permanent link">&para;</a></h2>
+<figure class="fig fig-photo" id="fig-h2_pes">
+<img class="photo" src="img/fig_h2_pes.png" alt="Left: H_2 potential energy surface computed by FCI (exact), VQE with UCCSD ansatz, and Hartree–Fock. VQE tracks FCI to within chemical accuracy (\leq 1.6\times 10^{-3} Ha). Right: VQE energy…" loading="lazy" width="1400" height="557">
+<figcaption><strong>Figure 19.1.</strong> Left: H<span class="math inline">\(_2\)</span> potential energy surface computed by FCI (exact), VQE with UCCSD ansatz, and Hartree–Fock. VQE tracks FCI to within chemical accuracy (<span class="math inline">\(\leq 1.6\times 10^{-3}\)</span> Ha). Right: VQE energy convergence at <span class="math inline">\(R=0.74\)</span> Å. <span class="credit">Figure drawn for this book</span></figcaption>
+</figure>
+<p><strong>Quantum Machine Learning Potentials</strong> (QMLPs) learn molecular potential energy surfaces (PES) from quantum-computed reference data.</p>
+<p><strong>Architecture</strong>:</p>
+<ol>
+<li>
+<p><strong>Descriptor</strong>: Convert molecular geometry <span class="arithmatex">\(\{Z_i, \mathbf{r}_i\}\)</span> to a rotationally/translationally invariant feature vector (e.g. Coulomb matrix, ACSF, SOAP descriptors)</p>
+</li>
+<li>
+<p><strong>QML model</strong>: QNN or quantum kernel trained on descriptor <span class="arithmatex">\(\to\)</span> energy</p>
+</li>
+<li>
+<p><strong>Prediction</strong>: Predict energy <span class="arithmatex">\(E(\mathbf{r})\)</span> and forces <span class="arithmatex">\(\mathbf{F}_i = -\nabla_{\mathbf{r}_i}E\)</span></p>
+</li>
+</ol>
+<p><strong>Coulomb matrix</strong> descriptor for <span class="arithmatex">\(N\)</span> atoms: <span id="eq-coulomb_matrix"></span></p>
+<div class="arithmatex">\[C_{ij} = \begin{cases}
+0.5Z_i^{2.4} &amp; i=j \\
+\frac{Z_iZ_j}{|\mathbf{r}_i-\mathbf{r}_j|} &amp; i\neq j
+\end{cases}\tag{19.10}\]</div>
+<h2 id="sec-qml_molecular"><span class="secnum">19.5</span> Quantum Kernels for Molecular Property Prediction<a class="headerlink" href="#sec-qml_molecular" title="Permanent link">&para;</a></h2>
+<p>Molecular fingerprints (Morgan fingerprints, MACCS keys) can be used as inputs to quantum kernel methods for drug property prediction:</p>
+<div id="eq-molecular_kernel"></div>
+<div class="arithmatex">\[k_Q(m_1, m_2) = |\langle\phi(m_1)|\phi(m_2)\rangle|^2\tag{19.11}\]</div>
+<p>where <span class="arithmatex">\(|\phi(m)\rangle = U_\phi(\text{fingerprint}(m))|0\rangle^n\)</span>.</p>
+<p>Applications:</p>
+<ul>
+<li>
+<p><strong>ADMET prediction</strong>: absorption, distribution, metabolism, excretion, toxicity</p>
+</li>
+<li>
+<p><strong>Binding affinity</strong>: protein-ligand docking score prediction</p>
+</li>
+<li>
+<p><strong>Solubility</strong>: aqueous solubility from molecular structure</p>
+</li>
+</ul>
+<h2 id="sec-chemistry_implementation"><span class="secnum">19.6</span> Implementation: VQE for H₂ and Molecular ML<a class="headerlink" href="#sec-chemistry_implementation" title="Permanent link">&para;</a></h2>
+<div class="language-text highlight"><pre><span></span><code>import pennylane as qml
+from pennylane import qchem
+import numpy as np
+import torch
+import matplotlib.pyplot as plt
+
+# -- Part 1: VQE for H2 at equilibrium geometry ---------------
+symbols = ["H", "H"]
+d_eq = 1.4  # Angstrom (equilibrium bond length)
+
+def h2_hamiltonian(bond_length):
+    """Build H2 Hamiltonian at given bond length."""
+    geometry = np.array([[0.0, 0.0, -bond_length/2],
+                          [0.0, 0.0,  bond_length/2]])
+    H, n_qubits = qchem.molecular_hamiltonian(
+        symbols, geometry,
+        basis="sto-3g",
+        method="rhf"
+    )
+    return H, n_qubits
+
+H_eq, n_q = h2_hamiltonian(d_eq)
+print(f"H2 Hamiltonian: {n_q} qubits, {len(H_eq.ops)} Pauli terms")
+
+dev = qml.device("default.qubit", wires=n_q)
+
+@qml.qnode(dev, diff_method="parameter-shift")
+def vqe_circuit(params):
+    """UCCSD-inspired ansatz for H2."""
+    # Hartree-Fock reference state: |1100&gt; (2 electrons in 4 spin-orbitals)
+    qml.BasisState(np.array([1, 1, 0, 0]), wires=range(n_q))
+    # Single excitation: orbital 0-&gt;2, 1-&gt;3
+    qml.SingleExcitation(params[0], wires=[0, 2])
+    qml.SingleExcitation(params[1], wires=[1, 3])
+    # Double excitation: 01-&gt;23
+    qml.DoubleExcitation(params[2], wires=[0, 1, 2, 3])
+    return qml.expval(H_eq)
+
+# Optimize
+params = np.array([0.1, 0.1, 0.1], requires_grad=True)
+opt = qml.GradientDescentOptimizer(stepsize=0.4)
+energies = []
+for step in range(150):
+    params, energy = opt.step_and_cost(vqe_circuit, params)
+    energies.append(energy)
+    if (step + 1)
+        print(f"Step {step+1:3d}: E = {energy:.6f} Ha")
+
+print(f"\nVQE ground state energy: {energies[-1]:.6f} Ha")
+print(f"FCI reference:          -1.136189 Ha")
+
+# -- Part 2: PES scan -----------------------------------------
+bond_lengths = np.linspace(0.5, 4.0, 20)
+pes_vqe    = []
+pes_hf     = []
+
+for d in bond_lengths:
+    H_d, _ = h2_hamiltonian(d)
+
+    @qml.qnode(dev, diff_method="parameter-shift")
+    def vqe_d(params):
+        qml.BasisState(np.array([1, 1, 0, 0]), wires=range(n_q))
+        qml.SingleExcitation(params[0], wires=[0, 2])
+        qml.SingleExcitation(params[1], wires=[1, 3])
+        qml.DoubleExcitation(params[2], wires=[0, 1, 2, 3])
+        return qml.expval(H_d)
+
+    # HF energy (params=0)
+    hf_e = vqe_d(np.array([0.0, 0.0, 0.0]))
+    # Optimize VQE
+    p = np.array([0.1, 0.1, 0.1], requires_grad=True)
+    opt2 = qml.GradientDescentOptimizer(stepsize=0.3)
+    for _ in range(80):
+        p, e = opt2.step_and_cost(vqe_d, p)
+    pes_vqe.append(e)
+    pes_hf.append(hf_e)
+    print(f"  d={d:.2f}: HF={hf_e:.4f}, VQE={e:.4f}")
+
+# -- Part 3: QML for PES (quantum kernel regression) ----------
+from sklearn.svm import SVR
+from sklearn.preprocessing import StandardScaler
+
+# Featurize bond length as quantum state
+dev2 = qml.device("default.qubit", wires=2)
+
+@qml.qnode(dev2)
+def mol_feature_map(x):
+    """Simple 2-qubit feature map for 1D molecular coordinate."""
+    qml.AngleEmbedding([x, x**2], wires=[0, 1], rotation='Y')
+    qml.CNOT(wires=[0, 1])
+    qml.RY(x, wires=0)
+    return qml.state()
+
+# Compute quantum kernel matrix
+X_train = bond_lengths[:16].reshape(-1, 1)
+y_train = np.array(pes_vqe[:16])
+
+def quantum_kernel(x1, x2):
+    psi1 = mol_feature_map(x1[0])
+    psi2 = mol_feature_map(x2[0])
+    return abs(np.dot(psi1.conj(), psi2))**2
+
+# Build kernel matrices
+n_train = len(X_train)
+K_train = np.array([[quantum_kernel(X_train[i], X_train[j])
+                     for j in range(n_train)]
+                    for i in range(n_train)])
+
+print(f"\nQuantum kernel matrix shape: {K_train.shape}")
+print(f"Kernel matrix trace: {np.trace(K_train):.3f}")
+</code></pre></div>
+<h2 id="197-chapter-summary"><span class="secnum">19.7</span> Chapter Summary<a class="headerlink" href="#197-chapter-summary" title="Permanent link">&para;</a></h2>
+<div class="admonition note box-chaptersummary kind-plain">
+<p class="admonition-title">Chapter Summary</p>
+<ul>
+<li>
+<p><strong>Electronic structure</strong>: Molecular Hamiltonian via second quantization + Jordan-Wigner transform yields Pauli Hamiltonian on <span class="arithmatex">\(O(N_e)\)</span> qubits.</p>
+</li>
+<li>
+<p><strong>VQE + UCCSD</strong>: Variational quantum eigensolver with chemically motivated UCCSD ansatz. Achieves near-FCI accuracy for small molecules on NISQ.</p>
+</li>
+<li>
+<p><strong>PES scanning</strong>: VQE at multiple bond lengths traces the potential energy surface. Captures bond breaking (strong correlation) where CCSD fails.</p>
+</li>
+<li>
+<p><strong>QML potentials</strong>: Quantum kernels on molecular fingerprints/Coulomb matrix for property prediction (ADMET, binding affinity, PES interpolation).</p>
+</li>
+<li>
+<p><strong>Quantum advantage</strong>: Phase estimation gives <span class="arithmatex">\(O(\text{poly}(N_e))\)</span> exact energies. NISQ VQE provides heuristic advantage for strongly correlated molecules (transition metals, bond breaking).</p>
+</li>
+</ul>
+</div>
+<div class="admonition note box-exercisebox kind-plain">
+<p class="admonition-title">Exercises</p>
+<p><strong>Exercise .</strong> Apply the Jordan-Wigner transform to write <span class="arithmatex">\(\hat{a}_0^\dagger\hat{a}_1\)</span> as a sum of Pauli operators. Show your working step by step.</p>
+<p><strong>Exercise .</strong> The H<span class="arithmatex">\(_2\)</span> UCCSD ansatz has 3 parameters. Classical CCSD for H<span class="arithmatex">\(_2\)</span> also has 3 amplitudes. What is the key difference between CCSD and UCCSD, and why is UCCSD preferred for quantum computers?</p>
+<p><strong>Exercise .</strong> Use PennyLane’s qchem module to compute the PES of LiH from 0.9 to 3.5 Angstroms with VQE (UCCSD ansatz). Plot VQE vs. HF energies and identify where correlation is most important (largest VQE-HF energy gap).</p>
+</div>
+<div class="admonition note box-furtherreading kind-plain">
+<p class="admonition-title">Further Reading</p>
+<ul>
+<li>
+<p>Peruzzo et al. (2014) — first VQE experiment (photonic chip)</p>
+</li>
+<li>
+<p>O’Malley et al. (2016) — VQE for H2 on superconducting qubit</p>
+</li>
+<li>
+<p>Cao et al. (2019) — quantum chemistry for NISQ devices review</p>
+</li>
+<li>
+<p>McArdle et al. (2020) — quantum computational chemistry review</p>
+</li>
+<li>
+<p>Babbush et al. (2019) — low-depth quantum simulation of electronic structure</p>
+</li>
+</ul>
+</div>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button type="button" class="md-top md-icon" data-md-component="top" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+Back to top
+</button>
+</main>
+<footer class="md-footer">
+<nav class="md-footer__inner md-grid" aria-label="Footer" >
+<a href="ch18-quantum-error-mitigation.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: 18. Quantum Error Mitigation">
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</div>
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Previous
+</span>
+<div class="md-ellipsis">
+18. Quantum Error Mitigation
+</div>
+</div>
+</a>
+<a href="ch20-qml-in-finance-and-optimization.html" class="md-footer__link md-footer__link--next" aria-label="Next: 20. QML in Finance and Optimization">
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Next
+</span>
+<div class="md-ellipsis">
+20. QML in Finance and Optimization
+</div>
+</div>
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+</div>
+</a>
+</nav>
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+The Open Book Project &middot;
+<a href="../../about.html">About this library</a> &middot;
+<a href="../../publish.html">Publish your book</a> &middot;
+© The authors of the books
+</div>
+Made with
+<a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+Material for MkDocs
+</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "navigation.prune", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "toc.follow", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+<script src="../../assets/mathjax.js"></script>
+<script src="../../assets/viz.js"></script>
+<script src="../../assets/remote.js"></script>
+<script src="../../assets/scans.js"></script>
+<script src="../../assets/reader.js"></script>
+<script src="../../assets/app.js"></script>
+<script src="../../assets/slides.js"></script>
+<script src="../../assets/speak.js"></script>
+<script src="../../assets/quiz.js"></script>
+<script>
+    /* offline reading: the service worker at the site root (its scope is the whole site) */
+    if ("serviceWorker" in navigator && window.isSecureContext) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register(new URL("../../sw.js", location.href).href).catch(function () {});
+      });
+    }
+  </script>
+</body>
+</html>

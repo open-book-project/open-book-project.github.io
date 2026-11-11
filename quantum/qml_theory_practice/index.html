@@ -1,0 +1,1088 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="description" content="The Open Book Project: books on computer science, quantum computing, cyber security, science, the social sciences, university courses and languages, read page by page like an e-book, online or offline.">
+<meta name="author" content="The Open Book Project">
+<link rel="canonical" href="https://open-book-project.github.io/quantum/qml_theory_practice/index.html">
+<link rel="prev" href="../qml/glossary-of-terms.html">
+<link rel="next" href="notation-and-conventions.html">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap"></noscript>
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Open Book">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="application-name" content="Open Book"><script src="../../assets/library-data.js"></script><script>
+    (function () {
+      var X = window.XMLHttpRequest, open, gate = new Promise(function (r) { open = r; });
+      if (!X) return;
+      var open0 = X.prototype.open, send0 = X.prototype.send;
+      X.prototype.open = function (method, url) {
+        this.__pkIndex = /\/search\/search_index\.json(\?|#|$)/.test(String(url));
+        return open0.apply(this, arguments);
+      };
+      X.prototype.send = function () {
+        if (!this.__pkIndex) return send0.apply(this, arguments);
+        var xhr = this, args = arguments;
+        gate.then(function () { send0.apply(xhr, args); });
+      };
+      function wake() { open(); }
+      document.addEventListener("focusin", function (e) { if (e.target && e.target.closest && e.target.closest(".md-search")) wake(); });
+      document.addEventListener("click", function (e) { if (e.target && e.target.closest && e.target.closest('label[for="__search"], .md-search')) wake(); }, true);
+      document.addEventListener("keydown", function (e) {
+        var k = e.key;
+        if ((k === "/" || k === "s" || k === "f" || k === "S" || k === "F") && !(e.target && e.target.closest && e.target.closest("input, textarea, [contenteditable]"))) wake();
+      }, true);
+      if (/[?&]q=/.test(location.search)) wake();
+    })();
+  </script><script>
+    try {
+      if ((window.matchMedia && (matchMedia("(display-mode: standalone)").matches || matchMedia("(display-mode: fullscreen)").matches)) || navigator.standalone === true) {
+        document.documentElement.className += " bjp-standalone";
+      }
+    } catch (e) { /* not an installed app */ }
+    /* the books of a subject or of the whole library as covers or as a list (assets/app.js): the reader's choice */
+    try {
+      var bv = localStorage.getItem("bjp.view");
+      if (bv === "list" || (bv !== "grid" && /\/books\.html$/.test(location.pathname))) document.documentElement.className += " bjp-view-list";
+    } catch (e) { /* no storage: covers */ }
+  </script>
+<script>
+    /* a book opened from its cover on the shelf: the page stays blank, in the cover's colour, until the reader is up */
+    try {
+      var cv = sessionStorage.getItem("bjp.reader.cover");
+      if (cv && sessionStorage.getItem("bjp.reader.open") === "1") {
+        var c = JSON.parse(cv), de = document.documentElement;
+        de.className += " bjp-booting";
+        if (c && /^#[0-9a-f]{3,8}$/i.test(c.bg || "")) de.style.background = c.bg;
+        setTimeout(function () { de.classList.remove("bjp-booting"); de.style.background = ""; }, 3000);
+      }
+    } catch (e) { /* no session storage: the page simply opens as usual */ }
+  </script>
+<title>Overview and preface - The Open Book Project</title>
+<link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+<link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+<link rel="stylesheet" href="../../assets/extra.css">
+<link rel="stylesheet" href="../../assets/reader.css">
+<link rel="stylesheet" href="../../assets/viz.css">
+<link rel="stylesheet" href="../../assets/app.css">
+<link rel="stylesheet" href="../../assets/theme.css">
+<link rel="stylesheet" href="../../assets/slides.css">
+<link rel="stylesheet" href="../../assets/remote.css">
+<link rel="stylesheet" href="../../assets/scans.css">
+<link rel="stylesheet" href="../../assets/speak.css">
+<link rel="stylesheet" href="../../assets/quiz.css">
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+<input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+<input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a href="#contents" class="md-skip">
+Skip to content
+</a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav class="md-header__inner md-grid" aria-label="Header">
+<a href="../../index.html" title="The Open Book Project" class="md-header__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+The Open Book Project
+</span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+Overview and preface
+</span>
+</div>
+</div>
+</div><a href="../../index.html" class="bjp-libbtn" aria-label="Library: all books" title="Library: all books">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V5h4v15M8 20V9h4v11M14 20L12.6 6l3.8-.8 3 14.2M3 20h18"/></svg><span>Library</span>
+</a>
+<a href="../../subjects/index.html" class="pk-catbtn" aria-haspopup="true" aria-expanded="false" title="Browse the books by category">
+<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><circle cx="17" cy="7" r="3.6"/><path d="M7 13.4l3.9 6.8H3.1z"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg><span>Categories</span>
+</a>
+<form class="md-header__option" data-md-component="palette">
+<input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+<label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+</label>
+<input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+<label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+<label class="md-search__icon md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</label>
+<nav class="md-search__options" aria-label="Search">
+<button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+Initializing search
+</div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--primary bjp-nav bjp-nav--book" aria-label="Navigation" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a href="../../index.html" title="The Open Book Project" class="md-nav__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+The Open Book Project
+</label>
+<ul class="md-nav__list" data-md-scrollfix>
+<li class="md-nav__item bjp-nav-all">
+<a href="../../index.html" class="md-nav__link" aria-label="All books: back to the library">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+<span class="md-ellipsis">All books</span>
+</a>
+</li>
+<li class="md-nav__item bjp-nav-book" role="presentation"><span class="bjp-nav-head">Quantum Machine Learning</span></li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+Overview and preface
+</span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a href="index.html" class="md-nav__link md-nav__link--active">
+<span class="md-ellipsis">
+Overview and preface
+</span>
+</a>
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#contents" class="md-nav__link">
+<span class="md-ellipsis">
+Contents
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#preface" class="md-nav__link">
+<span class="md-ellipsis">
+Preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#who-this-book-is-for" class="md-nav__link">
+<span class="md-ellipsis">
+Who This Book Is For
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#how-this-book-is-organized" class="md-nav__link">
+<span class="md-ellipsis">
+How This Book Is Organized
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#how-to-use-this-book" class="md-nav__link">
+<span class="md-ellipsis">
+How to Use This Book
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#software-and-code" class="md-nav__link">
+<span class="md-ellipsis">
+Software and Code
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#a-note-on-nisq-and-beyond" class="md-nav__link">
+<span class="md-ellipsis">
+A Note on NISQ and Beyond
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="notation-and-conventions.html" class="md-nav__link">
+<span class="md-ellipsis">
+Notation and Conventions
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="abbreviations-and-acronyms.html" class="md-nav__link">
+<span class="md-ellipsis">
+Abbreviations and Acronyms
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch01-mathematical-prerequisites-for-qml.html" class="md-nav__link">
+<span class="md-ellipsis">
+1. Mathematical Prerequisites for QML
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch02-quantum-computing-essentials.html" class="md-nav__link">
+<span class="md-ellipsis">
+2. Quantum Computing Essentials
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch03-quantum-information-theory-for-machine-learning.html" class="md-nav__link">
+<span class="md-ellipsis">
+3. Quantum Information Theory for Machine Learning
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch04-machine-learning-foundations.html" class="md-nav__link">
+<span class="md-ellipsis">
+4. Machine Learning Foundations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch05-advanced-classical-machine-learning.html" class="md-nav__link">
+<span class="md-ellipsis">
+5. Advanced Classical Machine Learning
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch06-variational-quantum-circuits.html" class="md-nav__link">
+<span class="md-ellipsis">
+6. Variational Quantum Circuits
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch07-quantum-feature-maps-and-data-encoding.html" class="md-nav__link">
+<span class="md-ellipsis">
+7. Quantum Feature Maps and Data Encoding
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch08-quantum-kernel-methods.html" class="md-nav__link">
+<span class="md-ellipsis">
+8. Quantum Kernel Methods
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch09-quantum-support-vector-machines.html" class="md-nav__link">
+<span class="md-ellipsis">
+9. Quantum Support Vector Machines
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch10-quantum-neural-networks.html" class="md-nav__link">
+<span class="md-ellipsis">
+10. Quantum Neural Networks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch11-quantum-convolutional-neural-networks.html" class="md-nav__link">
+<span class="md-ellipsis">
+11. Quantum Convolutional Neural Networks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch12-quantum-recurrent-networks-and-qlstm.html" class="md-nav__link">
+<span class="md-ellipsis">
+12. Quantum Recurrent Networks and QLSTM
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch13-quantum-autoencoders.html" class="md-nav__link">
+<span class="md-ellipsis">
+13. Quantum Autoencoders
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch14-quantum-generative-models.html" class="md-nav__link">
+<span class="md-ellipsis">
+14. Quantum Generative Models
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch15-optimization-and-training-of-quantum-models.html" class="md-nav__link">
+<span class="md-ellipsis">
+15. Optimization and Training of Quantum Models
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch16-barren-plateaus-and-trainability-of-quantum.html" class="md-nav__link">
+<span class="md-ellipsis">
+16. Barren Plateaus and Trainability of Quantum Models
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch17-nisq-hardware-platforms.html" class="md-nav__link">
+<span class="md-ellipsis">
+17. NISQ Hardware Platforms
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch18-quantum-error-mitigation.html" class="md-nav__link">
+<span class="md-ellipsis">
+18. Quantum Error Mitigation
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch19-qml-for-quantum-chemistry-and-molecular.html" class="md-nav__link">
+<span class="md-ellipsis">
+19. QML for Quantum Chemistry and Molecular Simulation
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch20-qml-in-finance-and-optimization.html" class="md-nav__link">
+<span class="md-ellipsis">
+20. QML in Finance and Optimization
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch21-qml-in-healthcare-and-drug-discovery.html" class="md-nav__link">
+<span class="md-ellipsis">
+21. QML in Healthcare and Drug Discovery
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch22-qml-for-nlp-and-computer-vision.html" class="md-nav__link">
+<span class="md-ellipsis">
+22. QML for NLP and Computer Vision
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch23-quantum-advantage-theory-and-benchmarking.html" class="md-nav__link">
+<span class="md-ellipsis">
+23. Quantum Advantage Theory and Benchmarking
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch24-frontiers-and-future-directions-in-qml.html" class="md-nav__link">
+<span class="md-ellipsis">
+24. Frontiers and Future Directions in QML
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="python-environment-setup.html" class="md-nav__link">
+<span class="md-ellipsis">
+Python Environment Setup
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="pennylane-quick-reference.html" class="md-nav__link">
+<span class="md-ellipsis">
+PennyLane Quick Reference
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="qiskit-quick-reference.html" class="md-nav__link">
+<span class="md-ellipsis">
+Qiskit Quick Reference
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="mathematical-reference-tables.html" class="md-nav__link">
+<span class="md-ellipsis">
+Mathematical Reference Tables
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="quantum-gate-reference.html" class="md-nav__link">
+<span class="md-ellipsis">
+Quantum Gate Reference
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="benchmark-datasets-for-qml.html" class="md-nav__link">
+<span class="md-ellipsis">
+Benchmark Datasets for QML
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="selected-exercise-solutions.html" class="md-nav__link">
+<span class="md-ellipsis">
+Selected Exercise Solutions
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="bibliography.html" class="md-nav__link">
+<span class="md-ellipsis">
+References
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" hidden>
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#contents" class="md-nav__link">
+<span class="md-ellipsis">
+Contents
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#preface" class="md-nav__link">
+<span class="md-ellipsis">
+Preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#who-this-book-is-for" class="md-nav__link">
+<span class="md-ellipsis">
+Who This Book Is For
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#how-this-book-is-organized" class="md-nav__link">
+<span class="md-ellipsis">
+How This Book Is Organized
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#how-to-use-this-book" class="md-nav__link">
+<span class="md-ellipsis">
+How to Use This Book
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#software-and-code" class="md-nav__link">
+<span class="md-ellipsis">
+Software and Code
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#a-note-on-nisq-and-beyond" class="md-nav__link">
+<span class="md-ellipsis">
+A Note on NISQ and Beyond
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<div class="pk-book" data-vol="qml_theory_practice" markdown="0">
+<div class="pk-book-cover"><a class="vol-card pk-book-open" href="#preface" style="--cv-bg:#0b4f5c;--cv-accent:#f0b429;--cv-fg:#f1fafb;--cv-n:16;--cv-rot:11deg;--cv-x:88%;--cv-y:65%" aria-label="Start reading Quantum Machine Learning"><span class="book-cover cv-modern"><span class="cv-art" aria-hidden="true"></span><span class="cv-series">Quantum Computing</span><span class="cv-rule"></span><span class="vol-title">Quantum Machine Learning</span><span class="vol-sub">From Theory to Practice</span><span class="cv-author">AI generated</span></span></a></div>
+<div class="pk-book-info">
+<p class="pk-book-kicker"><span>Quantum Computing</span></p>
+<h1 class="pk-book-title"><span class="bjp-sr"></span>Quantum Machine Learning</h1>
+<p class="pk-book-sub">From Theory to Practice</p>
+<p class="pk-book-by">AI generated by Nikhil Kumar Rajput</p>
+<p class="pk-book-desc">Variational circuits, quantum kernels, QNNs, QCNNs, generative models, barren plateaus, NISQ hardware and error mitigation, with PennyLane and Qiskit code and applications in chemistry, finance, healthcare, language and vision</p>
+<p class="pk-book-tags"><span class="pk-badge lv-advanced">Advanced</span><span class="pk-badge">Textbook</span><a class="pk-chip" href="../../subjects/quantum.html"><svg class="pk-ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="8.5"/><ellipse cx="12" cy="12" rx="8.5" ry="3"/><path d="M12 12l3.6-5.8"/><circle cx="15.9" cy="5.7" r="1.3"/></svg><span class="pk-chip-cat">Computers &amp; Technology &rsaquo;</span> Quantum Computing</a><a class="pk-chip" href="../../subjects/artificial-intelligence.html"><svg class="pk-ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="5" cy="7" r="1.8"/><circle cx="5" cy="17" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="7" r="1.8"/><circle cx="19" cy="17" r="1.8"/><path d="M6.6 7.9l3.8 3.2M6.6 16.1l3.8-3.2M13.6 11.1l3.8-3.2M13.6 12.9l3.8 3.2"/></svg><span class="pk-chip-cat">Computers &amp; Technology &rsaquo;</span> AI &amp; Machine Learning</a></p><div class="pk-book-actions"><a class="pk-btn pk-btn-primary pk-read" href="#preface"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 7c-1.6-1.3-3.9-2-8-2v13c4.1 0 6.4.7 8 2 1.6-1.3 3.9-2 8-2V5c-4.1 0-6.4.7-8 2zM12 7v13"/></svg><span>Start reading</span></a>
+<div class="bjp-offline" data-vol="qml_theory_practice"></div></div>
+<p class="pk-book-facts"><span>24 chapters</span></p>
+</div>
+</div>
+<h2 id="contents">Contents<a class="headerlink" href="#contents" title="Permanent link">&para;</a></h2>
+<nav class="vol-contents" data-vol="qml_theory_practice" aria-label="Contents of this book" markdown="0">
+<p class="toc-group">Front matter</p>
+<ul class="vol-toc vol-toc-full">
+<li class="vc-ch vc-leaf"><a href="index.html#preface">Preface</a></li>
+<li class="vc-ch vc-leaf"><a href="index.html#who-this-book-is-for">Who This Book Is For</a></li>
+<li class="vc-ch vc-leaf"><a href="index.html#how-this-book-is-organized">How This Book Is Organized</a></li>
+<li class="vc-ch vc-leaf"><a href="index.html#how-to-use-this-book">How to Use This Book</a></li>
+<li class="vc-ch vc-leaf"><a href="index.html#software-and-code">Software and Code</a></li>
+<li class="vc-ch vc-leaf"><a href="index.html#a-note-on-nisq-and-beyond">A Note on NISQ and Beyond</a></li>
+<li class="vc-ch"><details><summary><a href="notation-and-conventions.html">Notation and Conventions</a></summary><ul class="vc-secs">
+<li class="vc-l2"><a href="notation-and-conventions.html#general-mathematical-notation">General Mathematical Notation</a></li>
+<li class="vc-l2"><a href="notation-and-conventions.html#quantum-mechanics-notation-diracbra-ket">Quantum Mechanics Notation (Dirac/Bra-Ket)</a></li>
+<li class="vc-l2"><a href="notation-and-conventions.html#machine-learning-notation">Machine Learning Notation</a></li>
+<li class="vc-l2"><a href="notation-and-conventions.html#qml-specific-notation">QML-Specific Notation</a></li>
+<li class="vc-l2"><a href="notation-and-conventions.html#abbreviations-used-frequently">Abbreviations Used Frequently</a></li>
+</ul></details></li>
+<li class="vc-ch vc-leaf"><a href="abbreviations-and-acronyms.html">Abbreviations and Acronyms</a></li>
+</ul>
+<p class="toc-group">Part I: Mathematical and Quantum Foundations</p>
+<ul class="vol-toc vol-toc-full">
+<li class="vc-ch"><details><summary><a href="ch01-mathematical-prerequisites-for-qml.html">Chapter 1: Mathematical Prerequisites for QML</a></summary><ul class="vc-secs">
+<li class="vc-l2"><a href="ch01-mathematical-prerequisites-for-qml.html#sec-linear_algebra"><span class="vc-n">1.1</span> Linear Algebra for Quantum Systems</a><ul class="vc-subs"><li class="vc-l3"><a href="ch01-mathematical-prerequisites-for-qml.html#ssec-vector_spaces"><span class="vc-n">1.1.1</span> Vector Spaces and Inner Products</a></li><li class="vc-l3"><a href="ch01-mathematical-prerequisites-for-qml.html#ssec-hilbert_spaces"><span class="vc-n">1.1.2</span> Hilbert Spaces</a></li><li class="vc-l3"><a href="ch01-mathematical-prerequisites-for-qml.html#ssec-matrix_classes"><span class="vc-n">1.1.3</span> Matrix Classes in Quantum Computing</a></li><li class="vc-l3"><a href="ch01-mathematical-prerequisites-for-qml.html#ssec-spectral"><span class="vc-n">1.1.4</span> Spectral Decomposition</a></li><li class="vc-l3"><a href="ch01-mathematical-prerequisites-for-qml.html#ssec-tensor_products"><span class="vc-n">1.1.5</span> Tensor Products</a></li><li class="vc-l3"><a href="ch01-mathematical-prerequisites-for-qml.html#ssec-svd"><span class="vc-n">1.1.6</span> Singular Value Decomposition</a></li></ul></li>
+<li class="vc-l2"><a href="ch01-mathematical-prerequisites-for-qml.html#sec-probability"><span class="vc-n">1.2</span> Probability and Statistics</a><ul class="vc-subs"><li class="vc-l3"><a href="ch01-mathematical-prerequisites-for-qml.html#ssec-prob_spaces"><span class="vc-n">1.2.1</span> Probability Spaces and Random Variables</a></li><li class="vc-l3"><a href="ch01-mathematical-prerequisites-for-qml.html#ssec-gaussian"><span class="vc-n">1.2.2</span> Multivariate Gaussian Distribution</a></li><li class="vc-l3"><a href="ch01-mathematical-prerequisites-for-qml.html#ssec-bayesian"><span class="vc-n">1.2.3</span> Bayesian Inference</a></li><li class="vc-l3"><a href="ch01-mathematical-prerequisites-for-qml.html#ssec-concentration"><span class="vc-n">1.2.4</span> Concentration Inequalities</a></li></ul></li>
+<li class="vc-l2"><a href="ch01-mathematical-prerequisites-for-qml.html#sec-optimization"><span class="vc-n">1.3</span> Optimization Theory</a><ul class="vc-subs"><li class="vc-l3"><a href="ch01-mathematical-prerequisites-for-qml.html#ssec-convex"><span class="vc-n">1.3.1</span> Convex Analysis</a></li><li class="vc-l3"><a href="ch01-mathematical-prerequisites-for-qml.html#ssec-gradient_descent"><span class="vc-n">1.3.2</span> Gradient Descent and Convergence</a></li><li class="vc-l3"><a href="ch01-mathematical-prerequisites-for-qml.html#ssec-lagrange"><span class="vc-n">1.3.3</span> Lagrange Multipliers and KKT Conditions</a></li></ul></li>
+<li class="vc-l2"><a href="ch01-mathematical-prerequisites-for-qml.html#sec-information_theory"><span class="vc-n">1.4</span> Information Theory</a><ul class="vc-subs"><li class="vc-l3"><a href="ch01-mathematical-prerequisites-for-qml.html#ssec-shannon_entropy"><span class="vc-n">1.4.1</span> Shannon Entropy</a></li><li class="vc-l3"><a href="ch01-mathematical-prerequisites-for-qml.html#ssec-kl_divergence"><span class="vc-n">1.4.2</span> KL Divergence and Cross-Entropy</a></li></ul></li>
+<li class="vc-l2"><a href="ch01-mathematical-prerequisites-for-qml.html#sec-fourier"><span class="vc-n">1.5</span> Fourier Analysis and Connections to QFT</a><ul class="vc-subs"><li class="vc-l3"><a href="ch01-mathematical-prerequisites-for-qml.html#ssec-dft"><span class="vc-n">1.5.1</span> Discrete Fourier Transform</a></li><li class="vc-l3"><a href="ch01-mathematical-prerequisites-for-qml.html#ssec-fourier_features"><span class="vc-n">1.5.2</span> Fourier Features for Kernel Methods</a></li></ul></li>
+<li class="vc-l2"><a href="ch01-mathematical-prerequisites-for-qml.html#16-chapter-summary"><span class="vc-n">1.6</span> Chapter Summary</a></li>
+<li class="vc-l2"><a href="ch01-mathematical-prerequisites-for-qml.html#exercises">Exercises</a></li>
+</ul></details></li>
+<li class="vc-ch"><details><summary><a href="ch02-quantum-computing-essentials.html">Chapter 2: Quantum Computing Essentials</a></summary><ul class="vc-secs">
+<li class="vc-l2"><a href="ch02-quantum-computing-essentials.html#sec-qubits"><span class="vc-n">2.1</span> From Bits to Qubits</a><ul class="vc-subs"><li class="vc-l3"><a href="ch02-quantum-computing-essentials.html#211-the-qubit"><span class="vc-n">2.1.1</span> The Qubit</a></li><li class="vc-l3"><a href="ch02-quantum-computing-essentials.html#212-the-bloch-sphere"><span class="vc-n">2.1.2</span> The Bloch Sphere</a></li></ul></li>
+<li class="vc-l2"><a href="ch02-quantum-computing-essentials.html#sec-quantum_gates"><span class="vc-n">2.2</span> Quantum Gates and Circuits</a><ul class="vc-subs"><li class="vc-l3"><a href="ch02-quantum-computing-essentials.html#221-single-qubit-gates"><span class="vc-n">2.2.1</span> Single-Qubit Gates</a></li><li class="vc-l3"><a href="ch02-quantum-computing-essentials.html#222-two-qubit-gates"><span class="vc-n">2.2.2</span> Two-Qubit Gates</a></li><li class="vc-l3"><a href="ch02-quantum-computing-essentials.html#223-quantum-circuits"><span class="vc-n">2.2.3</span> Quantum Circuits</a></li></ul></li>
+<li class="vc-l2"><a href="ch02-quantum-computing-essentials.html#sec-measurement"><span class="vc-n">2.3</span> Quantum Measurement</a><ul class="vc-subs"><li class="vc-l3"><a href="ch02-quantum-computing-essentials.html#231-projective-measurements-and-the-born-rule"><span class="vc-n">2.3.1</span> Projective Measurements and the Born Rule</a></li><li class="vc-l3"><a href="ch02-quantum-computing-essentials.html#232-shot-noise-and-statistical-estimation"><span class="vc-n">2.3.2</span> Shot Noise and Statistical Estimation</a></li></ul></li>
+<li class="vc-l2"><a href="ch02-quantum-computing-essentials.html#sec-entanglement"><span class="vc-n">2.4</span> Quantum Entanglement</a><ul class="vc-subs"><li class="vc-l3"><a href="ch02-quantum-computing-essentials.html#241-bell-states"><span class="vc-n">2.4.1</span> Bell States</a></li><li class="vc-l3"><a href="ch02-quantum-computing-essentials.html#242-schmidt-decomposition-and-entanglement-entropy"><span class="vc-n">2.4.2</span> Schmidt Decomposition and Entanglement Entropy</a></li></ul></li>
+<li class="vc-l2"><a href="ch02-quantum-computing-essentials.html#sec-density_matrices"><span class="vc-n">2.5</span> Density Matrices and Open Quantum Systems</a><ul class="vc-subs"><li class="vc-l3"><a href="ch02-quantum-computing-essentials.html#251-mixed-states"><span class="vc-n">2.5.1</span> Mixed States</a></li><li class="vc-l3"><a href="ch02-quantum-computing-essentials.html#252-quantum-channels"><span class="vc-n">2.5.2</span> Quantum Channels</a></li></ul></li>
+<li class="vc-l2"><a href="ch02-quantum-computing-essentials.html#sec-quantum_algorithms"><span class="vc-n">2.6</span> Key Quantum Algorithms</a><ul class="vc-subs"><li class="vc-l3"><a href="ch02-quantum-computing-essentials.html#261-grovers-search-algorithm"><span class="vc-n">2.6.1</span> Grover’s Search Algorithm</a></li><li class="vc-l3"><a href="ch02-quantum-computing-essentials.html#262-quantum-fourier-transform"><span class="vc-n">2.6.2</span> Quantum Fourier Transform</a></li><li class="vc-l3"><a href="ch02-quantum-computing-essentials.html#263-quantum-phase-estimation"><span class="vc-n">2.6.3</span> Quantum Phase Estimation</a></li><li class="vc-l3"><a href="ch02-quantum-computing-essentials.html#264-harrow-hassidim-lloyd-hhl-algorithm"><span class="vc-n">2.6.4</span> Harrow-Hassidim-Lloyd (HHL) Algorithm</a></li></ul></li>
+<li class="vc-l2"><a href="ch02-quantum-computing-essentials.html#27-chapter-summary"><span class="vc-n">2.7</span> Chapter Summary</a></li>
+<li class="vc-l2"><a href="ch02-quantum-computing-essentials.html#exercises">Exercises</a></li>
+</ul></details></li>
+<li class="vc-ch"><details><summary><a href="ch03-quantum-information-theory-for-machine-learning.html">Chapter 3: Quantum Information Theory for Machine Learning</a></summary><ul class="vc-secs">
+<li class="vc-l2"><a href="ch03-quantum-information-theory-for-machine-learning.html#sec-quantum_entropy"><span class="vc-n">3.1</span> Quantum Entropy and Information</a><ul class="vc-subs"><li class="vc-l3"><a href="ch03-quantum-information-theory-for-machine-learning.html#311-von-neumann-entropy"><span class="vc-n">3.1.1</span> Von Neumann Entropy</a></li><li class="vc-l3"><a href="ch03-quantum-information-theory-for-machine-learning.html#312-quantum-relative-entropy"><span class="vc-n">3.1.2</span> Quantum Relative Entropy</a></li><li class="vc-l3"><a href="ch03-quantum-information-theory-for-machine-learning.html#313-holevo-bound"><span class="vc-n">3.1.3</span> Holevo Bound</a></li></ul></li>
+<li class="vc-l2"><a href="ch03-quantum-information-theory-for-machine-learning.html#sec-fidelity_distance"><span class="vc-n">3.2</span> Fidelity and Distance Measures</a><ul class="vc-subs"><li class="vc-l3"><a href="ch03-quantum-information-theory-for-machine-learning.html#321-trace-distance"><span class="vc-n">3.2.1</span> Trace Distance</a></li><li class="vc-l3"><a href="ch03-quantum-information-theory-for-machine-learning.html#322-quantum-fidelity"><span class="vc-n">3.2.2</span> Quantum Fidelity</a></li></ul></li>
+<li class="vc-l2"><a href="ch03-quantum-information-theory-for-machine-learning.html#sec-quantum_fisher"><span class="vc-n">3.3</span> Quantum Fisher Information and Geometry</a><ul class="vc-subs"><li class="vc-l3"><a href="ch03-quantum-information-theory-for-machine-learning.html#331-classical-fisher-information"><span class="vc-n">3.3.1</span> Classical Fisher Information</a></li><li class="vc-l3"><a href="ch03-quantum-information-theory-for-machine-learning.html#332-quantum-fisher-information-matrix"><span class="vc-n">3.3.2</span> Quantum Fisher Information Matrix</a></li><li class="vc-l3"><a href="ch03-quantum-information-theory-for-machine-learning.html#333-fubini-study-metric-and-quantum-natural-gradient"><span class="vc-n">3.3.3</span> Fubini-Study Metric and Quantum Natural Gradient</a></li></ul></li>
+<li class="vc-l2"><a href="ch03-quantum-information-theory-for-machine-learning.html#sec-quantum_complexity"><span class="vc-n">3.4</span> Quantum Complexity Theory</a><ul class="vc-subs"><li class="vc-l3"><a href="ch03-quantum-information-theory-for-machine-learning.html#341-the-quantum-complexity-hierarchy"><span class="vc-n">3.4.1</span> The Quantum Complexity Hierarchy</a></li><li class="vc-l3"><a href="ch03-quantum-information-theory-for-machine-learning.html#342-quantum-advantage-for-machine-learning"><span class="vc-n">3.4.2</span> Quantum Advantage for Machine Learning</a></li></ul></li>
+<li class="vc-l2"><a href="ch03-quantum-information-theory-for-machine-learning.html#sec-quantum_channels_learning"><span class="vc-n">3.5</span> Quantum Channels for Learning</a><ul class="vc-subs"><li class="vc-l3"><a href="ch03-quantum-information-theory-for-machine-learning.html#351-diamond-norm-and-channel-distinguishability"><span class="vc-n">3.5.1</span> Diamond Norm and Channel Distinguishability</a></li><li class="vc-l3"><a href="ch03-quantum-information-theory-for-machine-learning.html#352-quantum-data-compression"><span class="vc-n">3.5.2</span> Quantum Data Compression</a></li></ul></li>
+<li class="vc-l2"><a href="ch03-quantum-information-theory-for-machine-learning.html#36-chapter-summary"><span class="vc-n">3.6</span> Chapter Summary</a></li>
+</ul></details></li>
+</ul>
+<p class="toc-group">Part II: Classical Machine Learning Prerequisites</p>
+<ul class="vol-toc vol-toc-full">
+<li class="vc-ch"><details><summary><a href="ch04-machine-learning-foundations.html">Chapter 4: Machine Learning Foundations</a></summary><ul class="vc-secs">
+<li class="vc-l2"><a href="ch04-machine-learning-foundations.html#sec-stat_learning"><span class="vc-n">4.1</span> Statistical Learning Theory</a><ul class="vc-subs"><li class="vc-l3"><a href="ch04-machine-learning-foundations.html#411-empirical-risk-minimization"><span class="vc-n">4.1.1</span> Empirical Risk Minimization</a></li><li class="vc-l3"><a href="ch04-machine-learning-foundations.html#412-pac-learning-and-vc-dimension"><span class="vc-n">4.1.2</span> PAC Learning and VC Dimension</a></li><li class="vc-l3"><a href="ch04-machine-learning-foundations.html#413-rademacher-complexity"><span class="vc-n">4.1.3</span> Rademacher Complexity</a></li></ul></li>
+<li class="vc-l2"><a href="ch04-machine-learning-foundations.html#sec-svm"><span class="vc-n">4.2</span> Support Vector Machines</a><ul class="vc-subs"><li class="vc-l3"><a href="ch04-machine-learning-foundations.html#421-hard-margin-svm-primal"><span class="vc-n">4.2.1</span> Hard-Margin SVM: Primal</a></li><li class="vc-l3"><a href="ch04-machine-learning-foundations.html#422-dual-problem-and-the-kernel-trick"><span class="vc-n">4.2.2</span> Dual Problem and the Kernel Trick</a></li></ul></li>
+<li class="vc-l2"><a href="ch04-machine-learning-foundations.html#sec-kernel_methods"><span class="vc-n">4.3</span> Kernel Methods and RKHS</a><ul class="vc-subs"><li class="vc-l3"><a href="ch04-machine-learning-foundations.html#431-reproducing-kernel-hilbert-spaces"><span class="vc-n">4.3.1</span> Reproducing Kernel Hilbert Spaces</a></li></ul></li>
+<li class="vc-l2"><a href="ch04-machine-learning-foundations.html#sec-deep_learning"><span class="vc-n">4.4</span> Neural Networks and Deep Learning</a><ul class="vc-subs"><li class="vc-l3"><a href="ch04-machine-learning-foundations.html#441-feedforward-networks-and-backpropagation"><span class="vc-n">4.4.1</span> Feedforward Networks and Backpropagation</a></li><li class="vc-l3"><a href="ch04-machine-learning-foundations.html#442-convolutional-neural-networks"><span class="vc-n">4.4.2</span> Convolutional Neural Networks</a></li><li class="vc-l3"><a href="ch04-machine-learning-foundations.html#443-adam-optimizer"><span class="vc-n">4.4.3</span> Adam Optimizer</a></li></ul></li>
+<li class="vc-l2"><a href="ch04-machine-learning-foundations.html#sec-unsupervised"><span class="vc-n">4.5</span> Unsupervised Learning</a><ul class="vc-subs"><li class="vc-l3"><a href="ch04-machine-learning-foundations.html#451-principal-component-analysis-pca"><span class="vc-n">4.5.1</span> Principal Component Analysis (PCA)</a></li><li class="vc-l3"><a href="ch04-machine-learning-foundations.html#452-k-means-clustering"><span class="vc-n">4.5.2</span> k-Means Clustering</a></li></ul></li>
+<li class="vc-l2"><a href="ch04-machine-learning-foundations.html#46-chapter-summary"><span class="vc-n">4.6</span> Chapter Summary</a></li>
+</ul></details></li>
+<li class="vc-ch"><details><summary><a href="ch05-advanced-classical-machine-learning.html">Chapter 5: Advanced Classical Machine Learning</a></summary><ul class="vc-secs">
+<li class="vc-l2"><a href="ch05-advanced-classical-machine-learning.html#sec-gaussian_processes"><span class="vc-n">5.1</span> Gaussian Processes</a><ul class="vc-subs"><li class="vc-l3"><a href="ch05-advanced-classical-machine-learning.html#511-gp-prior-and-posterior"><span class="vc-n">5.1.1</span> GP Prior and Posterior</a></li></ul></li>
+<li class="vc-l2"><a href="ch05-advanced-classical-machine-learning.html#sec-bayesian_ml"><span class="vc-n">5.2</span> Bayesian Machine Learning and Variational Inference</a><ul class="vc-subs"><li class="vc-l3"><a href="ch05-advanced-classical-machine-learning.html#521-variational-inference-and-elbo"><span class="vc-n">5.2.1</span> Variational Inference and ELBO</a></li><li class="vc-l3"><a href="ch05-advanced-classical-machine-learning.html#522-variational-autoencoders"><span class="vc-n">5.2.2</span> Variational Autoencoders</a></li></ul></li>
+<li class="vc-l2"><a href="ch05-advanced-classical-machine-learning.html#sec-gnn"><span class="vc-n">5.3</span> Graph Neural Networks</a><ul class="vc-subs"><li class="vc-l3"><a href="ch05-advanced-classical-machine-learning.html#531-message-passing-neural-networks"><span class="vc-n">5.3.1</span> Message Passing Neural Networks</a></li></ul></li>
+<li class="vc-l2"><a href="ch05-advanced-classical-machine-learning.html#sec-rl"><span class="vc-n">5.4</span> Reinforcement Learning</a><ul class="vc-subs"><li class="vc-l3"><a href="ch05-advanced-classical-machine-learning.html#541-markov-decision-processes"><span class="vc-n">5.4.1</span> Markov Decision Processes</a></li><li class="vc-l3"><a href="ch05-advanced-classical-machine-learning.html#542-policy-gradient-reinforce"><span class="vc-n">5.4.2</span> Policy Gradient (REINFORCE)</a></li></ul></li>
+<li class="vc-l2"><a href="ch05-advanced-classical-machine-learning.html#sec-dim_reduction"><span class="vc-n">5.5</span> Dimensionality Reduction</a><ul class="vc-subs"><li class="vc-l3"><a href="ch05-advanced-classical-machine-learning.html#551-t-sne-and-umap"><span class="vc-n">5.5.1</span> t-SNE and UMAP</a></li></ul></li>
+<li class="vc-l2"><a href="ch05-advanced-classical-machine-learning.html#56-chapter-summary"><span class="vc-n">5.6</span> Chapter Summary</a></li>
+</ul></details></li>
+</ul>
+<p class="toc-group">Part III: Core QML Algorithms</p>
+<ul class="vol-toc vol-toc-full">
+<li class="vc-ch"><details><summary><a href="ch06-variational-quantum-circuits.html">Chapter 6: Variational Quantum Circuits</a></summary><ul class="vc-secs">
+<li class="vc-l2"><a href="ch06-variational-quantum-circuits.html#sec-pqc_intro"><span class="vc-n">6.1</span> Parameterized Quantum Circuits</a><ul class="vc-subs"><li class="vc-l3"><a href="ch06-variational-quantum-circuits.html#611-the-variational-principle"><span class="vc-n">6.1.1</span> The Variational Principle</a></li><li class="vc-l3"><a href="ch06-variational-quantum-circuits.html#612-ansatz-design-philosophy"><span class="vc-n">6.1.2</span> Ansatz Design Philosophy</a></li></ul></li>
+<li class="vc-l2"><a href="ch06-variational-quantum-circuits.html#sec-ansatz_architectures"><span class="vc-n">6.2</span> Common Ansatz Architectures</a><ul class="vc-subs"><li class="vc-l3"><a href="ch06-variational-quantum-circuits.html#621-hardware-efficient-ansatz"><span class="vc-n">6.2.1</span> Hardware-Efficient Ansatz</a></li><li class="vc-l3"><a href="ch06-variational-quantum-circuits.html#622-strongly-entangling-layers"><span class="vc-n">6.2.2</span> Strongly Entangling Layers</a></li><li class="vc-l3"><a href="ch06-variational-quantum-circuits.html#623-data-re-uploading-ansatz"><span class="vc-n">6.2.3</span> Data Re-uploading Ansatz</a></li></ul></li>
+<li class="vc-l2"><a href="ch06-variational-quantum-circuits.html#sec-expressibility"><span class="vc-n">6.3</span> Expressibility and Entanglement Capability</a></li>
+<li class="vc-l2"><a href="ch06-variational-quantum-circuits.html#sec-hybrid_loop"><span class="vc-n">6.4</span> The Hybrid Classical-Quantum Loop</a></li>
+<li class="vc-l2"><a href="ch06-variational-quantum-circuits.html#sec-vqe"><span class="vc-n">6.5</span> Variational Quantum Eigensolver (VQE)</a></li>
+<li class="vc-l2"><a href="ch06-variational-quantum-circuits.html#sec-qaoa"><span class="vc-n">6.6</span> Quantum Approximate Optimization Algorithm (QAOA)</a></li>
+<li class="vc-l2"><a href="ch06-variational-quantum-circuits.html#sec-vqc_classifier"><span class="vc-n">6.7</span> Variational Quantum Classifier</a></li>
+<li class="vc-l2"><a href="ch06-variational-quantum-circuits.html#68-chapter-summary"><span class="vc-n">6.8</span> Chapter Summary</a></li>
+</ul></details></li>
+<li class="vc-ch"><details><summary><a href="ch07-quantum-feature-maps-and-data-encoding.html">Chapter 7: Quantum Feature Maps and Data Encoding</a></summary><ul class="vc-secs">
+<li class="vc-l2"><a href="ch07-quantum-feature-maps-and-data-encoding.html#sec-encoding_problem"><span class="vc-n">7.1</span> The Data Encoding Problem</a></li>
+<li class="vc-l2"><a href="ch07-quantum-feature-maps-and-data-encoding.html#sec-amplitude_encoding"><span class="vc-n">7.2</span> Amplitude Encoding</a></li>
+<li class="vc-l2"><a href="ch07-quantum-feature-maps-and-data-encoding.html#sec-angle_encoding"><span class="vc-n">7.3</span> Angle Encoding</a></li>
+<li class="vc-l2"><a href="ch07-quantum-feature-maps-and-data-encoding.html#sec-iqp_encoding"><span class="vc-n">7.4</span> IQP-Style Feature Maps</a></li>
+<li class="vc-l2"><a href="ch07-quantum-feature-maps-and-data-encoding.html#sec-data_reuploading"><span class="vc-n">7.5</span> Data Re-Uploading</a></li>
+<li class="vc-l2"><a href="ch07-quantum-feature-maps-and-data-encoding.html#sec-basis_encoding"><span class="vc-n">7.6</span> Basis Encoding and Computational Basis</a></li>
+<li class="vc-l2"><a href="ch07-quantum-feature-maps-and-data-encoding.html#sec-encoding_comparison"><span class="vc-n">7.7</span> Comparison of Encoding Strategies</a></li>
+<li class="vc-l2"><a href="ch07-quantum-feature-maps-and-data-encoding.html#78-chapter-summary"><span class="vc-n">7.8</span> Chapter Summary</a></li>
+</ul></details></li>
+<li class="vc-ch"><details><summary><a href="ch08-quantum-kernel-methods.html">Chapter 8: Quantum Kernel Methods</a></summary><ul class="vc-secs">
+<li class="vc-l2"><a href="ch08-quantum-kernel-methods.html#sec-classical_to_quantum_kernel"><span class="vc-n">8.1</span> From Classical to Quantum Kernels</a></li>
+<li class="vc-l2"><a href="ch08-quantum-kernel-methods.html#sec-kernel_estimation"><span class="vc-n">8.2</span> Quantum Kernel Estimation</a><ul class="vc-subs"><li class="vc-l3"><a href="ch08-quantum-kernel-methods.html#821-hadamard-test"><span class="vc-n">8.2.1</span> Hadamard Test</a></li><li class="vc-l3"><a href="ch08-quantum-kernel-methods.html#822-direct-fidelity-estimation"><span class="vc-n">8.2.2</span> Direct Fidelity Estimation</a></li></ul></li>
+<li class="vc-l2"><a href="ch08-quantum-kernel-methods.html#sec-kernel_properties"><span class="vc-n">8.3</span> Quantum Kernel Properties</a></li>
+<li class="vc-l2"><a href="ch08-quantum-kernel-methods.html#sec-projected_kernels"><span class="vc-n">8.4</span> Projected Quantum Kernels</a></li>
+<li class="vc-l2"><a href="ch08-quantum-kernel-methods.html#sec-kernel_advantage"><span class="vc-n">8.5</span> Quantum Kernel Advantage</a></li>
+<li class="vc-l2"><a href="ch08-quantum-kernel-methods.html#sec-trainable_kernels"><span class="vc-n">8.6</span> Trainable Quantum Kernels</a></li>
+<li class="vc-l2"><a href="ch08-quantum-kernel-methods.html#87-chapter-summary"><span class="vc-n">8.7</span> Chapter Summary</a></li>
+</ul></details></li>
+<li class="vc-ch"><details><summary><a href="ch09-quantum-support-vector-machines.html">Chapter 9: Quantum Support Vector Machines</a></summary><ul class="vc-secs">
+<li class="vc-l2"><a href="ch09-quantum-support-vector-machines.html#sec-hhl_qsvm"><span class="vc-n">9.1</span> The HHL-Based QSVM (Rebentrost 2014)</a></li>
+<li class="vc-l2"><a href="ch09-quantum-support-vector-machines.html#sec-dequantization_qsvm"><span class="vc-n">9.2</span> Dequantization of QSVM</a></li>
+<li class="vc-l2"><a href="ch09-quantum-support-vector-machines.html#sec-qksvm"><span class="vc-n">9.3</span> Quantum Kernel SVM (Practical Approach)</a></li>
+<li class="vc-l2"><a href="ch09-quantum-support-vector-machines.html#sec-multiclass_qsvm"><span class="vc-n">9.4</span> Multi-Class Quantum SVM</a></li>
+<li class="vc-l2"><a href="ch09-quantum-support-vector-machines.html#sec-qsvm_benchmarking"><span class="vc-n">9.5</span> Benchmarking: Fair Comparison</a></li>
+<li class="vc-l2"><a href="ch09-quantum-support-vector-machines.html#96-chapter-summary"><span class="vc-n">9.6</span> Chapter Summary</a></li>
+</ul></details></li>
+<li class="vc-ch"><details><summary><a href="ch10-quantum-neural-networks.html">Chapter 10: Quantum Neural Networks</a></summary><ul class="vc-secs">
+<li class="vc-l2"><a href="ch10-quantum-neural-networks.html#sec-qnn_architecture"><span class="vc-n">10.1</span> QNN Architecture</a></li>
+<li class="vc-l2"><a href="ch10-quantum-neural-networks.html#sec-parameter_shift"><span class="vc-n">10.2</span> The Parameter Shift Rule</a></li>
+<li class="vc-l2"><a href="ch10-quantum-neural-networks.html#sec-qng"><span class="vc-n">10.3</span> Quantum Natural Gradient</a></li>
+<li class="vc-l2"><a href="ch10-quantum-neural-networks.html#sec-qnn_loss"><span class="vc-n">10.4</span> Loss Functions for QNNs</a></li>
+<li class="vc-l2"><a href="ch10-quantum-neural-networks.html#sec-expr_train_tradeoff"><span class="vc-n">10.5</span> Expressibility vs. Trainability</a></li>
+<li class="vc-l2"><a href="ch10-quantum-neural-networks.html#sec-qnn_implementation"><span class="vc-n">10.6</span> Complete QNN with PennyLane + PyTorch</a></li>
+<li class="vc-l2"><a href="ch10-quantum-neural-networks.html#107-chapter-summary"><span class="vc-n">10.7</span> Chapter Summary</a></li>
+</ul></details></li>
+</ul>
+<p class="toc-group">Part IV: Deep Quantum Learning</p>
+<ul class="vol-toc vol-toc-full">
+<li class="vc-ch"><details><summary><a href="ch11-quantum-convolutional-neural-networks.html">Chapter 11: Quantum Convolutional Neural Networks</a></summary><ul class="vc-secs">
+<li class="vc-l2"><a href="ch11-quantum-convolutional-neural-networks.html#sec-cnn_to_qcnn"><span class="vc-n">11.1</span> From CNNs to QCNNs</a></li>
+<li class="vc-l2"><a href="ch11-quantum-convolutional-neural-networks.html#112-qcnn-architecture"><span class="vc-n">11.2</span> QCNN Architecture</a></li>
+<li class="vc-l2"><a href="ch11-quantum-convolutional-neural-networks.html#sec-qcnn_conv"><span class="vc-n">11.3</span> Quantum Convolutional Layers</a></li>
+<li class="vc-l2"><a href="ch11-quantum-convolutional-neural-networks.html#sec-qcnn_pooling"><span class="vc-n">11.4</span> Quantum Pooling Layers</a></li>
+<li class="vc-l2"><a href="ch11-quantum-convolutional-neural-networks.html#sec-qcnn_phase"><span class="vc-n">11.5</span> QCNN for Quantum Phase Recognition</a></li>
+<li class="vc-l2"><a href="ch11-quantum-convolutional-neural-networks.html#sec-qcnn_image"><span class="vc-n">11.6</span> QCNN for Image Classification</a></li>
+<li class="vc-l2"><a href="ch11-quantum-convolutional-neural-networks.html#117-chapter-summary"><span class="vc-n">11.7</span> Chapter Summary</a></li>
+</ul></details></li>
+<li class="vc-ch"><details><summary><a href="ch12-quantum-recurrent-networks-and-qlstm.html">Chapter 12: Quantum Recurrent Networks and QLSTM</a></summary><ul class="vc-secs">
+<li class="vc-l2"><a href="ch12-quantum-recurrent-networks-and-qlstm.html#sec-lstm_review"><span class="vc-n">12.1</span> Classical LSTM Review</a></li>
+<li class="vc-l2"><a href="ch12-quantum-recurrent-networks-and-qlstm.html#122-qlstm-architecture"><span class="vc-n">12.2</span> QLSTM Architecture</a></li>
+<li class="vc-l2"><a href="ch12-quantum-recurrent-networks-and-qlstm.html#sec-qlstm_vqc_design"><span class="vc-n">12.3</span> VQC Gate Design for QLSTM</a></li>
+<li class="vc-l2"><a href="ch12-quantum-recurrent-networks-and-qlstm.html#sec-qrc"><span class="vc-n">12.4</span> Quantum Reservoir Computing</a></li>
+<li class="vc-l2"><a href="ch12-quantum-recurrent-networks-and-qlstm.html#sec-qlstm_implementation"><span class="vc-n">12.5</span> Implementation</a></li>
+<li class="vc-l2"><a href="ch12-quantum-recurrent-networks-and-qlstm.html#126-chapter-summary"><span class="vc-n">12.6</span> Chapter Summary</a></li>
+</ul></details></li>
+<li class="vc-ch"><details><summary><a href="ch13-quantum-autoencoders.html">Chapter 13: Quantum Autoencoders</a></summary><ul class="vc-secs">
+<li class="vc-l2"><a href="ch13-quantum-autoencoders.html#sec-classical_ae"><span class="vc-n">13.1</span> Classical Autoencoders: A Brief Review</a></li>
+<li class="vc-l2"><a href="ch13-quantum-autoencoders.html#sec-qae_architecture"><span class="vc-n">13.2</span> Quantum Autoencoder Architecture</a></li>
+<li class="vc-l2"><a href="ch13-quantum-autoencoders.html#sec-qae_training"><span class="vc-n">13.3</span> Training Objectives</a><ul class="vc-subs"><li class="vc-l3"><a href="ch13-quantum-autoencoders.html#1331-fidelity-based-loss"><span class="vc-n">13.3.1</span> Fidelity-Based Loss</a></li><li class="vc-l3"><a href="ch13-quantum-autoencoders.html#1332-swap-test-fidelity"><span class="vc-n">13.3.2</span> SWAP-Test Fidelity</a></li><li class="vc-l3"><a href="ch13-quantum-autoencoders.html#1333-hilbertschmidt-inner-product-mixed-states"><span class="vc-n">13.3.3</span> Hilbert–Schmidt Inner Product (Mixed States)</a></li></ul></li>
+<li class="vc-l2"><a href="ch13-quantum-autoencoders.html#sec-qae_ansatz"><span class="vc-n">13.4</span> Encoder Ansatz Design</a></li>
+<li class="vc-l2"><a href="ch13-quantum-autoencoders.html#sec-qae_denoising"><span class="vc-n">13.5</span> Quantum State Denoising</a></li>
+<li class="vc-l2"><a href="ch13-quantum-autoencoders.html#sec-qae_anomaly"><span class="vc-n">13.6</span> Anomaly Detection with QAE</a></li>
+<li class="vc-l2"><a href="ch13-quantum-autoencoders.html#sec-qae_implementation"><span class="vc-n">13.7</span> Implementation</a></li>
+<li class="vc-l2"><a href="ch13-quantum-autoencoders.html#sec-qae_limits"><span class="vc-n">13.8</span> Information-Theoretic Limits</a></li>
+<li class="vc-l2"><a href="ch13-quantum-autoencoders.html#139-chapter-summary"><span class="vc-n">13.9</span> Chapter Summary</a></li>
+</ul></details></li>
+<li class="vc-ch"><details><summary><a href="ch14-quantum-generative-models.html">Chapter 14: Quantum Generative Models</a></summary><ul class="vc-secs">
+<li class="vc-l2"><a href="ch14-quantum-generative-models.html#sec-qgan"><span class="vc-n">14.1</span> Quantum Generative Adversarial Networks</a><ul class="vc-subs"><li class="vc-l3"><a href="ch14-quantum-generative-models.html#1411-classical-gan-review"><span class="vc-n">14.1.1</span> Classical GAN Review</a></li><li class="vc-l3"><a href="ch14-quantum-generative-models.html#1412-qgan-architecture"><span class="vc-n">14.1.2</span> QGAN Architecture</a></li><li class="vc-l3"><a href="ch14-quantum-generative-models.html#1413-qgan-training-objective"><span class="vc-n">14.1.3</span> QGAN Training Objective</a></li></ul></li>
+<li class="vc-l2"><a href="ch14-quantum-generative-models.html#sec-born_machine"><span class="vc-n">14.2</span> Born Machines</a><ul class="vc-subs"><li class="vc-l3"><a href="ch14-quantum-generative-models.html#1421-training-via-maximum-mean-discrepancy"><span class="vc-n">14.2.1</span> Training via Maximum Mean Discrepancy</a></li><li class="vc-l3"><a href="ch14-quantum-generative-models.html#1422-expressibility-of-born-machines"><span class="vc-n">14.2.2</span> Expressibility of Born Machines</a></li></ul></li>
+<li class="vc-l2"><a href="ch14-quantum-generative-models.html#sec-qbm"><span class="vc-n">14.3</span> Quantum Boltzmann Machines</a><ul class="vc-subs"><li class="vc-l3"><a href="ch14-quantum-generative-models.html#1431-training-qbms"><span class="vc-n">14.3.1</span> Training QBMs</a></li></ul></li>
+<li class="vc-l2"><a href="ch14-quantum-generative-models.html#sec-qgan_implementation"><span class="vc-n">14.4</span> Implementation: QGAN for Continuous Distributions</a></li>
+<li class="vc-l2"><a href="ch14-quantum-generative-models.html#sec-gen_comparison"><span class="vc-n">14.5</span> Comparison: Classical vs. Quantum Generative Models</a></li>
+<li class="vc-l2"><a href="ch14-quantum-generative-models.html#146-chapter-summary"><span class="vc-n">14.6</span> Chapter Summary</a></li>
+</ul></details></li>
+</ul>
+<p class="toc-group">Part V: Optimization and Training</p>
+<ul class="vol-toc vol-toc-full">
+<li class="vc-ch"><details><summary><a href="ch15-optimization-and-training-of-quantum-models.html">Chapter 15: Optimization and Training of Quantum Models</a></summary><ul class="vc-secs">
+<li class="vc-l2"><a href="ch15-optimization-and-training-of-quantum-models.html#sec-psr_full"><span class="vc-n">15.1</span> Parameter-Shift Rule: Complete Derivation</a><ul class="vc-subs"><li class="vc-l3"><a href="ch15-optimization-and-training-of-quantum-models.html#1511-single-parameter-shift-rule"><span class="vc-n">15.1.1</span> Single-Parameter Shift Rule</a></li><li class="vc-l3"><a href="ch15-optimization-and-training-of-quantum-models.html#1512-generalized-parameter-shift-rule"><span class="vc-n">15.1.2</span> Generalized Parameter-Shift Rule</a></li><li class="vc-l3"><a href="ch15-optimization-and-training-of-quantum-models.html#1513-gradient-estimation-under-finite-shots"><span class="vc-n">15.1.3</span> Gradient Estimation Under Finite Shots</a></li></ul></li>
+<li class="vc-l2"><a href="ch15-optimization-and-training-of-quantum-models.html#sec-qng_ch15"><span class="vc-n">15.2</span> Quantum Natural Gradient</a><ul class="vc-subs"><li class="vc-l3"><a href="ch15-optimization-and-training-of-quantum-models.html#1521-motivation-riemannian-optimization"><span class="vc-n">15.2.1</span> Motivation: Riemannian Optimization</a></li><li class="vc-l3"><a href="ch15-optimization-and-training-of-quantum-models.html#1522-computing-the-qfim"><span class="vc-n">15.2.2</span> Computing the QFIM</a></li></ul></li>
+<li class="vc-l2"><a href="ch15-optimization-and-training-of-quantum-models.html#sec-rotosolve"><span class="vc-n">15.3</span> Rotosolve</a></li>
+<li class="vc-l2"><a href="ch15-optimization-and-training-of-quantum-models.html#sec-spsa"><span class="vc-n">15.4</span> Simultaneous Perturbation Stochastic Approximation</a></li>
+<li class="vc-l2"><a href="ch15-optimization-and-training-of-quantum-models.html#sec-shot_budget"><span class="vc-n">15.5</span> Shot Budget Management</a><ul class="vc-subs"><li class="vc-l3"><a href="ch15-optimization-and-training-of-quantum-models.html#1551-optimal-shot-allocation"><span class="vc-n">15.5.1</span> Optimal Shot Allocation</a></li><li class="vc-l3"><a href="ch15-optimization-and-training-of-quantum-models.html#1552-stochastic-psr"><span class="vc-n">15.5.2</span> Stochastic PSR</a></li></ul></li>
+<li class="vc-l2"><a href="ch15-optimization-and-training-of-quantum-models.html#sec-optimizer_impl"><span class="vc-n">15.6</span> Implementation: Optimizer Comparison</a></li>
+<li class="vc-l2"><a href="ch15-optimization-and-training-of-quantum-models.html#157-chapter-summary"><span class="vc-n">15.7</span> Chapter Summary</a></li>
+</ul></details></li>
+<li class="vc-ch"><details><summary><a href="ch16-barren-plateaus-and-trainability-of-quantum.html">Chapter 16: Barren Plateaus and Trainability of Quantum Models</a></summary><ul class="vc-secs">
+<li class="vc-l2"><a href="ch16-barren-plateaus-and-trainability-of-quantum.html#sec-bp_phenomenon"><span class="vc-n">16.1</span> The Barren Plateau Phenomenon</a></li>
+<li class="vc-l2"><a href="ch16-barren-plateaus-and-trainability-of-quantum.html#sec-bp_theorem"><span class="vc-n">16.2</span> Barren Plateau Theorem</a></li>
+<li class="vc-l2"><a href="ch16-barren-plateaus-and-trainability-of-quantum.html#sec-bp_sources"><span class="vc-n">16.3</span> Sources of Barren Plateaus</a><ul class="vc-subs"><li class="vc-l3"><a href="ch16-barren-plateaus-and-trainability-of-quantum.html#1631-global-cost-functions"><span class="vc-n">16.3.1</span> Global Cost Functions</a></li><li class="vc-l3"><a href="ch16-barren-plateaus-and-trainability-of-quantum.html#1632-expressibility-induced-barren-plateaus"><span class="vc-n">16.3.2</span> Expressibility-Induced Barren Plateaus</a></li><li class="vc-l3"><a href="ch16-barren-plateaus-and-trainability-of-quantum.html#1633-noise-induced-barren-plateaus"><span class="vc-n">16.3.3</span> Noise-Induced Barren Plateaus</a></li><li class="vc-l3"><a href="ch16-barren-plateaus-and-trainability-of-quantum.html#1634-entanglement-induced-barren-plateaus"><span class="vc-n">16.3.4</span> Entanglement-Induced Barren Plateaus</a></li></ul></li>
+<li class="vc-l2"><a href="ch16-barren-plateaus-and-trainability-of-quantum.html#sec-bp_mitigation"><span class="vc-n">16.4</span> Mitigation Strategies</a><ul class="vc-subs"><li class="vc-l3"><a href="ch16-barren-plateaus-and-trainability-of-quantum.html#1641-local-cost-functions"><span class="vc-n">16.4.1</span> Local Cost Functions</a></li><li class="vc-l3"><a href="ch16-barren-plateaus-and-trainability-of-quantum.html#1642-identity-block-initialization"><span class="vc-n">16.4.2</span> Identity Block Initialization</a></li><li class="vc-l3"><a href="ch16-barren-plateaus-and-trainability-of-quantum.html#1643-layer-wise-training"><span class="vc-n">16.4.3</span> Layer-Wise Training</a></li><li class="vc-l3"><a href="ch16-barren-plateaus-and-trainability-of-quantum.html#1644-problem-informed-ansatze"><span class="vc-n">16.4.4</span> Problem-Informed Ansatze</a></li></ul></li>
+<li class="vc-l2"><a href="ch16-barren-plateaus-and-trainability-of-quantum.html#sec-bp_diagnosis"><span class="vc-n">16.5</span> Diagnosing Barren Plateaus</a></li>
+<li class="vc-l2"><a href="ch16-barren-plateaus-and-trainability-of-quantum.html#sec-bp_implementation"><span class="vc-n">16.6</span> Implementation: Barren Plateau Detection</a></li>
+<li class="vc-l2"><a href="ch16-barren-plateaus-and-trainability-of-quantum.html#167-chapter-summary"><span class="vc-n">16.7</span> Chapter Summary</a></li>
+</ul></details></li>
+</ul>
+<p class="toc-group">Part VI: Hardware, Noise, and Error Mitigation</p>
+<ul class="vol-toc vol-toc-full">
+<li class="vc-ch"><details><summary><a href="ch17-nisq-hardware-platforms.html">Chapter 17: NISQ Hardware Platforms</a></summary><ul class="vc-secs">
+<li class="vc-l2"><a href="ch17-nisq-hardware-platforms.html#sec-superconducting"><span class="vc-n">17.1</span> Superconducting Circuits</a><ul class="vc-subs"><li class="vc-l3"><a href="ch17-nisq-hardware-platforms.html#1711-physical-principles"><span class="vc-n">17.1.1</span> Physical Principles</a></li><li class="vc-l3"><a href="ch17-nisq-hardware-platforms.html#1712-native-gate-set-and-connectivity"><span class="vc-n">17.1.2</span> Native Gate Set and Connectivity</a></li></ul></li>
+<li class="vc-l2"><a href="ch17-nisq-hardware-platforms.html#sec-trapped_ion"><span class="vc-n">17.2</span> Trapped-Ion Qubits</a><ul class="vc-subs"><li class="vc-l3"><a href="ch17-nisq-hardware-platforms.html#1721-physical-principles"><span class="vc-n">17.2.1</span> Physical Principles</a></li><li class="vc-l3"><a href="ch17-nisq-hardware-platforms.html#1722-mlmer-srensen-gate"><span class="vc-n">17.2.2</span> Mølmer-Sørensen Gate</a></li></ul></li>
+<li class="vc-l2"><a href="ch17-nisq-hardware-platforms.html#sec-photonic"><span class="vc-n">17.3</span> Photonic Quantum Computing</a></li>
+<li class="vc-l2"><a href="ch17-nisq-hardware-platforms.html#sec-neutral_atoms"><span class="vc-n">17.4</span> Neutral Atom Arrays</a></li>
+<li class="vc-l2"><a href="ch17-nisq-hardware-platforms.html#sec-noise_models"><span class="vc-n">17.5</span> Hardware Noise Models</a><ul class="vc-subs"><li class="vc-l3"><a href="ch17-nisq-hardware-platforms.html#1751-depolarizing-channel"><span class="vc-n">17.5.1</span> Depolarizing Channel</a></li><li class="vc-l3"><a href="ch17-nisq-hardware-platforms.html#1752-dephasing-phase-damping-channel"><span class="vc-n">17.5.2</span> Dephasing (Phase-Damping) Channel</a></li><li class="vc-l3"><a href="ch17-nisq-hardware-platforms.html#1753-amplitude-damping-channel"><span class="vc-n">17.5.3</span> Amplitude Damping Channel</a></li><li class="vc-l3"><a href="ch17-nisq-hardware-platforms.html#1754-platform-comparison"><span class="vc-n">17.5.4</span> Platform Comparison</a></li></ul></li>
+<li class="vc-l2"><a href="ch17-nisq-hardware-platforms.html#sec-transpilation"><span class="vc-n">17.6</span> Circuit Transpilation</a></li>
+<li class="vc-l2"><a href="ch17-nisq-hardware-platforms.html#177-chapter-summary"><span class="vc-n">17.7</span> Chapter Summary</a></li>
+</ul></details></li>
+<li class="vc-ch"><details><summary><a href="ch18-quantum-error-mitigation.html">Chapter 18: Quantum Error Mitigation</a></summary><ul class="vc-secs">
+<li class="vc-l2"><a href="ch18-quantum-error-mitigation.html#sec-qem_vs_qec"><span class="vc-n">18.1</span> Error Mitigation vs. Error Correction</a></li>
+<li class="vc-l2"><a href="ch18-quantum-error-mitigation.html#sec-zne"><span class="vc-n">18.2</span> Zero-Noise Extrapolation</a><ul class="vc-subs"><li class="vc-l3"><a href="ch18-quantum-error-mitigation.html#1821-richardson-extrapolation"><span class="vc-n">18.2.1</span> Richardson Extrapolation</a></li></ul></li>
+<li class="vc-l2"><a href="ch18-quantum-error-mitigation.html#sec-pec"><span class="vc-n">18.3</span> Probabilistic Error Cancellation</a></li>
+<li class="vc-l2"><a href="ch18-quantum-error-mitigation.html#sec-cdr"><span class="vc-n">18.4</span> Clifford Data Regression</a></li>
+<li class="vc-l2"><a href="ch18-quantum-error-mitigation.html#sec-readout_mitigation"><span class="vc-n">18.5</span> Readout Error Mitigation</a></li>
+<li class="vc-l2"><a href="ch18-quantum-error-mitigation.html#sec-symmetry_verification"><span class="vc-n">18.6</span> Symmetry Verification</a></li>
+<li class="vc-l2"><a href="ch18-quantum-error-mitigation.html#sec-mitiq_implementation"><span class="vc-n">18.7</span> Implementation with Mitiq</a></li>
+<li class="vc-l2"><a href="ch18-quantum-error-mitigation.html#188-chapter-summary"><span class="vc-n">18.8</span> Chapter Summary</a></li>
+</ul></details></li>
+</ul>
+<p class="toc-group">Part VII: Applications and Domains</p>
+<ul class="vol-toc vol-toc-full">
+<li class="vc-ch"><details><summary><a href="ch19-qml-for-quantum-chemistry-and-molecular.html">Chapter 19: QML for Quantum Chemistry and Molecular Simulation</a></summary><ul class="vc-secs">
+<li class="vc-l2"><a href="ch19-qml-for-quantum-chemistry-and-molecular.html#sec-electronic_structure"><span class="vc-n">19.1</span> The Electronic Structure Problem</a></li>
+<li class="vc-l2"><a href="ch19-qml-for-quantum-chemistry-and-molecular.html#sec-second_quantization"><span class="vc-n">19.2</span> Second Quantization and Qubit Mappings</a><ul class="vc-subs"><li class="vc-l3"><a href="ch19-qml-for-quantum-chemistry-and-molecular.html#1921-jordan-wigner-transform"><span class="vc-n">19.2.1</span> Jordan-Wigner Transform</a></li></ul></li>
+<li class="vc-l2"><a href="ch19-qml-for-quantum-chemistry-and-molecular.html#sec-vqe_chemistry"><span class="vc-n">19.3</span> VQE for Molecular Ground States</a><ul class="vc-subs"><li class="vc-l3"><a href="ch19-qml-for-quantum-chemistry-and-molecular.html#1931-uccsd-ansatz"><span class="vc-n">19.3.1</span> UCCSD Ansatz</a></li></ul></li>
+<li class="vc-l2"><a href="ch19-qml-for-quantum-chemistry-and-molecular.html#sec-qmlp"><span class="vc-n">19.4</span> Quantum ML Potentials</a></li>
+<li class="vc-l2"><a href="ch19-qml-for-quantum-chemistry-and-molecular.html#sec-qml_molecular"><span class="vc-n">19.5</span> Quantum Kernels for Molecular Property Prediction</a></li>
+<li class="vc-l2"><a href="ch19-qml-for-quantum-chemistry-and-molecular.html#sec-chemistry_implementation"><span class="vc-n">19.6</span> Implementation: VQE for H₂ and Molecular ML</a></li>
+<li class="vc-l2"><a href="ch19-qml-for-quantum-chemistry-and-molecular.html#197-chapter-summary"><span class="vc-n">19.7</span> Chapter Summary</a></li>
+</ul></details></li>
+<li class="vc-ch"><details><summary><a href="ch20-qml-in-finance-and-optimization.html">Chapter 20: QML in Finance and Optimization</a></summary><ul class="vc-secs">
+<li class="vc-l2"><a href="ch20-qml-in-finance-and-optimization.html#sec-portfolio_qubo"><span class="vc-n">20.1</span> Portfolio Optimization as QUBO</a><ul class="vc-subs"><li class="vc-l3"><a href="ch20-qml-in-finance-and-optimization.html#2011-markowitz-portfolio-optimization"><span class="vc-n">20.1.1</span> Markowitz Portfolio Optimization</a></li><li class="vc-l3"><a href="ch20-qml-in-finance-and-optimization.html#2012-qubo-to-ising-mapping"><span class="vc-n">20.1.2</span> QUBO to Ising Mapping</a></li></ul></li>
+<li class="vc-l2"><a href="ch20-qml-in-finance-and-optimization.html#sec-qaoa_portfolio"><span class="vc-n">20.2</span> QAOA for Portfolio Optimization</a></li>
+<li class="vc-l2"><a href="ch20-qml-in-finance-and-optimization.html#sec-quantum_mc"><span class="vc-n">20.3</span> Quantum Monte Carlo for Option Pricing</a><ul class="vc-subs"><li class="vc-l3"><a href="ch20-qml-in-finance-and-optimization.html#2031-quantum-amplitude-estimation"><span class="vc-n">20.3.1</span> Quantum Amplitude Estimation</a></li></ul></li>
+<li class="vc-l2"><a href="ch20-qml-in-finance-and-optimization.html#sec-quantum_credit"><span class="vc-n">20.4</span> Quantum Classifiers for Financial ML</a></li>
+<li class="vc-l2"><a href="ch20-qml-in-finance-and-optimization.html#sec-finance_implementation"><span class="vc-n">20.5</span> Implementation: QAOA Portfolio and Quantum Finance</a></li>
+<li class="vc-l2"><a href="ch20-qml-in-finance-and-optimization.html#206-chapter-summary"><span class="vc-n">20.6</span> Chapter Summary</a></li>
+</ul></details></li>
+<li class="vc-ch"><details><summary><a href="ch21-qml-in-healthcare-and-drug-discovery.html">Chapter 21: QML in Healthcare and Drug Discovery</a></summary><ul class="vc-secs">
+<li class="vc-l2"><a href="ch21-qml-in-healthcare-and-drug-discovery.html#sec-drug_discovery"><span class="vc-n">21.1</span> Drug Discovery with QML</a><ul class="vc-subs"><li class="vc-l3"><a href="ch21-qml-in-healthcare-and-drug-discovery.html#2111-molecular-property-prediction-pipeline"><span class="vc-n">21.1.1</span> Molecular Property Prediction Pipeline</a></li><li class="vc-l3"><a href="ch21-qml-in-healthcare-and-drug-discovery.html#2112-quantum-tanimoto-kernel-for-molecular-similarity"><span class="vc-n">21.1.2</span> Quantum Tanimoto Kernel for Molecular Similarity</a></li></ul></li>
+<li class="vc-l2"><a href="ch21-qml-in-healthcare-and-drug-discovery.html#sec-medical_imaging"><span class="vc-n">21.2</span> Medical Image Classification</a><ul class="vc-subs"><li class="vc-l3"><a href="ch21-qml-in-healthcare-and-drug-discovery.html#2121-quantum-transfer-learning"><span class="vc-n">21.2.1</span> Quantum Transfer Learning</a></li><li class="vc-l3"><a href="ch21-qml-in-healthcare-and-drug-discovery.html#2122-qnn-for-chest-x-ray-classification"><span class="vc-n">21.2.2</span> QNN for Chest X-Ray Classification</a></li></ul></li>
+<li class="vc-l2"><a href="ch21-qml-in-healthcare-and-drug-discovery.html#sec-genomics"><span class="vc-n">21.3</span> Genomic Data Analysis</a><ul class="vc-subs"><li class="vc-l3"><a href="ch21-qml-in-healthcare-and-drug-discovery.html#2131-quantum-feature-maps-for-gene-expression"><span class="vc-n">21.3.1</span> Quantum Feature Maps for Gene Expression</a></li></ul></li>
+<li class="vc-l2"><a href="ch21-qml-in-healthcare-and-drug-discovery.html#sec-qfl"><span class="vc-n">21.4</span> Quantum Federated Learning</a></li>
+<li class="vc-l2"><a href="ch21-qml-in-healthcare-and-drug-discovery.html#sec-healthcare_implementation"><span class="vc-n">21.5</span> Implementation: Quantum Classifier for Heart Disease</a></li>
+<li class="vc-l2"><a href="ch21-qml-in-healthcare-and-drug-discovery.html#216-chapter-summary"><span class="vc-n">21.6</span> Chapter Summary</a></li>
+</ul></details></li>
+<li class="vc-ch"><details><summary><a href="ch22-qml-for-nlp-and-computer-vision.html">Chapter 22: QML for NLP and Computer Vision</a></summary><ul class="vc-secs">
+<li class="vc-l2"><a href="ch22-qml-for-nlp-and-computer-vision.html#sec-quantum_nlp"><span class="vc-n">22.1</span> Quantum NLP: DisCoCat Framework</a><ul class="vc-subs"><li class="vc-l3"><a href="ch22-qml-for-nlp-and-computer-vision.html#2211-compositional-distributional-semantics"><span class="vc-n">22.1.1</span> Compositional Distributional Semantics</a></li><li class="vc-l3"><a href="ch22-qml-for-nlp-and-computer-vision.html#2212-quantum-sentence-circuit"><span class="vc-n">22.1.2</span> Quantum Sentence Circuit</a></li></ul></li>
+<li class="vc-l2"><a href="ch22-qml-for-nlp-and-computer-vision.html#sec-quantum_text"><span class="vc-n">22.2</span> Quantum Text Classification</a><ul class="vc-subs"><li class="vc-l3"><a href="ch22-qml-for-nlp-and-computer-vision.html#2221-implementation-with-lambeq"><span class="vc-n">22.2.1</span> Implementation with lambeq</a></li></ul></li>
+<li class="vc-l2"><a href="ch22-qml-for-nlp-and-computer-vision.html#223-quantum-computer-vision"><span class="vc-n">22.3</span> Quantum Computer Vision</a><ul class="vc-subs"><li class="vc-l3"><a href="ch22-qml-for-nlp-and-computer-vision.html#2231-quantum-image-encoding"><span class="vc-n">22.3.1</span> Quantum Image Encoding</a></li><li class="vc-l3"><a href="ch22-qml-for-nlp-and-computer-vision.html#2232-quantum-cnn-for-image-classification"><span class="vc-n">22.3.2</span> Quantum CNN for Image Classification</a></li></ul></li>
+<li class="vc-l2"><a href="ch22-qml-for-nlp-and-computer-vision.html#sec-quantum_attention"><span class="vc-n">22.4</span> Quantum Attention Mechanisms</a></li>
+<li class="vc-l2"><a href="ch22-qml-for-nlp-and-computer-vision.html#225-chapter-summary"><span class="vc-n">22.5</span> Chapter Summary</a></li>
+</ul></details></li>
+</ul>
+<p class="toc-group">Part VIII: Frontiers and Future Directions</p>
+<ul class="vol-toc vol-toc-full">
+<li class="vc-ch"><details><summary><a href="ch23-quantum-advantage-theory-and-benchmarking.html">Chapter 23: Quantum Advantage Theory and Benchmarking</a></summary><ul class="vc-secs">
+<li class="vc-l2"><a href="ch23-quantum-advantage-theory-and-benchmarking.html#sec-complexity_review"><span class="vc-n">23.1</span> Computational Complexity Background</a></li>
+<li class="vc-l2"><a href="ch23-quantum-advantage-theory-and-benchmarking.html#sec-qml_advantage"><span class="vc-n">23.2</span> Quantum Advantage in Machine Learning</a><ul class="vc-subs"><li class="vc-l3"><a href="ch23-quantum-advantage-theory-and-benchmarking.html#2321-query-complexity-separations"><span class="vc-n">23.2.1</span> Query Complexity Separations</a></li><li class="vc-l3"><a href="ch23-quantum-advantage-theory-and-benchmarking.html#2322-the-liu-gyurik-dunjko-advantage-2021"><span class="vc-n">23.2.2</span> The Liu-Gyurik-Dunjko Advantage (2021)</a></li><li class="vc-l3"><a href="ch23-quantum-advantage-theory-and-benchmarking.html#2323-quantum-kernel-advantage-theorem"><span class="vc-n">23.2.3</span> Quantum Kernel Advantage Theorem</a></li></ul></li>
+<li class="vc-l2"><a href="ch23-quantum-advantage-theory-and-benchmarking.html#sec-dequantization"><span class="vc-n">23.3</span> Dequantization</a></li>
+<li class="vc-l2"><a href="ch23-quantum-advantage-theory-and-benchmarking.html#sec-fair_benchmarking"><span class="vc-n">23.4</span> Fair Benchmarking</a><ul class="vc-subs"><li class="vc-l3"><a href="ch23-quantum-advantage-theory-and-benchmarking.html#2341-bowles-et-al-2024-benchmarking-criteria"><span class="vc-n">23.4.1</span> Bowles et al. (2024) Benchmarking Criteria</a></li></ul></li>
+<li class="vc-l2"><a href="ch23-quantum-advantage-theory-and-benchmarking.html#sec-quantum_volume"><span class="vc-n">23.5</span> Quantum Volume and Benchmarks</a></li>
+<li class="vc-l2"><a href="ch23-quantum-advantage-theory-and-benchmarking.html#sec-benchmark_implementation"><span class="vc-n">23.6</span> Implementation: Rigorous QML Benchmark</a></li>
+<li class="vc-l2"><a href="ch23-quantum-advantage-theory-and-benchmarking.html#237-chapter-summary"><span class="vc-n">23.7</span> Chapter Summary</a></li>
+</ul></details></li>
+<li class="vc-ch"><details><summary><a href="ch24-frontiers-and-future-directions-in-qml.html">Chapter 24: Frontiers and Future Directions in QML</a></summary><ul class="vc-secs">
+<li class="vc-l2"><a href="ch24-frontiers-and-future-directions-in-qml.html#sec-ft_qml"><span class="vc-n">24.1</span> Fault-Tolerant QML Algorithms</a><ul class="vc-subs"><li class="vc-l3"><a href="ch24-frontiers-and-future-directions-in-qml.html#2411-the-fault-tolerant-horizon"><span class="vc-n">24.1.1</span> The Fault-Tolerant Horizon</a></li><li class="vc-l3"><a href="ch24-frontiers-and-future-directions-in-qml.html#2412-hhl-for-quantum-linear-systems"><span class="vc-n">24.1.2</span> HHL for Quantum Linear Systems</a></li><li class="vc-l3"><a href="ch24-frontiers-and-future-directions-in-qml.html#2413-quantum-principal-component-analysis"><span class="vc-n">24.1.3</span> Quantum Principal Component Analysis</a></li></ul></li>
+<li class="vc-l2"><a href="ch24-frontiers-and-future-directions-in-qml.html#sec-quantum_transformers"><span class="vc-n">24.2</span> Quantum Transformers</a></li>
+<li class="vc-l2"><a href="ch24-frontiers-and-future-directions-in-qml.html#sec-qrl"><span class="vc-n">24.3</span> Quantum Reinforcement Learning</a><ul class="vc-subs"><li class="vc-l3"><a href="ch24-frontiers-and-future-directions-in-qml.html#2431-vqc-policy-gradient"><span class="vc-n">24.3.1</span> VQC Policy Gradient</a></li><li class="vc-l3"><a href="ch24-frontiers-and-future-directions-in-qml.html#2432-quantum-grover-planning"><span class="vc-n">24.3.2</span> Quantum Grover Planning</a></li></ul></li>
+<li class="vc-l2"><a href="ch24-frontiers-and-future-directions-in-qml.html#sec-quantum_genai"><span class="vc-n">24.4</span> Quantum Generative AI</a><ul class="vc-subs"><li class="vc-l3"><a href="ch24-frontiers-and-future-directions-in-qml.html#2441-quantum-diffusion-models"><span class="vc-n">24.4.1</span> Quantum Diffusion Models</a></li><li class="vc-l3"><a href="ch24-frontiers-and-future-directions-in-qml.html#2442-quantum-large-language-models"><span class="vc-n">24.4.2</span> Quantum Large Language Models</a></li></ul></li>
+<li class="vc-l2"><a href="ch24-frontiers-and-future-directions-in-qml.html#sec-open_problems"><span class="vc-n">24.5</span> Open Research Problems</a></li>
+<li class="vc-l2"><a href="ch24-frontiers-and-future-directions-in-qml.html#sec-hardware_roadmaps"><span class="vc-n">24.6</span> Hardware Roadmaps and QML Implications</a></li>
+<li class="vc-l2"><a href="ch24-frontiers-and-future-directions-in-qml.html#sec-research_agenda"><span class="vc-n">24.7</span> A Quantum ML Research Agenda</a></li>
+<li class="vc-l2"><a href="ch24-frontiers-and-future-directions-in-qml.html#248-chapter-summary"><span class="vc-n">24.8</span> Chapter Summary</a></li>
+</ul></details></li>
+</ul>
+<p class="toc-group">Back matter</p>
+<ul class="vol-toc vol-toc-full">
+<li class="vc-ch"><details><summary><a href="python-environment-setup.html">Python Environment Setup</a></summary><ul class="vc-secs">
+<li class="vc-l2"><a href="python-environment-setup.html#sec-system_requirements">System Requirements</a></li>
+<li class="vc-l2"><a href="python-environment-setup.html#sec-conda_setup">Conda Environment Setup</a></li>
+<li class="vc-l2"><a href="python-environment-setup.html#sec-ibm_setup">IBM Quantum Account Setup</a></li>
+<li class="vc-l2"><a href="python-environment-setup.html#sec-pennylane_setup">PennyLane Device Configuration</a></li>
+<li class="vc-l2"><a href="python-environment-setup.html#sec-jupyter_setup">Jupyter Notebook Configuration</a></li>
+<li class="vc-l2"><a href="python-environment-setup.html#sec-troubleshooting">Troubleshooting</a></li>
+</ul></details></li>
+<li class="vc-ch"><details><summary><a href="pennylane-quick-reference.html">PennyLane Quick Reference</a></summary><ul class="vc-secs">
+<li class="vc-l2"><a href="pennylane-quick-reference.html#core-concepts">Core Concepts</a></li>
+<li class="vc-l2"><a href="pennylane-quick-reference.html#pennylane-pytorch-integration">PennyLane-PyTorch Integration</a></li>
+<li class="vc-l2"><a href="pennylane-quick-reference.html#circuit-drawing-and-visualization">Circuit Drawing and Visualization</a></li>
+</ul></details></li>
+<li class="vc-ch"><details><summary><a href="qiskit-quick-reference.html">Qiskit Quick Reference</a></summary><ul class="vc-secs">
+<li class="vc-l2"><a href="qiskit-quick-reference.html#circuit-construction">Circuit Construction</a></li>
+<li class="vc-l2"><a href="qiskit-quick-reference.html#simulation">Simulation</a></li>
+<li class="vc-l2"><a href="qiskit-quick-reference.html#transpilation-and-optimization">Transpilation and Optimization</a></li>
+<li class="vc-l2"><a href="qiskit-quick-reference.html#qiskit-machine-learning">Qiskit Machine Learning</a></li>
+</ul></details></li>
+<li class="vc-ch"><details><summary><a href="mathematical-reference-tables.html">Mathematical Reference Tables</a></summary><ul class="vc-secs">
+<li class="vc-l2"><a href="mathematical-reference-tables.html#linear-algebra-identities">Linear Algebra Identities</a></li>
+<li class="vc-l2"><a href="mathematical-reference-tables.html#pauli-matrix-algebra">Pauli Matrix Algebra</a></li>
+<li class="vc-l2"><a href="mathematical-reference-tables.html#quantum-gate-reference">Quantum Gate Reference</a></li>
+<li class="vc-l2"><a href="mathematical-reference-tables.html#entropy-and-information-measures">Entropy and Information Measures</a></li>
+<li class="vc-l2"><a href="mathematical-reference-tables.html#taylor-and-fourier-series">Taylor and Fourier Series</a></li>
+<li class="vc-l2"><a href="mathematical-reference-tables.html#useful-inequalities">Useful Inequalities</a></li>
+</ul></details></li>
+<li class="vc-ch"><details><summary><a href="quantum-gate-reference.html">Quantum Gate Reference</a></summary><ul class="vc-secs">
+<li class="vc-l2"><a href="quantum-gate-reference.html#standard-single-qubit-gates">Standard Single-Qubit Gates</a></li>
+<li class="vc-l2"><a href="quantum-gate-reference.html#standard-two-qubit-gates">Standard Two-Qubit Gates</a></li>
+<li class="vc-l2"><a href="quantum-gate-reference.html#pennylane-rotation-conventions">PennyLane Rotation Conventions</a></li>
+<li class="vc-l2"><a href="quantum-gate-reference.html#gate-decompositions">Gate Decompositions</a></li>
+<li class="vc-l2"><a href="quantum-gate-reference.html#circuit-identities-for-optimization">Circuit Identities for Optimization</a></li>
+</ul></details></li>
+<li class="vc-ch"><details><summary><a href="benchmark-datasets-for-qml.html">Benchmark Datasets for QML</a></summary><ul class="vc-secs">
+<li class="vc-l2"><a href="benchmark-datasets-for-qml.html#classical-datasets-used-in-qml-research">Classical Datasets Used in QML Research</a></li>
+<li class="vc-l2"><a href="benchmark-datasets-for-qml.html#quantum-and-molecular-datasets">Quantum and Molecular Datasets</a></li>
+<li class="vc-l2"><a href="benchmark-datasets-for-qml.html#loading-datasets-in-python">Loading Datasets in Python</a></li>
+<li class="vc-l2"><a href="benchmark-datasets-for-qml.html#dataset-preprocessing-for-qml">Dataset Preprocessing for QML</a></li>
+</ul></details></li>
+<li class="vc-ch"><details><summary><a href="selected-exercise-solutions.html">Selected Exercise Solutions</a></summary><ul class="vc-secs">
+<li class="vc-l2"><a href="selected-exercise-solutions.html#chapter-1-mathematical-prerequisites">Chapter 1: Mathematical Prerequisites</a></li>
+<li class="vc-l2"><a href="selected-exercise-solutions.html#chapter-2-quantum-computing-essentials">Chapter 2: Quantum Computing Essentials</a></li>
+<li class="vc-l2"><a href="selected-exercise-solutions.html#chapter-6-variational-quantum-circuits">Chapter 6: Variational Quantum Circuits</a></li>
+<li class="vc-l2"><a href="selected-exercise-solutions.html#chapter-10-quantum-neural-networks">Chapter 10: Quantum Neural Networks</a></li>
+<li class="vc-l2"><a href="selected-exercise-solutions.html#chapter-15-optimization">Chapter 15: Optimization</a></li>
+<li class="vc-l2"><a href="selected-exercise-solutions.html#chapter-16-barren-plateaus">Chapter 16: Barren Plateaus</a></li>
+<li class="vc-l2"><a href="selected-exercise-solutions.html#chapter-20-finance">Chapter 20: Finance</a></li>
+</ul></details></li>
+<li class="vc-ch vc-leaf"><a href="bibliography.html">References</a></li>
+</ul>
+</nav>
+<h2 id="preface">Preface<a class="headerlink" href="#preface" title="Permanent link">&para;</a></h2>
+<div class="admonition info box-bxkey kind-concept">
+<p><em>This book emerged from a simple observation: quantum machine learning sits at one of the most intellectually rich intersections in modern science, yet most resources are either too mathematical for practitioners or too shallow for researchers. This text aims to bridge that gap.</em></p>
+</div>
+<p>Quantum machine learning (QML) is not a single algorithm or a single idea — it is a paradigm shift in how we think about computation, information, and intelligence. Over the past decade, the convergence of quantum hardware engineering, quantum algorithm design, and classical machine learning theory has created a landscape of extraordinary possibility.</p>
+<h2 id="who-this-book-is-for">Who This Book Is For<a class="headerlink" href="#who-this-book-is-for" title="Permanent link">&para;</a></h2>
+<p>This book is designed for several audiences:</p>
+<ul>
+<li>
+<p><strong>Machine learning practitioners</strong> who want to understand quantum extensions of familiar models (SVMs, neural networks, generative models).</p>
+</li>
+<li>
+<p><strong>Quantum computing researchers</strong> seeking a rigorous treatment of the machine learning side.</p>
+</li>
+<li>
+<p><strong>Graduate students</strong> in physics, computer science, or engineering embarking on QML research.</p>
+</li>
+<li>
+<p><strong>Industry professionals</strong> in finance, healthcare, chemistry, or logistics who are evaluating quantum advantage for their domains.</p>
+</li>
+</ul>
+<div class="admonition note box-notebox kind-note">
+<p class="admonition-title">Note</p>
+<p>Prerequisites: Linear algebra at the undergraduate level, basic probability, Python programming, and familiarity with at least one classical ML framework (scikit-learn, PyTorch, or TensorFlow). Prior quantum mechanics experience is helpful but not required — Part I covers everything from scratch.</p>
+</div>
+<h2 id="how-this-book-is-organized">How This Book Is Organized<a class="headerlink" href="#how-this-book-is-organized" title="Permanent link">&para;</a></h2>
+<p>The book is divided into eight parts and twenty-four chapters:</p>
+<dl>
+<dt><strong>Part I: Mathematical and Quantum Foundations</strong></dt>
+<dd>Chapters 1–3 build the mathematical (linear algebra, optimization, information theory) and quantum (qubits, gates, measurements, algorithms) vocabulary used throughout the book.</dd>
+<dt><strong>Part II: Classical ML Prerequisites</strong></dt>
+<dd>Chapters 4–5 review classical machine learning concepts — kernel methods, SVMs, deep learning, generative models — emphasizing the structures that have direct quantum counterparts.</dd>
+<dt><strong>Part III: Core QML Algorithms</strong></dt>
+<dd>Chapters 6–10 introduce the heart of QML: variational quantum circuits, quantum feature maps, quantum kernels, quantum SVMs, and quantum neural networks.</dd>
+<dt><strong>Part IV: Deep Quantum Learning</strong></dt>
+<dd>Chapters 11–14 extend QML to deep architectures: quantum convolutional networks (QCNNs), quantum LSTMs (QLSTMs), quantum autoencoders, and quantum generative adversarial networks (QGANs).</dd>
+<dt><strong>Part V: Optimization and Training</strong></dt>
+<dd>Chapters 15–16 address the training challenge: gradient computation via the parameter shift rule, quantum natural gradient, and the critical problem of barren plateaus.</dd>
+<dt><strong>Part VI: Hardware, Noise, and Error Mitigation</strong></dt>
+<dd>Chapters 17–18 cover real quantum hardware constraints, noise models, and practical error mitigation strategies for NISQ devices.</dd>
+<dt><strong>Part VII: Applications and Domains</strong></dt>
+<dd>Chapters 19–22 survey QML applications in quantum chemistry, finance, healthcare, NLP, and computer vision.</dd>
+<dt><strong>Part VIII: Frontiers and Future Directions</strong></dt>
+<dd>Chapters 23–24 explore quantum advantage theory, fault-tolerant QML, quantum transformers, federated learning, and the open questions of the field.</dd>
+</dl>
+<h2 id="how-to-use-this-book">How to Use This Book<a class="headerlink" href="#how-to-use-this-book" title="Permanent link">&para;</a></h2>
+<div class="admonition success box-tipbox kind-insight">
+<p class="admonition-title">Tip</p>
+<p><strong>For self-study:</strong> Work through Parts I and II carefully if you lack background. Chapters can then be read in order or selectively by topic. Each chapter is largely self-contained with internal cross-references.</p>
+<p><strong>For a course:</strong> A semester course might cover Parts I–V (Chapters 1–16). An advanced seminar could focus on Parts III–VIII with students presenting individual chapters.</p>
+<p><strong>For practitioners:</strong> Jump to Chapter 6 (Variational Circuits) after reviewing the notation guide, then follow domain-specific chapters in Part VII.</p>
+</div>
+<p>Each chapter contains:</p>
+<ul>
+<li>
+<p><strong>Learning Objectives</strong> — clear statements of what you will master</p>
+</li>
+<li>
+<p><strong>Chapter Introduction</strong> — motivating context and roadmap</p>
+</li>
+<li>
+<p><strong>Detailed Exposition</strong> — theory, proofs, and intuitions</p>
+</li>
+<li>
+<p><strong>Figures and Diagrams</strong> — visual representations of key concepts</p>
+</li>
+<li>
+<p><strong>Algorithm Boxes</strong> — step-by-step pseudocode</p>
+</li>
+<li>
+<p><strong>Solved Examples</strong> — worked problems with full solutions</p>
+</li>
+<li>
+<p><strong>Code Listings</strong> — PennyLane/Qiskit implementations</p>
+</li>
+<li>
+<p><strong>Exercises</strong> — ranging from foundational to research-level</p>
+</li>
+<li>
+<p><strong>Chapter Summary</strong> — key takeaways</p>
+</li>
+<li>
+<p><strong>Further Reading</strong> — curated references for deeper study</p>
+</li>
+</ul>
+<h2 id="software-and-code">Software and Code<a class="headerlink" href="#software-and-code" title="Permanent link">&para;</a></h2>
+<p>All code examples use Python 3.10+ with the following primary frameworks:</p>
+<ul>
+<li>
+<p><strong>PennyLane</strong> (version <span class="arithmatex">\(\geq\)</span> 0.38) — primary QML framework</p>
+</li>
+<li>
+<p><strong>Qiskit</strong> (version <span class="arithmatex">\(\geq\)</span> 1.0) — IBM quantum framework</p>
+</li>
+<li>
+<p><strong>PyTorch</strong> (version <span class="arithmatex">\(\geq\)</span> 2.0) — classical deep learning</p>
+</li>
+<li>
+<p><strong>NumPy, SciPy, scikit-learn</strong> — numerical computing</p>
+</li>
+</ul>
+<div class="admonition info box-importantbox kind-concept">
+<p class="admonition-title">Important</p>
+<p>All code in this book is available on the companion GitHub repository. Installation instructions and environment setup are provided in Appendix A. We recommend using a conda or virtual environment to manage dependencies.</p>
+</div>
+<h2 id="a-note-on-nisq-and-beyond">A Note on NISQ and Beyond<a class="headerlink" href="#a-note-on-nisq-and-beyond" title="Permanent link">&para;</a></h2>
+<p>As of 2025–2026, we are firmly in the Noisy Intermediate-Scale Quantum (NISQ) era. Most practical QML experiments run on devices with 50–1000 qubits and significant noise. This book covers both:</p>
+<ol>
+<li>
+<p><strong>NISQ-era algorithms</strong> (variational, hybrid classical-quantum) that work on today’s hardware</p>
+</li>
+<li>
+<p><strong>Fault-tolerant algorithms</strong> (HHL, qPCA, quantum speedups) that require error-corrected hardware but are crucial for understanding the theoretical landscape</p>
+</li>
+</ol>
+<p>We are honest about limitations: classical simulability, dequantization results, and the barren plateau problem all constrain what QML can currently achieve. Our goal is to give you a rigorous, honest, and exciting view of this field.</p>
+<p><em>We hope you enjoy the journey into quantum machine learning.<br> The quantum future is being written — and you are now part of it.</em></p>
+<p><strong>The Authors</strong><br> <em>March 2026</em></p>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button type="button" class="md-top md-icon" data-md-component="top" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+Back to top
+</button>
+</main>
+<footer class="md-footer">
+<nav class="md-footer__inner md-grid" aria-label="Footer" >
+<a href="../qml/glossary-of-terms.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: Glossary of Terms">
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</div>
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Previous
+</span>
+<div class="md-ellipsis">
+Glossary of Terms
+</div>
+</div>
+</a>
+<a href="notation-and-conventions.html" class="md-footer__link md-footer__link--next" aria-label="Next: Notation and Conventions">
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Next
+</span>
+<div class="md-ellipsis">
+Notation and Conventions
+</div>
+</div>
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+</div>
+</a>
+</nav>
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+The Open Book Project &middot;
+<a href="../../about.html">About this library</a> &middot;
+<a href="../../publish.html">Publish your book</a> &middot;
+© The authors of the books
+</div>
+Made with
+<a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+Material for MkDocs
+</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "navigation.prune", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "toc.follow", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+<script src="../../assets/mathjax.js"></script>
+<script src="../../assets/viz.js"></script>
+<script src="../../assets/remote.js"></script>
+<script src="../../assets/scans.js"></script>
+<script src="../../assets/reader.js"></script>
+<script src="../../assets/app.js"></script>
+<script src="../../assets/slides.js"></script>
+<script src="../../assets/speak.js"></script>
+<script src="../../assets/quiz.js"></script>
+<script>
+    /* offline reading: the service worker at the site root (its scope is the whole site) */
+    if ("serviceWorker" in navigator && window.isSecureContext) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register(new URL("../../sw.js", location.href).href).catch(function () {});
+      });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,1043 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="description" content="The Open Book Project: books on computer science, quantum computing, cyber security, science, the social sciences, university courses and languages, read page by page like an e-book, online or offline.">
+<meta name="author" content="The Open Book Project">
+<link rel="canonical" href="https://open-book-project.github.io/quantum/qml_theory_practice/ch21-qml-in-healthcare-and-drug-discovery.html">
+<link rel="prev" href="ch20-qml-in-finance-and-optimization.html">
+<link rel="next" href="ch22-qml-for-nlp-and-computer-vision.html">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap"></noscript>
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Open Book">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="application-name" content="Open Book"><script src="../../assets/library-data.js"></script><script>
+    (function () {
+      var X = window.XMLHttpRequest, open, gate = new Promise(function (r) { open = r; });
+      if (!X) return;
+      var open0 = X.prototype.open, send0 = X.prototype.send;
+      X.prototype.open = function (method, url) {
+        this.__pkIndex = /\/search\/search_index\.json(\?|#|$)/.test(String(url));
+        return open0.apply(this, arguments);
+      };
+      X.prototype.send = function () {
+        if (!this.__pkIndex) return send0.apply(this, arguments);
+        var xhr = this, args = arguments;
+        gate.then(function () { send0.apply(xhr, args); });
+      };
+      function wake() { open(); }
+      document.addEventListener("focusin", function (e) { if (e.target && e.target.closest && e.target.closest(".md-search")) wake(); });
+      document.addEventListener("click", function (e) { if (e.target && e.target.closest && e.target.closest('label[for="__search"], .md-search')) wake(); }, true);
+      document.addEventListener("keydown", function (e) {
+        var k = e.key;
+        if ((k === "/" || k === "s" || k === "f" || k === "S" || k === "F") && !(e.target && e.target.closest && e.target.closest("input, textarea, [contenteditable]"))) wake();
+      }, true);
+      if (/[?&]q=/.test(location.search)) wake();
+    })();
+  </script><script>
+    try {
+      if ((window.matchMedia && (matchMedia("(display-mode: standalone)").matches || matchMedia("(display-mode: fullscreen)").matches)) || navigator.standalone === true) {
+        document.documentElement.className += " bjp-standalone";
+      }
+    } catch (e) { /* not an installed app */ }
+    /* the books of a subject or of the whole library as covers or as a list (assets/app.js): the reader's choice */
+    try {
+      var bv = localStorage.getItem("bjp.view");
+      if (bv === "list" || (bv !== "grid" && /\/books\.html$/.test(location.pathname))) document.documentElement.className += " bjp-view-list";
+    } catch (e) { /* no storage: covers */ }
+  </script>
+<script>
+    /* a book opened from its cover on the shelf: the page stays blank, in the cover's colour, until the reader is up */
+    try {
+      var cv = sessionStorage.getItem("bjp.reader.cover");
+      if (cv && sessionStorage.getItem("bjp.reader.open") === "1") {
+        var c = JSON.parse(cv), de = document.documentElement;
+        de.className += " bjp-booting";
+        if (c && /^#[0-9a-f]{3,8}$/i.test(c.bg || "")) de.style.background = c.bg;
+        setTimeout(function () { de.classList.remove("bjp-booting"); de.style.background = ""; }, 3000);
+      }
+    } catch (e) { /* no session storage: the page simply opens as usual */ }
+  </script>
+<title>21. QML in Healthcare and Drug Discovery - The Open Book Project</title>
+<link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+<link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+<link rel="stylesheet" href="../../assets/extra.css">
+<link rel="stylesheet" href="../../assets/reader.css">
+<link rel="stylesheet" href="../../assets/viz.css">
+<link rel="stylesheet" href="../../assets/app.css">
+<link rel="stylesheet" href="../../assets/theme.css">
+<link rel="stylesheet" href="../../assets/slides.css">
+<link rel="stylesheet" href="../../assets/remote.css">
+<link rel="stylesheet" href="../../assets/scans.css">
+<link rel="stylesheet" href="../../assets/speak.css">
+<link rel="stylesheet" href="../../assets/quiz.css">
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+<input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+<input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a href="#sec-drug_discovery" class="md-skip">
+Skip to content
+</a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav class="md-header__inner md-grid" aria-label="Header">
+<a href="../../index.html" title="The Open Book Project" class="md-header__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+The Open Book Project
+</span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+21. QML in Healthcare and Drug Discovery
+</span>
+</div>
+</div>
+</div><a href="../../index.html" class="bjp-libbtn" aria-label="Library: all books" title="Library: all books">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V5h4v15M8 20V9h4v11M14 20L12.6 6l3.8-.8 3 14.2M3 20h18"/></svg><span>Library</span>
+</a>
+<a href="../../subjects/index.html" class="pk-catbtn" aria-haspopup="true" aria-expanded="false" title="Browse the books by category">
+<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><circle cx="17" cy="7" r="3.6"/><path d="M7 13.4l3.9 6.8H3.1z"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg><span>Categories</span>
+</a>
+<form class="md-header__option" data-md-component="palette">
+<input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+<label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+</label>
+<input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+<label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+<label class="md-search__icon md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</label>
+<nav class="md-search__options" aria-label="Search">
+<button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+Initializing search
+</div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--primary bjp-nav bjp-nav--book" aria-label="Navigation" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a href="../../index.html" title="The Open Book Project" class="md-nav__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+The Open Book Project
+</label>
+<ul class="md-nav__list" data-md-scrollfix>
+<li class="md-nav__item bjp-nav-all">
+<a href="../../index.html" class="md-nav__link" aria-label="All books: back to the library">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+<span class="md-ellipsis">All books</span>
+</a>
+</li>
+<li class="md-nav__item bjp-nav-book" role="presentation"><span class="bjp-nav-head">Quantum Machine Learning</span></li>
+<li class="md-nav__item">
+<a href="index.html" class="md-nav__link">
+<span class="md-ellipsis">
+Overview and preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="notation-and-conventions.html" class="md-nav__link">
+<span class="md-ellipsis">
+Notation and Conventions
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="abbreviations-and-acronyms.html" class="md-nav__link">
+<span class="md-ellipsis">
+Abbreviations and Acronyms
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch01-mathematical-prerequisites-for-qml.html" class="md-nav__link">
+<span class="md-ellipsis">
+1. Mathematical Prerequisites for QML
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch02-quantum-computing-essentials.html" class="md-nav__link">
+<span class="md-ellipsis">
+2. Quantum Computing Essentials
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch03-quantum-information-theory-for-machine-learning.html" class="md-nav__link">
+<span class="md-ellipsis">
+3. Quantum Information Theory for Machine Learning
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch04-machine-learning-foundations.html" class="md-nav__link">
+<span class="md-ellipsis">
+4. Machine Learning Foundations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch05-advanced-classical-machine-learning.html" class="md-nav__link">
+<span class="md-ellipsis">
+5. Advanced Classical Machine Learning
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch06-variational-quantum-circuits.html" class="md-nav__link">
+<span class="md-ellipsis">
+6. Variational Quantum Circuits
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch07-quantum-feature-maps-and-data-encoding.html" class="md-nav__link">
+<span class="md-ellipsis">
+7. Quantum Feature Maps and Data Encoding
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch08-quantum-kernel-methods.html" class="md-nav__link">
+<span class="md-ellipsis">
+8. Quantum Kernel Methods
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch09-quantum-support-vector-machines.html" class="md-nav__link">
+<span class="md-ellipsis">
+9. Quantum Support Vector Machines
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch10-quantum-neural-networks.html" class="md-nav__link">
+<span class="md-ellipsis">
+10. Quantum Neural Networks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch11-quantum-convolutional-neural-networks.html" class="md-nav__link">
+<span class="md-ellipsis">
+11. Quantum Convolutional Neural Networks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch12-quantum-recurrent-networks-and-qlstm.html" class="md-nav__link">
+<span class="md-ellipsis">
+12. Quantum Recurrent Networks and QLSTM
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch13-quantum-autoencoders.html" class="md-nav__link">
+<span class="md-ellipsis">
+13. Quantum Autoencoders
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch14-quantum-generative-models.html" class="md-nav__link">
+<span class="md-ellipsis">
+14. Quantum Generative Models
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch15-optimization-and-training-of-quantum-models.html" class="md-nav__link">
+<span class="md-ellipsis">
+15. Optimization and Training of Quantum Models
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch16-barren-plateaus-and-trainability-of-quantum.html" class="md-nav__link">
+<span class="md-ellipsis">
+16. Barren Plateaus and Trainability of Quantum Models
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch17-nisq-hardware-platforms.html" class="md-nav__link">
+<span class="md-ellipsis">
+17. NISQ Hardware Platforms
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch18-quantum-error-mitigation.html" class="md-nav__link">
+<span class="md-ellipsis">
+18. Quantum Error Mitigation
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch19-qml-for-quantum-chemistry-and-molecular.html" class="md-nav__link">
+<span class="md-ellipsis">
+19. QML for Quantum Chemistry and Molecular Simulation
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch20-qml-in-finance-and-optimization.html" class="md-nav__link">
+<span class="md-ellipsis">
+20. QML in Finance and Optimization
+</span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+21. QML in Healthcare and Drug Discovery
+</span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a href="ch21-qml-in-healthcare-and-drug-discovery.html" class="md-nav__link md-nav__link--active">
+<span class="md-ellipsis">
+21. QML in Healthcare and Drug Discovery
+</span>
+</a>
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#sec-drug_discovery" class="md-nav__link">
+<span class="md-ellipsis">
+21.1 Drug Discovery with QML
+</span>
+</a>
+<nav class="md-nav" aria-label="21.1 Drug Discovery with QML">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#2111-molecular-property-prediction-pipeline" class="md-nav__link">
+<span class="md-ellipsis">
+21.1.1 Molecular Property Prediction Pipeline
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2112-quantum-tanimoto-kernel-for-molecular-similarity" class="md-nav__link">
+<span class="md-ellipsis">
+21.1.2 Quantum Tanimoto Kernel for Molecular Similarity
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-medical_imaging" class="md-nav__link">
+<span class="md-ellipsis">
+21.2 Medical Image Classification
+</span>
+</a>
+<nav class="md-nav" aria-label="21.2 Medical Image Classification">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#2121-quantum-transfer-learning" class="md-nav__link">
+<span class="md-ellipsis">
+21.2.1 Quantum Transfer Learning
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2122-qnn-for-chest-x-ray-classification" class="md-nav__link">
+<span class="md-ellipsis">
+21.2.2 QNN for Chest X-Ray Classification
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-genomics" class="md-nav__link">
+<span class="md-ellipsis">
+21.3 Genomic Data Analysis
+</span>
+</a>
+<nav class="md-nav" aria-label="21.3 Genomic Data Analysis">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#2131-quantum-feature-maps-for-gene-expression" class="md-nav__link">
+<span class="md-ellipsis">
+21.3.1 Quantum Feature Maps for Gene Expression
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-qfl" class="md-nav__link">
+<span class="md-ellipsis">
+21.4 Quantum Federated Learning
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-healthcare_implementation" class="md-nav__link">
+<span class="md-ellipsis">
+21.5 Implementation: Quantum Classifier for Heart Disease
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#216-chapter-summary" class="md-nav__link">
+<span class="md-ellipsis">
+21.6 Chapter Summary
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="ch22-qml-for-nlp-and-computer-vision.html" class="md-nav__link">
+<span class="md-ellipsis">
+22. QML for NLP and Computer Vision
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch23-quantum-advantage-theory-and-benchmarking.html" class="md-nav__link">
+<span class="md-ellipsis">
+23. Quantum Advantage Theory and Benchmarking
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch24-frontiers-and-future-directions-in-qml.html" class="md-nav__link">
+<span class="md-ellipsis">
+24. Frontiers and Future Directions in QML
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="python-environment-setup.html" class="md-nav__link">
+<span class="md-ellipsis">
+Python Environment Setup
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="pennylane-quick-reference.html" class="md-nav__link">
+<span class="md-ellipsis">
+PennyLane Quick Reference
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="qiskit-quick-reference.html" class="md-nav__link">
+<span class="md-ellipsis">
+Qiskit Quick Reference
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="mathematical-reference-tables.html" class="md-nav__link">
+<span class="md-ellipsis">
+Mathematical Reference Tables
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="quantum-gate-reference.html" class="md-nav__link">
+<span class="md-ellipsis">
+Quantum Gate Reference
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="benchmark-datasets-for-qml.html" class="md-nav__link">
+<span class="md-ellipsis">
+Benchmark Datasets for QML
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="selected-exercise-solutions.html" class="md-nav__link">
+<span class="md-ellipsis">
+Selected Exercise Solutions
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="bibliography.html" class="md-nav__link">
+<span class="md-ellipsis">
+References
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#sec-drug_discovery" class="md-nav__link">
+<span class="md-ellipsis">
+21.1 Drug Discovery with QML
+</span>
+</a>
+<nav class="md-nav" aria-label="21.1 Drug Discovery with QML">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#2111-molecular-property-prediction-pipeline" class="md-nav__link">
+<span class="md-ellipsis">
+21.1.1 Molecular Property Prediction Pipeline
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2112-quantum-tanimoto-kernel-for-molecular-similarity" class="md-nav__link">
+<span class="md-ellipsis">
+21.1.2 Quantum Tanimoto Kernel for Molecular Similarity
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-medical_imaging" class="md-nav__link">
+<span class="md-ellipsis">
+21.2 Medical Image Classification
+</span>
+</a>
+<nav class="md-nav" aria-label="21.2 Medical Image Classification">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#2121-quantum-transfer-learning" class="md-nav__link">
+<span class="md-ellipsis">
+21.2.1 Quantum Transfer Learning
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2122-qnn-for-chest-x-ray-classification" class="md-nav__link">
+<span class="md-ellipsis">
+21.2.2 QNN for Chest X-Ray Classification
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-genomics" class="md-nav__link">
+<span class="md-ellipsis">
+21.3 Genomic Data Analysis
+</span>
+</a>
+<nav class="md-nav" aria-label="21.3 Genomic Data Analysis">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#2131-quantum-feature-maps-for-gene-expression" class="md-nav__link">
+<span class="md-ellipsis">
+21.3.1 Quantum Feature Maps for Gene Expression
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-qfl" class="md-nav__link">
+<span class="md-ellipsis">
+21.4 Quantum Federated Learning
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-healthcare_implementation" class="md-nav__link">
+<span class="md-ellipsis">
+21.5 Implementation: Quantum Classifier for Heart Disease
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#216-chapter-summary" class="md-nav__link">
+<span class="md-ellipsis">
+21.6 Chapter Summary
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="ch-healthcare">Chapter 21: QML in Healthcare and Drug Discovery<a class="headerlink" href="#ch-healthcare" title="Permanent link">&para;</a></h1>
+<div class="admonition info box-bxkey kind-concept">
+<p><em>Healthcare and drug discovery present high-dimensional, data-scarce problems where quantum machine learning may offer advantages: protein structure prediction, molecular property prediction, medical image classification, genomic analysis, and federated learning for privacy-preserving clinical data. This chapter surveys QML applications in healthcare with practical implementations.</em></p>
+</div>
+<div class="admonition tip box-learningobjectives kind-teaching">
+<p class="admonition-title">Learning Objectives</p>
+<p>By the end of this chapter, you will be able to:</p>
+<ul>
+<li>
+<p>Apply quantum kernels to genomic and proteomic feature spaces</p>
+</li>
+<li>
+<p>Implement quantum transfer learning for medical image classification</p>
+</li>
+<li>
+<p>Use quantum generative models for synthetic medical data generation</p>
+</li>
+<li>
+<p>Discuss quantum federated learning for privacy-preserving healthcare ML</p>
+</li>
+<li>
+<p>Evaluate QML on real biomedical datasets (UCI Heart Disease, MNIST medical)</p>
+</li>
+</ul>
+</div>
+<h2 id="sec-drug_discovery"><span class="secnum">21.1</span> Drug Discovery with QML<a class="headerlink" href="#sec-drug_discovery" title="Permanent link">&para;</a></h2>
+<h3 id="2111-molecular-property-prediction-pipeline"><span class="secnum">21.1.1</span> Molecular Property Prediction Pipeline<a class="headerlink" href="#2111-molecular-property-prediction-pipeline" title="Permanent link">&para;</a></h3>
+<div class="center">
+<div class="center">
+<p><img class="tikz" src="img/tikz-eff316895872.svg" alt="image" loading="lazy" width="439" height="41"></p>
+</div>
+</div>
+<p><strong>Molecular fingerprints</strong>: Binary or count vectors encoding molecular substructure presence. Common types:</p>
+<ul>
+<li>
+<p><strong>Morgan/ECFP</strong>: Extended connectivity fingerprints, radius-<span class="arithmatex">\(r\)</span> neighborhoods</p>
+</li>
+<li>
+<p><strong>MACCS keys</strong>: 166-bit SMARTS-based structural keys</p>
+</li>
+<li>
+<p><strong>RDKit</strong>: Daylight-type path-based fingerprints</p>
+</li>
+</ul>
+<h3 id="2112-quantum-tanimoto-kernel-for-molecular-similarity"><span class="secnum">21.1.2</span> Quantum Tanimoto Kernel for Molecular Similarity<a class="headerlink" href="#2112-quantum-tanimoto-kernel-for-molecular-similarity" title="Permanent link">&para;</a></h3>
+<p>The Tanimoto coefficient between binary fingerprints <span class="arithmatex">\(\mathbf{x}, \mathbf{y}\)</span>: <span id="eq-tanimoto"></span></p>
+<div class="arithmatex">\[T(\mathbf{x}, \mathbf{y}) = \frac{|\mathbf{x}\cap\mathbf{y}|}{|\mathbf{x}\cup\mathbf{y}|}
+= \frac{\mathbf{x}^\top\mathbf{y}}{\|\mathbf{x}\|^2 + \|\mathbf{y}\|^2 - \mathbf{x}^\top\mathbf{y}}\tag{21.1}\]</div>
+<p>A quantum kernel approximating the Tanimoto similarity uses amplitude encoding of fingerprint vectors and SWAP-test fidelity.</p>
+<h2 id="sec-medical_imaging"><span class="secnum">21.2</span> Medical Image Classification<a class="headerlink" href="#sec-medical_imaging" title="Permanent link">&para;</a></h2>
+<h3 id="2121-quantum-transfer-learning"><span class="secnum">21.2.1</span> Quantum Transfer Learning<a class="headerlink" href="#2121-quantum-transfer-learning" title="Permanent link">&para;</a></h3>
+<p>Large medical imaging datasets are rare due to privacy regulations. Quantum transfer learning (Caro et al., 2022; Mari et al., 2020) (<a href="bibliography.html#ref-Mari2020TransferLearning">Mari et al. 2020</a>) adapts classical pre-trained features for quantum classifiers:</p>
+<ol>
+<li>
+<p>Extract features with pre-trained CNN (ResNet, DenseNet) on large dataset</p>
+</li>
+<li>
+<p>Reduce to <span class="arithmatex">\(n\)</span> dimensions via PCA</p>
+</li>
+<li>
+<p>Encode into quantum state using angle encoding</p>
+</li>
+<li>
+<p>Fine-tune a shallow PQC on the target medical dataset (few-shot)</p>
+</li>
+</ol>
+<h3 id="2122-qnn-for-chest-x-ray-classification"><span class="secnum">21.2.2</span> QNN for Chest X-Ray Classification<a class="headerlink" href="#2122-qnn-for-chest-x-ray-classification" title="Permanent link">&para;</a></h3>
+<div class="admonition example box-algorithmbox kind-example">
+<p class="admonition-title">Algorithm: Quantum Transfer Learning for Medical Imaging</p>
+<p><strong>Pre-processing</strong>:</p>
+<ul>
+<li>
+<p>Resize to <span class="arithmatex">\(224\times224\)</span>, normalize (ImageNet stats)</p>
+</li>
+<li>
+<p>Pass through ResNet-18 (remove last layer): <span class="arithmatex">\(512\)</span>-dim feature vector</p>
+</li>
+<li>
+<p>PCA to <span class="arithmatex">\(n=4\)</span> dimensions, normalize to <span class="arithmatex">\([-\pi, \pi]\)</span></p>
+</li>
+</ul>
+<p><strong>Quantum classifier</strong>: 4-qubit PQC with 2 strongly entangling layers + linear readout. Total <span class="arithmatex">\(\sim50\)</span> quantum parameters.</p>
+<p><strong>Training</strong>: Few-shot learning on target dataset (<span class="arithmatex">\(50\)</span>–<span class="arithmatex">\(500\)</span> images). Classical head: frozen. Quantum circuit: fine-tuned.</p>
+</div>
+<h2 id="sec-genomics"><span class="secnum">21.3</span> Genomic Data Analysis<a class="headerlink" href="#sec-genomics" title="Permanent link">&para;</a></h2>
+<h3 id="2131-quantum-feature-maps-for-gene-expression"><span class="secnum">21.3.1</span> Quantum Feature Maps for Gene Expression<a class="headerlink" href="#2131-quantum-feature-maps-for-gene-expression" title="Permanent link">&para;</a></h3>
+<p>Gene expression data is high-dimensional (<span class="arithmatex">\(\sim20,000\)</span> genes) but with few samples (<span class="arithmatex">\(n\sim100\)</span>). Quantum kernels can exploit the high dimensionality:</p>
+<div id="eq-genomic_kernel"></div>
+<div class="arithmatex">\[k_Q(\mathbf{x}_{\text{gene}}, \mathbf{y}_{\text{gene}})
+= |\langle\phi(\mathbf{x})|\phi(\mathbf{y})\rangle|^2\tag{21.2}\]</div>
+<p>where <span class="arithmatex">\(|\phi(\mathbf{x})\rangle\)</span> encodes the top-<span class="arithmatex">\(n\)</span> PCA components of the gene expression profile.</p>
+<p><strong>Applications</strong>:</p>
+<ul>
+<li>
+<p>Cancer subtype classification (RNA-seq data)</p>
+</li>
+<li>
+<p>Drug response prediction (gene expression signatures)</p>
+</li>
+<li>
+<p>Biomarker discovery (feature selection via quantum SVM)</p>
+</li>
+</ul>
+<h2 id="sec-qfl"><span class="secnum">21.4</span> Quantum Federated Learning<a class="headerlink" href="#sec-qfl" title="Permanent link">&para;</a></h2>
+<div class="admonition info box-definitionbox kind-concept">
+<p class="admonition-title">Definition: Quantum Federated Learning</p>
+<p><strong>Quantum Federated Learning</strong> (QFL) distributes training of quantum classifiers across multiple hospitals/institutions without sharing raw patient data:</p>
+<ol>
+<li>
+<p>Global quantum model parameters <span class="arithmatex">\(\boldsymbol{\theta}_0\)</span> broadcast to all clients</p>
+</li>
+<li>
+<p>Each client <span class="arithmatex">\(c\)</span> trains locally on private data: <span class="arithmatex">\(\boldsymbol{\theta}_c = \boldsymbol{\theta}_0 - \eta\nabla_\theta\mathcal{L}_c\)</span></p>
+</li>
+<li>
+<p>Server aggregates updates: <span class="arithmatex">\(\boldsymbol{\theta}_{\text{new}} = \sum_c \frac{n_c}{N}\boldsymbol{\theta}_c\)</span> (FedAvg)</p>
+</li>
+<li>
+<p>Repeat until convergence</p>
+</li>
+</ol>
+</div>
+<p><strong>Privacy advantages of QFL</strong>:</p>
+<ul>
+<li>
+<p>Only gradient updates (parameter shifts) are communicated, not raw data</p>
+</li>
+<li>
+<p>Quantum differential privacy: add noise to parameter-shift estimates</p>
+</li>
+<li>
+<p>Quantum secure aggregation: use quantum key distribution for communication</p>
+</li>
+</ul>
+<h2 id="sec-healthcare_implementation"><span class="secnum">21.5</span> Implementation: Quantum Classifier for Heart Disease<a class="headerlink" href="#sec-healthcare_implementation" title="Permanent link">&para;</a></h2>
+<div class="language-text highlight"><pre><span></span><code>import pennylane as qml
+import numpy as np
+import torch
+import torch.nn as nn
+from sklearn.datasets import load_breast_cancer
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.metrics import accuracy_score, roc_auc_score
+
+# -- Data preparation -----------------------------------------
+# Use breast cancer as proxy for medical dataset
+data = load_breast_cancer()
+X, y = data.data, data.target
+
+# Select top 4 features (by variance) for quantum encoding
+scaler = MinMaxScaler(feature_range=(0, np.pi))
+X_scaled = scaler.fit_transform(X[:, :4])
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X_scaled, y, test_size=0.2, random_state=42, stratify=y
+)
+X_train = torch.tensor(X_train, dtype=torch.float32)
+X_test  = torch.tensor(X_test,  dtype=torch.float32)
+y_train = torch.tensor(y_train, dtype=torch.float32)
+y_test  = torch.tensor(y_test,  dtype=torch.float32)
+
+print(f"Training samples: {len(X_train)}, Test samples: {len(X_test)}")
+print(f"Class balance: {y_train.mean():.2f} (malignant)")
+
+# -- Quantum circuit -----------------------------------------
+n_qubits = 4
+n_layers = 3
+dev = qml.device("default.qubit", wires=n_qubits)
+
+@qml.qnode(dev, interface="torch", diff_method="parameter-shift")
+def quantum_classifier(inputs, weights):
+    """
+    4-qubit hybrid classifier for medical data.
+    inputs: 4-dimensional feature vector (scaled to [0, pi])
+    weights: (n_layers, n_qubits, 3) rotation angles
+    """
+    # Angle encoding
+    qml.AngleEmbedding(inputs, wires=range(n_qubits), rotation='Y')
+    # Variational layers
+    qml.StronglyEntanglingLayers(weights, wires=range(n_qubits))
+    # Measurement (binary classification output)
+    return qml.expval(qml.PauliZ(0))
+
+# -- Hybrid model ----------------------------------------------
+weight_shape = (n_layers, n_qubits, 3)
+
+class QuantumMedicalClassifier(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.q_layer = qml.qnn.TorchLayer(
+            quantum_classifier,
+            {"weights": weight_shape}
+        )
+        self.bias = nn.Parameter(torch.zeros(1))
+
+    def forward(self, x):
+        q_out = self.q_layer(x)  # in [-1, 1]
+        return torch.sigmoid(q_out + self.bias)
+
+model = QuantumMedicalClassifier()
+optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
+criterion = nn.BCELoss()
+
+# -- Training -------------------------------------------------
+print("\nTraining quantum medical classifier...")
+best_auc = 0.0
+for epoch in range(100):
+    model.train()
+    optimizer.zero_grad()
+    # Mini-batch
+    idx = torch.randperm(len(X_train))[:32]
+    out = model(X_train[idx]).squeeze()
+    loss = criterion(out, y_train[idx])
+    loss.backward()
+    optimizer.step()
+
+    if (epoch + 1)
+        model.eval()
+        with torch.no_grad():
+            train_pred = model(X_train).squeeze().numpy()
+            test_pred  = model(X_test).squeeze().numpy()
+        train_acc = accuracy_score(y_train.numpy(), (train_pred &gt; 0.5).astype(int))
+        test_acc  = accuracy_score(y_test.numpy(),  (test_pred  &gt; 0.5).astype(int))
+        test_auc  = roc_auc_score(y_test.numpy(),   test_pred)
+        best_auc = max(best_auc, test_auc)
+        print(f"Epoch {epoch+1:3d} | Loss: {loss.item():.4f} | "
+              f"Train Acc: {train_acc:.3f} | Test Acc: {test_acc:.3f} | "
+              f"AUC: {test_auc:.3f}")
+
+print(f"\nBest test AUC: {best_auc:.4f}")
+
+# -- Compare with classical SVM --------------------------------
+from sklearn.svm import SVC
+svm = SVC(kernel='rbf', probability=True, random_state=42)
+svm.fit(X_train.numpy(), y_train.numpy())
+svm_pred = svm.predict_proba(X_test.numpy())[:, 1]
+svm_auc = roc_auc_score(y_test.numpy(), svm_pred)
+svm_acc = accuracy_score(y_test.numpy(), (svm_pred &gt; 0.5).astype(int))
+print(f"Classical RBF SVM: Acc={svm_acc:.3f}, AUC={svm_auc:.4f}")
+
+# -- Quantum kernel SVM ----------------------------------------
+dev_kern = qml.device("default.qubit", wires=n_qubits)
+
+@qml.qnode(dev_kern)
+def kernel_circuit(x1, x2):
+    qml.AngleEmbedding(x1, wires=range(n_qubits), rotation='Y')
+    qml.adjoint(qml.AngleEmbedding)(x2, wires=range(n_qubits), rotation='Y')
+    return qml.probs(wires=range(n_qubits))
+
+def quantum_kernel_fn(x1, x2):
+    return kernel_circuit(x1, x2)[0]  # |&lt;phi(x1)|phi(x2)&gt;|^2
+
+# Build kernel matrix (small subset for demo)
+n_subset = 50
+X_tr_sub = X_train.numpy()[:n_subset]
+y_tr_sub = y_train.numpy()[:n_subset]
+K_train_q = np.array([[quantum_kernel_fn(X_tr_sub[i], X_tr_sub[j])
+                        for j in range(n_subset)]
+                       for i in range(n_subset)])
+
+qsvm = SVC(kernel='precomputed', probability=True)
+qsvm.fit(K_train_q, y_tr_sub)
+
+# Kernel matrix for test
+X_te_sub = X_test.numpy()[:20]
+K_test_q = np.array([[quantum_kernel_fn(X_te_sub[i], X_tr_sub[j])
+                       for j in range(n_subset)]
+                      for i in range(20)])
+qsvm_pred = qsvm.predict_proba(K_test_q)[:, 1]
+qsvm_auc = roc_auc_score(y_test.numpy()[:20], qsvm_pred)
+print(f"Quantum kernel SVM (n={n_subset}): AUC={qsvm_auc:.4f}")
+</code></pre></div>
+<h2 id="216-chapter-summary"><span class="secnum">21.6</span> Chapter Summary<a class="headerlink" href="#216-chapter-summary" title="Permanent link">&para;</a></h2>
+<div class="admonition note box-chaptersummary kind-plain">
+<p class="admonition-title">Chapter Summary</p>
+<ul>
+<li>
+<p><strong>Drug discovery</strong>: Quantum kernels on molecular fingerprints for property prediction (ADMET, binding affinity). Tanimoto quantum kernel for molecular similarity.</p>
+</li>
+<li>
+<p><strong>Medical imaging</strong>: Quantum transfer learning from classical CNN features. Effective for few-shot medical classification.</p>
+</li>
+<li>
+<p><strong>Genomics</strong>: Quantum kernels for high-dimensional, small-<span class="arithmatex">\(n\)</span> gene expression classification. Cancer subtype and biomarker discovery.</p>
+</li>
+<li>
+<p><strong>Federated learning</strong>: QFL for privacy-preserving multi-hospital training without sharing patient data.</p>
+</li>
+<li>
+<p><strong>Practical status</strong>: Quantum classifiers on 4–8 qubits show competitive performance with classical SVMs on small medical datasets, but large-scale advantage requires fault-tolerant hardware.</p>
+</li>
+</ul>
+</div>
+<div class="admonition note box-exercisebox kind-plain">
+<p class="admonition-title">Exercises</p>
+<p><strong>Exercise .</strong> Explain the privacy advantage of federated learning over centralized training. What additional privacy guarantee does quantum differential privacy provide?</p>
+<p><strong>Exercise .</strong> For a 2000-gene RNA-seq dataset (<span class="arithmatex">\(n=100\)</span> samples), propose a quantum dimensionality reduction pipeline before quantum kernel classification. How many qubits are needed?</p>
+<p><strong>Exercise .</strong> Obtain the UCI Heart Disease dataset. Train a quantum kernel SVM (4-qubit IQP feature map) and a classical RBF SVM. Compare on: accuracy, AUC, and training time. Use 5-fold cross-validation.</p>
+</div>
+<div class="admonition note box-furtherreading kind-plain">
+<p class="admonition-title">Further Reading</p>
+<ul>
+<li>
+<p>Mari et al. (2020) (<a href="bibliography.html#ref-Mari2020TransferLearning">Mari et al. 2020</a>) — quantum transfer learning</p>
+</li>
+<li>
+<p>Batra et al. (2021) — quantum machine learning in drug discovery</p>
+</li>
+<li>
+<p>Gottesman et al. (2022) — quantum federated learning for healthcare</p>
+</li>
+<li>
+<p>Bravyi et al. (2022) — quantum advantage with noisy shallow circuits</p>
+</li>
+</ul>
+</div>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button type="button" class="md-top md-icon" data-md-component="top" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+Back to top
+</button>
+</main>
+<footer class="md-footer">
+<nav class="md-footer__inner md-grid" aria-label="Footer" >
+<a href="ch20-qml-in-finance-and-optimization.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: 20. QML in Finance and Optimization">
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</div>
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Previous
+</span>
+<div class="md-ellipsis">
+20. QML in Finance and Optimization
+</div>
+</div>
+</a>
+<a href="ch22-qml-for-nlp-and-computer-vision.html" class="md-footer__link md-footer__link--next" aria-label="Next: 22. QML for NLP and Computer Vision">
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Next
+</span>
+<div class="md-ellipsis">
+22. QML for NLP and Computer Vision
+</div>
+</div>
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+</div>
+</a>
+</nav>
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+The Open Book Project &middot;
+<a href="../../about.html">About this library</a> &middot;
+<a href="../../publish.html">Publish your book</a> &middot;
+© The authors of the books
+</div>
+Made with
+<a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+Material for MkDocs
+</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "navigation.prune", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "toc.follow", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+<script src="../../assets/mathjax.js"></script>
+<script src="../../assets/viz.js"></script>
+<script src="../../assets/remote.js"></script>
+<script src="../../assets/scans.js"></script>
+<script src="../../assets/reader.js"></script>
+<script src="../../assets/app.js"></script>
+<script src="../../assets/slides.js"></script>
+<script src="../../assets/speak.js"></script>
+<script src="../../assets/quiz.js"></script>
+<script>
+    /* offline reading: the service worker at the site root (its scope is the whole site) */
+    if ("serviceWorker" in navigator && window.isSecureContext) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register(new URL("../../sw.js", location.href).href).catch(function () {});
+      });
+    }
+  </script>
+</body>
+</html>

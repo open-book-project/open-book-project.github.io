@@ -1,0 +1,563 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="description" content="The Open Book Project: books on computer science, quantum computing, cyber security, science, the social sciences, university courses and languages, read page by page like an e-book, online or offline.">
+<meta name="author" content="The Open Book Project">
+<link rel="canonical" href="https://open-book-project.github.io/cyber/post_quantum_cryptography/index.html">
+<link rel="prev" href="../security_systems_engineering/bibliography.html">
+<link rel="next" href="ch01-foundations-of-post-quantum-cryptography.html">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap"></noscript>
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Open Book">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="application-name" content="Open Book"><script src="../../assets/library-data.js"></script><script>
+    (function () {
+      var X = window.XMLHttpRequest, open, gate = new Promise(function (r) { open = r; });
+      if (!X) return;
+      var open0 = X.prototype.open, send0 = X.prototype.send;
+      X.prototype.open = function (method, url) {
+        this.__pkIndex = /\/search\/search_index\.json(\?|#|$)/.test(String(url));
+        return open0.apply(this, arguments);
+      };
+      X.prototype.send = function () {
+        if (!this.__pkIndex) return send0.apply(this, arguments);
+        var xhr = this, args = arguments;
+        gate.then(function () { send0.apply(xhr, args); });
+      };
+      function wake() { open(); }
+      document.addEventListener("focusin", function (e) { if (e.target && e.target.closest && e.target.closest(".md-search")) wake(); });
+      document.addEventListener("click", function (e) { if (e.target && e.target.closest && e.target.closest('label[for="__search"], .md-search')) wake(); }, true);
+      document.addEventListener("keydown", function (e) {
+        var k = e.key;
+        if ((k === "/" || k === "s" || k === "f" || k === "S" || k === "F") && !(e.target && e.target.closest && e.target.closest("input, textarea, [contenteditable]"))) wake();
+      }, true);
+      if (/[?&]q=/.test(location.search)) wake();
+    })();
+  </script><script>
+    try {
+      if ((window.matchMedia && (matchMedia("(display-mode: standalone)").matches || matchMedia("(display-mode: fullscreen)").matches)) || navigator.standalone === true) {
+        document.documentElement.className += " bjp-standalone";
+      }
+    } catch (e) { /* not an installed app */ }
+    /* the books of a subject or of the whole library as covers or as a list (assets/app.js): the reader's choice */
+    try {
+      var bv = localStorage.getItem("bjp.view");
+      if (bv === "list" || (bv !== "grid" && /\/books\.html$/.test(location.pathname))) document.documentElement.className += " bjp-view-list";
+    } catch (e) { /* no storage: covers */ }
+  </script>
+<script>
+    /* a book opened from its cover on the shelf: the page stays blank, in the cover's colour, until the reader is up */
+    try {
+      var cv = sessionStorage.getItem("bjp.reader.cover");
+      if (cv && sessionStorage.getItem("bjp.reader.open") === "1") {
+        var c = JSON.parse(cv), de = document.documentElement;
+        de.className += " bjp-booting";
+        if (c && /^#[0-9a-f]{3,8}$/i.test(c.bg || "")) de.style.background = c.bg;
+        setTimeout(function () { de.classList.remove("bjp-booting"); de.style.background = ""; }, 3000);
+      }
+    } catch (e) { /* no session storage: the page simply opens as usual */ }
+  </script>
+<title>Overview and preface - The Open Book Project</title>
+<link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+<link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+<link rel="stylesheet" href="../../assets/extra.css">
+<link rel="stylesheet" href="../../assets/reader.css">
+<link rel="stylesheet" href="../../assets/viz.css">
+<link rel="stylesheet" href="../../assets/app.css">
+<link rel="stylesheet" href="../../assets/theme.css">
+<link rel="stylesheet" href="../../assets/slides.css">
+<link rel="stylesheet" href="../../assets/remote.css">
+<link rel="stylesheet" href="../../assets/scans.css">
+<link rel="stylesheet" href="../../assets/speak.css">
+<link rel="stylesheet" href="../../assets/quiz.css">
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+<input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+<input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a href="#contents" class="md-skip">
+Skip to content
+</a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav class="md-header__inner md-grid" aria-label="Header">
+<a href="../../index.html" title="The Open Book Project" class="md-header__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+The Open Book Project
+</span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+Overview and preface
+</span>
+</div>
+</div>
+</div><a href="../../index.html" class="bjp-libbtn" aria-label="Library: all books" title="Library: all books">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V5h4v15M8 20V9h4v11M14 20L12.6 6l3.8-.8 3 14.2M3 20h18"/></svg><span>Library</span>
+</a>
+<a href="../../subjects/index.html" class="pk-catbtn" aria-haspopup="true" aria-expanded="false" title="Browse the books by category">
+<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><circle cx="17" cy="7" r="3.6"/><path d="M7 13.4l3.9 6.8H3.1z"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg><span>Categories</span>
+</a>
+<form class="md-header__option" data-md-component="palette">
+<input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+<label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+</label>
+<input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+<label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+<label class="md-search__icon md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</label>
+<nav class="md-search__options" aria-label="Search">
+<button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+Initializing search
+</div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--primary bjp-nav bjp-nav--book" aria-label="Navigation" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a href="../../index.html" title="The Open Book Project" class="md-nav__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+The Open Book Project
+</label>
+<ul class="md-nav__list" data-md-scrollfix>
+<li class="md-nav__item bjp-nav-all">
+<a href="../../index.html" class="md-nav__link" aria-label="All books: back to the library">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+<span class="md-ellipsis">All books</span>
+</a>
+</li>
+<li class="md-nav__item bjp-nav-book" role="presentation"><span class="bjp-nav-head">Post-Quantum Cryptography</span></li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+Overview and preface
+</span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a href="index.html" class="md-nav__link md-nav__link--active">
+<span class="md-ellipsis">
+Overview and preface
+</span>
+</a>
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#contents" class="md-nav__link">
+<span class="md-ellipsis">
+Contents
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#preface" class="md-nav__link">
+<span class="md-ellipsis">
+Preface
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="ch01-foundations-of-post-quantum-cryptography.html" class="md-nav__link">
+<span class="md-ellipsis">
+1. Foundations of Post-Quantum Cryptography
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch02-pqc-algorithm-families.html" class="md-nav__link">
+<span class="md-ellipsis">
+2. PQC Algorithm Families
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch03-nist-pqc-standards.html" class="md-nav__link">
+<span class="md-ellipsis">
+3. NIST PQC Standards
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch04-pqc-implementation.html" class="md-nav__link">
+<span class="md-ellipsis">
+4. PQC Implementation
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch05-pqc-migration-strategy.html" class="md-nav__link">
+<span class="md-ellipsis">
+5. PQC Migration Strategy
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch06-hybrid-cryptography.html" class="md-nav__link">
+<span class="md-ellipsis">
+6. Hybrid Cryptography
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch07-pqc-testing-and-validation.html" class="md-nav__link">
+<span class="md-ellipsis">
+7. PQC Testing and Validation
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch08-side-channel-attacks-and-countermeasures.html" class="md-nav__link">
+<span class="md-ellipsis">
+8. Side-Channel Attacks and Countermeasures
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch09-pqc-applications-and-national-solutions.html" class="md-nav__link">
+<span class="md-ellipsis">
+9. PQC Applications and National Solutions
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch10-pqc-research-and-open-problems.html" class="md-nav__link">
+<span class="md-ellipsis">
+10. PQC Research and Open Problems
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" hidden>
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#contents" class="md-nav__link">
+<span class="md-ellipsis">
+Contents
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#preface" class="md-nav__link">
+<span class="md-ellipsis">
+Preface
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<div class="pk-book" data-vol="post_quantum_cryptography" markdown="0">
+<div class="pk-book-cover"><a class="vol-card pk-book-open" href="#preface" style="--cv-bg:#0f3a63;--cv-accent:#5fd0b0;--cv-fg:#f1f8fc;--cv-n:24;--cv-rot:39deg;--cv-x:86%;--cv-y:91%" aria-label="Start reading Post-Quantum Cryptography"><span class="book-cover cv-modern"><span class="cv-art" aria-hidden="true"></span><span class="cv-series">Cyber Security</span><span class="cv-rule"></span><span class="vol-title">Post-Quantum Cryptography</span><span class="vol-sub">A Comprehensive Guide to Quantum-Safe Security</span><span class="cv-author">AI generated</span></span></a></div>
+<div class="pk-book-info">
+<p class="pk-book-kicker"><span>Cyber Security</span></p>
+<h1 class="pk-book-title"><span class="bjp-sr"></span>Post-Quantum Cryptography</h1>
+<p class="pk-book-sub">A Comprehensive Guide to Quantum-Safe Security</p>
+<p class="pk-book-by">AI generated by Nikhil Kumar Rajput</p>
+<p class="pk-book-desc">Lattice, code, hash and multivariate cryptography, the NIST standards (ML-KEM, ML-DSA, SLH-DSA, HQC), implementation, hybrid deployment, migration, side-channel security and applications</p>
+<p class="pk-book-tags"><span class="pk-badge lv-advanced">Advanced</span><span class="pk-badge">Reference</span><a class="pk-chip" href="../../subjects/cyber-security.html"><svg class="pk-ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 3l7.5 3v5.5c0 4.6-3.2 8.3-7.5 9.5-4.3-1.2-7.5-4.9-7.5-9.5V6zM9 12l2.2 2.2L15.5 10"/></svg><span class="pk-chip-cat">Computers &amp; Technology &rsaquo;</span> Cyber Security</a><a class="pk-chip" href="../../subjects/quantum.html"><svg class="pk-ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="8.5"/><ellipse cx="12" cy="12" rx="8.5" ry="3"/><path d="M12 12l3.6-5.8"/><circle cx="15.9" cy="5.7" r="1.3"/></svg><span class="pk-chip-cat">Computers &amp; Technology &rsaquo;</span> Quantum Computing</a></p><div class="pk-book-actions"><a class="pk-btn pk-btn-primary pk-read" href="#preface"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 7c-1.6-1.3-3.9-2-8-2v13c4.1 0 6.4.7 8 2 1.6-1.3 3.9-2 8-2V5c-4.1 0-6.4.7-8 2zM12 7v13"/></svg><span>Start reading</span></a>
+<div class="bjp-offline" data-vol="post_quantum_cryptography"></div></div>
+<p class="pk-book-facts"><span>10 chapters</span></p>
+</div>
+</div>
+<h2 id="contents">Contents<a class="headerlink" href="#contents" title="Permanent link">&para;</a></h2>
+<nav class="vol-contents" data-vol="post_quantum_cryptography" aria-label="Contents of this book" markdown="0">
+<p class="toc-group">Front matter</p>
+<ul class="vol-toc vol-toc-full">
+<li class="vc-ch vc-leaf"><a href="index.html#preface">Preface</a></li>
+</ul>
+<p class="toc-group">Chapters</p>
+<ul class="vol-toc vol-toc-full">
+<li class="vc-ch"><details><summary><a href="ch01-foundations-of-post-quantum-cryptography.html">Chapter 1: Foundations of Post-Quantum Cryptography</a></summary><ul class="vc-secs">
+<li class="vc-l2"><a href="ch01-foundations-of-post-quantum-cryptography.html#11-the-quantum-threat-to-classical-cryptography"><span class="vc-n">1.1</span> The Quantum Threat to Classical Cryptography</a><ul class="vc-subs"><li class="vc-l3"><a href="ch01-foundations-of-post-quantum-cryptography.html#111-grovers-algorithm-and-symmetric-cryptography"><span class="vc-n">1.1.1</span> Grover’s Algorithm and Symmetric Cryptography</a></li><li class="vc-l3"><a href="ch01-foundations-of-post-quantum-cryptography.html#112-the-harvest-now-decrypt-later-hndl-threat"><span class="vc-n">1.1.2</span> The “Harvest Now, Decrypt Later” (HNDL) Threat</a></li></ul></li>
+<li class="vc-l2"><a href="ch01-foundations-of-post-quantum-cryptography.html#12-mathematical-foundations"><span class="vc-n">1.2</span> Mathematical Foundations</a><ul class="vc-subs"><li class="vc-l3"><a href="ch01-foundations-of-post-quantum-cryptography.html#121-lattice-theory"><span class="vc-n">1.2.1</span> Lattice Theory</a></li><li class="vc-l3"><a href="ch01-foundations-of-post-quantum-cryptography.html#122-learning-with-errors-lwe"><span class="vc-n">1.2.2</span> Learning With Errors (LWE)</a></li><li class="vc-l3"><a href="ch01-foundations-of-post-quantum-cryptography.html#123-ring-lwe-and-module-lwe"><span class="vc-n">1.2.3</span> Ring-LWE and Module-LWE</a></li><li class="vc-l3"><a href="ch01-foundations-of-post-quantum-cryptography.html#124-number-theoretic-transform-ntt"><span class="vc-n">1.2.4</span> Number Theoretic Transform (NTT)</a></li><li class="vc-l3"><a href="ch01-foundations-of-post-quantum-cryptography.html#125-short-integer-solution-sis"><span class="vc-n">1.2.5</span> Short Integer Solution (SIS)</a></li><li class="vc-l3"><a href="ch01-foundations-of-post-quantum-cryptography.html#126-code-based-mathematical-foundations"><span class="vc-n">1.2.6</span> Code-Based Mathematical Foundations</a></li><li class="vc-l3"><a href="ch01-foundations-of-post-quantum-cryptography.html#127-hash-based-security"><span class="vc-n">1.2.7</span> Hash-Based Security</a></li></ul></li>
+<li class="vc-l2"><a href="ch01-foundations-of-post-quantum-cryptography.html#13-security-levels"><span class="vc-n">1.3</span> Security Levels</a></li>
+<li class="vc-l2"><a href="ch01-foundations-of-post-quantum-cryptography.html#14-cryptographic-primitives-kem-and-dss"><span class="vc-n">1.4</span> Cryptographic Primitives: KEM and DSS</a><ul class="vc-subs"><li class="vc-l3"><a href="ch01-foundations-of-post-quantum-cryptography.html#141-key-encapsulation-mechanism-kem"><span class="vc-n">1.4.1</span> Key Encapsulation Mechanism (KEM)</a></li><li class="vc-l3"><a href="ch01-foundations-of-post-quantum-cryptography.html#142-digital-signature-scheme-dss"><span class="vc-n">1.4.2</span> Digital Signature Scheme (DSS)</a></li></ul></li>
+<li class="vc-l2"><a href="ch01-foundations-of-post-quantum-cryptography.html#15-nist-pqc-standardization-history"><span class="vc-n">1.5</span> NIST PQC Standardization History</a></li>
+<li class="vc-l2"><a href="ch01-foundations-of-post-quantum-cryptography.html#16-algorithm-families-overview"><span class="vc-n">1.6</span> Algorithm Families Overview</a></li>
+<li class="vc-l2"><a href="ch01-foundations-of-post-quantum-cryptography.html#17-summary"><span class="vc-n">1.7</span> Summary</a></li>
+</ul></details></li>
+<li class="vc-ch"><details><summary><a href="ch02-pqc-algorithm-families.html">Chapter 2: PQC Algorithm Families</a></summary><ul class="vc-secs">
+<li class="vc-l2"><a href="ch02-pqc-algorithm-families.html#21-lattice-based-cryptography"><span class="vc-n">2.1</span> Lattice-Based Cryptography</a><ul class="vc-subs"><li class="vc-l3"><a href="ch02-pqc-algorithm-families.html#211-ml-kem-fips-203-module-lattice-kem"><span class="vc-n">2.1.1</span> ML-KEM (FIPS 203) — Module-Lattice KEM</a></li><li class="vc-l3"><a href="ch02-pqc-algorithm-families.html#212-ml-dsa-fips-204-module-lattice-digital-signature-algorithm"><span class="vc-n">2.1.2</span> ML-DSA (FIPS 204) — Module-Lattice Digital Signature Algorithm</a></li><li class="vc-l3"><a href="ch02-pqc-algorithm-families.html#213-fn-dsa-fips-206-falcon"><span class="vc-n">2.1.3</span> FN-DSA (FIPS 206) — Falcon</a></li></ul></li>
+<li class="vc-l2"><a href="ch02-pqc-algorithm-families.html#22-code-based-cryptography"><span class="vc-n">2.2</span> Code-Based Cryptography</a><ul class="vc-subs"><li class="vc-l3"><a href="ch02-pqc-algorithm-families.html#221-classic-mceliece"><span class="vc-n">2.2.1</span> Classic McEliece</a></li><li class="vc-l3"><a href="ch02-pqc-algorithm-families.html#222-hqc-the-5th-nist-algorithm"><span class="vc-n">2.2.2</span> HQC — The 5th NIST Algorithm</a></li></ul></li>
+<li class="vc-l2"><a href="ch02-pqc-algorithm-families.html#23-hash-based-cryptography"><span class="vc-n">2.3</span> Hash-Based Cryptography</a><ul class="vc-subs"><li class="vc-l3"><a href="ch02-pqc-algorithm-families.html#231-lamport-one-time-signature"><span class="vc-n">2.3.1</span> Lamport One-Time Signature</a></li><li class="vc-l3"><a href="ch02-pqc-algorithm-families.html#232-slh-dsa-fips-205-sphincs"><span class="vc-n">2.3.2</span> SLH-DSA (FIPS 205) — SPHINCS+</a></li><li class="vc-l3"><a href="ch02-pqc-algorithm-families.html#233-stateful-hash-based-signatures-xmss-and-lms"><span class="vc-n">2.3.3</span> Stateful Hash-Based Signatures: XMSS and LMS</a></li></ul></li>
+<li class="vc-l2"><a href="ch02-pqc-algorithm-families.html#24-multivariate-cryptography"><span class="vc-n">2.4</span> Multivariate Cryptography</a><ul class="vc-subs"><li class="vc-l3"><a href="ch02-pqc-algorithm-families.html#241-oil-and-vinegar-construction"><span class="vc-n">2.4.1</span> Oil and Vinegar Construction</a></li></ul></li>
+<li class="vc-l2"><a href="ch02-pqc-algorithm-families.html#25-isogeny-based-cryptography"><span class="vc-n">2.5</span> Isogeny-Based Cryptography</a><ul class="vc-subs"><li class="vc-l3"><a href="ch02-pqc-algorithm-families.html#251-the-sidhsike-collapse"><span class="vc-n">2.5.1</span> The SIDH/SIKE Collapse</a></li><li class="vc-l3"><a href="ch02-pqc-algorithm-families.html#252-surviving-constructions"><span class="vc-n">2.5.2</span> Surviving Constructions</a></li></ul></li>
+<li class="vc-l2"><a href="ch02-pqc-algorithm-families.html#26-algorithm-selection-guide"><span class="vc-n">2.6</span> Algorithm Selection Guide</a></li>
+<li class="vc-l2"><a href="ch02-pqc-algorithm-families.html#27-summary"><span class="vc-n">2.7</span> Summary</a></li>
+</ul></details></li>
+<li class="vc-ch"><details><summary><a href="ch03-nist-pqc-standards.html">Chapter 3: NIST PQC Standards</a></summary><ul class="vc-secs">
+<li class="vc-l2"><a href="ch03-nist-pqc-standards.html#31-overview-of-finalized-standards"><span class="vc-n">3.1</span> Overview of Finalized Standards</a></li>
+<li class="vc-l2"><a href="ch03-nist-pqc-standards.html#32-fips-203-ml-kem"><span class="vc-n">3.2</span> FIPS 203: ML-KEM</a><ul class="vc-subs"><li class="vc-l3"><a href="ch03-nist-pqc-standards.html#321-specification-summary"><span class="vc-n">3.2.1</span> Specification Summary</a></li><li class="vc-l3"><a href="ch03-nist-pqc-standards.html#322-changes-from-kyber-to-ml-kem"><span class="vc-n">3.2.2</span> Changes from Kyber to ML-KEM</a></li><li class="vc-l3"><a href="ch03-nist-pqc-standards.html#323-ml-kem-full-specification"><span class="vc-n">3.2.3</span> ML-KEM Full Specification</a></li></ul></li>
+<li class="vc-l2"><a href="ch03-nist-pqc-standards.html#33-fips-204-ml-dsa"><span class="vc-n">3.3</span> FIPS 204: ML-DSA</a><ul class="vc-subs"><li class="vc-l3"><a href="ch03-nist-pqc-standards.html#331-specification-summary"><span class="vc-n">3.3.1</span> Specification Summary</a></li><li class="vc-l3"><a href="ch03-nist-pqc-standards.html#332-ml-dsa-full-parameter-table"><span class="vc-n">3.3.2</span> ML-DSA Full Parameter Table</a></li></ul></li>
+<li class="vc-l2"><a href="ch03-nist-pqc-standards.html#34-fips-205-slh-dsa"><span class="vc-n">3.4</span> FIPS 205: SLH-DSA</a><ul class="vc-subs"><li class="vc-l3"><a href="ch03-nist-pqc-standards.html#341-specification-summary"><span class="vc-n">3.4.1</span> Specification Summary</a></li><li class="vc-l3"><a href="ch03-nist-pqc-standards.html#342-slh-dsa-full-parameter-sets"><span class="vc-n">3.4.2</span> SLH-DSA Full Parameter Sets</a></li></ul></li>
+<li class="vc-l2"><a href="ch03-nist-pqc-standards.html#35-hqc-the-fifth-pqc-standard"><span class="vc-n">3.5</span> HQC: The Fifth PQC Standard</a></li>
+<li class="vc-l2"><a href="ch03-nist-pqc-standards.html#36-nist-ir-8547-transition-timeline"><span class="vc-n">3.6</span> NIST IR 8547: Transition Timeline</a></li>
+<li class="vc-l2"><a href="ch03-nist-pqc-standards.html#37-nsa-cnsa-20-requirements"><span class="vc-n">3.7</span> NSA CNSA 2.0 Requirements</a></li>
+<li class="vc-l2"><a href="ch03-nist-pqc-standards.html#38-nist-additional-signatures-round-2-2023present"><span class="vc-n">3.8</span> NIST Additional Signatures Round 2 (2023–Present)</a></li>
+<li class="vc-l2"><a href="ch03-nist-pqc-standards.html#39-fips-140-3-and-algorithm-compliance"><span class="vc-n">3.9</span> FIPS 140-3 and Algorithm Compliance</a></li>
+<li class="vc-l2"><a href="ch03-nist-pqc-standards.html#310-international-standards-alignment"><span class="vc-n">3.10</span> International Standards Alignment</a></li>
+<li class="vc-l2"><a href="ch03-nist-pqc-standards.html#311-summary"><span class="vc-n">3.11</span> Summary</a></li>
+</ul></details></li>
+<li class="vc-ch"><details><summary><a href="ch04-pqc-implementation.html">Chapter 4: PQC Implementation</a></summary><ul class="vc-secs">
+<li class="vc-l2"><a href="ch04-pqc-implementation.html#41-software-libraries"><span class="vc-n">4.1</span> Software Libraries</a><ul class="vc-subs"><li class="vc-l3"><a href="ch04-pqc-implementation.html#411-liboqs-open-quantum-safe"><span class="vc-n">4.1.1</span> liboqs — Open Quantum Safe</a></li><li class="vc-l3"><a href="ch04-pqc-implementation.html#412-oqs-provider-for-openssl"><span class="vc-n">4.1.2</span> OQS Provider for OpenSSL</a></li><li class="vc-l3"><a href="ch04-pqc-implementation.html#413-pqclean"><span class="vc-n">4.1.3</span> PQClean</a></li><li class="vc-l3"><a href="ch04-pqc-implementation.html#414-language-ecosystem"><span class="vc-n">4.1.4</span> Language Ecosystem</a></li><li class="vc-l3"><a href="ch04-pqc-implementation.html#415-mlkem-native-formally-verified-implementation"><span class="vc-n">4.1.5</span> mlkem-native: Formally Verified Implementation</a></li></ul></li>
+<li class="vc-l2"><a href="ch04-pqc-implementation.html#42-hardware-acceleration"><span class="vc-n">4.2</span> Hardware Acceleration</a><ul class="vc-subs"><li class="vc-l3"><a href="ch04-pqc-implementation.html#421-ntt-hardware-architecture"><span class="vc-n">4.2.1</span> NTT Hardware Architecture</a></li><li class="vc-l3"><a href="ch04-pqc-implementation.html#422-fpga-implementation-results"><span class="vc-n">4.2.2</span> FPGA Implementation Results</a></li><li class="vc-l3"><a href="ch04-pqc-implementation.html#423-asic-implementation-results"><span class="vc-n">4.2.3</span> ASIC Implementation Results</a></li><li class="vc-l3"><a href="ch04-pqc-implementation.html#424-gpu-acceleration"><span class="vc-n">4.2.4</span> GPU Acceleration</a></li></ul></li>
+<li class="vc-l2"><a href="ch04-pqc-implementation.html#43-embedded-systems-implementation"><span class="vc-n">4.3</span> Embedded Systems Implementation</a><ul class="vc-subs"><li class="vc-l3"><a href="ch04-pqc-implementation.html#431-pqm4-cortex-m4-benchmark"><span class="vc-n">4.3.1</span> pqm4: Cortex-M4 Benchmark</a></li><li class="vc-l3"><a href="ch04-pqc-implementation.html#432-assembly-optimization-techniques"><span class="vc-n">4.3.2</span> Assembly Optimization Techniques</a></li><li class="vc-l3"><a href="ch04-pqc-implementation.html#433-memory-constrained-implementations"><span class="vc-n">4.3.3</span> Memory-Constrained Implementations</a></li><li class="vc-l3"><a href="ch04-pqc-implementation.html#434-on-the-fly-key-expansion"><span class="vc-n">4.3.4</span> On-the-Fly Key Expansion</a></li></ul></li>
+<li class="vc-l2"><a href="ch04-pqc-implementation.html#44-performance-benchmarks"><span class="vc-n">4.4</span> Performance Benchmarks</a></li>
+<li class="vc-l2"><a href="ch04-pqc-implementation.html#45-tls-integration"><span class="vc-n">4.5</span> TLS Integration</a></li>
+<li class="vc-l2"><a href="ch04-pqc-implementation.html#46-summary"><span class="vc-n">4.6</span> Summary</a></li>
+</ul></details></li>
+<li class="vc-ch"><details><summary><a href="ch05-pqc-migration-strategy.html">Chapter 5: PQC Migration Strategy</a></summary><ul class="vc-secs">
+<li class="vc-l2"><a href="ch05-pqc-migration-strategy.html#51-why-migration-is-urgent"><span class="vc-n">5.1</span> Why Migration Is Urgent</a></li>
+<li class="vc-l2"><a href="ch05-pqc-migration-strategy.html#52-the-nist-nccoe-migration-framework"><span class="vc-n">5.2</span> The NIST NCCoE Migration Framework</a><ul class="vc-subs"><li class="vc-l3"><a href="ch05-pqc-migration-strategy.html#521-phase-1-cryptographic-inventory-discovery"><span class="vc-n">5.2.1</span> Phase 1: Cryptographic Inventory (Discovery)</a></li><li class="vc-l3"><a href="ch05-pqc-migration-strategy.html#522-cryptography-bill-of-materials-cbom"><span class="vc-n">5.2.2</span> Cryptography Bill of Materials (CBOM)</a></li><li class="vc-l3"><a href="ch05-pqc-migration-strategy.html#523-phase-2-risk-assessment"><span class="vc-n">5.2.3</span> Phase 2: Risk Assessment</a></li><li class="vc-l3"><a href="ch05-pqc-migration-strategy.html#524-phase-3-prioritization"><span class="vc-n">5.2.4</span> Phase 3: Prioritization</a></li></ul></li>
+<li class="vc-l2"><a href="ch05-pqc-migration-strategy.html#53-crypto-agility"><span class="vc-n">5.3</span> Crypto-Agility</a><ul class="vc-subs"><li class="vc-l3"><a href="ch05-pqc-migration-strategy.html#531-crypto-agility-design-patterns"><span class="vc-n">5.3.1</span> Crypto-Agility Design Patterns</a></li></ul></li>
+<li class="vc-l2"><a href="ch05-pqc-migration-strategy.html#54-protocol-migration"><span class="vc-n">5.4</span> Protocol Migration</a><ul class="vc-subs"><li class="vc-l3"><a href="ch05-pqc-migration-strategy.html#541-tls-13-migration"><span class="vc-n">5.4.1</span> TLS 1.3 Migration</a></li><li class="vc-l3"><a href="ch05-pqc-migration-strategy.html#542-ssh-migration"><span class="vc-n">5.4.2</span> SSH Migration</a></li><li class="vc-l3"><a href="ch05-pqc-migration-strategy.html#543-pki-and-x509-migration"><span class="vc-n">5.4.3</span> PKI and X.509 Migration</a></li><li class="vc-l3"><a href="ch05-pqc-migration-strategy.html#544-dual-certificate-approach"><span class="vc-n">5.4.4</span> Dual-Certificate Approach</a></li></ul></li>
+<li class="vc-l2"><a href="ch05-pqc-migration-strategy.html#55-migration-timeline"><span class="vc-n">5.5</span> Migration Timeline</a></li>
+<li class="vc-l2"><a href="ch05-pqc-migration-strategy.html#56-vendor-and-product-readiness"><span class="vc-n">5.6</span> Vendor and Product Readiness</a></li>
+<li class="vc-l2"><a href="ch05-pqc-migration-strategy.html#57-summary"><span class="vc-n">5.7</span> Summary</a></li>
+</ul></details></li>
+<li class="vc-ch"><details><summary><a href="ch06-hybrid-cryptography.html">Chapter 6: Hybrid Cryptography</a></summary><ul class="vc-secs">
+<li class="vc-l2"><a href="ch06-hybrid-cryptography.html#61-rationale-for-hybrid-cryptography"><span class="vc-n">6.1</span> Rationale for Hybrid Cryptography</a></li>
+<li class="vc-l2"><a href="ch06-hybrid-cryptography.html#62-generic-hybrid-kem-construction"><span class="vc-n">6.2</span> Generic Hybrid KEM Construction</a></li>
+<li class="vc-l2"><a href="ch06-hybrid-cryptography.html#63-x25519mlkem768-the-recommended-hybrid"><span class="vc-n">6.3</span> X25519MLKEM768 — The Recommended Hybrid</a><ul class="vc-subs"><li class="vc-l3"><a href="ch06-hybrid-cryptography.html#631-tls-overhead-analysis"><span class="vc-n">6.3.1</span> TLS Overhead Analysis</a></li><li class="vc-l3"><a href="ch06-hybrid-cryptography.html#632-deployment-status"><span class="vc-n">6.3.2</span> Deployment Status</a></li></ul></li>
+<li class="vc-l2"><a href="ch06-hybrid-cryptography.html#64-deployed-hybrid-protocols"><span class="vc-n">6.4</span> Deployed Hybrid Protocols</a><ul class="vc-subs"><li class="vc-l3"><a href="ch06-hybrid-cryptography.html#641-signals-pqxdh-post-quantum-extended-diffie-hellman"><span class="vc-n">6.4.1</span> Signal’s PQXDH (Post-Quantum Extended Diffie-Hellman)</a></li><li class="vc-l3"><a href="ch06-hybrid-cryptography.html#642-apple-imessage-pq3-2024"><span class="vc-n">6.4.2</span> Apple iMessage PQ3 (2024)</a></li><li class="vc-l3"><a href="ch06-hybrid-cryptography.html#643-meta-messenger-e2ee"><span class="vc-n">6.4.3</span> Meta Messenger E2EE</a></li></ul></li>
+<li class="vc-l2"><a href="ch06-hybrid-cryptography.html#65-hybrid-signatures"><span class="vc-n">6.5</span> Hybrid Signatures</a><ul class="vc-subs"><li class="vc-l3"><a href="ch06-hybrid-cryptography.html#651-composite-signatures-x509"><span class="vc-n">6.5.1</span> Composite Signatures (X.509)</a></li><li class="vc-l3"><a href="ch06-hybrid-cryptography.html#652-concatenated-hybrid-signatures"><span class="vc-n">6.5.2</span> Concatenated Hybrid Signatures</a></li></ul></li>
+<li class="vc-l2"><a href="ch06-hybrid-cryptography.html#66-hybrid-kdf-security-analysis"><span class="vc-n">6.6</span> Hybrid KDF Security Analysis</a></li>
+<li class="vc-l2"><a href="ch06-hybrid-cryptography.html#67-ietf-standards-for-hybrid-pqc"><span class="vc-n">6.7</span> IETF Standards for Hybrid PQC</a></li>
+<li class="vc-l2"><a href="ch06-hybrid-cryptography.html#68-when-to-use-pure-pqc-vs-hybrid"><span class="vc-n">6.8</span> When to Use Pure PQC vs Hybrid</a></li>
+<li class="vc-l2"><a href="ch06-hybrid-cryptography.html#69-summary"><span class="vc-n">6.9</span> Summary</a></li>
+</ul></details></li>
+<li class="vc-ch"><details><summary><a href="ch07-pqc-testing-and-validation.html">Chapter 7: PQC Testing and Validation</a></summary><ul class="vc-secs">
+<li class="vc-l2"><a href="ch07-pqc-testing-and-validation.html#71-overview-of-pqc-testing"><span class="vc-n">7.1</span> Overview of PQC Testing</a></li>
+<li class="vc-l2"><a href="ch07-pqc-testing-and-validation.html#72-known-answer-tests-kat"><span class="vc-n">7.2</span> Known Answer Tests (KAT)</a><ul class="vc-subs"><li class="vc-l3"><a href="ch07-pqc-testing-and-validation.html#721-kat-format"><span class="vc-n">7.2.1</span> KAT Format</a></li><li class="vc-l3"><a href="ch07-pqc-testing-and-validation.html#722-running-kat-tests"><span class="vc-n">7.2.2</span> Running KAT Tests</a></li><li class="vc-l3"><a href="ch07-pqc-testing-and-validation.html#723-kat-testing-with-liboqs"><span class="vc-n">7.2.3</span> KAT Testing with liboqs</a></li></ul></li>
+<li class="vc-l2"><a href="ch07-pqc-testing-and-validation.html#73-nist-automated-cryptographic-validation-protocol-acvp"><span class="vc-n">7.3</span> NIST Automated Cryptographic Validation Protocol (ACVP)</a><ul class="vc-subs"><li class="vc-l3"><a href="ch07-pqc-testing-and-validation.html#731-acvp-json-test-format"><span class="vc-n">7.3.1</span> ACVP JSON Test Format</a></li><li class="vc-l3"><a href="ch07-pqc-testing-and-validation.html#732-acvp-test-types"><span class="vc-n">7.3.2</span> ACVP Test Types</a></li></ul></li>
+<li class="vc-l2"><a href="ch07-pqc-testing-and-validation.html#74-interoperability-testing"><span class="vc-n">7.4</span> Interoperability Testing</a><ul class="vc-subs"><li class="vc-l3"><a href="ch07-pqc-testing-and-validation.html#741-tls-interoperability-test"><span class="vc-n">7.4.1</span> TLS Interoperability Test</a></li></ul></li>
+<li class="vc-l2"><a href="ch07-pqc-testing-and-validation.html#75-performance-benchmarking"><span class="vc-n">7.5</span> Performance Benchmarking</a><ul class="vc-subs"><li class="vc-l3"><a href="ch07-pqc-testing-and-validation.html#751-supercop-pqcrypto-speed"><span class="vc-n">7.5.1</span> SUPERCOP / pqcrypto-speed</a></li><li class="vc-l3"><a href="ch07-pqc-testing-and-validation.html#752-benchmark-script"><span class="vc-n">7.5.2</span> Benchmark Script</a></li></ul></li>
+<li class="vc-l2"><a href="ch07-pqc-testing-and-validation.html#76-security-testing-fuzzing"><span class="vc-n">7.6</span> Security Testing: Fuzzing</a><ul class="vc-subs"><li class="vc-l3"><a href="ch07-pqc-testing-and-validation.html#761-libfuzzer-integration"><span class="vc-n">7.6.1</span> libFuzzer Integration</a></li></ul></li>
+<li class="vc-l2"><a href="ch07-pqc-testing-and-validation.html#77-formal-verification"><span class="vc-n">7.7</span> Formal Verification</a><ul class="vc-subs"><li class="vc-l3"><a href="ch07-pqc-testing-and-validation.html#771-mlkem-native-cbmc-verification"><span class="vc-n">7.7.1</span> mlkem-native CBMC Verification</a></li></ul></li>
+<li class="vc-l2"><a href="ch07-pqc-testing-and-validation.html#78-compliance-validation-checklist"><span class="vc-n">7.8</span> Compliance Validation Checklist</a></li>
+<li class="vc-l2"><a href="ch07-pqc-testing-and-validation.html#79-summary"><span class="vc-n">7.9</span> Summary</a></li>
+</ul></details></li>
+<li class="vc-ch"><details><summary><a href="ch08-side-channel-attacks-and-countermeasures.html">Chapter 8: Side-Channel Attacks and Countermeasures</a></summary><ul class="vc-secs">
+<li class="vc-l2"><a href="ch08-side-channel-attacks-and-countermeasures.html#81-side-channel-attack-overview"><span class="vc-n">8.1</span> Side-Channel Attack Overview</a></li>
+<li class="vc-l2"><a href="ch08-side-channel-attacks-and-countermeasures.html#82-attack-types"><span class="vc-n">8.2</span> Attack Types</a><ul class="vc-subs"><li class="vc-l3"><a href="ch08-side-channel-attacks-and-countermeasures.html#821-timing-attacks"><span class="vc-n">8.2.1</span> Timing Attacks</a></li><li class="vc-l3"><a href="ch08-side-channel-attacks-and-countermeasures.html#822-simple-power-analysis-spa"><span class="vc-n">8.2.2</span> Simple Power Analysis (SPA)</a></li><li class="vc-l3"><a href="ch08-side-channel-attacks-and-countermeasures.html#823-differential-power-analysis-dpa"><span class="vc-n">8.2.3</span> Differential Power Analysis (DPA)</a></li><li class="vc-l3"><a href="ch08-side-channel-attacks-and-countermeasures.html#824-electromagnetic-em-attacks"><span class="vc-n">8.2.4</span> Electromagnetic (EM) Attacks</a></li><li class="vc-l3"><a href="ch08-side-channel-attacks-and-countermeasures.html#825-cache-timing-attacks"><span class="vc-n">8.2.5</span> Cache-Timing Attacks</a></li><li class="vc-l3"><a href="ch08-side-channel-attacks-and-countermeasures.html#826-fault-injection-attacks"><span class="vc-n">8.2.6</span> Fault Injection Attacks</a></li></ul></li>
+<li class="vc-l2"><a href="ch08-side-channel-attacks-and-countermeasures.html#83-pqc-specific-vulnerabilities"><span class="vc-n">8.3</span> PQC-Specific Vulnerabilities</a><ul class="vc-subs"><li class="vc-l3"><a href="ch08-side-channel-attacks-and-countermeasures.html#831-ml-kem-side-channel-considerations"><span class="vc-n">8.3.1</span> ML-KEM Side-Channel Considerations</a></li><li class="vc-l3"><a href="ch08-side-channel-attacks-and-countermeasures.html#832-ml-dsa-side-channel-considerations"><span class="vc-n">8.3.2</span> ML-DSA Side-Channel Considerations</a></li><li class="vc-l3"><a href="ch08-side-channel-attacks-and-countermeasures.html#833-falcon-fn-dsa-critical-vulnerability"><span class="vc-n">8.3.3</span> FALCON (FN-DSA) Critical Vulnerability</a></li></ul></li>
+<li class="vc-l2"><a href="ch08-side-channel-attacks-and-countermeasures.html#84-countermeasures"><span class="vc-n">8.4</span> Countermeasures</a><ul class="vc-subs"><li class="vc-l3"><a href="ch08-side-channel-attacks-and-countermeasures.html#841-masking"><span class="vc-n">8.4.1</span> Masking</a></li><li class="vc-l3"><a href="ch08-side-channel-attacks-and-countermeasures.html#842-randomization"><span class="vc-n">8.4.2</span> Randomization</a></li><li class="vc-l3"><a href="ch08-side-channel-attacks-and-countermeasures.html#843-physical-countermeasures"><span class="vc-n">8.4.3</span> Physical Countermeasures</a></li></ul></li>
+<li class="vc-l2"><a href="ch08-side-channel-attacks-and-countermeasures.html#85-evaluation-standards"><span class="vc-n">8.5</span> Evaluation Standards</a><ul class="vc-subs"><li class="vc-l3"><a href="ch08-side-channel-attacks-and-countermeasures.html#851-tvla-test-vector-leakage-assessment"><span class="vc-n">8.5.1</span> TVLA (Test Vector Leakage Assessment)</a></li></ul></li>
+<li class="vc-l2"><a href="ch08-side-channel-attacks-and-countermeasures.html#86-tools-for-sca-research"><span class="vc-n">8.6</span> Tools for SCA Research</a></li>
+<li class="vc-l2"><a href="ch08-side-channel-attacks-and-countermeasures.html#87-summary"><span class="vc-n">8.7</span> Summary</a></li>
+</ul></details></li>
+<li class="vc-ch"><details><summary><a href="ch09-pqc-applications-and-national-solutions.html">Chapter 9: PQC Applications and National Solutions</a></summary><ul class="vc-secs">
+<li class="vc-l2"><a href="ch09-pqc-applications-and-national-solutions.html#91-tls-and-secure-web-communication"><span class="vc-n">9.1</span> TLS and Secure Web Communication</a><ul class="vc-subs"><li class="vc-l3"><a href="ch09-pqc-applications-and-national-solutions.html#911-tls-13-with-pqc"><span class="vc-n">9.1.1</span> TLS 1.3 with PQC</a></li><li class="vc-l3"><a href="ch09-pqc-applications-and-national-solutions.html#912-cloudflares-pqc-deployment"><span class="vc-n">9.1.2</span> Cloudflare’s PQC Deployment</a></li></ul></li>
+<li class="vc-l2"><a href="ch09-pqc-applications-and-national-solutions.html#92-secure-messaging"><span class="vc-n">9.2</span> Secure Messaging</a><ul class="vc-subs"><li class="vc-l3"><a href="ch09-pqc-applications-and-national-solutions.html#921-signals-pqxdh-protocol"><span class="vc-n">9.2.1</span> Signal’s PQXDH Protocol</a></li><li class="vc-l3"><a href="ch09-pqc-applications-and-national-solutions.html#922-apple-imessage-pq3"><span class="vc-n">9.2.2</span> Apple iMessage PQ3</a></li></ul></li>
+<li class="vc-l2"><a href="ch09-pqc-applications-and-national-solutions.html#93-public-key-infrastructure-pki"><span class="vc-n">9.3</span> Public Key Infrastructure (PKI)</a><ul class="vc-subs"><li class="vc-l3"><a href="ch09-pqc-applications-and-national-solutions.html#931-x509-pqc-certificates"><span class="vc-n">9.3.1</span> X.509 PQC Certificates</a></li><li class="vc-l3"><a href="ch09-pqc-applications-and-national-solutions.html#932-certificate-transparency-ct-impact"><span class="vc-n">9.3.2</span> Certificate Transparency (CT) Impact</a></li></ul></li>
+<li class="vc-l2"><a href="ch09-pqc-applications-and-national-solutions.html#94-code-signing"><span class="vc-n">9.4</span> Code Signing</a></li>
+<li class="vc-l2"><a href="ch09-pqc-applications-and-national-solutions.html#95-blockchain-and-quantum-resistant-ledgers"><span class="vc-n">9.5</span> Blockchain and Quantum-Resistant Ledgers</a><ul class="vc-subs"><li class="vc-l3"><a href="ch09-pqc-applications-and-national-solutions.html#951-bitcoin-and-ecdsa-vulnerability"><span class="vc-n">9.5.1</span> Bitcoin and ECDSA Vulnerability</a></li><li class="vc-l3"><a href="ch09-pqc-applications-and-national-solutions.html#952-quantum-resistant-ledger-qrl"><span class="vc-n">9.5.2</span> Quantum Resistant Ledger (QRL)</a></li></ul></li>
+<li class="vc-l2"><a href="ch09-pqc-applications-and-national-solutions.html#96-national-and-indigenous-pqc-solutions"><span class="vc-n">9.6</span> National and Indigenous PQC Solutions</a><ul class="vc-subs"><li class="vc-l3"><a href="ch09-pqc-applications-and-national-solutions.html#961-china-sm-series-cryptography"><span class="vc-n">9.6.1</span> China: SM-Series Cryptography</a></li><li class="vc-l3"><a href="ch09-pqc-applications-and-national-solutions.html#962-russia-gost-cryptographic-standards"><span class="vc-n">9.6.2</span> Russia: GOST Cryptographic Standards</a></li><li class="vc-l3"><a href="ch09-pqc-applications-and-national-solutions.html#963-south-korea-kpqc"><span class="vc-n">9.6.3</span> South Korea: KPQC</a></li><li class="vc-l3"><a href="ch09-pqc-applications-and-national-solutions.html#964-germany-bsi-bundesamt-fur-sicherheit-in-der-informationstechnik"><span class="vc-n">9.6.4</span> Germany: BSI (Bundesamt für Sicherheit in der Informationstechnik)</a></li><li class="vc-l3"><a href="ch09-pqc-applications-and-national-solutions.html#965-france-anssi-agence-nationale-de-la-securite-des-systemes-dinformation"><span class="vc-n">9.6.5</span> France: ANSSI (Agence Nationale de la Sécurité des Systèmes d’Information)</a></li><li class="vc-l3"><a href="ch09-pqc-applications-and-national-solutions.html#966-japan-cryptrec"><span class="vc-n">9.6.6</span> Japan: CRYPTREC</a></li><li class="vc-l3"><a href="ch09-pqc-applications-and-national-solutions.html#967-india"><span class="vc-n">9.6.7</span> India</a></li><li class="vc-l3"><a href="ch09-pqc-applications-and-national-solutions.html#968-australia-asd-australian-signals-directorate"><span class="vc-n">9.6.8</span> Australia: ASD (Australian Signals Directorate)</a></li><li class="vc-l3"><a href="ch09-pqc-applications-and-national-solutions.html#969-israel"><span class="vc-n">9.6.9</span> Israel</a></li></ul></li>
+<li class="vc-l2"><a href="ch09-pqc-applications-and-national-solutions.html#97-iot-and-embedded-applications"><span class="vc-n">9.7</span> IoT and Embedded Applications</a><ul class="vc-subs"><li class="vc-l3"><a href="ch09-pqc-applications-and-national-solutions.html#971-dtls-13-with-pqc-for-iot"><span class="vc-n">9.7.1</span> DTLS 1.3 with PQC for IoT</a></li><li class="vc-l3"><a href="ch09-pqc-applications-and-national-solutions.html#972-automotive-v2x-and-secure-boot"><span class="vc-n">9.7.2</span> Automotive: V2X and Secure Boot</a></li></ul></li>
+<li class="vc-l2"><a href="ch09-pqc-applications-and-national-solutions.html#98-summary"><span class="vc-n">9.8</span> Summary</a></li>
+</ul></details></li>
+<li class="vc-ch"><details><summary><a href="ch10-pqc-research-and-open-problems.html">Chapter 10: PQC Research and Open Problems</a></summary><ul class="vc-secs">
+<li class="vc-l2"><a href="ch10-pqc-research-and-open-problems.html#101-open-security-problems"><span class="vc-n">10.1</span> Open Security Problems</a><ul class="vc-subs"><li class="vc-l3"><a href="ch10-pqc-research-and-open-problems.html#1011-lattice-security-analysis"><span class="vc-n">10.1.1</span> Lattice Security Analysis</a></li><li class="vc-l3"><a href="ch10-pqc-research-and-open-problems.html#1012-code-based-security-gaps"><span class="vc-n">10.1.2</span> Code-Based Security Gaps</a></li><li class="vc-l3"><a href="ch10-pqc-research-and-open-problems.html#1013-isogeny-based-security-after-sidh"><span class="vc-n">10.1.3</span> Isogeny-Based Security After SIDH</a></li></ul></li>
+<li class="vc-l2"><a href="ch10-pqc-research-and-open-problems.html#102-active-research-areas"><span class="vc-n">10.2</span> Active Research Areas</a><ul class="vc-subs"><li class="vc-l3"><a href="ch10-pqc-research-and-open-problems.html#1021-threshold-pqc"><span class="vc-n">10.2.1</span> Threshold PQC</a></li><li class="vc-l3"><a href="ch10-pqc-research-and-open-problems.html#1022-zero-knowledge-proofs-from-pqc"><span class="vc-n">10.2.2</span> Zero-Knowledge Proofs from PQC</a></li><li class="vc-l3"><a href="ch10-pqc-research-and-open-problems.html#1023-quantum-safe-key-derivation"><span class="vc-n">10.2.3</span> Quantum-Safe Key Derivation</a></li><li class="vc-l3"><a href="ch10-pqc-research-and-open-problems.html#1024-blockchain-and-post-quantum-consensus"><span class="vc-n">10.2.4</span> Blockchain and Post-Quantum Consensus</a></li></ul></li>
+<li class="vc-l2"><a href="ch10-pqc-research-and-open-problems.html#103-quantum-computing-progress"><span class="vc-n">10.3</span> Quantum Computing Progress</a></li>
+<li class="vc-l2"><a href="ch10-pqc-research-and-open-problems.html#104-post-quantum-secure-multi-party-computation-mpc"><span class="vc-n">10.4</span> Post-Quantum Secure Multi-Party Computation (MPC)</a></li>
+<li class="vc-l2"><a href="ch10-pqc-research-and-open-problems.html#105-research-on-advanced-pqc-constructions"><span class="vc-n">10.5</span> Research on Advanced PQC Constructions</a><ul class="vc-subs"><li class="vc-l3"><a href="ch10-pqc-research-and-open-problems.html#1051-attribute-based-encryption-abe-from-lattices"><span class="vc-n">10.5.1</span> Attribute-Based Encryption (ABE) from Lattices</a></li><li class="vc-l3"><a href="ch10-pqc-research-and-open-problems.html#1052-functional-encryption-from-lattices"><span class="vc-n">10.5.2</span> Functional Encryption from Lattices</a></li><li class="vc-l3"><a href="ch10-pqc-research-and-open-problems.html#1053-fully-homomorphic-encryption-fhe"><span class="vc-n">10.5.3</span> Fully Homomorphic Encryption (FHE)</a></li></ul></li>
+<li class="vc-l2"><a href="ch10-pqc-research-and-open-problems.html#106-open-source-research-tools"><span class="vc-n">10.6</span> Open-Source Research Tools</a></li>
+<li class="vc-l2"><a href="ch10-pqc-research-and-open-problems.html#107-security-estimation-lattice-estimator"><span class="vc-n">10.7</span> Security Estimation: lattice-estimator</a></li>
+<li class="vc-l2"><a href="ch10-pqc-research-and-open-problems.html#108-conferences-and-key-publications"><span class="vc-n">10.8</span> Conferences and Key Publications</a></li>
+<li class="vc-l2"><a href="ch10-pqc-research-and-open-problems.html#109-summary-and-future-outlook"><span class="vc-n">10.9</span> Summary and Future Outlook</a></li>
+</ul></details></li>
+</ul>
+</nav>
+<h2 id="preface">Preface<a class="headerlink" href="#preface" title="Permanent link">&para;</a></h2>
+<p>The quantum computing era is approaching. While cryptographically-relevant quantum computers (CRQCs) capable of breaking today’s public-key cryptography do not yet exist, their eventual arrival is now widely considered a matter of <em>when</em>, not <em>if</em>. The consequences are severe: every public-key cryptosystem in use today — RSA, Diffie-Hellman, ECDH, ECDSA — would be broken by Shor’s algorithm running on a CRQC.</p>
+<p>Post-Quantum Cryptography (PQC) is the field developing new cryptographic algorithms that resist both classical and quantum attacks. After an eight-year standardization process, NIST published the first three PQC standards in August 2024 (FIPS 203, 204, 205), and selected a fifth algorithm (HQC) in March 2025. The migration from classical to quantum-safe cryptography is now an organizational imperative.</p>
+<p>This book provides a thorough technical treatment of PQC, covering:</p>
+<ul>
+<li>
+<p><strong>Mathematical foundations</strong>: Lattice problems, learning with errors, code-based cryptography.</p>
+</li>
+<li>
+<p><strong>Algorithm families</strong>: Lattice-based, code-based, hash-based, multivariate, isogeny-based.</p>
+</li>
+<li>
+<p><strong>NIST standards</strong>: FIPS 203/204/205 and upcoming algorithms.</p>
+</li>
+<li>
+<p><strong>Implementation</strong>: Software libraries (liboqs, PQClean), hardware (NTT ASIC, GPU), embedded systems.</p>
+</li>
+<li>
+<p><strong>Migration strategy</strong>: Cryptographic inventory, hybrid deployment, PKI transition.</p>
+</li>
+<li>
+<p><strong>Side-channel attacks</strong>: Power analysis, timing attacks, fault injection, and defenses.</p>
+</li>
+<li>
+<p><strong>Applications</strong>: TLS, messaging, PKI, code signing, blockchain.</p>
+</li>
+<li>
+<p><strong>National solutions</strong>: NIST, NSA, German BSI, French ANSSI, Korean KPQC, Chinese SM, Russian GOST.</p>
+</li>
+</ul>
+<p>The “Harvest Now, Decrypt Later” threat means action is required <em>today</em>, not after CRQCs arrive.</p>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button type="button" class="md-top md-icon" data-md-component="top" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+Back to top
+</button>
+</main>
+<footer class="md-footer">
+<nav class="md-footer__inner md-grid" aria-label="Footer" >
+<a href="../security_systems_engineering/bibliography.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: References">
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</div>
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Previous
+</span>
+<div class="md-ellipsis">
+References
+</div>
+</div>
+</a>
+<a href="ch01-foundations-of-post-quantum-cryptography.html" class="md-footer__link md-footer__link--next" aria-label="Next: 1. Foundations of Post-Quantum Cryptography">
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Next
+</span>
+<div class="md-ellipsis">
+1. Foundations of Post-Quantum Cryptography
+</div>
+</div>
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+</div>
+</a>
+</nav>
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+The Open Book Project &middot;
+<a href="../../about.html">About this library</a> &middot;
+<a href="../../publish.html">Publish your book</a> &middot;
+© The authors of the books
+</div>
+Made with
+<a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+Material for MkDocs
+</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "navigation.prune", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "toc.follow", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+<script src="../../assets/mathjax.js"></script>
+<script src="../../assets/viz.js"></script>
+<script src="../../assets/remote.js"></script>
+<script src="../../assets/scans.js"></script>
+<script src="../../assets/reader.js"></script>
+<script src="../../assets/app.js"></script>
+<script src="../../assets/slides.js"></script>
+<script src="../../assets/speak.js"></script>
+<script src="../../assets/quiz.js"></script>
+<script>
+    /* offline reading: the service worker at the site root (its scope is the whole site) */
+    if ("serviceWorker" in navigator && window.isSecureContext) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register(new URL("../../sw.js", location.href).href).catch(function () {});
+      });
+    }
+  </script>
+</body>
+</html>

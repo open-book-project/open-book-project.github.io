@@ -1,0 +1,1278 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="description" content="The Open Book Project: books on computer science, quantum computing, cyber security, science, the social sciences, university courses and languages, read page by page like an e-book, online or offline.">
+<meta name="author" content="The Open Book Project">
+<link rel="canonical" href="https://open-book-project.github.io/cyber/security_systems_engineering/ch25-security-architecture-and-design.html">
+<link rel="prev" href="ch24-exploit-development-fundamentals.html">
+<link rel="next" href="ch26-cloud-native-security.html">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap"></noscript>
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Open Book">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="application-name" content="Open Book"><script src="../../assets/library-data.js"></script><script>
+    (function () {
+      var X = window.XMLHttpRequest, open, gate = new Promise(function (r) { open = r; });
+      if (!X) return;
+      var open0 = X.prototype.open, send0 = X.prototype.send;
+      X.prototype.open = function (method, url) {
+        this.__pkIndex = /\/search\/search_index\.json(\?|#|$)/.test(String(url));
+        return open0.apply(this, arguments);
+      };
+      X.prototype.send = function () {
+        if (!this.__pkIndex) return send0.apply(this, arguments);
+        var xhr = this, args = arguments;
+        gate.then(function () { send0.apply(xhr, args); });
+      };
+      function wake() { open(); }
+      document.addEventListener("focusin", function (e) { if (e.target && e.target.closest && e.target.closest(".md-search")) wake(); });
+      document.addEventListener("click", function (e) { if (e.target && e.target.closest && e.target.closest('label[for="__search"], .md-search')) wake(); }, true);
+      document.addEventListener("keydown", function (e) {
+        var k = e.key;
+        if ((k === "/" || k === "s" || k === "f" || k === "S" || k === "F") && !(e.target && e.target.closest && e.target.closest("input, textarea, [contenteditable]"))) wake();
+      }, true);
+      if (/[?&]q=/.test(location.search)) wake();
+    })();
+  </script><script>
+    try {
+      if ((window.matchMedia && (matchMedia("(display-mode: standalone)").matches || matchMedia("(display-mode: fullscreen)").matches)) || navigator.standalone === true) {
+        document.documentElement.className += " bjp-standalone";
+      }
+    } catch (e) { /* not an installed app */ }
+    /* the books of a subject or of the whole library as covers or as a list (assets/app.js): the reader's choice */
+    try {
+      var bv = localStorage.getItem("bjp.view");
+      if (bv === "list" || (bv !== "grid" && /\/books\.html$/.test(location.pathname))) document.documentElement.className += " bjp-view-list";
+    } catch (e) { /* no storage: covers */ }
+  </script>
+<script>
+    /* a book opened from its cover on the shelf: the page stays blank, in the cover's colour, until the reader is up */
+    try {
+      var cv = sessionStorage.getItem("bjp.reader.cover");
+      if (cv && sessionStorage.getItem("bjp.reader.open") === "1") {
+        var c = JSON.parse(cv), de = document.documentElement;
+        de.className += " bjp-booting";
+        if (c && /^#[0-9a-f]{3,8}$/i.test(c.bg || "")) de.style.background = c.bg;
+        setTimeout(function () { de.classList.remove("bjp-booting"); de.style.background = ""; }, 3000);
+      }
+    } catch (e) { /* no session storage: the page simply opens as usual */ }
+  </script>
+<title>25. Security Architecture and Design - The Open Book Project</title>
+<link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+<link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+<link rel="stylesheet" href="../../assets/extra.css">
+<link rel="stylesheet" href="../../assets/reader.css">
+<link rel="stylesheet" href="../../assets/viz.css">
+<link rel="stylesheet" href="../../assets/app.css">
+<link rel="stylesheet" href="../../assets/theme.css">
+<link rel="stylesheet" href="../../assets/slides.css">
+<link rel="stylesheet" href="../../assets/remote.css">
+<link rel="stylesheet" href="../../assets/scans.css">
+<link rel="stylesheet" href="../../assets/speak.css">
+<link rel="stylesheet" href="../../assets/quiz.css">
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+<input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+<input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a href="#sec-arch-frameworks" class="md-skip">
+Skip to content
+</a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav class="md-header__inner md-grid" aria-label="Header">
+<a href="../../index.html" title="The Open Book Project" class="md-header__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+The Open Book Project
+</span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+25. Security Architecture and Design
+</span>
+</div>
+</div>
+</div><a href="../../index.html" class="bjp-libbtn" aria-label="Library: all books" title="Library: all books">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V5h4v15M8 20V9h4v11M14 20L12.6 6l3.8-.8 3 14.2M3 20h18"/></svg><span>Library</span>
+</a>
+<a href="../../subjects/index.html" class="pk-catbtn" aria-haspopup="true" aria-expanded="false" title="Browse the books by category">
+<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><circle cx="17" cy="7" r="3.6"/><path d="M7 13.4l3.9 6.8H3.1z"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg><span>Categories</span>
+</a>
+<form class="md-header__option" data-md-component="palette">
+<input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+<label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+</label>
+<input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+<label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+<label class="md-search__icon md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</label>
+<nav class="md-search__options" aria-label="Search">
+<button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+Initializing search
+</div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--primary bjp-nav bjp-nav--book" aria-label="Navigation" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a href="../../index.html" title="The Open Book Project" class="md-nav__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+The Open Book Project
+</label>
+<ul class="md-nav__list" data-md-scrollfix>
+<li class="md-nav__item bjp-nav-all">
+<a href="../../index.html" class="md-nav__link" aria-label="All books: back to the library">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+<span class="md-ellipsis">All books</span>
+</a>
+</li>
+<li class="md-nav__item bjp-nav-book" role="presentation"><span class="bjp-nav-head">Security Systems Engineering</span></li>
+<li class="md-nav__item">
+<a href="index.html" class="md-nav__link">
+<span class="md-ellipsis">
+Overview and preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="notation-and-conventions.html" class="md-nav__link">
+<span class="md-ellipsis">
+Notation and Conventions
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch01-mathematical-foundations-of-cryptography.html" class="md-nav__link">
+<span class="md-ellipsis">
+1. Mathematical Foundations of Cryptography
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch02-symmetric-cryptography.html" class="md-nav__link">
+<span class="md-ellipsis">
+2. Symmetric Cryptography
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch03-public-key-cryptography.html" class="md-nav__link">
+<span class="md-ellipsis">
+3. Public-Key Cryptography
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch04-cryptographic-hash-functions-and-macs.html" class="md-nav__link">
+<span class="md-ellipsis">
+4. Cryptographic Hash Functions and MACs
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch05-key-management-and-public-key-infrastructure.html" class="md-nav__link">
+<span class="md-ellipsis">
+5. Key Management and Public Key Infrastructure
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch06-cryptographic-protocols-and-security-proofs.html" class="md-nav__link">
+<span class="md-ellipsis">
+6. Cryptographic Protocols and Security Proofs
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch07-quantum-cryptography-and-post-quantum-migration.html" class="md-nav__link">
+<span class="md-ellipsis">
+7. Quantum Cryptography and Post-Quantum Migration
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch08-network-security-fundamentals.html" class="md-nav__link">
+<span class="md-ellipsis">
+8. Network Security Fundamentals
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch09-firewalls-ids-and-ips.html" class="md-nav__link">
+<span class="md-ellipsis">
+9. Firewalls, IDS, and IPS
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch10-network-protocol-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+10. Network Protocol Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch11-web-application-security-fundamentals.html" class="md-nav__link">
+<span class="md-ellipsis">
+11. Web Application Security Fundamentals
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch12-authentication-authorization-and-access-control.html" class="md-nav__link">
+<span class="md-ellipsis">
+12. Authentication, Authorization, and Access Control
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch13-api-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+13. API Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch14-side-channel-attacks.html" class="md-nav__link">
+<span class="md-ellipsis">
+14. Side-Channel Attacks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch15-hardware-tamper-protection.html" class="md-nav__link">
+<span class="md-ellipsis">
+15. Hardware Tamper Protection
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch16-transport-layer-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+16. Transport Layer Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch17-ssh-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+17. SSH Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch18-email-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+18. Email Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch19-advanced-network-protocol-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+19. Advanced Network Protocol Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch20-malware-analysis.html" class="md-nav__link">
+<span class="md-ellipsis">
+20. Malware Analysis
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch21-reverse-engineering.html" class="md-nav__link">
+<span class="md-ellipsis">
+21. Reverse Engineering
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch22-digital-forensics.html" class="md-nav__link">
+<span class="md-ellipsis">
+22. Digital Forensics
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch23-vulnerability-research-and-fuzzing.html" class="md-nav__link">
+<span class="md-ellipsis">
+23. Vulnerability Research and Fuzzing
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch24-exploit-development-fundamentals.html" class="md-nav__link">
+<span class="md-ellipsis">
+24. Exploit Development Fundamentals
+</span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+25. Security Architecture and Design
+</span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a href="ch25-security-architecture-and-design.html" class="md-nav__link md-nav__link--active">
+<span class="md-ellipsis">
+25. Security Architecture and Design
+</span>
+</a>
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#sec-arch-frameworks" class="md-nav__link">
+<span class="md-ellipsis">
+25.1 Security Architecture Frameworks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-defence-in-depth" class="md-nav__link">
+<span class="md-ellipsis">
+25.2 Defence in Depth
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-zero-trust" class="md-nav__link">
+<span class="md-ellipsis">
+25.3 Zero Trust Architecture
+</span>
+</a>
+<nav class="md-nav" aria-label="25.3 Zero Trust Architecture">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#2531-nist-sp-800-207-seven-tenets" class="md-nav__link">
+<span class="md-ellipsis">
+25.3.1 NIST SP 800-207 Seven Tenets
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2532-zero-trust-components" class="md-nav__link">
+<span class="md-ellipsis">
+25.3.2 Zero Trust Components
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-segmentation" class="md-nav__link">
+<span class="md-ellipsis">
+25.4 Network Segmentation
+</span>
+</a>
+<nav class="md-nav" aria-label="25.4 Network Segmentation">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#2541-microsegmentation-in-practice" class="md-nav__link">
+<span class="md-ellipsis">
+25.4.1 Microsegmentation in Practice
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-stride" class="md-nav__link">
+<span class="md-ellipsis">
+25.5 Threat Modelling: STRIDE
+</span>
+</a>
+<nav class="md-nav" aria-label="25.5 Threat Modelling: STRIDE">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#2551-stride-applied-to-a-web-api" class="md-nav__link">
+<span class="md-ellipsis">
+25.5.1 STRIDE Applied to a Web API
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2552-worked-stride-example-rest-api-with-database-backend" class="md-nav__link">
+<span class="md-ellipsis">
+25.5.2 Worked STRIDE Example: REST API with Database Backend
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-controls" class="md-nav__link">
+<span class="md-ellipsis">
+25.6 Security Controls Classification
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-hardening" class="md-nav__link">
+<span class="md-ellipsis">
+25.7 Hardening and Benchmarks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-ssdlc" class="md-nav__link">
+<span class="md-ellipsis">
+25.8 Secure SDLC
+</span>
+</a>
+<nav class="md-nav" aria-label="25.8 Secure SDLC">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#2581-security-guardrails-in-cicd" class="md-nav__link">
+<span class="md-ellipsis">
+25.8.1 Security Guardrails in CI/CD
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-compliance" class="md-nav__link">
+<span class="md-ellipsis">
+25.9 Compliance Frameworks
+</span>
+</a>
+<nav class="md-nav" aria-label="25.9 Compliance Frameworks">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#2591-nist-csf-20-controls-mapping" class="md-nav__link">
+<span class="md-ellipsis">
+25.9.1 NIST CSF 2.0 Controls Mapping
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2592-cloud-security-posture-management-cspm" class="md-nav__link">
+<span class="md-ellipsis">
+25.9.2 Cloud Security Posture Management (CSPM)
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#exercises" class="md-nav__link">
+<span class="md-ellipsis">
+Exercises
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="ch26-cloud-native-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+26. Cloud-Native Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch27-human-factors-in-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+27. Human Factors in Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch28-artificial-intelligence-and-machine-learning.html" class="md-nav__link">
+<span class="md-ellipsis">
+28. Artificial Intelligence and Machine Learning Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch29-iot-industrial-control-systems-and-the-emerging.html" class="md-nav__link">
+<span class="md-ellipsis">
+29. IoT, Industrial Control Systems, and the Emerging Threat Horizon
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="app-a-mathematical-reference.html" class="md-nav__link">
+<span class="md-ellipsis">
+Appendix A. Mathematical Reference
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="app-b-security-tools-reference.html" class="md-nav__link">
+<span class="md-ellipsis">
+Appendix B. Security Tools Reference
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="app-c-selected-exercise-solutions.html" class="md-nav__link">
+<span class="md-ellipsis">
+Appendix C. Selected Exercise Solutions
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="bibliography.html" class="md-nav__link">
+<span class="md-ellipsis">
+References
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#sec-arch-frameworks" class="md-nav__link">
+<span class="md-ellipsis">
+25.1 Security Architecture Frameworks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-defence-in-depth" class="md-nav__link">
+<span class="md-ellipsis">
+25.2 Defence in Depth
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-zero-trust" class="md-nav__link">
+<span class="md-ellipsis">
+25.3 Zero Trust Architecture
+</span>
+</a>
+<nav class="md-nav" aria-label="25.3 Zero Trust Architecture">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#2531-nist-sp-800-207-seven-tenets" class="md-nav__link">
+<span class="md-ellipsis">
+25.3.1 NIST SP 800-207 Seven Tenets
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2532-zero-trust-components" class="md-nav__link">
+<span class="md-ellipsis">
+25.3.2 Zero Trust Components
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-segmentation" class="md-nav__link">
+<span class="md-ellipsis">
+25.4 Network Segmentation
+</span>
+</a>
+<nav class="md-nav" aria-label="25.4 Network Segmentation">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#2541-microsegmentation-in-practice" class="md-nav__link">
+<span class="md-ellipsis">
+25.4.1 Microsegmentation in Practice
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-stride" class="md-nav__link">
+<span class="md-ellipsis">
+25.5 Threat Modelling: STRIDE
+</span>
+</a>
+<nav class="md-nav" aria-label="25.5 Threat Modelling: STRIDE">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#2551-stride-applied-to-a-web-api" class="md-nav__link">
+<span class="md-ellipsis">
+25.5.1 STRIDE Applied to a Web API
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2552-worked-stride-example-rest-api-with-database-backend" class="md-nav__link">
+<span class="md-ellipsis">
+25.5.2 Worked STRIDE Example: REST API with Database Backend
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-controls" class="md-nav__link">
+<span class="md-ellipsis">
+25.6 Security Controls Classification
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-hardening" class="md-nav__link">
+<span class="md-ellipsis">
+25.7 Hardening and Benchmarks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-ssdlc" class="md-nav__link">
+<span class="md-ellipsis">
+25.8 Secure SDLC
+</span>
+</a>
+<nav class="md-nav" aria-label="25.8 Secure SDLC">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#2581-security-guardrails-in-cicd" class="md-nav__link">
+<span class="md-ellipsis">
+25.8.1 Security Guardrails in CI/CD
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-compliance" class="md-nav__link">
+<span class="md-ellipsis">
+25.9 Compliance Frameworks
+</span>
+</a>
+<nav class="md-nav" aria-label="25.9 Compliance Frameworks">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#2591-nist-csf-20-controls-mapping" class="md-nav__link">
+<span class="md-ellipsis">
+25.9.1 NIST CSF 2.0 Controls Mapping
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2592-cloud-security-posture-management-cspm" class="md-nav__link">
+<span class="md-ellipsis">
+25.9.2 Cloud Security Posture Management (CSPM)
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#exercises" class="md-nav__link">
+<span class="md-ellipsis">
+Exercises
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="ch-security-architecture">Chapter 25: Security Architecture and Design<a class="headerlink" href="#ch-security-architecture" title="Permanent link">&para;</a></h1>
+<p>Security architecture translates abstract security requirements into concrete, implementable system designs. A well-designed architecture reduces the attack surface, limits the blast radius of any single compromise, and provides the visibility needed for detection and response.</p>
+<p>This chapter moves from theoretical frameworks through practical controls and into the compliance requirements that often drive real procurement and design decisions.</p>
+<h2 id="sec-arch-frameworks"><span class="secnum">25.1</span> Security Architecture Frameworks<a class="headerlink" href="#sec-arch-frameworks" title="Permanent link">&para;</a></h2>
+<ul>
+<li>
+<p><strong>SABSA</strong> (Sherwood Applied Business Security Architecture) — A risk-driven, business-aligned framework with six layers: Contextual, Conceptual, Logical, Physical, Component, and Operational. Each layer answers the questions Who, What, Where, When, Why, and How for security.</p>
+</li>
+<li>
+<p><strong>TOGAF with Security Overlay</strong> — The Open Group Architecture Framework provides a generic enterprise architecture methodology; the Security Architecture domain extends it with threat and risk analysis at each ADM phase.</p>
+</li>
+<li>
+<p><strong>O-ESA</strong> (Open Enterprise Security Architecture) — An open standard from The Open Group focused on the logical and physical security architecture components: security services, security domains, and trust relationships.</p>
+</li>
+</ul>
+<h2 id="sec-defence-in-depth"><span class="secnum">25.2</span> Defence in Depth<a class="headerlink" href="#sec-defence-in-depth" title="Permanent link">&para;</a></h2>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 25.1 (Defence in Depth)</p>
+<p><strong>Defence in depth</strong> is a layered security strategy in which multiple independent security controls protect an asset. The failure of any single control does not result in a complete compromise.</p>
+</div>
+<figure class="fig fig-diagram" id="fig-defence-in-depth">
+<img class="tikz" src="img/tikz-32b33cdfd378.svg" alt="Defence in depth: concentric security layers" loading="lazy" width="287" height="74">
+<figcaption><strong>Figure 25.1.</strong> Defence in depth: concentric security layers</figcaption>
+</figure>
+<p>Each layer is implemented with different control types and technologies:</p>
+<ul>
+<li>
+<p><strong>Physical</strong>: Fences, guards, badge readers, CCTV.</p>
+</li>
+<li>
+<p><strong>Network</strong>: Firewall, IDS/IPS, VPN, network segmentation.</p>
+</li>
+<li>
+<p><strong>Host</strong>: EDR, patch management, host-based firewall, disk encryption.</p>
+</li>
+<li>
+<p><strong>Application</strong>: Input validation, WAF, SAST/DAST, secure SDLC.</p>
+</li>
+<li>
+<p><strong>Data</strong>: Encryption at rest and in transit, DLP, access control lists.</p>
+</li>
+</ul>
+<h2 id="sec-zero-trust"><span class="secnum">25.3</span> Zero Trust Architecture<a class="headerlink" href="#sec-zero-trust" title="Permanent link">&para;</a></h2>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 25.2 (Zero Trust Architecture)</p>
+<p><strong>Zero Trust Architecture</strong> (ZTA), defined in NIST SP 800-207, treats every network location as potentially hostile. Access decisions are made dynamically based on identity, device posture, and contextual signals rather than network perimeter location.</p>
+</div>
+<h3 id="2531-nist-sp-800-207-seven-tenets"><span class="secnum">25.3.1</span> NIST SP 800-207 Seven Tenets<a class="headerlink" href="#2531-nist-sp-800-207-seven-tenets" title="Permanent link">&para;</a></h3>
+<ol>
+<li>
+<p>All data sources and computing services are considered resources.</p>
+</li>
+<li>
+<p>All communication is secured regardless of network location.</p>
+</li>
+<li>
+<p>Access to resources is granted on a per-session basis.</p>
+</li>
+<li>
+<p>Resource access is determined by dynamic policy.</p>
+</li>
+<li>
+<p>The enterprise monitors and measures the integrity of all owned assets.</p>
+</li>
+<li>
+<p>All resource authentication and authorisation are dynamic and strictly enforced before access is granted.</p>
+</li>
+<li>
+<p>The enterprise collects information about the state of assets, network infrastructure, and communications to improve its security posture.</p>
+</li>
+</ol>
+<h3 id="2532-zero-trust-components"><span class="secnum">25.3.2</span> Zero Trust Components<a class="headerlink" href="#2532-zero-trust-components" title="Permanent link">&para;</a></h3>
+<figure class="fig fig-diagram" id="fig-zero-trust">
+<img class="tikz" src="img/tikz-7a7f42e52f1e.svg" alt="Zero Trust reference architecture (NIST SP 800-207)" loading="lazy" width="393" height="127">
+<figcaption><strong>Figure 25.2.</strong> Zero Trust reference architecture (NIST SP 800-207)</figcaption>
+</figure>
+<dl>
+<dt>Identity Provider (IdP)</dt>
+<dd>Issues verified claims about user and device identity. Examples: Okta, Azure Active Directory, Google Workspace.</dd>
+<dt>Policy Engine (PE)</dt>
+<dd>Evaluates trust score based on identity claims, device health (MDM compliance, patch level, EDR status), and contextual signals (geolocation, time, behavioural baseline).</dd>
+<dt>Policy Administrator (PA)</dt>
+<dd>Translates the PE decision into a session token or access credential.</dd>
+<dt>Policy Enforcement Point (PEP)</dt>
+<dd>Proxies or brokers traffic; enforces the PE allow/deny decision. Examples: Cloud-based reverse proxy, ZTNA agent.</dd>
+</dl>
+<div class="admonition info box-keybox kind-concept">
+<p class="admonition-title">BeyondCorp: Google’s Zero Trust Implementation</p>
+<p>Google’s BeyondCorp model (2014–) moved access control from VPN-based perimeter to device and user verification. The core insight: <em>the corporate network is as untrusted as the public internet</em>. Employee laptops must present a device certificate (managed by Google’s CA) and user identity token to the Access Proxy before reaching any internal service.</p>
+</div>
+<h2 id="sec-segmentation"><span class="secnum">25.4</span> Network Segmentation<a class="headerlink" href="#sec-segmentation" title="Permanent link">&para;</a></h2>
+<dl>
+<dt>VLANs</dt>
+<dd>Layer-2 segmentation; limits broadcast domains but does not prevent routed traffic unless combined with inter-VLAN ACLs.</dd>
+<dt>DMZ Architecture</dt>
+<dd>A perimeter network hosting publicly accessible services (web, email) behind an outer firewall; an inner firewall separates the DMZ from the internal network.</dd>
+<dt>Micro-segmentation</dt>
+<dd>Software-defined segmentation at the workload level; each VM or container has its own firewall policy.</dd>
+<dt>Service Mesh (Istio mTLS)</dt>
+<dd>Transparent mutual-TLS between microservices; every service has a certificate from a mesh CA; east-west traffic is authenticated and encrypted.</dd>
+</dl>
+<h3 id="2541-microsegmentation-in-practice"><span class="secnum">25.4.1</span> Microsegmentation in Practice<a class="headerlink" href="#2541-microsegmentation-in-practice" title="Permanent link">&para;</a></h3>
+<p>A traditional data centre relies on VLANs and perimeter firewalls to separate network zones, but once an attacker compromises a single host inside a VLAN, east-west traffic—server-to-server communication within the same network tier—flows freely. This flat internal network is the reason that ransomware can encrypt thousands of servers after a single workstation is compromised: the ransomware spreads laterally via SMB (port 445) or WMI with no firewall between servers in the same VLAN.</p>
+<p><strong>Microsegmentation</strong> replaces VLAN-based controls with workload-based policies. Instead of assigning a firewall rule to a subnet, you assign it to a workload identity—a VM tag, container label, or process signature. The policy is: “the <code>payment-service</code> workload may communicate with the <code>postgres-primary</code> workload on port 5432, and nothing else.” Any other connection—whether from a compromised adjacent workload or from the workload itself trying to reach the internet—is blocked by default.</p>
+<p>Implementation options:</p>
+<ul>
+<li>
+<p><strong>VMware NSX</strong> enforces distributed firewall rules at the hypervisor level; policy follows the VM regardless of which physical host or VLAN it migrates to. NSX’s distributed firewall processes traffic before it exits the virtual NIC, so there’s no traffic path that bypasses it.</p>
+</li>
+<li>
+<p><strong>Illumio Core</strong> installs a lightweight agent on each workload (physical server, VM, or container) that enforces allow-list policies locally and reports telemetry to a central Policy Compute Engine. Because policy enforcement is at the host, it works across heterogeneous environments—on-premises bare metal, cloud VMs, and containers in the same policy domain.</p>
+</li>
+<li>
+<p><strong>Cisco Tetration</strong> (now Cisco Secure Workload) uses network flow telemetry and machine learning to generate proposed segmentation policies based on observed communication patterns before enforcement is turned on—a critical feature for brownfield deployments where unknown dependencies would otherwise cause policy-induced outages.</p>
+</li>
+</ul>
+<p>The operational challenge of microsegmentation is the discovery phase: mapping every legitimate communication path before writing a deny-all default rule. Skipping this step and enabling enforcement too early causes unexpected application outages that erode trust in the programme. A phased approach— observe, propose, verify, enforce—is the only reliable path.</p>
+<h2 id="sec-stride"><span class="secnum">25.5</span> Threat Modelling: STRIDE<a class="headerlink" href="#sec-stride" title="Permanent link">&para;</a></h2>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 25.3 (STRIDE)</p>
+<p><strong>STRIDE</strong> is a mnemonic for six threat categories used to systematically analyse system components: <strong>S</strong>poofing identity, <strong>T</strong>ampering with data, <strong>R</strong>epudiation, <strong>I</strong>nformation Disclosure, <strong>D</strong>enial of Service, <strong>E</strong>levation of Privilege.</p>
+</div>
+<h3 id="2551-stride-applied-to-a-web-api"><span class="secnum">25.5.1</span> STRIDE Applied to a Web API<a class="headerlink" href="#2551-stride-applied-to-a-web-api" title="Permanent link">&para;</a></h3>
+<div class="center">
+<div class="tbl">
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Threat</strong></th>
+<th style="text-align: left;"><strong>Example</strong></th>
+<th style="text-align: left;"><strong>Mitigation</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Spoofing</td>
+<td style="text-align: left;">Forge or replay a JWT to impersonate another user</td>
+<td style="text-align: left;">Short JWT expiry; signature verification; token revocation</td>
+</tr>
+<tr>
+<td style="text-align: left;">Tampering</td>
+<td style="text-align: left;">Modify request body after signing</td>
+<td style="text-align: left;">HMAC request signing; TLS</td>
+</tr>
+<tr>
+<td style="text-align: left;">Repudiation</td>
+<td style="text-align: left;">Deny having made a destructive API call</td>
+<td style="text-align: left;">Structured audit log with user/IP/timestamp</td>
+</tr>
+<tr>
+<td style="text-align: left;">Info Disclosure</td>
+<td style="text-align: left;">Verbose error messages leak stack traces/SQL</td>
+<td style="text-align: left;">Generic error responses; structured logging</td>
+</tr>
+<tr>
+<td style="text-align: left;">DoS</td>
+<td style="text-align: left;">Unbounded query floods the API endpoint</td>
+<td style="text-align: left;">Rate limiting; query complexity limits</td>
+</tr>
+<tr>
+<td style="text-align: left;">Elevation</td>
+<td style="text-align: left;">IDOR: access another user’s resource by ID</td>
+<td style="text-align: left;">Ownership checks; object-level authorisation</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<h3 id="2552-worked-stride-example-rest-api-with-database-backend"><span class="secnum">25.5.2</span> Worked STRIDE Example: REST API with Database Backend<a class="headerlink" href="#2552-worked-stride-example-rest-api-with-database-backend" title="Permanent link">&para;</a></h3>
+<p>Consider a simple web API that accepts JSON over HTTPS, authenticates callers via JWT, and stores records in a PostgreSQL database. Walking each STRIDE category against this system produces concrete, actionable mitigations:</p>
+<dl>
+<dt>Spoofing.</dt>
+<dd>An attacker calls the API without a valid token, or replays a stolen token from a previous session. <em>Mitigation:</em> Require a signed JWT in the <code>Authorization: Bearer</code> header on every request. Use short expiry (15 minutes) with refresh tokens stored in HttpOnly cookies. Validate the signature against the public key from the issuer’s JWKS endpoint—never accept <code>alg: none</code> or HS256 with a predictable key. Maintain a token revocation list (or use short-lived tokens) for logout and account-takeover recovery.</dd>
+<dt>Tampering.</dt>
+<dd>The JSON body is modified in transit, changing a transaction amount or target account ID. <em>Mitigation:</em> TLS 1.3 prevents in-transit modification. For higher-assurance APIs, add an HMAC request signature over the canonical request body (<code>Content-Type</code> + body SHA-256 + timestamp), similar to AWS Signature v4. The server rejects any request whose signature does not match, regardless of TLS protection.</dd>
+<dt>Repudiation.</dt>
+<dd>A user denies having submitted a fraudulent transfer. Without logs, the API can’t prove otherwise. <em>Mitigation:</em> Write structured audit logs for every state-changing API call: authenticated user ID, source IP, hashed request body, resource modified, and timestamp. Ship these logs to an append-only, write-once storage tier (AWS S3 Object Lock, or a WORM appliance) so that neither the user nor a compromised application server can delete them.</dd>
+<dt>Information Disclosure.</dt>
+<dd>A database error propagates verbatim to the client: <code>ERROR: relation &quot;users&quot; does not exist</code> reveals schema. <em>Mitigation:</em> Catch all exceptions at the controller layer and return a generic <code>500 Internal Server Error</code> with a correlation ID. Log the full exception internally. Configure the framework to suppress stack traces in production mode.</dd>
+<dt>Denial of Service.</dt>
+<dd>An attacker scripts thousands of unauthenticated POST requests per second against <code>/auth/login</code>, exhausting the database connection pool. <em>Mitigation:</em> Apply a token-bucket rate limiter at the reverse proxy (nginx <code>limit_req_zone</code>, API gateway throttling): 10 requests/second per IP with burst 20. Add progressive delays after three failed login attempts and account lockout after ten within one hour.</dd>
+<dt>Elevation of Privilege.</dt>
+<dd>The <code>GET /api/invoices/{id}</code> endpoint returns an invoice to any authenticated user if they guess the numeric invoice ID—a classic IDOR. <em>Mitigation:</em> Every database query must include an ownership predicate: <code>WHERE id = $1 AND owner_id = <span class="arithmatex">\(2&lt;/code&gt;, where &lt;code&gt;\)</span>2</code> is the authenticated user’s ID extracted from the verified JWT, never from the request body. Use UUIDs instead of sequential integers to prevent enumeration.</dd>
+</dl>
+<p>This analysis is conducted in a structured session with developers, architects, and security engineers during the Design phase of the SDLC. Each threat-mitigation pair becomes a tracked security requirement, verified during penetration testing before release.</p>
+<h2 id="sec-controls"><span class="secnum">25.6</span> Security Controls Classification<a class="headerlink" href="#sec-controls" title="Permanent link">&para;</a></h2>
+<p>Security controls are classified by function and implementation type:</p>
+<div class="center">
+<div class="tbl">
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"></th>
+<th style="text-align: left;"><strong>Preventive</strong></th>
+<th style="text-align: left;"><strong>Detective</strong></th>
+<th style="text-align: left;"><strong>Corrective</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Administrative</strong></td>
+<td style="text-align: left;">Policy, training</td>
+<td style="text-align: left;">Audit, review</td>
+<td style="text-align: left;">Disciplinary action</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Technical</strong></td>
+<td style="text-align: left;">Firewall, MFA</td>
+<td style="text-align: left;">IDS, SIEM</td>
+<td style="text-align: left;">Patch, quarantine</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Physical</strong></td>
+<td style="text-align: left;">Lock, fence</td>
+<td style="text-align: left;">CCTV, alarm</td>
+<td style="text-align: left;">Fire suppression</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>A <strong>compensating control</strong> fulfils a security requirement when the primary control is not feasible (e.g., network-layer monitoring compensates for an unpatchable legacy system).</p>
+<h2 id="sec-hardening"><span class="secnum">25.7</span> Hardening and Benchmarks<a class="headerlink" href="#sec-hardening" title="Permanent link">&para;</a></h2>
+<dl>
+<dt>CIS Benchmarks</dt>
+<dd>The Center for Internet Security publishes prescriptive configuration guidelines for OS, middleware, and cloud platforms at two levels: Level 1 (basic hygiene, minimal performance impact) and Level 2 (defence-in-depth, higher operational overhead).</dd>
+<dt>DISA STIGs</dt>
+<dd>Security Technical Implementation Guides from the US Department of Defense; mandatory for federal systems; more prescriptive than CIS.</dd>
+<dt>Automated Compliance</dt>
+<dd>Tools such as OpenSCAP (OVAL/XCCDF), Chef InSpec, and Puppet Bolt continuously assess and remediate drift from the baseline.</dd>
+</dl>
+<h2 id="sec-ssdlc"><span class="secnum">25.8</span> Secure SDLC<a class="headerlink" href="#sec-ssdlc" title="Permanent link">&para;</a></h2>
+<p>Security must be integrated throughout the software development lifecycle (SDLC) rather than applied as a post-deployment afterthought.</p>
+<div class="admonition info box-keybox kind-concept">
+<p class="admonition-title">Secure SDLC Activities by Phase</p>
+<div class="center">
+<div class="tbl">
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Phase</strong></th>
+<th style="text-align: left;"><strong>Security Activities</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Requirements</td>
+<td style="text-align: left;">Security requirements, abuse cases, privacy impact assessment</td>
+</tr>
+<tr>
+<td style="text-align: left;">Design</td>
+<td style="text-align: left;">Threat modelling (STRIDE, PASTA), attack trees, crown jewel analysis</td>
+</tr>
+<tr>
+<td style="text-align: left;">Development</td>
+<td style="text-align: left;">Secure coding standards, peer review, pre-commit hooks</td>
+</tr>
+<tr>
+<td style="text-align: left;">Build/CI</td>
+<td style="text-align: left;">SAST (Semgrep, Checkmarx), SCA (Dependabot, Snyk), secrets detection</td>
+</tr>
+<tr>
+<td style="text-align: left;">Test</td>
+<td style="text-align: left;">DAST (OWASP ZAP, Burp), IAST, fuzzing, manual pen test</td>
+</tr>
+<tr>
+<td style="text-align: left;">Release</td>
+<td style="text-align: left;">Security gate (fail build on critical findings), signing, SBOM</td>
+</tr>
+<tr>
+<td style="text-align: left;">Operations</td>
+<td style="text-align: left;">Patch management, SIEM, CSPM, vulnerability management</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+<h3 id="2581-security-guardrails-in-cicd"><span class="secnum">25.8.1</span> Security Guardrails in CI/CD<a class="headerlink" href="#2581-security-guardrails-in-cicd" title="Permanent link">&para;</a></h3>
+<p>“Shift left” is the principle that security issues caught earlier in the development process cost orders of magnitude less to fix. The IBM Systems Sciences Institute estimated that a defect found at the requirements stage costs &#36;100 to fix; the same defect found in production costs around &#36;10,000. The implication is clear: embed automated security checks into every stage of the CI/CD pipeline so that issues surface when a developer still has full context, rather than weeks later during a scheduled pen test.</p>
+<p>A mature CI/CD security pipeline includes all of the following as mandatory gates—a finding above the configured severity threshold blocks the pull request or deployment:</p>
+<dl>
+<dt>SAST (Static Application Security Testing).</dt>
+<dd><strong>Semgrep</strong> and <strong>SonarQube</strong> scan source code for insecure patterns—SQL injection, XSS, hardcoded credentials, unsafe deserialization—without executing the code. Run as a PR check; fail on High/Critical findings. Semgrep’s rule registry includes OWASP Top 10 coverage for Python, Java, JavaScript, Go, and C/C++. Keep rulesets pinned to a version so results are reproducible.</dd>
+<dt>Secrets Scanning.</dt>
+<dd><strong>GitLeaks</strong> and <strong>TruffleHog</strong> scan the git history and staged changes for secrets—API keys, private keys, connection strings, and OAuth tokens—using regex patterns and entropy analysis. Run as a <strong>pre-commit hook</strong> (client-side, before the secret ever reaches the remote) and again as a CI server-side check. A secret committed to a public repository should be considered compromised immediately, regardless of whether it was caught later— git history is public and search engines index it within minutes.</dd>
+<dt>SCA (Software Composition Analysis).</dt>
+<dd><strong>Dependabot</strong> (GitHub-native) and <strong>Snyk</strong> scan dependency manifests (<code>package.json</code>, <code>requirements.txt</code>, <code>pom.xml</code>) against vulnerability databases (NVD, OSV) and open automated PRs with version bumps when a dependency has a known CVE. Configure severity thresholds: auto-merge Low/Medium dependency updates, require human review for High/ Critical. SBOM (Software Bill of Materials) generation using <strong>Syft</strong> or <strong>CycloneDX</strong> should be part of every release artefact.</dd>
+<dt>Container Image Scanning.</dt>
+<dd><strong>Trivy</strong> and <strong>Grype</strong> scan container images for OS package CVEs and application dependency vulnerabilities before push to the registry. Add the scan step between the <code>docker build</code> and <code>docker push</code> stages. Use a <strong>distroless</strong> or <strong>scratch</strong>-based base image to minimise the OS package attack surface—a distroless Python image carries no shell, no package manager, and no utilities an attacker could repurpose.</dd>
+<dt>IaC Scanning (Infrastructure-as-Code).</dt>
+<dd><strong>Checkov</strong> and <strong>tfsec</strong> analyse Terraform, Kubernetes YAML, CloudFormation, and Helm charts for misconfigurations—S3 buckets with public ACLs, security groups open to 0.0.0.0/0, containers running as root, missing pod security standards. Run on every PR that touches <code><em>.tf</code>, <code></em>.yaml</code>, or Helm templates.</dd>
+<dt>DAST (Dynamic Application Security Testing).</dt>
+<dd><strong>OWASP ZAP</strong> and <strong>Burp Suite Enterprise</strong> scan a running deployment in a staging environment for vulnerabilities that only manifest at runtime: authentication bypass, session fixation, CORS misconfiguration. Run against the staging environment on merge to the main branch, not on every PR (it requires a running service and takes longer).</dd>
+</dl>
+<p>The combined effect is a <em>security control at every commit</em>. A developer who introduces a hardcoded AWS secret sees a pre-commit hook failure within seconds; a dependency CVE surfaces as a Dependabot PR the same day the CVE is published; a container misconfiguration blocks deployment before it reaches staging. The cost of maintaining these pipelines is modest—a few hours to configure initially, then ongoing tuning to reduce false positives. The alternative—finding the same issues during a quarterly pen test—costs dramatically more in both remediation time and risk exposure.</p>
+<h2 id="sec-compliance"><span class="secnum">25.9</span> Compliance Frameworks<a class="headerlink" href="#sec-compliance" title="Permanent link">&para;</a></h2>
+<div class="center">
+<div class="tbl">
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Framework</strong></th>
+<th style="text-align: left;"><strong>Scope and Key Requirements</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">ISO/IEC 27001</td>
+<td style="text-align: left;">International ISMS standard; 93 controls in Annex A (ISO 27002:2022); risk assessment and Statement of Applicability required</td>
+</tr>
+<tr>
+<td style="text-align: left;">NIST CSF 2.0</td>
+<td style="text-align: left;">Six functions: Govern, Identify, Protect, Detect, Respond, Recover; voluntary framework aligned to NIST SP 800-53</td>
+</tr>
+<tr>
+<td style="text-align: left;">PCI DSS v4.0</td>
+<td style="text-align: left;">Payment card data; 12 requirements; customised approach option</td>
+</tr>
+<tr>
+<td style="text-align: left;">SOC 2 Type II</td>
+<td style="text-align: left;">AICPA trust service criteria (Security, Availability, Confidentiality, Processing Integrity, Privacy); audited over observation period</td>
+</tr>
+<tr>
+<td style="text-align: left;">HIPAA</td>
+<td style="text-align: left;">US health data; administrative, physical, and technical safeguards; breach notification within 60 days</td>
+</tr>
+<tr>
+<td style="text-align: left;">GDPR (Technical)</td>
+<td style="text-align: left;">Encryption, pseudonymisation, data minimisation, privacy by design; 72-hour breach notification to supervisory authority</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<h3 id="2591-nist-csf-20-controls-mapping"><span class="secnum">25.9.1</span> NIST CSF 2.0 Controls Mapping<a class="headerlink" href="#2591-nist-csf-20-controls-mapping" title="Permanent link">&para;</a></h3>
+<div class="center">
+<div class="tbl">
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Function</strong></th>
+<th style="text-align: left;"><strong>Example Controls</strong></th>
+<th style="text-align: left;"><strong>Key Outcome</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Govern</td>
+<td style="text-align: left;">Risk tolerance, supply chain policy</td>
+<td style="text-align: left;">Accountability established</td>
+</tr>
+<tr>
+<td style="text-align: left;">Identify</td>
+<td style="text-align: left;">Asset inventory, vulnerability scanning</td>
+<td style="text-align: left;">Risk understood</td>
+</tr>
+<tr>
+<td style="text-align: left;">Protect</td>
+<td style="text-align: left;">MFA, encryption, patch management, training</td>
+<td style="text-align: left;">Access limited</td>
+</tr>
+<tr>
+<td style="text-align: left;">Detect</td>
+<td style="text-align: left;">SIEM, IDS, anomaly detection, audit logs</td>
+<td style="text-align: left;">Events visible</td>
+</tr>
+<tr>
+<td style="text-align: left;">Respond</td>
+<td style="text-align: left;">IR plan, playbooks, communication plan</td>
+<td style="text-align: left;">Impact contained</td>
+</tr>
+<tr>
+<td style="text-align: left;">Recover</td>
+<td style="text-align: left;">Backups, DR plan, lessons learned</td>
+<td style="text-align: left;">Services restored</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<h3 id="2592-cloud-security-posture-management-cspm"><span class="secnum">25.9.2</span> Cloud Security Posture Management (CSPM)<a class="headerlink" href="#2592-cloud-security-posture-management-cspm" title="Permanent link">&para;</a></h3>
+<p>As organisations move workloads to AWS, Azure, and GCP, misconfigurations in cloud resource settings have become the dominant source of cloud security incidents—far more common than sophisticated attacks against patched software. An S3 bucket with public access, a security group that opens port 22 to <code>0.0.0.0/0</code>, or an IAM role with <code><em>:</em></code> permissions can expose critical data with a single misconfigured checkbox.</p>
+<p><strong>Cloud Security Posture Management (CSPM)</strong> tools continuously evaluate every cloud resource configuration against security benchmarks and alert on deviations. They connect to cloud APIs (AWS CloudFormation, Azure Resource Manager, GCP Cloud Asset Inventory) and compare the actual resource state against:</p>
+<ul>
+<li>
+<p><strong>CIS Benchmarks</strong> (CIS Amazon Web Services Foundations, CIS Microsoft Azure Foundations) — prescriptive configuration checks, e.g., “S3 buckets should not allow public ACLs”, “Multi-factor authentication should be enabled for all IAM users with console access”.</p>
+</li>
+<li>
+<p><strong>NIST CSF</strong> and <strong>SOC 2</strong> control mappings — useful when cloud security findings need to be reported against an audit framework.</p>
+</li>
+<li>
+<p><strong>AWS Foundational Security Best Practices</strong> (AWS native, surfaced via AWS Security Hub).</p>
+</li>
+</ul>
+<p>Key CSPM platforms:</p>
+<dl>
+<dt>AWS Security Hub</dt>
+<dd>AWS-native aggregation hub that ingests findings from GuardDuty (threat detection), Inspector (vulnerability scanning), Macie (S3 data classification), and third-party integrations, scored against the AWS Foundational Security Best Practices standard. No additional agent required for AWS resources.</dd>
+<dt>Wiz</dt>
+<dd>Agent-less graph-based CSPM that models the entire cloud environment as a connected graph—resources, identities, network paths, and data stores—and identifies attack paths that combine misconfigurations. A typical Wiz finding isn’t “S3 bucket is public” but “EC2 instance has an IAM role that can access this public S3 bucket which contains secrets, and the instance is reachable from the internet on port 443 via a public load balancer.”</dd>
+<dt>Prisma Cloud (Palo Alto Networks)</dt>
+<dd>A broad CNAPP (see below) that includes CSPM, CWPP, and IaC scanning in one platform; strong compliance reporting for PCI DSS, HIPAA, SOC 2, and GDPR.</dd>
+</dl>
+<p>It’s important to distinguish CSPM from adjacent categories that are often conflated:</p>
+<ul>
+<li>
+<p><strong>CWPP (Cloud Workload Protection Platform)</strong> focuses on <em>runtime</em> protection of cloud workloads—EDR-equivalent capabilities for VMs and containers, detecting in-memory attacks, cryptomining processes, or anomalous system calls. Where CSPM asks “is this resource configured correctly?”, CWPP asks “is this workload behaving correctly at runtime?”</p>
+</li>
+<li>
+<p><strong>CNAPP (Cloud-Native Application Protection Platform)</strong> combines CSPM and CWPP into a single platform with a unified data model, enabling correlation between configuration-level findings and runtime telemetry. Wiz, Prisma Cloud, and Microsoft Defender for Cloud are examples of converged CNAPP offerings. The CNAPP model reflects the reality that a useful cloud security finding usually requires both dimensions: a container breakout is more critical if the host VM’s IAM role can write to a production database.</p>
+</li>
+</ul>
+<p>CSPM should be enabled from day one of a cloud deployment, not retrofitted. The marginal cost of running AWS Security Hub on a new account is negligible; the cost of remediating a data breach caused by a public S3 bucket that CSPM would have caught on day one is not.</p>
+<h2 id="exercises">Exercises<a class="headerlink" href="#exercises" title="Permanent link">&para;</a></h2>
+<div class="admonition example box-exercise kind-example">
+<p class="admonition-title">Exercise 25.1</p>
+<p>Perform a STRIDE threat analysis on the following architecture: a mobile banking application that authenticates users via OAuth 2.0 with an external IdP, communicates with a REST API over TLS, and stores transaction history in a PostgreSQL database. For each STRIDE category, identify at least one concrete threat and a corresponding technical mitigation.</p>
+</div>
+<div class="admonition example box-exercise kind-example">
+<p class="admonition-title">Exercise 25.2</p>
+<p>Your organisation currently uses a traditional VPN for remote access. Design a phased Zero Trust migration roadmap over 18 months. Include: (a) identity foundation (IdP selection, MFA rollout), (b) device posture assessment, (c) micro-segmentation of the three most critical application tiers, and (d) metrics to demonstrate improved security posture to leadership.</p>
+</div>
+<div class="admonition example box-exercise kind-example">
+<p class="admonition-title">Exercise 25.3</p>
+<p>Map the following controls to their ISO/IEC 27001:2022 Annex A categories and to the corresponding NIST CSF 2.0 function: (a) encryption of data at rest with AES-256, (b) quarterly penetration testing, (c) automated patch deployment within 72 hours of critical CVE publication, (d) centralised SIEM with 1-year log retention, (e) annual security awareness training.</p>
+</div>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button type="button" class="md-top md-icon" data-md-component="top" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+Back to top
+</button>
+</main>
+<footer class="md-footer">
+<nav class="md-footer__inner md-grid" aria-label="Footer" >
+<a href="ch24-exploit-development-fundamentals.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: 24. Exploit Development Fundamentals">
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</div>
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Previous
+</span>
+<div class="md-ellipsis">
+24. Exploit Development Fundamentals
+</div>
+</div>
+</a>
+<a href="ch26-cloud-native-security.html" class="md-footer__link md-footer__link--next" aria-label="Next: 26. Cloud-Native Security">
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Next
+</span>
+<div class="md-ellipsis">
+26. Cloud-Native Security
+</div>
+</div>
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+</div>
+</a>
+</nav>
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+The Open Book Project &middot;
+<a href="../../about.html">About this library</a> &middot;
+<a href="../../publish.html">Publish your book</a> &middot;
+© The authors of the books
+</div>
+Made with
+<a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+Material for MkDocs
+</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "navigation.prune", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "toc.follow", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+<script src="../../assets/mathjax.js"></script>
+<script src="../../assets/viz.js"></script>
+<script src="../../assets/remote.js"></script>
+<script src="../../assets/scans.js"></script>
+<script src="../../assets/reader.js"></script>
+<script src="../../assets/app.js"></script>
+<script src="../../assets/slides.js"></script>
+<script src="../../assets/speak.js"></script>
+<script src="../../assets/quiz.js"></script>
+<script>
+    /* offline reading: the service worker at the site root (its scope is the whole site) */
+    if ("serviceWorker" in navigator && window.isSecureContext) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register(new URL("../../sw.js", location.href).href).catch(function () {});
+      });
+    }
+  </script>
+</body>
+</html>

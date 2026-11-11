@@ -1,0 +1,1130 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="description" content="The Open Book Project: books on computer science, quantum computing, cyber security, science, the social sciences, university courses and languages, read page by page like an e-book, online or offline.">
+<meta name="author" content="The Open Book Project">
+<link rel="canonical" href="https://open-book-project.github.io/cyber/security_systems_engineering/ch19-advanced-network-protocol-security.html">
+<link rel="prev" href="ch18-email-security.html">
+<link rel="next" href="ch20-malware-analysis.html">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap"></noscript>
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Open Book">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="application-name" content="Open Book"><script src="../../assets/library-data.js"></script><script>
+    (function () {
+      var X = window.XMLHttpRequest, open, gate = new Promise(function (r) { open = r; });
+      if (!X) return;
+      var open0 = X.prototype.open, send0 = X.prototype.send;
+      X.prototype.open = function (method, url) {
+        this.__pkIndex = /\/search\/search_index\.json(\?|#|$)/.test(String(url));
+        return open0.apply(this, arguments);
+      };
+      X.prototype.send = function () {
+        if (!this.__pkIndex) return send0.apply(this, arguments);
+        var xhr = this, args = arguments;
+        gate.then(function () { send0.apply(xhr, args); });
+      };
+      function wake() { open(); }
+      document.addEventListener("focusin", function (e) { if (e.target && e.target.closest && e.target.closest(".md-search")) wake(); });
+      document.addEventListener("click", function (e) { if (e.target && e.target.closest && e.target.closest('label[for="__search"], .md-search')) wake(); }, true);
+      document.addEventListener("keydown", function (e) {
+        var k = e.key;
+        if ((k === "/" || k === "s" || k === "f" || k === "S" || k === "F") && !(e.target && e.target.closest && e.target.closest("input, textarea, [contenteditable]"))) wake();
+      }, true);
+      if (/[?&]q=/.test(location.search)) wake();
+    })();
+  </script><script>
+    try {
+      if ((window.matchMedia && (matchMedia("(display-mode: standalone)").matches || matchMedia("(display-mode: fullscreen)").matches)) || navigator.standalone === true) {
+        document.documentElement.className += " bjp-standalone";
+      }
+    } catch (e) { /* not an installed app */ }
+    /* the books of a subject or of the whole library as covers or as a list (assets/app.js): the reader's choice */
+    try {
+      var bv = localStorage.getItem("bjp.view");
+      if (bv === "list" || (bv !== "grid" && /\/books\.html$/.test(location.pathname))) document.documentElement.className += " bjp-view-list";
+    } catch (e) { /* no storage: covers */ }
+  </script>
+<script>
+    /* a book opened from its cover on the shelf: the page stays blank, in the cover's colour, until the reader is up */
+    try {
+      var cv = sessionStorage.getItem("bjp.reader.cover");
+      if (cv && sessionStorage.getItem("bjp.reader.open") === "1") {
+        var c = JSON.parse(cv), de = document.documentElement;
+        de.className += " bjp-booting";
+        if (c && /^#[0-9a-f]{3,8}$/i.test(c.bg || "")) de.style.background = c.bg;
+        setTimeout(function () { de.classList.remove("bjp-booting"); de.style.background = ""; }, 3000);
+      }
+    } catch (e) { /* no session storage: the page simply opens as usual */ }
+  </script>
+<title>19. Advanced Network Protocol Security - The Open Book Project</title>
+<link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+<link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+<link rel="stylesheet" href="../../assets/extra.css">
+<link rel="stylesheet" href="../../assets/reader.css">
+<link rel="stylesheet" href="../../assets/viz.css">
+<link rel="stylesheet" href="../../assets/app.css">
+<link rel="stylesheet" href="../../assets/theme.css">
+<link rel="stylesheet" href="../../assets/slides.css">
+<link rel="stylesheet" href="../../assets/remote.css">
+<link rel="stylesheet" href="../../assets/scans.css">
+<link rel="stylesheet" href="../../assets/speak.css">
+<link rel="stylesheet" href="../../assets/quiz.css">
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+<input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+<input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a href="#sec-bgp-security" class="md-skip">
+Skip to content
+</a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav class="md-header__inner md-grid" aria-label="Header">
+<a href="../../index.html" title="The Open Book Project" class="md-header__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+The Open Book Project
+</span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+19. Advanced Network Protocol Security
+</span>
+</div>
+</div>
+</div><a href="../../index.html" class="bjp-libbtn" aria-label="Library: all books" title="Library: all books">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V5h4v15M8 20V9h4v11M14 20L12.6 6l3.8-.8 3 14.2M3 20h18"/></svg><span>Library</span>
+</a>
+<a href="../../subjects/index.html" class="pk-catbtn" aria-haspopup="true" aria-expanded="false" title="Browse the books by category">
+<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><circle cx="17" cy="7" r="3.6"/><path d="M7 13.4l3.9 6.8H3.1z"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg><span>Categories</span>
+</a>
+<form class="md-header__option" data-md-component="palette">
+<input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+<label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+</label>
+<input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+<label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+<label class="md-search__icon md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</label>
+<nav class="md-search__options" aria-label="Search">
+<button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+Initializing search
+</div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--primary bjp-nav bjp-nav--book" aria-label="Navigation" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a href="../../index.html" title="The Open Book Project" class="md-nav__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+The Open Book Project
+</label>
+<ul class="md-nav__list" data-md-scrollfix>
+<li class="md-nav__item bjp-nav-all">
+<a href="../../index.html" class="md-nav__link" aria-label="All books: back to the library">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+<span class="md-ellipsis">All books</span>
+</a>
+</li>
+<li class="md-nav__item bjp-nav-book" role="presentation"><span class="bjp-nav-head">Security Systems Engineering</span></li>
+<li class="md-nav__item">
+<a href="index.html" class="md-nav__link">
+<span class="md-ellipsis">
+Overview and preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="notation-and-conventions.html" class="md-nav__link">
+<span class="md-ellipsis">
+Notation and Conventions
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch01-mathematical-foundations-of-cryptography.html" class="md-nav__link">
+<span class="md-ellipsis">
+1. Mathematical Foundations of Cryptography
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch02-symmetric-cryptography.html" class="md-nav__link">
+<span class="md-ellipsis">
+2. Symmetric Cryptography
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch03-public-key-cryptography.html" class="md-nav__link">
+<span class="md-ellipsis">
+3. Public-Key Cryptography
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch04-cryptographic-hash-functions-and-macs.html" class="md-nav__link">
+<span class="md-ellipsis">
+4. Cryptographic Hash Functions and MACs
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch05-key-management-and-public-key-infrastructure.html" class="md-nav__link">
+<span class="md-ellipsis">
+5. Key Management and Public Key Infrastructure
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch06-cryptographic-protocols-and-security-proofs.html" class="md-nav__link">
+<span class="md-ellipsis">
+6. Cryptographic Protocols and Security Proofs
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch07-quantum-cryptography-and-post-quantum-migration.html" class="md-nav__link">
+<span class="md-ellipsis">
+7. Quantum Cryptography and Post-Quantum Migration
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch08-network-security-fundamentals.html" class="md-nav__link">
+<span class="md-ellipsis">
+8. Network Security Fundamentals
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch09-firewalls-ids-and-ips.html" class="md-nav__link">
+<span class="md-ellipsis">
+9. Firewalls, IDS, and IPS
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch10-network-protocol-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+10. Network Protocol Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch11-web-application-security-fundamentals.html" class="md-nav__link">
+<span class="md-ellipsis">
+11. Web Application Security Fundamentals
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch12-authentication-authorization-and-access-control.html" class="md-nav__link">
+<span class="md-ellipsis">
+12. Authentication, Authorization, and Access Control
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch13-api-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+13. API Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch14-side-channel-attacks.html" class="md-nav__link">
+<span class="md-ellipsis">
+14. Side-Channel Attacks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch15-hardware-tamper-protection.html" class="md-nav__link">
+<span class="md-ellipsis">
+15. Hardware Tamper Protection
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch16-transport-layer-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+16. Transport Layer Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch17-ssh-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+17. SSH Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch18-email-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+18. Email Security
+</span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+19. Advanced Network Protocol Security
+</span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a href="ch19-advanced-network-protocol-security.html" class="md-nav__link md-nav__link--active">
+<span class="md-ellipsis">
+19. Advanced Network Protocol Security
+</span>
+</a>
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#sec-bgp-security" class="md-nav__link">
+<span class="md-ellipsis">
+19.1 BGP Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-rpki" class="md-nav__link">
+<span class="md-ellipsis">
+19.2 RPKI: Resource Public Key Infrastructure
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-dns-privacy" class="md-nav__link">
+<span class="md-ellipsis">
+19.3 DNS Privacy: DoH and DoT
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-ntp-security" class="md-nav__link">
+<span class="md-ellipsis">
+19.4 NTP Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-kerberos" class="md-nav__link">
+<span class="md-ellipsis">
+19.5 Kerberos and Active Directory
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-ad-attacks" class="md-nav__link">
+<span class="md-ellipsis">
+19.6 Active Directory Attack Techniques
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-ad-pth" class="md-nav__link">
+<span class="md-ellipsis">
+19.7 Additional AD Attacks: Pass-the-Hash and DCSync
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-smb-security" class="md-nav__link">
+<span class="md-ellipsis">
+19.8 SMB and NTLM Relay
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-snmp" class="md-nav__link">
+<span class="md-ellipsis">
+19.9 SNMP Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-ipsec-details" class="md-nav__link">
+<span class="md-ellipsis">
+19.10 IPsec: Details and Configuration
+</span>
+</a>
+<nav class="md-nav" aria-label="19.10 IPsec: Details and Configuration">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#19101-ipsec-vs-tls-when-to-use-which" class="md-nav__link">
+<span class="md-ellipsis">
+19.10.1 IPsec vs. TLS: When to Use Which
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-radius-tacacs" class="md-nav__link">
+<span class="md-ellipsis">
+19.11 RADIUS, TACACS+, and 802.1X
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-network-advanced-exercises" class="md-nav__link">
+<span class="md-ellipsis">
+19.12 Exercises
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="ch20-malware-analysis.html" class="md-nav__link">
+<span class="md-ellipsis">
+20. Malware Analysis
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch21-reverse-engineering.html" class="md-nav__link">
+<span class="md-ellipsis">
+21. Reverse Engineering
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch22-digital-forensics.html" class="md-nav__link">
+<span class="md-ellipsis">
+22. Digital Forensics
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch23-vulnerability-research-and-fuzzing.html" class="md-nav__link">
+<span class="md-ellipsis">
+23. Vulnerability Research and Fuzzing
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch24-exploit-development-fundamentals.html" class="md-nav__link">
+<span class="md-ellipsis">
+24. Exploit Development Fundamentals
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch25-security-architecture-and-design.html" class="md-nav__link">
+<span class="md-ellipsis">
+25. Security Architecture and Design
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch26-cloud-native-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+26. Cloud-Native Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch27-human-factors-in-security.html" class="md-nav__link">
+<span class="md-ellipsis">
+27. Human Factors in Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch28-artificial-intelligence-and-machine-learning.html" class="md-nav__link">
+<span class="md-ellipsis">
+28. Artificial Intelligence and Machine Learning Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch29-iot-industrial-control-systems-and-the-emerging.html" class="md-nav__link">
+<span class="md-ellipsis">
+29. IoT, Industrial Control Systems, and the Emerging Threat Horizon
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="app-a-mathematical-reference.html" class="md-nav__link">
+<span class="md-ellipsis">
+Appendix A. Mathematical Reference
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="app-b-security-tools-reference.html" class="md-nav__link">
+<span class="md-ellipsis">
+Appendix B. Security Tools Reference
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="app-c-selected-exercise-solutions.html" class="md-nav__link">
+<span class="md-ellipsis">
+Appendix C. Selected Exercise Solutions
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="bibliography.html" class="md-nav__link">
+<span class="md-ellipsis">
+References
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#sec-bgp-security" class="md-nav__link">
+<span class="md-ellipsis">
+19.1 BGP Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-rpki" class="md-nav__link">
+<span class="md-ellipsis">
+19.2 RPKI: Resource Public Key Infrastructure
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-dns-privacy" class="md-nav__link">
+<span class="md-ellipsis">
+19.3 DNS Privacy: DoH and DoT
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-ntp-security" class="md-nav__link">
+<span class="md-ellipsis">
+19.4 NTP Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-kerberos" class="md-nav__link">
+<span class="md-ellipsis">
+19.5 Kerberos and Active Directory
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-ad-attacks" class="md-nav__link">
+<span class="md-ellipsis">
+19.6 Active Directory Attack Techniques
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-ad-pth" class="md-nav__link">
+<span class="md-ellipsis">
+19.7 Additional AD Attacks: Pass-the-Hash and DCSync
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-smb-security" class="md-nav__link">
+<span class="md-ellipsis">
+19.8 SMB and NTLM Relay
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-snmp" class="md-nav__link">
+<span class="md-ellipsis">
+19.9 SNMP Security
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-ipsec-details" class="md-nav__link">
+<span class="md-ellipsis">
+19.10 IPsec: Details and Configuration
+</span>
+</a>
+<nav class="md-nav" aria-label="19.10 IPsec: Details and Configuration">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#19101-ipsec-vs-tls-when-to-use-which" class="md-nav__link">
+<span class="md-ellipsis">
+19.10.1 IPsec vs. TLS: When to Use Which
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-radius-tacacs" class="md-nav__link">
+<span class="md-ellipsis">
+19.11 RADIUS, TACACS+, and 802.1X
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-network-advanced-exercises" class="md-nav__link">
+<span class="md-ellipsis">
+19.12 Exercises
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="ch-network-advanced">Chapter 19: Advanced Network Protocol Security<a class="headerlink" href="#ch-network-advanced" title="Permanent link">&para;</a></h1>
+<p>This chapter examines security vulnerabilities and hardening measures in foundational internet infrastructure protocols—BGP, DNS, NTP—and then turns to enterprise identity protocols (Kerberos, Active Directory, LDAP) that are the primary targets of lateral movement in modern intrusions.</p>
+<h2 id="sec-bgp-security"><span class="secnum">19.1</span> BGP Security<a class="headerlink" href="#sec-bgp-security" title="Permanent link">&para;</a></h2>
+<p>The Border Gateway Protocol (BGP) is the routing protocol of the internet. It was designed for trusted peering relationships between autonomous systems (ASes) and has virtually no built-in authentication.</p>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 19.1 (BGP Hijacking)</p>
+<p>BGP hijacking occurs when an AS announces IP prefixes it does not legitimately own. Receiving ASes, lacking verification mechanisms, may accept and propagate the false route, redirecting traffic destined for the victim to the attacker. Categories include:</p>
+<ul>
+<li>
+<p><strong>Prefix hijacking</strong>: announcing the exact victim prefix.</p>
+</li>
+<li>
+<p><strong>Sub-prefix hijacking</strong>: announcing a more-specific (longer) prefix, which BGP’s longest-match rule prefers; more reliably attracts traffic.</p>
+</li>
+<li>
+<p><strong>AS-path manipulation</strong>: shortening the AS-path to appear closer to a destination, influencing routing decisions.</p>
+</li>
+</ul>
+</div>
+<div class="admonition example box-example kind-example">
+<p class="admonition-title">Example 19.1 (Pakistan Telecom / YouTube 2008)</p>
+<p>On 24 February 2008, Pakistan Telecom (AS17557), attempting to block YouTube within Pakistan, announced <code>208.65.153.0/24</code>—a more-specific prefix than YouTube’s <code>208.65.152.0/22</code>. PCCW (AS3491), Pakistan Telecom’s upstream provider, propagated the route globally. For approximately two hours, YouTube traffic worldwide was routed to Pakistan Telecom, causing a near-total YouTube outage. This incident accelerated adoption of BGP prefix filtering and, later, RPKI.</p>
+</div>
+<h2 id="sec-rpki"><span class="secnum">19.2</span> RPKI: Resource Public Key Infrastructure<a class="headerlink" href="#sec-rpki" title="Permanent link">&para;</a></h2>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 19.2 (Route Origin Authorization (ROA))</p>
+<p>An ROA is a digitally signed object (RFC 6482) that authorises an AS to originate one or more IP prefixes. It is signed by the IP address holder’s resource certificate, which chains to a Regional Internet Registry (RIR: ARIN, RIPE NCC, APNIC, LACNIC, AFRINIC). Each ROA specifies:</p>
+<ul>
+<li>
+<p>The Autonomous System Number (ASN) permitted to originate the prefix.</p>
+</li>
+<li>
+<p>The IP prefix(es) covered.</p>
+</li>
+<li>
+<p>A <code>maxLength</code> field limiting the most-specific prefix the AS may announce (prevents sub-prefix hijacks).</p>
+</li>
+</ul>
+</div>
+<div class="language-bash highlight"><pre><span></span><code><span class="c1"># Install Routinator (NLnet Labs RPKI validator)</span>
+apt<span class="w"> </span>install<span class="w"> </span>routinator
+routinator<span class="w"> </span>init<span class="w"> </span>--accept-arin-rpa
+
+<span class="c1"># Query ROA for a prefix</span>
+routinator<span class="w"> </span>validate<span class="w"> </span>--prefix<span class="w"> </span><span class="m">208</span>.65.153.0/24<span class="w"> </span>--asn<span class="w"> </span><span class="m">36561</span>
+
+<span class="c1"># Output:</span>
+<span class="c1"># Status: Valid</span>
+<span class="c1"># Route: 208.65.153.0/24 (max-length: 24)</span>
+<span class="c1"># Validated by ROA: AS36561 -&gt; 208.65.153.0/24</span>
+
+<span class="c1"># Check RPKI coverage statistics</span>
+curl<span class="w"> </span>https://rpki-monitor.antiddos.systems/api/v1/stats<span class="w"> </span><span class="p">|</span><span class="w"> </span>python3<span class="w"> </span>-m<span class="w"> </span>json.tool
+</code></pre></div>
+<div class="admonition info box-keybox kind-concept">
+<p class="admonition-title">RPKI Deployment Status</p>
+<p>As of 2024, over 40% of globally routed BGP prefixes have valid ROAs. Major networks including Cloudflare, AWS, Hurricane Electric, and most European ISPs drop RPKI-invalid routes. RPKI does not prevent all BGP attacks (BGPsec, RFC 8205, provides path validation but has negligible deployment) but effectively prevents origin hijacks of covered prefixes.</p>
+</div>
+<h2 id="sec-dns-privacy"><span class="secnum">19.3</span> DNS Privacy: DoH and DoT<a class="headerlink" href="#sec-dns-privacy" title="Permanent link">&para;</a></h2>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 19.3 (DNS over TLS (DoT, RFC 7858))</p>
+<p>DoT wraps DNS messages in a TLS session on TCP port 853. It provides confidentiality and integrity for DNS queries between the client and its configured resolver. Enterprise environments can inspect DoT by deploying a TLS-intercepting resolver at the network boundary.</p>
+</div>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 19.4 (DNS over HTTPS (DoH, RFC 8484))</p>
+<p>DoH encapsulates DNS queries as HTTPS requests (<code>application/dns-message</code>), typically to a well-known URI (<code>/dns-query</code>). Because DoH traffic is indistinguishable from ordinary HTTPS on port 443, it’s significantly harder for enterprise proxies and firewalls to intercept or block, creating a tension between user privacy and enterprise monitoring requirements.</p>
+</div>
+<div class="admonition warning box-warningbox kind-safety">
+<p class="admonition-title">Enterprise Monitoring vs. DoH</p>
+<p>DoH configured at the browser level (Firefox Trusted Recursive Resolver, Chrome Secure DNS) bypasses enterprise DNS sinkholes, URL filtering, and threat intelligence feeds. Mitigations for enterprises:</p>
+<ul>
+<li>
+<p>Block DNS-over-HTTPS to known public resolvers (1.1.1.1, 8.8.8.8) by IP at the firewall.</p>
+</li>
+<li>
+<p>Deploy an enterprise DoH resolver to serve as the canonical endpoint.</p>
+</li>
+<li>
+<p>Use MDM/GPO to configure browsers’ DoH endpoint to the enterprise resolver.</p>
+</li>
+</ul>
+</div>
+<h2 id="sec-ntp-security"><span class="secnum">19.4</span> NTP Security<a class="headerlink" href="#sec-ntp-security" title="Permanent link">&para;</a></h2>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 19.5 (NTP Amplification Attack)</p>
+<p>NTP servers respond to <code>monlist</code> (REQ_MON_GETLIST) queries with a list of up to 600 recent clients—an amplification factor of up to 1000x. An attacker spoofing the victim’s IP as the source causes massive UDP traffic toward the victim. Mitigations: disable <code>monlist</code> (<code>noquery</code> in <code>ntp.conf</code>); source-address validation (BCP38) at ISPs.</p>
+</div>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 19.6 (Network Time Security (NTS, RFC 8915))</p>
+<p>NTS adds authenticated key exchange and AEAD-protected NTP packets. A client performs a TLS handshake with an NTS Key Exchange server to obtain session keys and cookies. Subsequent NTP packets carry an AEAD authentication tag, preventing time-shifting attacks where an attacker manipulates system clocks to invalidate TLS certificates or affect log timestamps.</p>
+</div>
+<h2 id="sec-kerberos"><span class="secnum">19.5</span> Kerberos and Active Directory<a class="headerlink" href="#sec-kerberos" title="Permanent link">&para;</a></h2>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 19.7 (Kerberos Authentication Flow)</p>
+<p>Kerberos (RFC 4120) provides single sign-on via a Key Distribution Centre (KDC) split into two services:</p>
+<ol>
+<li>
+<p><strong>Authentication Service (AS)</strong>: issues a Ticket Granting Ticket (TGT) after verifying the user’s password.</p>
+</li>
+<li>
+<p><strong>Ticket Granting Service (TGS)</strong>: issues Service Tickets in exchange for a valid TGT.</p>
+</li>
+</ol>
+<p>Neither the password nor the long-term key is transmitted on the wire; all secrets are used only to encrypt/decrypt tickets.</p>
+</div>
+<figure class="fig fig-diagram" id="fig-kerberos-flow">
+<img class="tikz" src="img/tikz-a6900e7e0827.svg" alt="Kerberos authentication flow: AS exchange, TGS exchange, and service access." loading="lazy" width="451" height="152">
+<figcaption><strong>Figure 19.1.</strong> Kerberos authentication flow: AS exchange, TGS exchange, and service access.</figcaption>
+</figure>
+<h2 id="sec-ad-attacks"><span class="secnum">19.6</span> Active Directory Attack Techniques<a class="headerlink" href="#sec-ad-attacks" title="Permanent link">&para;</a></h2>
+<div class="admonition warning box-attackbox kind-safety">
+<p class="admonition-title">AS-REP Roasting</p>
+<p>By default, Kerberos requires <em>pre-authentication</em>: the client proves knowledge of its password by encrypting the current timestamp with a key derived from the password. If pre-authentication is disabled for an account (a misconfiguration), any unauthenticated user can request an AS-REP for that account. The AS-REP contains material encrypted with the target account’s key (derivable from the password), which can be extracted and cracked offline.</p>
+<div class="language-bash highlight"><pre><span></span><code><span class="c1"># Find accounts with pre-auth disabled (requires LDAP read)</span>
+impacket-GetNPUsers<span class="w"> </span>domain.local/<span class="w"> </span>-no-pass<span class="w"> </span>-usersfile<span class="w"> </span>users.txt
+
+<span class="c1"># Output: $krb5asrep$23$victim@DOMAIN:HASH...</span>
+<span class="c1"># Crack with hashcat</span>
+hashcat<span class="w"> </span>-m<span class="w"> </span><span class="m">18200</span><span class="w"> </span>asrep_hashes.txt<span class="w"> </span>rockyou.txt
+</code></pre></div>
+<p><strong>Defence</strong>: Enable pre-authentication on all accounts; disable UF_DONT_REQUIRE_PREAUTH flag; alert on AS-REQ without pre-auth field.</p>
+</div>
+<h4 id="as-rep-roasting-in-depth">AS-REP Roasting in Depth<a class="headerlink" href="#as-rep-roasting-in-depth" title="Permanent link">&para;</a></h4>
+<p>AS-REP Roasting is notable because it requires <em>no credentials at all</em> to initiate. The <code>UF_DONT_REQUIRE_PREAUTH</code> flag (<code>userAccountControl</code> attribute bit 0x400000) is often set on service accounts that use legacy applications expecting old Kerberos behaviour, or on accounts that were migrated from environments where pre-authentication was disabled domain-wide. Attackers enumerate these accounts through an LDAP query or by simply trying AS-REQ requests for a list of usernames — any account with the flag set will return a response; any without it will return <code>KRB5KDC_ERR_PREAUTH_REQUIRED</code>.</p>
+<p>The encrypted portion of the AS-REP (the <code>enc-part</code> field) is encrypted with AES-256 (etype 18) by default on modern domains, or RC4-HMAC (etype 23) on older ones. Hashcat mode 18200 handles the AS-REP format. RC4 hashes crack significantly faster than AES on GPU hardware because RC4 uses a simpler key derivation (single HMAC-MD5 round) versus AES’s PBKDF2-HMAC-SHA1 with 4096 iterations. Attackers often specifically request RC4 encryption in the AS-REQ to receive a faster-cracking response, which is possible if the domain policy allows etype 23.</p>
+<p>The contrast with Kerberoasting is instructive. Kerberoasting requires an authenticated domain account (any account, even a low-privilege one) to request a TGS-REP. The TGS is encrypted with the <em>service account’s</em> key rather than the requesting user’s key. Because any SPN-registered account is targetable, Kerberoasting typically goes after high-privilege service accounts (SQL Server service accounts running as domain admins being the classic case). Both attacks yield offline-crackable hashes without generating any failed login events or lockouts, which makes them attractive for low-and-slow reconnaissance. The tell-tale detection signal is an unusual volume of TGS-REQ requests for diverse SPNs from a single source, or AS-REQ messages without the pre-authentication field from non-KDC sources.</p>
+<div class="admonition warning box-attackbox kind-safety">
+<p class="admonition-title">Kerberoasting</p>
+<p>Any authenticated domain user can request a Service Ticket for any Service Principal Name (SPN). The service ticket is encrypted with the service account’s password hash. Attackers request tickets for high-privilege service accounts (SQL Server, IIS app pools) and crack them offline.</p>
+<div class="language-bash highlight"><pre><span></span><code><span class="c1"># Request service tickets for all SPNs</span>
+impacket-GetUserSPNs<span class="w"> </span>domain.local/alice:Password1<span class="w"> </span>-request
+
+<span class="c1"># Output: $krb5tgs$23$*serviceaccount$...$HASH</span>
+hashcat<span class="w"> </span>-m<span class="w"> </span><span class="m">13100</span><span class="w"> </span>kerberoast_hashes.txt<span class="w"> </span>rockyou.txt
+</code></pre></div>
+<p><strong>Defence</strong>: Use Group Managed Service Accounts (gMSA) with 120-character randomly generated passwords; monitor for anomalous TGS-REQ bursts; implement Kerberos AES-only encryption (removes RC4 etype 23, preferred by attackers for faster cracking).</p>
+</div>
+<div class="admonition warning box-attackbox kind-safety">
+<p class="admonition-title">Golden Ticket Attack</p>
+<p>If an attacker obtains the <code>krbtgt</code> account’s NTLM hash (by DCSync, NTDS.dit extraction, or direct domain controller compromise), they can forge arbitrary Kerberos TGTs for any user, any group, and any validity period—including tickets valid for 10 years with Domain Admin membership. These <em>Golden Tickets</em> bypass all normal authentication controls.</p>
+<div class="language-bash highlight"><pre><span></span><code><span class="c1"># Dump krbtgt hash (requires Domain Admin or DCSync rights)</span>
+mimikatz<span class="w"> </span><span class="c1"># lsadump::dcsync /domain:domain.local /user:krbtgt</span>
+
+<span class="c1"># Forge Golden Ticket</span>
+mimikatz<span class="w"> </span><span class="c1"># kerberos::golden /domain:domain.local \</span>
+<span class="w">            </span>/sid:S-1-5-21-...<span class="w"> </span>/krbtgt:NTLMHASH<span class="w"> </span><span class="se">\</span>
+<span class="w">            </span>/user:Administrator<span class="w"> </span>/id:500<span class="w"> </span>/ptt
+</code></pre></div>
+<p><strong>Defence</strong>: Rotate <code>krbtgt</code> password twice (invalidates existing tickets); deploy Microsoft Defender for Identity to detect anomalous ticket properties; enforce Protected Users security group for privileged accounts.</p>
+</div>
+<div class="admonition warning box-attackbox kind-safety">
+<p class="admonition-title">Silver Ticket Attack</p>
+<p>With a service account’s NTLM hash (from credential dumping), an attacker can forge a service ticket for that specific service without contacting the KDC—the service validates tickets with its own key, not the KDC. Silver tickets are stealthier than Golden tickets because no KDC interaction occurs.</p>
+</div>
+<h4 id="golden-ticket-vs-silver-ticket-key-differences">Golden Ticket vs. Silver Ticket: Key Differences<a class="headerlink" href="#golden-ticket-vs-silver-ticket-key-differences" title="Permanent link">&para;</a></h4>
+<p>Both Golden and Silver Ticket attacks forge Kerberos tickets to bypass normal authentication, but they operate at different levels of the protocol and have different prerequisites, blast radii, and detection profiles.</p>
+<p>A <em>Golden Ticket</em> is a forged TGT (Ticket Granting Ticket) — the credential the KDC issues after successful AS exchange that a user presents to the TGS to get service tickets. The KDC encrypts and signs TGTs with the <code>krbtgt</code> account’s secret key. If an attacker obtains this key (through DCSync, direct NTDS.dit extraction, or memory scraping on a Domain Controller), they can forge TGTs with arbitrary content: any username, any group memberships (including Domain Admins), any validity period. Mimikatz’s <code>kerberos::golden</code> module produces tickets valid for up to 10 years by default. Critically, a Golden Ticket bypasses Active Directory account controls entirely: even if the target user account is disabled or the password is changed, the forged TGT continues to work until either the <code>krbtgt</code> key is rotated (which must be done <em>twice</em> to invalidate all outstanding TGTs, since KDCs accept tickets encrypted with the previous key) or the ticket’s own validity expires. A single Golden Ticket can grant access to every Kerberos service in the domain.</p>
+<p>A <em>Silver Ticket</em> is a forged Service Ticket — the credential a client presents directly to a service (CIFS, HTTP, MSSQL) to authenticate. The KDC does not issue or validate service tickets; the service decrypts them using its own account’s secret key. This means the attacker only needs the service account’s NTLM hash (not the <code>krbtgt</code> hash), and the forged ticket never touches the KDC during use. Silver Tickets are therefore much stealthier: there are no KDC authentication events to trigger, no AS-REQ, no TGS-REQ. The limitation is scope — a Silver Ticket for the CIFS service on <code>fileserver01</code> works only for that specific service on that specific host. Pivoting requires a Silver Ticket per service. Detection relies on the service itself logging authentication events (Windows Event ID 4627) and on monitoring for <code>PAC</code> validation anomalies: Silver Tickets can contain a forged PAC with arbitrary group memberships, but without the KDC’s signature, Privileged Attribute Certificate (PAC) validation against the KDC will fail if enabled. Enabling PAC validation (<code>ValidateKdcPacSignature</code> registry key) on all services is the primary mitigation alongside aggressive service account password management with gMSA.</p>
+<h2 id="sec-ad-pth"><span class="secnum">19.7</span> Additional AD Attacks: Pass-the-Hash and DCSync<a class="headerlink" href="#sec-ad-pth" title="Permanent link">&para;</a></h2>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 19.8 (Pass-the-Hash (PtH))</p>
+<p>NTLM authentication uses the password hash directly as keying material. An attacker who extracts an NTLM hash from LSASS memory (using Mimikatz or similar) can authenticate to NTLM-accepting services as that user without knowing the plaintext password.</p>
+</div>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 19.9 (DCSync Attack)</p>
+<p>DCSync abuses the <code>DS-Replication-Get-Changes-All</code> Active Directory right (normally held by Domain Controllers) to request replication of account objects including password hashes. An attacker with this right (often obtained through over-privileged service accounts) can extract the entire domain’s password hash database without logging on to a domain controller.</p>
+</div>
+<h2 id="sec-smb-security"><span class="secnum">19.8</span> SMB and NTLM Relay<a class="headerlink" href="#sec-smb-security" title="Permanent link">&para;</a></h2>
+<div class="admonition warning box-warningbox kind-safety">
+<p class="admonition-title">SMBv1: EternalBlue (MS17-010)</p>
+<p>SMBv1 contained a critical buffer overflow in the Windows SMB server (MS17-010, CVE-2017-0144). The NSA exploit EternalBlue allowed unauthenticated remote code execution on all unpatched Windows systems. The WannaCry ransomware (May 2017) exploited EternalBlue to self-propagate across networks, infecting over 200,000 systems in 150 countries. Disable SMBv1: <code>Set-SmbServerConfiguration -EnableSMB1Protocol $false</code>.</p>
+</div>
+<div class="admonition info box-keybox kind-concept">
+<p class="admonition-title">SMB Signing Enforcement</p>
+<p>SMB signing authenticates each SMB packet with an HMAC-SHA256 tag, preventing NTLM relay attacks where an attacker in a man-in-the-middle position relays authentication from one service to another. Enforce via GPO: <code>Microsoft network server: Digitally sign communications (always) = Enabled</code>.</p>
+</div>
+<h2 id="sec-snmp"><span class="secnum">19.9</span> SNMP Security<a class="headerlink" href="#sec-snmp" title="Permanent link">&para;</a></h2>
+<div class="tbl" id="tab-legacy-protocols">
+<div class="tbl-caption"><strong>Table 19.1.</strong> Legacy protocols and their secure replacements</div>
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Protocol</strong></th>
+<th style="text-align: left;"><strong>Weakness</strong></th>
+<th style="text-align: left;"><strong>Replacement</strong></th>
+<th style="text-align: left;"><strong>Notes</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">SNMPv1/v2c</td>
+<td style="text-align: left;">Plaintext community strings</td>
+<td style="text-align: left;">SNMPv3 authPriv</td>
+<td style="text-align: left;">SHA + AES encryption</td>
+</tr>
+<tr>
+<td style="text-align: left;">Telnet</td>
+<td style="text-align: left;">Plaintext credential + data</td>
+<td style="text-align: left;">SSH-2</td>
+<td style="text-align: left;">SSH with Ed25519 keys</td>
+</tr>
+<tr>
+<td style="text-align: left;">FTP</td>
+<td style="text-align: left;">Plaintext credential + data</td>
+<td style="text-align: left;">SFTP / FTPS</td>
+<td style="text-align: left;">SFTP preferred</td>
+</tr>
+<tr>
+<td style="text-align: left;">HTTP (admin)</td>
+<td style="text-align: left;">No transport encryption</td>
+<td style="text-align: left;">HTTPS TLS 1.3</td>
+<td style="text-align: left;">HSTS + valid cert</td>
+</tr>
+<tr>
+<td style="text-align: left;">NTPv3</td>
+<td style="text-align: left;">No authentication</td>
+<td style="text-align: left;">NTPv4 + NTS</td>
+<td style="text-align: left;">RFC 8915</td>
+</tr>
+<tr>
+<td style="text-align: left;">Rlogin/RSH</td>
+<td style="text-align: left;">No auth, no encryption</td>
+<td style="text-align: left;">SSH-2</td>
+<td style="text-align: left;">Remove from all systems</td>
+</tr>
+<tr>
+<td style="text-align: left;">SMBv1</td>
+<td style="text-align: left;">EternalBlue, relay attacks</td>
+<td style="text-align: left;">SMBv3 + signing</td>
+<td style="text-align: left;">Disable globally</td>
+</tr>
+<tr>
+<td style="text-align: left;">LDAP (389)</td>
+<td style="text-align: left;">Plaintext bind</td>
+<td style="text-align: left;">LDAPS / STARTTLS</td>
+<td style="text-align: left;">Or Kerberos GSSAPI</td>
+</tr>
+</tbody>
+</table>
+</div></div>
+<h2 id="sec-ipsec-details"><span class="secnum">19.10</span> IPsec: Details and Configuration<a class="headerlink" href="#sec-ipsec-details" title="Permanent link">&para;</a></h2>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 19.10 (IPsec Modes)</p>
+<p>IPsec operates in two modes:</p>
+<ul>
+<li>
+<p><strong>Transport mode</strong>: Encrypts only the IP payload; the original IP header remains. Used for host-to-host communication.</p>
+</li>
+<li>
+<p><strong>Tunnel mode</strong>: Encapsulates the entire original IP packet inside a new IP packet; encrypts both header and payload. Used for VPN gateways and site-to-site VPNs.</p>
+</li>
+</ul>
+<p>IPsec protocols: <strong>AH</strong> (Authentication Header) provides integrity and anti-replay but no confidentiality; <strong>ESP</strong> (Encapsulating Security Payload) provides confidentiality, integrity, and anti-replay. ESP is used in all modern deployments; AH is largely obsolete.</p>
+</div>
+<div class="admonition warning box-warningbox kind-safety">
+<p class="admonition-title">IKEv1 Aggressive Mode</p>
+<p>IKEv1 Aggressive Mode transmits the IKE identity and hashed PSK challenge without encryption, allowing passive interception and offline PSK cracking. It also leaks information about the PSK’s existence before authentication completes. Use IKEv2 exclusively; disable Aggressive Mode on all VPN gateways.</p>
+</div>
+<h3 id="19101-ipsec-vs-tls-when-to-use-which"><span class="secnum">19.10.1</span> IPsec vs. TLS: When to Use Which<a class="headerlink" href="#19101-ipsec-vs-tls-when-to-use-which" title="Permanent link">&para;</a></h3>
+<p>IPsec and TLS both provide confidentiality and integrity for network communications, but they operate at different layers of the stack and are suited to different use cases. Choosing between them is an architectural decision, not a security strength competition.</p>
+<div class="parahead">
+<p>Layer of operation.</p>
+</div>
+<p>IPsec is a Layer 3 (IP-layer) protocol. It encrypts and authenticates IP packets directly, transparent to the applications above it. Any protocol running over IP — TCP, UDP, ICMP, SCTP — gets protected without any modification to the application. TLS operates at Layer 4/7: it wraps a TCP (or QUIC) connection and is used explicitly by applications. The application must open a TLS connection; plain TCP connections are not automatically protected.</p>
+<div class="parahead">
+<p>IPsec use cases.</p>
+</div>
+<p>IPsec tunnel mode is the standard for <em>site-to-site VPNs</em>: two network gateways negotiate an IPsec SA and encapsulate all traffic between their networks inside authenticated, encrypted ESP packets. The hosts on each side communicate as if on the same LAN, needing no TLS of their own. IPsec transport mode protects <em>host-to-host</em> communication at the OS level — useful for securing replication traffic between database nodes or management plane traffic between servers without touching application code. Because IPsec lives in the kernel network stack, it’s transparent to all applications and can be enforced by policy on entire subnets.</p>
+<div class="parahead">
+<p>TLS use cases.</p>
+</div>
+<p>TLS is the right choice when you need <em>per-application, per-connection security</em>: a web server serving HTTPS needs TLS so it can present its own certificate; an API gateway enforcing mTLS needs TLS so it can inspect client certificates and make routing decisions based on identity; a microservice needs TLS to authenticate a specific backend with a specific certificate. TLS also carries the application-layer context (HTTP headers, ALPN protocol negotiation) that IPsec cannot see.</p>
+<div class="parahead">
+<p>Practical coexistence.</p>
+</div>
+<p>The two protocols often coexist: a site-to-site IPsec VPN encrypts the network path between datacentres, while individual services within those datacentres use mTLS for service-to-service authentication. The IPsec layer prevents passive interception on the wire; the TLS layer provides workload identity and ensures that a compromised host inside the IPsec perimeter cannot impersonate another service. In a zero-trust model, IPsec VPN is deprecated in favour of per-connection mTLS everywhere, since “inside the VPN” is no longer a trust boundary.</p>
+<div class="center">
+<div class="tbl">
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Property</strong></th>
+<th style="text-align: left;"><strong>IPsec</strong></th>
+<th style="text-align: left;"><strong>TLS</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">OSI Layer</td>
+<td style="text-align: left;">Layer 3 (IP)</td>
+<td style="text-align: left;">Layer 4/7 (TCP/App)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Application change</td>
+<td style="text-align: left;">None required</td>
+<td style="text-align: left;">App must use TLS API</td>
+</tr>
+<tr>
+<td style="text-align: left;">Scope</td>
+<td style="text-align: left;">All IP traffic on a path</td>
+<td style="text-align: left;">One connection at a time</td>
+</tr>
+<tr>
+<td style="text-align: left;">Identity</td>
+<td style="text-align: left;">IP address / certificate (IKE)</td>
+<td style="text-align: left;">Certificate (per connection)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Primary use</td>
+<td style="text-align: left;">Site-to-site VPN, host-to-host</td>
+<td style="text-align: left;">HTTPS, API, service mesh</td>
+</tr>
+<tr>
+<td style="text-align: left;">Packet overhead</td>
+<td style="text-align: left;">ESP header + ICV (16–40 bytes)</td>
+<td style="text-align: left;">TLS record header (5 bytes)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Key management</td>
+<td style="text-align: left;">IKEv2 (automated SA negotiation)</td>
+<td style="text-align: left;">TLS handshake per session</td>
+</tr>
+<tr>
+<td style="text-align: left;">Zero-trust fit</td>
+<td style="text-align: left;">Network perimeter focus</td>
+<td style="text-align: left;">Per-workload identity</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<h2 id="sec-radius-tacacs"><span class="secnum">19.11</span> RADIUS, TACACS+, and 802.1X<a class="headerlink" href="#sec-radius-tacacs" title="Permanent link">&para;</a></h2>
+<p>Network device authentication — proving who logged into a router, switch, or firewall and what commands they ran — relies on dedicated AAA (Authentication, Authorisation, Accounting) protocols. The two dominant protocols are RADIUS and TACACS+, which differ significantly in their security models and capabilities.</p>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 19.11 (RADIUS (RFC 2865))</p>
+<p>Remote Authentication Dial-In User Service (RADIUS) is a UDP-based AAA protocol. The Network Access Server (NAS) — a switch, VPN gateway, or Wi-Fi controller — forwards authentication requests to a RADIUS server (FreeRADIUS, Cisco ISE, Microsoft NPS). RADIUS uses MD5-based request authentication and encrypts only the <code>User-Password</code> attribute, leaving the rest of the packet in cleartext.</p>
+</div>
+<div class="admonition info box-definition kind-concept">
+<p class="admonition-title">Definition 19.12 (TACACS+ (Cisco proprietary, de facto standard))</p>
+<p>Terminal Access Controller Access Control System Plus encrypts the <em>entire</em> packet body (not just the password) using a shared secret and MD5. Unlike RADIUS, TACACS+ separates Authentication, Authorisation, and Accounting into distinct exchanges and supports per-command authorisation: the NAS can check with the TACACS+ server whether a specific user is permitted to run <code>show running-config</code> or <code>conf t</code> on a specific device. This command-level granularity makes TACACS+ the preferred protocol for privileged access to network devices.</p>
+</div>
+<div class="parahead">
+<p>The shared secret weakness.</p>
+</div>
+<p>Both RADIUS and TACACS+ rely on a shared secret configured on both the NAS and the AAA server. This secret is used to derive keying material via MD5 — a broken hash function for this purpose. An attacker who captures RADIUS traffic and knows or can guess the shared secret can decrypt <code>User-Password</code> attributes or, for TACACS+, the entire session. The shared-secret model also means every NAS is a potential point of exposure: a compromised switch reveals the shared secret for that NAS, which may be the same across all devices if administrators reuse secrets.</p>
+<div class="parahead">
+<p>RADSEC: RADIUS over TLS (RFC 6614).</p>
+</div>
+<p>RADSEC wraps RADIUS inside a TLS session (TCP port 2083), replacing the MD5-based authentication and encryption with proper TLS. The NAS authenticates the RADIUS server via its TLS certificate, and the RADIUS server can authenticate the NAS via mTLS. The entire exchange is encrypted and integrity-protected with modern cipher suites. RADSEC is the correct answer to RADIUS’s security limitations and is supported by FreeRADIUS 3.x and Cisco ISE. Deployment requires a PKI for issuing NAS and RADIUS server certificates, which is the primary operational barrier.</p>
+<div class="parahead">
+<p>802.1X and EAP-TLS for port authentication.</p>
+</div>
+<p>802.1X is the IEEE standard for port-based Network Access Control (NAC). Before a device can send traffic on a wired or wireless port, it must authenticate to the network using the Extensible Authentication Protocol (EAP). EAP messages travel between the supplicant (the device), the authenticator (the switch or access point), and the authentication server (RADIUS) in a three-party protocol:</p>
+<ol>
+<li>
+<p>The switch port blocks all traffic except EAP.</p>
+</li>
+<li>
+<p>The device presents credentials (certificate, username/password, or token) via EAP to the switch.</p>
+</li>
+<li>
+<p>The switch forwards EAP frames encapsulated in RADIUS Access-Request messages to the RADIUS server.</p>
+</li>
+<li>
+<p>The RADIUS server validates credentials, returns Access-Accept or Access-Reject, and optionally assigns the port to a VLAN.</p>
+</li>
+<li>
+<p>The switch opens the port on Accept; the device can now send IP traffic.</p>
+</li>
+</ol>
+<p><strong>EAP-TLS</strong> is the strongest EAP method: both the client and the RADIUS server present X.509 certificates, providing mutual authentication and forward secrecy via a TLS handshake inside the EAP tunnel. It requires a device certificate issued to each endpoint (typically via MDM or auto-enrollment via 802.1X group policy), which is operationally significant but eliminates password-based authentication entirely. An attacker with a stolen password but no device certificate cannot authenticate to the network. EAP-PEAP (Protected EAP) and EAP-TTLS are common fallbacks that protect MSCHAPv2 password authentication inside a TLS tunnel, but they remain vulnerable to rogue access point attacks if clients don’t validate the RADIUS server certificate.</p>
+<div class="admonition warning box-warningbox kind-safety">
+<p class="admonition-title">Validate the RADIUS Server Certificate</p>
+<p>EAP-PEAP and EAP-TTLS clients that don’t validate the RADIUS server certificate are vulnerable to rogue access point attacks: an attacker sets up a fake AP with the same SSID, terminates EAP from the client, and captures the MSCHAPv2 challenge-response. Tools like EAPHammer and hostapd-wpe automate this. Configure supplicants to pin the RADIUS server CA certificate and hostname; reject connections to servers with unknown certificates.</p>
+</div>
+<h2 id="sec-network-advanced-exercises"><span class="secnum">19.12</span> Exercises<a class="headerlink" href="#sec-network-advanced-exercises" title="Permanent link">&para;</a></h2>
+<div class="admonition example box-exercise kind-example">
+<p class="admonition-title">Exercise 19.1</p>
+<p>Explain the AS-REP roasting attack in detail. What Active Directory account configuration enables it? Describe the technical steps an attacker takes from initial domain authentication through to obtaining domain administrator credentials. Propose three defensive controls in order of effectiveness, explaining the mechanism by which each control prevents or detects the attack.</p>
+</div>
+<div class="admonition example box-exercise kind-example">
+<p class="admonition-title">Exercise 19.2</p>
+<p>Your organisation’s BGP router currently accepts all routes from upstream providers without RPKI validation. Describe the risk this poses with a concrete attack scenario. Outline the steps required to deploy Routinator as an RPKI relying party and integrate it with BIRD or FRRouting to drop RPKI-invalid routes. What percentage of global prefixes would this protect, and what are the operational risks of enabling RPKI route origin validation in “drop invalid” mode?</p>
+</div>
+<div class="admonition example box-exercise kind-example">
+<p class="admonition-title">Exercise 19.3</p>
+<p>A security assessment identifies an NTP server on your network responding to <code>monlist</code> queries. Demonstrate how this can be exploited in a DDoS amplification attack with a numerical example (calculate amplification factor). Provide the exact <code>ntp.conf</code> directives required to disable <code>monlist</code> and restrict query access, and describe how NTS would eliminate the need for such restrictions.</p>
+</div>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button type="button" class="md-top md-icon" data-md-component="top" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+Back to top
+</button>
+</main>
+<footer class="md-footer">
+<nav class="md-footer__inner md-grid" aria-label="Footer" >
+<a href="ch18-email-security.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: 18. Email Security">
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</div>
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Previous
+</span>
+<div class="md-ellipsis">
+18. Email Security
+</div>
+</div>
+</a>
+<a href="ch20-malware-analysis.html" class="md-footer__link md-footer__link--next" aria-label="Next: 20. Malware Analysis">
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Next
+</span>
+<div class="md-ellipsis">
+20. Malware Analysis
+</div>
+</div>
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+</div>
+</a>
+</nav>
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+The Open Book Project &middot;
+<a href="../../about.html">About this library</a> &middot;
+<a href="../../publish.html">Publish your book</a> &middot;
+© The authors of the books
+</div>
+Made with
+<a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+Material for MkDocs
+</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "navigation.prune", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "toc.follow", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+<script src="../../assets/mathjax.js"></script>
+<script src="../../assets/viz.js"></script>
+<script src="../../assets/remote.js"></script>
+<script src="../../assets/scans.js"></script>
+<script src="../../assets/reader.js"></script>
+<script src="../../assets/app.js"></script>
+<script src="../../assets/slides.js"></script>
+<script src="../../assets/speak.js"></script>
+<script src="../../assets/quiz.js"></script>
+<script>
+    /* offline reading: the service worker at the site root (its scope is the whole site) */
+    if ("serviceWorker" in navigator && window.isSecureContext) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register(new URL("../../sw.js", location.href).href).catch(function () {});
+      });
+    }
+  </script>
+</body>
+</html>
