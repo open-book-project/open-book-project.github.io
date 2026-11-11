@@ -1,0 +1,2177 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="description" content="The Open Book Project: books on computer science, quantum computing, cyber security, science, the social sciences, university courses and languages, read page by page like an e-book, online or offline.">
+<meta name="author" content="The Open Book Project">
+<link rel="canonical" href="https://open-book-project.github.io/engineering/satellite_technology/link-budget-templates-and-worked-examples.html">
+<link rel="prev" href="launch-vehicle-specifications.html">
+<link rel="next" href="key-standards-software-tools-and-references.html">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap"></noscript>
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Open Book">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="application-name" content="Open Book"><script src="../../assets/library-data.js"></script><script>
+    (function () {
+      var X = window.XMLHttpRequest, open, gate = new Promise(function (r) { open = r; });
+      if (!X) return;
+      var open0 = X.prototype.open, send0 = X.prototype.send;
+      X.prototype.open = function (method, url) {
+        this.__pkIndex = /\/search\/search_index\.json(\?|#|$)/.test(String(url));
+        return open0.apply(this, arguments);
+      };
+      X.prototype.send = function () {
+        if (!this.__pkIndex) return send0.apply(this, arguments);
+        var xhr = this, args = arguments;
+        gate.then(function () { send0.apply(xhr, args); });
+      };
+      function wake() { open(); }
+      document.addEventListener("focusin", function (e) { if (e.target && e.target.closest && e.target.closest(".md-search")) wake(); });
+      document.addEventListener("click", function (e) { if (e.target && e.target.closest && e.target.closest('label[for="__search"], .md-search')) wake(); }, true);
+      document.addEventListener("keydown", function (e) {
+        var k = e.key;
+        if ((k === "/" || k === "s" || k === "f" || k === "S" || k === "F") && !(e.target && e.target.closest && e.target.closest("input, textarea, [contenteditable]"))) wake();
+      }, true);
+      if (/[?&]q=/.test(location.search)) wake();
+    })();
+  </script><script>
+    try {
+      if ((window.matchMedia && (matchMedia("(display-mode: standalone)").matches || matchMedia("(display-mode: fullscreen)").matches)) || navigator.standalone === true) {
+        document.documentElement.className += " bjp-standalone";
+      }
+    } catch (e) { /* not an installed app */ }
+    /* the books of a subject or of the whole library as covers or as a list (assets/app.js): the reader's choice */
+    try {
+      var bv = localStorage.getItem("bjp.view");
+      if (bv === "list" || (bv !== "grid" && /\/books\.html$/.test(location.pathname))) document.documentElement.className += " bjp-view-list";
+    } catch (e) { /* no storage: covers */ }
+  </script>
+<script>
+    /* a book opened from its cover on the shelf: the page stays blank, in the cover's colour, until the reader is up */
+    try {
+      var cv = sessionStorage.getItem("bjp.reader.cover");
+      if (cv && sessionStorage.getItem("bjp.reader.open") === "1") {
+        var c = JSON.parse(cv), de = document.documentElement;
+        de.className += " bjp-booting";
+        if (c && /^#[0-9a-f]{3,8}$/i.test(c.bg || "")) de.style.background = c.bg;
+        setTimeout(function () { de.classList.remove("bjp-booting"); de.style.background = ""; }, 3000);
+      }
+    } catch (e) { /* no session storage: the page simply opens as usual */ }
+  </script>
+<title>Link Budget Templates and Worked Examples - The Open Book Project</title>
+<link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+<link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+<link rel="stylesheet" href="../../assets/extra.css">
+<link rel="stylesheet" href="../../assets/reader.css">
+<link rel="stylesheet" href="../../assets/viz.css">
+<link rel="stylesheet" href="../../assets/app.css">
+<link rel="stylesheet" href="../../assets/theme.css">
+<link rel="stylesheet" href="../../assets/slides.css">
+<link rel="stylesheet" href="../../assets/remote.css">
+<link rel="stylesheet" href="../../assets/scans.css">
+<link rel="stylesheet" href="../../assets/speak.css">
+<link rel="stylesheet" href="../../assets/quiz.css">
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+<input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+<input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a href="#sec-linkbudget_intro" class="md-skip">
+Skip to content
+</a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav class="md-header__inner md-grid" aria-label="Header">
+<a href="../../index.html" title="The Open Book Project" class="md-header__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+The Open Book Project
+</span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+Link Budget Templates and Worked Examples
+</span>
+</div>
+</div>
+</div><a href="../../index.html" class="bjp-libbtn" aria-label="Library: all books" title="Library: all books">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V5h4v15M8 20V9h4v11M14 20L12.6 6l3.8-.8 3 14.2M3 20h18"/></svg><span>Library</span>
+</a>
+<a href="../../subjects/index.html" class="pk-catbtn" aria-haspopup="true" aria-expanded="false" title="Browse the books by category">
+<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><circle cx="17" cy="7" r="3.6"/><path d="M7 13.4l3.9 6.8H3.1z"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg><span>Categories</span>
+</a>
+<form class="md-header__option" data-md-component="palette">
+<input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+<label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+</label>
+<input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+<label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+<label class="md-search__icon md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</label>
+<nav class="md-search__options" aria-label="Search">
+<button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+Initializing search
+</div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--primary bjp-nav bjp-nav--book" aria-label="Navigation" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a href="../../index.html" title="The Open Book Project" class="md-nav__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+The Open Book Project
+</label>
+<ul class="md-nav__list" data-md-scrollfix>
+<li class="md-nav__item bjp-nav-all">
+<a href="../../index.html" class="md-nav__link" aria-label="All books: back to the library">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+<span class="md-ellipsis">All books</span>
+</a>
+</li>
+<li class="md-nav__item bjp-nav-book" role="presentation"><span class="bjp-nav-head">Satellite Technology</span></li>
+<li class="md-nav__item">
+<a href="index.html" class="md-nav__link">
+<span class="md-ellipsis">
+Overview and preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="list-of-abbreviations.html" class="md-nav__link">
+<span class="md-ellipsis">
+List of Abbreviations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch01-introduction-to-satellite-technology.html" class="md-nav__link">
+<span class="md-ellipsis">
+1. Introduction to Satellite Technology
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch02-orbital-mechanics.html" class="md-nav__link">
+<span class="md-ellipsis">
+2. Orbital Mechanics
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch03-the-space-environment.html" class="md-nav__link">
+<span class="md-ellipsis">
+3. The Space Environment
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch04-launch-systems-and-mission-design.html" class="md-nav__link">
+<span class="md-ellipsis">
+4. Launch Systems and Mission Design
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch05-satellite-architecture-and-systems-engineering.html" class="md-nav__link">
+<span class="md-ellipsis">
+5. Satellite Architecture and Systems Engineering
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch06-satellite-electrical-power-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+6. Satellite Electrical Power Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch07-attitude-determination-and-control-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+7. Attitude Determination and Control Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch08-satellite-propulsion-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+8. Satellite Propulsion Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch09-thermal-control-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+9. Thermal Control Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch10-on-board-data-handling.html" class="md-nav__link">
+<span class="md-ellipsis">
+10. On-Board Data Handling
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch11-telemetry-tracking-and-command-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+11. Telemetry, Tracking and Command Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch12-radio-frequency-satellite-communications.html" class="md-nav__link">
+<span class="md-ellipsis">
+12. Radio Frequency Satellite Communications
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch13-satellite-link-budget-analysis.html" class="md-nav__link">
+<span class="md-ellipsis">
+13. Satellite Link Budget Analysis
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch14-satellite-antenna-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+14. Satellite Antenna Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch15-digital-signal-processing-for-satellites.html" class="md-nav__link">
+<span class="md-ellipsis">
+15. Digital Signal Processing for Satellites
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch16-optical-satellite-communications.html" class="md-nav__link">
+<span class="md-ellipsis">
+16. Optical Satellite Communications
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch17-earth-observation-and-remote-sensing.html" class="md-nav__link">
+<span class="md-ellipsis">
+17. Earth Observation and Remote Sensing
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch18-global-navigation-satellite-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+18. Global Navigation Satellite Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch19-communication-satellites-and-services.html" class="md-nav__link">
+<span class="md-ellipsis">
+19. Communication Satellites and Services
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch20-scientific-satellites-and-space-observatories.html" class="md-nav__link">
+<span class="md-ellipsis">
+20. Scientific Satellites and Space Observatories
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch21-military-and-intelligence-satellites.html" class="md-nav__link">
+<span class="md-ellipsis">
+21. Military and Intelligence Satellites
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch22-ground-station-design-and-networks.html" class="md-nav__link">
+<span class="md-ellipsis">
+22. Ground Station Design and Networks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch23-mission-operations-and-ground-control.html" class="md-nav__link">
+<span class="md-ellipsis">
+23. Mission Operations and Ground Control
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch24-smallsats-cubesats-and-the-new-space-revolution.html" class="md-nav__link">
+<span class="md-ellipsis">
+24. SmallSats, CubeSats, and the New Space Revolution
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch25-mega-constellations-and-leo-broadband-networks.html" class="md-nav__link">
+<span class="md-ellipsis">
+25. Mega-Constellations and LEO Broadband Networks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch26-artificial-intelligence-and-machine-learning-in.html" class="md-nav__link">
+<span class="md-ellipsis">
+26. Artificial Intelligence and Machine Learning in Space
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch27-on-orbit-servicing-and-space-robotics.html" class="md-nav__link">
+<span class="md-ellipsis">
+27. On-Orbit Servicing and Space Robotics
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch28-space-debris-and-long-term-sustainability.html" class="md-nav__link">
+<span class="md-ellipsis">
+28. Space Debris and Long-Term Sustainability
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch29-quantum-communications-and-satellite-qkd.html" class="md-nav__link">
+<span class="md-ellipsis">
+29. Quantum Communications and Satellite QKD
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch30-6g-and-non-terrestrial-networks.html" class="md-nav__link">
+<span class="md-ellipsis">
+30. 6G and Non-Terrestrial Networks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch31-future-concepts-and-emerging-space-technologies.html" class="md-nav__link">
+<span class="md-ellipsis">
+31. Future Concepts and Emerging Space Technologies
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="classical-orbital-elements-and-coordinate.html" class="md-nav__link">
+<span class="md-ellipsis">
+Classical Orbital Elements and Coordinate Transformations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="satellite-frequency-allocations.html" class="md-nav__link">
+<span class="md-ellipsis">
+Satellite Frequency Allocations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="launch-vehicle-specifications.html" class="md-nav__link">
+<span class="md-ellipsis">
+Launch Vehicle Specifications
+</span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+Link Budget Templates and Worked Examples
+</span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a href="link-budget-templates-and-worked-examples.html" class="md-nav__link md-nav__link--active">
+<span class="md-ellipsis">
+Link Budget Templates and Worked Examples
+</span>
+</a>
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#sec-linkbudget_intro" class="md-nav__link">
+<span class="md-ellipsis">
+Introduction to Link Budget Analysis
+</span>
+</a>
+<nav class="md-nav" aria-label="Introduction to Link Budget Analysis">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-fundamental_link" class="md-nav__link">
+<span class="md-ellipsis">
+The Fundamental Link Equation
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-noise_temp" class="md-nav__link">
+<span class="md-ellipsis">
+System Noise Temperature
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-link_margin" class="md-nav__link">
+<span class="md-ellipsis">
+Link Margin and Availability
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-shannon" class="md-nav__link">
+<span class="md-ellipsis">
+Shannon Capacity Bound
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-example1_ka_geo" class="md-nav__link">
+<span class="md-ellipsis">
+Example 1: Ka-band GEO Downlink
+</span>
+</a>
+<nav class="md-nav" aria-label="Example 1: Ka-band GEO Downlink">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-ex1_scenario" class="md-nav__link">
+<span class="md-ellipsis">
+Scenario Definition
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-ex1_calculation" class="md-nav__link">
+<span class="md-ellipsis">
+Link Budget Calculation
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-ex1_interp" class="md-nav__link">
+<span class="md-ellipsis">
+Interpretation
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-example2_sband_ttc" class="md-nav__link">
+<span class="md-ellipsis">
+Example 2: S-band TT&amp;C Uplink
+</span>
+</a>
+<nav class="md-nav" aria-label="Example 2: S-band TT&amp;C Uplink">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-ex2_scenario" class="md-nav__link">
+<span class="md-ellipsis">
+Scenario Definition
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-ex2_calculation" class="md-nav__link">
+<span class="md-ellipsis">
+Link Budget Calculation
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-ex2_interp" class="md-nav__link">
+<span class="md-ellipsis">
+Interpretation
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-example3_xband_leo" class="md-nav__link">
+<span class="md-ellipsis">
+Example 3: X-band LEO Data Downlink
+</span>
+</a>
+<nav class="md-nav" aria-label="Example 3: X-band LEO Data Downlink">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-ex3_scenario" class="md-nav__link">
+<span class="md-ellipsis">
+Scenario Definition
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-ex3_interp" class="md-nav__link">
+<span class="md-ellipsis">
+Interpretation
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-example4_optical" class="md-nav__link">
+<span class="md-ellipsis">
+Example 4: Optical Free-Space Link (LEO Downlink)
+</span>
+</a>
+<nav class="md-nav" aria-label="Example 4: Optical Free-Space Link (LEO Downlink)">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-ex4_scenario" class="md-nav__link">
+<span class="md-ellipsis">
+Scenario Definition
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-ex4_calculation" class="md-nav__link">
+<span class="md-ellipsis">
+Optical Link Budget Calculation
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-ex4_interp" class="md-nav__link">
+<span class="md-ellipsis">
+Interpretation
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-linkbudget_summary" class="md-nav__link">
+<span class="md-ellipsis">
+Link Budget Summary Formulae
+</span>
+</a>
+<nav class="md-nav" aria-label="Link Budget Summary Formulae">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-key_equations" class="md-nav__link">
+<span class="md-ellipsis">
+Key Equations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-nf_to_temp" class="md-nav__link">
+<span class="md-ellipsis">
+Noise Figure to Noise Temperature Conversion
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-modcod_req" class="md-nav__link">
+<span class="md-ellipsis">
+Modulation and Coding Requirements
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-rain_fade" class="md-nav__link">
+<span class="md-ellipsis">
+Rain Fade Statistics
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-template" class="md-nav__link">
+<span class="md-ellipsis">
+Complete Link Budget Template
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-example_comparison" class="md-nav__link">
+<span class="md-ellipsis">
+Comparison of Worked Examples
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="key-standards-software-tools-and-references.html" class="md-nav__link">
+<span class="md-ellipsis">
+Key Standards, Software Tools, and References
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="bibliography.html" class="md-nav__link">
+<span class="md-ellipsis">
+Bibliography
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#sec-linkbudget_intro" class="md-nav__link">
+<span class="md-ellipsis">
+Introduction to Link Budget Analysis
+</span>
+</a>
+<nav class="md-nav" aria-label="Introduction to Link Budget Analysis">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-fundamental_link" class="md-nav__link">
+<span class="md-ellipsis">
+The Fundamental Link Equation
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-noise_temp" class="md-nav__link">
+<span class="md-ellipsis">
+System Noise Temperature
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-link_margin" class="md-nav__link">
+<span class="md-ellipsis">
+Link Margin and Availability
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-shannon" class="md-nav__link">
+<span class="md-ellipsis">
+Shannon Capacity Bound
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-example1_ka_geo" class="md-nav__link">
+<span class="md-ellipsis">
+Example 1: Ka-band GEO Downlink
+</span>
+</a>
+<nav class="md-nav" aria-label="Example 1: Ka-band GEO Downlink">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-ex1_scenario" class="md-nav__link">
+<span class="md-ellipsis">
+Scenario Definition
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-ex1_calculation" class="md-nav__link">
+<span class="md-ellipsis">
+Link Budget Calculation
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-ex1_interp" class="md-nav__link">
+<span class="md-ellipsis">
+Interpretation
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-example2_sband_ttc" class="md-nav__link">
+<span class="md-ellipsis">
+Example 2: S-band TT&amp;C Uplink
+</span>
+</a>
+<nav class="md-nav" aria-label="Example 2: S-band TT&amp;C Uplink">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-ex2_scenario" class="md-nav__link">
+<span class="md-ellipsis">
+Scenario Definition
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-ex2_calculation" class="md-nav__link">
+<span class="md-ellipsis">
+Link Budget Calculation
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-ex2_interp" class="md-nav__link">
+<span class="md-ellipsis">
+Interpretation
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-example3_xband_leo" class="md-nav__link">
+<span class="md-ellipsis">
+Example 3: X-band LEO Data Downlink
+</span>
+</a>
+<nav class="md-nav" aria-label="Example 3: X-band LEO Data Downlink">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-ex3_scenario" class="md-nav__link">
+<span class="md-ellipsis">
+Scenario Definition
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-ex3_interp" class="md-nav__link">
+<span class="md-ellipsis">
+Interpretation
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-example4_optical" class="md-nav__link">
+<span class="md-ellipsis">
+Example 4: Optical Free-Space Link (LEO Downlink)
+</span>
+</a>
+<nav class="md-nav" aria-label="Example 4: Optical Free-Space Link (LEO Downlink)">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-ex4_scenario" class="md-nav__link">
+<span class="md-ellipsis">
+Scenario Definition
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-ex4_calculation" class="md-nav__link">
+<span class="md-ellipsis">
+Optical Link Budget Calculation
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-ex4_interp" class="md-nav__link">
+<span class="md-ellipsis">
+Interpretation
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-linkbudget_summary" class="md-nav__link">
+<span class="md-ellipsis">
+Link Budget Summary Formulae
+</span>
+</a>
+<nav class="md-nav" aria-label="Link Budget Summary Formulae">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-key_equations" class="md-nav__link">
+<span class="md-ellipsis">
+Key Equations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-nf_to_temp" class="md-nav__link">
+<span class="md-ellipsis">
+Noise Figure to Noise Temperature Conversion
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-modcod_req" class="md-nav__link">
+<span class="md-ellipsis">
+Modulation and Coding Requirements
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-rain_fade" class="md-nav__link">
+<span class="md-ellipsis">
+Rain Fade Statistics
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-template" class="md-nav__link">
+<span class="md-ellipsis">
+Complete Link Budget Template
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-example_comparison" class="md-nav__link">
+<span class="md-ellipsis">
+Comparison of Worked Examples
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="app-linkbudget">Link Budget Templates and Worked Examples<a class="headerlink" href="#app-linkbudget" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p><em>“A link budget that closes in analysis often does not close in practice, and one that closes in practice is always the result of careful attention to every term.”</em><br> <span class="srcline">—Spacecraft systems engineering maxim</span></p>
+</blockquote>
+<p>Link budget analysis is the accounting exercise that determines whether a radio or optical communication link will deliver adequate signal quality to support the required data rate under defined propagation conditions. Every communications satellite, every TT&amp;C system, and every ground station design begins with a link budget. This appendix provides a systematic treatment of the methodology, complete worked examples for four representative link types encountered in satellite engineering, a summary of key formulae, and annotated templates suitable for adaptation to new designs.</p>
+<h2 id="sec-linkbudget_intro">Introduction to Link Budget Analysis<a class="headerlink" href="#sec-linkbudget_intro" title="Permanent link">&para;</a></h2>
+<h3 id="subsec-fundamental_link">The Fundamental Link Equation<a class="headerlink" href="#subsec-fundamental_link" title="Permanent link">&para;</a></h3>
+<p>The received carrier-to-noise density ratio <span class="arithmatex">\(C/N_0\)</span> (in dBHz) is the central quantity of any link budget. It expresses the ratio of received carrier power to the noise power per unit bandwidth, and is the quantity that determines how much information can be recovered from the received signal before any bandwidth-limiting process is applied. The fundamental link equation in logarithmic form is:</p>
+<div id="eq-cn0_general"></div>
+<div class="arithmatex">\[\begin{align*}
+\frac{C}{N_0}\bigg|_{\text{dBHz}} &amp;= \text{EIRP}_{\text{dBW}} - \text{FSPL}_{\text{dB}} - L_{\text{atm,dB}} - L_{\text{misc,dB}} + \left(\frac{G}{T}\right)_{\text{dB/K}} - k_B
+\end{align*}\]</div>
+<p>where:</p>
+<ul>
+<li>
+<p><span class="arithmatex">\(\text{EIRP} = P_t + G_t - L_{\text{tx}}\)</span> (dBW): Effective Isotropic Radiated Power, the transmit power augmented by antenna gain and reduced by transmit path losses</p>
+</li>
+<li>
+<p><span class="arithmatex">\(\text{FSPL} = 20\log_{10}\!\left(\frac{4\pi d}{\lambda}\right)\)</span> (dB): Free-Space Path Loss, the geometric spreading loss over slant range <span class="arithmatex">\(d\)</span> at wavelength <span class="arithmatex">\(\lambda\)</span></p>
+</li>
+<li>
+<p><span class="arithmatex">\(L_{\text{atm}}\)</span> (dB): Atmospheric absorption including gaseous (O<span class="arithmatex">\(_2\)</span>, H<span class="arithmatex">\(_2\)</span>O), cloud, and rain losses</p>
+</li>
+<li>
+<p><span class="arithmatex">\(L_{\text{misc}}\)</span> (dB): Miscellaneous losses including polarisation mismatch, pointing error, Faraday rotation, and implementation loss</p>
+</li>
+<li>
+<p><span class="arithmatex">\(G/T\)</span> (dB/K): Receive system figure of merit, the receive antenna gain divided by system noise temperature</p>
+</li>
+<li>
+<p><span class="arithmatex">\(k_B = -228.6\)</span> dBW/K/Hz: Boltzmann’s constant in logarithmic form</p>
+</li>
+</ul>
+<h3 id="subsec-noise_temp">System Noise Temperature<a class="headerlink" href="#subsec-noise_temp" title="Permanent link">&para;</a></h3>
+<p>The receive system noise temperature <span class="arithmatex">\(T_{\text{sys}}\)</span> is the sum of all noise contributions referred to the antenna output port:</p>
+<div id="eq-tsys_appD"></div>
+<div class="arithmatex">\[\begin{align*}
+T_{\text{sys}} &amp;= T_{\text{ant}} + T_{\text{feed}} + \frac{T_{\text{LNA}}}{G_{\text{ant}}} + \frac{T_{\text{backend}}}{G_{\text{ant}} G_{\text{LNA}}}
+\end{align*}\]</div>
+<p>In practice, for high-gain antennas where <span class="arithmatex">\(G_{\text{ant}} \gg 1\)</span>, the system noise temperature is dominated by the antenna noise temperature <span class="arithmatex">\(T_{\text{ant}}\)</span> (which includes both sky noise and ground pickup through sidelobes) and the LNA noise temperature <span class="arithmatex">\(T_{\text{LNA}}\)</span>. For a receive system with an antenna noise temperature of 30 K (pointing at cold sky), a feed loss of 0.3 dB (equivalent to 20 K), and an LNA with 1 dB noise figure (75 K), the system noise temperature is approximately:</p>
+<div id="eq-tsys_example"></div>
+<div class="arithmatex">\[\begin{align*}
+T_{\text{sys}} &amp;\approx 30 + 20 + 75 = 125~\text{K}
+\end{align*}\]</div>
+<h3 id="subsec-link_margin">Link Margin and Availability<a class="headerlink" href="#subsec-link_margin" title="Permanent link">&para;</a></h3>
+<p>The link margin <span class="arithmatex">\(M\)</span> is the difference between the received <span class="arithmatex">\(C/N_0\)</span> and the minimum required <span class="arithmatex">\(C/N_0\)</span> needed to close the link at the specified modulation and coding with the required bit error rate (BER):</p>
+<div id="eq-link_margin_appD"></div>
+<div class="arithmatex">\[\begin{align*}
+M &amp;= \left(\frac{C}{N_0}\right)_{\text{received}} - \left(\frac{C}{N_0}\right)_{\text{required}}
+\end{align*}\]</div>
+<p>A positive margin indicates the link closes; a negative margin indicates link failure. Design convention typically requires a minimum margin of 3 dB for geostationary links in clear sky, with additional margins for rain fade specified at an exceedance probability (e.g., 5 dB rain fade margin for 99.9% annual availability at mid-latitudes for Ka-band). The relationship between bit error rate and <span class="arithmatex">\(E_b/N_0\)</span> (energy-per-bit to noise density ratio) is:</p>
+<div id="eq-ebn0_appD"></div>
+<div class="arithmatex">\[\begin{align*}
+\frac{E_b}{N_0}\bigg|_{\text{dB}} &amp;= \frac{C}{N_0}\bigg|_{\text{dBHz}} - 10\log_{10}(R_b)
+\end{align*}\]</div>
+<p>where <span class="arithmatex">\(R_b\)</span> is the information bit rate in bit/s.</p>
+<h3 id="subsec-shannon">Shannon Capacity Bound<a class="headerlink" href="#subsec-shannon" title="Permanent link">&para;</a></h3>
+<p>The Shannon–Hartley theorem provides the theoretical maximum channel capacity <span class="arithmatex">\(C\)</span> (bit/s) as a function of bandwidth <span class="arithmatex">\(B\)</span> (Hz) and signal-to-noise ratio SNR:</p>
+<div id="eq-shannon_appD"></div>
+<div class="arithmatex">\[\begin{align*}
+C &amp;= B \log_2\!\left(1 + \text{SNR}\right)
+\end{align*}\]</div>
+<p>where <span class="arithmatex">\(\text{SNR} = C/N = (C/N_0)/B\)</span>. Modern forward error correction codes (turbo codes, LDPC) operate within 0.5–1.0 dB of the Shannon limit. The spectral efficiency <span class="arithmatex">\(\eta_s = C/B = \log_2(1 + \text{SNR})\)</span> in bit/s/Hz determines the maximum data rate achievable within a given bandwidth allocation.</p>
+<h2 id="sec-example1_ka_geo">Example 1: Ka-band GEO Downlink<a class="headerlink" href="#sec-example1_ka_geo" title="Permanent link">&para;</a></h2>
+<h3 id="subsec-ex1_scenario">Scenario Definition<a class="headerlink" href="#subsec-ex1_scenario" title="Permanent link">&para;</a></h3>
+<p>This example computes the link budget for a Ka-band downlink from a geostationary communications satellite to a small VSAT terminal. The scenario represents a typical direct-to-home or enterprise broadband downlink. Parameters are representative of a Ku-to-Ka band transition era satellite.</p>
+<p><strong>Scenario:</strong> GEO satellite at 35,786 km altitude, 20 GHz downlink frequency, 10 W transmit power, 0.5 m spacecraft transmit dish, receiving at a 0.9 m ground dish at 45<span class="arithmatex">\(^\circ\)</span> elevation angle in a temperate European location.</p>
+<h3 id="subsec-ex1_calculation">Link Budget Calculation<a class="headerlink" href="#subsec-ex1_calculation" title="Permanent link">&para;</a></h3>
+<p>The free-space path loss at 20 GHz (wavelength <span class="arithmatex">\(\lambda = c/f = 3\times10^8/20\times10^9 = 0.015\)</span> m) over 36,000 km slant range is:</p>
+<div id="eq-ex1_fspl"></div>
+<div class="arithmatex">\[\begin{align*}
+\text{FSPL} &amp;= 20\log_{10}\!\left(\frac{4\pi \times 36{,}000 \times 10^3}{0.015}\right) = 20\log_{10}(30.16 \times 10^9) = 209.6~\text{dB}
+\end{align*}\]</div>
+<p>The transmit antenna gain for a 0.5 m dish at 20 GHz with 55% efficiency (<span class="arithmatex">\(\eta\)</span>):</p>
+<div class="arithmatex">\[\begin{align*}
+G_t &amp;= \eta \left(\frac{\pi D f}{c}\right)^2 = 0.55 \times \left(\frac{\pi \times 0.5 \times 20 \times 10^9}{3 \times 10^8}\right)^2 = 0.55 \times 10{,}966 = 6031 \Rightarrow 37.8~\text{dBi}
+\end{align*}\]</div>
+<p>Rounding to account for sidelobe level correction and actual beam efficiency: <span class="arithmatex">\(G_t \approx 35.0\)</span> dBi (conservative design value for a shaped-beam antenna optimised for coverage rather than peak gain).</p>
+<p>The receive antenna gain for a 0.9 m dish at 20 GHz with 60% efficiency:</p>
+<div class="arithmatex">\[\begin{align*}
+G_r &amp;= 0.60 \times \left(\frac{\pi \times 0.9 \times 20 \times 10^9}{3 \times 10^8}\right)^2 = 0.60 \times 35,531 = 21,318 \Rightarrow 43.3~\text{dBi}
+\end{align*}\]</div>
+<p>Applying an additional 3.8 dB pointing loss at 45<span class="arithmatex">\(^\circ\)</span> elevation (edge-of-coverage reduction for a non-European GEO slot): <span class="arithmatex">\(G_r = 39.5\)</span> dBi.</p>
+<div class="tbl" id="tab-ex1_ka_geo">
+<div class="tbl-caption"><strong>Table 1.</strong> Ka-band GEO Downlink Budget (20 GHz, GEO at 35<span>,</span>786 km)</div>
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Parameter</strong></th>
+<th style="text-align: right;"><strong>Value</strong></th>
+<th style="text-align: right;"><strong>Units</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="3" style="text-align: left;"><em>Transmit Side</em></td>
+</tr>
+<tr>
+<td style="text-align: left;">Transmit power <span class="math inline">\(P_t\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(+10.0\)</span></td>
+<td style="text-align: right;">dBW (<span class="math inline">\(= 10\)</span> W)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Transmit antenna gain <span class="math inline">\(G_t\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(+35.0\)</span></td>
+<td style="text-align: right;">dBi (0.5 m dish, shaped beam)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Waveguide and feed losses <span class="math inline">\(L_{\text{tx}}\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(-1.0\)</span></td>
+<td style="text-align: right;">dB</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>EIRP</strong></td>
+<td style="text-align: right;"><span class="math inline">\(\mathbf{+44.0}\)</span></td>
+<td style="text-align: right;"><strong>dBW</strong></td>
+</tr>
+<tr>
+<td colspan="3" style="text-align: left;"><em>Propagation</em></td>
+</tr>
+<tr>
+<td style="text-align: left;">Free-space path loss FSPL</td>
+<td style="text-align: right;"><span class="math inline">\(-209.6\)</span></td>
+<td style="text-align: right;">dB (<span class="math inline">\(d=36{,}000\)</span> km, <span class="math inline">\(f=20\)</span> GHz)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Atmospheric absorption <span class="math inline">\(L_{\text{gas}}\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(-0.5\)</span></td>
+<td style="text-align: right;">dB (O<span class="math inline">\(_2\)</span>, H<span class="math inline">\(_2\)</span>O at 45<span class="math inline">\(^\circ\)</span> el.)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Rain fade margin (0.01% time)</td>
+<td style="text-align: right;"><span class="math inline">\(-5.0\)</span></td>
+<td style="text-align: right;">dB (ITU-R P.618-14, zone E)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Polarisation mismatch / pointing</td>
+<td style="text-align: right;"><span class="math inline">\(-0.5\)</span></td>
+<td style="text-align: right;">dB</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Total path losses</strong></td>
+<td style="text-align: right;"><span class="math inline">\(\mathbf{-215.6}\)</span></td>
+<td style="text-align: right;"><strong>dB</strong></td>
+</tr>
+<tr>
+<td colspan="3" style="text-align: left;"><em>Receive Side</em></td>
+</tr>
+<tr>
+<td style="text-align: left;">Receive antenna gain <span class="math inline">\(G_r\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(+39.5\)</span></td>
+<td style="text-align: right;">dBi (0.9 m dish, 60% efficiency)</td>
+</tr>
+<tr>
+<td style="text-align: left;">System noise temperature <span class="math inline">\(T_{\text{sys}}\)</span></td>
+<td style="text-align: right;">150 K</td>
+<td style="text-align: right;"><span class="math inline">\(= +21.8\)</span> dBK</td>
+</tr>
+<tr>
+<td style="text-align: left;">Receive figure of merit <span class="math inline">\(G/T\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(+17.7\)</span></td>
+<td style="text-align: right;">dB/K (<span class="math inline">\(= 39.5 - 21.8\)</span>)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Boltzmann constant <span class="math inline">\(k_B\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(+228.6\)</span></td>
+<td style="text-align: right;">dBW/K/Hz</td>
+</tr>
+<tr>
+<td colspan="3" style="text-align: left;"><em>Link Performance</em></td>
+</tr>
+<tr>
+<td style="text-align: left;">Received <span class="math inline">\(C/N_0 = 44.0 - 215.6 + 17.7 + 228.6\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(\mathbf{+75.2}\)</span></td>
+<td style="text-align: right;"><strong>dBHz</strong></td>
+</tr>
+<tr>
+<td colspan="3" style="text-align: left;"><em>Required <span class="math inline">\(C/N_0\)</span> for DVB-S2</em></td>
+</tr>
+<tr>
+<td style="text-align: left;">Modulation: QPSK, code rate 3/4</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">Required <span class="math inline">\(E_b/N_0\)</span> at BER <span class="math inline">\(10^{-7}\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(+5.5\)</span></td>
+<td style="text-align: right;">dB</td>
+</tr>
+<tr>
+<td style="text-align: left;">Modem implementation loss</td>
+<td style="text-align: right;"><span class="math inline">\(+1.0\)</span></td>
+<td style="text-align: right;">dB</td>
+</tr>
+<tr>
+<td style="text-align: left;">Data rate <span class="math inline">\(R_b = 18\)</span> Mbps (<span class="math inline">\(= 72.55\)</span> dBHz)</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">Required <span class="math inline">\(C/N_0 = 5.5 + 1.0 + 72.55\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(+79.05 - 14.0 =\)</span></td>
+<td style="text-align: right;">dBHz</td>
+</tr>
+<tr>
+<td style="text-align: left;">DVB-S2 QPSK 3/4 required <span class="math inline">\(C/N_0\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(\mathbf{+65.0}\)</span></td>
+<td style="text-align: right;"><strong>dBHz</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Link margin</strong> <span class="math inline">\(= 75.2 - 65.0\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(\mathbf{+10.2}\)</span></td>
+<td style="text-align: right;"><strong>dB</strong></td>
+</tr>
+</tbody>
+</table>
+</div></div>
+<h3 id="subsec-ex1_interp">Interpretation<a class="headerlink" href="#subsec-ex1_interp" title="Permanent link">&para;</a></h3>
+<p>The 10.2 dB link margin is healthy for a Ka-band GEO system. The 5.0 dB rain fade margin is separately accounted: removing the rain fade entry (<span class="arithmatex">\(-5.0\)</span> dB), the clear-sky margin is 15.2 dB, of which 5.0 dB is allocated to rain and the remaining 10.2 dB is the operational margin available for pointing errors, antenna degradation, and interference. In a real system, the 5.0 dB rain fade margin ensures 99.99% annual availability at a zone E European location per ITU-R P.618-14. Increasing the receive dish from 0.9 m to 1.2 m would add approximately 2.5 dBi in antenna gain and thus 2.5 dB of margin, allowing either higher data rate (from 18 Mbps to <span class="arithmatex">\(\sim\)</span>32 Mbps at QPSK 3/4) or lower power transmit (from 10 W to 5.5 W with same margin).</p>
+<div class="admonition note box-notebox kind-note">
+<p><strong>DVB-S2 Adaptive Coding and Modulation (ACM).</strong> Modern Ka-band broadband systems use ACM: when the link margin is high (clear sky), the modem switches to a higher spectral efficiency MODCOD (e.g., 8PSK 2/3 or 16APSK 3/4) to increase throughput; when rain reduces margin, it falls back to a more robust MODCOD (QPSK 1/2). This exploits the available margin dynamically, increasing average throughput by 30–60% compared to a fixed-modulation link designed for availability.</p>
+</div>
+<h2 id="sec-example2_sband_ttc">Example 2: S-band TT&amp;C Uplink<a class="headerlink" href="#sec-example2_sband_ttc" title="Permanent link">&para;</a></h2>
+<h3 id="subsec-ex2_scenario">Scenario Definition<a class="headerlink" href="#subsec-ex2_scenario" title="Permanent link">&para;</a></h3>
+<p>This example computes the command uplink from a ground station to a LEO spacecraft. The scenario represents typical mission operations for a small satellite, where the ground station must reliably command the spacecraft during a pass with potentially poor geometry. The worst-case link occurs at low elevation angle, where both path length and atmospheric absorption are maximised.</p>
+<p><strong>Scenario:</strong> 2.1 GHz S-band command uplink, 5 W TWTA at ground station with 3 m dish, LEO satellite at 600 km circular orbit, worst-case elevation angle 10<span class="arithmatex">\(^\circ\)</span> (slant range <span class="arithmatex">\(\approx\)</span>2,060 km), spacecraft omnidirectional receive antenna, BPSK modulation at 4 kbps, target BER <span class="arithmatex">\(10^{-5}\)</span>.</p>
+<h3 id="subsec-ex2_calculation">Link Budget Calculation<a class="headerlink" href="#subsec-ex2_calculation" title="Permanent link">&para;</a></h3>
+<p>At 2.1 GHz, wavelength <span class="arithmatex">\(\lambda = 3\times10^8 / 2.1\times10^9 = 0.143\)</span> m.</p>
+<p>For the worst-case 10<span class="arithmatex">\(^\circ\)</span> elevation geometry, the slant range from a 600 km circular orbit is:</p>
+<div id="eq-slant_range_appD"></div>
+<div class="arithmatex">\[\begin{align*}
+d_{\text{slant}} &amp;= \sqrt{(R_E + h)^2 - R_E^2\cos^2(\varepsilon)} - R_E\sin(\varepsilon) \approx 2060~\text{km at } \varepsilon=10^\circ
+\end{align*}\]</div>
+<p>Free-space path loss at worst-case range:</p>
+<div id="eq-ex2_fspl"></div>
+<div class="arithmatex">\[\begin{align*}
+\text{FSPL} &amp;= 20\log_{10}\!\left(\frac{4\pi \times 2{,}060 \times 10^3}{0.143}\right) = 20\log_{10}(1.806 \times 10^{11}) = 165.1~\text{dB}
+\end{align*}\]</div>
+<p>For BPSK at BER <span class="arithmatex">\(= 10^{-5}\)</span>, the required <span class="arithmatex">\(E_b/N_0 = 9.6\)</span> dB. At <span class="arithmatex">\(R_b = 4000\)</span> bps:</p>
+<div id="eq-ex2_cn0req"></div>
+<div class="arithmatex">\[\begin{align*}
+\left(\frac{C}{N_0}\right)_{\text{req}} &amp;= \frac{E_b}{N_0} + 10\log_{10}(R_b) = 9.6 + 10\log_{10}(4000) = 9.6 + 36.0 = 45.6~\text{dBHz}
+\end{align*}\]</div>
+<div class="tbl" id="tab-ex2_sband_ttc">
+<div class="tbl-caption"><strong>Table 2.</strong> S-band TT&amp;C Command Uplink Budget (2.1 GHz, LEO 600 km, 10<span class="math inline">\(^\circ\)</span> elevation)</div>
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Parameter</strong></th>
+<th style="text-align: right;"><strong>Value</strong></th>
+<th style="text-align: right;"><strong>Units</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="3" style="text-align: left;"><em>Transmit Side (Ground Station)</em></td>
+</tr>
+<tr>
+<td style="text-align: left;">Transmit power <span class="math inline">\(P_t\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(+7.0\)</span></td>
+<td style="text-align: right;">dBW (<span class="math inline">\(= 5\)</span> W)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Transmit antenna gain <span class="math inline">\(G_t\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(+26.0\)</span></td>
+<td style="text-align: right;">dBi (3 m dish, 55% eff., <span class="math inline">\(f=2.1\)</span> GHz)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Feed and cable losses <span class="math inline">\(L_{\text{tx}}\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(-0.5\)</span></td>
+<td style="text-align: right;">dB</td>
+</tr>
+<tr>
+<td style="text-align: left;">Pointing loss (worst-case)</td>
+<td style="text-align: right;"><span class="math inline">\(-0.5\)</span></td>
+<td style="text-align: right;">dB</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>EIRP</strong></td>
+<td style="text-align: right;"><span class="math inline">\(\mathbf{+32.0}\)</span></td>
+<td style="text-align: right;"><strong>dBW</strong></td>
+</tr>
+<tr>
+<td colspan="3" style="text-align: left;"><em>Propagation (Worst Case: 10<span class="math inline">\(^\circ\)</span> elevation)</em></td>
+</tr>
+<tr>
+<td style="text-align: left;">Slant range (10<span class="math inline">\(^\circ\)</span> el., 600 km orbit)</td>
+<td style="text-align: right;">2060 km</td>
+<td style="text-align: right;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">Free-space path loss FSPL</td>
+<td style="text-align: right;"><span class="math inline">\(-165.1\)</span></td>
+<td style="text-align: right;">dB</td>
+</tr>
+<tr>
+<td style="text-align: left;">Atmospheric absorption</td>
+<td style="text-align: right;"><span class="math inline">\(-0.5\)</span></td>
+<td style="text-align: right;">dB (elevated <span class="math inline">\(L_{\text{gas}}\)</span> at low elevation)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Ionospheric loss</td>
+<td style="text-align: right;"><span class="math inline">\(-0.2\)</span></td>
+<td style="text-align: right;">dB (S-band, typical)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Total path losses</strong></td>
+<td style="text-align: right;"><span class="math inline">\(\mathbf{-165.8}\)</span></td>
+<td style="text-align: right;"><strong>dB</strong></td>
+</tr>
+<tr>
+<td colspan="3" style="text-align: left;"><em>Receive Side (Spacecraft)</em></td>
+</tr>
+<tr>
+<td style="text-align: left;">Receive antenna gain <span class="math inline">\(G_r\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(0.0\)</span></td>
+<td style="text-align: right;">dBi (omnidirectional monopole)</td>
+</tr>
+<tr>
+<td style="text-align: left;">System noise temperature <span class="math inline">\(T_{\text{sys}}\)</span></td>
+<td style="text-align: right;">1000 K</td>
+<td style="text-align: right;"><span class="math inline">\(= +30.0\)</span> dBK (Earth-viewing, body noise)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Spacecraft <span class="math inline">\(G/T\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(-30.0\)</span></td>
+<td style="text-align: right;">dB/K (<span class="math inline">\(= 0.0 - 30.0\)</span>)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Boltzmann constant <span class="math inline">\(k_B\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(+228.6\)</span></td>
+<td style="text-align: right;">dBW/K/Hz</td>
+</tr>
+<tr>
+<td colspan="3" style="text-align: left;"><em>Link Performance</em></td>
+</tr>
+<tr>
+<td style="text-align: left;">Received <span class="math inline">\(C/N_0 = 32.0 - 165.8 + (-30.0) + 228.6\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(\mathbf{+64.8}\)</span></td>
+<td style="text-align: right;"><strong>dBHz</strong></td>
+</tr>
+<tr>
+<td colspan="3" style="text-align: left;"><em>Required <span class="math inline">\(C/N_0\)</span> (BPSK, 4 kbps, BER <span class="math inline">\(10^{-5}\)</span>)</em></td>
+</tr>
+<tr>
+<td style="text-align: left;">Required <span class="math inline">\(E_b/N_0\)</span> (BPSK, BER <span class="math inline">\(10^{-5}\)</span>)</td>
+<td style="text-align: right;"><span class="math inline">\(+9.6\)</span></td>
+<td style="text-align: right;">dB</td>
+</tr>
+<tr>
+<td style="text-align: left;">Implementation loss</td>
+<td style="text-align: right;"><span class="math inline">\(+0.5\)</span></td>
+<td style="text-align: right;">dB</td>
+</tr>
+<tr>
+<td style="text-align: left;">Data rate term <span class="math inline">\(10\log_{10}(4000)\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(+36.0\)</span></td>
+<td style="text-align: right;">dBHz</td>
+</tr>
+<tr>
+<td style="text-align: left;">Required <span class="math inline">\(C/N_0\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(\mathbf{+46.1}\)</span></td>
+<td style="text-align: right;"><strong>dBHz</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Link margin</strong> <span class="math inline">\(= 64.8 - 46.1\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(\mathbf{+18.7}\)</span></td>
+<td style="text-align: right;"><strong>dB</strong></td>
+</tr>
+</tbody>
+</table>
+</div></div>
+<h3 id="subsec-ex2_interp">Interpretation<a class="headerlink" href="#subsec-ex2_interp" title="Permanent link">&para;</a></h3>
+<p>The 18.7 dB margin at worst-case 10<span class="arithmatex">\(^\circ\)</span> elevation is deliberately generous for a command uplink: TT&amp;C reliability is safety-critical, and the 4 kbps command rate is intentionally conservative. The large margin enables robust command reception even under severe scintillation, interference, or antenna mispointing. If the spacecraft’s attitude is uncertain (e.g., during an emergency safe mode), the omnidirectional receive antenna provides full-sphere coverage. Note that for higher elevation angles (e.g., 45<span class="arithmatex">\(^\circ\)</span>, slant range <span class="arithmatex">\(\sim\)</span>800 km), the margin increases by approximately <span class="arithmatex">\(20\log_{10}(2060/800) = 8.2\)</span> dB to over 26 dB—the link is extremely robust at favourable geometry. The command rate of 4 kbps is more than adequate for standard uplink packets; rates of 64–256 kbps are possible at zenith with the same link budget.</p>
+<h2 id="sec-example3_xband_leo">Example 3: X-band LEO Data Downlink<a class="headerlink" href="#sec-example3_xband_leo" title="Permanent link">&para;</a></h2>
+<h3 id="subsec-ex3_scenario">Scenario Definition<a class="headerlink" href="#subsec-ex3_scenario" title="Permanent link">&para;</a></h3>
+<p>Earth Observation (EO) satellites, particularly Synthetic Aperture Radar (SAR) missions, generate data at rates that challenge X-band downlink capacity. This example computes the link budget for an X-band SAR data downlink from a LEO spacecraft to a large direct-readout ground station, representative of missions such as Sentinel-1, RADARSAT-2, or Capella Space.</p>
+<p><strong>Scenario:</strong> 8.1 GHz X-band downlink, 2 W (3 dBW) transmit power, 0.5 m parabolic dish on the spacecraft, 13 m ground receiving antenna at the DLR/GSOC complex (Weilheim, Germany), 600 km circular orbit, 45<span class="arithmatex">\(^\circ\)</span> elevation angle, target 150 Mbps data throughput.</p>
+<p>At 8.1 GHz: <span class="arithmatex">\(\lambda = 3\times10^8 / 8.1\times10^9 = 0.037\)</span> m.</p>
+<p>Slant range at 45<span class="arithmatex">\(^\circ\)</span> elevation from 600 km orbit:</p>
+<div id="eq-ex3_slant"></div>
+<div class="arithmatex">\[\begin{align*}
+d_{45} &amp;\approx \sqrt{(6371+600)^2 - 6371^2\cos^2(45^\circ)} - 6371\sin(45^\circ) \approx 880~\text{km}
+\end{align*}\]</div>
+<div id="eq-ex3_fspl"></div>
+<div class="arithmatex">\[\begin{align*}
+\text{FSPL} &amp;= 20\log_{10}\!\left(\frac{4\pi \times 880 \times 10^3}{0.037}\right) = 20\log_{10}(2.98 \times 10^{11}) = 169.5~\text{dB}
+\end{align*}\]</div>
+<p>Spacecraft transmit antenna gain (0.5 m dish, 60% efficiency): <span id="eq-ex3_gt"></span></p>
+<div class="arithmatex">\[\begin{align*}
+G_t &amp;= \eta\!\left(\frac{\pi D f}{c}\right)^2 = 0.60 \times \left(\frac{\pi \times 0.5 \times 8.1 \times 10^9}{3 \times 10^8}\right)^2 = 0.60 \times 17{,}841 = 10{,}705 \Rightarrow 40.3~\text{dBi}
+\end{align*}\]</div>
+<p>Ground receive antenna gain (13 m dish, 70% efficiency at 8.1 GHz): <span id="eq-ex3_gr"></span></p>
+<div class="arithmatex">\[\begin{align*}
+G_r &amp;= 0.70 \times \left(\frac{\pi \times 13 \times 8.1 \times 10^9}{3 \times 10^8}\right)^2 = 0.70 \times 120{,}893{,}770 \Rightarrow 60.3~\text{dBi}
+\end{align*}\]</div>
+<div class="tbl" id="tab-ex3_xband_leo">
+<div class="tbl-caption"><strong>Table 3.</strong> X-band SAR Data Downlink Budget (8.1 GHz, LEO 600 km, 45<span class="math inline">\(^\circ\)</span> elevation)</div>
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Parameter</strong></th>
+<th style="text-align: right;"><strong>Value</strong></th>
+<th style="text-align: right;"><strong>Units</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="3" style="text-align: left;"><em>Transmit Side (Spacecraft)</em></td>
+</tr>
+<tr>
+<td style="text-align: left;">Transmit power <span class="math inline">\(P_t\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(+3.0\)</span></td>
+<td style="text-align: right;">dBW (<span class="math inline">\(= 2\)</span> W)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Transmit antenna gain <span class="math inline">\(G_t\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(+40.3\)</span></td>
+<td style="text-align: right;">dBi (0.5 m dish, 60% eff.)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Waveguide and switch losses <span class="math inline">\(L_{\text{tx}}\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(-1.5\)</span></td>
+<td style="text-align: right;">dB</td>
+</tr>
+<tr>
+<td style="text-align: left;">Pointing loss</td>
+<td style="text-align: right;"><span class="math inline">\(-0.5\)</span></td>
+<td style="text-align: right;">dB</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>EIRP</strong></td>
+<td style="text-align: right;"><span class="math inline">\(\mathbf{+41.3}\)</span></td>
+<td style="text-align: right;"><strong>dBW</strong></td>
+</tr>
+<tr>
+<td colspan="3" style="text-align: left;"><em>Propagation (45<span class="math inline">\(^\circ\)</span> elevation, 880 km slant)</em></td>
+</tr>
+<tr>
+<td style="text-align: left;">Free-space path loss FSPL</td>
+<td style="text-align: right;"><span class="math inline">\(-169.5\)</span></td>
+<td style="text-align: right;">dB</td>
+</tr>
+<tr>
+<td style="text-align: left;">Atmospheric absorption <span class="math inline">\(L_{\text{gas}}\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(-0.2\)</span></td>
+<td style="text-align: right;">dB (X-band, low rain latitude)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Rain fade margin (0.1% time)</td>
+<td style="text-align: right;"><span class="math inline">\(-2.0\)</span></td>
+<td style="text-align: right;">dB (mild, X-band less affected)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Total path losses</strong></td>
+<td style="text-align: right;"><span class="math inline">\(\mathbf{-171.7}\)</span></td>
+<td style="text-align: right;"><strong>dB</strong></td>
+</tr>
+<tr>
+<td colspan="3" style="text-align: left;"><em>Receive Side (Ground Station)</em></td>
+</tr>
+<tr>
+<td style="text-align: left;">Receive antenna gain <span class="math inline">\(G_r\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(+60.3\)</span></td>
+<td style="text-align: right;">dBi (13 m dish, 70% eff.)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Feed and LNA losses</td>
+<td style="text-align: right;"><span class="math inline">\(-0.5\)</span></td>
+<td style="text-align: right;">dB</td>
+</tr>
+<tr>
+<td style="text-align: left;">System noise temperature <span class="math inline">\(T_{\text{sys}}\)</span></td>
+<td style="text-align: right;">65 K</td>
+<td style="text-align: right;"><span class="math inline">\(= +18.1\)</span> dBK (cold sky, cryo LNA)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Ground station <span class="math inline">\(G/T\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(+41.7\)</span></td>
+<td style="text-align: right;">dB/K (<span class="math inline">\(= 59.8 - 18.1\)</span>)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Boltzmann constant <span class="math inline">\(k_B\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(+228.6\)</span></td>
+<td style="text-align: right;">dBW/K/Hz</td>
+</tr>
+<tr>
+<td colspan="3" style="text-align: left;"><em>Link Performance</em></td>
+</tr>
+<tr>
+<td style="text-align: left;">Received <span class="math inline">\(C/N_0 = 41.3 - 171.7 + 41.7 + 228.6\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(\mathbf{+139.9}\)</span></td>
+<td style="text-align: right;"><strong>dBHz</strong></td>
+</tr>
+<tr>
+<td colspan="3" style="text-align: left;"><em>Required <span class="math inline">\(C/N_0\)</span> for 150 Mbps, DVB-S2X</em></td>
+</tr>
+<tr>
+<td style="text-align: left;">Target data rate <span class="math inline">\(R_b = 150\)</span> Mbps</td>
+<td style="text-align: right;"><span class="math inline">\(10\log_{10}(150\times10^6) =\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(+81.8\)</span> dBHz</td>
+</tr>
+<tr>
+<td style="text-align: left;">Modulation: 8PSK 2/3, req. <span class="math inline">\(E_b/N_0 = 6.5\)</span> dB</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">Implementation + Reed-Solomon loss</td>
+<td style="text-align: right;"><span class="math inline">\(+0.8\)</span></td>
+<td style="text-align: right;">dB</td>
+</tr>
+<tr>
+<td style="text-align: left;">Required <span class="math inline">\(C/N_0\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(\mathbf{+89.1}\)</span></td>
+<td style="text-align: right;"><strong>dBHz</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Link margin</strong> <span class="math inline">\(= 139.9 - 89.1\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(\mathbf{+50.8}\)</span></td>
+<td style="text-align: right;"><strong>dB</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Max achievable rate at 0 dB margin</strong></td>
+<td style="text-align: right;"><span class="math inline">\(\mathbf{\sim}\)</span>18 Gbps</td>
+<td style="text-align: right;">(Shannon limit at this <span class="math inline">\(C/N_0\)</span>, 400 MHz BW)</td>
+</tr>
+</tbody>
+</table>
+</div></div>
+<h3 id="subsec-ex3_interp">Interpretation<a class="headerlink" href="#subsec-ex3_interp" title="Permanent link">&para;</a></h3>
+<p>The extremely large 50.8 dB margin reveals that for this scenario, the link is far from being the binding constraint. The actual binding constraint is the spacecraft data storage capacity, the contact window duration (<span class="arithmatex">\(\sim\)</span>7 minutes for a 600 km orbit at 45<span class="arithmatex">\(^\circ\)</span> minimum elevation), and the allocated bandwidth in the Earth Exploration Satellite Service (EESS) at X-band. With 400 MHz of allocated bandwidth (EESS allocation per ITU-R SA.1026-4) and 8PSK 2/3 (spectral efficiency 2 bit/s/Hz), the maximum throughput is approximately 600 Mbps—well within the link’s capability. The margin surplus could be used to reduce transmit power to 0.002 W (thus conserving spacecraft power), increase altitude to 1200 km, or operate to a much smaller (2 m) ground antenna while maintaining the 150 Mbps link. In practice, X-band EO downlinks are constrained by regulatory bandwidth limits and data volume rather than link budget.</p>
+<h2 id="sec-example4_optical">Example 4: Optical Free-Space Link (LEO Downlink)<a class="headerlink" href="#sec-example4_optical" title="Permanent link">&para;</a></h2>
+<h3 id="subsec-ex4_scenario">Scenario Definition<a class="headerlink" href="#subsec-ex4_scenario" title="Permanent link">&para;</a></h3>
+<p>Optical free-space communication (FSO) links offer orders-of-magnitude higher bandwidth density than radio frequency links at comparable aperture sizes. This example computes the link budget for a 1550 nm downlink from a LEO spacecraft to an optical ground station, representative of missions such as ESA’s LCOT (Laser Communication Terminal) or JAXA’s LLCD-equivalent.</p>
+<p><strong>Scenario:</strong> Wavelength <span class="arithmatex">\(\lambda = 1550\)</span> nm (<span class="arithmatex">\(1.55\times10^{-6}\)</span> m), 10 W transmit laser power, 15 cm transmit telescope on spacecraft, 1 m receive telescope at ground station, 600 km altitude, 45<span class="arithmatex">\(^\circ\)</span> elevation angle (slant range <span class="arithmatex">\(\approx\)</span>880 km), InGaAs avalanche photodiode (APD) receiver, target 1 Gbps data rate.</p>
+<h3 id="subsec-ex4_calculation">Optical Link Budget Calculation<a class="headerlink" href="#subsec-ex4_calculation" title="Permanent link">&para;</a></h3>
+<p>For a diffraction-limited Gaussian beam from a 15 cm transmit aperture, the far-field beam divergence half-angle is:</p>
+<div id="eq-beam_div"></div>
+<div class="arithmatex">\[\begin{align*}
+\theta_{\text{div}} &amp;= \frac{2.44\,\lambda}{D_t} = \frac{2.44 \times 1.55 \times 10^{-6}}{0.15} = 25.2~\mu\text{rad}
+\end{align*}\]</div>
+<p>The transmit telescope gain (analogous to antenna gain) with aperture efficiency <span class="arithmatex">\(\eta_t = 0.8\)</span>:</p>
+<div id="eq-opt_gt"></div>
+<div class="arithmatex">\[\begin{align*}
+G_t &amp;= \eta_t \left(\frac{\pi D_t}{\lambda}\right)^2 = 0.8 \times \left(\frac{\pi \times 0.15}{1.55 \times 10^{-6}}\right)^2 = 0.8 \times (3.038 \times 10^5)^2 \Rightarrow 109.7~\text{dBi}
+\end{align*}\]</div>
+<p>The geometric (free-space spreading) loss for an optical beam, expressed in dB, using the receive aperture diameter <span class="arithmatex">\(D_r = 1\)</span> m:</p>
+<div id="eq-opt_geom_loss"></div>
+<div class="arithmatex">\[\begin{align*}
+L_{\text{geom}} &amp;= -20\log_{10}\!\left(\frac{D_r}{\theta_{\text{div}} \cdot d}\right) = -20\log_{10}\!\left(\frac{1.0}{25.2 \times 10^{-6} \times 880 \times 10^3}\right)
+\end{align*}\]</div>
+<div class="arithmatex">\[\begin{align*}
+&amp;= -20\log_{10}\!\left(\frac{1.0}{22.2}\right) = +26.9~\text{dB (this is a loss, so $-26.9$~dB)}
+\end{align*}\]</div>
+<p>Alternatively, using the FSPL formula directly at <span class="arithmatex">\(\lambda = 1550\)</span> nm over 880 km:</p>
+<div id="eq-opt_fspl"></div>
+<div class="arithmatex">\[\begin{align*}
+\text{FSPL}_{\text{opt}} &amp;= 20\log_{10}\!\left(\frac{4\pi \times 880 \times 10^3}{1.55 \times 10^{-6}}\right) = 20\log_{10}(7.136 \times 10^{15}) = 317.1~\text{dB}
+\end{align*}\]</div>
+<p>The receive telescope gain with <span class="arithmatex">\(\eta_r = 0.7\)</span>:</p>
+<div id="eq-opt_gr"></div>
+<div class="arithmatex">\[\begin{align*}
+G_r &amp;= \eta_r \left(\frac{\pi D_r}{\lambda}\right)^2 = 0.7 \times \left(\frac{\pi \times 1.0}{1.55 \times 10^{-6}}\right)^2 = 0.7 \times 4.112 \times 10^{12} \Rightarrow 125.6~\text{dBi}
+\end{align*}\]</div>
+<p>For a cooled InGaAs APD receiver with sensitivity of <span class="arithmatex">\(-\)</span>58 dBm (2.5 pW per bit) at 1 Gbps (BER <span class="arithmatex">\(10^{-9}\)</span>), the minimum required received power is:</p>
+<div id="eq-opt_preq"></div>
+<div class="arithmatex">\[\begin{align*}
+P_{\text{req}} &amp;= -58~\text{dBm} = -88~\text{dBW} \quad \text{(at 1 Gbps)}
+\end{align*}\]</div>
+<div class="tbl" id="tab-ex4_optical">
+<div class="tbl-caption"><strong>Table 4.</strong> Optical Free-Space Link Budget (1550 nm, LEO 600 km, 45<span class="math inline">\(^\circ\)</span> elevation)</div>
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Parameter</strong></th>
+<th style="text-align: right;"><strong>Value</strong></th>
+<th style="text-align: right;"><strong>Units</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="3" style="text-align: left;"><em>Transmit Side (Spacecraft)</em></td>
+</tr>
+<tr>
+<td style="text-align: left;">Transmit laser power <span class="math inline">\(P_t\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(+10.0\)</span></td>
+<td style="text-align: right;">dBW (<span class="math inline">\(= 10\)</span> W)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Transmit telescope gain <span class="math inline">\(G_t\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(+109.7\)</span></td>
+<td style="text-align: right;">dBi (15 cm aperture, <span class="math inline">\(\lambda=1550\)</span> nm)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Optical TX losses (WDM, isolator)</td>
+<td style="text-align: right;"><span class="math inline">\(-2.0\)</span></td>
+<td style="text-align: right;">dB</td>
+</tr>
+<tr>
+<td style="text-align: left;">Pointing loss (fine APT residual 1 <span class="math inline">\(\mu\)</span>rad)</td>
+<td style="text-align: right;"><span class="math inline">\(-1.5\)</span></td>
+<td style="text-align: right;">dB</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>EIRP (optical)</strong></td>
+<td style="text-align: right;"><span class="math inline">\(\mathbf{+116.2}\)</span></td>
+<td style="text-align: right;"><strong>dBW</strong></td>
+</tr>
+<tr>
+<td colspan="3" style="text-align: left;"><em>Propagation (880 km slant range, 45<span class="math inline">\(^\circ\)</span> el.)</em></td>
+</tr>
+<tr>
+<td style="text-align: left;">Free-space path loss FSPL</td>
+<td style="text-align: right;"><span class="math inline">\(-317.1\)</span></td>
+<td style="text-align: right;">dB (<span class="math inline">\(f = c/\lambda = 193\)</span> THz)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Atmospheric turbulence (scintillation)</td>
+<td style="text-align: right;"><span class="math inline">\(-3.0\)</span></td>
+<td style="text-align: right;">dB (Kolmogorov, <span class="math inline">\(C_n^2 = 10^{-14}\)</span> m<span class="math inline">\(^{-2/3}\)</span>)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Cirrus cloud / thin cloud</td>
+<td style="text-align: right;"><span class="math inline">\(-2.0\)</span></td>
+<td style="text-align: right;">dB (marginal conditions)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Aerosol extinction</td>
+<td style="text-align: right;"><span class="math inline">\(-0.5\)</span></td>
+<td style="text-align: right;">dB (maritime aerosol)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Total path losses</strong></td>
+<td style="text-align: right;"><span class="math inline">\(\mathbf{-322.6}\)</span></td>
+<td style="text-align: right;"><strong>dB</strong></td>
+</tr>
+<tr>
+<td colspan="3" style="text-align: left;"><em>Receive Side (Ground Telescope)</em></td>
+</tr>
+<tr>
+<td style="text-align: left;">Receive telescope gain <span class="math inline">\(G_r\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(+125.6\)</span></td>
+<td style="text-align: right;">dBi (1 m aperture, <span class="math inline">\(\eta_r = 0.70\)</span>)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Optical RX losses (bandpass filter, fibre)</td>
+<td style="text-align: right;"><span class="math inline">\(-3.0\)</span></td>
+<td style="text-align: right;">dB</td>
+</tr>
+<tr>
+<td style="text-align: left;">Effective receive system gain</td>
+<td style="text-align: right;"><span class="math inline">\(+122.6\)</span></td>
+<td style="text-align: right;">dBi</td>
+</tr>
+<tr>
+<td colspan="3" style="text-align: left;"><em>Link Performance</em></td>
+</tr>
+<tr>
+<td style="text-align: left;">Received power <span class="math inline">\(= 116.2 - 322.6 + 122.6\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(\mathbf{-83.8}\)</span></td>
+<td style="text-align: right;"><strong>dBW</strong></td>
+</tr>
+<tr>
+<td colspan="3" style="text-align: left;"><em>Required Received Power at 1 Gbps</em></td>
+</tr>
+<tr>
+<td style="text-align: left;">APD sensitivity (BER <span class="math inline">\(10^{-9}\)</span>, 1 Gbps)</td>
+<td style="text-align: right;"><span class="math inline">\(-88.0\)</span></td>
+<td style="text-align: right;">dBW (<span class="math inline">\(=\)</span> 1.58 pW/bit)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Link margin</strong> <span class="math inline">\(= -83.8 - (-88.0)\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(\mathbf{+4.2}\)</span></td>
+<td style="text-align: right;"><strong>dB</strong></td>
+</tr>
+<tr>
+<td colspan="3" style="text-align: left;"><em>Notes</em></td>
+</tr>
+<tr>
+<td colspan="3" style="text-align: left;">Clear sky margin: <span class="math inline">\(4.2 + 2.0 + 3.0 = +9.2\)</span> dB (excluding cloud, scintillation)</td>
+</tr>
+<tr>
+<td colspan="3" style="text-align: left;">Adaptive optics can recover 2–3 dB of turbulence loss in good seeing</td>
+</tr>
+<tr>
+<td colspan="3" style="text-align: left;">SNSPD detector improves sensitivity by 10–15 dB over APD</td>
+</tr>
+</tbody>
+</table>
+</div></div>
+<h3 id="subsec-ex4_interp">Interpretation<a class="headerlink" href="#subsec-ex4_interp" title="Permanent link">&para;</a></h3>
+<p>The 4.2 dB clear-sky margin for a 1 Gbps optical link from 600 km is achievable but tight, reflecting the fundamental challenge of optical LEO communications: atmospheric turbulence and cloud blockage impose deep fades that require either: (1) optical ground station networks (diversity between multiple OGSs eliminates cloud; turbulence is site-specific); (2) adaptive optics at the ground telescope to pre-compensate the wavefront distortion induced by the atmosphere; or (3) more sensitive detectors (superconducting nanowire single-photon detectors, SNSPDs, provide 10–15 dB sensitivity advantage over APDs, but require cooling to <span class="arithmatex">\(&lt;\)</span>4 K).</p>
+<p>DSOC on the Psyche mission (<a href="ch31-future-concepts-and-emerging-space-technologies.html#sec-deep_space_comms">Section 31.4</a>) uses an SNSPD at Palomar for exactly this reason: the sensitivity improvement allows photon-counting communication from hundreds of millions of kilometres with a 22 cm transmit aperture. For LEO commercial applications, the trade between link budget, OGS network coverage, and APT (Acquisition, Pointing, and Tracking) complexity will determine the practical data rates achievable with 5–15 cm spacecraft apertures.</p>
+<h2 id="sec-linkbudget_summary">Link Budget Summary Formulae<a class="headerlink" href="#sec-linkbudget_summary" title="Permanent link">&para;</a></h2>
+<h3 id="subsec-key_equations">Key Equations<a class="headerlink" href="#subsec-key_equations" title="Permanent link">&para;</a></h3>
+<p>The following equations encapsulate the complete link budget calculation chain. All quantities are in SI units unless subscript dB, dBW, dBi, dBK, or dBHz is specified.</p>
+<div class="admonition info box-keybox kind-concept">
+<p><strong>Complete Link Budget Formula Set</strong></p>
+<p><strong>Free-space path loss:</strong> <span id="eq-fspl_summary"></span></p>
+<div class="arithmatex">\[\begin{align*}
+\text{FSPL}_{\text{dB}} &amp;= 20\log_{10}\!\left(\frac{4\pi d}{\lambda}\right) = 20\log_{10}(d) + 20\log_{10}(f) - 147.55
+\end{align*}\]</div>
+<p>where <span class="arithmatex">\(d\)</span> is in metres, <span class="arithmatex">\(f\)</span> in Hz, and the constant <span class="arithmatex">\(-147.55 = 20\log_{10}(4\pi/c)\)</span>.</p>
+<p><strong>Effective Isotropic Radiated Power:</strong> <span id="eq-eirp_summary"></span></p>
+<div class="arithmatex">\[\begin{align*}
+\text{EIRP}_{\text{dBW}} &amp;= P_{t,\text{dBW}} + G_{t,\text{dBi}} - L_{tx,\text{dB}}
+\end{align*}\]</div>
+<p><strong>Carrier-to-noise density ratio:</strong> <span id="eq-cn0_summary"></span></p>
+<div class="arithmatex">\[\begin{align*}
+\left(\frac{C}{N_0}\right)_{\text{dBHz}} &amp;= \text{EIRP}_{\text{dBW}} - \text{FSPL}_{\text{dB}} - L_{\text{atm,dB}} - L_{\text{misc,dB}} + \left(\frac{G}{T}\right)_{\text{dB/K}} + 228.6
+\end{align*}\]</div>
+<p><strong>Energy-per-bit to noise density:</strong> <span id="eq-ebn0_summary"></span></p>
+<div class="arithmatex">\[\begin{align*}
+\left(\frac{E_b}{N_0}\right)_{\text{dB}} &amp;= \left(\frac{C}{N_0}\right)_{\text{dBHz}} - 10\log_{10}(R_b)
+\end{align*}\]</div>
+<p><strong>Shannon channel capacity:</strong> <span id="eq-shannon_summary"></span></p>
+<div class="arithmatex">\[\begin{align*}
+C &amp;= B\log_2\!\left(1 + \frac{C/N_0}{B}\right)~\text{bit/s}
+\end{align*}\]</div>
+<p><strong>Antenna gain from aperture:</strong> <span id="eq-gain_aperture"></span></p>
+<div class="arithmatex">\[\begin{align*}
+G_{\text{dBi}} &amp;= 10\log_{10}\!\left[\eta\left(\frac{\pi D f}{c}\right)^2\right]
+\end{align*}\]</div>
+<p><strong>System noise temperature:</strong> <span id="eq-tsys_summary"></span></p>
+<div class="arithmatex">\[\begin{align*}
+T_{\text{sys}} &amp;= T_{\text{ant}} + T_{\text{feed}} + T_{\text{LNA}} + \frac{T_{\text{post-LNA}}}{G_{\text{LNA}}}~[\text{K}]
+\end{align*}\]</div>
+</div>
+<h3 id="subsec-nf_to_temp">Noise Figure to Noise Temperature Conversion<a class="headerlink" href="#subsec-nf_to_temp" title="Permanent link">&para;</a></h3>
+<p>The noise figure <span class="arithmatex">\(F\)</span> (linear, dimensionless) of a device at physical temperature <span class="arithmatex">\(T_0 = 290\)</span> K is related to the equivalent noise temperature <span class="arithmatex">\(T_e\)</span> by:</p>
+<div id="eq-nf_to_temp"></div>
+<div class="arithmatex">\[\begin{align*}
+T_e &amp;= T_0(F - 1) = 290(F - 1)~\text{K}
+\end{align*}\]</div>
+<p>Common conversions at <span class="arithmatex">\(T_0 = 290\)</span> K:</p>
+<div class="tbl" id="tab-nf_temp">
+<div class="tbl-caption"><strong>Table 5.</strong> Noise Figure to Equivalent Noise Temperature Conversion</div>
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: center;"><strong>Noise Figure (dB)</strong></th>
+<th style="text-align: center;"><strong>Linear <span class="math inline">\(F\)</span></strong></th>
+<th style="text-align: center;"><strong>Noise Temperature (K)</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">0.3</td>
+<td style="text-align: center;">1.072</td>
+<td style="text-align: center;">20.8</td>
+</tr>
+<tr>
+<td style="text-align: center;">0.5</td>
+<td style="text-align: center;">1.122</td>
+<td style="text-align: center;">35.4</td>
+</tr>
+<tr>
+<td style="text-align: center;">1.0</td>
+<td style="text-align: center;">1.259</td>
+<td style="text-align: center;">75.1</td>
+</tr>
+<tr>
+<td style="text-align: center;">1.5</td>
+<td style="text-align: center;">1.413</td>
+<td style="text-align: center;">119.9</td>
+</tr>
+<tr>
+<td style="text-align: center;">2.0</td>
+<td style="text-align: center;">1.585</td>
+<td style="text-align: center;">169.8</td>
+</tr>
+<tr>
+<td style="text-align: center;">3.0</td>
+<td style="text-align: center;">1.995</td>
+<td style="text-align: center;">288.7</td>
+</tr>
+<tr>
+<td style="text-align: center;">5.0</td>
+<td style="text-align: center;">3.162</td>
+<td style="text-align: center;">627.0</td>
+</tr>
+<tr>
+<td style="text-align: center;">10.0</td>
+<td style="text-align: center;">10.0</td>
+<td style="text-align: center;">2610.0</td>
+</tr>
+</tbody>
+</table>
+</div></div>
+<h3 id="subsec-modcod_req">Modulation and Coding Requirements<a class="headerlink" href="#subsec-modcod_req" title="Permanent link">&para;</a></h3>
+<p><a href="#tab-modcod_req">Table 6</a> provides required <span class="arithmatex">\(E_b/N_0\)</span> values for common satellite modulations and coding rates at BER = <span class="arithmatex">\(10^{-7}\)</span> (after FEC, equivalent to approximately <span class="arithmatex">\(10^{-3}\)</span> pre-FEC for turbo/LDPC codes). Values include typical implementation loss of 0.5 dB.</p>
+<div class="tbl" id="tab-modcod_req">
+<div class="tbl-caption"><strong>Table 6.</strong> Required <span class="math inline">\(E_b/N_0\)</span> for Common Satellite MODCODs at BER <span class="math inline">\(10^{-7}\)</span> (post-FEC)</div>
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Standard</strong></th>
+<th style="text-align: left;"><strong>Modulation</strong></th>
+<th style="text-align: center;"><strong>Code Rate</strong></th>
+<th style="text-align: center;"><strong>Spectral Eff.</strong></th>
+<th style="text-align: center;"><strong>Req. <span class="math inline">\(E_b/N_0\)</span> (dB)</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">DVB-S2</td>
+<td style="text-align: left;">QPSK</td>
+<td style="text-align: center;">1/2</td>
+<td style="text-align: center;">1.0 b/s/Hz</td>
+<td style="text-align: center;">1.0</td>
+</tr>
+<tr>
+<td style="text-align: left;">DVB-S2</td>
+<td style="text-align: left;">QPSK</td>
+<td style="text-align: center;">3/4</td>
+<td style="text-align: center;">1.5 b/s/Hz</td>
+<td style="text-align: center;">3.7</td>
+</tr>
+<tr>
+<td style="text-align: left;">DVB-S2</td>
+<td style="text-align: left;">QPSK</td>
+<td style="text-align: center;">9/10</td>
+<td style="text-align: center;">1.8 b/s/Hz</td>
+<td style="text-align: center;">5.2</td>
+</tr>
+<tr>
+<td style="text-align: left;">DVB-S2</td>
+<td style="text-align: left;">8PSK</td>
+<td style="text-align: center;">2/3</td>
+<td style="text-align: center;">2.0 b/s/Hz</td>
+<td style="text-align: center;">5.0</td>
+</tr>
+<tr>
+<td style="text-align: left;">DVB-S2</td>
+<td style="text-align: left;">8PSK</td>
+<td style="text-align: center;">3/4</td>
+<td style="text-align: center;">2.25 b/s/Hz</td>
+<td style="text-align: center;">6.2</td>
+</tr>
+<tr>
+<td style="text-align: left;">DVB-S2</td>
+<td style="text-align: left;">16APSK</td>
+<td style="text-align: center;">2/3</td>
+<td style="text-align: center;">2.67 b/s/Hz</td>
+<td style="text-align: center;">7.5</td>
+</tr>
+<tr>
+<td style="text-align: left;">DVB-S2</td>
+<td style="text-align: left;">16APSK</td>
+<td style="text-align: center;">3/4</td>
+<td style="text-align: center;">3.0 b/s/Hz</td>
+<td style="text-align: center;">8.5</td>
+</tr>
+<tr>
+<td style="text-align: left;">DVB-S2</td>
+<td style="text-align: left;">32APSK</td>
+<td style="text-align: center;">3/4</td>
+<td style="text-align: center;">3.75 b/s/Hz</td>
+<td style="text-align: center;">11.0</td>
+</tr>
+<tr>
+<td style="text-align: left;">DVB-S2X</td>
+<td style="text-align: left;">64APSK</td>
+<td style="text-align: center;">4/5</td>
+<td style="text-align: center;">5.12 b/s/Hz</td>
+<td style="text-align: center;">14.8</td>
+</tr>
+<tr>
+<td style="text-align: left;">BPSK</td>
+<td style="text-align: left;">BPSK</td>
+<td style="text-align: center;">Uncoded</td>
+<td style="text-align: center;">1.0 b/s/Hz</td>
+<td style="text-align: center;">10.5</td>
+</tr>
+<tr>
+<td style="text-align: left;">BPSK + RS</td>
+<td style="text-align: left;">BPSK</td>
+<td style="text-align: center;">R=7/8</td>
+<td style="text-align: center;">0.875 b/s/Hz</td>
+<td style="text-align: center;">5.8</td>
+</tr>
+<tr>
+<td style="text-align: left;">QPSK + RS</td>
+<td style="text-align: left;">QPSK</td>
+<td style="text-align: center;">R=7/8</td>
+<td style="text-align: center;">1.75 b/s/Hz</td>
+<td style="text-align: center;">5.8</td>
+</tr>
+</tbody>
+</table>
+</div></div>
+<h3 id="subsec-rain_fade">Rain Fade Statistics<a class="headerlink" href="#subsec-rain_fade" title="Permanent link">&para;</a></h3>
+<p>Rain attenuation at Ka-band (20 GHz) is the dominant variable impairment in GEO downlinks at mid-to-tropical latitudes. The ITU-R P.618-14 model calculates exceeded attenuation as a function of rain rate exceeded for <span class="arithmatex">\(p\)</span>% of the annual time. <a href="#tab-rain_fade">Table 7</a> gives representative fade margins required for specified availability at 20 GHz, 45<span class="arithmatex">\(^\circ\)</span> elevation, in representative ITU-R rain zones.</p>
+<div class="tbl" id="tab-rain_fade">
+<div class="tbl-caption"><strong>Table 7.</strong> Approximate Ka-band Rain Fade Margins (20 GHz, 45<span class="math inline">\(^\circ\)</span> elevation, per ITU-R P.618-14)</div>
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Rain Zone / Location</strong></th>
+<th style="text-align: center;"><strong>0.1% Time</strong></th>
+<th style="text-align: center;"><strong>0.01% Time</strong></th>
+<th style="text-align: center;"><strong>0.001% Time</strong></th>
+<th style="text-align: center;"><strong>Annual Avail.</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Zone C (Northern Europe)</td>
+<td style="text-align: center;">4.5 dB</td>
+<td style="text-align: center;">12.0 dB</td>
+<td style="text-align: center;">24.0 dB</td>
+<td style="text-align: center;">99.9% @ 4.5 dB</td>
+</tr>
+<tr>
+<td style="text-align: left;">Zone E (Central Europe)</td>
+<td style="text-align: center;">6.0 dB</td>
+<td style="text-align: center;">15.0 dB</td>
+<td style="text-align: center;">28.0 dB</td>
+<td style="text-align: center;">99.9% @ 6.0 dB</td>
+</tr>
+<tr>
+<td style="text-align: left;">Zone K (South/East Asia)</td>
+<td style="text-align: center;">12.0 dB</td>
+<td style="text-align: center;">28.0 dB</td>
+<td style="text-align: center;">45.0 dB</td>
+<td style="text-align: center;">99.9% @ 12.0 dB</td>
+</tr>
+<tr>
+<td style="text-align: left;">Zone N (Tropical)</td>
+<td style="text-align: center;">16.0 dB</td>
+<td style="text-align: center;">35.0 dB</td>
+<td style="text-align: center;"><span class="math inline">\(&gt;\)</span>50 dB</td>
+<td style="text-align: center;">99.9% @ 16.0 dB</td>
+</tr>
+</tbody>
+</table>
+</div></div>
+<div class="admonition note box-notebox kind-note">
+<p><strong>Satellite Link Budget Design Rules of Thumb</strong></p>
+<ul>
+<li>
+<p>For GEO Ka-band: design for at least 10 dB clear-sky margin to accommodate rain fade without ACM.</p>
+</li>
+<li>
+<p>For LEO S/X-band TT&amp;C: design for at least 15 dB margin at worst-case elevation to ensure reliable command.</p>
+</li>
+<li>
+<p>For optical links: diversity among 3 ground stations at <span class="arithmatex">\(&gt;\)</span>500 km separation reduces cloud outage probability below 1%.</p>
+</li>
+<li>
+<p>Every 3 dB increase in EIRP or <span class="arithmatex">\(G/T\)</span> doubles the achievable data rate (Shannon) or halves the required bandwidth.</p>
+</li>
+<li>
+<p>Rule of thumb FSPL: <span class="arithmatex">\(\text{FSPL}_{\text{dB}} \approx 92.4 + 20\log_{10}(f_{\text{GHz}}) + 20\log_{10}(d_{\text{km}})\)</span> (exact for SI: constant <span class="arithmatex">\(= 92.44\)</span>).</p>
+</li>
+<li>
+<p>System noise temperature: a 1 dB LNA noise figure adds only 75 K; a 0.3 dB LNA adds only 21 K. LNA quality matters.</p>
+</li>
+</ul>
+</div>
+<h3 id="subsec-template">Complete Link Budget Template<a class="headerlink" href="#subsec-template" title="Permanent link">&para;</a></h3>
+<p><a href="#tab-lb_template">Table 8</a> provides a generic blank link budget template suitable for hand calculation or spreadsheet implementation. Positive entries contribute to received <span class="arithmatex">\(C/N_0\)</span>; negative entries are losses.</p>
+<div class="tbl" id="tab-lb_template">
+<div class="tbl-caption"><strong>Table 8.</strong> Generic Link Budget Template</div>
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Parameter</strong></th>
+<th style="text-align: right;"><strong>Value</strong></th>
+<th style="text-align: right;"><strong>Units</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="3" style="text-align: left;"><em>Transmit Side</em></td>
+</tr>
+<tr>
+<td style="text-align: left;">Transmit power <span class="math inline">\(P_t\)</span></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">dBW</td>
+</tr>
+<tr>
+<td style="text-align: left;">Transmit antenna gain <span class="math inline">\(G_t\)</span></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">dBi</td>
+</tr>
+<tr>
+<td style="text-align: left;">Transmit line/feed losses <span class="math inline">\(L_{\text{tx}}\)</span></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">dB</td>
+</tr>
+<tr>
+<td style="text-align: left;">Pointing loss</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">dB</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>EIRP</strong></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">dBW</td>
+</tr>
+<tr>
+<td colspan="3" style="text-align: left;"><em>Propagation</em></td>
+</tr>
+<tr>
+<td style="text-align: left;">Frequency <span class="math inline">\(f\)</span></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">GHz</td>
+</tr>
+<tr>
+<td style="text-align: left;">Slant range <span class="math inline">\(d\)</span></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">km</td>
+</tr>
+<tr>
+<td style="text-align: left;">Wavelength <span class="math inline">\(\lambda = c/f\)</span></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">m</td>
+</tr>
+<tr>
+<td style="text-align: left;">FSPL <span class="math inline">\(= 92.44 + 20\log f_{\text{GHz}} + 20\log d_{\text{km}}\)</span></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">dB</td>
+</tr>
+<tr>
+<td style="text-align: left;">Atmospheric absorption <span class="math inline">\(L_{\text{gas}}\)</span></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">dB</td>
+</tr>
+<tr>
+<td style="text-align: left;">Rain fade margin (99.X% avail.)</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">dB</td>
+</tr>
+<tr>
+<td style="text-align: left;">Miscellaneous losses <span class="math inline">\(L_{\text{misc}}\)</span></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">dB</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Total losses</strong></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">dB</td>
+</tr>
+<tr>
+<td colspan="3" style="text-align: left;"><em>Receive Side</em></td>
+</tr>
+<tr>
+<td style="text-align: left;">Receive antenna gain <span class="math inline">\(G_r\)</span></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">dBi</td>
+</tr>
+<tr>
+<td style="text-align: left;">Receive line/feed losses <span class="math inline">\(L_{\text{rx}}\)</span></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">dB</td>
+</tr>
+<tr>
+<td style="text-align: left;">System noise temperature <span class="math inline">\(T_{\text{sys}}\)</span></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">K / dBK</td>
+</tr>
+<tr>
+<td style="text-align: left;">Figure of merit <span class="math inline">\(G/T = G_r - L_{\text{rx}} - T_{\text{sys,dBK}}\)</span></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">dB/K</td>
+</tr>
+<tr>
+<td style="text-align: left;">Boltzmann constant <span class="math inline">\(k_B\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(+228.6\)</span></td>
+<td style="text-align: right;">dBW/K/Hz</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Received <span class="math inline">\(C/N_0\)</span></strong> = EIRP <span class="math inline">\(-\)</span> Losses <span class="math inline">\(+ G/T + 228.6\)</span></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">dBHz</td>
+</tr>
+<tr>
+<td colspan="3" style="text-align: left;"><em>Performance Assessment</em></td>
+</tr>
+<tr>
+<td style="text-align: left;">Data rate <span class="math inline">\(R_b\)</span></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">bps</td>
+</tr>
+<tr>
+<td style="text-align: left;"><span class="math inline">\(10\log_{10}(R_b)\)</span></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">dBHz</td>
+</tr>
+<tr>
+<td style="text-align: left;">Required <span class="math inline">\(E_b/N_0\)</span> (from MODCOD table)</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">dB</td>
+</tr>
+<tr>
+<td style="text-align: left;">Implementation loss</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">dB</td>
+</tr>
+<tr>
+<td style="text-align: left;">Required <span class="math inline">\(C/N_0 = E_b/N_0 + 10\log R_b +\)</span> impl. loss</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">dBHz</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Link margin</strong> = Received <span class="math inline">\(C/N_0 -\)</span> Required <span class="math inline">\(C/N_0\)</span></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">dB</td>
+</tr>
+</tbody>
+</table>
+</div></div>
+<h3 id="subsec-example_comparison">Comparison of Worked Examples<a class="headerlink" href="#subsec-example_comparison" title="Permanent link">&para;</a></h3>
+<p><a href="#tab-example_summary">Table 9</a> summarises all four worked examples for rapid comparison. The stark contrast between the X-band EO scenario (50+ dB margin) and the optical scenario (4 dB margin) reflects the fundamental difference between radio and optical link design philosophy: radio links are generally margin-rich and bandwidth-constrained; optical links are sensitivity-limited and bandwidth-unlimited.</p>
+<div class="tbl" id="tab-example_summary">
+<div class="tbl-caption"><strong>Table 9.</strong> Summary of Worked Link Budget Examples</div>
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Example</strong></th>
+<th style="text-align: left;"><strong>Band</strong></th>
+<th style="text-align: left;"><strong>Link Type</strong></th>
+<th style="text-align: center;"><strong><span class="math inline">\(C/N_0\)</span> (dBHz)</strong></th>
+<th style="text-align: center;"><strong>Required</strong></th>
+<th style="text-align: center;"><strong>Margin (dB)</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Ex. 1: Ka GEO DL</td>
+<td style="text-align: left;">20 GHz</td>
+<td style="text-align: left;">GEO <span class="math inline">\(\to\)</span> VSAT</td>
+<td style="text-align: center;">75.2</td>
+<td style="text-align: center;">65.0</td>
+<td style="text-align: center;">+10.2</td>
+</tr>
+<tr>
+<td style="text-align: left;">Ex. 2: S-band UL</td>
+<td style="text-align: left;">2.1 GHz</td>
+<td style="text-align: left;">GND <span class="math inline">\(\to\)</span> LEO TT&amp;C</td>
+<td style="text-align: center;">64.8</td>
+<td style="text-align: center;">46.1</td>
+<td style="text-align: center;">+18.7</td>
+</tr>
+<tr>
+<td style="text-align: left;">Ex. 3: X-band DL</td>
+<td style="text-align: left;">8.1 GHz</td>
+<td style="text-align: left;">LEO SAR <span class="math inline">\(\to\)</span> GND</td>
+<td style="text-align: center;">139.9</td>
+<td style="text-align: center;">89.1</td>
+<td style="text-align: center;">+50.8</td>
+</tr>
+<tr>
+<td style="text-align: left;">Ex. 4: Optical DL</td>
+<td style="text-align: left;">193 THz</td>
+<td style="text-align: left;">LEO OPT <span class="math inline">\(\to\)</span> OGS</td>
+<td style="text-align: center;"><span class="math inline">\(-83.8\)</span> dBW</td>
+<td style="text-align: center;"><span class="math inline">\(-88.0\)</span> dBW</td>
+<td style="text-align: center;">+4.2</td>
+</tr>
+</tbody>
+</table>
+</div></div>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button type="button" class="md-top md-icon" data-md-component="top" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+Back to top
+</button>
+</main>
+<footer class="md-footer">
+<nav class="md-footer__inner md-grid" aria-label="Footer" >
+<a href="launch-vehicle-specifications.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: Launch Vehicle Specifications">
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</div>
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Previous
+</span>
+<div class="md-ellipsis">
+Launch Vehicle Specifications
+</div>
+</div>
+</a>
+<a href="key-standards-software-tools-and-references.html" class="md-footer__link md-footer__link--next" aria-label="Next: Key Standards, Software Tools, and References">
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Next
+</span>
+<div class="md-ellipsis">
+Key Standards, Software Tools, and References
+</div>
+</div>
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+</div>
+</a>
+</nav>
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+The Open Book Project &middot;
+<a href="../../about.html">About this library</a> &middot;
+<a href="../../publish.html">Publish your book</a> &middot;
+© The authors of the books
+</div>
+Made with
+<a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+Material for MkDocs
+</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "navigation.prune", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "toc.follow", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+<script src="../../assets/mathjax.js"></script>
+<script src="../../assets/viz.js"></script>
+<script src="../../assets/remote.js"></script>
+<script src="../../assets/scans.js"></script>
+<script src="../../assets/reader.js"></script>
+<script src="../../assets/app.js"></script>
+<script src="../../assets/slides.js"></script>
+<script src="../../assets/speak.js"></script>
+<script src="../../assets/quiz.js"></script>
+<script>
+    /* offline reading: the service worker at the site root (its scope is the whole site) */
+    if ("serviceWorker" in navigator && window.isSecureContext) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register(new URL("../../sw.js", location.href).href).catch(function () {});
+      });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,1742 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="description" content="The Open Book Project: books on computer science, quantum computing, cyber security, science, the social sciences, university courses and languages, read page by page like an e-book, online or offline.">
+<meta name="author" content="The Open Book Project">
+<link rel="canonical" href="https://open-book-project.github.io/engineering/satellite_technology/ch16-optical-satellite-communications.html">
+<link rel="prev" href="ch15-digital-signal-processing-for-satellites.html">
+<link rel="next" href="ch17-earth-observation-and-remote-sensing.html">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap"></noscript>
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Open Book">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="application-name" content="Open Book"><script src="../../assets/library-data.js"></script><script>
+    (function () {
+      var X = window.XMLHttpRequest, open, gate = new Promise(function (r) { open = r; });
+      if (!X) return;
+      var open0 = X.prototype.open, send0 = X.prototype.send;
+      X.prototype.open = function (method, url) {
+        this.__pkIndex = /\/search\/search_index\.json(\?|#|$)/.test(String(url));
+        return open0.apply(this, arguments);
+      };
+      X.prototype.send = function () {
+        if (!this.__pkIndex) return send0.apply(this, arguments);
+        var xhr = this, args = arguments;
+        gate.then(function () { send0.apply(xhr, args); });
+      };
+      function wake() { open(); }
+      document.addEventListener("focusin", function (e) { if (e.target && e.target.closest && e.target.closest(".md-search")) wake(); });
+      document.addEventListener("click", function (e) { if (e.target && e.target.closest && e.target.closest('label[for="__search"], .md-search')) wake(); }, true);
+      document.addEventListener("keydown", function (e) {
+        var k = e.key;
+        if ((k === "/" || k === "s" || k === "f" || k === "S" || k === "F") && !(e.target && e.target.closest && e.target.closest("input, textarea, [contenteditable]"))) wake();
+      }, true);
+      if (/[?&]q=/.test(location.search)) wake();
+    })();
+  </script><script>
+    try {
+      if ((window.matchMedia && (matchMedia("(display-mode: standalone)").matches || matchMedia("(display-mode: fullscreen)").matches)) || navigator.standalone === true) {
+        document.documentElement.className += " bjp-standalone";
+      }
+    } catch (e) { /* not an installed app */ }
+    /* the books of a subject or of the whole library as covers or as a list (assets/app.js): the reader's choice */
+    try {
+      var bv = localStorage.getItem("bjp.view");
+      if (bv === "list" || (bv !== "grid" && /\/books\.html$/.test(location.pathname))) document.documentElement.className += " bjp-view-list";
+    } catch (e) { /* no storage: covers */ }
+  </script>
+<script>
+    /* a book opened from its cover on the shelf: the page stays blank, in the cover's colour, until the reader is up */
+    try {
+      var cv = sessionStorage.getItem("bjp.reader.cover");
+      if (cv && sessionStorage.getItem("bjp.reader.open") === "1") {
+        var c = JSON.parse(cv), de = document.documentElement;
+        de.className += " bjp-booting";
+        if (c && /^#[0-9a-f]{3,8}$/i.test(c.bg || "")) de.style.background = c.bg;
+        setTimeout(function () { de.classList.remove("bjp-booting"); de.style.background = ""; }, 3000);
+      }
+    } catch (e) { /* no session storage: the page simply opens as usual */ }
+  </script>
+<title>16. Optical Satellite Communications - The Open Book Project</title>
+<link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+<link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+<link rel="stylesheet" href="../../assets/extra.css">
+<link rel="stylesheet" href="../../assets/reader.css">
+<link rel="stylesheet" href="../../assets/viz.css">
+<link rel="stylesheet" href="../../assets/app.css">
+<link rel="stylesheet" href="../../assets/theme.css">
+<link rel="stylesheet" href="../../assets/slides.css">
+<link rel="stylesheet" href="../../assets/remote.css">
+<link rel="stylesheet" href="../../assets/scans.css">
+<link rel="stylesheet" href="../../assets/speak.css">
+<link rel="stylesheet" href="../../assets/quiz.css">
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+<input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+<input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a href="#sec-fso_intro" class="md-skip">
+Skip to content
+</a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav class="md-header__inner md-grid" aria-label="Header">
+<a href="../../index.html" title="The Open Book Project" class="md-header__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+The Open Book Project
+</span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+16. Optical Satellite Communications
+</span>
+</div>
+</div>
+</div><a href="../../index.html" class="bjp-libbtn" aria-label="Library: all books" title="Library: all books">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V5h4v15M8 20V9h4v11M14 20L12.6 6l3.8-.8 3 14.2M3 20h18"/></svg><span>Library</span>
+</a>
+<a href="../../subjects/index.html" class="pk-catbtn" aria-haspopup="true" aria-expanded="false" title="Browse the books by category">
+<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><circle cx="17" cy="7" r="3.6"/><path d="M7 13.4l3.9 6.8H3.1z"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg><span>Categories</span>
+</a>
+<form class="md-header__option" data-md-component="palette">
+<input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+<label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+</label>
+<input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+<label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+<label class="md-search__icon md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</label>
+<nav class="md-search__options" aria-label="Search">
+<button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+Initializing search
+</div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--primary bjp-nav bjp-nav--book" aria-label="Navigation" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a href="../../index.html" title="The Open Book Project" class="md-nav__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+The Open Book Project
+</label>
+<ul class="md-nav__list" data-md-scrollfix>
+<li class="md-nav__item bjp-nav-all">
+<a href="../../index.html" class="md-nav__link" aria-label="All books: back to the library">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+<span class="md-ellipsis">All books</span>
+</a>
+</li>
+<li class="md-nav__item bjp-nav-book" role="presentation"><span class="bjp-nav-head">Satellite Technology</span></li>
+<li class="md-nav__item">
+<a href="index.html" class="md-nav__link">
+<span class="md-ellipsis">
+Overview and preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="list-of-abbreviations.html" class="md-nav__link">
+<span class="md-ellipsis">
+List of Abbreviations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch01-introduction-to-satellite-technology.html" class="md-nav__link">
+<span class="md-ellipsis">
+1. Introduction to Satellite Technology
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch02-orbital-mechanics.html" class="md-nav__link">
+<span class="md-ellipsis">
+2. Orbital Mechanics
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch03-the-space-environment.html" class="md-nav__link">
+<span class="md-ellipsis">
+3. The Space Environment
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch04-launch-systems-and-mission-design.html" class="md-nav__link">
+<span class="md-ellipsis">
+4. Launch Systems and Mission Design
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch05-satellite-architecture-and-systems-engineering.html" class="md-nav__link">
+<span class="md-ellipsis">
+5. Satellite Architecture and Systems Engineering
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch06-satellite-electrical-power-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+6. Satellite Electrical Power Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch07-attitude-determination-and-control-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+7. Attitude Determination and Control Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch08-satellite-propulsion-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+8. Satellite Propulsion Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch09-thermal-control-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+9. Thermal Control Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch10-on-board-data-handling.html" class="md-nav__link">
+<span class="md-ellipsis">
+10. On-Board Data Handling
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch11-telemetry-tracking-and-command-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+11. Telemetry, Tracking and Command Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch12-radio-frequency-satellite-communications.html" class="md-nav__link">
+<span class="md-ellipsis">
+12. Radio Frequency Satellite Communications
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch13-satellite-link-budget-analysis.html" class="md-nav__link">
+<span class="md-ellipsis">
+13. Satellite Link Budget Analysis
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch14-satellite-antenna-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+14. Satellite Antenna Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch15-digital-signal-processing-for-satellites.html" class="md-nav__link">
+<span class="md-ellipsis">
+15. Digital Signal Processing for Satellites
+</span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+16. Optical Satellite Communications
+</span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a href="ch16-optical-satellite-communications.html" class="md-nav__link md-nav__link--active">
+<span class="md-ellipsis">
+16. Optical Satellite Communications
+</span>
+</a>
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#sec-fso_intro" class="md-nav__link">
+<span class="md-ellipsis">
+16.1 Introduction to Free-Space Optical Communications
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-fso_fundamentals" class="md-nav__link">
+<span class="md-ellipsis">
+16.2 FSO Link Fundamentals
+</span>
+</a>
+<nav class="md-nav" aria-label="16.2 FSO Link Fundamentals">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1621-received-power-and-link-equation" class="md-nav__link">
+<span class="md-ellipsis">
+16.2.1 Received Power and Link Equation
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1622-atmospheric-transmission" class="md-nav__link">
+<span class="md-ellipsis">
+16.2.2 Atmospheric Transmission
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-atmospheric_effects" class="md-nav__link">
+<span class="md-ellipsis">
+16.3 Atmospheric Effects
+</span>
+</a>
+<nav class="md-nav" aria-label="16.3 Atmospheric Effects">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1631-atmospheric-turbulence" class="md-nav__link">
+<span class="md-ellipsis">
+16.3.1 Atmospheric Turbulence
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1632-coherence-parameters" class="md-nav__link">
+<span class="md-ellipsis">
+16.3.2 Coherence Parameters
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1633-cloud-blockage" class="md-nav__link">
+<span class="md-ellipsis">
+16.3.3 Cloud Blockage
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-adaptive_optics" class="md-nav__link">
+<span class="md-ellipsis">
+16.4 Adaptive Optics
+</span>
+</a>
+<nav class="md-nav" aria-label="16.4 Adaptive Optics">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1641-shack-hartmann-wavefront-sensor" class="md-nav__link">
+<span class="md-ellipsis">
+16.4.1 Shack-Hartmann Wavefront Sensor
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1642-deformable-mirror" class="md-nav__link">
+<span class="md-ellipsis">
+16.4.2 Deformable Mirror
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1643-strehl-ratio-and-performance-metric" class="md-nav__link">
+<span class="md-ellipsis">
+16.4.3 Strehl Ratio and Performance Metric
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-pat" class="md-nav__link">
+<span class="md-ellipsis">
+16.5 Pointing, Acquisition, and Tracking
+</span>
+</a>
+<nav class="md-nav" aria-label="16.5 Pointing, Acquisition, and Tracking">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1651-pat-system-architecture" class="md-nav__link">
+<span class="md-ellipsis">
+16.5.1 PAT System Architecture
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1652-pointing-loss-budget" class="md-nav__link">
+<span class="md-ellipsis">
+16.5.2 Pointing Loss Budget
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1653-acquisition-scan-patterns" class="md-nav__link">
+<span class="md-ellipsis">
+16.5.3 Acquisition Scan Patterns
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-optical_link_budget" class="md-nav__link">
+<span class="md-ellipsis">
+16.6 Optical Link Budget
+</span>
+</a>
+<nav class="md-nav" aria-label="16.6 Optical Link Budget">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1661-complete-link-equation" class="md-nav__link">
+<span class="md-ellipsis">
+16.6.1 Complete Link Equation
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-optical_modulation" class="md-nav__link">
+<span class="md-ellipsis">
+16.7 Modulation and Detection
+</span>
+</a>
+<nav class="md-nav" aria-label="16.7 Modulation and Detection">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1671-on-off-keying-ook" class="md-nav__link">
+<span class="md-ellipsis">
+16.7.1 On-Off Keying (OOK)
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1672-pulse-position-modulation-ppm" class="md-nav__link">
+<span class="md-ellipsis">
+16.7.2 Pulse Position Modulation (PPM)
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1673-differential-phase-shift-keying-dpsk" class="md-nav__link">
+<span class="md-ellipsis">
+16.7.3 Differential Phase-Shift Keying (DPSK)
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1674-coherent-qpsk" class="md-nav__link">
+<span class="md-ellipsis">
+16.7.4 Coherent QPSK
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1675-photon-counting-detection" class="md-nav__link">
+<span class="md-ellipsis">
+16.7.5 Photon-Counting Detection
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-laser_sources" class="md-nav__link">
+<span class="md-ellipsis">
+16.8 Laser Sources
+</span>
+</a>
+<nav class="md-nav" aria-label="16.8 Laser Sources">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1681-wavelength-selection" class="md-nav__link">
+<span class="md-ellipsis">
+16.8.1 Wavelength Selection
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1682-laser-types" class="md-nav__link">
+<span class="md-ellipsis">
+16.8.2 Laser Types
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-optical_missions" class="md-nav__link">
+<span class="md-ellipsis">
+16.9 Demonstrated Missions
+</span>
+</a>
+<nav class="md-nav" aria-label="16.9 Demonstrated Missions">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1691-llcd-lunar-laser-communication-demonstration" class="md-nav__link">
+<span class="md-ellipsis">
+16.9.1 LLCD: Lunar Laser Communication Demonstration
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1692-lcrd-laser-communications-relay-demonstration" class="md-nav__link">
+<span class="md-ellipsis">
+16.9.2 LCRD: Laser Communications Relay Demonstration
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1693-tbird-terabyte-infrared-delivery" class="md-nav__link">
+<span class="md-ellipsis">
+16.9.3 TBIRD: TeraByte InfraRed Delivery
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1694-edrs-space-data-highway" class="md-nav__link">
+<span class="md-ellipsis">
+16.9.4 EDRS Space Data Highway
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-isl_ch16" class="md-nav__link">
+<span class="md-ellipsis">
+16.10 Inter-Satellite Optical Links
+</span>
+</a>
+<nav class="md-nav" aria-label="16.10 Inter-Satellite Optical Links">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#16101-isl-geometry-and-link-parameters" class="md-nav__link">
+<span class="md-ellipsis">
+16.10.1 ISL Geometry and Link Parameters
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#16102-starlink-optical-isl" class="md-nav__link">
+<span class="md-ellipsis">
+16.10.2 Starlink Optical ISL
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-ground_diversity" class="md-nav__link">
+<span class="md-ellipsis">
+16.11 Ground Networks and Site Diversity
+</span>
+</a>
+<nav class="md-nav" aria-label="16.11 Ground Networks and Site Diversity">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#16111-ground-terminal-design" class="md-nav__link">
+<span class="md-ellipsis">
+16.11.1 Ground Terminal Design
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#16112-site-diversity-and-cloud-outage-statistics" class="md-nav__link">
+<span class="md-ellipsis">
+16.11.2 Site Diversity and Cloud Outage Statistics
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#16113-uav-and-high-altitude-platform-relay" class="md-nav__link">
+<span class="md-ellipsis">
+16.11.3 UAV and High-Altitude Platform Relay
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#summary" class="md-nav__link">
+<span class="md-ellipsis">
+Summary
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="ch17-earth-observation-and-remote-sensing.html" class="md-nav__link">
+<span class="md-ellipsis">
+17. Earth Observation and Remote Sensing
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch18-global-navigation-satellite-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+18. Global Navigation Satellite Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch19-communication-satellites-and-services.html" class="md-nav__link">
+<span class="md-ellipsis">
+19. Communication Satellites and Services
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch20-scientific-satellites-and-space-observatories.html" class="md-nav__link">
+<span class="md-ellipsis">
+20. Scientific Satellites and Space Observatories
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch21-military-and-intelligence-satellites.html" class="md-nav__link">
+<span class="md-ellipsis">
+21. Military and Intelligence Satellites
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch22-ground-station-design-and-networks.html" class="md-nav__link">
+<span class="md-ellipsis">
+22. Ground Station Design and Networks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch23-mission-operations-and-ground-control.html" class="md-nav__link">
+<span class="md-ellipsis">
+23. Mission Operations and Ground Control
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch24-smallsats-cubesats-and-the-new-space-revolution.html" class="md-nav__link">
+<span class="md-ellipsis">
+24. SmallSats, CubeSats, and the New Space Revolution
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch25-mega-constellations-and-leo-broadband-networks.html" class="md-nav__link">
+<span class="md-ellipsis">
+25. Mega-Constellations and LEO Broadband Networks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch26-artificial-intelligence-and-machine-learning-in.html" class="md-nav__link">
+<span class="md-ellipsis">
+26. Artificial Intelligence and Machine Learning in Space
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch27-on-orbit-servicing-and-space-robotics.html" class="md-nav__link">
+<span class="md-ellipsis">
+27. On-Orbit Servicing and Space Robotics
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch28-space-debris-and-long-term-sustainability.html" class="md-nav__link">
+<span class="md-ellipsis">
+28. Space Debris and Long-Term Sustainability
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch29-quantum-communications-and-satellite-qkd.html" class="md-nav__link">
+<span class="md-ellipsis">
+29. Quantum Communications and Satellite QKD
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch30-6g-and-non-terrestrial-networks.html" class="md-nav__link">
+<span class="md-ellipsis">
+30. 6G and Non-Terrestrial Networks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch31-future-concepts-and-emerging-space-technologies.html" class="md-nav__link">
+<span class="md-ellipsis">
+31. Future Concepts and Emerging Space Technologies
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="classical-orbital-elements-and-coordinate.html" class="md-nav__link">
+<span class="md-ellipsis">
+Classical Orbital Elements and Coordinate Transformations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="satellite-frequency-allocations.html" class="md-nav__link">
+<span class="md-ellipsis">
+Satellite Frequency Allocations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="launch-vehicle-specifications.html" class="md-nav__link">
+<span class="md-ellipsis">
+Launch Vehicle Specifications
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="link-budget-templates-and-worked-examples.html" class="md-nav__link">
+<span class="md-ellipsis">
+Link Budget Templates and Worked Examples
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="key-standards-software-tools-and-references.html" class="md-nav__link">
+<span class="md-ellipsis">
+Key Standards, Software Tools, and References
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="bibliography.html" class="md-nav__link">
+<span class="md-ellipsis">
+Bibliography
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#sec-fso_intro" class="md-nav__link">
+<span class="md-ellipsis">
+16.1 Introduction to Free-Space Optical Communications
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-fso_fundamentals" class="md-nav__link">
+<span class="md-ellipsis">
+16.2 FSO Link Fundamentals
+</span>
+</a>
+<nav class="md-nav" aria-label="16.2 FSO Link Fundamentals">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1621-received-power-and-link-equation" class="md-nav__link">
+<span class="md-ellipsis">
+16.2.1 Received Power and Link Equation
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1622-atmospheric-transmission" class="md-nav__link">
+<span class="md-ellipsis">
+16.2.2 Atmospheric Transmission
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-atmospheric_effects" class="md-nav__link">
+<span class="md-ellipsis">
+16.3 Atmospheric Effects
+</span>
+</a>
+<nav class="md-nav" aria-label="16.3 Atmospheric Effects">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1631-atmospheric-turbulence" class="md-nav__link">
+<span class="md-ellipsis">
+16.3.1 Atmospheric Turbulence
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1632-coherence-parameters" class="md-nav__link">
+<span class="md-ellipsis">
+16.3.2 Coherence Parameters
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1633-cloud-blockage" class="md-nav__link">
+<span class="md-ellipsis">
+16.3.3 Cloud Blockage
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-adaptive_optics" class="md-nav__link">
+<span class="md-ellipsis">
+16.4 Adaptive Optics
+</span>
+</a>
+<nav class="md-nav" aria-label="16.4 Adaptive Optics">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1641-shack-hartmann-wavefront-sensor" class="md-nav__link">
+<span class="md-ellipsis">
+16.4.1 Shack-Hartmann Wavefront Sensor
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1642-deformable-mirror" class="md-nav__link">
+<span class="md-ellipsis">
+16.4.2 Deformable Mirror
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1643-strehl-ratio-and-performance-metric" class="md-nav__link">
+<span class="md-ellipsis">
+16.4.3 Strehl Ratio and Performance Metric
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-pat" class="md-nav__link">
+<span class="md-ellipsis">
+16.5 Pointing, Acquisition, and Tracking
+</span>
+</a>
+<nav class="md-nav" aria-label="16.5 Pointing, Acquisition, and Tracking">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1651-pat-system-architecture" class="md-nav__link">
+<span class="md-ellipsis">
+16.5.1 PAT System Architecture
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1652-pointing-loss-budget" class="md-nav__link">
+<span class="md-ellipsis">
+16.5.2 Pointing Loss Budget
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1653-acquisition-scan-patterns" class="md-nav__link">
+<span class="md-ellipsis">
+16.5.3 Acquisition Scan Patterns
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-optical_link_budget" class="md-nav__link">
+<span class="md-ellipsis">
+16.6 Optical Link Budget
+</span>
+</a>
+<nav class="md-nav" aria-label="16.6 Optical Link Budget">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1661-complete-link-equation" class="md-nav__link">
+<span class="md-ellipsis">
+16.6.1 Complete Link Equation
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-optical_modulation" class="md-nav__link">
+<span class="md-ellipsis">
+16.7 Modulation and Detection
+</span>
+</a>
+<nav class="md-nav" aria-label="16.7 Modulation and Detection">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1671-on-off-keying-ook" class="md-nav__link">
+<span class="md-ellipsis">
+16.7.1 On-Off Keying (OOK)
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1672-pulse-position-modulation-ppm" class="md-nav__link">
+<span class="md-ellipsis">
+16.7.2 Pulse Position Modulation (PPM)
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1673-differential-phase-shift-keying-dpsk" class="md-nav__link">
+<span class="md-ellipsis">
+16.7.3 Differential Phase-Shift Keying (DPSK)
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1674-coherent-qpsk" class="md-nav__link">
+<span class="md-ellipsis">
+16.7.4 Coherent QPSK
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1675-photon-counting-detection" class="md-nav__link">
+<span class="md-ellipsis">
+16.7.5 Photon-Counting Detection
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-laser_sources" class="md-nav__link">
+<span class="md-ellipsis">
+16.8 Laser Sources
+</span>
+</a>
+<nav class="md-nav" aria-label="16.8 Laser Sources">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1681-wavelength-selection" class="md-nav__link">
+<span class="md-ellipsis">
+16.8.1 Wavelength Selection
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1682-laser-types" class="md-nav__link">
+<span class="md-ellipsis">
+16.8.2 Laser Types
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-optical_missions" class="md-nav__link">
+<span class="md-ellipsis">
+16.9 Demonstrated Missions
+</span>
+</a>
+<nav class="md-nav" aria-label="16.9 Demonstrated Missions">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1691-llcd-lunar-laser-communication-demonstration" class="md-nav__link">
+<span class="md-ellipsis">
+16.9.1 LLCD: Lunar Laser Communication Demonstration
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1692-lcrd-laser-communications-relay-demonstration" class="md-nav__link">
+<span class="md-ellipsis">
+16.9.2 LCRD: Laser Communications Relay Demonstration
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1693-tbird-terabyte-infrared-delivery" class="md-nav__link">
+<span class="md-ellipsis">
+16.9.3 TBIRD: TeraByte InfraRed Delivery
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1694-edrs-space-data-highway" class="md-nav__link">
+<span class="md-ellipsis">
+16.9.4 EDRS Space Data Highway
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-isl_ch16" class="md-nav__link">
+<span class="md-ellipsis">
+16.10 Inter-Satellite Optical Links
+</span>
+</a>
+<nav class="md-nav" aria-label="16.10 Inter-Satellite Optical Links">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#16101-isl-geometry-and-link-parameters" class="md-nav__link">
+<span class="md-ellipsis">
+16.10.1 ISL Geometry and Link Parameters
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#16102-starlink-optical-isl" class="md-nav__link">
+<span class="md-ellipsis">
+16.10.2 Starlink Optical ISL
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-ground_diversity" class="md-nav__link">
+<span class="md-ellipsis">
+16.11 Ground Networks and Site Diversity
+</span>
+</a>
+<nav class="md-nav" aria-label="16.11 Ground Networks and Site Diversity">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#16111-ground-terminal-design" class="md-nav__link">
+<span class="md-ellipsis">
+16.11.1 Ground Terminal Design
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#16112-site-diversity-and-cloud-outage-statistics" class="md-nav__link">
+<span class="md-ellipsis">
+16.11.2 Site Diversity and Cloud Outage Statistics
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#16113-uav-and-high-altitude-platform-relay" class="md-nav__link">
+<span class="md-ellipsis">
+16.11.3 UAV and High-Altitude Platform Relay
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#summary" class="md-nav__link">
+<span class="md-ellipsis">
+Summary
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="ch-optical_comms">Chapter 16: Optical Satellite Communications<a class="headerlink" href="#ch-optical_comms" title="Permanent link">&para;</a></h1>
+<div class="admonition info box-keybox kind-concept">
+<p>Chapter Objectives This chapter presents the physics, engineering, and operational aspects of free-space optical (FSO) communications for satellite systems. Topics include atmospheric propagation, adaptive optics, pointing-acquisition-tracking (PAT), optical link budgets, modulation and detection schemes, laser sources, inter-satellite links, and demonstrated missions from LLCD to TBIRD and the Starlink optical ISL network.</p>
+</div>
+<h2 id="sec-fso_intro"><span class="secnum">16.1</span> Introduction to Free-Space Optical Communications<a class="headerlink" href="#sec-fso_intro" title="Permanent link">&para;</a></h2>
+<p>Free-space optical (FSO) communications represents a paradigm shift in satellite data transmission, offering data rates of 1–1000 Gbps using narrow laser beams that are thousands of times more spectrum-efficient than conventional radio frequency (RF) links. The fundamental advantage of optical wavelengths (typically 780 nm, 1064 nm, or 1550 nm) over RF is the dramatically reduced beam divergence: for a 10 cm aperture at 1550 nm, the diffraction-limited half-angle divergence is <span class="arithmatex">\(\theta_{\rm div} \approx 19~\mu\)</span>rad, compared to several degrees for a comparable RF aperture. This narrows the beam to deliver essentially all transmitted power within a small illuminated spot at the receiver, enabling extraordinary link efficiency.</p>
+<p>FSO satellite links face challenges absent in terrestrial fiber: atmospheric turbulence introduces intensity fluctuations (scintillation) and beam wander; clouds block the link entirely; and the sub-microradian pointing accuracy requirement demands sophisticated acquisition and tracking systems. Despite these challenges, the success of missions including LLCD (2013), LCRD (2021), and TBIRD (2022) has validated FSO technology for operational satellite communications.</p>
+<p>Key technical drivers motivating optical satellite links include:</p>
+<ul>
+<li>
+<p><strong>Bandwidth</strong>: Optical carrier frequencies near <span class="arithmatex">\(2 \times 10^{14}\)</span> Hz offer 200 THz of potential bandwidth, vastly exceeding the total allocated RF satellite spectrum.</p>
+</li>
+<li>
+<p><strong>Mass and power</strong>: A 1 Gbps optical terminal weighing 1–5 kg replaces an RF system at hundreds of kilograms; the narrow beam eliminates the need for large dish antennas.</p>
+</li>
+<li>
+<p><strong>Licensing-free operation</strong>: Optical wavelengths are unregulated by the ITU Radio Regulations, eliminating spectrum coordination delays.</p>
+</li>
+<li>
+<p><strong>Security</strong>: The narrow beam (<span class="arithmatex">\(&lt; 1\)</span> mrad) is inherently difficult to intercept without detection, providing physical-layer security that supplements encryption.</p>
+</li>
+<li>
+<p><strong>Interference immunity</strong>: Optical links are immune to RF interference and electronic warfare, providing resilience in contested environments.</p>
+</li>
+</ul>
+<h2 id="sec-fso_fundamentals"><span class="secnum">16.2</span> FSO Link Fundamentals<a class="headerlink" href="#sec-fso_fundamentals" title="Permanent link">&para;</a></h2>
+<h3 id="1621-received-power-and-link-equation"><span class="secnum">16.2.1</span> Received Power and Link Equation<a class="headerlink" href="#1621-received-power-and-link-equation" title="Permanent link">&para;</a></h3>
+<p>The received optical power in a space-to-space FSO link (above the atmosphere) is governed by a form analogous to the RF Friis transmission equation. For a transmitter with power <span class="arithmatex">\(P_t\)</span>, transmit aperture diameter <span class="arithmatex">\(D_t\)</span>, receive aperture diameter <span class="arithmatex">\(D_r\)</span>, link distance <span class="arithmatex">\(d\)</span>, and wavelength <span class="arithmatex">\(\lambda\)</span>, the received power is:</p>
+<div id="eq-fso_link"></div>
+<div class="arithmatex">\[P_r = P_t\, \eta_t\, \eta_r\, \left(\frac{D_t D_r}{4 d\,\lambda}\right)^2 \cdot L_{\rm point}\tag{16.1}\]</div>
+<p>where <span class="arithmatex">\(\eta_t\)</span> and <span class="arithmatex">\(\eta_r\)</span> are transmit and receive optics efficiency (typically 0.7–0.9 each), and <span class="arithmatex">\(L_{\rm point}\)</span> is the pointing loss factor. This expression assumes diffraction-limited operation of both apertures. The geometric loss (free-space path loss) dominates for space-to-space links, scaling as <span class="arithmatex">\(1/d^2\)</span>, identical to RF free-space loss but with the beam diffraction efficiency factor <span class="arithmatex">\((\lambda/D)^2\)</span> replacing the RF wavelength factor.</p>
+<p>The transmit telescope gain relative to an isotropic radiator is: <span id="eq-telescope_gain"></span></p>
+<div class="arithmatex">\[G_t = \eta_t \left(\frac{\pi D_t}{\lambda}\right)^2\tag{16.2}\]</div>
+<p>and the half-angle diffraction-limited beam divergence (to the <span class="arithmatex">\(1/e^2\)</span> intensity radius) is: <span id="eq-beam_divergence"></span></p>
+<div class="arithmatex">\[\theta_{\rm div} = \frac{2.44\,\lambda}{D_t}\tag{16.3}\]</div>
+<p>For a 10 cm aperture at 1550 nm, <span class="arithmatex">\(\theta_{\rm div} \approx 37.8~\mu\)</span>rad <span class="arithmatex">\((7.8~\text{arcsec})\)</span>.</p>
+<h3 id="1622-atmospheric-transmission"><span class="secnum">16.2.2</span> Atmospheric Transmission<a class="headerlink" href="#1622-atmospheric-transmission" title="Permanent link">&para;</a></h3>
+<p>For ground-to-space links passing through the atmosphere, the Beer-Lambert law gives the atmospheric transmission at zenith angle <span class="arithmatex">\(\zeta\)</span>: <span id="eq-beer_lambert"></span></p>
+<div class="arithmatex">\[T_{\rm atm} = \exp\!\left(-\sigma_{\rm ext}(\lambda)\, L_{\rm eff}\right) = \exp\!\left(-\frac{\tau(\lambda)}{\cos\zeta}\right)\tag{16.4}\]</div>
+<p>where <span class="arithmatex">\(\sigma_{\rm ext}(\lambda)\)</span> is the wavelength-dependent extinction coefficient (sum of absorption and scattering), <span class="arithmatex">\(L_{\rm eff}\)</span> is the effective atmospheric path length, and <span class="arithmatex">\(\tau(\lambda)\)</span> is the vertical optical depth. At 1550 nm in clear sky at zenith, <span class="arithmatex">\(\tau \approx 0.05\)</span>, giving <span class="arithmatex">\(T_{\rm atm} \approx 0.95\)</span>. Absorption bands at 940 nm, 1140 nm, and 1380 nm must be avoided; the 1550 nm window benefits from minimal absorption by water vapor and <span class="arithmatex">\(\rm O_2\)</span>.</p>
+<h2 id="sec-atmospheric_effects"><span class="secnum">16.3</span> Atmospheric Effects<a class="headerlink" href="#sec-atmospheric_effects" title="Permanent link">&para;</a></h2>
+<h3 id="1631-atmospheric-turbulence"><span class="secnum">16.3.1</span> Atmospheric Turbulence<a class="headerlink" href="#1631-atmospheric-turbulence" title="Permanent link">&para;</a></h3>
+<p>Turbulent mixing of air masses with different temperatures creates refractive index fluctuations <span class="arithmatex">\(n(\mathbf{r},t) = n_0 + n_1(\mathbf{r},t)\)</span>, where <span class="arithmatex">\(n_1 \ll n_0 \approx 1\)</span>. These fluctuations distort the optical wavefront, causing beam spreading, beam wander, and intensity scintillation at the receiver.</p>
+<p>The strength of turbulence is characterized by the refractive index structure constant <span class="arithmatex">\(C_n^2\)</span> (units of m<span class="arithmatex">\(^{-2/3}\)</span>), which ranges from <span class="arithmatex">\(10^{-17}\)</span> m<span class="arithmatex">\(^{-2/3}\)</span> (weak, high altitude) to <span class="arithmatex">\(10^{-13}\)</span> m<span class="arithmatex">\(^{-2/3}\)</span> (strong, near ground). For a horizontal path of length <span class="arithmatex">\(L\)</span> at constant turbulence strength, the Rytov variance (log-intensity variance for a plane wave) is: <span id="eq-rytov_variance"></span></p>
+<div class="arithmatex">\[\sigma_R^2 = 1.23\, C_n^2\, k^{7/6}\, L^{11/6}\tag{16.5}\]</div>
+<p>where <span class="arithmatex">\(k = 2\pi/\lambda\)</span> is the optical wavenumber. The turbulence regime is classified as:</p>
+<ul>
+<li>
+<p><strong>Weak</strong>: <span class="arithmatex">\(\sigma_R^2 &lt; 0.3\)</span> — perturbative treatment valid, scintillation index <span class="arithmatex">\(\sigma_I^2 \approx \sigma_R^2\)</span>.</p>
+</li>
+<li>
+<p><strong>Moderate</strong>: <span class="arithmatex">\(0.3 &lt; \sigma_R^2 &lt; 5\)</span> — multiple scattering effects, saturation begins.</p>
+</li>
+<li>
+<p><strong>Strong</strong>: <span class="arithmatex">\(\sigma_R^2 &gt; 5\)</span> — saturation regime, <span class="arithmatex">\(\sigma_I^2 \to 1\)</span> (Rayleigh distribution).</p>
+</li>
+</ul>
+<p>For a vertical path from ground to a LEO satellite at 500 km, the integrated <span class="arithmatex">\(C_n^2\)</span> path (Kolmogorov model) gives <span class="arithmatex">\(\sigma_R^2 \approx 0.1\)</span>–<span class="arithmatex">\(0.5\)</span> at 1550 nm for typical mid-latitude sites, placing most ground-to-space links in the weak-to-moderate turbulence regime.</p>
+<h3 id="1632-coherence-parameters"><span class="secnum">16.3.2</span> Coherence Parameters<a class="headerlink" href="#1632-coherence-parameters" title="Permanent link">&para;</a></h3>
+<p>The <strong>Fried parameter</strong> <span class="arithmatex">\(r_0\)</span> characterizes the spatial coherence of the wavefront: <span id="eq-fried_parameter"></span></p>
+<div class="arithmatex">\[r_0 = \left[ 0.423\, k^2 \sec\zeta \int_0^H C_n^2(h)\, dh \right]^{-3/5}\tag{16.6}\]</div>
+<p>Typical values: <span class="arithmatex">\(r_0 = 2\)</span>–<span class="arithmatex">\(20\)</span> cm at visible wavelengths at good astronomical sites (Mauna Kea, La Palma). Larger apertures (<span class="arithmatex">\(D &gt; r_0\)</span>) collect more power but with distorted wavefronts, requiring adaptive optics for coherent detection.</p>
+<p>The <strong>coherence time</strong> <span class="arithmatex">\(\tau_0 = r_0 / \bar{v}\)</span>, where <span class="arithmatex">\(\bar{v}\)</span> is the effective wind velocity, characterizes how rapidly the wavefront changes. Typical values <span class="arithmatex">\(\tau_0 = 1\)</span>–<span class="arithmatex">\(10\)</span> ms impose requirements on the adaptive optics bandwidth.</p>
+<h3 id="1633-cloud-blockage"><span class="secnum">16.3.3</span> Cloud Blockage<a class="headerlink" href="#1633-cloud-blockage" title="Permanent link">&para;</a></h3>
+<p>Clouds completely block optical links, with blockage probability varying strongly with geographic location and season. Good astronomical sites (high altitude, subtropical, or polar): 5–20% cloud blockage annually. Poor mid-latitude sites: 40–60%. Site diversity (two or more ground stations separated by 100–200 km) reduces joint outage probability to the product of individual probabilities (assuming statistical independence of cloud cover at separated sites).</p>
+<h2 id="sec-adaptive_optics"><span class="secnum">16.4</span> Adaptive Optics<a class="headerlink" href="#sec-adaptive_optics" title="Permanent link">&para;</a></h2>
+<p>Adaptive optics (AO) systems measure and correct atmospheric wavefront distortions in real time, enabling diffraction-limited performance with large-aperture ground telescopes despite turbulence.</p>
+<h3 id="1641-shack-hartmann-wavefront-sensor"><span class="secnum">16.4.1</span> Shack-Hartmann Wavefront Sensor<a class="headerlink" href="#1641-shack-hartmann-wavefront-sensor" title="Permanent link">&para;</a></h3>
+<p>The Shack-Hartmann wavefront sensor (SHWFS) divides the incoming wavefront into <span class="arithmatex">\(N_{\rm sub} \times N_{\rm sub}\)</span> subapertures using a lenslet array. Each lenslet focuses light from its subaperture onto a CCD detector, and the centroid displacement of the focal spot relative to the reference position is proportional to the local wavefront slope: <span id="eq-shwfs_slope"></span></p>
+<div class="arithmatex">\[s_{x,i} = \frac{\partial \phi}{\partial x}\bigg|_{\rm subaperture~i} \cdot \frac{d_{\rm sub}}{2}\tag{16.7}\]</div>
+<p>where <span class="arithmatex">\(d_{\rm sub}\)</span> is the subaperture diameter and <span class="arithmatex">\(\phi\)</span> is the wavefront phase. The collection of slope measurements <span class="arithmatex">\(\mathbf{s}\)</span> is related to the actuator commands <span class="arithmatex">\(\mathbf{u}\)</span> via the interaction matrix <span class="arithmatex">\(\mathbf{G}\)</span>: <span class="arithmatex">\(\mathbf{s} = \mathbf{G}\mathbf{u}\)</span>, inverted to give <span class="arithmatex">\(\mathbf{u} = \mathbf{G}^+\mathbf{s}\)</span> (pseudoinverse).</p>
+<h3 id="1642-deformable-mirror"><span class="secnum">16.4.2</span> Deformable Mirror<a class="headerlink" href="#1642-deformable-mirror" title="Permanent link">&para;</a></h3>
+<p>The deformable mirror (DM) is controlled by <span class="arithmatex">\(N_{\rm act}\)</span> piezoelectric, electrostatic, or MEMS actuators. Each actuator deforms the mirror surface according to an influence function <span class="arithmatex">\(F_i(\mathbf{r})\)</span> such that the corrected surface is: <span id="eq-dm_surface"></span></p>
+<div class="arithmatex">\[W_{\rm DM}(\mathbf{r}) = \sum_{i=1}^{N_{\rm act}} u_i\, F_i(\mathbf{r})\tag{16.8}\]</div>
+<p>Commercial DMs for FSO: Boston Micromachines Multi-DM (140 actuators, <span class="arithmatex">\(\pm3.5~\mu\)</span>m stroke, MEMS-based), ALPAO DM97 (97 voice-coil actuators, <span class="arithmatex">\(&gt; 80~\mu\)</span>m stroke). Closed-loop AO bandwidth of <span class="arithmatex">\(&gt; 100\)</span> Hz is required to track the evolving wavefront within the coherence time <span class="arithmatex">\(\tau_0\)</span>.</p>
+<h3 id="1643-strehl-ratio-and-performance-metric"><span class="secnum">16.4.3</span> Strehl Ratio and Performance Metric<a class="headerlink" href="#1643-strehl-ratio-and-performance-metric" title="Permanent link">&para;</a></h3>
+<p>The Strehl ratio <span class="arithmatex">\(S\)</span> quantifies AO performance as the ratio of the actual on-axis intensity to the diffraction-limited (unaberrated) intensity: <span id="eq-strehl"></span></p>
+<div class="arithmatex">\[S = \exp\!\left(-\left(\frac{2\pi\, \sigma_\phi}{\lambda}\right)^2\right)\tag{16.9}\]</div>
+<p>where <span class="arithmatex">\(\sigma_\phi\)</span> is the rms residual wavefront error after AO correction. The Maréchal approximation, valid for <span class="arithmatex">\(\sigma_\phi &lt; \lambda/14\)</span>, gives: <span id="eq-marechal"></span></p>
+<div class="arithmatex">\[S \approx 1 - \left(\frac{2\pi\, \sigma_\phi}{\lambda}\right)^2\tag{16.10}\]</div>
+<p>A well-corrected AO system achieves <span class="arithmatex">\(S &gt; 0.8\)</span> (Strehl criterion for “diffraction-limited”), corresponding to <span class="arithmatex">\(\sigma_\phi &lt; \lambda/14\)</span> rms. Tip-tilt correction alone (second-order AO) recovers <span class="arithmatex">\(\sim 70\)</span>% of the Strehl, while higher-order correction (<span class="arithmatex">\(&gt; 100\)</span> modes) is needed for high <span class="arithmatex">\(D/r_0\)</span> ratios.</p>
+<h2 id="sec-pat"><span class="secnum">16.5</span> Pointing, Acquisition, and Tracking<a class="headerlink" href="#sec-pat" title="Permanent link">&para;</a></h2>
+<p>Successful establishment of an FSO link requires three phases: <strong>acquisition</strong> (finding the remote terminal), <strong>pointing</strong> (aligning the beam), and <strong>tracking</strong> (maintaining alignment during relative motion). The PAT system is often the most technically challenging subsystem of an optical communication terminal.</p>
+<h3 id="1651-pat-system-architecture"><span class="secnum">16.5.1</span> PAT System Architecture<a class="headerlink" href="#1651-pat-system-architecture" title="Permanent link">&para;</a></h3>
+<figure class="fig fig-diagram" id="fig-pat_system">
+<img class="tikz" src="img/tikz-c4bf36e925f8.svg" alt="Block diagram of a satellite optical PAT (Pointing, Acquisition, and Tracking) system. The coarse gimbal provides \pm 45^\circ pointing range using star tracker and IMU attitude references; the fine…" loading="lazy" width="356" height="204">
+<figcaption><strong>Figure 16.1.</strong> Block diagram of a satellite optical PAT (Pointing, Acquisition, and Tracking) system. The coarse gimbal provides <span class="math inline">\(\pm 45^\circ\)</span> pointing range using star tracker and IMU attitude references; the fine steering mirror (FSM) provides high-bandwidth fine correction; acquisition uses spiral scanning until the beacon is detected.</figcaption>
+</figure>
+<h3 id="1652-pointing-loss-budget"><span class="secnum">16.5.2</span> Pointing Loss Budget<a class="headerlink" href="#1652-pointing-loss-budget" title="Permanent link">&para;</a></h3>
+<p>The total pointing error <span class="arithmatex">\(\sigma_\theta\)</span> consists of contributions from platform jitter (mechanical vibrations, thermal gradients), residual tracking error (finite control bandwidth), and thermal structural drift. The pointing-induced power loss is: <span id="eq-pointing_loss_ch16"></span></p>
+<div class="arithmatex">\[L_{\rm point} = \exp\!\left(-\frac{8\,\sigma_\theta^2}{\theta_{\rm div}^2}\right)\tag{16.11}\]</div>
+<p>For a beam divergence <span class="arithmatex">\(\theta_{\rm div} = 40~\mu\)</span>rad and pointing error <span class="arithmatex">\(\sigma_\theta = 1~\mu\)</span>rad, the pointing loss is <span class="arithmatex">\(L_{\rm point} = \exp(-8/1600) \approx -0.022\)</span> dB, negligible. For <span class="arithmatex">\(\sigma_\theta = 10~\mu\)</span>rad with the same divergence, the loss rises to 2.2 dB.</p>
+<p>The TBIRD terminal (NASA, 2022) demonstrated <span class="arithmatex">\(&lt; 1~\mu\)</span>rad pointing accuracy for a 10 cm aperture on a LEO satellite, achieving 200 Gbps.</p>
+<h3 id="1653-acquisition-scan-patterns"><span class="secnum">16.5.3</span> Acquisition Scan Patterns<a class="headerlink" href="#1653-acquisition-scan-patterns" title="Permanent link">&para;</a></h3>
+<p>During acquisition, the pointing direction of one terminal is uncertain within an uncertainty cone of half-angle <span class="arithmatex">\(\sigma_{\rm unc}\)</span> (typically 1–10 mrad from attitude reference uncertainty). A spiral scan pattern systematically covers the uncertainty area: <span id="eq-spiral_theta"></span><span id="eq-spiral_r"></span></p>
+<div class="arithmatex">\[\begin{align*}
+\theta(t) &amp;= \omega_s t  \\
+r(t) &amp;= v_s t
+\end{align*}\]</div>
+<p>where <span class="arithmatex">\(\omega_s\)</span> and <span class="arithmatex">\(v_s\)</span> are the angular velocity and radial velocity. The acquisition time is bounded by <span class="arithmatex">\(T_{\rm acq} \leq \pi \sigma_{\rm unc}^2 / (\theta_{\rm div} \cdot v_s)\)</span>. Track loop bandwidth: 1–10 kHz, providing rejection of platform vibrations up to the loop bandwidth with <span class="arithmatex">\(&gt; 20\)</span> dB attenuation.</p>
+<h2 id="sec-optical_link_budget"><span class="secnum">16.6</span> Optical Link Budget<a class="headerlink" href="#sec-optical_link_budget" title="Permanent link">&para;</a></h2>
+<h3 id="1661-complete-link-equation"><span class="secnum">16.6.1</span> Complete Link Equation<a class="headerlink" href="#1661-complete-link-equation" title="Permanent link">&para;</a></h3>
+<p>Combining all factors, the received power for a ground-to-space uplink is: <span id="eq-full_link"></span></p>
+<div class="arithmatex">\[P_r = P_t \cdot G_t \cdot T_{\rm atm} \cdot L_{\rm geom} \cdot A_r \cdot \eta_r \cdot L_{\rm point} \cdot L_{\rm AO}\tag{16.14}\]</div>
+<p>where <span class="arithmatex">\(G_t = \eta_t(\pi D_t/\lambda)^2\)</span> is the transmit telescope gain, <span class="arithmatex">\(L_{\rm geom} = (\lambda/(4\pi d))^2\)</span> is the free-space geometric loss, <span class="arithmatex">\(A_r = \pi(D_r/2)^2\)</span> is the receive aperture area, <span class="arithmatex">\(L_{\rm AO}\)</span> accounts for residual wavefront error and is equivalent to the Strehl ratio.</p>
+<p>The signal-to-noise ratio for a direct-detection (photodiode) receiver in the quantum noise limited regime is: <span id="eq-optical_snr"></span></p>
+<div class="arithmatex">\[\mathrm{SNR} = \frac{P_r}{2\, h\nu\, B \left(1 + \bar{n}_{\rm th}\right)}\tag{16.15}\]</div>
+<p>where <span class="arithmatex">\(h\nu\)</span> is the photon energy (<span class="arithmatex">\(h\nu = 1.28 \times 10^{-19}\)</span> J at 1550 nm), <span class="arithmatex">\(B\)</span> is the receiver electrical bandwidth, and <span class="arithmatex">\(\bar{n}_{\rm th}\)</span> is the mean thermal photon number (negligible at 1550 nm, <span class="arithmatex">\(&lt; 0.01\)</span> at room temperature). For coherent detection (homodyne), the SNR is 3 dB higher for the same received power.</p>
+<div class="tbl" id="tab-optical_link_budget">
+<div class="tbl-caption"><strong>Table 16.1.</strong> Representative optical link budget for a LEO-to-ground downlink at 1550 nm. Satellite altitude 550 km, elevation angle <span class="math inline">\(30^\circ\)</span>, link range <span class="math inline">\(d = 1100\)</span> km.</div>
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Parameter</strong></th>
+<th style="text-align: center;"><strong>Value</strong></th>
+<th style="text-align: center;"><strong>Unit / dB</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Transmit laser power <span class="math inline">\(P_t\)</span></td>
+<td style="text-align: center;">1.0 W</td>
+<td style="text-align: center;">+30.0 dBm</td>
+</tr>
+<tr>
+<td style="text-align: left;">Transmit aperture <span class="math inline">\(D_t\)</span></td>
+<td style="text-align: center;">10 cm</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr>
+<td style="text-align: left;">Transmit telescope gain <span class="math inline">\(G_t\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\eta_t(\pi D_t/\lambda)^2\)</span></td>
+<td style="text-align: center;">+108.1 dB</td>
+</tr>
+<tr>
+<td style="text-align: left;">Transmit optics efficiency <span class="math inline">\(\eta_t\)</span></td>
+<td style="text-align: center;">0.80</td>
+<td style="text-align: center;"><span class="math inline">\(-\)</span>0.97 dB</td>
+</tr>
+<tr>
+<td style="text-align: left;">Free-space geometric loss <span class="math inline">\(L_{\rm geom}\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(({\lambda}/{4\pi d})^2\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(-\)</span>283.9 dB</td>
+</tr>
+<tr>
+<td style="text-align: left;">Atmospheric transmission (clear)</td>
+<td style="text-align: center;">0.85</td>
+<td style="text-align: center;"><span class="math inline">\(-\)</span>0.71 dB</td>
+</tr>
+<tr>
+<td style="text-align: left;">Pointing loss <span class="math inline">\(L_{\rm point}\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(e^{-8(1/40)^2}\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(-\)</span>0.09 dB</td>
+</tr>
+<tr>
+<td style="text-align: left;">Receive aperture area (1 m)</td>
+<td style="text-align: center;">0.785 m<span class="math inline">\(^2\)</span></td>
+<td style="text-align: center;">+118.9 dBcm<span class="math inline">\(^2\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">Receive optics efficiency <span class="math inline">\(\eta_r\)</span></td>
+<td style="text-align: center;">0.80</td>
+<td style="text-align: center;"><span class="math inline">\(-\)</span>0.97 dB</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Received power</strong> <span class="math inline">\(P_r\)</span> (clear sky)</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"><span class="math inline">\(\mathbf{-29.6}\)</span> <strong>dBm</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;">Detector sensitivity (BER <span class="math inline">\(10^{-6}\)</span>, DPSK)</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"><span class="math inline">\(-\)</span>43.0 dBm</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Link margin (clear sky)</strong></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"><span class="math inline">\(\mathbf{+13.4}\)</span> <strong>dB</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;">Atmospheric transmission (thin cloud)</td>
+<td style="text-align: center;">0.30</td>
+<td style="text-align: center;"><span class="math inline">\(-\)</span>5.2 dB</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Link margin (thin cloud)</strong></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"><span class="math inline">\(\mathbf{+8.2}\)</span> <strong>dB</strong></td>
+</tr>
+</tbody>
+</table>
+</div></div>
+<h2 id="sec-optical_modulation"><span class="secnum">16.7</span> Modulation and Detection<a class="headerlink" href="#sec-optical_modulation" title="Permanent link">&para;</a></h2>
+<h3 id="1671-on-off-keying-ook"><span class="secnum">16.7.1</span> On-Off Keying (OOK)<a class="headerlink" href="#1671-on-off-keying-ook" title="Permanent link">&para;</a></h3>
+<p>OOK is the simplest optical modulation: the laser is switched on for “1” and off (or dimmed) for “0.” The spectral efficiency is 1 b/s/Hz (ideal), and the bit error rate for direct detection with intensity noise is: <span id="eq-ook_ber"></span></p>
+<div class="arithmatex">\[P_b^{\rm OOK} = \frac{1}{2}\exp\!\left(-\frac{\bar{n}_s}{2}\right)\tag{16.16}\]</div>
+<p>where <span class="arithmatex">\(\bar{n}_s\)</span> is the mean signal photon count per bit for a “1” symbol.</p>
+<h3 id="1672-pulse-position-modulation-ppm"><span class="secnum">16.7.2</span> Pulse Position Modulation (PPM)<a class="headerlink" href="#1672-pulse-position-modulation-ppm" title="Permanent link">&para;</a></h3>
+<p><span class="arithmatex">\(M\)</span>-ary PPM encodes <span class="arithmatex">\(\log_2 M\)</span> bits by placing a single optical pulse in one of <span class="arithmatex">\(M\)</span> time slots within a frame. The slot error probability for a Poisson detector is: <span id="eq-ppm_slot"></span></p>
+<div class="arithmatex">\[P_{\rm slot} = \exp\!\left(-\frac{\bar{K}_s}{M}\right)\tag{16.17}\]</div>
+<p>where <span class="arithmatex">\(\bar{K}_s\)</span> is the mean signal photon count per symbol. PPM is used in deep-space optical links (LLCD: 16-PPM) where the received photon rate is extremely low (<span class="arithmatex">\(&lt; 1\)</span> photon/bit at lunar distances) and power efficiency is paramount.</p>
+<h3 id="1673-differential-phase-shift-keying-dpsk"><span class="secnum">16.7.3</span> Differential Phase-Shift Keying (DPSK)<a class="headerlink" href="#1673-differential-phase-shift-keying-dpsk" title="Permanent link">&para;</a></h3>
+<p>DPSK encodes data in the phase difference between consecutive pulses rather than the absolute phase, eliminating the need for a coherent phase reference. DPSK achieves approximately 3 dB better receiver sensitivity than OOK at the same bit error rate. Using a Mach-Zehnder delay interferometer (MZDI) as the demodulator, the differential phase is converted to intensity difference before photodetection.</p>
+<h3 id="1674-coherent-qpsk"><span class="secnum">16.7.4</span> Coherent QPSK<a class="headerlink" href="#1674-coherent-qpsk" title="Permanent link">&para;</a></h3>
+<p>Coherent detection with a local oscillator (LO) laser is shot-noise limited and achieves the highest possible spectral efficiency. For QPSK coherent detection: <span id="eq-coherent_ber"></span></p>
+<div class="arithmatex">\[P_b^{\rm QPSK} = Q\!\left(\sqrt{\frac{2\eta_{\rm opt}\, P_r}{h\nu\, B}}\right)\tag{16.18}\]</div>
+<p>where <span class="arithmatex">\(\eta_{\rm opt}\)</span> is the quantum efficiency of the receiver. TBIRD (2022) achieved 200 Gbps using coherent QPSK at 1550 nm with a 10 cm aperture in LEO.</p>
+<h3 id="1675-photon-counting-detection"><span class="secnum">16.7.5</span> Photon-Counting Detection<a class="headerlink" href="#1675-photon-counting-detection" title="Permanent link">&para;</a></h3>
+<p>For very low light levels (deep space, or photon-efficient PPM links), photon-counting detectors offer the highest sensitivity:</p>
+<p><strong>Avalanche Photodiode (APD)</strong>: The APD achieves internal gain <span class="arithmatex">\(M\)</span> through impact ionization. The excess noise factor is: <span id="eq-apd_noise"></span></p>
+<div class="arithmatex">\[F = k\, M + \left(2 - \frac{1}{M}\right)(1-k)\tag{16.19}\]</div>
+<p>where <span class="arithmatex">\(k\)</span> is the ionization ratio (<span class="arithmatex">\(k \approx 0.02\)</span> for Si, <span class="arithmatex">\(k \approx 0.4\)</span> for InGaAs). Si APDs at 800 nm achieve <span class="arithmatex">\(M \approx 100\)</span> with <span class="arithmatex">\(F \approx 3\)</span> dB excess noise; InGaAs APDs at 1550 nm achieve <span class="arithmatex">\(M \approx 10\)</span>–<span class="arithmatex">\(30\)</span> with <span class="arithmatex">\(F \approx 5\)</span>–8 dB.</p>
+<p><strong>Superconducting Nanowire Single-Photon Detector (SNSPD)</strong>: Cryogenic detectors (operating at 0.8–3 K) using a superconducting NbN or WSi nanowire. Performance: detection efficiency <span class="arithmatex">\(&gt; 93\)</span>% at 1550 nm, timing jitter <span class="arithmatex">\(&lt; 50\)</span> ps, dark count rate <span class="arithmatex">\(&lt; 1\)</span> cps, maximum count rate <span class="arithmatex">\(&gt; 100\)</span> Mcps. SNSPDs are used in LLCD and LCRD ground terminals for single-photon-level sensitivity.</p>
+<h2 id="sec-laser_sources"><span class="secnum">16.8</span> Laser Sources<a class="headerlink" href="#sec-laser_sources" title="Permanent link">&para;</a></h2>
+<h3 id="1681-wavelength-selection"><span class="secnum">16.8.1</span> Wavelength Selection<a class="headerlink" href="#1681-wavelength-selection" title="Permanent link">&para;</a></h3>
+<p>The choice of operating wavelength involves tradeoffs among atmospheric transmission, detector technology, laser technology, and eye safety regulations:</p>
+<ul>
+<li>
+<p><strong>1550 nm</strong>: Eye-safe (cornea and lens absorb, retina protected); EDFA amplifiers provide 30 dB gain with <span class="arithmatex">\(&lt; 5\)</span> dB noise figure; telecom-grade components available; InGaAs detectors and coherent receivers well-developed.</p>
+</li>
+<li>
+<p><strong>1064 nm</strong>: High-power Nd:YAG and Yb-fiber lasers; Si APDs have higher quantum efficiency than at 1550 nm; shorter wavelength gives smaller diffraction divergence for given aperture, reducing geometric loss.</p>
+</li>
+<li>
+<p><strong>780 nm / 850 nm</strong>: Si APD peak sensitivity; Rb atomic transition at 780 nm can serve as absolute frequency reference for clock applications; higher Rayleigh scattering limits low-elevation-angle links.</p>
+</li>
+</ul>
+<h3 id="1682-laser-types"><span class="secnum">16.8.2</span> Laser Types<a class="headerlink" href="#1682-laser-types" title="Permanent link">&para;</a></h3>
+<p><strong>Nd:YAG DPSS (1064 nm)</strong>: Diode-pumped solid-state Nd:YAG lasers provide output powers of 0.5–10 W with high beam quality (<span class="arithmatex">\(M^2 &lt; 1.1\)</span>) and good frequency stability. Used in early MLCD and LLCD demonstrations.</p>
+<p><strong>Er-doped Fiber Amplifier (EDFA, 1530–1570 nm)</strong>: A master oscillator power amplifier (MOPA) architecture combines a narrow-linewidth distributed feedback (DFB) laser seed with an EDFA booster to produce 0.5–2 W of amplified output. EDFA gain bandwidth covers the entire C-band; noise figure 4–5 dB typical. The MOPA architecture allows the modulation to be applied to the low-power seed laser, then amplified without distortion.</p>
+<p><strong>Semiconductor Laser Diode</strong>: Single-mode DFB lasers at 780 nm or 850 nm offer compactness and direct modulation at rates up to 40 GHz but are limited to <span class="arithmatex">\(\leq 100\)</span> mW single-mode power; arrays can reach watts. InGaAsP/InP DFB lasers at 1310 nm or 1550 nm are the workhorses of coherent optical communications.</p>
+<p>For coherent detection, the laser linewidth must satisfy <span class="arithmatex">\(\Delta\nu_{\rm LW} \ll B_{\rm symbol}\)</span> to prevent phase noise from dominating receiver performance. For QPSK at 10 Gbaud, the combined transmitter-LO linewidth must be <span class="arithmatex">\(&lt; 1\)</span> MHz; for 64-QAM, <span class="arithmatex">\(&lt; 100\)</span> kHz. ECL (external cavity laser) and DFB+fiber Bragg grating lasers achieve linewidths of 1–100 kHz.</p>
+<h2 id="sec-optical_missions"><span class="secnum">16.9</span> Demonstrated Missions<a class="headerlink" href="#sec-optical_missions" title="Permanent link">&para;</a></h2>
+<div class="tbl" id="tab-optical_missions">
+<div class="tbl-caption"><strong>Table 16.2.</strong> Key optical satellite communication mission comparison. GEO = geostationary orbit; LEO = low Earth orbit; L2 = Earth-Moon Lagrange point 2.</div>
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Mission</strong></th>
+<th style="text-align: center;"><strong>Year</strong></th>
+<th style="text-align: center;"><strong>Rate</strong></th>
+<th style="text-align: center;"><strong><span class="math inline">\(\lambda\)</span> (nm)</strong></th>
+<th style="text-align: center;"><strong>Distance</strong></th>
+<th style="text-align: center;"><strong>Aperture</strong></th>
+<th style="text-align: center;"><strong>Org.</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">LLCD (LADEE)</td>
+<td style="text-align: center;">2013</td>
+<td style="text-align: center;">622 Mbps</td>
+<td style="text-align: center;">1550</td>
+<td style="text-align: center;">385,000 km (Moon)</td>
+<td style="text-align: center;">15 cm SC, 1 m GND</td>
+<td style="text-align: center;">NASA</td>
+</tr>
+<tr>
+<td style="text-align: left;">LCRD</td>
+<td style="text-align: center;">2021</td>
+<td style="text-align: center;">1.2 Gbps</td>
+<td style="text-align: center;">1550</td>
+<td style="text-align: center;">36,000 km (GEO)</td>
+<td style="text-align: center;">10 cm SC, 1 m GND</td>
+<td style="text-align: center;">NASA</td>
+</tr>
+<tr>
+<td style="text-align: left;">TBIRD</td>
+<td style="text-align: center;">2022</td>
+<td style="text-align: center;">200 Gbps</td>
+<td style="text-align: center;">1550</td>
+<td style="text-align: center;">550 km (LEO)</td>
+<td style="text-align: center;">10 cm SC, 1 m GND</td>
+<td style="text-align: center;">NASA</td>
+</tr>
+<tr>
+<td style="text-align: left;">EDRS SpaceDataHighway</td>
+<td style="text-align: center;">2016</td>
+<td style="text-align: center;">1.8 Gbps</td>
+<td style="text-align: center;">1064</td>
+<td style="text-align: center;">45,000 km (ISL)</td>
+<td style="text-align: center;">13.5 cm LCT</td>
+<td style="text-align: center;">ESA/Airbus</td>
+</tr>
+<tr>
+<td style="text-align: left;">Micius QKD</td>
+<td style="text-align: center;">2017</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">800</td>
+<td style="text-align: center;">1200 km (sat-GND)</td>
+<td style="text-align: center;">30 cm SC, 1.2 m GND</td>
+<td style="text-align: center;">CNSA</td>
+</tr>
+<tr>
+<td style="text-align: left;">Starlink ISL</td>
+<td style="text-align: center;">2021</td>
+<td style="text-align: center;"><span class="math inline">\(\sim\)</span>100 Gbps</td>
+<td style="text-align: center;">1550</td>
+<td style="text-align: center;"><span class="math inline">\(&lt;\)</span> 5000 km (ISL)</td>
+<td style="text-align: center;"><span class="math inline">\(\sim\)</span>5 cm</td>
+<td style="text-align: center;">SpaceX</td>
+</tr>
+<tr>
+<td style="text-align: left;">OPALS (ISS)</td>
+<td style="text-align: center;">2014</td>
+<td style="text-align: center;">50 Mbps</td>
+<td style="text-align: center;">1550</td>
+<td style="text-align: center;">400 km (ISS)</td>
+<td style="text-align: center;">10 cm SC</td>
+<td style="text-align: center;">NASA/JPL</td>
+</tr>
+</tbody>
+</table>
+</div></div>
+<h3 id="1691-llcd-lunar-laser-communication-demonstration"><span class="secnum">16.9.1</span> LLCD: Lunar Laser Communication Demonstration<a class="headerlink" href="#1691-llcd-lunar-laser-communication-demonstration" title="Permanent link">&para;</a></h3>
+<p>LLCD (2013) flew aboard NASA’s LADEE spacecraft in lunar orbit, demonstrating optical communications from the Moon for the first time. Key achievements:</p>
+<ul>
+<li>
+<p><strong>622 Mbps downlink</strong>: DPSK modulation, 0.5 W transmitted, 15 cm telescope on spacecraft.</p>
+</li>
+<li>
+<p><strong>20 Mbps uplink</strong>: From three ground stations (White Sands NM, Tenerife Spain, Table Mountain CA) with 1 m receive apertures.</p>
+</li>
+<li>
+<p><strong>Error-free reception</strong>: At lunar distance (385,000 km), a factor of <span class="arithmatex">\(\sim\!5\times\)</span> improvement over the best RF link from lunar distance demonstrated to that point.</p>
+</li>
+<li>
+<p><strong>PPM format</strong>: 16-slot PPM with rate-1/2 LDPC coding for power efficiency.</p>
+</li>
+</ul>
+<h3 id="1692-lcrd-laser-communications-relay-demonstration"><span class="secnum">16.9.2</span> LCRD: Laser Communications Relay Demonstration<a class="headerlink" href="#1692-lcrd-laser-communications-relay-demonstration" title="Permanent link">&para;</a></h3>
+<p>LCRD (launched December 2021 on STPSat-6 into GEO) is NASA’s first two-way optical relay demonstration. Operating at 1.2 Gbps bidirectional, LCRD relays data between two ground stations at White Sands and Table Mountain, demonstrating the relay concept for future TDRSS optical replacement. LCRD remains operational as of 2025.</p>
+<h3 id="1693-tbird-terabyte-infrared-delivery"><span class="secnum">16.9.3</span> TBIRD: TeraByte InfraRed Delivery<a class="headerlink" href="#1693-tbird-terabyte-infrared-delivery" title="Permanent link">&para;</a></h3>
+<p>TBIRD (2022) on the PathFinder Technology Demonstrator-3 (PTD-3) CubeSat in LEO achieved 200 Gbps—the highest data rate ever demonstrated in a space optical communication link—using:</p>
+<ul>
+<li>
+<p>Coherent QPSK modulation at 200 Gbaud equivalent</p>
+</li>
+<li>
+<p>10 cm aperture telescope on the 12U CubeSat</p>
+</li>
+<li>
+<p>0.72 m ground telescope at White Sands Missile Range</p>
+</li>
+<li>
+<p>Sub-microradian (<span class="arithmatex">\(&lt; 1~\mu\)</span>rad) pointing performance</p>
+</li>
+<li>
+<p>1550 nm EDFA-based MOPA transmitter</p>
+</li>
+</ul>
+<p>The 200 Gbps rate enables transfer of terabytes of data per satellite pass, with implications for high-volume Earth observation data downlink.</p>
+<h3 id="1694-edrs-space-data-highway"><span class="secnum">16.9.4</span> EDRS Space Data Highway<a class="headerlink" href="#1694-edrs-space-data-highway" title="Permanent link">&para;</a></h3>
+<p>The European Data Relay System (EDRS), operated by Airbus and ESA, provides a commercial optical ISL service between GEO relay satellites (EDRS-A at 9<span class="arithmatex">\(^\circ\)</span>E, EDRS-C at 3<span class="arithmatex">\(^\circ\)</span>E) and LEO satellites including Copernicus Sentinel-1 and Sentinel-2. Each ISL uses the Tesat Laser Communication Terminal (LCT):</p>
+<ul>
+<li>
+<p>1.8 Gbps full-duplex at 1064 nm (BPSK coherent)</p>
+</li>
+<li>
+<p>13.5 cm Cassegrain telescope</p>
+</li>
+<li>
+<p>Acquisition time <span class="arithmatex">\(&lt; 20\)</span> s from cold start</p>
+</li>
+<li>
+<p>Pointing accuracy <span class="arithmatex">\(&lt; 0.3~\mu\)</span>rad RMS</p>
+</li>
+<li>
+<p>Maximum ISL range 45,000 km (LEO-to-GEO)</p>
+</li>
+</ul>
+<h2 id="sec-isl_ch16"><span class="secnum">16.10</span> Inter-Satellite Optical Links<a class="headerlink" href="#sec-isl_ch16" title="Permanent link">&para;</a></h2>
+<h3 id="16101-isl-geometry-and-link-parameters"><span class="secnum">16.10.1</span> ISL Geometry and Link Parameters<a class="headerlink" href="#16101-isl-geometry-and-link-parameters" title="Permanent link">&para;</a></h3>
+<p>Inter-satellite links (ISL) eliminate atmospheric effects, operating in vacuum where the link is purely geometric. Key ISL geometries:</p>
+<ul>
+<li>
+<p><strong>LEO-LEO (in-plane)</strong>: Separation 1000–5000 km; relative velocity <span class="arithmatex">\(&lt; 0.5\)</span> km/s (same orbital plane); Doppler shift <span class="arithmatex">\(&lt; 1\)</span> GHz; high-rate links (100 Gbps) feasible with <span class="arithmatex">\(&lt; 5\)</span> cm apertures.</p>
+</li>
+<li>
+<p><strong>LEO-LEO (cross-plane)</strong>: High relative velocity at low latitudes causes link disruption; Starlink disables cross-plane links at latitudes <span class="arithmatex">\(&gt; 65^\circ\)</span>.</p>
+</li>
+<li>
+<p><strong>GEO-GEO</strong>: Separation up to 70,000 km (full-ring GEO); Doppler nearly zero; large geometric loss requires larger apertures (<span class="arithmatex">\(\geq 20\)</span> cm).</p>
+</li>
+<li>
+<p><strong>LEO-GEO</strong>: Separation 35,000–45,000 km; significant relative motion; EDRS architecture uses GEO relay to store and forward from LEO to ground.</p>
+</li>
+</ul>
+<h3 id="16102-starlink-optical-isl"><span class="secnum">16.10.2</span> Starlink Optical ISL<a class="headerlink" href="#16102-starlink-optical-isl" title="Permanent link">&para;</a></h3>
+<p>SpaceX Starlink Generation 2 satellites incorporate four optical ISL terminals per satellite: two in-plane (fore and aft) and two cross-plane (left and right). The ISL network enables routing of user traffic through the satellite mesh without requiring ground relay stations, substantially reducing latency for transoceanic routes.</p>
+<p>Key parameters (estimated from available disclosures):</p>
+<ul>
+<li>
+<p><strong>Wavelength</strong>: 1550 nm (eye-safe, telecom-compatible)</p>
+</li>
+<li>
+<p><strong>Data rate</strong>: <span class="arithmatex">\(\sim 100\)</span> Gbps per ISL link</p>
+</li>
+<li>
+<p><strong>Aperture</strong>: <span class="arithmatex">\(\sim 5\)</span> cm (consistent with Tesat LCT heritage)</p>
+</li>
+<li>
+<p><strong>Network topology</strong>: Mesh routing using modified BGP-like protocol</p>
+</li>
+<li>
+<p><strong>Latency advantage</strong>: FSO propagation at <span class="arithmatex">\(c = 3\times10^8\)</span> m/s vs. fiber at <span class="arithmatex">\(c/n_{\rm fiber} \approx 2\times10^8\)</span> m/s, giving 33% lower propagation delay.</p>
+</li>
+</ul>
+<p>The latency advantage for a transoceanic route (London to New York, 5570 km great circle) via Starlink ISL is approximately: <span id="eq-isl_latency"></span></p>
+<div class="arithmatex">\[\Delta t = \frac{d}{c_{\rm fiber}} - \frac{d_{\rm ISL}}{c} = \frac{5570}{2 \times 10^5} - \frac{6100}{3 \times 10^5} \approx 7.4 \text{ ms}\tag{16.20}\]</div>
+<p>(accounting for the longer ISL path through LEO orbits at <span class="arithmatex">\(\sim 550\)</span> km altitude).</p>
+<h2 id="sec-ground_diversity"><span class="secnum">16.11</span> Ground Networks and Site Diversity<a class="headerlink" href="#sec-ground_diversity" title="Permanent link">&para;</a></h2>
+<h3 id="16111-ground-terminal-design"><span class="secnum">16.11.1</span> Ground Terminal Design<a class="headerlink" href="#16111-ground-terminal-design" title="Permanent link">&para;</a></h3>
+<p>Optical ground station (OGS) telescopes for satellite communication use designs adapted from astronomical telescope mounts with additions for optical communications:</p>
+<ul>
+<li>
+<p><strong>Aperture</strong>: 0.4–4 m diameter; 1 m is typical for operational stations; larger apertures reduce terminal count needed for the same link availability.</p>
+</li>
+<li>
+<p><strong>Mount</strong>: Alt-azimuth tracking with slew rates <span class="arithmatex">\(&gt; 10^\circ\)</span>/s and tracking accuracy <span class="arithmatex">\(&lt; 1~\mu\)</span>rad with additional fine steering mirror.</p>
+</li>
+<li>
+<p><strong>Vibration isolation</strong>: Active and passive isolation to suppress building HVAC and traffic vibrations to <span class="arithmatex">\(&lt; 1~\mu\)</span>rad pointing residual.</p>
+</li>
+<li>
+<p><strong>Dome/enclosure</strong>: Fast-opening shutters (<span class="arithmatex">\(&lt; 5\)</span> s) for responsive tasking; active ventilation to minimize dome seeing (local turbulence from temperature gradients).</p>
+</li>
+</ul>
+<h3 id="16112-site-diversity-and-cloud-outage-statistics"><span class="secnum">16.11.2</span> Site Diversity and Cloud Outage Statistics<a class="headerlink" href="#16112-site-diversity-and-cloud-outage-statistics" title="Permanent link">&para;</a></h3>
+<p>Cloud outage statistics at candidate optical ground station sites:</p>
+<div class="tbl" id="tab-site_diversity">
+<div class="tbl-caption"><strong>Table 16.3.</strong> Optical ground station cloud outage statistics for candidate sites. Joint outage probability computed assuming statistical independence (conservative for sites <span class="math inline">\(&gt; 300\)</span> km apart during stratiform cloud events; correlated for cyclonic weather).</div>
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Site</strong></th>
+<th style="text-align: center;"><strong>Elevation (m)</strong></th>
+<th style="text-align: center;"><strong>Annual Outage (%)</strong></th>
+<th style="text-align: center;"><strong>Summer (%)</strong></th>
+<th style="text-align: center;"><strong>Winter (%)</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Mauna Kea, Hawaii</td>
+<td style="text-align: center;">4205</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">12</td>
+</tr>
+<tr>
+<td style="text-align: left;">La Palma, Canary Is.</td>
+<td style="text-align: center;">2396</td>
+<td style="text-align: center;">12</td>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">18</td>
+</tr>
+<tr>
+<td style="text-align: left;">Atacama, Chile</td>
+<td style="text-align: center;">5000</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">8</td>
+</tr>
+<tr>
+<td style="text-align: left;">White Sands, NM</td>
+<td style="text-align: center;">1200</td>
+<td style="text-align: center;">22</td>
+<td style="text-align: center;">30</td>
+<td style="text-align: center;">15</td>
+</tr>
+<tr>
+<td style="text-align: left;">Tenerife OGS (ESA)</td>
+<td style="text-align: center;">2393</td>
+<td style="text-align: center;">15</td>
+<td style="text-align: center;">10</td>
+<td style="text-align: center;">22</td>
+</tr>
+<tr>
+<td style="text-align: left;">Singapore</td>
+<td style="text-align: center;">10</td>
+<td style="text-align: center;">55</td>
+<td style="text-align: center;">52</td>
+<td style="text-align: center;">58</td>
+</tr>
+<tr>
+<td style="text-align: left;">Central Europe (avg)</td>
+<td style="text-align: center;">300</td>
+<td style="text-align: center;">62</td>
+<td style="text-align: center;">55</td>
+<td style="text-align: center;">70</td>
+</tr>
+</tbody>
+</table>
+</div></div>
+<p>For a two-site diversity network with outage probabilities <span class="arithmatex">\(P_1\)</span> and <span class="arithmatex">\(P_2\)</span>, the joint outage probability (both sites blocked simultaneously) is: <span id="eq-joint_outage"></span></p>
+<div class="arithmatex">\[P_{\rm joint} \approx P_1 \cdot P_2 \cdot (1 + \rho_{12})^{1/2}\tag{16.21}\]</div>
+<p>where <span class="arithmatex">\(\rho_{12}\)</span> is the temporal cross-correlation between outage events (0 for independent, 1 for fully correlated). For Mauna Kea and La Palma (hemispheric separation): joint outage <span class="arithmatex">\(\approx 8\% \times 12\% = 0.96\%\)</span>, achieving <span class="arithmatex">\(&gt; 99\%\)</span> availability, meeting most service level agreements.</p>
+<h3 id="16113-uav-and-high-altitude-platform-relay"><span class="secnum">16.11.3</span> UAV and High-Altitude Platform Relay<a class="headerlink" href="#16113-uav-and-high-altitude-platform-relay" title="Permanent link">&para;</a></h3>
+<p>For locations with persistent cloud cover, unmanned aerial vehicle (UAV) relay platforms or high-altitude pseudo-satellites (HAPS) at 20 km altitude (above 95% of cloud cover) can serve as optical relay nodes, converting between FSO and ground-level RF or fiber links. Solar-powered HAPS (Airbus Zephyr, Boeing PHASA-35) with 24-hour endurance at 20 km can position above cloud systems for days at a time, providing FSO connectivity to otherwise inaccessible ground networks.</p>
+<div class="admonition info box-keybox kind-concept">
+<p>Optical Link Design Guidelines Key rules of thumb for optical satellite link design:</p>
+<ul>
+<li>
+<p>Beam divergence: <span class="arithmatex">\(\theta_{\rm div} = 2.44\,\lambda/D_t\)</span> (Airy disk first null)</p>
+</li>
+<li>
+<p>Pointing accuracy: <span class="arithmatex">\(\sigma_\theta &lt; \theta_{\rm div}/10\)</span> for <span class="arithmatex">\(&lt; 0.5\)</span> dB pointing loss</p>
+</li>
+<li>
+<p>Site diversity: Two sites <span class="arithmatex">\(&gt; 200\)</span> km apart reduces cloud outage from 40% to <span class="arithmatex">\(&lt; 4\%\)</span></p>
+</li>
+<li>
+<p>Detector technology: SNSPD for <span class="arithmatex">\(&lt; 1\)</span> photon/bit sensitivity; APD for intermediate; PIN for <span class="arithmatex">\(&gt; 1000\)</span> photons/bit</p>
+</li>
+<li>
+<p>1550 nm is the preferred wavelength for satellite-to-ground links (eye-safe, EDFA-compatible, mature component ecosystem)</p>
+</li>
+</ul>
+</div>
+<h2 id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">&para;</a></h2>
+<p>Optical satellite communications has advanced from theoretical proposal to operational infrastructure in the decade following LLCD’s 2013 lunar demonstration. The 200 Gbps achievement of TBIRD (2022) marks a 300-fold increase over LLCD’s 622 Mbps in just nine years. The key enabling technologies—coherent modulation, EDFA power amplifiers, fast PAT systems achieving sub-microradian pointing, and adaptive optics for ground terminals—are sufficiently mature for operational deployment. The Starlink optical ISL network and EDRS Space Data Highway represent the first commercial-scale deployments. The fundamental advantages of FSO—orders of magnitude more bandwidth than RF, mass and power efficiency, and licensing-free operation—ensure that optical communications will play an increasingly central role in future satellite constellations, particularly for high-throughput broadband, inter-satellite routing, and deep-space missions.</p>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button type="button" class="md-top md-icon" data-md-component="top" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+Back to top
+</button>
+</main>
+<footer class="md-footer">
+<nav class="md-footer__inner md-grid" aria-label="Footer" >
+<a href="ch15-digital-signal-processing-for-satellites.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: 15. Digital Signal Processing for Satellites">
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</div>
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Previous
+</span>
+<div class="md-ellipsis">
+15. Digital Signal Processing for Satellites
+</div>
+</div>
+</a>
+<a href="ch17-earth-observation-and-remote-sensing.html" class="md-footer__link md-footer__link--next" aria-label="Next: 17. Earth Observation and Remote Sensing">
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Next
+</span>
+<div class="md-ellipsis">
+17. Earth Observation and Remote Sensing
+</div>
+</div>
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+</div>
+</a>
+</nav>
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+The Open Book Project &middot;
+<a href="../../about.html">About this library</a> &middot;
+<a href="../../publish.html">Publish your book</a> &middot;
+© The authors of the books
+</div>
+Made with
+<a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+Material for MkDocs
+</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "navigation.prune", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "toc.follow", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+<script src="../../assets/mathjax.js"></script>
+<script src="../../assets/viz.js"></script>
+<script src="../../assets/remote.js"></script>
+<script src="../../assets/scans.js"></script>
+<script src="../../assets/reader.js"></script>
+<script src="../../assets/app.js"></script>
+<script src="../../assets/slides.js"></script>
+<script src="../../assets/speak.js"></script>
+<script src="../../assets/quiz.js"></script>
+<script>
+    /* offline reading: the service worker at the site root (its scope is the whole site) */
+    if ("serviceWorker" in navigator && window.isSecureContext) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register(new URL("../../sw.js", location.href).href).catch(function () {});
+      });
+    }
+  </script>
+</body>
+</html>

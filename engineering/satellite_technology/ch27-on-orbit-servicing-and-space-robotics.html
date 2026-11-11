@@ -1,0 +1,1540 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="description" content="The Open Book Project: books on computer science, quantum computing, cyber security, science, the social sciences, university courses and languages, read page by page like an e-book, online or offline.">
+<meta name="author" content="The Open Book Project">
+<link rel="canonical" href="https://open-book-project.github.io/engineering/satellite_technology/ch27-on-orbit-servicing-and-space-robotics.html">
+<link rel="prev" href="ch26-artificial-intelligence-and-machine-learning-in.html">
+<link rel="next" href="ch28-space-debris-and-long-term-sustainability.html">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap"></noscript>
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Open Book">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="application-name" content="Open Book"><script src="../../assets/library-data.js"></script><script>
+    (function () {
+      var X = window.XMLHttpRequest, open, gate = new Promise(function (r) { open = r; });
+      if (!X) return;
+      var open0 = X.prototype.open, send0 = X.prototype.send;
+      X.prototype.open = function (method, url) {
+        this.__pkIndex = /\/search\/search_index\.json(\?|#|$)/.test(String(url));
+        return open0.apply(this, arguments);
+      };
+      X.prototype.send = function () {
+        if (!this.__pkIndex) return send0.apply(this, arguments);
+        var xhr = this, args = arguments;
+        gate.then(function () { send0.apply(xhr, args); });
+      };
+      function wake() { open(); }
+      document.addEventListener("focusin", function (e) { if (e.target && e.target.closest && e.target.closest(".md-search")) wake(); });
+      document.addEventListener("click", function (e) { if (e.target && e.target.closest && e.target.closest('label[for="__search"], .md-search')) wake(); }, true);
+      document.addEventListener("keydown", function (e) {
+        var k = e.key;
+        if ((k === "/" || k === "s" || k === "f" || k === "S" || k === "F") && !(e.target && e.target.closest && e.target.closest("input, textarea, [contenteditable]"))) wake();
+      }, true);
+      if (/[?&]q=/.test(location.search)) wake();
+    })();
+  </script><script>
+    try {
+      if ((window.matchMedia && (matchMedia("(display-mode: standalone)").matches || matchMedia("(display-mode: fullscreen)").matches)) || navigator.standalone === true) {
+        document.documentElement.className += " bjp-standalone";
+      }
+    } catch (e) { /* not an installed app */ }
+    /* the books of a subject or of the whole library as covers or as a list (assets/app.js): the reader's choice */
+    try {
+      var bv = localStorage.getItem("bjp.view");
+      if (bv === "list" || (bv !== "grid" && /\/books\.html$/.test(location.pathname))) document.documentElement.className += " bjp-view-list";
+    } catch (e) { /* no storage: covers */ }
+  </script>
+<script>
+    /* a book opened from its cover on the shelf: the page stays blank, in the cover's colour, until the reader is up */
+    try {
+      var cv = sessionStorage.getItem("bjp.reader.cover");
+      if (cv && sessionStorage.getItem("bjp.reader.open") === "1") {
+        var c = JSON.parse(cv), de = document.documentElement;
+        de.className += " bjp-booting";
+        if (c && /^#[0-9a-f]{3,8}$/i.test(c.bg || "")) de.style.background = c.bg;
+        setTimeout(function () { de.classList.remove("bjp-booting"); de.style.background = ""; }, 3000);
+      }
+    } catch (e) { /* no session storage: the page simply opens as usual */ }
+  </script>
+<title>27. On-Orbit Servicing and Space Robotics - The Open Book Project</title>
+<link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+<link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+<link rel="stylesheet" href="../../assets/extra.css">
+<link rel="stylesheet" href="../../assets/reader.css">
+<link rel="stylesheet" href="../../assets/viz.css">
+<link rel="stylesheet" href="../../assets/app.css">
+<link rel="stylesheet" href="../../assets/theme.css">
+<link rel="stylesheet" href="../../assets/slides.css">
+<link rel="stylesheet" href="../../assets/remote.css">
+<link rel="stylesheet" href="../../assets/scans.css">
+<link rel="stylesheet" href="../../assets/speak.css">
+<link rel="stylesheet" href="../../assets/quiz.css">
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+<input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+<input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a href="#sec-oos_intro" class="md-skip">
+Skip to content
+</a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav class="md-header__inner md-grid" aria-label="Header">
+<a href="../../index.html" title="The Open Book Project" class="md-header__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+The Open Book Project
+</span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+27. On-Orbit Servicing and Space Robotics
+</span>
+</div>
+</div>
+</div><a href="../../index.html" class="bjp-libbtn" aria-label="Library: all books" title="Library: all books">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V5h4v15M8 20V9h4v11M14 20L12.6 6l3.8-.8 3 14.2M3 20h18"/></svg><span>Library</span>
+</a>
+<a href="../../subjects/index.html" class="pk-catbtn" aria-haspopup="true" aria-expanded="false" title="Browse the books by category">
+<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><circle cx="17" cy="7" r="3.6"/><path d="M7 13.4l3.9 6.8H3.1z"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg><span>Categories</span>
+</a>
+<form class="md-header__option" data-md-component="palette">
+<input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+<label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+</label>
+<input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+<label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+<label class="md-search__icon md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</label>
+<nav class="md-search__options" aria-label="Search">
+<button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+Initializing search
+</div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--primary bjp-nav bjp-nav--book" aria-label="Navigation" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a href="../../index.html" title="The Open Book Project" class="md-nav__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+The Open Book Project
+</label>
+<ul class="md-nav__list" data-md-scrollfix>
+<li class="md-nav__item bjp-nav-all">
+<a href="../../index.html" class="md-nav__link" aria-label="All books: back to the library">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+<span class="md-ellipsis">All books</span>
+</a>
+</li>
+<li class="md-nav__item bjp-nav-book" role="presentation"><span class="bjp-nav-head">Satellite Technology</span></li>
+<li class="md-nav__item">
+<a href="index.html" class="md-nav__link">
+<span class="md-ellipsis">
+Overview and preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="list-of-abbreviations.html" class="md-nav__link">
+<span class="md-ellipsis">
+List of Abbreviations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch01-introduction-to-satellite-technology.html" class="md-nav__link">
+<span class="md-ellipsis">
+1. Introduction to Satellite Technology
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch02-orbital-mechanics.html" class="md-nav__link">
+<span class="md-ellipsis">
+2. Orbital Mechanics
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch03-the-space-environment.html" class="md-nav__link">
+<span class="md-ellipsis">
+3. The Space Environment
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch04-launch-systems-and-mission-design.html" class="md-nav__link">
+<span class="md-ellipsis">
+4. Launch Systems and Mission Design
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch05-satellite-architecture-and-systems-engineering.html" class="md-nav__link">
+<span class="md-ellipsis">
+5. Satellite Architecture and Systems Engineering
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch06-satellite-electrical-power-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+6. Satellite Electrical Power Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch07-attitude-determination-and-control-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+7. Attitude Determination and Control Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch08-satellite-propulsion-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+8. Satellite Propulsion Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch09-thermal-control-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+9. Thermal Control Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch10-on-board-data-handling.html" class="md-nav__link">
+<span class="md-ellipsis">
+10. On-Board Data Handling
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch11-telemetry-tracking-and-command-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+11. Telemetry, Tracking and Command Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch12-radio-frequency-satellite-communications.html" class="md-nav__link">
+<span class="md-ellipsis">
+12. Radio Frequency Satellite Communications
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch13-satellite-link-budget-analysis.html" class="md-nav__link">
+<span class="md-ellipsis">
+13. Satellite Link Budget Analysis
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch14-satellite-antenna-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+14. Satellite Antenna Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch15-digital-signal-processing-for-satellites.html" class="md-nav__link">
+<span class="md-ellipsis">
+15. Digital Signal Processing for Satellites
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch16-optical-satellite-communications.html" class="md-nav__link">
+<span class="md-ellipsis">
+16. Optical Satellite Communications
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch17-earth-observation-and-remote-sensing.html" class="md-nav__link">
+<span class="md-ellipsis">
+17. Earth Observation and Remote Sensing
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch18-global-navigation-satellite-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+18. Global Navigation Satellite Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch19-communication-satellites-and-services.html" class="md-nav__link">
+<span class="md-ellipsis">
+19. Communication Satellites and Services
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch20-scientific-satellites-and-space-observatories.html" class="md-nav__link">
+<span class="md-ellipsis">
+20. Scientific Satellites and Space Observatories
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch21-military-and-intelligence-satellites.html" class="md-nav__link">
+<span class="md-ellipsis">
+21. Military and Intelligence Satellites
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch22-ground-station-design-and-networks.html" class="md-nav__link">
+<span class="md-ellipsis">
+22. Ground Station Design and Networks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch23-mission-operations-and-ground-control.html" class="md-nav__link">
+<span class="md-ellipsis">
+23. Mission Operations and Ground Control
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch24-smallsats-cubesats-and-the-new-space-revolution.html" class="md-nav__link">
+<span class="md-ellipsis">
+24. SmallSats, CubeSats, and the New Space Revolution
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch25-mega-constellations-and-leo-broadband-networks.html" class="md-nav__link">
+<span class="md-ellipsis">
+25. Mega-Constellations and LEO Broadband Networks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch26-artificial-intelligence-and-machine-learning-in.html" class="md-nav__link">
+<span class="md-ellipsis">
+26. Artificial Intelligence and Machine Learning in Space
+</span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+27. On-Orbit Servicing and Space Robotics
+</span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a href="ch27-on-orbit-servicing-and-space-robotics.html" class="md-nav__link md-nav__link--active">
+<span class="md-ellipsis">
+27. On-Orbit Servicing and Space Robotics
+</span>
+</a>
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#sec-oos_intro" class="md-nav__link">
+<span class="md-ellipsis">
+27.1 Introduction to On-Orbit Servicing
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-oos_history" class="md-nav__link">
+<span class="md-ellipsis">
+27.2 Historical Background
+</span>
+</a>
+<nav class="md-nav" aria-label="27.2 Historical Background">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-hst_servicing" class="md-nav__link">
+<span class="md-ellipsis">
+27.2.1 Hubble Space Telescope Servicing Missions
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-darpa_phoenix" class="md-nav__link">
+<span class="md-ellipsis">
+27.2.2 DARPA Phoenix Program
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-iss_robotics" class="md-nav__link">
+<span class="md-ellipsis">
+27.2.3 ISS Robotic Servicing Heritage
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-rpod" class="md-nav__link">
+<span class="md-ellipsis">
+27.3 Rendezvous and Proximity Operations
+</span>
+</a>
+<nav class="md-nav" aria-label="27.3 Rendezvous and Proximity Operations">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-cw_dynamics" class="md-nav__link">
+<span class="md-ellipsis">
+27.3.1 Relative Motion Dynamics
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-glideslope" class="md-nav__link">
+<span class="md-ellipsis">
+27.3.2 Glideslope Approach Strategies
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-rpod_sensors" class="md-nav__link">
+<span class="md-ellipsis">
+27.3.3 Navigation Sensors for Proximity Operations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-rpod_safety" class="md-nav__link">
+<span class="md-ellipsis">
+27.3.4 Proximity Operations Safety
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-robotics" class="md-nav__link">
+<span class="md-ellipsis">
+27.4 Robotic Manipulators
+</span>
+</a>
+<nav class="md-nav" aria-label="27.4 Robotic Manipulators">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-canadarm2" class="md-nav__link">
+<span class="md-ellipsis">
+27.4.1 Canadarm2 (SSRMS)
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-dextre" class="md-nav__link">
+<span class="md-ellipsis">
+27.4.2 Dextre (SPDM)
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-era" class="md-nav__link">
+<span class="md-ellipsis">
+27.4.3 European Robotic Arm (ERA)
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-force_torque" class="md-nav__link">
+<span class="md-ellipsis">
+27.4.4 Force-Torque Control for Compliant Manipulation
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-teleoperation" class="md-nav__link">
+<span class="md-ellipsis">
+27.4.5 Teleoperation with Time Delay
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-tumbling_capture" class="md-nav__link">
+<span class="md-ellipsis">
+27.4.6 Grasping Non-Cooperative Tumbling Objects
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-commercial_oos" class="md-nav__link">
+<span class="md-ellipsis">
+27.5 Commercial OOS Missions
+</span>
+</a>
+<nav class="md-nav" aria-label="27.5 Commercial OOS Missions">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-mev" class="md-nav__link">
+<span class="md-ellipsis">
+27.5.1 Mission Extension Vehicle (MEV)
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-mep" class="md-nav__link">
+<span class="md-ellipsis">
+27.5.2 Mission Extension Pod (MEP)
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-astroscale_elsa" class="md-nav__link">
+<span class="md-ellipsis">
+27.5.3 Astroscale ELSA-d and ELSA-M
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-osam1" class="md-nav__link">
+<span class="md-ellipsis">
+27.5.4 OSAM-1 (Restore-L / Robotic Servicing of Geosynchronous Satellites)
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-osam2" class="md-nav__link">
+<span class="md-ellipsis">
+27.5.5 OSAM-2 (Archinaut One)
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-orbit_fab" class="md-nav__link">
+<span class="md-ellipsis">
+27.5.6 Orbit Fab Propellant Depots
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-propellant_transfer" class="md-nav__link">
+<span class="md-ellipsis">
+27.6 Propellant Transfer and Refueling
+</span>
+</a>
+<nav class="md-nav" aria-label="27.6 Propellant Transfer and Refueling">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-zero_g_fluid" class="md-nav__link">
+<span class="md-ellipsis">
+27.6.1 Zero-Gravity Fluid Management
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-cryo_transfer" class="md-nav__link">
+<span class="md-ellipsis">
+27.6.2 Cryogenic Propellant Transfer Challenges
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-std_interfaces" class="md-nav__link">
+<span class="md-ellipsis">
+27.6.3 Standard Refueling Interfaces
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-refueling_economics" class="md-nav__link">
+<span class="md-ellipsis">
+27.6.4 Refueling Economics
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-isam" class="md-nav__link">
+<span class="md-ellipsis">
+27.7 In-Space Assembly and Manufacturing
+</span>
+</a>
+<nav class="md-nav" aria-label="27.7 In-Space Assembly and Manufacturing">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-archinaut" class="md-nav__link">
+<span class="md-ellipsis">
+27.7.1 Archinaut Technology
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-large_aperture" class="md-nav__link">
+<span class="md-ellipsis">
+27.7.2 Large Aperture Assembly
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-additive_mfg_ch27" class="md-nav__link">
+<span class="md-ellipsis">
+27.7.3 Additive Manufacturing in Orbit
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-oos_market" class="md-nav__link">
+<span class="md-ellipsis">
+27.8 Future OOS Market
+</span>
+</a>
+<nav class="md-nav" aria-label="27.8 Future OOS Market">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-oos_market_analysis" class="md-nav__link">
+<span class="md-ellipsis">
+27.8.1 Market Analysis and Projections
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-oos_regulatory" class="md-nav__link">
+<span class="md-ellipsis">
+27.8.2 Regulatory Framework
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-oos_standardization" class="md-nav__link">
+<span class="md-ellipsis">
+27.8.3 Industry Standardization
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-oos_equations" class="md-nav__link">
+<span class="md-ellipsis">
+27.9 Key Equations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-oos_tables" class="md-nav__link">
+<span class="md-ellipsis">
+27.10 Mission and System Comparison Tables
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-cw_diagram" class="md-nav__link">
+<span class="md-ellipsis">
+27.11 CW Trajectory Diagram
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-oos_summary" class="md-nav__link">
+<span class="md-ellipsis">
+27.12 Summary
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="ch28-space-debris-and-long-term-sustainability.html" class="md-nav__link">
+<span class="md-ellipsis">
+28. Space Debris and Long-Term Sustainability
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch29-quantum-communications-and-satellite-qkd.html" class="md-nav__link">
+<span class="md-ellipsis">
+29. Quantum Communications and Satellite QKD
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch30-6g-and-non-terrestrial-networks.html" class="md-nav__link">
+<span class="md-ellipsis">
+30. 6G and Non-Terrestrial Networks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch31-future-concepts-and-emerging-space-technologies.html" class="md-nav__link">
+<span class="md-ellipsis">
+31. Future Concepts and Emerging Space Technologies
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="classical-orbital-elements-and-coordinate.html" class="md-nav__link">
+<span class="md-ellipsis">
+Classical Orbital Elements and Coordinate Transformations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="satellite-frequency-allocations.html" class="md-nav__link">
+<span class="md-ellipsis">
+Satellite Frequency Allocations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="launch-vehicle-specifications.html" class="md-nav__link">
+<span class="md-ellipsis">
+Launch Vehicle Specifications
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="link-budget-templates-and-worked-examples.html" class="md-nav__link">
+<span class="md-ellipsis">
+Link Budget Templates and Worked Examples
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="key-standards-software-tools-and-references.html" class="md-nav__link">
+<span class="md-ellipsis">
+Key Standards, Software Tools, and References
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="bibliography.html" class="md-nav__link">
+<span class="md-ellipsis">
+Bibliography
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#sec-oos_intro" class="md-nav__link">
+<span class="md-ellipsis">
+27.1 Introduction to On-Orbit Servicing
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-oos_history" class="md-nav__link">
+<span class="md-ellipsis">
+27.2 Historical Background
+</span>
+</a>
+<nav class="md-nav" aria-label="27.2 Historical Background">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-hst_servicing" class="md-nav__link">
+<span class="md-ellipsis">
+27.2.1 Hubble Space Telescope Servicing Missions
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-darpa_phoenix" class="md-nav__link">
+<span class="md-ellipsis">
+27.2.2 DARPA Phoenix Program
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-iss_robotics" class="md-nav__link">
+<span class="md-ellipsis">
+27.2.3 ISS Robotic Servicing Heritage
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-rpod" class="md-nav__link">
+<span class="md-ellipsis">
+27.3 Rendezvous and Proximity Operations
+</span>
+</a>
+<nav class="md-nav" aria-label="27.3 Rendezvous and Proximity Operations">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-cw_dynamics" class="md-nav__link">
+<span class="md-ellipsis">
+27.3.1 Relative Motion Dynamics
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-glideslope" class="md-nav__link">
+<span class="md-ellipsis">
+27.3.2 Glideslope Approach Strategies
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-rpod_sensors" class="md-nav__link">
+<span class="md-ellipsis">
+27.3.3 Navigation Sensors for Proximity Operations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-rpod_safety" class="md-nav__link">
+<span class="md-ellipsis">
+27.3.4 Proximity Operations Safety
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-robotics" class="md-nav__link">
+<span class="md-ellipsis">
+27.4 Robotic Manipulators
+</span>
+</a>
+<nav class="md-nav" aria-label="27.4 Robotic Manipulators">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-canadarm2" class="md-nav__link">
+<span class="md-ellipsis">
+27.4.1 Canadarm2 (SSRMS)
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-dextre" class="md-nav__link">
+<span class="md-ellipsis">
+27.4.2 Dextre (SPDM)
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-era" class="md-nav__link">
+<span class="md-ellipsis">
+27.4.3 European Robotic Arm (ERA)
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-force_torque" class="md-nav__link">
+<span class="md-ellipsis">
+27.4.4 Force-Torque Control for Compliant Manipulation
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-teleoperation" class="md-nav__link">
+<span class="md-ellipsis">
+27.4.5 Teleoperation with Time Delay
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-tumbling_capture" class="md-nav__link">
+<span class="md-ellipsis">
+27.4.6 Grasping Non-Cooperative Tumbling Objects
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-commercial_oos" class="md-nav__link">
+<span class="md-ellipsis">
+27.5 Commercial OOS Missions
+</span>
+</a>
+<nav class="md-nav" aria-label="27.5 Commercial OOS Missions">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-mev" class="md-nav__link">
+<span class="md-ellipsis">
+27.5.1 Mission Extension Vehicle (MEV)
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-mep" class="md-nav__link">
+<span class="md-ellipsis">
+27.5.2 Mission Extension Pod (MEP)
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-astroscale_elsa" class="md-nav__link">
+<span class="md-ellipsis">
+27.5.3 Astroscale ELSA-d and ELSA-M
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-osam1" class="md-nav__link">
+<span class="md-ellipsis">
+27.5.4 OSAM-1 (Restore-L / Robotic Servicing of Geosynchronous Satellites)
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-osam2" class="md-nav__link">
+<span class="md-ellipsis">
+27.5.5 OSAM-2 (Archinaut One)
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-orbit_fab" class="md-nav__link">
+<span class="md-ellipsis">
+27.5.6 Orbit Fab Propellant Depots
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-propellant_transfer" class="md-nav__link">
+<span class="md-ellipsis">
+27.6 Propellant Transfer and Refueling
+</span>
+</a>
+<nav class="md-nav" aria-label="27.6 Propellant Transfer and Refueling">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-zero_g_fluid" class="md-nav__link">
+<span class="md-ellipsis">
+27.6.1 Zero-Gravity Fluid Management
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-cryo_transfer" class="md-nav__link">
+<span class="md-ellipsis">
+27.6.2 Cryogenic Propellant Transfer Challenges
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-std_interfaces" class="md-nav__link">
+<span class="md-ellipsis">
+27.6.3 Standard Refueling Interfaces
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-refueling_economics" class="md-nav__link">
+<span class="md-ellipsis">
+27.6.4 Refueling Economics
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-isam" class="md-nav__link">
+<span class="md-ellipsis">
+27.7 In-Space Assembly and Manufacturing
+</span>
+</a>
+<nav class="md-nav" aria-label="27.7 In-Space Assembly and Manufacturing">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-archinaut" class="md-nav__link">
+<span class="md-ellipsis">
+27.7.1 Archinaut Technology
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-large_aperture" class="md-nav__link">
+<span class="md-ellipsis">
+27.7.2 Large Aperture Assembly
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-additive_mfg_ch27" class="md-nav__link">
+<span class="md-ellipsis">
+27.7.3 Additive Manufacturing in Orbit
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-oos_market" class="md-nav__link">
+<span class="md-ellipsis">
+27.8 Future OOS Market
+</span>
+</a>
+<nav class="md-nav" aria-label="27.8 Future OOS Market">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-oos_market_analysis" class="md-nav__link">
+<span class="md-ellipsis">
+27.8.1 Market Analysis and Projections
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-oos_regulatory" class="md-nav__link">
+<span class="md-ellipsis">
+27.8.2 Regulatory Framework
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-oos_standardization" class="md-nav__link">
+<span class="md-ellipsis">
+27.8.3 Industry Standardization
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-oos_equations" class="md-nav__link">
+<span class="md-ellipsis">
+27.9 Key Equations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-oos_tables" class="md-nav__link">
+<span class="md-ellipsis">
+27.10 Mission and System Comparison Tables
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-cw_diagram" class="md-nav__link">
+<span class="md-ellipsis">
+27.11 CW Trajectory Diagram
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-oos_summary" class="md-nav__link">
+<span class="md-ellipsis">
+27.12 Summary
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="ch-on_orbit_servicing">Chapter 27: On-Orbit Servicing and Space Robotics<a class="headerlink" href="#ch-on_orbit_servicing" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p><em>“The greatest engineering challenge is not building a satellite—it is fixing one, refueling one, or removing one, while both you and it are hurtling through vacuum at eight kilometers per second.”</em></p>
+</blockquote>
+<p>On-orbit servicing (OOS) represents one of the most technically demanding and commercially consequential frontiers in contemporary space engineering. The fundamental premise is straightforward: a spacecraft that has exhausted its propellant, suffered a manageable fault, or simply reached an age where its technology is obsolete need not be abandoned. Given a servicer vehicle with the rendezvous capability, robotic manipulation dexterity, and on-orbit logistics support required, that spacecraft can be refueled, repaired, upgraded, or safely deorbited. The economic logic is compelling—a geostationary satellite that cost &#36;300 million to build and launch and carries a 15-year commercial payload license represents an enormous stranded asset if it runs out of propellant at year 12. This chapter develops the technical foundations of OOS across rendezvous and proximity operations, robotic manipulation, commercial mission heritage, propellant transfer, in-space manufacturing, and the emerging regulatory and market frameworks governing the industry (<a href="bibliography.html#ref-reed2016"><span class="nocase">Reed et al.</span> 2016</a>).</p>
+<h2 id="sec-oos_intro"><span class="secnum">27.1</span> Introduction to On-Orbit Servicing<a class="headerlink" href="#sec-oos_intro" title="Permanent link">&para;</a></h2>
+<p>On-orbit servicing encompasses a broad spectrum of activities performed by one spacecraft (the servicer) in the vicinity of another (the client): inspection and health assessment, refueling and consumable replenishment, component replacement and upgrade (orbital replacement unit exchange), attitude stabilization and orbit maintenance, relocation to a new orbital slot, and controlled deorbit for end-of-life disposal. Each activity imposes distinct requirements on rendezvous precision, docking mechanism compatibility, robotic dexterity, and propellant management, and each carries distinct regulatory implications regarding spacecraft jurisdiction, liability, and spectrum rights.</p>
+<div class="admonition note box-notebox kind-note">
+<p>The distinction between <em>cooperative</em> and <em>non-cooperative</em> targets is fundamental to OOS mission design. A cooperative client is designed with standardized interfaces, markers, or grapple fixtures that facilitate capture. A non-cooperative target—the vast majority of existing in-orbit assets and all debris objects—lacks these features and must be captured by methods that tolerate tumbling, uncertain surface properties, and the absence of any designed attachment points.</p>
+</div>
+<p>The technical genealogy of OOS extends to the earliest days of human spaceflight. Skylab’s rescue EVA (1973), the Solar Maximum Mission repair by Shuttle crew (1984), and—most memorably—the five Hubble Space Telescope servicing missions (1993–2009) demonstrated that complex on-orbit maintenance was operationally feasible. The evolution from human-performed to robotic OOS reflects the economic imperative to reduce costs by eliminating human spaceflight infrastructure while maintaining or exceeding servicing capability for a growing client population that includes both GEO commercial satellites and LEO constellations.</p>
+<h2 id="sec-oos_history"><span class="secnum">27.2</span> Historical Background<a class="headerlink" href="#sec-oos_history" title="Permanent link">&para;</a></h2>
+<h3 id="subsec-hst_servicing"><span class="secnum">27.2.1</span> Hubble Space Telescope Servicing Missions<a class="headerlink" href="#subsec-hst_servicing" title="Permanent link">&para;</a></h3>
+<p>The Hubble Space Telescope (HST) servicing program, spanning five Shuttle missions over 16 years, remains the definitive proof of concept for on-orbit servicing of a large, complex space observatory. Each mission demonstrated progressively more sophisticated servicing capabilities and generated a body of human factors engineering knowledge that directly informs current robotic OOS system design.</p>
+<div class="parahead">
+<p>SM1 (STS-61, December 1993).</p>
+</div>
+<p>The first servicing mission corrected the infamous spherical aberration in HST’s primary mirror by installing the Corrective Optics Space Telescope Axial Replacement (COSTAR) module—a set of small corrective mirrors that intercepted light paths to the spectrographs and cameras—and replacing the Wide Field Planetary Camera with WFPC2, which incorporated its own internal corrective optics. Five EVAs totaling 35 hours 28 minutes installed gyroscope replacements, solar array upgrades, and magnetometer improvements. The mission validated the “design for serviceability” philosophy: HST’s crew-aids and tools, standardized bolt sizes, and EVA-compatible connector covers were essential preconditions for successful servicing.</p>
+<div class="parahead">
+<p>SM3B (STS-109, March 2002).</p>
+</div>
+<p>SM3B installed the Advanced Camera for Surveys (ACS), replacing the Faint Object Camera, and performed the first cryogenic replacement of the Near Infrared Camera and Multi-Object Spectrometer (NICMOS) cooling system—a technically unprecedented cryocooler installation under EVA conditions. New solar arrays replaced the original flexible roll-out panels.</p>
+<div class="parahead">
+<p>SM4 (STS-125, May 2009).</p>
+</div>
+<p>The final servicing mission installed the Cosmic Origins Spectrograph (COS) and Wide Field Camera 3 (WFC3), repaired the Advanced Camera for Surveys (ACS), and installed a Soft Capture and Rendezvous System (SCRS) to facilitate future robotic deorbit if required. About 37 hours of spacewalking were devoted to SM4 across five spacewalks. The SCRS installation foreshadowed the design of standardized docking interfaces now being developed for robotic OOS systems. The Hubble servicing missions showed the value of designing hardware for servicing: standardized fasteners, captive screws, color-coded connectors, and tool-compatible handrails reduce crew time and the risk of error.</p>
+<h3 id="subsec-darpa_phoenix"><span class="secnum">27.2.2</span> DARPA Phoenix Program<a class="headerlink" href="#subsec-darpa_phoenix" title="Permanent link">&para;</a></h3>
+<p>DARPA’s Phoenix program (2012–2014) developed the concept of repurposing the valuable apertures and structural components of retired GEO satellites by dispatching small robotic “satlets” to harvest antennas and solar arrays from defunct spacecraft and attach them to new, small bus platforms—effectively constructing new satellites from salvaged components in GEO orbit. The Tendrils robotic manipulator concept—a flexible, snake-like gripper designed to wrap around irregular surfaces—addressed the fundamental challenge of grasping non-cooperative targets without designed attachment points. Although Phoenix was ultimately canceled before flight, the program generated substantial intellectual property in robotic manipulation, proximity operations, and microsat bus design that informed subsequent commercial OOS ventures.</p>
+<h3 id="subsec-iss_robotics"><span class="secnum">27.2.3</span> ISS Robotic Servicing Heritage<a class="headerlink" href="#subsec-iss_robotics" title="Permanent link">&para;</a></h3>
+<p>The International Space Station provides an operational robotic servicing environment where Orbital Replacement Unit (ORU) exchange, inspection, and logistics operations are routinely performed using the Space Station Remote Manipulator System (SSRMS, Canadarm2) and the Special Purpose Dexterous Manipulator (SPDM, Dextre). The ISS robotic systems have collectively performed more than 50 ORU exchanges, validating the design of standardized space interfaces and robotic ORU tool changeout mechanisms under operational conditions—not merely in laboratory demonstrations. The SPDM successfully replaced the CTC-1 commercial television camera in 2014 using the Orbital Replacement Unit Tool Changeout Mechanism (OTCM), a modular end-effector that interfaces with a standardized socket drive on all ISS ORUs.</p>
+<h2 id="sec-rpod"><span class="secnum">27.3</span> Rendezvous and Proximity Operations<a class="headerlink" href="#sec-rpod" title="Permanent link">&para;</a></h2>
+<h3 id="subsec-cw_dynamics"><span class="secnum">27.3.1</span> Relative Motion Dynamics<a class="headerlink" href="#subsec-cw_dynamics" title="Permanent link">&para;</a></h3>
+<p>Relative motion between two spacecraft in nearby circular orbits is described to first order by the Clohessy-Wiltshire-Hill (CWH) equations, derived by linearizing the equations of motion about a circular reference orbit of mean motion <span class="arithmatex">\(n = \sqrt{\mu/a^3}\)</span> (<a href="bibliography.html#ref-clohessy1960">Clohessy and Wiltshire 1960</a>): <span id="eq-cw_x"></span><span id="eq-cw_y"></span><span id="eq-cw_z"></span></p>
+<div class="arithmatex">\[\begin{align*}
+\ddot{x} - 2n\dot{y} - 3n^2 x &amp;= f_x  \\
+\ddot{y} + 2n\dot{x} &amp;= f_y  \\
+\ddot{z} + n^2 z &amp;= f_z
+\end{align*}\]</div>
+<p>where the coordinate frame is centered on the target spacecraft with <span class="arithmatex">\(x\)</span> pointing radially outward (R-bar), <span class="arithmatex">\(y\)</span> pointing in the direction of orbital velocity (V-bar), and <span class="arithmatex">\(z\)</span> pointing normal to the orbital plane. The terms <span class="arithmatex">\(f_x\)</span>, <span class="arithmatex">\(f_y\)</span>, <span class="arithmatex">\(f_z\)</span> represent specific forces (thrust acceleration) applied to the chaser spacecraft. The out-of-plane equation (<a href="#eq-cw_z">(27.3)</a>) is decoupled from the in-plane equations (<a href="#eq-cw_x">(27.1)</a>)–(<a href="#eq-cw_y">(27.2)</a>); the out-of-plane motion is simple harmonic at frequency <span class="arithmatex">\(n\)</span>.</p>
+<p>The homogeneous solution (zero thrust) to the CW equations reveals important natural motion modes:</p>
+<ul>
+<li>
+<p><strong>Drift orbit:</strong> An uncontrolled chaser displaced in the <span class="arithmatex">\(x\)</span>-direction from the target will execute a drift along the <span class="arithmatex">\(y\)</span>-axis at rate <span class="arithmatex">\(\dot{y} = -3n x_0 / 2\)</span>, producing a secular drift that causes unbounded range growth. This natural drift is exploited in passive V-bar approach corridors.</p>
+</li>
+<li>
+<p><strong>Elliptical motion:</strong> A chaser with initial conditions in the <span class="arithmatex">\(x\)</span>-<span class="arithmatex">\(y\)</span> plane traces a 2:1 ellipse centered on the drift trajectory, with the <span class="arithmatex">\(x\)</span>-amplitude twice the <span class="arithmatex">\(y\)</span>-amplitude.</p>
+</li>
+<li>
+<p><strong>Hold point:</strong> A specific set of initial velocities produces a periodic relative orbit about the target, enabling station-keeping at a defined relative distance without secular drift—relevant for inspection holds.</p>
+</li>
+</ul>
+<h3 id="subsec-glideslope"><span class="secnum">27.3.2</span> Glideslope Approach Strategies<a class="headerlink" href="#subsec-glideslope" title="Permanent link">&para;</a></h3>
+<p>Two primary approach corridors are used for rendezvous and docking in low Earth orbit and GEO proximity operations:</p>
+<div class="parahead">
+<p>V-bar Approach.</p>
+</div>
+<p>The servicer approaches along the V-bar (+<span class="arithmatex">\(y\)</span> direction, co-velocity with the target). Natural orbital mechanics cause the chaser’s orbit to decay slightly lower than the target’s (lower altitude = higher velocity), so a perfectly placed chaser will drift forward relative to the target without thrust—enabling passive, propellant-free station-keeping on the approach corridor outside the keep-out zone. V-bar approach is preferred for RPOD (Rendezvous, Proximity Operations, and Docking) with the ISS and other targets in LEO.</p>
+<div class="parahead">
+<p>R-bar Approach.</p>
+</div>
+<p>The servicer approaches from directly below the target along the R-bar (+<span class="arithmatex">\(x\)</span>, radial) direction. Solar radiation pressure acts in the <span class="arithmatex">\(+y\)</span> direction (anti-sunward), safely pushing the chaser away from the target if thrust is lost—making R-bar a fail-safe approach direction for docking with targets where SRP-induced drift would be critical. The ISS transiting vehicle program uses R-bar approach for Soyuz, Progress, HTV, and Dragon vehicles.</p>
+<p>The glideslope approach divides the approach corridor into a series of waypoints (hold points) separated by calculated <span class="arithmatex">\(\Delta v\)</span> maneuvers that maintain the chaser precisely on the approach trajectory. A typical sequence for GEO OOS might proceed: 5 km hold <span class="arithmatex">\(\to\)</span> 500 m hold <span class="arithmatex">\(\to\)</span> 100 m hold <span class="arithmatex">\(\to\)</span> 10 m pre-contact hold <span class="arithmatex">\(\to\)</span> docking contact.</p>
+<h3 id="subsec-rpod_sensors"><span class="secnum">27.3.3</span> Navigation Sensors for Proximity Operations<a class="headerlink" href="#subsec-rpod_sensors" title="Permanent link">&para;</a></h3>
+<div class="parahead">
+<p>LIDAR Systems.</p>
+</div>
+<p>The Neptec TriDAR 3D LIDAR, developed for ISS COTS program navigation, operates at wavelength 1550 nm with a range of 0.3–3000 m and provides 3D point cloud data at 10 Hz frame rate. Accuracy is approximately 0.1 m in range and 0.1<span class="arithmatex">\(^\circ\)</span> in angular bearing at 100 m range. The TriDAR integrates a flash LIDAR mode (range image at full camera resolution) with a scanning LIDAR mode for higher resolution local mapping, enabling both long-range acquisition (<span class="arithmatex">\(&gt;\)</span>500 m) and close-range (<span class="arithmatex">\(&lt;\)</span>5 m) precision navigation from a single sensor head.</p>
+<div class="parahead">
+<p>Stereo Vision Systems.</p>
+</div>
+<p>Stereo camera pairs provide passive navigation without active illumination, benefiting safety-critical scenarios where laser illumination of the target must be avoided. Photogrammetric feature matching on structural landmarks (corners, edges, reflective markers) achieves range accuracy of <span class="arithmatex">\(\pm\)</span>5 cm at 10-m separation with 10-cm baseline stereo cameras. Template matching and line-edge tracking algorithms provide real-time pose updates at video frame rates (25–30 Hz) suitable for rendezvous terminal phase guidance.</p>
+<div class="parahead">
+<p>Relative GPS.</p>
+</div>
+<p>For missions in LEO with GPS availability, differential GPS (DGPS) between two receivers—one on the servicer, one on the client—provides relative positioning with <span class="arithmatex">\(\pm\)</span>1 m accuracy at baselines up to 1 km. Below 10-m range, GPS multipath and antenna blockage degrade accuracy, necessitating handover to LIDAR or vision-based navigation.</p>
+<div class="parahead">
+<p>CNN-Based Pose Estimation.</p>
+</div>
+<p>As discussed in Chapter 26, deep learning pose estimation achieves sub-1% translation error and below 1<span class="arithmatex">\(^\circ\)</span> rotation error at 5-m range on the SPEED benchmark, enabling autonomous rendezvous to non-cooperative or weakly-cooperative targets without designed fiducial markers.</p>
+<h3 id="subsec-rpod_safety"><span class="secnum">27.3.4</span> Proximity Operations Safety<a class="headerlink" href="#subsec-rpod_safety" title="Permanent link">&para;</a></h3>
+<p>Proximity operations safety architecture defines exclusion zones around the client spacecraft within which the servicer must not enter without explicit authorization, and escape trajectories that can be executed automatically if communication is lost or an anomaly is detected. For GEO operations, a standard keep-out sphere (KOS) of 200-m radius is maintained during approach phases, with entry requiring positive ground authorization. Inside the KOS, the servicer must maintain a pre-planned escape trajectory: a pre-computed thrust sequence that, if executed at any point along the approach, returns the servicer to a safe separation distance within one orbital period without risk of collision with the client. The escape trajectory is uploaded to onboard memory before each proximity phase and can be triggered autonomously by the fault protection system if telemetry loss exceeds a configurable timeout (typically 10–30 seconds).</p>
+<h2 id="sec-robotics"><span class="secnum">27.4</span> Robotic Manipulators<a class="headerlink" href="#sec-robotics" title="Permanent link">&para;</a></h2>
+<h3 id="subsec-canadarm2"><span class="secnum">27.4.1</span> Canadarm2 (SSRMS)<a class="headerlink" href="#subsec-canadarm2" title="Permanent link">&para;</a></h3>
+<p>The Space Station Remote Manipulator System (SSRMS), known as Canadarm2, is a 7-DOF serial robotic arm 17.6 m in length and capable of handling payloads up to 116,000 kg—including the Shuttle orbiter during berthing operations. Each of the seven joints provides rotation about a single axis, with joint angles ranging from <span class="arithmatex">\(\pm\)</span>270<span class="arithmatex">\(^\circ\)</span> to <span class="arithmatex">\(\pm\)</span>360<span class="arithmatex">\(^\circ\)</span> depending on joint number. Latching End Effectors (LEEs) at each end of the arm can grapple the grapple fixtures (Power Data Grapple Fixtures, PDGFs) distributed across the ISS truss, enabling the “inchworm” walking motion that allows Canadarm2 to traverse the full length of the 109-m truss. The Mobile Base System (MBS) on the Main Truss provides a translating rail that extends Canadarm2’s reach across the full truss length, enabling payload handoffs from one end of the ISS to the other.</p>
+<h3 id="subsec-dextre"><span class="secnum">27.4.2</span> Dextre (SPDM)<a class="headerlink" href="#subsec-dextre" title="Permanent link">&para;</a></h3>
+<p>The Special Purpose Dexterous Manipulator (SPDM), known as Dextre, is a dual-arm robotic system 3.5 m in total span with two identical 7-DOF arms, each capable of independent operation. The Orbital Replacement Unit Tool Changeout Mechanism (OTCM) end-effector on each arm integrates a grapple mechanism, camera and lighting system, torque sensor, and tool socket into a single modular end-effector that interfaces with all standard ISS ORU sockets. Dextre has performed more than 50 ORU exchanges on the ISS external truss without crew EVA, including battery ORU replacement, pump module exchange, and camera replacement—validating the operational concept of robotic maintenance for large space systems.</p>
+<p>Dextre’s 6-axis force-torque sensor on each arm wrist enables compliant manipulation: the control system detects contact forces and adjusts arm velocity to maintain contact forces within specified limits, preventing damage to both the arm and the ORU during precision insertion and extraction operations.</p>
+<h3 id="subsec-era"><span class="secnum">27.4.3</span> European Robotic Arm (ERA)<a class="headerlink" href="#subsec-era" title="Permanent link">&para;</a></h3>
+<p>The European Robotic Arm (ERA) was installed on the Russian Multipurpose Laboratory Module (Nauka) of the ISS in 2021. ERA is an 8-DOF arm with an extended length of 11.3 m and a payload handling capacity of 8000 kg. ERA employs a symmetric two-end design: grapple fixtures at both ends enable a walking motion along the Russian segment’s outer surface, where ERA can transfer from one attached end to another, extending its reach beyond what a fixed-base arm could achieve. ERA is designed to support EVA preparation and hardware exchange on the Russian ISS segment, including solar panel replacement and equipment transfer from docked Progress vehicles.</p>
+<h3 id="subsec-force_torque"><span class="secnum">27.4.4</span> Force-Torque Control for Compliant Manipulation<a class="headerlink" href="#subsec-force_torque" title="Permanent link">&para;</a></h3>
+<p>For contact operations—inserting a connector, tightening a bolt, or capturing a grapple fixture—purely position-controlled robotic arms generate destructive contact forces if positioning errors or target compliance cause the commanded trajectory to intersect a rigid surface. Impedance control instead specifies the desired dynamic relationship between end-effector position error and contact force: <span id="eq-impedance_control"></span></p>
+<div class="arithmatex">\[\mathbf{F}_\text{contact} = \mathbf{M}_d\,(\ddot{\mathbf{x}}_d - \ddot{\mathbf{x}}) + \mathbf{B}_d\,(\dot{\mathbf{x}}_d - \dot{\mathbf{x}}) + \mathbf{K}_d\,(\mathbf{x}_d - \mathbf{x})\tag{27.4}\]</div>
+<p>where <span class="arithmatex">\(\mathbf{M}_d\)</span>, <span class="arithmatex">\(\mathbf{B}_d\)</span>, <span class="arithmatex">\(\mathbf{K}_d\)</span> are the desired inertia, damping, and stiffness matrices; <span class="arithmatex">\(\mathbf{x}_d\)</span> is the desired trajectory; and <span class="arithmatex">\(\mathbf{x}\)</span> is the actual end-effector position measured by kinematics. By tuning <span class="arithmatex">\(\mathbf{K}_d\)</span> to be small during contact and large during free motion, the controller behaves compliantly at surfaces and precisely in free space. Hybrid force-position control combines impedance control in contact-force-controlled directions with pure position control in uncontrolled directions, enabling insertion of a connector with precise angular alignment (position control) while controlling insertion force (force control).</p>
+<h3 id="subsec-teleoperation"><span class="secnum">27.4.5</span> Teleoperation with Time Delay<a class="headerlink" href="#subsec-teleoperation" title="Permanent link">&para;</a></h3>
+<p>Human teleoperation of space robotics from Earth is complicated by round-trip communication latency: approximately 600 ms for LEO operations through geosynchronous relay satellites, 3–22 minutes one-way for Mars surface operations. At delays above 300 ms, human operators experience severe degradation in task performance and increased contact force errors, because operator corrections based on visual feedback arrive at the arm after the dynamic situation has evolved.</p>
+<p>The Smith predictor compensates for known, constant communication delays by running a model of the remote environment in the local operator display, advancing the predicted state by the delay duration. The operator interacts with the model, and corrections based on delayed real-world feedback update the model. Predictive display systems at the Canadian Space Agency have demonstrated teleoperation latency compensation up to 1.5 seconds with task completion times approaching zero-delay baseline performance on standard peg-in-hole assembly tasks. Model-mediated teleoperation extends this concept to variable-delay channels by decoupling the operator’s action space from the physical robot through an explicit world model, maintaining a stable shared autonomy interaction even for delays up to 20 minutes.</p>
+<h3 id="subsec-tumbling_capture"><span class="secnum">27.4.6</span> Grasping Non-Cooperative Tumbling Objects<a class="headerlink" href="#subsec-tumbling_capture" title="Permanent link">&para;</a></h3>
+<p>The most technically demanding OOS scenario is the capture of a non-cooperative target—a defunct satellite or rocket body that is slowly tumbling in an uncontrolled attitude with angular rates of 0.5–5<span class="arithmatex">\(^\circ\)</span>/s. The capture sequence consists of three phases: (1) <em>estimation</em>: the servicer uses vision-based angular rate estimation from optical cameras to determine the target’s angular velocity <span class="arithmatex">\(\boldsymbol{\omega}\)</span> and orientation trajectory with sufficient precision to predict the position of grapple surfaces over a 10–30 second capture window; (2) <em>synchronization</em>: the servicer adjusts its own attitude to match the target’s angular velocity within a tolerance of <span class="arithmatex">\(\pm\)</span>0.5<span class="arithmatex">\(^\circ\)</span>/s in all axes before contact, minimizing angular momentum exchange at capture; (3) <em>capture and detumbling</em>: the manipulator establishes contact at the planned grapple point and applies controlled damping torques to gradually reduce the combined system’s angular rate to zero over 30–120 seconds.</p>
+<p>Contact dynamics at capture are governed by the coefficient of restitution <span class="arithmatex">\(e\)</span> (ratio of post- to pre-impact relative velocity, typically 0.1–0.3 for spacecraft structures) and Coulomb friction model (<span class="arithmatex">\(\mu = 0.3\)</span>–<span class="arithmatex">\(0.7\)</span> for aluminum-aluminum contact). Analysis shows that synchronization accuracy is the dominant factor in capture probability: angular rate errors above 1<span class="arithmatex">\(^\circ\)</span>/s reduce capture probability from <span class="arithmatex">\(&gt;\)</span>95% to below 70% for typical manipulator geometries.</p>
+<h2 id="sec-commercial_oos"><span class="secnum">27.5</span> Commercial OOS Missions<a class="headerlink" href="#sec-commercial_oos" title="Permanent link">&para;</a></h2>
+<h3 id="subsec-mev"><span class="secnum">27.5.1</span> Mission Extension Vehicle (MEV)<a class="headerlink" href="#subsec-mev" title="Permanent link">&para;</a></h3>
+<p>The Northrop Grumman SpaceLogistics Mission Extension Vehicle represents the world’s first commercially deployed robotic OOS system. MEV-1 completed its docking to Intelsat 901 on February 25, 2020—the first commercial docking between two satellites in GEO orbit. MEV-2 followed, docking to Intelsat 10-02 on April 12, 2021. The MEV docking mechanism exploits a structural feature present on many older GEO satellites: the apogee kick motor (AKM) nozzle. The MEV inserts a grapple probe into the nozzle throat (typically 40–50 cm diameter), engaging retention clips in the nozzle convergent section. This mechanism requires no designed interface on the client satellite and is compatible with a large population of existing GEO platforms (<a href="bibliography.html#ref-reed2016"><span class="nocase">Reed et al.</span> 2016</a>).</p>
+<p>Once docked, the MEV provides propulsion and attitude control to the combined MEV-client stack, effectively extending the life of the client satellite by 5 years. The client’s own propulsion system is no longer used; the MEV’s 12 kW solar electric propulsion (ion engine backup plus conventional bipropellant thrusters for attitude control) maintains the client’s orbital slot and station-keeping within ITU filing requirements. At end of the service period, the MEV undocks and proceeds to the next client in its service manifest. MEV-1 successfully completed its first service period and undocked from Intelsat 901 in April 2022.</p>
+<h3 id="subsec-mep"><span class="secnum">27.5.2</span> Mission Extension Pod (MEP)<a class="headerlink" href="#subsec-mep" title="Permanent link">&para;</a></h3>
+<p>The Mission Extension Pod is a smaller, lighter derivative of the MEV concept. The MEP provides propulsion capability only (no attitude control, unlike MEV), and is designed for multi-pod delivery: a single MEV-class vehicle can deliver multiple MEPs to different client satellites on a single mission. The first MEPs were planned for launch in the mid-2020s. The MEP latches to the client satellite using the same nozzle-grapple mechanism as the MEV, then autonomously manages north-south station-keeping and orbital maintenance using its own propellant supply. Multiple MEPs can be pre-positioned on a client satellite, providing redundant life extension capability or extended service duration beyond what a single MEP could provide.</p>
+<h3 id="subsec-astroscale_elsa"><span class="secnum">27.5.3</span> Astroscale ELSA-d and ELSA-M<a class="headerlink" href="#subsec-astroscale_elsa" title="Permanent link">&para;</a></h3>
+<p>Astroscale’s End-of-Life Services by Astroscale demonstration mission (ELSA-d), launched March 2021, demonstrated the proximity operations and magnetic capture technology fundamental to active debris removal. ELSA-d comprised two spacecraft: a 175-kg chaser and a 17-kg client with a magnetic docking plate installed. The chaser demonstrated capture, release, and re-capture of the client in multiple approach scenarios, including a client in non-cooperative tumbling mode, validating the magnetic capture mechanism and vision-based navigation under diverse illumination conditions.</p>
+<p>The commercial ELSA-M (Multi) system targets multi-client debris removal missions where a single chaser visits and deorbits multiple defunct satellites in a single mission. Astroscale has secured contracts from OneWeb and other operators for ELSA-M services, representing the first commercial active debris removal contracts awarded.</p>
+<h3 id="subsec-osam1"><span class="secnum">27.5.4</span> OSAM-1 (Restore-L / Robotic Servicing of Geosynchronous Satellites)<a class="headerlink" href="#subsec-osam1" title="Permanent link">&para;</a></h3>
+<p>NASA’s On-orbit Servicing, Assembly, and Manufacturing 1 (OSAM-1, formerly Restore-L) mission targets the robotic refueling of Landsat-7, which was not designed for servicing and carries no designed refueling interfaces. The mission requires development of the Joint Fluid Attachment (JAFE) interface—a robotic tool that cuts and seals a propellant line, installs a non-native refueling port, and transfers hydrazine—at an orbital altitude of 705 km. OSAM-1 was developed by NASA’s Goddard Space Flight Center with a commercial spacecraft builder, and would have been among the most complex robotic servicing missions attempted, since the target was designed with no servicing accommodation. NASA terminated the mission in 2024 because of cost growth and schedule delays, although the technologies it developed continue to be used in other work.</p>
+<h3 id="subsec-osam2"><span class="secnum">27.5.5</span> OSAM-2 (Archinaut One)<a class="headerlink" href="#subsec-osam2" title="Permanent link">&para;</a></h3>
+<p>NASA’s OSAM-2 mission (Archinaut One), developed by Redwire Space (formerly Made In Space), was to demonstrate in-space manufacturing and assembly technology; NASA ended the mission in 2023. The mission concept uses a robotic arm-mounted 3D printer to extrude and assemble a 10-m structural beam in the vacuum and microgravity of orbit, then autonomously attaches solar array panels to the beam. The “Archinaut” approach is to construct large satellite structures in orbit rather than launching them folded within a fairing, which could in principle allow structures larger than the launch volume permits.</p>
+<h3 id="subsec-orbit_fab"><span class="secnum">27.5.6</span> Orbit Fab Propellant Depots<a class="headerlink" href="#subsec-orbit_fab" title="Permanent link">&para;</a></h3>
+<p>Orbit Fab is developing a commercial propellant depot network based on the Rapidly Attachable Fluid Transfer Interface (RAFTI) standard—a 3/8-inch ball valve coupling mechanism designed for robotic attachment without specialized end-effectors. The RAFTI standard has been published openly to enable multi-vendor compatibility. Orbit Fab has flown demonstration hardware (including a refuelling tanker launched in 2021) and describes commercial depots in GEO as a future service; the timeline has not been firm. Xenon tankers for electric propulsion refueling represent a second product line targeting the growing GEO EP satellite fleet.</p>
+<h2 id="sec-propellant_transfer"><span class="secnum">27.6</span> Propellant Transfer and Refueling<a class="headerlink" href="#sec-propellant_transfer" title="Permanent link">&para;</a></h2>
+<h3 id="subsec-zero_g_fluid"><span class="secnum">27.6.1</span> Zero-Gravity Fluid Management<a class="headerlink" href="#subsec-zero_g_fluid" title="Permanent link">&para;</a></h3>
+<p>In the absence of gravitational settling, liquid propellant in a spacecraft tank is distributed arbitrarily between the tank walls and center, driven by capillary forces, surface tension, and residual accelerations from spacecraft attitude motion. The propellant management device (PMD)—a network of screen channels, vanes, and diaphragms inside the tank—uses capillary forces (surface tension <span class="arithmatex">\(\sigma \cos\theta\)</span> over characteristic pore size <span class="arithmatex">\(r\)</span>: capillary pressure <span class="arithmatex">\(\Delta P = 2\sigma\cos\theta / r\)</span>) to maintain a propellant-liquid channel connected to the outlet under all attitude conditions, preventing vapor ingestion into the propellant feed line.</p>
+<p>For propellant transfer between two spacecraft tanks, a settling burn of <span class="arithmatex">\(\sim\)</span>10<span class="arithmatex">\(^{-3}\)</span> g is typically required to establish a consistent propellant distribution favorable for transfer initiation—the transfer cannot begin until propellant is against the transfer outlet. The transfer mass flow rate is limited by pressure differential, feed line conductance, and inlet screen capillary recovery time, typically yielding transfer rates of 0.1–1 kg/min for monopropellant hydrazine systems.</p>
+<h3 id="subsec-cryo_transfer"><span class="secnum">27.6.2</span> Cryogenic Propellant Transfer Challenges<a class="headerlink" href="#subsec-cryo_transfer" title="Permanent link">&para;</a></h3>
+<p>Cryogenic propellants (liquid oxygen at 90 K, liquid hydrogen at 20 K) offer the highest specific impulse of any chemical propellant combination but present severe challenges for extended on-orbit storage and transfer. Passive boiloff rates for uninsulated cryogenic tanks in LEO reach 3–5%/day due to solar and Earth albedo thermal loading, necessitating either active cryocooling (adding mass and power) or rapid transfer operations that minimize boiloff time. The no-vent fill (NVF) technique transfers cryogen into a warm receiver tank without venting the receiver, relying on condensation of pressurant vapor to manage ullage pressure—validated on ground in NASA’s Cryogenic Fluid Management (CFM) Facility but not yet demonstrated in orbit. ULA’s ACES (Advanced Cryogenic Evolved Stage) and NASA’s Cryogenic Propellant Storage and Transfer (CPST) program have developed hardware for the first in-space cryogenic transfer demonstration.</p>
+<h3 id="subsec-std_interfaces"><span class="secnum">27.6.3</span> Standard Refueling Interfaces<a class="headerlink" href="#subsec-std_interfaces" title="Permanent link">&para;</a></h3>
+<p>The proliferation of incompatible proprietary propellant interfaces across the GEO satellite fleet is a fundamental impediment to commercial refueling. Several standardization efforts are underway:</p>
+<ul>
+<li>
+<p><strong>RAFTI (Orbit Fab):</strong> Rapidly Attachable Fluid Transfer Interface, 3/8-inch ball valve, suitable for hydrazine and xenon, commercially published open standard.</p>
+</li>
+<li>
+<p><strong>ESA Serviceable Docking Interface (SDI):</strong> Standardized androgynous docking ring for future ESA spacecraft, mechanically and electrically compatible with servicing vehicles.</p>
+</li>
+<li>
+<p><strong>CONFERS Standard:</strong> Commercial On-Orbit Servicing Norms, Frameworks, and Standards, an industry consortium defining interface requirements for new satellites designed with servicing accommodation.</p>
+</li>
+<li>
+<p><strong>DARPA ROSA:</strong> Robotic Operations Servicing Accessories standard connectors designed for robotic manipulation without specialized end-effectors.</p>
+</li>
+</ul>
+<h3 id="subsec-refueling_economics"><span class="secnum">27.6.4</span> Refueling Economics<a class="headerlink" href="#subsec-refueling_economics" title="Permanent link">&para;</a></h3>
+<p>The economic case for GEO satellite refueling is attractive when the cost of a refueling mission is compared to the cost of a replacement satellite. A new GEO communications satellite, including its launch, costs of the order of hundreds of millions of dollars and has a design life of about 15 years; a mission that extends the life of an existing satellite by a few years costs a fraction of that, which is the basis of the economic case (the actual prices of life-extension services are commercial and are not public). Beyond the direct cost comparison, refueling also preserves the ITU orbital slot filing, avoids the lengthy procurement cycle for a replacement satellite (typically 4–6 years from contract to orbit), and maintains revenue continuity for the operator (<a href="bibliography.html#ref-reed2016"><span class="nocase">Reed et al.</span> 2016</a>).</p>
+<h2 id="sec-isam"><span class="secnum">27.7</span> In-Space Assembly and Manufacturing<a class="headerlink" href="#sec-isam" title="Permanent link">&para;</a></h2>
+<h3 id="subsec-archinaut"><span class="secnum">27.7.1</span> Archinaut Technology<a class="headerlink" href="#subsec-archinaut" title="Permanent link">&para;</a></h3>
+<p>Redwire Space’s Archinaut technology employs a robotic arm-mounted Integrated Structural Intelligent System (ISIS) that extrudes PEEK (polyether ether ketone) thermoplastic structural beams in the space environment, using UV radiation (abundant in orbit) and a thermal curing process validated in thermal-vacuum chamber testing. Ground demonstrations have produced 10-m beams in 8 hours; orbital demonstrations are planned with the OSAM-2 mission. The compressive strength of vacuum-deposited PEEK beams is approximately 85% of injection-molded baseline, attributable to layer bonding differences in vacuum—a factor that drives structural margin selection for beam applications.</p>
+<h3 id="subsec-large_aperture"><span class="secnum">27.7.2</span> Large Aperture Assembly<a class="headerlink" href="#subsec-large_aperture" title="Permanent link">&para;</a></h3>
+<p>Future space observatories at the 30-m aperture class—beyond what any current or planned launch vehicle fairing can accommodate—require assembly from smaller segments in orbit. A robotic assembly sequence for a 30-m segmented mirror telescope would position individual mirror segments to <span class="arithmatex">\(\pm\)</span>0.1 mm tolerance using laser metrology feedback and compliant latching mechanisms, then align them optically using active wavefront sensing. The assembly sequence is driven by Monte Carlo structural analysis to identify optimal segment placement order minimizing induced misalignments during multi-week assembly operations in GEO or L2 orbit.</p>
+<h3 id="subsec-additive_mfg_ch27"><span class="secnum">27.7.3</span> Additive Manufacturing in Orbit<a class="headerlink" href="#subsec-additive_mfg_ch27" title="Permanent link">&para;</a></h3>
+<p>The Additive Manufacturing Facility (AMF) aboard the ISS, operated by Made In Space, has produced over 200 parts in orbit using Fused Deposition Modeling (FDM) with ABS plastic, demonstrating that the FDM process is functional in microgravity with layer-to-layer adhesion comparable to Earth-printed baselines. Vacuum-compatible thermoset resins and metal powder bed fusion (Sciaky EBAM—Electron Beam Additive Manufacturing) are under development for higher-performance structural applications. In-orbit manufacturing enables rapid production of replacement tools, fixtures, and structural inserts without the 6-month logistics pipeline from Earth—potentially eliminating several categories of mission-ending spare part shortfalls.</p>
+<h2 id="sec-oos_market"><span class="secnum">27.8</span> Future OOS Market<a class="headerlink" href="#sec-oos_market" title="Permanent link">&para;</a></h2>
+<h3 id="subsec-oos_market_analysis"><span class="secnum">27.8.1</span> Market Analysis and Projections<a class="headerlink" href="#subsec-oos_market_analysis" title="Permanent link">&para;</a></h3>
+<p>The commercial OOS market is advancing from proof-of-concept to initial operational capability. Northrop Grumman’s MEV-1 and MEV-2 are operating commercially, and market analysts expect growth driven by the many GEO satellites reaching end of life each year and by demand from LEO constellation operators for decommissioning services; market-size forecasts differ widely. The expansion of electric propulsion across the GEO fleet creates a new market segment for xenon or krypton propellant resupply—EP satellites nominally sized for 15 years of station-keeping could potentially operate for 20–25 years with propellant resupply, at a fraction of replacement cost.</p>
+<h3 id="subsec-oos_regulatory"><span class="secnum">27.8.2</span> Regulatory Framework<a class="headerlink" href="#subsec-oos_regulatory" title="Permanent link">&para;</a></h3>
+<p>OOS creates novel regulatory situations not contemplated in the original frameworks developed for single-operator satellites: (1) <em>ITU spectrum coordination</em>: the ITU framework ties orbital slot rights to a specific satellite physical object; when a docked MEV provides propulsion to a satellite, the ITU filing continuity of the client is maintained as long as the client’s payload remains the active transmitter. (2) <em>FCC transfer of control</em>: docking a servicer to a client satellite may trigger FCC transfer-of-control authorization requirements in the US, as the servicer operator gains de facto control over the combined spacecraft’s position and attitude. (3) <em>Liability</em>: under the Outer Space Treaty and Liability Convention, the state that launches a space object retains liability for that object; when a MEV docks to a satellite launched by a different state, the liability assignment for the docked configuration is ambiguous. COPUOS (Committee on the Peaceful Uses of Outer Space) is actively discussing OOS regulatory frameworks, with the goal of developing internationally agreed guidelines by the late 2020s.</p>
+<h3 id="subsec-oos_standardization"><span class="secnum">27.8.3</span> Industry Standardization<a class="headerlink" href="#subsec-oos_standardization" title="Permanent link">&para;</a></h3>
+<p>The CONFERS (Consortium for Execution of Rendezvous and Servicing Operations) initiative, started with DARPA support and including satellite operators and servicing companies, develops non-binding technical and operational guidance for servicing operations, such as principles for safe rendezvous and proximity operations, data sharing between servicer and client, and interface design. Some satellite manufacturers have begun to offer servicing-compatible interfaces as optional features.</p>
+<h2 id="sec-oos_equations"><span class="secnum">27.9</span> Key Equations<a class="headerlink" href="#sec-oos_equations" title="Permanent link">&para;</a></h2>
+<div class="parahead">
+<p>CW Relative Motion State Transition.</p>
+</div>
+<p>The closed-form CW state transition from initial state <span class="arithmatex">\((x_0, y_0, \dot{x}_0, \dot{y}_0)\)</span> at <span class="arithmatex">\(t=0\)</span> to state at time <span class="arithmatex">\(t\)</span>:</p>
+<div class="arithmatex">\[\begin{align*}
+x(t) &amp;= (4 - 3\cos nt)\,x_0 + \sin(nt)\,\frac{\dot{x}_0}{n} + \frac{2(1-\cos nt)}{n}\dot{y}_0 \\
+y(t) &amp;= 6(\sin nt - nt)\,x_0 + y_0 - \frac{2(1-\cos nt)}{n}\dot{x}_0 + \frac{4\sin nt - 3nt}{n}\dot{y}_0
+\end{align*}\]</div>
+<p>These solutions enable planning of fuel-optimal rendezvous maneuver sequences for the V-bar and R-bar approach profiles.</p>
+<div class="parahead">
+<p>Impedance Control Law.</p>
+</div>
+<p>Restated for the 6-DOF case with diagonal stiffness matrix <span class="arithmatex">\(\mathbf{K}_d = \text{diag}(k_1,…,k_6)\)</span>: <span id="eq-impedance_full"></span></p>
+<div class="arithmatex">\[\boldsymbol{\tau} = \mathbf{J}^T\!\left[\mathbf{F}_\text{ext} + \mathbf{M}_d\,\ddot{\mathbf{e}} + \mathbf{B}_d\,\dot{\mathbf{e}} + \mathbf{K}_d\,\mathbf{e}\right] + \mathbf{C}(\mathbf{q},\dot{\mathbf{q}})\dot{\mathbf{q}} + \mathbf{g}(\mathbf{q})\tag{27.7}\]</div>
+<p>where <span class="arithmatex">\(\mathbf{e} = \mathbf{x}_d - \mathbf{x}\)</span> is the Cartesian error, <span class="arithmatex">\(\mathbf{J}\)</span> is the Jacobian, and <span class="arithmatex">\(\mathbf{C}\)</span>, <span class="arithmatex">\(\mathbf{g}\)</span> are Coriolis and gravity compensation terms.</p>
+<div class="parahead">
+<p>Propellant Mass for Refueling.</p>
+</div>
+<p>The propellant mass <span class="arithmatex">\(m_p\)</span> needed to extend a satellite’s life by <span class="arithmatex">\(\Delta t\)</span> years given annual station-keeping <span class="arithmatex">\(\Delta v_{SK}\)</span> (m/s/year) and specific impulse <span class="arithmatex">\(I_{sp}\)</span> (s): <span id="eq-propellant_refuel"></span></p>
+<div class="arithmatex">\[m_p = m_0 \left[1 - \exp\!\left(-\frac{\Delta v_{SK}\,\Delta t}{g_0\,I_{sp}}\right)\right]\tag{27.8}\]</div>
+<p>For a GEO satellite with <span class="arithmatex">\(m_0 = 2000\)</span> kg, <span class="arithmatex">\(\Delta v_{SK} = 50\)</span> m/s/yr, <span class="arithmatex">\(I_{sp} = 220\)</span> s, and <span class="arithmatex">\(\Delta t = 5\)</span> yr: <span class="arithmatex">\(m_p \approx 210\)</span> kg of hydrazine—a fraction of the satellite’s total propellant capacity.</p>
+<h2 id="sec-oos_tables"><span class="secnum">27.10</span> Mission and System Comparison Tables<a class="headerlink" href="#sec-oos_tables" title="Permanent link">&para;</a></h2>
+<div class="tbl" id="tab-oos_missions">
+<div class="tbl-caption"><strong>Table 27.1.</strong> Selected On-Orbit Servicing Missions (2020–2026)</div>
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Mission</strong></th>
+<th style="text-align: left;"><strong>Operator</strong></th>
+<th style="text-align: left;"><strong>Year</strong></th>
+<th style="text-align: left;"><strong>Orbit</strong></th>
+<th style="text-align: left;"><strong>Technique</strong></th>
+<th style="text-align: left;"><strong>Outcome</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">MEV-1</td>
+<td style="text-align: left;">Northrop Grumman</td>
+<td style="text-align: left;">2020</td>
+<td style="text-align: left;">GEO</td>
+<td style="text-align: left;">Nozzle grapple dock</td>
+<td style="text-align: left;">5-yr life ext. Intelsat 901</td>
+</tr>
+<tr>
+<td style="text-align: left;">MEV-2</td>
+<td style="text-align: left;">Northrop Grumman</td>
+<td style="text-align: left;">2021</td>
+<td style="text-align: left;">GEO</td>
+<td style="text-align: left;">Nozzle grapple dock</td>
+<td style="text-align: left;">5-yr life ext. Intelsat 10-02</td>
+</tr>
+<tr>
+<td style="text-align: left;">ELSA-d</td>
+<td style="text-align: left;">Astroscale</td>
+<td style="text-align: left;">2021</td>
+<td style="text-align: left;">LEO</td>
+<td style="text-align: left;">Magnetic capture</td>
+<td style="text-align: left;">Proximity ops demo</td>
+</tr>
+<tr>
+<td style="text-align: left;">TANKER-001</td>
+<td style="text-align: left;">Orbit Fab</td>
+<td style="text-align: left;">2021</td>
+<td style="text-align: left;">LEO</td>
+<td style="text-align: left;">RAFTI interface demo</td>
+<td style="text-align: left;">Interface demonstration</td>
+</tr>
+<tr>
+<td style="text-align: left;">ClearSpace-1</td>
+<td style="text-align: left;">ClearSpace SA/ESA</td>
+<td style="text-align: left;">planned</td>
+<td style="text-align: left;">LEO</td>
+<td style="text-align: left;">Claw capture</td>
+<td style="text-align: left;">Target redefined in 2023</td>
+</tr>
+<tr>
+<td style="text-align: left;">ADRAS-J (CRD2 Ph.1)</td>
+<td style="text-align: left;">Astroscale-Japan</td>
+<td style="text-align: left;">2024</td>
+<td style="text-align: left;">LEO</td>
+<td style="text-align: left;">Proximity ops RPO</td>
+<td style="text-align: left;">H-IIA RPO demo</td>
+</tr>
+</tbody>
+</table>
+</div></div>
+<div class="tbl" id="tab-robot_comparison">
+<div class="tbl-caption"><strong>Table 27.2.</strong> Space Robotic System Comparison</div>
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>System</strong></th>
+<th style="text-align: left;"><strong>Platform</strong></th>
+<th style="text-align: right;"><strong>Length (m)</strong></th>
+<th style="text-align: right;"><strong>DOF</strong></th>
+<th style="text-align: left;"><strong>Payload Cap.</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Canadarm2 (SSRMS)</td>
+<td style="text-align: left;">ISS</td>
+<td style="text-align: right;">17.6</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: left;">116,000 kg</td>
+</tr>
+<tr>
+<td style="text-align: left;">Dextre (SPDM)</td>
+<td style="text-align: left;">ISS</td>
+<td style="text-align: right;">3.5 (arm)</td>
+<td style="text-align: right;">7+7</td>
+<td style="text-align: left;">600 kg</td>
+</tr>
+<tr>
+<td style="text-align: left;">European Robotic Arm</td>
+<td style="text-align: left;">ISS (Russian)</td>
+<td style="text-align: right;">11.3</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: left;">8,000 kg</td>
+</tr>
+<tr>
+<td style="text-align: left;">JEMRMS (Japan)</td>
+<td style="text-align: left;">ISS (JEM)</td>
+<td style="text-align: right;">10.0</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: left;">7,000 kg</td>
+</tr>
+<tr>
+<td style="text-align: left;">MEV Capture Mechanism</td>
+<td style="text-align: left;">MEV-1/2</td>
+<td style="text-align: right;">N/A (grapple)</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">N/A</td>
+</tr>
+<tr>
+<td style="text-align: left;">ClearSpace Claw</td>
+<td style="text-align: left;">ClearSpace-1</td>
+<td style="text-align: right;">2.0 (arm)</td>
+<td style="text-align: right;">4 arms</td>
+<td style="text-align: left;">112 kg</td>
+</tr>
+</tbody>
+</table>
+</div></div>
+<h2 id="sec-cw_diagram"><span class="secnum">27.11</span> CW Trajectory Diagram<a class="headerlink" href="#sec-cw_diagram" title="Permanent link">&para;</a></h2>
+<p><a href="#fig-cw_trajectory">Figure 27.1</a> illustrates a V-bar approach trajectory in the Clohessy-Wiltshire (Hill) frame, showing the natural drift and controlled hold-point approach.</p>
+<figure class="fig fig-diagram" id="fig-cw_trajectory">
+<img class="tikz" src="img/tikz-c7602e1af54c.svg" alt="Clohessy-Wiltshire frame V-bar approach trajectory for an OOS servicer rendezvous. The chaser traverses a series of hold points (HP1–HP4) spaced along the +y (V-bar) axis, executing impulsive…" loading="lazy" width="326" height="149">
+<figcaption><strong>Figure 27.1.</strong> Clohessy-Wiltshire frame V-bar approach trajectory for an OOS servicer rendezvous. The chaser traverses a series of hold points (HP1–HP4) spaced along the +<span class="math inline">\(y\)</span> (V-bar) axis, executing impulsive <span class="math inline">\(\Delta v\)</span> maneuvers at each hold point to counteract natural drift and advance to the next waypoint. The keep-out sphere (KOS, dashed red circle) defines the exclusion zone around the target within which entry requires positive ground authorization. A natural drift ellipse (dashed green) illustrates the trajectory a free-drifting chaser would follow without additional thrust.</figcaption>
+</figure>
+<h2 id="sec-oos_summary"><span class="secnum">27.12</span> Summary<a class="headerlink" href="#sec-oos_summary" title="Permanent link">&para;</a></h2>
+<div class="admonition info box-keybox kind-concept">
+<p><strong>Chapter 27 Key Takeaways</strong></p>
+<ul>
+<li>
+<p>On-orbit servicing encompasses life extension (MEV), refueling (OSAM-1), inspection, relocation, and active debris removal—each imposing distinct rendezvous, manipulation, and interface requirements.</p>
+</li>
+<li>
+<p>The Clohessy-Wiltshire equations govern relative motion for close proximity operations; V-bar glideslope and R-bar approaches provide the principal rendezvous corridors with distinct safety and propellant trade-offs.</p>
+</li>
+<li>
+<p>Navigation sensor suites combine LIDAR (0.1-m range accuracy at 100 m), stereo vision (photogrammetric), relative GPS (<span class="arithmatex">\(\pm\)</span>1 m in LEO), and CNN-based pose estimation (<span class="arithmatex">\(&lt;\)</span>1% error at 5 m) into layered architectures.</p>
+</li>
+<li>
+<p>Commercial OOS missions (MEV-1/2, Astroscale ELSA-d, ClearSpace-1) have demonstrated or are demonstrating the full lifecycle from rendezvous to capture to life extension or deorbit in both GEO and LEO environments.</p>
+</li>
+<li>
+<p>Impedance control with wrist force-torque sensing enables compliant manipulation for ORU exchange and propellant transfer without damaging either the manipulator or client hardware.</p>
+</li>
+<li>
+<p>Propellant refueling economics are compelling: a &#36;50–100M refueling mission providing 5-year life extension of a &#36;300M GEO satellite delivers NPV-positive returns even at conservative revenue assumptions.</p>
+</li>
+<li>
+<p>Interface standardization (RAFTI, CONFERS, ESA SDI) and regulatory clarification (ITU, FCC, COPUOS) are the two principal non-technical barriers to widespread OOS market adoption.</p>
+</li>
+</ul>
+</div>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button type="button" class="md-top md-icon" data-md-component="top" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+Back to top
+</button>
+</main>
+<footer class="md-footer">
+<nav class="md-footer__inner md-grid" aria-label="Footer" >
+<a href="ch26-artificial-intelligence-and-machine-learning-in.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: 26. Artificial Intelligence and Machine Learning in Space">
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</div>
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Previous
+</span>
+<div class="md-ellipsis">
+26. Artificial Intelligence and Machine Learning in Space
+</div>
+</div>
+</a>
+<a href="ch28-space-debris-and-long-term-sustainability.html" class="md-footer__link md-footer__link--next" aria-label="Next: 28. Space Debris and Long-Term Sustainability">
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Next
+</span>
+<div class="md-ellipsis">
+28. Space Debris and Long-Term Sustainability
+</div>
+</div>
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+</div>
+</a>
+</nav>
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+The Open Book Project &middot;
+<a href="../../about.html">About this library</a> &middot;
+<a href="../../publish.html">Publish your book</a> &middot;
+© The authors of the books
+</div>
+Made with
+<a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+Material for MkDocs
+</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "navigation.prune", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "toc.follow", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+<script src="../../assets/mathjax.js"></script>
+<script src="../../assets/viz.js"></script>
+<script src="../../assets/remote.js"></script>
+<script src="../../assets/scans.js"></script>
+<script src="../../assets/reader.js"></script>
+<script src="../../assets/app.js"></script>
+<script src="../../assets/slides.js"></script>
+<script src="../../assets/speak.js"></script>
+<script src="../../assets/quiz.js"></script>
+<script>
+    /* offline reading: the service worker at the site root (its scope is the whole site) */
+    if ("serviceWorker" in navigator && window.isSecureContext) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register(new URL("../../sw.js", location.href).href).catch(function () {});
+      });
+    }
+  </script>
+</body>
+</html>

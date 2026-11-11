@@ -1,0 +1,1749 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="description" content="The Open Book Project: books on computer science, quantum computing, cyber security, science, the social sciences, university courses and languages, read page by page like an e-book, online or offline.">
+<meta name="author" content="The Open Book Project">
+<link rel="canonical" href="https://open-book-project.github.io/engineering/satellite_technology/ch09-thermal-control-systems.html">
+<link rel="prev" href="ch08-satellite-propulsion-systems.html">
+<link rel="next" href="ch10-on-board-data-handling.html">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap"></noscript>
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Open Book">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="application-name" content="Open Book"><script src="../../assets/library-data.js"></script><script>
+    (function () {
+      var X = window.XMLHttpRequest, open, gate = new Promise(function (r) { open = r; });
+      if (!X) return;
+      var open0 = X.prototype.open, send0 = X.prototype.send;
+      X.prototype.open = function (method, url) {
+        this.__pkIndex = /\/search\/search_index\.json(\?|#|$)/.test(String(url));
+        return open0.apply(this, arguments);
+      };
+      X.prototype.send = function () {
+        if (!this.__pkIndex) return send0.apply(this, arguments);
+        var xhr = this, args = arguments;
+        gate.then(function () { send0.apply(xhr, args); });
+      };
+      function wake() { open(); }
+      document.addEventListener("focusin", function (e) { if (e.target && e.target.closest && e.target.closest(".md-search")) wake(); });
+      document.addEventListener("click", function (e) { if (e.target && e.target.closest && e.target.closest('label[for="__search"], .md-search')) wake(); }, true);
+      document.addEventListener("keydown", function (e) {
+        var k = e.key;
+        if ((k === "/" || k === "s" || k === "f" || k === "S" || k === "F") && !(e.target && e.target.closest && e.target.closest("input, textarea, [contenteditable]"))) wake();
+      }, true);
+      if (/[?&]q=/.test(location.search)) wake();
+    })();
+  </script><script>
+    try {
+      if ((window.matchMedia && (matchMedia("(display-mode: standalone)").matches || matchMedia("(display-mode: fullscreen)").matches)) || navigator.standalone === true) {
+        document.documentElement.className += " bjp-standalone";
+      }
+    } catch (e) { /* not an installed app */ }
+    /* the books of a subject or of the whole library as covers or as a list (assets/app.js): the reader's choice */
+    try {
+      var bv = localStorage.getItem("bjp.view");
+      if (bv === "list" || (bv !== "grid" && /\/books\.html$/.test(location.pathname))) document.documentElement.className += " bjp-view-list";
+    } catch (e) { /* no storage: covers */ }
+  </script>
+<script>
+    /* a book opened from its cover on the shelf: the page stays blank, in the cover's colour, until the reader is up */
+    try {
+      var cv = sessionStorage.getItem("bjp.reader.cover");
+      if (cv && sessionStorage.getItem("bjp.reader.open") === "1") {
+        var c = JSON.parse(cv), de = document.documentElement;
+        de.className += " bjp-booting";
+        if (c && /^#[0-9a-f]{3,8}$/i.test(c.bg || "")) de.style.background = c.bg;
+        setTimeout(function () { de.classList.remove("bjp-booting"); de.style.background = ""; }, 3000);
+      }
+    } catch (e) { /* no session storage: the page simply opens as usual */ }
+  </script>
+<title>9. Thermal Control Systems - The Open Book Project</title>
+<link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+<link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+<link rel="stylesheet" href="../../assets/extra.css">
+<link rel="stylesheet" href="../../assets/reader.css">
+<link rel="stylesheet" href="../../assets/viz.css">
+<link rel="stylesheet" href="../../assets/app.css">
+<link rel="stylesheet" href="../../assets/theme.css">
+<link rel="stylesheet" href="../../assets/slides.css">
+<link rel="stylesheet" href="../../assets/remote.css">
+<link rel="stylesheet" href="../../assets/scans.css">
+<link rel="stylesheet" href="../../assets/speak.css">
+<link rel="stylesheet" href="../../assets/quiz.css">
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+<input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+<input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a href="#sec-tcs_intro" class="md-skip">
+Skip to content
+</a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav class="md-header__inner md-grid" aria-label="Header">
+<a href="../../index.html" title="The Open Book Project" class="md-header__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+The Open Book Project
+</span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+9. Thermal Control Systems
+</span>
+</div>
+</div>
+</div><a href="../../index.html" class="bjp-libbtn" aria-label="Library: all books" title="Library: all books">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V5h4v15M8 20V9h4v11M14 20L12.6 6l3.8-.8 3 14.2M3 20h18"/></svg><span>Library</span>
+</a>
+<a href="../../subjects/index.html" class="pk-catbtn" aria-haspopup="true" aria-expanded="false" title="Browse the books by category">
+<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><circle cx="17" cy="7" r="3.6"/><path d="M7 13.4l3.9 6.8H3.1z"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg><span>Categories</span>
+</a>
+<form class="md-header__option" data-md-component="palette">
+<input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+<label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+</label>
+<input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+<label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+<label class="md-search__icon md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</label>
+<nav class="md-search__options" aria-label="Search">
+<button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+Initializing search
+</div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--primary bjp-nav bjp-nav--book" aria-label="Navigation" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a href="../../index.html" title="The Open Book Project" class="md-nav__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+The Open Book Project
+</label>
+<ul class="md-nav__list" data-md-scrollfix>
+<li class="md-nav__item bjp-nav-all">
+<a href="../../index.html" class="md-nav__link" aria-label="All books: back to the library">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+<span class="md-ellipsis">All books</span>
+</a>
+</li>
+<li class="md-nav__item bjp-nav-book" role="presentation"><span class="bjp-nav-head">Satellite Technology</span></li>
+<li class="md-nav__item">
+<a href="index.html" class="md-nav__link">
+<span class="md-ellipsis">
+Overview and preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="list-of-abbreviations.html" class="md-nav__link">
+<span class="md-ellipsis">
+List of Abbreviations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch01-introduction-to-satellite-technology.html" class="md-nav__link">
+<span class="md-ellipsis">
+1. Introduction to Satellite Technology
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch02-orbital-mechanics.html" class="md-nav__link">
+<span class="md-ellipsis">
+2. Orbital Mechanics
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch03-the-space-environment.html" class="md-nav__link">
+<span class="md-ellipsis">
+3. The Space Environment
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch04-launch-systems-and-mission-design.html" class="md-nav__link">
+<span class="md-ellipsis">
+4. Launch Systems and Mission Design
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch05-satellite-architecture-and-systems-engineering.html" class="md-nav__link">
+<span class="md-ellipsis">
+5. Satellite Architecture and Systems Engineering
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch06-satellite-electrical-power-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+6. Satellite Electrical Power Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch07-attitude-determination-and-control-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+7. Attitude Determination and Control Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch08-satellite-propulsion-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+8. Satellite Propulsion Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+9. Thermal Control Systems
+</span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a href="ch09-thermal-control-systems.html" class="md-nav__link md-nav__link--active">
+<span class="md-ellipsis">
+9. Thermal Control Systems
+</span>
+</a>
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#sec-tcs_intro" class="md-nav__link">
+<span class="md-ellipsis">
+9.1 Introduction and Design Philosophy
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-heat_transfer" class="md-nav__link">
+<span class="md-ellipsis">
+9.2 Heat Transfer Fundamentals in the Space Environment
+</span>
+</a>
+<nav class="md-nav" aria-label="9.2 Heat Transfer Fundamentals in the Space Environment">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-conduction" class="md-nav__link">
+<span class="md-ellipsis">
+9.2.1 Conduction
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-radiation" class="md-nav__link">
+<span class="md-ellipsis">
+9.2.2 Thermal Radiation
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-no_convection" class="md-nav__link">
+<span class="md-ellipsis">
+9.2.3 Absence of Convection
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-orbital_environment" class="md-nav__link">
+<span class="md-ellipsis">
+9.3 The Orbital Thermal Environment
+</span>
+</a>
+<nav class="md-nav" aria-label="9.3 The Orbital Thermal Environment">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-solar_irradiance" class="md-nav__link">
+<span class="md-ellipsis">
+9.3.1 Solar Irradiance
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-earth_ir_albedo" class="md-nav__link">
+<span class="md-ellipsis">
+9.3.2 Earth Infrared Emission and Albedo
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-energy_balance" class="md-nav__link">
+<span class="md-ellipsis">
+9.3.3 Spacecraft Energy Balance
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-passive_tcs" class="md-nav__link">
+<span class="md-ellipsis">
+9.4 Passive Thermal Control
+</span>
+</a>
+<nav class="md-nav" aria-label="9.4 Passive Thermal Control">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-mli" class="md-nav__link">
+<span class="md-ellipsis">
+9.4.1 Multilayer Insulation
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-osr" class="md-nav__link">
+<span class="md-ellipsis">
+9.4.2 Optical Solar Reflectors
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-heat_pipes" class="md-nav__link">
+<span class="md-ellipsis">
+9.4.3 Heat Pipes
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-active_tcs" class="md-nav__link">
+<span class="md-ellipsis">
+9.5 Active Thermal Control
+</span>
+</a>
+<nav class="md-nav" aria-label="9.5 Active Thermal Control">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-heaters" class="md-nav__link">
+<span class="md-ellipsis">
+9.5.1 Electrical Heaters
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-louvers" class="md-nav__link">
+<span class="md-ellipsis">
+9.5.2 Louvers
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-mpfl" class="md-nav__link">
+<span class="md-ellipsis">
+9.5.3 Mechanically Pumped Fluid Loops
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-cryocoolers" class="md-nav__link">
+<span class="md-ellipsis">
+9.5.4 Cryocoolers
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-tec" class="md-nav__link">
+<span class="md-ellipsis">
+9.5.5 Thermoelectric Coolers (Peltier Devices)
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-tim" class="md-nav__link">
+<span class="md-ellipsis">
+9.6 Thermal Interface Materials
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-tmm" class="md-nav__link">
+<span class="md-ellipsis">
+9.7 Thermal Mathematical Modelling
+</span>
+</a>
+<nav class="md-nav" aria-label="9.7 Thermal Mathematical Modelling">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-gmm" class="md-nav__link">
+<span class="md-ellipsis">
+9.7.1 Geometric Math Model and View Factor Calculation
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-node_network" class="md-nav__link">
+<span class="md-ellipsis">
+9.7.2 Node Network and Conductors
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-analysis_cases" class="md-nav__link">
+<span class="md-ellipsis">
+9.7.3 Thermal Analysis Cases
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-thermal_testing" class="md-nav__link">
+<span class="md-ellipsis">
+9.8 Thermal Testing and Verification
+</span>
+</a>
+<nav class="md-nav" aria-label="9.8 Thermal Testing and Verification">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-thermal_balance" class="md-nav__link">
+<span class="md-ellipsis">
+9.8.1 Thermal Balance Test
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-thermal_cycling" class="md-nav__link">
+<span class="md-ellipsis">
+9.8.2 Thermal Cycling
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-special_cases" class="md-nav__link">
+<span class="md-ellipsis">
+9.9 Special Thermal Design Challenges
+</span>
+</a>
+<nav class="md-nav" aria-label="9.9 Special Thermal Design Challenges">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-cryogenic_instruments" class="md-nav__link">
+<span class="md-ellipsis">
+9.9.1 Cryogenic Instrument Thermal Design
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-battery_thermal" class="md-nav__link">
+<span class="md-ellipsis">
+9.9.2 Battery Thermal Management
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-orbit_thermal" class="md-nav__link">
+<span class="md-ellipsis">
+9.9.3 Thermal Control for Different Orbit Regimes
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-design_example" class="md-nav__link">
+<span class="md-ellipsis">
+9.10 Design Example: LEO Earth Observation Satellite Thermal Control
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-tcs_summary" class="md-nav__link">
+<span class="md-ellipsis">
+9.11 Summary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#further-reading" class="md-nav__link">
+<span class="md-ellipsis">
+Further Reading
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="ch10-on-board-data-handling.html" class="md-nav__link">
+<span class="md-ellipsis">
+10. On-Board Data Handling
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch11-telemetry-tracking-and-command-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+11. Telemetry, Tracking and Command Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch12-radio-frequency-satellite-communications.html" class="md-nav__link">
+<span class="md-ellipsis">
+12. Radio Frequency Satellite Communications
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch13-satellite-link-budget-analysis.html" class="md-nav__link">
+<span class="md-ellipsis">
+13. Satellite Link Budget Analysis
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch14-satellite-antenna-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+14. Satellite Antenna Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch15-digital-signal-processing-for-satellites.html" class="md-nav__link">
+<span class="md-ellipsis">
+15. Digital Signal Processing for Satellites
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch16-optical-satellite-communications.html" class="md-nav__link">
+<span class="md-ellipsis">
+16. Optical Satellite Communications
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch17-earth-observation-and-remote-sensing.html" class="md-nav__link">
+<span class="md-ellipsis">
+17. Earth Observation and Remote Sensing
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch18-global-navigation-satellite-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+18. Global Navigation Satellite Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch19-communication-satellites-and-services.html" class="md-nav__link">
+<span class="md-ellipsis">
+19. Communication Satellites and Services
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch20-scientific-satellites-and-space-observatories.html" class="md-nav__link">
+<span class="md-ellipsis">
+20. Scientific Satellites and Space Observatories
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch21-military-and-intelligence-satellites.html" class="md-nav__link">
+<span class="md-ellipsis">
+21. Military and Intelligence Satellites
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch22-ground-station-design-and-networks.html" class="md-nav__link">
+<span class="md-ellipsis">
+22. Ground Station Design and Networks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch23-mission-operations-and-ground-control.html" class="md-nav__link">
+<span class="md-ellipsis">
+23. Mission Operations and Ground Control
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch24-smallsats-cubesats-and-the-new-space-revolution.html" class="md-nav__link">
+<span class="md-ellipsis">
+24. SmallSats, CubeSats, and the New Space Revolution
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch25-mega-constellations-and-leo-broadband-networks.html" class="md-nav__link">
+<span class="md-ellipsis">
+25. Mega-Constellations and LEO Broadband Networks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch26-artificial-intelligence-and-machine-learning-in.html" class="md-nav__link">
+<span class="md-ellipsis">
+26. Artificial Intelligence and Machine Learning in Space
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch27-on-orbit-servicing-and-space-robotics.html" class="md-nav__link">
+<span class="md-ellipsis">
+27. On-Orbit Servicing and Space Robotics
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch28-space-debris-and-long-term-sustainability.html" class="md-nav__link">
+<span class="md-ellipsis">
+28. Space Debris and Long-Term Sustainability
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch29-quantum-communications-and-satellite-qkd.html" class="md-nav__link">
+<span class="md-ellipsis">
+29. Quantum Communications and Satellite QKD
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch30-6g-and-non-terrestrial-networks.html" class="md-nav__link">
+<span class="md-ellipsis">
+30. 6G and Non-Terrestrial Networks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch31-future-concepts-and-emerging-space-technologies.html" class="md-nav__link">
+<span class="md-ellipsis">
+31. Future Concepts and Emerging Space Technologies
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="classical-orbital-elements-and-coordinate.html" class="md-nav__link">
+<span class="md-ellipsis">
+Classical Orbital Elements and Coordinate Transformations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="satellite-frequency-allocations.html" class="md-nav__link">
+<span class="md-ellipsis">
+Satellite Frequency Allocations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="launch-vehicle-specifications.html" class="md-nav__link">
+<span class="md-ellipsis">
+Launch Vehicle Specifications
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="link-budget-templates-and-worked-examples.html" class="md-nav__link">
+<span class="md-ellipsis">
+Link Budget Templates and Worked Examples
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="key-standards-software-tools-and-references.html" class="md-nav__link">
+<span class="md-ellipsis">
+Key Standards, Software Tools, and References
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="bibliography.html" class="md-nav__link">
+<span class="md-ellipsis">
+Bibliography
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#sec-tcs_intro" class="md-nav__link">
+<span class="md-ellipsis">
+9.1 Introduction and Design Philosophy
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-heat_transfer" class="md-nav__link">
+<span class="md-ellipsis">
+9.2 Heat Transfer Fundamentals in the Space Environment
+</span>
+</a>
+<nav class="md-nav" aria-label="9.2 Heat Transfer Fundamentals in the Space Environment">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-conduction" class="md-nav__link">
+<span class="md-ellipsis">
+9.2.1 Conduction
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-radiation" class="md-nav__link">
+<span class="md-ellipsis">
+9.2.2 Thermal Radiation
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-no_convection" class="md-nav__link">
+<span class="md-ellipsis">
+9.2.3 Absence of Convection
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-orbital_environment" class="md-nav__link">
+<span class="md-ellipsis">
+9.3 The Orbital Thermal Environment
+</span>
+</a>
+<nav class="md-nav" aria-label="9.3 The Orbital Thermal Environment">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-solar_irradiance" class="md-nav__link">
+<span class="md-ellipsis">
+9.3.1 Solar Irradiance
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-earth_ir_albedo" class="md-nav__link">
+<span class="md-ellipsis">
+9.3.2 Earth Infrared Emission and Albedo
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-energy_balance" class="md-nav__link">
+<span class="md-ellipsis">
+9.3.3 Spacecraft Energy Balance
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-passive_tcs" class="md-nav__link">
+<span class="md-ellipsis">
+9.4 Passive Thermal Control
+</span>
+</a>
+<nav class="md-nav" aria-label="9.4 Passive Thermal Control">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-mli" class="md-nav__link">
+<span class="md-ellipsis">
+9.4.1 Multilayer Insulation
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-osr" class="md-nav__link">
+<span class="md-ellipsis">
+9.4.2 Optical Solar Reflectors
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-heat_pipes" class="md-nav__link">
+<span class="md-ellipsis">
+9.4.3 Heat Pipes
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-active_tcs" class="md-nav__link">
+<span class="md-ellipsis">
+9.5 Active Thermal Control
+</span>
+</a>
+<nav class="md-nav" aria-label="9.5 Active Thermal Control">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-heaters" class="md-nav__link">
+<span class="md-ellipsis">
+9.5.1 Electrical Heaters
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-louvers" class="md-nav__link">
+<span class="md-ellipsis">
+9.5.2 Louvers
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-mpfl" class="md-nav__link">
+<span class="md-ellipsis">
+9.5.3 Mechanically Pumped Fluid Loops
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-cryocoolers" class="md-nav__link">
+<span class="md-ellipsis">
+9.5.4 Cryocoolers
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-tec" class="md-nav__link">
+<span class="md-ellipsis">
+9.5.5 Thermoelectric Coolers (Peltier Devices)
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-tim" class="md-nav__link">
+<span class="md-ellipsis">
+9.6 Thermal Interface Materials
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-tmm" class="md-nav__link">
+<span class="md-ellipsis">
+9.7 Thermal Mathematical Modelling
+</span>
+</a>
+<nav class="md-nav" aria-label="9.7 Thermal Mathematical Modelling">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-gmm" class="md-nav__link">
+<span class="md-ellipsis">
+9.7.1 Geometric Math Model and View Factor Calculation
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-node_network" class="md-nav__link">
+<span class="md-ellipsis">
+9.7.2 Node Network and Conductors
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-analysis_cases" class="md-nav__link">
+<span class="md-ellipsis">
+9.7.3 Thermal Analysis Cases
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-thermal_testing" class="md-nav__link">
+<span class="md-ellipsis">
+9.8 Thermal Testing and Verification
+</span>
+</a>
+<nav class="md-nav" aria-label="9.8 Thermal Testing and Verification">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-thermal_balance" class="md-nav__link">
+<span class="md-ellipsis">
+9.8.1 Thermal Balance Test
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-thermal_cycling" class="md-nav__link">
+<span class="md-ellipsis">
+9.8.2 Thermal Cycling
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-special_cases" class="md-nav__link">
+<span class="md-ellipsis">
+9.9 Special Thermal Design Challenges
+</span>
+</a>
+<nav class="md-nav" aria-label="9.9 Special Thermal Design Challenges">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-cryogenic_instruments" class="md-nav__link">
+<span class="md-ellipsis">
+9.9.1 Cryogenic Instrument Thermal Design
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-battery_thermal" class="md-nav__link">
+<span class="md-ellipsis">
+9.9.2 Battery Thermal Management
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-orbit_thermal" class="md-nav__link">
+<span class="md-ellipsis">
+9.9.3 Thermal Control for Different Orbit Regimes
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-design_example" class="md-nav__link">
+<span class="md-ellipsis">
+9.10 Design Example: LEO Earth Observation Satellite Thermal Control
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-tcs_summary" class="md-nav__link">
+<span class="md-ellipsis">
+9.11 Summary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#further-reading" class="md-nav__link">
+<span class="md-ellipsis">
+Further Reading
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="ch-thermal_control">Chapter 9: Thermal Control Systems<a class="headerlink" href="#ch-thermal_control" title="Permanent link">&para;</a></h1>
+<div class="admonition info box-keybox kind-concept">
+<p><strong>Key Concepts in This Chapter</strong></p>
+<ul>
+<li>
+<p>Heat transfer mechanisms in the space environment: conduction, radiation, and the absence of convection</p>
+</li>
+<li>
+<p>Orbital thermal environment characterisation including solar, planetary infrared, and albedo heat loads</p>
+</li>
+<li>
+<p>Passive thermal control: multilayer insulation, optical coatings, and heat pipes</p>
+</li>
+<li>
+<p>Active thermal control: heaters, louvers, mechanically pumped fluid loops, and cryocoolers</p>
+</li>
+<li>
+<p>Thermal mathematical modelling methodology and verification by test</p>
+</li>
+<li>
+<p>Special thermal design challenges: cryogenic instruments and battery thermal management</p>
+</li>
+</ul>
+</div>
+<h2 id="sec-tcs_intro"><span class="secnum">9.1</span> Introduction and Design Philosophy<a class="headerlink" href="#sec-tcs_intro" title="Permanent link">&para;</a></h2>
+<p>The thermal control system (TCS) of a spacecraft is responsible for maintaining all components within their allowable temperature ranges throughout every phase of the mission, from integration and test on the ground to end-of-life on-orbit operations. Unlike terrestrial engineering where convection dominates heat transfer, spacecraft thermal engineers must work exclusively with conduction and radiation, two fundamentally different mechanisms that demand careful systems-level reasoning.</p>
+<p>The consequence of thermal failure can be severe. Battery cells that freeze below <span class="arithmatex">\(-20\,^{\circ}\)</span>C lose capacity irreversibly; reaction wheels overheat and seize if their lubricant degrades above <span class="arithmatex">\(+60\,^{\circ}\)</span>C; optical detector arrays must often be maintained within <span class="arithmatex">\(\pm 0.1\,^{\circ}\)</span>C to preserve calibration stability; and electronic components exposed to thermal cycling beyond their qualified range rapidly develop solder joint fatigue. The thermal design engineer must simultaneously satisfy conflicting requirements: electronics generate heat that must be rejected to space, yet sensitive detectors must be shielded from solar and planetary heating, and batteries must be kept warm during eclipse.</p>
+<p>This chapter presents the fundamental physics governing spacecraft thermal behaviour, surveys the suite of passive and active thermal control hardware available to the designer, introduces the computational methods used to model and predict temperatures, and describes the test methodologies used to validate thermal models prior to launch (<a href="bibliography.html#ref-gilmore2002">Gilmore 2002</a>).</p>
+<h2 id="sec-heat_transfer"><span class="secnum">9.2</span> Heat Transfer Fundamentals in the Space Environment<a class="headerlink" href="#sec-heat_transfer" title="Permanent link">&para;</a></h2>
+<h3 id="subsec-conduction"><span class="secnum">9.2.1</span> Conduction<a class="headerlink" href="#subsec-conduction" title="Permanent link">&para;</a></h3>
+<p>Heat conduction within solid bodies obeys Fourier’s Law. For steady-state one-dimensional conduction through a slab of cross-sectional area <span class="arithmatex">\(A\)</span>, thermal conductivity <span class="arithmatex">\(k\)</span>, and temperature gradient <span class="arithmatex">\(dT/dx\)</span>:</p>
+<div id="eq-fourier"></div>
+<div class="arithmatex">\[Q_{\mathrm{cond}} = -k \, A \, \frac{dT}{dx}\tag{9.1}\]</div>
+<p>For a composite multi-layer structure (e.g., a panel sandwich of aluminium face-sheets and honeycomb core), thermal resistances are combined in series or parallel analogously to electrical resistors. The thermal resistance of a layer of thickness <span class="arithmatex">\(\delta\)</span> is:</p>
+<div id="eq-cond_resistance"></div>
+<div class="arithmatex">\[R_{\mathrm{cond}} = \frac{\delta}{k \, A}\tag{9.2}\]</div>
+<p>Aluminium alloy Al-6061 has <span class="arithmatex">\(k \approx 167\,\mathrm{W\,m^{-1}\,K^{-1}}\)</span>, making it the dominant structural material for heat spreading. Titanium (<span class="arithmatex">\(k \approx 7\,\mathrm{W\,m^{-1}\,K^{-1}}\)</span>) is used as a thermal isolator, while carbon-fibre reinforced polymer (CFRP) panels used for dimensional stability have <span class="arithmatex">\(k\)</span> ranging from <span class="arithmatex">\(5\)</span> to <span class="arithmatex">\(700\,\mathrm{W\,m^{-1}\,K^{-1}}\)</span> depending on fibre orientation. Thermal interface resistance between mechanical surfaces can dominate the conductive path; this is discussed in <a href="#subsec-tim">Section 9.6</a>.</p>
+<h3 id="subsec-radiation"><span class="secnum">9.2.2</span> Thermal Radiation<a class="headerlink" href="#subsec-radiation" title="Permanent link">&para;</a></h3>
+<p>All surfaces emit thermal radiation according to the Stefan-Boltzmann law. For a surface of emittance <span class="arithmatex">\(\varepsilon\)</span>, temperature <span class="arithmatex">\(T\)</span>, and area <span class="arithmatex">\(A\)</span>:</p>
+<div id="eq-stefan_boltzmann_ch09"></div>
+<div class="arithmatex">\[Q_{\mathrm{rad}} = \varepsilon \, \sigma \, T^4 \, A\tag{9.3}\]</div>
+<p>where <span class="arithmatex">\(\sigma = 5.6704 \times 10^{-8}\,\mathrm{W\,m^{-2}\,K^{-4}}\)</span> is the Stefan-Boltzmann constant. The net radiation exchange between two large parallel plates of emittances <span class="arithmatex">\(\varepsilon_1\)</span> and <span class="arithmatex">\(\varepsilon_2\)</span> at temperatures <span class="arithmatex">\(T_1\)</span> and <span class="arithmatex">\(T_2\)</span> is:</p>
+<div id="eq-parallel_plates"></div>
+<div class="arithmatex">\[Q_{\mathrm{net}} = \frac{\sigma (T_1^4 - T_2^4)}{\frac{1}{\varepsilon_1} + \frac{1}{\varepsilon_2} - 1}\tag{9.4}\]</div>
+<p>For arbitrarily oriented surfaces, the geometric view factor <span class="arithmatex">\(F_{ij}\)</span> represents the fraction of diffuse radiation leaving surface <span class="arithmatex">\(i\)</span> that is intercepted by surface <span class="arithmatex">\(j\)</span>. The view factor integral is:</p>
+<div id="eq-view_factor"></div>
+<div class="arithmatex">\[F_{ij} = \frac{1}{\pi A_i} \int\!\!\int_{A_i} \int\!\!\int_{A_j}
+\frac{\cos\theta_i \, \cos\theta_j}{\pi r^2} \, dA_i \, dA_j\tag{9.5}\]</div>
+<p>where <span class="arithmatex">\(\theta_i\)</span> and <span class="arithmatex">\(\theta_j\)</span> are the angles between the surface normals and the line joining the area elements, and <span class="arithmatex">\(r\)</span> is the distance between them. View factors obey the reciprocity relation <span class="arithmatex">\(A_i F_{ij} = A_j F_{j i}\)</span> and the enclosure summation rule <span class="arithmatex">\(\sum_j F_{ij} = 1\)</span>.</p>
+<h3 id="subsec-no_convection"><span class="secnum">9.2.3</span> Absence of Convection<a class="headerlink" href="#subsec-no_convection" title="Permanent link">&para;</a></h3>
+<p>In the space vacuum (<span class="arithmatex">\(p &lt; 10^{-6}\,\mathrm{Pa}\)</span>), there are essentially no gas molecules available to carry heat convectively. This has profound implications: heat generated inside a spacecraft can only leave by radiation from an external surface, with conduction providing the internal transport path. The thermal engineer must therefore create a low-resistance conductive path from every heat-generating component to a radiating surface, while simultaneously insulating the spacecraft from external heat fluxes. In pressurised volumes (crew modules, battery enclosures) convective effects are present and must be accounted for.</p>
+<h2 id="sec-orbital_environment"><span class="secnum">9.3</span> The Orbital Thermal Environment<a class="headerlink" href="#sec-orbital_environment" title="Permanent link">&para;</a></h2>
+<h3 id="subsec-solar_irradiance"><span class="secnum">9.3.1</span> Solar Irradiance<a class="headerlink" href="#subsec-solar_irradiance" title="Permanent link">&para;</a></h3>
+<p>The solar irradiance (solar constant) at 1 AU from the Sun is:</p>
+<div id="eq-solar_constant_ch09"></div>
+<div class="arithmatex">\[S_0 = 1361 \pm 0.5 \,\mathrm{W/m^2}\tag{9.6}\]</div>
+<p>This value varies seasonally by <span class="arithmatex">\(\pm 3.5\%\)</span> due to Earth’s orbital eccentricity, reaching a maximum of approximately <span class="arithmatex">\(1414\,\mathrm{W/m^2}\)</span> at perihelion (January) and a minimum of <span class="arithmatex">\(1322\,\mathrm{W/m^2}\)</span> at aphelion (July). For missions at other distances from the Sun, the irradiance scales as the inverse square:</p>
+<div id="eq-solar_distance"></div>
+<div class="arithmatex">\[S(r) = S_0 \left(\frac{1\,\mathrm{AU}}{r}\right)^2\tag{9.7}\]</div>
+<p>yielding <span class="arithmatex">\(S = 9126\,\mathrm{W/m^2}\)</span> at Mercury (0.387 AU) and <span class="arithmatex">\(S = 50\,\mathrm{W/m^2}\)</span> at Jupiter (5.2 AU).</p>
+<h3 id="subsec-earth_ir_albedo"><span class="secnum">9.3.2</span> Earth Infrared Emission and Albedo<a class="headerlink" href="#subsec-earth_ir_albedo" title="Permanent link">&para;</a></h3>
+<p>The Earth emits thermal infrared radiation at a disk-averaged flux of approximately:</p>
+<div id="eq-earth_ir_ch09"></div>
+<div class="arithmatex">\[Q_{\mathrm{IR}} = 250 \pm 20 \,\mathrm{W/m^2}\tag{9.8}\]</div>
+<p>This flux varies with latitude, season, and cloud cover. For thermal design, worst-case hot and cold values must be separately analysed. The Earth also reflects solar radiation with an average albedo factor of:</p>
+<div id="eq-albedo_factor"></div>
+<div class="arithmatex">\[a = 0.30 \pm 0.05\tag{9.9}\]</div>
+<p>The albedo heat flux absorbed by a spacecraft surface facing the Earth is:</p>
+<div id="eq-albedo_heat"></div>
+<div class="arithmatex">\[Q_{\mathrm{alb}} = a \cdot S \cdot \alpha_s \cdot A_{\mathrm{proj}} \cdot F_{\mathrm{Earth}}\tag{9.10}\]</div>
+<p>where <span class="arithmatex">\(\alpha_s\)</span> is the solar absorptance of the surface, <span class="arithmatex">\(A_{\mathrm{proj}}\)</span> is the projected area toward the Earth, and <span class="arithmatex">\(F_{\mathrm{Earth}}\)</span> is the view factor from the surface to the Earth disk.</p>
+<h3 id="subsec-energy_balance"><span class="secnum">9.3.3</span> Spacecraft Energy Balance<a class="headerlink" href="#subsec-energy_balance" title="Permanent link">&para;</a></h3>
+<p>The transient energy balance for a spacecraft thermal node of mass <span class="arithmatex">\(M\)</span> and specific heat <span class="arithmatex">\(C_p\)</span> is:</p>
+<div id="eq-energy_balance"></div>
+<div class="arithmatex">\[M \, C_p \, \frac{dT}{dt} = Q_{\mathrm{solar}} \cdot \alpha_s \cdot A_{\mathrm{proj}}
++ Q_{\mathrm{IR}} \cdot \varepsilon \cdot A_{\mathrm{Earth-facing}}
++ Q_{\mathrm{alb}} \cdot \alpha_s \cdot A_{\mathrm{proj}}
++ Q_{\mathrm{int}}
+- \varepsilon \, \sigma \, T^4 \, A_{\mathrm{rad}}\tag{9.11}\]</div>
+<p>In steady-state (<span class="arithmatex">\(dT/dt = 0\)</span>), the equilibrium temperature of a simple isothermal spacecraft body is:</p>
+<div id="eq-equilibrium_temp"></div>
+<div class="arithmatex">\[T_{\mathrm{eq}} = \left[ \frac{\alpha_s \, A_{\mathrm{sun}} \, S
++ \varepsilon \, Q_{\mathrm{IR}} \, A_{\mathrm{earth}}
++ Q_{\mathrm{int}}}
+{\varepsilon \, \sigma \, A_{\mathrm{rad}}} \right]^{1/4}\tag{9.12}\]</div>
+<p>The ratio <span class="arithmatex">\(\alpha_s/\varepsilon\)</span> is arguably the most important single parameter in spacecraft thermal design. A high ratio causes the spacecraft to run hot; a low ratio causes it to run cold. Passive thermal control is largely the art of selecting surface finishes with appropriate <span class="arithmatex">\(\alpha_s/\varepsilon\)</span> ratios.</p>
+<div class="tbl" id="tab-thermo_optical">
+<div class="tbl-caption"><strong>Table 9.1.</strong> Thermo-optical properties of common spacecraft surface finishes (BOL = Beginning of Life). Note that <span class="math inline">\(\alpha_s\)</span> degrades with radiation dose (UV darkening).</div>
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Surface Finish</strong></th>
+<th style="text-align: center;"><span class="math inline">\(\alpha_s\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(\varepsilon\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(\alpha_s/\varepsilon\)</span></th>
+<th style="text-align: center;"><strong>Notes</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Polished aluminium (bare)</td>
+<td style="text-align: center;">0.09</td>
+<td style="text-align: center;">0.03</td>
+<td style="text-align: center;">3.0</td>
+<td style="text-align: center;">Gets very hot, degrades</td>
+</tr>
+<tr>
+<td style="text-align: left;">Anodised aluminium (black)</td>
+<td style="text-align: center;">0.87</td>
+<td style="text-align: center;">0.90</td>
+<td style="text-align: center;">0.97</td>
+<td style="text-align: center;">Good radiator, absorbs solar</td>
+</tr>
+<tr>
+<td style="text-align: left;">Alodine (Iridite) treatment</td>
+<td style="text-align: center;">0.15</td>
+<td style="text-align: center;">0.08</td>
+<td style="text-align: center;">1.88</td>
+<td style="text-align: center;">Common finish, moderate</td>
+</tr>
+<tr>
+<td style="text-align: left;">Optical Solar Reflector (OSR)</td>
+<td style="text-align: center;">0.07</td>
+<td style="text-align: center;">0.80</td>
+<td style="text-align: center;">0.09</td>
+<td style="text-align: center;">Excellent radiator</td>
+</tr>
+<tr>
+<td style="text-align: left;">White paint (S13G-LO)</td>
+<td style="text-align: center;">0.20</td>
+<td style="text-align: center;">0.85</td>
+<td style="text-align: center;">0.24</td>
+<td style="text-align: center;">Stable, widely used</td>
+</tr>
+<tr>
+<td style="text-align: left;">Black paint (Aeroglaze Z306)</td>
+<td style="text-align: center;">0.92</td>
+<td style="text-align: center;">0.89</td>
+<td style="text-align: center;">1.03</td>
+<td style="text-align: center;">Absorbs all wavelengths</td>
+</tr>
+<tr>
+<td style="text-align: left;">Aluminised Kapton (MLI outer)</td>
+<td style="text-align: center;">0.38</td>
+<td style="text-align: center;">0.67</td>
+<td style="text-align: center;">0.57</td>
+<td style="text-align: center;">Flexible film</td>
+</tr>
+<tr>
+<td style="text-align: left;">Aluminised Mylar</td>
+<td style="text-align: center;">0.14</td>
+<td style="text-align: center;">0.02</td>
+<td style="text-align: center;">7.0</td>
+<td style="text-align: center;">MLI inner layers only</td>
+</tr>
+<tr>
+<td style="text-align: left;">Gold plating</td>
+<td style="text-align: center;">0.25</td>
+<td style="text-align: center;">0.02</td>
+<td style="text-align: center;">12.5</td>
+<td style="text-align: center;">Keeps surfaces warm</td>
+</tr>
+<tr>
+<td style="text-align: left;">Second-surface silver mirror</td>
+<td style="text-align: center;">0.07</td>
+<td style="text-align: center;">0.80</td>
+<td style="text-align: center;">0.09</td>
+<td style="text-align: center;">Similar to OSR</td>
+</tr>
+<tr>
+<td style="text-align: left;">ITO-coated Kapton</td>
+<td style="text-align: center;">0.37</td>
+<td style="text-align: center;">0.79</td>
+<td style="text-align: center;">0.47</td>
+<td style="text-align: center;">ESD-safe flexible cover</td>
+</tr>
+<tr>
+<td style="text-align: left;">Carbon composite (CFRP)</td>
+<td style="text-align: center;">0.88</td>
+<td style="text-align: center;">0.85</td>
+<td style="text-align: center;">1.04</td>
+<td style="text-align: center;">Structure material</td>
+</tr>
+</tbody>
+</table>
+</div></div>
+<h2 id="sec-passive_tcs"><span class="secnum">9.4</span> Passive Thermal Control<a class="headerlink" href="#sec-passive_tcs" title="Permanent link">&para;</a></h2>
+<p>Passive thermal control encompasses all techniques that operate without power consumption: surface coatings, multilayer insulation blankets, heat pipes (which require no electrical power), and structural design for thermal paths.</p>
+<h3 id="subsec-mli"><span class="secnum">9.4.1</span> Multilayer Insulation<a class="headerlink" href="#subsec-mli" title="Permanent link">&para;</a></h3>
+<p>Multilayer insulation (MLI) blankets are the workhorse of spacecraft thermal control. A typical blanket consists of 10 to 30 layers of <span class="arithmatex">\(6\)</span>–<span class="arithmatex">\(25\,\mu\mathrm{m}\)</span> Mylar or Kapton film with a thin vacuum-deposited aluminium coating, separated by Dacron mesh spacers to prevent direct contact between layers. The Dacron spacers have very low area contact fraction (typically <span class="arithmatex">\(\sim 2\%\)</span>), minimising conductive bridging.</p>
+<p>The effective emittance <span class="arithmatex">\(\varepsilon^*\)</span> of an <span class="arithmatex">\(N\)</span>-layer MLI blanket, accounting for both radiation and residual conduction through spacers, can be estimated. For a perfect MLI with <span class="arithmatex">\(N\)</span> shields of individual emittance <span class="arithmatex">\(\varepsilon_s\)</span> (both sides), the radiation component gives:</p>
+<div id="eq-mli_rad"></div>
+<div class="arithmatex">\[\frac{1}{\varepsilon^*_{\mathrm{rad}}} = \frac{1}{\varepsilon_1} + \frac{N}{\varepsilon_s / 2} + \frac{1}{\varepsilon_2} - (N+1)
+\approx \frac{N+2}{\varepsilon_s}\tag{9.13}\]</div>
+<p>For adjacent layer pairs with emittances <span class="arithmatex">\(\varepsilon_a\)</span> and <span class="arithmatex">\(\varepsilon_b\)</span>, the effective emittance of that pair is:</p>
+<div id="eq-layer_pair"></div>
+<div class="arithmatex">\[\varepsilon_{\mathrm{pair}} = \frac{\varepsilon_a \, \varepsilon_b}{\varepsilon_a + \varepsilon_b - \varepsilon_a \, \varepsilon_b}\tag{9.14}\]</div>
+<p>The total heat flux through an <span class="arithmatex">\(N\)</span>-shield MLI in the radiation limit is:</p>
+<div id="eq-mli_heat_flux"></div>
+<div class="arithmatex">\[Q_{\mathrm{MLI}} = \frac{\sigma (T_1^4 - T_2^4)}{N+2} \cdot A \cdot \varepsilon^*\tag{9.15}\]</div>
+<p>In practice, effective emittances <span class="arithmatex">\(\varepsilon^* \approx 0.010\)</span>–<span class="arithmatex">\(0.025\)</span> are achievable for well-fabricated 20-layer blankets. The actual performance is degraded by edges, seams, penetrations (for cables, tubes, and bolts), and handling damage. A conservative design value of <span class="arithmatex">\(\varepsilon^* = 0.03\)</span>–<span class="arithmatex">\(0.05\)</span> is often used for budgeting.</p>
+<div class="tbl" id="tab-mli_performance">
+<div class="tbl-caption"><strong>Table 9.2.</strong> MLI blanket performance data for typical configurations used in spacecraft thermal control.</div>
+<div class="tbl-scroll">
+<table>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Configuration</strong></td>
+<td style="text-align: center;"><strong>Layers</strong></td>
+<td style="text-align: center;"><span class="math inline">\(\varepsilon^*\)</span></td>
+<td style="text-align: center;"><strong>Heat Flux (W/m<span class="math inline">\(^2\)</span>)</strong></td>
+<td style="text-align: left;"><strong>Application</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"><strong>(typical)</strong></td>
+<td style="text-align: center;"><strong>(at 300–77 K)</strong></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">Double Aluminised Mylar (DAM) + Dacron</td>
+<td style="text-align: center;">10</td>
+<td style="text-align: center;">0.030</td>
+<td style="text-align: center;">3.5</td>
+<td style="text-align: left;">Instrument covers</td>
+</tr>
+<tr>
+<td style="text-align: left;">DAM + Dacron</td>
+<td style="text-align: center;">20</td>
+<td style="text-align: center;">0.015</td>
+<td style="text-align: center;">1.8</td>
+<td style="text-align: left;">Spacecraft body</td>
+</tr>
+<tr>
+<td style="text-align: left;">Aluminised Kapton + Dacron</td>
+<td style="text-align: center;">20</td>
+<td style="text-align: center;">0.025</td>
+<td style="text-align: center;">2.9</td>
+<td style="text-align: left;">External (UV stable)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Single-sided aluminised Mylar</td>
+<td style="text-align: center;">30</td>
+<td style="text-align: center;">0.008</td>
+<td style="text-align: center;">1.0</td>
+<td style="text-align: left;">Cryogenic dewar</td>
+</tr>
+<tr>
+<td style="text-align: left;">NRC-2 foil</td>
+<td style="text-align: center;">10</td>
+<td style="text-align: center;">0.050</td>
+<td style="text-align: center;">5.8</td>
+<td style="text-align: left;">High-temperature</td>
+</tr>
+</tbody>
+</table>
+</div></div>
+<h3 id="subsec-osr"><span class="secnum">9.4.2</span> Optical Solar Reflectors<a class="headerlink" href="#subsec-osr" title="Permanent link">&para;</a></h3>
+<p>Optical solar reflectors (OSRs) consist of thin (<span class="arithmatex">\(0.1\)</span>–<span class="arithmatex">\(0.5\,\mathrm{mm}\)</span>) fused silica or ceria-stabilised glass tiles with a silver or aluminium metallic backing. The glass transmits solar radiation (<span class="arithmatex">\(\lambda &lt; 5\,\mu\mathrm{m}\)</span>) and reflects it from the backing, giving a very low solar absorptance. The glass itself is opaque to thermal infrared (<span class="arithmatex">\(\lambda &gt; 5\,\mu\mathrm{m}\)</span>) and radiates with high emittance. The resulting thermo-optical properties are excellent:</p>
+<ul>
+<li>
+<p>Solar absorptance: <span class="arithmatex">\(\alpha_s = 0.06\)</span>–<span class="arithmatex">\(0.08\)</span></p>
+</li>
+<li>
+<p>Infrared emittance: <span class="arithmatex">\(\varepsilon = 0.78\)</span>–<span class="arithmatex">\(0.82\)</span></p>
+</li>
+<li>
+<p>Ratio: <span class="arithmatex">\(\alpha_s / \varepsilon \approx 0.08\)</span>–<span class="arithmatex">\(0.10\)</span></p>
+</li>
+<li>
+<p>End-of-life (post-radiation): <span class="arithmatex">\(\alpha_s \approx 0.10\)</span>–<span class="arithmatex">\(0.13\)</span> (slight UV darkening of glass)</p>
+</li>
+</ul>
+<p>OSRs are radiation-stable compared to paints (which suffer UV darkening and particle radiation damage). They are commonly used on GEO satellite radiator panels where the 15+ year mission duration demands BOL-to-EOL stability. Typical radiator specific rejection capacity with OSR cover is <span class="arithmatex">\(250\)</span>–<span class="arithmatex">\(300\,\mathrm{W/m^2}\)</span>.</p>
+<h3 id="subsec-heat_pipes"><span class="secnum">9.4.3</span> Heat Pipes<a class="headerlink" href="#subsec-heat_pipes" title="Permanent link">&para;</a></h3>
+<p>Heat pipes are passive two-phase heat transport devices exploiting the latent heat of vaporisation of a working fluid. The principle of operation involves:</p>
+<ol>
+<li>
+<p><strong>Evaporator</strong>: heat input vaporises the working fluid, raising local vapour pressure.</p>
+</li>
+<li>
+<p><strong>Vapour transport</strong>: pressure difference drives vapour flow through the central vapour core from evaporator to condenser.</p>
+</li>
+<li>
+<p><strong>Condenser</strong>: vapour condenses, releasing latent heat to the heat sink, and the liquid is returned to the evaporator.</p>
+</li>
+<li>
+<p><strong>Wick</strong>: a porous capillary structure (screen mesh, sintered powder, grooves) pumps liquid by capillary action back to the evaporator, requiring no mechanical pump.</p>
+</li>
+</ol>
+<p>The maximum heat transport capability (limited by capillary pumping) is:</p>
+<div id="eq-heat_pipe_capacity"></div>
+<div class="arithmatex">\[Q_{\max} = \frac{r_e A_v \rho_v h_{fg}}{\mu_v L_{\mathrm{eff}}}
+\left[ \frac{2\sigma_l}{r_c} - \rho_l g L \sin\phi \right]\tag{9.16}\]</div>
+<p>where <span class="arithmatex">\(r_e\)</span> is the effective pore radius, <span class="arithmatex">\(A_v\)</span> is the vapour space cross-sectional area, <span class="arithmatex">\(\rho_v\)</span> is the vapour density, <span class="arithmatex">\(h_{fg}\)</span> is the latent heat of vaporisation, <span class="arithmatex">\(\mu_v\)</span> is the vapour dynamic viscosity, <span class="arithmatex">\(L_{\mathrm{eff}}\)</span> is the effective length, <span class="arithmatex">\(\sigma_l\)</span> is the liquid surface tension, <span class="arithmatex">\(r_c\)</span> is the capillary pore radius, and <span class="arithmatex">\(\phi\)</span> is the tilt angle relative to horizontal.</p>
+<p>The most common spacecraft heat pipe working fluid is ammonia (NH<span class="arithmatex">\(_3\)</span>), which has an excellent figure of merit <span class="arithmatex">\(N_l = \sigma_l \rho_l h_{fg} / \mu_l\)</span> in the temperature range <span class="arithmatex">\(-60\)</span> to <span class="arithmatex">\(+60\,^{\circ}\)</span>C covering the typical spacecraft operating range. Propylene (<span class="arithmatex">\(-50\)</span> to <span class="arithmatex">\(+45\,^{\circ}\)</span>C) and ethane (<span class="arithmatex">\(-120\)</span> to <span class="arithmatex">\(-10\,^{\circ}\)</span>C) serve lower temperature applications.</p>
+<p>A <em>variable conductance heat pipe</em> (VCHP) contains a reservoir of non-condensable gas (NCG, typically nitrogen or helium) connected to the condenser end. As the heat source temperature rises, the working fluid vapour pressure increases and compresses the NCG, exposing more condenser area and increasing the effective thermal conductance. This provides passive temperature control without any power input. The conductance varies as:</p>
+<div id="eq-vchp_conductance"></div>
+<div class="arithmatex">\[G_{\mathrm{eff}} = G_{\max} \cdot F_{\mathrm{condenser}}(T_{\mathrm{source}})\tag{9.17}\]</div>
+<p>Loop heat pipes (LHPs) use the same two-phase cycle but with a mechanically separate evaporator/compensation chamber and remote condenser connected by flexible transport lines, enabling heat transport over distances of <span class="arithmatex">\(10\)</span>–<span class="arithmatex">\(30\,\mathrm{m}\)</span>. LHPs are used on the GOES-R weather satellite series and ESA’s MetOp spacecraft.</p>
+<h2 id="sec-active_tcs"><span class="secnum">9.5</span> Active Thermal Control<a class="headerlink" href="#sec-active_tcs" title="Permanent link">&para;</a></h2>
+<h3 id="subsec-heaters"><span class="secnum">9.5.1</span> Electrical Heaters<a class="headerlink" href="#subsec-heaters" title="Permanent link">&para;</a></h3>
+<p>Electrical heaters are used to maintain components above their minimum allowable temperature (MAT). Two distinct classes are employed:</p>
+<p><strong>Survival heaters</strong> are powered from the battery during eclipse or emergency power mode. They maintain non-operating components (e.g., propulsion lines, battery cells during launch, pyrotechnic initiators) above their survival lower limit (SLL). Typical temperature set-point: <span class="arithmatex">\(-20\,^{\circ}\)</span>C.</p>
+<p><strong>Operational heaters</strong> are thermostatically controlled (via bimetal thermostats or software-commanded solid-state relays) during normal operations. They compensate for variations in internal dissipation and orbital environment. Heater sizing requires:</p>
+<div id="eq-heater_power"></div>
+<div class="arithmatex">\[P_{\mathrm{heater}} = Q_{\mathrm{loss}} - Q_{\mathrm{int,\min}} = (\varepsilon \sigma T^4 A + G \Delta T) - Q_{\mathrm{int,\min}}\tag{9.18}\]</div>
+<p>Resistive foil heaters (Kapton-encapsulated etched-foil elements) are applied directly to component surfaces or structural panels. Typical power densities are <span class="arithmatex">\(0.5\)</span>–<span class="arithmatex">\(3\,\mathrm{W/cm^2}\)</span>.</p>
+<h3 id="subsec-louvers"><span class="secnum">9.5.2</span> Louvers<a class="headerlink" href="#subsec-louvers" title="Permanent link">&para;</a></h3>
+<p>Louver assemblies (also called jalousie shutters) provide variable effective emittance by opening and closing bi-metallic actuated blades over a radiator surface. As temperature rises, the blades open, exposing the high-emittance radiator coating; as temperature falls, blades close and the low-emittance blade back-surface reduces radiative loss.</p>
+<ul>
+<li>
+<p>Fully open effective emittance: <span class="arithmatex">\(\varepsilon_{\mathrm{open}} \approx 0.60\)</span>–<span class="arithmatex">\(0.70\)</span></p>
+</li>
+<li>
+<p>Fully closed effective emittance: <span class="arithmatex">\(\varepsilon_{\mathrm{closed}} \approx 0.05\)</span>–<span class="arithmatex">\(0.10\)</span></p>
+</li>
+<li>
+<p>Temperature control range: <span class="arithmatex">\(\pm 5\)</span>–<span class="arithmatex">\(10\,^{\circ}\)</span>C</p>
+</li>
+<li>
+<p>Control range (open to closed): <span class="arithmatex">\(15\)</span>–<span class="arithmatex">\(30\,^{\circ}\)</span>C</p>
+</li>
+</ul>
+<p>Louvers require no power and represent a well-proven heritage technology (used since early US and Soviet satellites). Their disadvantages are mass, complexity, potential for jamming, and susceptibility to contamination of sliding surfaces.</p>
+<h3 id="subsec-mpfl"><span class="secnum">9.5.3</span> Mechanically Pumped Fluid Loops<a class="headerlink" href="#subsec-mpfl" title="Permanent link">&para;</a></h3>
+<p>For high-power spacecraft (<span class="arithmatex">\(&gt;5\,\mathrm{kW}\)</span> total dissipation), mechanically pumped single-phase fluid loops offer efficient heat collection from distributed sources and rejection at centralised radiators. The heat transport capacity is:</p>
+<div id="eq-fluid_loop"></div>
+<div class="arithmatex">\[Q = \dot{m} \, C_p \, \Delta T = \rho \, \dot{V} \, C_p \, (T_{\mathrm{out}} - T_{\mathrm{in}})\tag{9.19}\]</div>
+<p>The International Space Station (ISS) uses two independent mechanically pumped single-phase ammonia loops in the External Active Thermal Control System (EATCS), each capable of rejecting up to <span class="arithmatex">\(70\,\mathrm{kW}\)</span> through large (<span class="arithmatex">\(700\,\mathrm{m^2}\)</span>) deployable radiator panels. Commercial GEO satellites such as Boeing 702 and Airbus Eurostar E3000 use MPFL with Novec 7100 (methoxy-nonafluorobutane, <span class="arithmatex">\(\rho = 1528\,\mathrm{kg/m^3}\)</span>, <span class="arithmatex">\(C_p = 1183\,\mathrm{J\,kg^{-1}\,K^{-1}}\)</span>) as the working fluid, which is non-toxic, non-flammable, and compatible with all spacecraft materials.</p>
+<h3 id="subsec-cryocoolers"><span class="secnum">9.5.4</span> Cryocoolers<a class="headerlink" href="#subsec-cryocoolers" title="Permanent link">&para;</a></h3>
+<p>Cryocoolers are mechanical refrigerators that maintain sensors and detectors at temperatures from <span class="arithmatex">\(4\,\mathrm{K}\)</span> to <span class="arithmatex">\(150\,\mathrm{K}\)</span> by actively pumping heat from the cold stage to a warm rejection point. The thermodynamic efficiency is characterised by the coefficient of performance (COP):</p>
+<div id="eq-cop"></div>
+<div class="arithmatex">\[\mathrm{COP} = \frac{Q_{\mathrm{cold}}}{W_{\mathrm{input}}} = \frac{Q_{\mathrm{cold}}}{Q_{\mathrm{hot}} - Q_{\mathrm{cold}}}\tag{9.20}\]</div>
+<p>The Carnot COP provides the theoretical maximum:</p>
+<div id="eq-cop_carnot"></div>
+<div class="arithmatex">\[\mathrm{COP}_{\mathrm{Carnot}} = \frac{T_{\mathrm{cold}}}{T_{\mathrm{hot}} - T_{\mathrm{cold}}}\tag{9.21}\]</div>
+<p>Practical cryocoolers achieve <span class="arithmatex">\(10\)</span>–<span class="arithmatex">\(30\%\)</span> of Carnot COP. Major types used in space:</p>
+<ul>
+<li>
+<p><strong>Stirling cryocoolers</strong>: linear piston compressor + displacer piston, <span class="arithmatex">\(20\)</span>–<span class="arithmatex">\(100\,\mathrm{K}\)</span> cooling, heritage on IRAS, Landsat, and numerous military IR satellites. Lockheed Martin ACTDP Stirling cooler provides <span class="arithmatex">\(600\,\mathrm{mW}\)</span> at <span class="arithmatex">\(55\,\mathrm{K}\)</span> consuming <span class="arithmatex">\(46\,\mathrm{W}\)</span>.</p>
+</li>
+<li>
+<p><strong>Pulse tube cryocoolers</strong>: no moving displacer (replaced by inertance tube and reservoir), lower vibration than Stirling, <span class="arithmatex">\(30\)</span>–<span class="arithmatex">\(100\,\mathrm{K}\)</span>, used on ASTER/Terra, GOES-R ABI.</p>
+</li>
+<li>
+<p><strong>Joule-Thomson (JT) cryocoolers</strong>: expansion of pre-cooled gas through throttling valve, <span class="arithmatex">\(&lt;20\,\mathrm{K}\)</span> achievable, used as a final stage, no moving parts in cold head.</p>
+</li>
+<li>
+<p><strong>Adiabatic demagnetisation refrigerators (ADR)</strong>: paramagnetic salt demagnetised to reach <span class="arithmatex">\(&lt;1\,\mathrm{K}\)</span>, used on XMM-Newton RGS and Astro-H SXS to achieve <span class="arithmatex">\(50\,\mathrm{mK}\)</span>.</p>
+</li>
+<li>
+<p><strong>Dilution refrigerators</strong>: <span class="arithmatex">\(^3\)</span>He/<span class="arithmatex">\(^4\)</span>He dilution, sub-millikelvin temperatures, planned for future quantum sensor missions.</p>
+</li>
+</ul>
+<p>The James Webb Space Telescope (JWST) Mid-Infrared Instrument (MIRI) operates at <span class="arithmatex">\(6.7\,\mathrm{K}\)</span>, achieved by a dedicated Joule-Thomson cryocooler (the MIRI cooler system, <span class="arithmatex">\(5.6\,\mathrm{W}\)</span> input for <span class="arithmatex">\(160\,\mathrm{mW}\)</span> at <span class="arithmatex">\(6.2\,\mathrm{K}\)</span>) combined with the telescope’s passive cooling to <span class="arithmatex">\(40\,\mathrm{K}\)</span> provided by its L2 orbit and multi-layer sunshield.</p>
+<h3 id="subsec-tec"><span class="secnum">9.5.5</span> Thermoelectric Coolers (Peltier Devices)<a class="headerlink" href="#subsec-tec" title="Permanent link">&para;</a></h3>
+<p>Thermoelectric coolers (TECs) use the Peltier effect: when current flows through a junction of two dissimilar semiconductor materials (bismuth telluride Bi<span class="arithmatex">\(_2\)</span>Te<span class="arithmatex">\(_3\)</span> alloys), heat is pumped from the cold face to the hot face. The heat pumped and electrical power consumed are:</p>
+<div id="eq-tec_cooling"></div>
+<div class="arithmatex">\[Q_{\mathrm{cold}} = \alpha_P \, I \, T_{\mathrm{cold}} - \frac{1}{2} I^2 R - K (T_{\mathrm{hot}} - T_{\mathrm{cold}})\tag{9.22}\]</div>
+<p>where <span class="arithmatex">\(\alpha_P\)</span> is the Seebeck coefficient of the thermocouple pair, <span class="arithmatex">\(I\)</span> is the current, <span class="arithmatex">\(R\)</span> is the electrical resistance, and <span class="arithmatex">\(K\)</span> is the thermal conductance of the module. TECs are used for small precise temperature control applications: focal plane array (FPA) temperature stabilisation (<span class="arithmatex">\(\pm 0.01\,^{\circ}\)</span>C), laser diode temperature control, and electronics boxes where <span class="arithmatex">\(\Delta T &lt; 40\,^{\circ}\)</span>C is needed.</p>
+<h2 id="sec-tim"><span class="secnum">9.6</span> Thermal Interface Materials<a class="headerlink" href="#sec-tim" title="Permanent link">&para;</a></h2>
+<div id="subsec-tim"></div>
+<p>Even highly polished metal surfaces in intimate contact leave microscopic air gaps that dominate thermal resistance at the interface. Thermal interface materials (TIMs) fill these gaps and dramatically reduce contact resistance. The interface thermal resistance is:</p>
+<div id="eq-interface_resistance"></div>
+<div class="arithmatex">\[R_{\mathrm{int}} = \frac{1}{h_c \, A_{\mathrm{contact}}}\tag{9.23}\]</div>
+<p>where <span class="arithmatex">\(h_c\)</span> is the contact conductance (<span class="arithmatex">\(\mathrm{W\,m^{-2}\,K^{-1}}\)</span>). <a href="#tab-tim">Table 9.3</a> summarises common TIM options.</p>
+<div class="tbl" id="tab-tim">
+<div class="tbl-caption"><strong>Table 9.3.</strong> Thermal interface material (TIM) properties and typical applications in spacecraft.</div>
+<div class="tbl-scroll">
+<table>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>TIM Type</strong></td>
+<td style="text-align: center;"><strong>Conductivity</strong></td>
+<td style="text-align: center;"><strong>Contact Conductance</strong></td>
+<td style="text-align: left;"><strong>Notes</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: center;"><span class="math inline">\(k\)</span> (W m<span class="math inline">\(^{-1}\)</span> K<span class="math inline">\(^{-1}\)</span>)</td>
+<td style="text-align: center;"><span class="math inline">\(h_c\)</span> (W m<span class="math inline">\(^{-2}\)</span> K<span class="math inline">\(^{-1}\)</span>)</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">Indium foil (0.1 mm)</td>
+<td style="text-align: center;">81</td>
+<td style="text-align: center;"><span class="math inline">\(5000\)</span>–<span class="math inline">\(15000\)</span></td>
+<td style="text-align: left;">Reusable, soft metal</td>
+</tr>
+<tr>
+<td style="text-align: left;">Thermal grease (Apiezon N)</td>
+<td style="text-align: center;">0.2</td>
+<td style="text-align: center;"><span class="math inline">\(3000\)</span>–<span class="math inline">\(8000\)</span></td>
+<td style="text-align: left;">Low temp, pumpout risk</td>
+</tr>
+<tr>
+<td style="text-align: left;">Thermal grease (Dowsil TC-5026)</td>
+<td style="text-align: center;">4.0</td>
+<td style="text-align: center;"><span class="math inline">\(8000\)</span>–<span class="math inline">\(20000\)</span></td>
+<td style="text-align: left;">High conductivity</td>
+</tr>
+<tr>
+<td style="text-align: left;">Graphite pad (Grafoil)</td>
+<td style="text-align: center;">5 (in-plane), 3 (thru)</td>
+<td style="text-align: center;"><span class="math inline">\(4000\)</span>–<span class="math inline">\(12000\)</span></td>
+<td style="text-align: left;">Compressible, EMC too</td>
+</tr>
+<tr>
+<td style="text-align: left;">Phase change material (PCM)</td>
+<td style="text-align: center;">0.7</td>
+<td style="text-align: center;"><span class="math inline">\(5000\)</span>–<span class="math inline">\(18000\)</span></td>
+<td style="text-align: left;">Reflows at 52C</td>
+</tr>
+<tr>
+<td style="text-align: left;">Bare Al-Al joint (bolted)</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;"><span class="math inline">\(500\)</span>–<span class="math inline">\(3000\)</span></td>
+<td style="text-align: left;">Highly bolt-torque dependent</td>
+</tr>
+</tbody>
+</table>
+</div></div>
+<p>The contact conductance between two bolted aluminium surfaces increases approximately as:</p>
+<div id="eq-contact_pressure"></div>
+<div class="arithmatex">\[h_c \approx h_{c,0} \left( \frac{P}{P_0} \right)^{0.7}\tag{9.24}\]</div>
+<p>where <span class="arithmatex">\(P\)</span> is the contact pressure (MPa) and <span class="arithmatex">\(P_0\)</span> is a reference pressure. The strong dependence on bolt torque means that the TCS thermal model must track the bolt torque specification and any relaxation due to vibration or thermal cycling.</p>
+<h2 id="sec-tmm"><span class="secnum">9.7</span> Thermal Mathematical Modelling<a class="headerlink" href="#sec-tmm" title="Permanent link">&para;</a></h2>
+<h3 id="subsec-gmm"><span class="secnum">9.7.1</span> Geometric Math Model and View Factor Calculation<a class="headerlink" href="#subsec-gmm" title="Permanent link">&para;</a></h3>
+<p>The thermal mathematical model (TMM) consists of a network of thermal nodes connected by conductors, implemented in commercial software such as ESATAN-TMS (European Standard Analysis Tool for Thermal Networks), Thermal Desktop/SINDA (Cullimore &amp; Ring), or MSC Nastran thermal. The modelling process begins with a Geometric Math Model (GMM) that captures the spacecraft geometry for view factor and absorbed flux computation.</p>
+<p><strong>View factor calculation</strong> for complex geometries uses the Monte Carlo ray-tracing method: <span class="arithmatex">\(N_{\mathrm{rays}}\)</span> rays are launched from surface <span class="arithmatex">\(i\)</span> in random directions weighted by the cosine law; the fraction intercepting surface <span class="arithmatex">\(j\)</span> gives <span class="arithmatex">\(F_{ij}\)</span>. The statistical uncertainty is:</p>
+<div id="eq-view_factor_uncertainty"></div>
+<div class="arithmatex">\[\sigma_{F_{ij}} = \sqrt{\frac{F_{ij}(1-F_{ij})}{N_{\mathrm{rays}}}}\tag{9.25}\]</div>
+<p>Typically <span class="arithmatex">\(N_{\mathrm{rays}} = 10^6\)</span> to <span class="arithmatex">\(10^8\)</span> are used to achieve <span class="arithmatex">\(\sigma &lt; 0.001\)</span>.</p>
+<h3 id="subsec-node_network"><span class="secnum">9.7.2</span> Node Network and Conductors<a class="headerlink" href="#subsec-node_network" title="Permanent link">&para;</a></h3>
+<p>The TMM discretises the spacecraft into a set of thermal nodes. For a network of <span class="arithmatex">\(n\)</span> nodes, the thermal state is described by the vector <span class="arithmatex">\(\mathbf{T} \in \mathbb{R}^n\)</span>. The governing equations are:</p>
+<div id="eq-node_equation"></div>
+<div class="arithmatex">\[C_i \frac{dT_i}{dt} = Q_{\mathrm{ext},i} + Q_{\mathrm{int},i}
++ \sum_{j \neq i} G_{ij}^{\mathrm{cond}} (T_j - T_i)
++ \sum_{j \neq i} G_{ij}^{\mathrm{rad}} (T_j^4 - T_i^4)\tag{9.26}\]</div>
+<p>where <span class="arithmatex">\(C_i = M_i C_{p,i}\)</span> is the thermal capacitance of node <span class="arithmatex">\(i\)</span>, <span class="arithmatex">\(G_{ij}^{\mathrm{cond}}\)</span> is the linear conductive conductor, <span class="arithmatex">\(G_{ij}^{\mathrm{rad}} = \varepsilon^* \sigma A_i F_{ij}\)</span> is the radiative conductor (radiation exchange factor, REF), and <span class="arithmatex">\(Q_{\mathrm{ext},i}\)</span> includes solar, IR, and albedo inputs computed by the GMM for each orbital position.</p>
+<p>The system of equations can be written in matrix form:</p>
+<div id="eq-matrix_form"></div>
+<div class="arithmatex">\[\mathbf{C} \dot{\mathbf{T}} = \mathbf{Q}_{\mathrm{ext}} + \mathbf{Q}_{\mathrm{int}}
++ \mathbf{G}^{\mathrm{cond}} (\mathbf{T}_j - \mathbf{T}_i)
++ \mathbf{G}^{\mathrm{rad}} (\mathbf{T}_j^4 - \mathbf{T}_i^4)\tag{9.27}\]</div>
+<h3 id="subsec-analysis_cases"><span class="secnum">9.7.3</span> Thermal Analysis Cases<a class="headerlink" href="#subsec-analysis_cases" title="Permanent link">&para;</a></h3>
+<p>Four primary analysis cases bound the temperature range:</p>
+<ol>
+<li>
+<p><strong>Hot case</strong>: maximum solar (perihelion), maximum internal dissipation (payload fully on), orbit with maximum sunlit time, BOL surface properties (clean surfaces, low <span class="arithmatex">\(\alpha_s\)</span>).</p>
+</li>
+<li>
+<p><strong>Cold case</strong>: minimum solar (aphelion), minimum internal dissipation (safe mode, minimum equipment on), maximum eclipse fraction, EOL degraded surface properties (UV-darkened, high <span class="arithmatex">\(\alpha_s\)</span>).</p>
+</li>
+<li>
+<p><strong>Eclipse start/end transient</strong>: rapid temperature change as spacecraft enters/exits Earth’s shadow, driving thermal cycling fatigue analysis.</p>
+</li>
+<li>
+<p><strong>Transfer orbit</strong>: applicable to GEO satellites during the apogee engine firing phase when attitude is constrained by the engine pointing requirement.</p>
+</li>
+</ol>
+<h2 id="sec-thermal_testing"><span class="secnum">9.8</span> Thermal Testing and Verification<a class="headerlink" href="#sec-thermal_testing" title="Permanent link">&para;</a></h2>
+<h3 id="subsec-thermal_balance"><span class="secnum">9.8.1</span> Thermal Balance Test<a class="headerlink" href="#subsec-thermal_balance" title="Permanent link">&para;</a></h3>
+<p>The thermal balance test (TBT) is conducted in a large thermal vacuum (TV) chamber at pressures below <span class="arithmatex">\(10^{-4}\,\mathrm{Pa}\)</span>. The spacecraft is placed on a support structure surrounded by a cold shroud (liquid nitrogen cooled, <span class="arithmatex">\(T_{\mathrm{shroud}} \approx 100\,\mathrm{K}\)</span>) to simulate the cold space sink. Solar simulation is provided by infrared heater arrays or, for higher fidelity, quartz lamp arrays. The test sequence includes:</p>
+<ol>
+<li>
+<p>Pump down to vacuum (<span class="arithmatex">\(&lt; 10^{-4}\,\mathrm{Pa}\)</span>)</p>
+</li>
+<li>
+<p>Cold soak stabilisation (typically 12–24 h)</p>
+</li>
+<li>
+<p>Hot case stabilisation at maximum internal dissipation</p>
+</li>
+<li>
+<p>Eclipse simulation (heater arrays off)</p>
+</li>
+<li>
+<p>Additional cases per test plan</p>
+</li>
+</ol>
+<p>Correlation between test-measured temperatures and TMM-predicted temperatures is performed. Acceptance criteria typically require:</p>
+<div id="eq-tbt_correlation"></div>
+<div class="arithmatex">\[|T_{\mathrm{predicted}} - T_{\mathrm{measured}}| &lt; 3\,^{\circ}\mathrm{C}
+\quad \text{for critical nodes}\tag{9.28}\]</div>
+<p>Parameters adjusted during correlation include conductances, heater powers, and surface properties, following a systematic sensitivity analysis.</p>
+<h3 id="subsec-thermal_cycling"><span class="secnum">9.8.2</span> Thermal Cycling<a class="headerlink" href="#subsec-thermal_cycling" title="Permanent link">&para;</a></h3>
+<p>Thermal cycling tests subject the spacecraft or unit to repeated temperature excursions between <span class="arithmatex">\(T_{\min} = -40\,^{\circ}\)</span>C and <span class="arithmatex">\(T_{\max} = +70\,^{\circ}\)</span>C (qualification) or <span class="arithmatex">\(-25\)</span> to <span class="arithmatex">\(+55\,^{\circ}\)</span>C (acceptance), with dwell times sufficient to achieve temperature stabilisation within <span class="arithmatex">\(\pm 2\,^{\circ}\)</span>C. Typical cycle counts: 8 (acceptance), 100 (qualification). Cycling is performed in ambient air for unit-level tests (air cooling compensates for lack of radiation) and in vacuum for spacecraft-level tests.</p>
+<h2 id="sec-special_cases"><span class="secnum">9.9</span> Special Thermal Design Challenges<a class="headerlink" href="#sec-special_cases" title="Permanent link">&para;</a></h2>
+<h3 id="subsec-cryogenic_instruments"><span class="secnum">9.9.1</span> Cryogenic Instrument Thermal Design<a class="headerlink" href="#subsec-cryogenic_instruments" title="Permanent link">&para;</a></h3>
+<p>Cryogenic infrared and X-ray instruments present the most demanding thermal design challenges. The key principle is to minimise parasitic heat loads to the coldest stage through:</p>
+<ul>
+<li>
+<p><strong>Passive cooling</strong>: L2, lunar trailing, or Sun-synchronous (with appropriate baffle) orbits allow large passive radiators to reach <span class="arithmatex">\(40\)</span>–<span class="arithmatex">\(80\,\mathrm{K}\)</span>.</p>
+</li>
+<li>
+<p><strong>V-groove radiators</strong>: JWST uses three deployable V-groove radiators to achieve passive cooling of the telescope structure to <span class="arithmatex">\(\sim40\,\mathrm{K}\)</span>.</p>
+</li>
+<li>
+<p><strong>Thermal straps</strong>: braided aluminium or copper straps with low stiffness connect the cold stage to the cryocooler cold finger or passive radiator.</p>
+</li>
+<li>
+<p><strong>Multilayer insulation</strong>: cryogenic MLI with 30+ layers provides effective emittance <span class="arithmatex">\(\varepsilon^* &lt; 0.005\)</span>.</p>
+</li>
+</ul>
+<h3 id="subsec-battery_thermal"><span class="secnum">9.9.2</span> Battery Thermal Management<a class="headerlink" href="#subsec-battery_thermal" title="Permanent link">&para;</a></h3>
+<p>Lithium-ion battery cells exhibit strong temperature sensitivity:</p>
+<ul>
+<li>
+<p>Optimal charge/discharge temperature: <span class="arithmatex">\(0\)</span> to <span class="arithmatex">\(+40\,^{\circ}\)</span>C</p>
+</li>
+<li>
+<p>Charging below <span class="arithmatex">\(0\,^{\circ}\)</span>C: lithium plating causes irreversible capacity loss</p>
+</li>
+<li>
+<p>Storage at elevated temperature accelerates calendar aging (capacity fade)</p>
+</li>
+<li>
+<p>Thermal runaway threshold: <span class="arithmatex">\(\sim 130\,^{\circ}\)</span>C</p>
+</li>
+<li>
+<p>Capacity recovery at low temperature: cells deliver <span class="arithmatex">\(\sim 50\%\)</span> capacity at <span class="arithmatex">\(-20\,^{\circ}\)</span>C vs. <span class="arithmatex">\(+20\,^{\circ}\)</span>C</p>
+</li>
+</ul>
+<p>Battery thermal design must therefore maintain cells within <span class="arithmatex">\(0\)</span> to <span class="arithmatex">\(+30\,^{\circ}\)</span>C throughout the mission. This requires survival heaters (typically <span class="arithmatex">\(10\)</span>–<span class="arithmatex">\(30\,\mathrm{W}\)</span> per battery) for eclipse cold-soak and heat spreading/rejection in hot orbit.</p>
+<h3 id="subsec-orbit_thermal"><span class="secnum">9.9.3</span> Thermal Control for Different Orbit Regimes<a class="headerlink" href="#subsec-orbit_thermal" title="Permanent link">&para;</a></h3>
+<div class="tbl" id="tab-orbit_thermal">
+<div class="tbl-caption"><strong>Table 9.4.</strong> Thermal environment comparison for different orbit/mission types. Peak heat flux values are surface-area-specific assuming worst-case orientation.</div>
+<div class="tbl-scroll">
+<table>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Mission Type</strong></td>
+<td style="text-align: center;"><strong>Eclipse</strong></td>
+<td style="text-align: center;"><strong>Solar Flux</strong></td>
+<td style="text-align: center;"><strong>Earth IR</strong></td>
+<td style="text-align: left;"><strong>Dominant Challenge</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: center;"><strong>Fraction</strong></td>
+<td style="text-align: center;"><strong>(W/m<span class="math inline">\(^2\)</span>)</strong></td>
+<td style="text-align: center;"><strong>(W/m<span class="math inline">\(^2\)</span>)</strong></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">LEO (500 km)</td>
+<td style="text-align: center;">35%</td>
+<td style="text-align: center;"><span class="math inline">\(1361\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(250\)</span></td>
+<td style="text-align: left;">Thermal cycling, eclipse heaters</td>
+</tr>
+<tr>
+<td style="text-align: left;">LEO (ISS, 400 km)</td>
+<td style="text-align: center;">38%</td>
+<td style="text-align: center;"><span class="math inline">\(1361\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(250\)</span></td>
+<td style="text-align: left;">High internal power</td>
+</tr>
+<tr>
+<td style="text-align: left;">SSO (700 km, dawn-dusk)</td>
+<td style="text-align: center;">0% (near)</td>
+<td style="text-align: center;"><span class="math inline">\(1361\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(250\)</span></td>
+<td style="text-align: left;">Continuous solar, no eclipse</td>
+</tr>
+<tr>
+<td style="text-align: left;">MEO (GPS, 20200 km)</td>
+<td style="text-align: center;">10%</td>
+<td style="text-align: center;"><span class="math inline">\(1361\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(30\)</span></td>
+<td style="text-align: left;">Low Earth IR, radiation belts</td>
+</tr>
+<tr>
+<td style="text-align: left;">GEO (35786 km)</td>
+<td style="text-align: center;">1%</td>
+<td style="text-align: center;"><span class="math inline">\(1361\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(7\)</span></td>
+<td style="text-align: left;">Long eclipse equinox periods</td>
+</tr>
+<tr>
+<td style="text-align: left;">L2 (1.5M km)</td>
+<td style="text-align: center;">0%</td>
+<td style="text-align: center;"><span class="math inline">\(1362\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\sim 0\)</span></td>
+<td style="text-align: left;">Passive cooling, no eclipse</td>
+</tr>
+<tr>
+<td style="text-align: left;">Mars orbit</td>
+<td style="text-align: center;">20%</td>
+<td style="text-align: center;"><span class="math inline">\(590\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(110\)</span></td>
+<td style="text-align: left;">Low solar, CO<span class="math inline">\(_2\)</span> atmosphere</td>
+</tr>
+<tr>
+<td style="text-align: left;">Jupiter orbit</td>
+<td style="text-align: center;">variable</td>
+<td style="text-align: center;"><span class="math inline">\(50\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(5\)</span></td>
+<td style="text-align: left;">Very low solar, nuclear power</td>
+</tr>
+</tbody>
+</table>
+</div></div>
+<h2 id="sec-design_example"><span class="secnum">9.10</span> Design Example: LEO Earth Observation Satellite Thermal Control<a class="headerlink" href="#sec-design_example" title="Permanent link">&para;</a></h2>
+<p>Consider a <span class="arithmatex">\(200\,\mathrm{kg}\)</span> LEO Earth observation satellite in a <span class="arithmatex">\(600\,\mathrm{km}\)</span> Sun-synchronous orbit. The satellite bus dissipates <span class="arithmatex">\(500\,\mathrm{W}\)</span> in operational mode and <span class="arithmatex">\(100\,\mathrm{W}\)</span> in safe mode. The radiator area required to reject the operational dissipation with a maximum panel temperature of <span class="arithmatex">\(+30\,^{\circ}\)</span>C and an OSR cover (<span class="arithmatex">\(\varepsilon = 0.80\)</span>, <span class="arithmatex">\(\alpha_s = 0.07\)</span>) is:</p>
+<div id="eq-radiator_sizing"></div>
+<div class="arithmatex">\[A_{\mathrm{rad}} = \frac{Q_{\mathrm{int}}}{\varepsilon \sigma T_{\mathrm{max}}^4 - \alpha_s S / 4}
+= \frac{500}{0.80 \times 5.67\times10^{-8} \times 303^4 - 0.07 \times 1361 / 4}
+\approx 1.35\,\mathrm{m^2}\tag{9.29}\]</div>
+<p>This calculation ignores Earth IR and albedo inputs for brevity. The survival heater power to maintain the spacecraft above <span class="arithmatex">\(-15\,^{\circ}\)</span>C during a <span class="arithmatex">\(35\%\)</span> eclipse fraction with all equipment off (safe mode):</p>
+<div id="eq-survival_heater"></div>
+<div class="arithmatex">\[P_{\mathrm{survival}} = \varepsilon \sigma T_{\mathrm{survival}}^4 A_{\mathrm{rad}} - Q_{\mathrm{int,safe}}
+\approx 0.80 \times 5.67\times10^{-8} \times 258^4 \times 1.35 - 100
+\approx 55\,\mathrm{W}\tag{9.30}\]</div>
+<h2 id="sec-tcs_summary"><span class="secnum">9.11</span> Summary<a class="headerlink" href="#sec-tcs_summary" title="Permanent link">&para;</a></h2>
+<p>The thermal control system is a critical enabling subsystem that must be designed concurrently with the spacecraft structure, power, and attitude control from the earliest mission concept phase. The choice between passive-dominant and active-dominant thermal architectures is driven by the total internal dissipation, the mission orbit, and the temperature requirements of the payload.</p>
+<p>Key design parameters are the thermo-optical properties <span class="arithmatex">\(\alpha_s\)</span> and <span class="arithmatex">\(\varepsilon\)</span> of all external surfaces, the effective emittance <span class="arithmatex">\(\varepsilon^*\)</span> of MLI blankets, the heat pipe conductance sizing, and the heater power budget. The thermal mathematical model must be validated against thermal balance test data before flight predictions can be trusted.</p>
+<p>Future trends include the increasing use of mechanically pumped loops and deployable radiators for high-power communications satellites (<span class="arithmatex">\(&gt;20\,\mathrm{kW}\)</span>), advanced variable conductance technologies for wide-range autonomy, and the development of sub-Kelvin refrigerators for next-generation quantum sensor and far-infrared astronomy missions (<a href="bibliography.html#ref-gilmore2002">Gilmore 2002</a>).</p>
+<h2 id="further-reading">Further Reading<a class="headerlink" href="#further-reading" title="Permanent link">&para;</a></h2>
+<ul>
+<li>
+<p>Gilmore, D. G. (Ed.): <em>Spacecraft Thermal Control Handbook</em>, Vol. 1: Fundamental Technologies, 2nd edn., Aerospace Press, El Segundo (2002).</p>
+</li>
+<li>
+<p>Karam, R. D.: <em>Satellite Thermal Control for Systems Engineers</em>, AIAA Education Series (1998).</p>
+</li>
+<li>
+<p>Meseguer, J., P’erez-Grande, I., Sanz-Andr’es, A.: <em>Spacecraft Thermal Control</em>, Woodhead Publishing (2012).</p>
+</li>
+<li>
+<p>Incropera, F. P., DeWitt, D. P., Bergman, T. L., Lavine, A. S.: <em>Fundamentals of Heat and Mass Transfer</em>, 7th edn., Wiley (2011).</p>
+</li>
+<li>
+<p>ESA-ESTEC: <em>ECSS-E-HB-31-01 Part 1–6: Thermal Design Handbook</em>, ECSS Secretariat (2011).</p>
+</li>
+</ul>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button type="button" class="md-top md-icon" data-md-component="top" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+Back to top
+</button>
+</main>
+<footer class="md-footer">
+<nav class="md-footer__inner md-grid" aria-label="Footer" >
+<a href="ch08-satellite-propulsion-systems.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: 8. Satellite Propulsion Systems">
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</div>
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Previous
+</span>
+<div class="md-ellipsis">
+8. Satellite Propulsion Systems
+</div>
+</div>
+</a>
+<a href="ch10-on-board-data-handling.html" class="md-footer__link md-footer__link--next" aria-label="Next: 10. On-Board Data Handling">
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Next
+</span>
+<div class="md-ellipsis">
+10. On-Board Data Handling
+</div>
+</div>
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+</div>
+</a>
+</nav>
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+The Open Book Project &middot;
+<a href="../../about.html">About this library</a> &middot;
+<a href="../../publish.html">Publish your book</a> &middot;
+© The authors of the books
+</div>
+Made with
+<a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+Material for MkDocs
+</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "navigation.prune", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "toc.follow", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+<script src="../../assets/mathjax.js"></script>
+<script src="../../assets/viz.js"></script>
+<script src="../../assets/remote.js"></script>
+<script src="../../assets/scans.js"></script>
+<script src="../../assets/reader.js"></script>
+<script src="../../assets/app.js"></script>
+<script src="../../assets/slides.js"></script>
+<script src="../../assets/speak.js"></script>
+<script src="../../assets/quiz.js"></script>
+<script>
+    /* offline reading: the service worker at the site root (its scope is the whole site) */
+    if ("serviceWorker" in navigator && window.isSecureContext) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register(new URL("../../sw.js", location.href).href).catch(function () {});
+      });
+    }
+  </script>
+</body>
+</html>

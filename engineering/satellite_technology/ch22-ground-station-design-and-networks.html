@@ -1,0 +1,1666 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="description" content="The Open Book Project: books on computer science, quantum computing, cyber security, science, the social sciences, university courses and languages, read page by page like an e-book, online or offline.">
+<meta name="author" content="The Open Book Project">
+<link rel="canonical" href="https://open-book-project.github.io/engineering/satellite_technology/ch22-ground-station-design-and-networks.html">
+<link rel="prev" href="ch21-military-and-intelligence-satellites.html">
+<link rel="next" href="ch23-mission-operations-and-ground-control.html">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap"></noscript>
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Open Book">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="application-name" content="Open Book"><script src="../../assets/library-data.js"></script><script>
+    (function () {
+      var X = window.XMLHttpRequest, open, gate = new Promise(function (r) { open = r; });
+      if (!X) return;
+      var open0 = X.prototype.open, send0 = X.prototype.send;
+      X.prototype.open = function (method, url) {
+        this.__pkIndex = /\/search\/search_index\.json(\?|#|$)/.test(String(url));
+        return open0.apply(this, arguments);
+      };
+      X.prototype.send = function () {
+        if (!this.__pkIndex) return send0.apply(this, arguments);
+        var xhr = this, args = arguments;
+        gate.then(function () { send0.apply(xhr, args); });
+      };
+      function wake() { open(); }
+      document.addEventListener("focusin", function (e) { if (e.target && e.target.closest && e.target.closest(".md-search")) wake(); });
+      document.addEventListener("click", function (e) { if (e.target && e.target.closest && e.target.closest('label[for="__search"], .md-search')) wake(); }, true);
+      document.addEventListener("keydown", function (e) {
+        var k = e.key;
+        if ((k === "/" || k === "s" || k === "f" || k === "S" || k === "F") && !(e.target && e.target.closest && e.target.closest("input, textarea, [contenteditable]"))) wake();
+      }, true);
+      if (/[?&]q=/.test(location.search)) wake();
+    })();
+  </script><script>
+    try {
+      if ((window.matchMedia && (matchMedia("(display-mode: standalone)").matches || matchMedia("(display-mode: fullscreen)").matches)) || navigator.standalone === true) {
+        document.documentElement.className += " bjp-standalone";
+      }
+    } catch (e) { /* not an installed app */ }
+    /* the books of a subject or of the whole library as covers or as a list (assets/app.js): the reader's choice */
+    try {
+      var bv = localStorage.getItem("bjp.view");
+      if (bv === "list" || (bv !== "grid" && /\/books\.html$/.test(location.pathname))) document.documentElement.className += " bjp-view-list";
+    } catch (e) { /* no storage: covers */ }
+  </script>
+<script>
+    /* a book opened from its cover on the shelf: the page stays blank, in the cover's colour, until the reader is up */
+    try {
+      var cv = sessionStorage.getItem("bjp.reader.cover");
+      if (cv && sessionStorage.getItem("bjp.reader.open") === "1") {
+        var c = JSON.parse(cv), de = document.documentElement;
+        de.className += " bjp-booting";
+        if (c && /^#[0-9a-f]{3,8}$/i.test(c.bg || "")) de.style.background = c.bg;
+        setTimeout(function () { de.classList.remove("bjp-booting"); de.style.background = ""; }, 3000);
+      }
+    } catch (e) { /* no session storage: the page simply opens as usual */ }
+  </script>
+<title>22. Ground Station Design and Networks - The Open Book Project</title>
+<link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+<link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+<link rel="stylesheet" href="../../assets/extra.css">
+<link rel="stylesheet" href="../../assets/reader.css">
+<link rel="stylesheet" href="../../assets/viz.css">
+<link rel="stylesheet" href="../../assets/app.css">
+<link rel="stylesheet" href="../../assets/theme.css">
+<link rel="stylesheet" href="../../assets/slides.css">
+<link rel="stylesheet" href="../../assets/remote.css">
+<link rel="stylesheet" href="../../assets/scans.css">
+<link rel="stylesheet" href="../../assets/speak.css">
+<link rel="stylesheet" href="../../assets/quiz.css">
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+<input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+<input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a href="#sec-gs_functions" class="md-skip">
+Skip to content
+</a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav class="md-header__inner md-grid" aria-label="Header">
+<a href="../../index.html" title="The Open Book Project" class="md-header__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+The Open Book Project
+</span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+22. Ground Station Design and Networks
+</span>
+</div>
+</div>
+</div><a href="../../index.html" class="bjp-libbtn" aria-label="Library: all books" title="Library: all books">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V5h4v15M8 20V9h4v11M14 20L12.6 6l3.8-.8 3 14.2M3 20h18"/></svg><span>Library</span>
+</a>
+<a href="../../subjects/index.html" class="pk-catbtn" aria-haspopup="true" aria-expanded="false" title="Browse the books by category">
+<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><circle cx="17" cy="7" r="3.6"/><path d="M7 13.4l3.9 6.8H3.1z"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg><span>Categories</span>
+</a>
+<form class="md-header__option" data-md-component="palette">
+<input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+<label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+</label>
+<input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+<label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+<label class="md-search__icon md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</label>
+<nav class="md-search__options" aria-label="Search">
+<button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+Initializing search
+</div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--primary bjp-nav bjp-nav--book" aria-label="Navigation" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a href="../../index.html" title="The Open Book Project" class="md-nav__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+The Open Book Project
+</label>
+<ul class="md-nav__list" data-md-scrollfix>
+<li class="md-nav__item bjp-nav-all">
+<a href="../../index.html" class="md-nav__link" aria-label="All books: back to the library">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+<span class="md-ellipsis">All books</span>
+</a>
+</li>
+<li class="md-nav__item bjp-nav-book" role="presentation"><span class="bjp-nav-head">Satellite Technology</span></li>
+<li class="md-nav__item">
+<a href="index.html" class="md-nav__link">
+<span class="md-ellipsis">
+Overview and preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="list-of-abbreviations.html" class="md-nav__link">
+<span class="md-ellipsis">
+List of Abbreviations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch01-introduction-to-satellite-technology.html" class="md-nav__link">
+<span class="md-ellipsis">
+1. Introduction to Satellite Technology
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch02-orbital-mechanics.html" class="md-nav__link">
+<span class="md-ellipsis">
+2. Orbital Mechanics
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch03-the-space-environment.html" class="md-nav__link">
+<span class="md-ellipsis">
+3. The Space Environment
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch04-launch-systems-and-mission-design.html" class="md-nav__link">
+<span class="md-ellipsis">
+4. Launch Systems and Mission Design
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch05-satellite-architecture-and-systems-engineering.html" class="md-nav__link">
+<span class="md-ellipsis">
+5. Satellite Architecture and Systems Engineering
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch06-satellite-electrical-power-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+6. Satellite Electrical Power Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch07-attitude-determination-and-control-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+7. Attitude Determination and Control Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch08-satellite-propulsion-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+8. Satellite Propulsion Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch09-thermal-control-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+9. Thermal Control Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch10-on-board-data-handling.html" class="md-nav__link">
+<span class="md-ellipsis">
+10. On-Board Data Handling
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch11-telemetry-tracking-and-command-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+11. Telemetry, Tracking and Command Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch12-radio-frequency-satellite-communications.html" class="md-nav__link">
+<span class="md-ellipsis">
+12. Radio Frequency Satellite Communications
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch13-satellite-link-budget-analysis.html" class="md-nav__link">
+<span class="md-ellipsis">
+13. Satellite Link Budget Analysis
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch14-satellite-antenna-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+14. Satellite Antenna Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch15-digital-signal-processing-for-satellites.html" class="md-nav__link">
+<span class="md-ellipsis">
+15. Digital Signal Processing for Satellites
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch16-optical-satellite-communications.html" class="md-nav__link">
+<span class="md-ellipsis">
+16. Optical Satellite Communications
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch17-earth-observation-and-remote-sensing.html" class="md-nav__link">
+<span class="md-ellipsis">
+17. Earth Observation and Remote Sensing
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch18-global-navigation-satellite-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+18. Global Navigation Satellite Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch19-communication-satellites-and-services.html" class="md-nav__link">
+<span class="md-ellipsis">
+19. Communication Satellites and Services
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch20-scientific-satellites-and-space-observatories.html" class="md-nav__link">
+<span class="md-ellipsis">
+20. Scientific Satellites and Space Observatories
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch21-military-and-intelligence-satellites.html" class="md-nav__link">
+<span class="md-ellipsis">
+21. Military and Intelligence Satellites
+</span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+22. Ground Station Design and Networks
+</span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a href="ch22-ground-station-design-and-networks.html" class="md-nav__link md-nav__link--active">
+<span class="md-ellipsis">
+22. Ground Station Design and Networks
+</span>
+</a>
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#sec-gs_functions" class="md-nav__link">
+<span class="md-ellipsis">
+22.1 Functions of a Ground Station
+</span>
+</a>
+<nav class="md-nav" aria-label="22.1 Functions of a Ground Station">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#2211-tracking-and-antenna-pointing" class="md-nav__link">
+<span class="md-ellipsis">
+22.1.1 Tracking and Antenna Pointing
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2212-telemetry-reception-tm" class="md-nav__link">
+<span class="md-ellipsis">
+22.1.2 Telemetry Reception (TM)
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2213-command-transmission-tc" class="md-nav__link">
+<span class="md-ellipsis">
+22.1.3 Command Transmission (TC)
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2214-ranging-and-orbit-determination" class="md-nav__link">
+<span class="md-ellipsis">
+22.1.4 Ranging and Orbit Determination
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2215-payload-data-reception" class="md-nav__link">
+<span class="md-ellipsis">
+22.1.5 Payload Data Reception
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-antenna_sizing" class="md-nav__link">
+<span class="md-ellipsis">
+22.2 Antenna Sizing for Different Applications
+</span>
+</a>
+<nav class="md-nav" aria-label="22.2 Antenna Sizing for Different Applications">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#2221-antenna-gain-and-efficiency" class="md-nav__link">
+<span class="md-ellipsis">
+22.2.1 Antenna Gain and Efficiency
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-tracking_systems" class="md-nav__link">
+<span class="md-ellipsis">
+22.3 Antenna Tracking Systems
+</span>
+</a>
+<nav class="md-nav" aria-label="22.3 Antenna Tracking Systems">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#2231-monopulse-tracking" class="md-nav__link">
+<span class="md-ellipsis">
+22.3.1 Monopulse Tracking
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2232-program-tracking-open-loop" class="md-nav__link">
+<span class="md-ellipsis">
+22.3.2 Program Tracking (Open-Loop)
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2233-step-track-and-conscan" class="md-nav__link">
+<span class="md-ellipsis">
+22.3.3 Step-Track and Conscan
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-mount_types" class="md-nav__link">
+<span class="md-ellipsis">
+22.4 Antenna Mount Types
+</span>
+</a>
+<nav class="md-nav" aria-label="22.4 Antenna Mount Types">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#2241-azimuthelevation-az-el-mount" class="md-nav__link">
+<span class="md-ellipsis">
+22.4.1 Azimuth–Elevation (Az-El) Mount
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2242-x-y-mount" class="md-nav__link">
+<span class="md-ellipsis">
+22.4.2 X-Y Mount
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2243-polar-equatorial-mount" class="md-nav__link">
+<span class="md-ellipsis">
+22.4.3 Polar (Equatorial) Mount
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2244-fixed-position-mounts-for-geo" class="md-nav__link">
+<span class="md-ellipsis">
+22.4.4 Fixed-Position Mounts for GEO
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-rf_chain" class="md-nav__link">
+<span class="md-ellipsis">
+22.5 RF Chain Architecture
+</span>
+</a>
+<nav class="md-nav" aria-label="22.5 RF Chain Architecture">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#2251-low-noise-amplifier" class="md-nav__link">
+<span class="md-ellipsis">
+22.5.1 Low-Noise Amplifier
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2252-high-power-amplifier" class="md-nav__link">
+<span class="md-ellipsis">
+22.5.2 High-Power Amplifier
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-site_selection" class="md-nav__link">
+<span class="md-ellipsis">
+22.6 Site Selection Criteria
+</span>
+</a>
+<nav class="md-nav" aria-label="22.6 Site Selection Criteria">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#2261-radio-frequency-environment" class="md-nav__link">
+<span class="md-ellipsis">
+22.6.1 Radio Frequency Environment
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2262-meteorological-factors" class="md-nav__link">
+<span class="md-ellipsis">
+22.6.2 Meteorological Factors
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2263-infrastructure-requirements" class="md-nav__link">
+<span class="md-ellipsis">
+22.6.3 Infrastructure Requirements
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2264-elevation-angle-to-satellite" class="md-nav__link">
+<span class="md-ellipsis">
+22.6.4 Elevation Angle to Satellite
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-contact_geometry" class="md-nav__link">
+<span class="md-ellipsis">
+22.7 Contact Prediction Geometry
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-tracking_networks" class="md-nav__link">
+<span class="md-ellipsis">
+22.8 Major Tracking Networks
+</span>
+</a>
+<nav class="md-nav" aria-label="22.8 Major Tracking Networks">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#2281-nasa-deep-space-network-dsn" class="md-nav__link">
+<span class="md-ellipsis">
+22.8.1 NASA Deep Space Network (DSN)
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2282-esa-estrack-network" class="md-nav__link">
+<span class="md-ellipsis">
+22.8.2 ESA ESTRACK Network
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2283-nasa-near-earth-network-nen" class="md-nav__link">
+<span class="md-ellipsis">
+22.8.3 NASA Near Earth Network (NEN)
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-commercial_networks" class="md-nav__link">
+<span class="md-ellipsis">
+22.9 Commercial Ground Station Networks
+</span>
+</a>
+<nav class="md-nav" aria-label="22.9 Commercial Ground Station Networks">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#2291-aws-ground-station" class="md-nav__link">
+<span class="md-ellipsis">
+22.9.1 AWS Ground Station
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2292-kongsberg-satellite-services-ksat" class="md-nav__link">
+<span class="md-ellipsis">
+22.9.2 Kongsberg Satellite Services (KSAT)
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2293-microsoft-azure-orbital" class="md-nav__link">
+<span class="md-ellipsis">
+22.9.3 Microsoft Azure Orbital
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2294-leaf-space" class="md-nav__link">
+<span class="md-ellipsis">
+22.9.4 Leaf Space
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-gt_measurement" class="md-nav__link">
+<span class="md-ellipsis">
+22.10 G/T Measurement Procedure
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-leo_specifics" class="md-nav__link">
+<span class="md-ellipsis">
+22.11 LEO Ground Station Specifics
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-automation" class="md-nav__link">
+<span class="md-ellipsis">
+22.12 Ground Station Automation and Software
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-data_processing" class="md-nav__link">
+<span class="md-ellipsis">
+22.13 Data Processing at the Ground Station
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-interoperability" class="md-nav__link">
+<span class="md-ellipsis">
+22.14 Interoperability and Standards
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-gs_summary" class="md-nav__link">
+<span class="md-ellipsis">
+22.15 Summary
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="ch23-mission-operations-and-ground-control.html" class="md-nav__link">
+<span class="md-ellipsis">
+23. Mission Operations and Ground Control
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch24-smallsats-cubesats-and-the-new-space-revolution.html" class="md-nav__link">
+<span class="md-ellipsis">
+24. SmallSats, CubeSats, and the New Space Revolution
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch25-mega-constellations-and-leo-broadband-networks.html" class="md-nav__link">
+<span class="md-ellipsis">
+25. Mega-Constellations and LEO Broadband Networks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch26-artificial-intelligence-and-machine-learning-in.html" class="md-nav__link">
+<span class="md-ellipsis">
+26. Artificial Intelligence and Machine Learning in Space
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch27-on-orbit-servicing-and-space-robotics.html" class="md-nav__link">
+<span class="md-ellipsis">
+27. On-Orbit Servicing and Space Robotics
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch28-space-debris-and-long-term-sustainability.html" class="md-nav__link">
+<span class="md-ellipsis">
+28. Space Debris and Long-Term Sustainability
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch29-quantum-communications-and-satellite-qkd.html" class="md-nav__link">
+<span class="md-ellipsis">
+29. Quantum Communications and Satellite QKD
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch30-6g-and-non-terrestrial-networks.html" class="md-nav__link">
+<span class="md-ellipsis">
+30. 6G and Non-Terrestrial Networks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch31-future-concepts-and-emerging-space-technologies.html" class="md-nav__link">
+<span class="md-ellipsis">
+31. Future Concepts and Emerging Space Technologies
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="classical-orbital-elements-and-coordinate.html" class="md-nav__link">
+<span class="md-ellipsis">
+Classical Orbital Elements and Coordinate Transformations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="satellite-frequency-allocations.html" class="md-nav__link">
+<span class="md-ellipsis">
+Satellite Frequency Allocations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="launch-vehicle-specifications.html" class="md-nav__link">
+<span class="md-ellipsis">
+Launch Vehicle Specifications
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="link-budget-templates-and-worked-examples.html" class="md-nav__link">
+<span class="md-ellipsis">
+Link Budget Templates and Worked Examples
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="key-standards-software-tools-and-references.html" class="md-nav__link">
+<span class="md-ellipsis">
+Key Standards, Software Tools, and References
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="bibliography.html" class="md-nav__link">
+<span class="md-ellipsis">
+Bibliography
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#sec-gs_functions" class="md-nav__link">
+<span class="md-ellipsis">
+22.1 Functions of a Ground Station
+</span>
+</a>
+<nav class="md-nav" aria-label="22.1 Functions of a Ground Station">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#2211-tracking-and-antenna-pointing" class="md-nav__link">
+<span class="md-ellipsis">
+22.1.1 Tracking and Antenna Pointing
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2212-telemetry-reception-tm" class="md-nav__link">
+<span class="md-ellipsis">
+22.1.2 Telemetry Reception (TM)
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2213-command-transmission-tc" class="md-nav__link">
+<span class="md-ellipsis">
+22.1.3 Command Transmission (TC)
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2214-ranging-and-orbit-determination" class="md-nav__link">
+<span class="md-ellipsis">
+22.1.4 Ranging and Orbit Determination
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2215-payload-data-reception" class="md-nav__link">
+<span class="md-ellipsis">
+22.1.5 Payload Data Reception
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-antenna_sizing" class="md-nav__link">
+<span class="md-ellipsis">
+22.2 Antenna Sizing for Different Applications
+</span>
+</a>
+<nav class="md-nav" aria-label="22.2 Antenna Sizing for Different Applications">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#2221-antenna-gain-and-efficiency" class="md-nav__link">
+<span class="md-ellipsis">
+22.2.1 Antenna Gain and Efficiency
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-tracking_systems" class="md-nav__link">
+<span class="md-ellipsis">
+22.3 Antenna Tracking Systems
+</span>
+</a>
+<nav class="md-nav" aria-label="22.3 Antenna Tracking Systems">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#2231-monopulse-tracking" class="md-nav__link">
+<span class="md-ellipsis">
+22.3.1 Monopulse Tracking
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2232-program-tracking-open-loop" class="md-nav__link">
+<span class="md-ellipsis">
+22.3.2 Program Tracking (Open-Loop)
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2233-step-track-and-conscan" class="md-nav__link">
+<span class="md-ellipsis">
+22.3.3 Step-Track and Conscan
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-mount_types" class="md-nav__link">
+<span class="md-ellipsis">
+22.4 Antenna Mount Types
+</span>
+</a>
+<nav class="md-nav" aria-label="22.4 Antenna Mount Types">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#2241-azimuthelevation-az-el-mount" class="md-nav__link">
+<span class="md-ellipsis">
+22.4.1 Azimuth–Elevation (Az-El) Mount
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2242-x-y-mount" class="md-nav__link">
+<span class="md-ellipsis">
+22.4.2 X-Y Mount
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2243-polar-equatorial-mount" class="md-nav__link">
+<span class="md-ellipsis">
+22.4.3 Polar (Equatorial) Mount
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2244-fixed-position-mounts-for-geo" class="md-nav__link">
+<span class="md-ellipsis">
+22.4.4 Fixed-Position Mounts for GEO
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-rf_chain" class="md-nav__link">
+<span class="md-ellipsis">
+22.5 RF Chain Architecture
+</span>
+</a>
+<nav class="md-nav" aria-label="22.5 RF Chain Architecture">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#2251-low-noise-amplifier" class="md-nav__link">
+<span class="md-ellipsis">
+22.5.1 Low-Noise Amplifier
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2252-high-power-amplifier" class="md-nav__link">
+<span class="md-ellipsis">
+22.5.2 High-Power Amplifier
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-site_selection" class="md-nav__link">
+<span class="md-ellipsis">
+22.6 Site Selection Criteria
+</span>
+</a>
+<nav class="md-nav" aria-label="22.6 Site Selection Criteria">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#2261-radio-frequency-environment" class="md-nav__link">
+<span class="md-ellipsis">
+22.6.1 Radio Frequency Environment
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2262-meteorological-factors" class="md-nav__link">
+<span class="md-ellipsis">
+22.6.2 Meteorological Factors
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2263-infrastructure-requirements" class="md-nav__link">
+<span class="md-ellipsis">
+22.6.3 Infrastructure Requirements
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2264-elevation-angle-to-satellite" class="md-nav__link">
+<span class="md-ellipsis">
+22.6.4 Elevation Angle to Satellite
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-contact_geometry" class="md-nav__link">
+<span class="md-ellipsis">
+22.7 Contact Prediction Geometry
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-tracking_networks" class="md-nav__link">
+<span class="md-ellipsis">
+22.8 Major Tracking Networks
+</span>
+</a>
+<nav class="md-nav" aria-label="22.8 Major Tracking Networks">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#2281-nasa-deep-space-network-dsn" class="md-nav__link">
+<span class="md-ellipsis">
+22.8.1 NASA Deep Space Network (DSN)
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2282-esa-estrack-network" class="md-nav__link">
+<span class="md-ellipsis">
+22.8.2 ESA ESTRACK Network
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2283-nasa-near-earth-network-nen" class="md-nav__link">
+<span class="md-ellipsis">
+22.8.3 NASA Near Earth Network (NEN)
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-commercial_networks" class="md-nav__link">
+<span class="md-ellipsis">
+22.9 Commercial Ground Station Networks
+</span>
+</a>
+<nav class="md-nav" aria-label="22.9 Commercial Ground Station Networks">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#2291-aws-ground-station" class="md-nav__link">
+<span class="md-ellipsis">
+22.9.1 AWS Ground Station
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2292-kongsberg-satellite-services-ksat" class="md-nav__link">
+<span class="md-ellipsis">
+22.9.2 Kongsberg Satellite Services (KSAT)
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2293-microsoft-azure-orbital" class="md-nav__link">
+<span class="md-ellipsis">
+22.9.3 Microsoft Azure Orbital
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2294-leaf-space" class="md-nav__link">
+<span class="md-ellipsis">
+22.9.4 Leaf Space
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-gt_measurement" class="md-nav__link">
+<span class="md-ellipsis">
+22.10 G/T Measurement Procedure
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-leo_specifics" class="md-nav__link">
+<span class="md-ellipsis">
+22.11 LEO Ground Station Specifics
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-automation" class="md-nav__link">
+<span class="md-ellipsis">
+22.12 Ground Station Automation and Software
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-data_processing" class="md-nav__link">
+<span class="md-ellipsis">
+22.13 Data Processing at the Ground Station
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-interoperability" class="md-nav__link">
+<span class="md-ellipsis">
+22.14 Interoperability and Standards
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-gs_summary" class="md-nav__link">
+<span class="md-ellipsis">
+22.15 Summary
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="ch-ground_stations">Chapter 22: Ground Station Design and Networks<a class="headerlink" href="#ch-ground_stations" title="Permanent link">&para;</a></h1>
+<div class="admonition info box-keybox kind-concept">
+<p>Chapter Key Concepts Ground stations form the indispensable interface between space and Earth, providing tracking, telemetry reception, command transmission, ranging, and payload data downlink. Station design is governed by link budget requirements, antenna physics, site selection criteria, and the operational demands of the mission. Modern ground networks—from NASA’s Deep Space Network to commercial cloud-integrated services—increasingly leverage automation, software-defined radio, and on-demand scheduling to serve a growing satellite population.</p>
+</div>
+<h2 id="sec-gs_functions"><span class="secnum">22.1</span> Functions of a Ground Station<a class="headerlink" href="#sec-gs_functions" title="Permanent link">&para;</a></h2>
+<p>Every satellite mission, regardless of orbit or purpose, relies on one or more ground stations to fulfill a set of core functions. These functions can be grouped into five primary categories.</p>
+<h3 id="2211-tracking-and-antenna-pointing"><span class="secnum">22.1.1</span> Tracking and Antenna Pointing<a class="headerlink" href="#2211-tracking-and-antenna-pointing" title="Permanent link">&para;</a></h3>
+<p>Tracking refers to the continuous or sampled measurement of the satellite’s angular position and the servo-control of the ground antenna to maintain a pointing direction that maximizes received signal strength. For geostationary (GEO) satellites the pointing requirement is relaxed—a fixed antenna suffices for most links—but for low Earth orbit (LEO) satellites a full two-axis drive system must slew the antenna across the sky at angular rates that may exceed <span class="arithmatex">\(2\,^\circ/\mathrm{s}\)</span> near zenith.</p>
+<p>The angular rates and accelerations experienced during an LEO pass drive actuator sizing. For a circular orbit at altitude <span class="arithmatex">\(h\)</span> with ground range <span class="arithmatex">\(\rho\)</span>, the angular velocity of the satellite as seen from a station directly below the sub-satellite track is</p>
+<div id="eq-angular_rate"></div>
+<div class="arithmatex">\[\dot{\theta} = \frac{v_s \cos\varepsilon}{\rho},\tag{22.1}\]</div>
+<p>where <span class="arithmatex">\(v_s\)</span> is the satellite velocity, <span class="arithmatex">\(\varepsilon\)</span> is the elevation angle, and <span class="arithmatex">\(\rho\)</span> is the slant range. At zenith, <span class="arithmatex">\(\varepsilon = 90^\circ\)</span> and <span class="arithmatex">\(\dot{\theta}\)</span> approaches <span class="arithmatex">\(v_s / h\)</span>, which for a 550 km orbit yields approximately <span class="arithmatex">\(1.1\,^\circ/\mathrm{s}\)</span>. The angular acceleration can reach <span class="arithmatex">\(0.4\,^\circ/\mathrm{s}^2\)</span> near zenith, imposing demanding requirements on mount stiffness and servo bandwidth.</p>
+<h3 id="2212-telemetry-reception-tm"><span class="secnum">22.1.2</span> Telemetry Reception (TM)<a class="headerlink" href="#2212-telemetry-reception-tm" title="Permanent link">&para;</a></h3>
+<p>Spacecraft housekeeping and science telemetry is received by the ground station, demodulated, synchronised to frame boundaries, and forwarded to the Mission Operations Centre (MOC). The receiver chain must handle the link geometry (varying range and elevation) and any Doppler shift imparted by satellite motion. For a LEO satellite at 550 km, the two-way Doppler shift at S-band (2.25 GHz) reaches approximately <span class="arithmatex">\(\pm 50\,\mathrm{kHz}\)</span> at low elevation angles, while at X-band (8.1 GHz) it exceeds <span class="arithmatex">\(\pm 180\,\mathrm{kHz}\)</span>. Receivers must either sweep-acquire or use a frequency-locking loop with sufficient pull-in range.</p>
+<h3 id="2213-command-transmission-tc"><span class="secnum">22.1.3</span> Command Transmission (TC)<a class="headerlink" href="#2213-command-transmission-tc" title="Permanent link">&para;</a></h3>
+<p>Uplink commanding requires the ground station to modulate, amplify, and beam commands to the spacecraft at sufficient power to close the uplink margin under worst-case link conditions (rain fading, pointing loss, antenna blockage). Command uplinks are designed with very large margins—often <span class="arithmatex">\(6\)</span>–<span class="arithmatex">\(10\,\mathrm{dB}\)</span> above the receiver threshold—to ensure command reception even during spacecraft anomalies when attitude may be degraded and receive antenna patterns uncertain.</p>
+<h3 id="2214-ranging-and-orbit-determination"><span class="secnum">22.1.4</span> Ranging and Orbit Determination<a class="headerlink" href="#2214-ranging-and-orbit-determination" title="Permanent link">&para;</a></h3>
+<p>Ranging involves transmitting a coded waveform (CCSDS ranging signal, PN code, or tone ranging) and measuring the two-way light time <span class="arithmatex">\(\tau_{2w}\)</span>. The one-way range is</p>
+<div id="eq-ranging"></div>
+<div class="arithmatex">\[R = \frac{c \, \tau_{2w}}{2} - \Delta_{\mathrm{trop}} - \Delta_{\mathrm{iono}} - \Delta_{\mathrm{station}},\tag{22.2}\]</div>
+<p>where <span class="arithmatex">\(c\)</span> is the speed of light and the <span class="arithmatex">\(\Delta\)</span> terms represent corrections for tropospheric and ionospheric delays and station-related biases. Combined with Doppler-derived range-rate measurements, ranging data are processed by orbit determination software to produce state vectors used for maneuver planning and antenna pointing predictions.</p>
+<h3 id="2215-payload-data-reception"><span class="secnum">22.1.5</span> Payload Data Reception<a class="headerlink" href="#2215-payload-data-reception" title="Permanent link">&para;</a></h3>
+<p>High-resolution Earth observation (EO) satellites, science instruments, and communications relay satellites generate data at rates ranging from a few megabits per second to tens of gigabits per second. The ground station must provide sufficient aperture (antenna gain), low system noise temperature, and baseband processing capacity to receive, demodulate, and store these data in real time. X-band (8–8.4 GHz) and Ka-band (25.5–27 GHz) are the preferred bands for high-rate EO downlinks.</p>
+<h2 id="sec-antenna_sizing"><span class="secnum">22.2</span> Antenna Sizing for Different Applications<a class="headerlink" href="#sec-antenna_sizing" title="Permanent link">&para;</a></h2>
+<p>The fundamental figure of merit for a receiving ground station is the ratio of antenna gain to system noise temperature, <span class="arithmatex">\(G/T\)</span> (pronounced “G over T”), expressed in decibels per kelvin. The <span class="arithmatex">\(G/T\)</span> requirement is derived directly from the downlink budget:</p>
+<div id="eq-gt_from_link"></div>
+<div class="arithmatex">\[\frac{G}{T} = \frac{E_b}{N_0}\bigg|_{\mathrm{req}} + \text{LOSSES} - \text{EIRP}_{\mathrm{spacecraft}} - 10\log_{10}\!\left(\frac{k R_b}{1\,\mathrm{W/Hz}}\right)^{-1},\tag{22.3}\]</div>
+<p>where <span class="arithmatex">\(E_b/N_0\big|_{\mathrm{req}}\)</span> is the required bit-energy to noise spectral density ratio (including coding gain and implementation margin), LOSSES account for path loss and atmospheric effects, <span class="arithmatex">\(\text{EIRP}_{\mathrm{spacecraft}}\)</span> is the spacecraft effective isotropic radiated power, <span class="arithmatex">\(k = 1.381 \times 10^{-23}\,\mathrm{J/K}\)</span> is Boltzmann’s constant, and <span class="arithmatex">\(R_b\)</span> is the bit rate.</p>
+<p>The system noise temperature is the composite of antenna noise temperature <span class="arithmatex">\(T_A\)</span>, feed loss contribution <span class="arithmatex">\(T_F\)</span>, and receiver noise temperature <span class="arithmatex">\(T_R\)</span>:</p>
+<div id="eq-tsys_ch22"></div>
+<div class="arithmatex">\[T_{\mathrm{sys}} = T_A + T_F + T_R = T_A + (L_F - 1)T_{\mathrm{phys}} + L_F \cdot T_R,\tag{22.4}\]</div>
+<p>where <span class="arithmatex">\(L_F &gt; 1\)</span> is the feed network loss factor and <span class="arithmatex">\(T_{\mathrm{phys}}\)</span> is its physical temperature (<span class="arithmatex">\(\approx 290\,\mathrm{K}\)</span>).</p>
+<p><a href="#tab-antenna_sizing">Table 22.1</a> summarises typical antenna diameters, frequency bands, and achieved <span class="arithmatex">\(G/T\)</span> values for representative ground station applications.</p>
+<div class="tbl" id="tab-antenna_sizing">
+<div class="tbl-caption"><strong>Table 22.1.</strong> Antenna sizing and <span class="math inline">\(G/T\)</span> for representative ground station applications.</div>
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Application</strong></th>
+<th style="text-align: center;"><strong>Band</strong></th>
+<th style="text-align: center;"><strong>Diameter (m)</strong></th>
+<th style="text-align: center;"><strong><span class="math inline">\(G/T\)</span> (dB/K)</strong></th>
+<th style="text-align: left;"><strong>Notes</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">GEO TT&amp;C</td>
+<td style="text-align: center;">S</td>
+<td style="text-align: center;">3–5</td>
+<td style="text-align: center;">15–20</td>
+<td style="text-align: left;">Uncooled HEMT LNA</td>
+</tr>
+<tr>
+<td style="text-align: left;">GEO payload reception</td>
+<td style="text-align: center;">Ku</td>
+<td style="text-align: center;">7–13</td>
+<td style="text-align: center;">25–35</td>
+<td style="text-align: left;">High-power downlinks</td>
+</tr>
+<tr>
+<td style="text-align: left;">LEO data reception</td>
+<td style="text-align: center;">X</td>
+<td style="text-align: center;">3–5</td>
+<td style="text-align: center;">18–25</td>
+<td style="text-align: left;">5–10 min contact window</td>
+</tr>
+<tr>
+<td style="text-align: left;">LEO high-rate Ka</td>
+<td style="text-align: center;">Ka</td>
+<td style="text-align: center;">9–11</td>
+<td style="text-align: center;">28–34</td>
+<td style="text-align: left;">Sub-THz LNA required</td>
+</tr>
+<tr>
+<td style="text-align: left;">Deep space (DSN 34 m)</td>
+<td style="text-align: center;">X/Ka</td>
+<td style="text-align: center;">34</td>
+<td style="text-align: center;">48–52</td>
+<td style="text-align: left;">BWG design</td>
+</tr>
+<tr>
+<td style="text-align: left;">Deep space (DSN 70 m)</td>
+<td style="text-align: center;">S/X</td>
+<td style="text-align: center;">70</td>
+<td style="text-align: center;">55–58</td>
+<td style="text-align: left;">Cryogenic LNA (<span class="math inline">\(\sim 20\,\mathrm{K}\)</span>)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Amateur/educational</td>
+<td style="text-align: center;">UHF</td>
+<td style="text-align: center;">0.5–2</td>
+<td style="text-align: center;"><span class="math inline">\(-\)</span>5 to 8</td>
+<td style="text-align: left;">Yagi or small dish</td>
+</tr>
+</tbody>
+</table>
+</div></div>
+<h3 id="2221-antenna-gain-and-efficiency"><span class="secnum">22.2.1</span> Antenna Gain and Efficiency<a class="headerlink" href="#2221-antenna-gain-and-efficiency" title="Permanent link">&para;</a></h3>
+<p>For a parabolic reflector antenna of diameter <span class="arithmatex">\(D\)</span> and aperture efficiency <span class="arithmatex">\(\eta_a\)</span> operating at wavelength <span class="arithmatex">\(\lambda\)</span>, the peak gain is</p>
+<div id="eq-antenna_gain"></div>
+<div class="arithmatex">\[G = \eta_a \left(\frac{\pi D}{\lambda}\right)^2,\tag{22.5}\]</div>
+<p>and the half-power beamwidth (HPBW) is approximately</p>
+<div id="eq-hpbw_ch22"></div>
+<div class="arithmatex">\[\theta_{\mathrm{HPBW}} \approx \frac{70\lambda}{D} \quad [\mathrm{degrees}].\tag{22.6}\]</div>
+<p>A 7 m Ku-band (<span class="arithmatex">\(f = 11.7\,\mathrm{GHz}\)</span>, <span class="arithmatex">\(\lambda = 25.6\,\mathrm{mm}\)</span>) antenna with <span class="arithmatex">\(\eta_a = 0.65\)</span> achieves <span class="arithmatex">\(G = 0.65 \times (\pi \times 7 / 0.0256)^2 \approx 5.6 \times 10^6\)</span>, or approximately <span class="arithmatex">\(57.5\,\mathrm{dBi}\)</span>, with <span class="arithmatex">\(\theta_{\mathrm{HPBW}} \approx 0.26^\circ\)</span>.</p>
+<h2 id="sec-tracking_systems"><span class="secnum">22.3</span> Antenna Tracking Systems<a class="headerlink" href="#sec-tracking_systems" title="Permanent link">&para;</a></h2>
+<p>Accurate antenna pointing is critical to maintaining link margin. The tolerable pointing error <span class="arithmatex">\(\delta\theta\)</span> corresponds to an acceptable gain loss <span class="arithmatex">\(\Delta G\)</span>; for a parabolic reflector the gain drop due to pointing error is approximately</p>
+<div id="eq-pointing_loss_ch22"></div>
+<div class="arithmatex">\[\Delta G \approx -12 \left(\frac{\delta\theta}{\theta_{\mathrm{HPBW}}}\right)^2 \quad [\mathrm{dB}].\tag{22.7}\]</div>
+<p>To keep pointing loss below <span class="arithmatex">\(0.5\,\mathrm{dB}\)</span>, the pointing accuracy must satisfy <span class="arithmatex">\(\delta\theta &lt; 0.204\,\theta_{\mathrm{HPBW}}\)</span>. For the 7 m Ku-band example above, this requires <span class="arithmatex">\(\delta\theta &lt; 0.053^\circ\)</span>, a stringent requirement met by closed-loop tracking methods.</p>
+<h3 id="2231-monopulse-tracking"><span class="secnum">22.3.1</span> Monopulse Tracking<a class="headerlink" href="#2231-monopulse-tracking" title="Permanent link">&para;</a></h3>
+<p>Monopulse tracking is the highest-accuracy technique. The feed assembly generates simultaneous sum (<span class="arithmatex">\(\Sigma\)</span>) and difference (<span class="arithmatex">\(\Delta\)</span>) patterns. The sum beam is used for signal reception; the difference beam, which has a null on the boresight axis, generates an angle-error voltage proportional to the angular offset:</p>
+<div id="eq-monopulse"></div>
+<div class="arithmatex">\[\varepsilon_{\theta} = k_m \cdot \frac{\Delta}{\Sigma},\tag{22.8}\]</div>
+<p>where <span class="arithmatex">\(k_m\)</span> is the monopulse sensitivity factor (rad<span class="arithmatex">\(^{-1}\)</span>). Two difference channels (azimuth and elevation, or equivalently, X and Y in a Cartesian scheme) feed a servo loop that drives the mount to null the error. Monopulse systems routinely achieve tracking accuracies of <span class="arithmatex">\(0.003\)</span>–<span class="arithmatex">\(0.01^\circ\)</span> RMS.</p>
+<h3 id="2232-program-tracking-open-loop"><span class="secnum">22.3.2</span> Program Tracking (Open-Loop)<a class="headerlink" href="#2232-program-tracking-open-loop" title="Permanent link">&para;</a></h3>
+<p>Program tracking uses a pre-computed ephemeris and an accurate station clock to open-loop point the antenna without any RF feedback. The pointing accuracy is limited by ephemeris uncertainty (orbit determination error) and refraction corrections. For well-determined LEO orbits, program-track errors are typically <span class="arithmatex">\(0.05\)</span>–<span class="arithmatex">\(0.2^\circ\)</span>; for GEO satellites the error budget is dominated by thermal-flexure and encoder calibration (typically <span class="arithmatex">\(0.01\)</span>–<span class="arithmatex">\(0.05^\circ\)</span>).</p>
+<h3 id="2233-step-track-and-conscan"><span class="secnum">22.3.3</span> Step-Track and Conscan<a class="headerlink" href="#2233-step-track-and-conscan" title="Permanent link">&para;</a></h3>
+<p>Step-track periodically offsets the antenna in small increments and measures received power, then steps toward the direction of increasing power. Conscan (conical scan) continuously rotates the pointing direction around a small cone; the amplitude modulation of the received signal encodes the angular error direction. Both methods are slower and less accurate than monopulse but are used on smaller, lower-cost stations.</p>
+<h2 id="sec-mount_types"><span class="secnum">22.4</span> Antenna Mount Types<a class="headerlink" href="#sec-mount_types" title="Permanent link">&para;</a></h2>
+<h3 id="2241-azimuthelevation-az-el-mount"><span class="secnum">22.4.1</span> Azimuth–Elevation (Az-El) Mount<a class="headerlink" href="#2241-azimuthelevation-az-el-mount" title="Permanent link">&para;</a></h3>
+<p>The Az-El mount rotates the antenna in azimuth (horizontal plane) and elevation (vertical angle). It is mechanically simple and permits unlimited azimuth rotation. The singular disadvantage is a <em>keyhole</em> or <em>gimbal lock</em> condition at zenith: as the satellite passes directly overhead, the required azimuth rate diverges to infinity (<a href="#eq-angular_rate">Eq. (22.1)</a>). Az-El mounts are therefore avoided for LEO missions with expected overhead passes unless a zenith exclusion zone (typically <span class="arithmatex">\(\pm 5^\circ\)</span> around zenith) is acceptable.</p>
+<h3 id="2242-x-y-mount"><span class="secnum">22.4.2</span> X-Y Mount<a class="headerlink" href="#2242-x-y-mount" title="Permanent link">&para;</a></h3>
+<p>The X-Y (or horizontal/vertical) mount avoids the zenith singularity by rotating around two orthogonal horizontal axes. This is the preferred choice for LEO ground stations with overhead passes. The singularity is displaced to the horizon, where passes do not normally occur. The mechanical implementation is more complex than Az-El, requiring a rotating platform.</p>
+<h3 id="2243-polar-equatorial-mount"><span class="secnum">22.4.3</span> Polar (Equatorial) Mount<a class="headerlink" href="#2243-polar-equatorial-mount" title="Permanent link">&para;</a></h3>
+<p>The polar mount aligns one axis with Earth’s rotation axis (hour angle) and the other perpendicular to it (declination). Slow, single-speed rotation on the hour-angle axis tracks the sidereal sky, making it ideal for astronomical telescopes. Satellite tracking requires both axes to move, so this mount sees limited use in satellite operations except at legacy radio astronomy facilities pressed into satellite service.</p>
+<h3 id="2244-fixed-position-mounts-for-geo"><span class="secnum">22.4.4</span> Fixed-Position Mounts for GEO<a class="headerlink" href="#2244-fixed-position-mounts-for-geo" title="Permanent link">&para;</a></h3>
+<p>Because geostationary satellites appear stationary (to within <span class="arithmatex">\(\pm 0.1^\circ\)</span> for a well-station-kept satellite), a fixed-mount dish is often used for payload data reception and consumer terminals. An azimuth peaking procedure performed during installation sets the antenna to the GEO satellite’s angular coordinates, which are then fixed.</p>
+<h2 id="sec-rf_chain"><span class="secnum">22.5</span> RF Chain Architecture<a class="headerlink" href="#sec-rf_chain" title="Permanent link">&para;</a></h2>
+<p><a href="#fig-gs_rf_chain">Figure 22.1</a> illustrates the receive and transmit chains of a full-capability TT&amp;C and data-reception ground station.</p>
+<figure class="fig" id="fig-gs_rf_chain">
+<figcaption><strong>Figure 22.1.</strong> Ground station RF chain block diagram (receive and transmit paths).</figcaption>
+</figure>
+<h3 id="2251-low-noise-amplifier"><span class="secnum">22.5.1</span> Low-Noise Amplifier<a class="headerlink" href="#2251-low-noise-amplifier" title="Permanent link">&para;</a></h3>
+<p>The LNA is the most noise-critical component in the receive chain and should be mounted as close to the feed as possible. Modern high-electron-mobility transistor (HEMT) LNAs achieve:</p>
+<ul>
+<li>
+<p>Uncooled HEMT at ambient temperature (<span class="arithmatex">\(T_{\mathrm{phys}} \approx 290\,\mathrm{K}\)</span>): noise figure NF = <span class="arithmatex">\(0.8\)</span>–<span class="arithmatex">\(1.5\,\mathrm{dB}\)</span>, equivalent noise temperature <span class="arithmatex">\(T_e = (10^{NF/10}-1) \times 290\,\mathrm{K} \approx 65\)</span>–<span class="arithmatex">\(120\,\mathrm{K}\)</span>.</p>
+</li>
+<li>
+<p>Cooled HEMT (<span class="arithmatex">\(T_{\mathrm{phys}} \approx 15\)</span>–<span class="arithmatex">\(20\,\mathrm{K}\)</span>, cryogenic dewar): NF <span class="arithmatex">\(= 0.2\)</span>–<span class="arithmatex">\(0.4\,\mathrm{dB}\)</span>, <span class="arithmatex">\(T_e \approx 14\)</span>–<span class="arithmatex">\(30\,\mathrm{K}\)</span>. Used in DSN 70 m stations.</p>
+</li>
+<li>
+<p>Maser (parametric amplifier, DSN 70 m legacy): <span class="arithmatex">\(T_e \approx 3\)</span>–<span class="arithmatex">\(10\,\mathrm{K}\)</span> at X-band.</p>
+</li>
+</ul>
+<p>The overall receive chain noise temperature, referred to the LNA input, is</p>
+<div id="eq-friis_ch22"></div>
+<div class="arithmatex">\[T_{\mathrm{rec}} = T_{e,\mathrm{LNA}} + \frac{T_{e,2}}{G_{\mathrm{LNA}}} + \frac{T_{e,3}}{G_{\mathrm{LNA}} G_2} + \cdots,\tag{22.9}\]</div>
+<p>which is the Friis formula for cascaded noise temperatures. Because <span class="arithmatex">\(G_{\mathrm{LNA}}\)</span> is typically <span class="arithmatex">\(30\)</span>–<span class="arithmatex">\(40\,\mathrm{dB}\)</span>, subsequent stages contribute negligibly.</p>
+<h3 id="2252-high-power-amplifier"><span class="secnum">22.5.2</span> High-Power Amplifier<a class="headerlink" href="#2252-high-power-amplifier" title="Permanent link">&para;</a></h3>
+<p>The uplink HPA provides the transmit EIRP required to close the spacecraft command receiver link. Two technologies dominate:</p>
+<ul>
+<li>
+<p><strong>Solid-State Power Amplifier (SSPA)</strong>: GaN-on-SiC technology, typical output power 100–1000 W at S-band, efficiency <span class="arithmatex">\(\eta = 30\)</span>–<span class="arithmatex">\(50\,\%\)</span>, linear phase response, no warm-up time, maintenance-free. Increasingly preferred for S-band TT&amp;C.</p>
+</li>
+<li>
+<p><strong>Travelling-Wave Tube Amplifier (TWTA)</strong>: 50–750 W at Ka-band, efficiency <span class="arithmatex">\(\eta = 40\)</span>–<span class="arithmatex">\(60\,\%\)</span> with electronic power conditioner (EPC), requires warm-up time (<span class="arithmatex">\(\sim\)</span>20 min for heater cycling), replaceable tube. Required at Ka-band where GaN performance is still developing.</p>
+</li>
+</ul>
+<h2 id="sec-site_selection"><span class="secnum">22.6</span> Site Selection Criteria<a class="headerlink" href="#sec-site_selection" title="Permanent link">&para;</a></h2>
+<p>Ground station site selection is a multi-disciplinary engineering and operational process balancing RF, meteorological, infrastructure, and geopolitical factors.</p>
+<h3 id="2261-radio-frequency-environment"><span class="secnum">22.6.1</span> Radio Frequency Environment<a class="headerlink" href="#2261-radio-frequency-environment" title="Permanent link">&para;</a></h3>
+<p>ITU Radio Regulations require frequency coordination for all earth stations. Antenna siting should minimise exposure to co-channel interference from terrestrial systems (radar, cellular base stations, broadcasting transmitters) and other earth stations. The Earth station coordination zone is defined by the ITU-R P.452 propagation model and is typically a circle of 100–600 km radius depending on frequency, polarisation, and local terrain. Adjacent ground stations sharing the same frequency must maintain sufficient angular separation to avoid mutual interference.</p>
+<h3 id="2262-meteorological-factors"><span class="secnum">22.6.2</span> Meteorological Factors<a class="headerlink" href="#2262-meteorological-factors" title="Permanent link">&para;</a></h3>
+<p>Atmospheric attenuation, primarily from rain at frequencies above 10 GHz and water vapour/oxygen absorption, imposes a time-varying fade that the link budget must accommodate. The rain attenuation <span class="arithmatex">\(A_R\)</span> (dB) for a link of path length <span class="arithmatex">\(L_{\mathrm{eff}}\)</span> through rain is modelled by the ITU-R P.618 procedure:</p>
+<div id="eq-rain_attenuation"></div>
+<div class="arithmatex">\[A_R = \gamma_R \cdot L_{\mathrm{eff}} = k \cdot R^{\alpha} \cdot L_{\mathrm{eff}},\tag{22.10}\]</div>
+<p>where <span class="arithmatex">\(\gamma_R\)</span> is the specific attenuation (dB/km), <span class="arithmatex">\(R\)</span> is the rain rate (mm/hr), and <span class="arithmatex">\(k\)</span>, <span class="arithmatex">\(\alpha\)</span> are frequency- and polarisation-dependent coefficients tabulated in ITU-R P.838. The effective path length <span class="arithmatex">\(L_{\mathrm{eff}} = L / (1 + L/L_0)\)</span> with <span class="arithmatex">\(L_0 = 35 e^{-0.015 R_{0.01}}\)</span> accounts for the non-uniform spatial structure of rain cells. Tropical and subtropical sites (high rain rates, <span class="arithmatex">\(R_{0.01} &gt; 100\,\mathrm{mm/hr}\)</span>) impose severe fade margins at Ka-band (typically 10–20 dB for 99.9% availability), driving antenna size or requiring site diversity.</p>
+<h3 id="2263-infrastructure-requirements"><span class="secnum">22.6.3</span> Infrastructure Requirements<a class="headerlink" href="#2263-infrastructure-requirements" title="Permanent link">&para;</a></h3>
+<p>Ground stations require reliable grid power (10 kW to 10 MW depending on HPA size and cooling loads), high-bandwidth terrestrial connectivity to the MOC (optical fibre at 10–100 Gbps for high-rate payload data delivery), physical security (fencing, CCTV, access control), and seismic and wind-load assessments for large structures.</p>
+<h3 id="2264-elevation-angle-to-satellite"><span class="secnum">22.6.4</span> Elevation Angle to Satellite<a class="headerlink" href="#2264-elevation-angle-to-satellite" title="Permanent link">&para;</a></h3>
+<p>The minimum operational elevation angle <span class="arithmatex">\(\varepsilon_{\min}\)</span> is set by atmospheric path length (which increases rapidly at low elevation), horizon blockage by local terrain or structures, and interference environment. A practical minimum is <span class="arithmatex">\(5^\circ\)</span> for GEO links and <span class="arithmatex">\(3^\circ\)</span> for LEO where the satellite pass geometry limits the contact window. The free-space path loss as a function of slant range <span class="arithmatex">\(R_s\)</span> is</p>
+<div id="eq-fspl_ch22"></div>
+<div class="arithmatex">\[L_{\mathrm{fs}} = \left(\frac{4\pi R_s}{\lambda}\right)^2,\tag{22.11}\]</div>
+<p>and the slant range from station to a LEO satellite at altitude <span class="arithmatex">\(h\)</span> seen at elevation <span class="arithmatex">\(\varepsilon\)</span> is</p>
+<div id="eq-slant_range_ch22"></div>
+<div class="arithmatex">\[R_s = \sqrt{(R_E + h)^2 - R_E^2 \cos^2\varepsilon} - R_E \sin\varepsilon,\tag{22.12}\]</div>
+<p>where <span class="arithmatex">\(R_E = 6371\,\mathrm{km}\)</span> is Earth’s mean radius. At 550 km altitude and <span class="arithmatex">\(5^\circ\)</span> elevation, <span class="arithmatex">\(R_s \approx 2200\,\mathrm{km}\)</span>, nearly four times the nadir slant range of 550 km, resulting in an additional 15.7 dB of free-space path loss.</p>
+<h2 id="sec-contact_geometry"><span class="secnum">22.7</span> Contact Prediction Geometry<a class="headerlink" href="#sec-contact_geometry" title="Permanent link">&para;</a></h2>
+<p>A key operational calculation is the prediction of satellite rise/set times, maximum elevation, and Doppler frequency profile for each ground contact. Given the ground station geodetic coordinates <span class="arithmatex">\((\phi_s, \lambda_s, h_s)\)</span> and the satellite state vector in an Earth-centred inertial (ECI) frame, the elevation and azimuth of the satellite as seen from the station are obtained by coordinate transformation.</p>
+<p>The Doppler shift of the received signal at frequency <span class="arithmatex">\(f_0\)</span> due to the satellite’s radial velocity <span class="arithmatex">\(\dot{R}_s\)</span> (positive away from station) is</p>
+<div id="eq-doppler_ch22"></div>
+<div class="arithmatex">\[f_D = -\frac{f_0}{c} \dot{R}_s = -\frac{f_0}{c} \frac{d R_s}{dt},\tag{22.13}\]</div>
+<p>where</p>
+<div id="eq-doppler_radial"></div>
+<div class="arithmatex">\[\dot{R}_s = \frac{(\mathbf{r}_s - \mathbf{r}_{\mathrm{gs}}) \cdot (\mathbf{v}_s - \mathbf{v}_{\mathrm{gs}})}{|\mathbf{r}_s - \mathbf{r}_{\mathrm{gs}}|}.\tag{22.14}\]</div>
+<p>Here <span class="arithmatex">\(\mathbf{r}_s\)</span>, <span class="arithmatex">\(\mathbf{v}_s\)</span> are the satellite position and velocity vectors in ECI frame, and <span class="arithmatex">\(\mathbf{r}_{\mathrm{gs}}\)</span>, <span class="arithmatex">\(\mathbf{v}_{\mathrm{gs}}\)</span> are the corresponding station vectors (including Earth’s rotation velocity). For a 550 km, 53<span class="arithmatex">\(^\circ\)</span> inclination LEO satellite tracked at S-band (2.25 GHz), the peak-to-peak Doppler excursion is approximately <span class="arithmatex">\(\pm 47\,\mathrm{kHz}\)</span>, with a maximum slew rate of <span class="arithmatex">\(\sim\)</span>680 Hz/s at closest approach.</p>
+<p><a href="#tab-contact_geometry">Table 22.2</a> presents typical contact geometry statistics for a 550 km orbit tracked by ground stations at various latitudes.</p>
+<div class="tbl" id="tab-contact_geometry">
+<div class="tbl-caption"><strong>Table 22.2.</strong> Typical LEO contact statistics for a 550 km circular orbit (53<span class="math inline">\(^\circ\)</span> inclination), station elevation mask <span class="math inline">\(5^\circ\)</span>.</div>
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Station Latitude</strong></th>
+<th style="text-align: center;"><strong>Passes/Day</strong></th>
+<th style="text-align: center;"><strong>Mean Duration (s)</strong></th>
+<th style="text-align: center;"><strong>Max Elev. (<span class="math inline">\(^\circ\)</span>)</strong></th>
+<th style="text-align: center;"><strong>Max Data (Gb/pass, 100 Mbps)</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><span class="math inline">\(0^\circ\)</span> (equatorial)</td>
+<td style="text-align: center;">3–5</td>
+<td style="text-align: center;">420–520</td>
+<td style="text-align: center;">60–90</td>
+<td style="text-align: center;">42–52</td>
+</tr>
+<tr>
+<td style="text-align: left;"><span class="math inline">\(45^\circ\)</span> (mid-lat.)</td>
+<td style="text-align: center;">6–10</td>
+<td style="text-align: center;">370–500</td>
+<td style="text-align: center;">45–90</td>
+<td style="text-align: center;">37–50</td>
+</tr>
+<tr>
+<td style="text-align: left;"><span class="math inline">\(78^\circ\)</span> (subarctic)</td>
+<td style="text-align: center;">10–14</td>
+<td style="text-align: center;">380–600</td>
+<td style="text-align: center;">55–90</td>
+<td style="text-align: center;">38–60</td>
+</tr>
+<tr>
+<td style="text-align: left;"><span class="math inline">\(90^\circ\)</span> (polar)</td>
+<td style="text-align: center;">14–15</td>
+<td style="text-align: center;">400–600</td>
+<td style="text-align: center;">70–90</td>
+<td style="text-align: center;">40–60</td>
+</tr>
+</tbody>
+</table>
+</div></div>
+<h2 id="sec-tracking_networks"><span class="secnum">22.8</span> Major Tracking Networks<a class="headerlink" href="#sec-tracking_networks" title="Permanent link">&para;</a></h2>
+<h3 id="2281-nasa-deep-space-network-dsn"><span class="secnum">22.8.1</span> NASA Deep Space Network (DSN)<a class="headerlink" href="#2281-nasa-deep-space-network-dsn" title="Permanent link">&para;</a></h3>
+<p>The DSN is NASA’s global spacecraft communications and navigation facility, managed by the Jet Propulsion Laboratory (JPL). It comprises three complexes separated by approximately 120<span class="arithmatex">\(^\circ\)</span> in longitude to provide near-continuous coverage of any spacecraft:</p>
+<ol>
+<li>
+<p><strong>Goldstone, California (DSS-14 to DSS-65)</strong>: located in the Mojave Desert. Primary assets include a 70 m dish (DSS-14) and multiple 34 m Beam-Waveguide (BWG) antennas.</p>
+</li>
+<li>
+<p><strong>Madrid, Spain (DSS-54 to DSS-65)</strong>: located at ESAC near Villafranca del Castillo. Similar complement of 70 m and 34 m dishes.</p>
+</li>
+<li>
+<p><strong>Canberra, Australia (DSS-34 to DSS-65)</strong>: located in Tidbinbilla Valley. The only DSN complex in the Southern Hemisphere, essential for missions to the outer solar system.</p>
+</li>
+</ol>
+<p><a href="#tab-dsn_comparison">Table 22.3</a> compares the principal DSN antenna types.</p>
+<div class="tbl" id="tab-dsn_comparison">
+<div class="tbl-caption"><strong>Table 22.3.</strong> Comparison of NASA DSN antenna types (2024 configuration).</div>
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Type</strong></th>
+<th style="text-align: center;"><strong>Diameter</strong></th>
+<th style="text-align: center;"><strong>Bands</strong></th>
+<th style="text-align: center;"><strong><span class="math inline">\(G/T\)</span> (dB/K)</strong></th>
+<th style="text-align: center;"><strong>Quantity</strong></th>
+<th style="text-align: center;"><strong>Max EIRP</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">70 m (Heritage)</td>
+<td style="text-align: center;">70 m</td>
+<td style="text-align: center;">S/X</td>
+<td style="text-align: center;">55–58</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">440 kW at X</td>
+</tr>
+<tr>
+<td style="text-align: left;">34 m BWG</td>
+<td style="text-align: center;">34 m</td>
+<td style="text-align: center;">S/X/Ka</td>
+<td style="text-align: center;">48–52</td>
+<td style="text-align: center;">12</td>
+<td style="text-align: center;">400 kW at X</td>
+</tr>
+<tr>
+<td style="text-align: left;">34 m HEF</td>
+<td style="text-align: center;">34 m</td>
+<td style="text-align: center;">S/X/Ka</td>
+<td style="text-align: center;">46–50</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">100 kW at S</td>
+</tr>
+<tr>
+<td style="text-align: left;">26 m (NEN support)</td>
+<td style="text-align: center;">26 m</td>
+<td style="text-align: center;">S/X</td>
+<td style="text-align: center;">35–42</td>
+<td style="text-align: center;">retired</td>
+<td style="text-align: center;">—</td>
+</tr>
+</tbody>
+</table>
+</div></div>
+<p>The BWG (Beam Waveguide) design routes the focal signal down through the antenna structure to a room-temperature receiver room via a series of mirrors and the antenna’s rotational axes, avoiding the cryogenic LNA rotating with the antenna—a critical advantage for maintenance and reliability.</p>
+<p>The DSN supports more than 40 interplanetary missions simultaneously and provides sequential link scheduling through JPL’s Network Operations Control Team (NOCT). Link frequencies span S-band (2.1/2.3 GHz), X-band (7.2/8.4 GHz), Ka-band (about 34/32 GHz uplink/downlink), and optical communications (1550 nm with Deep Space Optical Communications, DSOC, demonstrated in 2023–2024 on Psyche mission).</p>
+<h3 id="2282-esa-estrack-network"><span class="secnum">22.8.2</span> ESA ESTRACK Network<a class="headerlink" href="#2282-esa-estrack-network" title="Permanent link">&para;</a></h3>
+<p>The European Space Tracking (ESTRACK) network is operated by ESA’s European Space Operations Centre (ESOC) in Darmstadt, Germany. ESTRACK comprises a mix of large and medium aperture stations:</p>
+<ul>
+<li>
+<p><strong>New Norcia, Australia (NNO)</strong>: 35 m BWG at X/Ka-band; primary deep space station for ESA missions.</p>
+</li>
+<li>
+<p><strong>Cebreros, Spain (CEB)</strong>: 35 m BWG; second deep space station, supports lunar and interplanetary missions.</p>
+</li>
+<li>
+<p><strong>Malargüe, Argentina (MAL)</strong>: 35 m BWG; third deep space station completed 2012, providing global 120<span class="arithmatex">\(^\circ\)</span> separation with NNO and CEB.</p>
+</li>
+<li>
+<p><strong>Maspalomas, Canary Islands (MAS)</strong>: 15 m; near-Earth TT&amp;C, Copernicus EO support.</p>
+</li>
+<li>
+<p><strong>Kourou, French Guiana (KRU)</strong>: 15 m; LEOP support co-located with the Guiana Space Centre; critically positioned for GTO launches.</p>
+</li>
+<li>
+<p><strong>Kiruna, Sweden (KIR)</strong>: 15 m at S/X-band; excellent coverage of polar LEO satellites including Sentinel series; <span class="arithmatex">\(67.9^\circ\)</span>N latitude.</p>
+</li>
+<li>
+<p><strong>Perth, Australia (PER)</strong>: 15 m; near-Earth and science missions.</p>
+</li>
+<li>
+<p><strong>Santa Maria, Azores (SMA)</strong>: a smaller dish; LEOP and near-Earth supplement.</p>
+</li>
+</ul>
+<p>ESTRACK is interconnected to ESOC via high-bandwidth fibre links and is augmented by the EDRS (European Data Relay System) optical inter-satellite link for real-time LEO data relay.</p>
+<h3 id="2283-nasa-near-earth-network-nen"><span class="secnum">22.8.3</span> NASA Near Earth Network (NEN)<a class="headerlink" href="#2283-nasa-near-earth-network-nen" title="Permanent link">&para;</a></h3>
+<p>The NEN provides TT&amp;C and data services for missions in LEO, highly elliptical orbit (HEO), and the Moon. It includes government-owned stations (Wallops Island, White Sands) and commercially contracted stations (AWS Ground Station, SSC Universal Space Network). NEN supports the full CCSDS protocol suite including CFDP (CCSDS File Delivery Protocol).</p>
+<h2 id="sec-commercial_networks"><span class="secnum">22.9</span> Commercial Ground Station Networks<a class="headerlink" href="#sec-commercial_networks" title="Permanent link">&para;</a></h2>
+<p>The commercial ground station market has grown rapidly since 2018, driven by the proliferation of commercial LEO satellites and the advent of cloud-integrated data delivery architectures.</p>
+<h3 id="2291-aws-ground-station"><span class="secnum">22.9.1</span> AWS Ground Station<a class="headerlink" href="#2291-aws-ground-station" title="Permanent link">&para;</a></h3>
+<p>Amazon Web Services’ Ground Station service, launched in 2019, provides fully managed, on-demand antenna access integrated with AWS cloud services. Key characteristics include:</p>
+<ul>
+<li>
+<p>Antennas at sites in several regions (for example the United States, Europe, Asia-Pacific and the Middle East; the number of sites has grown since launch).</p>
+</li>
+<li>
+<p>Frequency bands: S-band (uplink 2.025–2.120 GHz, downlink 2.200–2.290 GHz) and X-band (downlink 8.025–8.400 GHz).</p>
+</li>
+<li>
+<p>Data delivered directly to Amazon S3 buckets or EC2 instances in real time via AWS Direct Connect; no customer-managed on-site data infrastructure required.</p>
+</li>
+<li>
+<p>On-demand scheduling (contact reservation 24 h to 15 days in advance) or reserved (committed capacity).</p>
+</li>
+<li>
+<p>Integration with AWS SageMaker for on-cloud ML processing of satellite imagery.</p>
+</li>
+</ul>
+<h3 id="2292-kongsberg-satellite-services-ksat"><span class="secnum">22.9.2</span> Kongsberg Satellite Services (KSAT)<a class="headerlink" href="#2292-kongsberg-satellite-services-ksat" title="Permanent link">&para;</a></h3>
+<p>KSAT operates the world’s largest commercial ground station network with over 300 antenna systems and 20+ locations. The Svalbard site at <span class="arithmatex">\(78^\circ\)</span>N provides exceptional coverage of all sun-synchronous and high-inclination LEO satellites, often supporting 8–15 contacts per day. KSAT serves over 200 satellite operators including Planet, Maxar, Airbus Defence, and government agencies. Its KSATlite network comprises smaller antennas in tropical and southern hemisphere locations to complement polar coverage.</p>
+<h3 id="2293-microsoft-azure-orbital"><span class="secnum">22.9.3</span> Microsoft Azure Orbital<a class="headerlink" href="#2293-microsoft-azure-orbital" title="Permanent link">&para;</a></h3>
+<p>Azure Orbital leverages partnerships with KSAT, Viasat, and Kratos/HawkEye 360 to provide a cloud-integrated ground station service competitive with AWS Ground Station. The service includes Orbital Ground Station as a Service and Orbital Analytics pipelines for EO data exploitation.</p>
+<h3 id="2294-leaf-space"><span class="secnum">22.9.4</span> Leaf Space<a class="headerlink" href="#2294-leaf-space" title="Permanent link">&para;</a></h3>
+<p>Leaf Space is a European commercial ground station operator specialising in LEO missions. It operates software-defined radio (SDR) stations supporting UHF (430–440 MHz), VHF, S-band, and X-band. The use of SDR allows waveform reconfiguration to support new protocols without hardware changes—a key advantage for the rapidly evolving CubeSat and New Space market.</p>
+<h2 id="sec-gt_measurement"><span class="secnum">22.10</span> G/T Measurement Procedure<a class="headerlink" href="#sec-gt_measurement" title="Permanent link">&para;</a></h2>
+<p>The <span class="arithmatex">\(G/T\)</span> of a receiving ground station is measured using the <em>radiometric Y-factor method</em>. The procedure measures the noise power ratio when the antenna is pointed at a calibrated cosmic noise source (radio star or the Moon) versus a cold sky reference:</p>
+<div id="eq-y_factor"></div>
+<div class="arithmatex">\[Y = \frac{T_{\mathrm{sky}} + T_{\mathrm{sys}}}{T_{\mathrm{cold}} + T_{\mathrm{sys}}},\tag{22.15}\]</div>
+<p>where <span class="arithmatex">\(T_{\mathrm{sky}}\)</span> is the antenna temperature contribution of the radio star (Cassiopeia A, Cygnus A, or Taurus A are commonly used), <span class="arithmatex">\(T_{\mathrm{cold}}\)</span> is the antenna temperature when pointed at cold sky away from the galactic plane (<span class="arithmatex">\(\approx 3\)</span>–<span class="arithmatex">\(10\,\mathrm{K}\)</span> depending on elevation and frequency), and <span class="arithmatex">\(T_{\mathrm{sys}}\)</span> is the system noise temperature being measured. Solving for <span class="arithmatex">\(T_{\mathrm{sys}}\)</span>:</p>
+<div id="eq-tsys_from_Y"></div>
+<div class="arithmatex">\[T_{\mathrm{sys}} = \frac{T_{\mathrm{sky}} - Y \cdot T_{\mathrm{cold}}}{Y - 1}.\tag{22.16}\]</div>
+<p>The antenna gain <span class="arithmatex">\(G\)</span> is then obtained from the absolute flux density <span class="arithmatex">\(S\)</span> of the radio star (in Jansky, <span class="arithmatex">\(1\,\mathrm{Jy} = 10^{-26}\,\mathrm{W\,m}^{-2}\,\mathrm{Hz}^{-1}\)</span>) and the noise power increase <span class="arithmatex">\(\Delta T = T_{\mathrm{sky}} - T_{\mathrm{cold}}\)</span>:</p>
+<div id="eq-G_from_star"></div>
+<div class="arithmatex">\[G = \frac{8\pi k \Delta T}{\lambda^2 S},\tag{22.17}\]</div>
+<p>and thus</p>
+<div id="eq-GT_measured"></div>
+<div class="arithmatex">\[\frac{G}{T} = \frac{G}{T_{\mathrm{sys}}} = \frac{8\pi k \Delta T}{\lambda^2 S \cdot T_{\mathrm{sys}}}.\tag{22.18}\]</div>
+<p>This method is traceable to absolute flux density calibrations of the radio stars with uncertainties of <span class="arithmatex">\(\pm 1\)</span>–<span class="arithmatex">\(2\,\mathrm{dB}\)</span>. Alternative methods include the sun as a noise source (strong but requires solar flux corrections) and satellite beacon measurements (requires independent knowledge of spacecraft EIRP).</p>
+<h2 id="sec-leo_specifics"><span class="secnum">22.11</span> LEO Ground Station Specifics<a class="headerlink" href="#sec-leo_specifics" title="Permanent link">&para;</a></h2>
+<p>Ground stations for LEO satellites face operational challenges not present in GEO operations. Contact windows are brief (5–10 minutes for a single station, depending on elevation mask and satellite altitude), and each pass sweeps across a large azimuth and elevation arc. The Doppler rate can reach <span class="arithmatex">\(\pm 3\,\mathrm{kHz/s}\)</span> at S-band for a low-elevation pass, requiring the demodulator’s frequency tracking loop to have sufficient pull-in range and slew rate. The relationship between Doppler rate and orbital geometry is</p>
+<div id="eq-doppler_rate"></div>
+<div class="arithmatex">\[\frac{df_D}{dt} = -\frac{f_0}{c} \ddot{R}_s = \frac{f_0}{c} \cdot \frac{v_s^2 \cos^2\varepsilon}{R_s},\tag{22.19}\]</div>
+<p>which peaks near the moment of closest approach (maximum elevation).</p>
+<p>The economics of LEO data delivery strongly favour multiple ground stations, either operator-owned or purchased as a service. For an Earth observation satellite generating 10 Gbps of imaging data, a single 10 m X-band station at a mid-latitude site might capture only 4–6 contacts per day at 100 Mbps, collecting <span class="arithmatex">\(\approx 200\,\mathrm{Gb/day}\)</span>—far less than the satellite can produce. The solution is either an on-orbit data recorder combined with a network of globally distributed stations, or direct-to-cloud architectures using AWS/KSAT/Azure networks (<a href="bibliography.html#ref-wertz2011">Wertz et al. 2011</a>).</p>
+<h2 id="sec-automation"><span class="secnum">22.12</span> Ground Station Automation and Software<a class="headerlink" href="#sec-automation" title="Permanent link">&para;</a></h2>
+<p>Modern ground stations operate with high levels of automation to reduce operational staffing costs and improve reliability. Key software components include:</p>
+<ul>
+<li>
+<p><strong>Mission Scheduling</strong>: constraint-based scheduling software allocates ground station contacts among competing missions, respecting resource constraints (antenna availability, RF exclusion zones, elevation limits). Algorithms based on constraint satisfaction programming (CSP) or mixed-integer programming (MIP) find optimal contact allocations.</p>
+</li>
+<li>
+<p><strong>Antenna Controller</strong>: the antenna control unit (ACU) receives pointing commands from the tracking prediction engine (azimuth, elevation as time series), executes servo drives, monitors tracking error, and switches between open-loop program track and closed-loop autotrack modes.</p>
+</li>
+<li>
+<p><strong>Contact Automation</strong>: fully automated contacts execute the uplink/downlink procedure—from antenna drive start through acquisition, data collection, and post-pass archive—without operator intervention. Operator alerting is triggered only by anomaly conditions (signal-not-found, BER exceedance, hardware fault).</p>
+</li>
+<li>
+<p><strong>CCSDS File Delivery Protocol (CFDP)</strong>: CCSDS 727.0-B-5 specifies a reliable, acknowledged file delivery protocol for use over space links. CFDP supports Class 1 (unreliable, no ACK) and Class 2 (acknowledged, automatic retransmission) service modes, enabling store-and-forward operations over intermittent LEO links.</p>
+</li>
+</ul>
+<h2 id="sec-data_processing"><span class="secnum">22.13</span> Data Processing at the Ground Station<a class="headerlink" href="#sec-data_processing" title="Permanent link">&para;</a></h2>
+<p>Raw data received at the ground station undergoes a processing pipeline before delivery to the MOC and science users:</p>
+<ol>
+<li>
+<p><strong>Frame Synchronisation</strong>: the bit stream is searched for the synchronisation marker (CCSDS ASM = 0x1ACFFC1D for Turbo/LDPC framed data) to identify frame boundaries.</p>
+</li>
+<li>
+<p><strong>Error Correction</strong>: forward error correction (FEC) decoding is applied. Modern missions use LDPC (Low-Density Parity-Check) or Turbo codes with coding rates <span class="arithmatex">\(r = 1/2\)</span> to <span class="arithmatex">\(7/8\)</span> and block lengths up to 16384 bits, achieving <span class="arithmatex">\(E_b/N_0\)</span> thresholds within 0.5–1.5 dB of the Shannon limit.</p>
+</li>
+<li>
+<p><strong>Quality Monitoring</strong>: bit error rate (BER), frame loss rate, and signal strength are logged and compared against pass-quality thresholds. Alerts are generated if degradation indicates a link or hardware anomaly.</p>
+</li>
+<li>
+<p><strong>Level 0 Archiving</strong>: raw CCSDS packets are stored in a Level 0 (L0) archive with full provenance metadata (pass ID, station, start/end UTC, contact quality metrics).</p>
+</li>
+<li>
+<p><strong>Data Delivery</strong>: packets are forwarded to the MOC in real time (for time-critical housekeeping data) or post-pass (for payload data), using CFDP or TCP/IP-based file transfer. High-rate payload data (tens to hundreds of Gbps/day) may require 100 Gbps fibre links between station and cloud data centre.</p>
+</li>
+</ol>
+<h2 id="sec-interoperability"><span class="secnum">22.14</span> Interoperability and Standards<a class="headerlink" href="#sec-interoperability" title="Permanent link">&para;</a></h2>
+<p>The Consultative Committee for Space Data Systems (CCSDS) has established the Cross Support Services framework to enable interoperability between national agency ground networks. Key standards include:</p>
+<ul>
+<li>
+<p><strong>CCSDS 910.4</strong>: Cross Support Transfer Service (CSTS) specification, defining a standardised API for space link services between agencies.</p>
+</li>
+<li>
+<p><strong>CCSDS 911.1</strong>: Space Link Extension (SLE) service specifications (RAF, RCF, CLTU, TCF) implemented by virtually all major space agencies and many commercial operators.</p>
+</li>
+<li>
+<p><strong>CCSDS 135.0-B</strong>: Space Link Identifiers (SCID, VCID, APID) enabling unambiguous mission identification across mixed-agency networks.</p>
+</li>
+</ul>
+<p>These standards allow, for example, ESA’s ESTRACK to serve NASA missions under a cross-support agreement, and DSN to provide emergency coverage for ESA science satellites—providing redundancy at critical mission phases such as LEOP.</p>
+<h2 id="sec-gs_summary"><span class="secnum">22.15</span> Summary<a class="headerlink" href="#sec-gs_summary" title="Permanent link">&para;</a></h2>
+<p>Ground station design is a systems engineering discipline integrating antenna physics, RF electronics, signal processing, site meteorology, and network operations. The selection of antenna aperture, mount type, tracking method, and LNA technology must be jointly optimised for the specific mission’s orbit, data rate, and availability requirements. Modern commercial cloud-integrated networks—particularly AWS Ground Station and KSAT—have fundamentally changed the economics of ground network access, enabling New Space operators to avoid infrastructure investment while achieving global coverage. Looking forward, optical ground stations (e.g., ESA’s OICETS follow-on, NASA LLCD/LCRD successors) and high-rate Ka-band systems will further expand the achievable throughput between satellites and Earth, driven by data-hungry mega-constellations and high-resolution EO payloads.</p>
+<div class="admonition info box-keybox kind-concept">
+<p>Key Equations</p>
+<dl>
+<dt>Antenna gain:</dt>
+<dd><span class="arithmatex">\(G = \eta_a (\pi D/\lambda)^2\)</span></dd>
+<dt>HPBW:</dt>
+<dd><span class="arithmatex">\(\theta_{\mathrm{HPBW}} \approx 70\lambda/D\)</span> (degrees)</dd>
+<dt>Pointing loss:</dt>
+<dd><span class="arithmatex">\(\Delta G \approx -12(\delta\theta/\theta_{\mathrm{HPBW}})^2\)</span> dB</dd>
+<dt>Doppler shift:</dt>
+<dd><span class="arithmatex">\(f_D = -(f_0/c)\dot{R}_s\)</span></dd>
+<dt>Slant range:</dt>
+<dd><span class="arithmatex">\(R_s = \sqrt{(R_E+h)^2 - R_E^2\cos^2\varepsilon} - R_E\sin\varepsilon\)</span></dd>
+<dt>Rain attenuation:</dt>
+<dd><span class="arithmatex">\(A_R = k R^\alpha L_{\mathrm{eff}}\)</span> (ITU-R P.618)</dd>
+<dt><span class="arithmatex">\(G/T\)</span> measurement:</dt>
+<dd><span class="arithmatex">\(T_{\mathrm{sys}} = (T_{\mathrm{sky}} - Y T_{\mathrm{cold}})/(Y-1)\)</span></dd>
+</dl>
+</div>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button type="button" class="md-top md-icon" data-md-component="top" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+Back to top
+</button>
+</main>
+<footer class="md-footer">
+<nav class="md-footer__inner md-grid" aria-label="Footer" >
+<a href="ch21-military-and-intelligence-satellites.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: 21. Military and Intelligence Satellites">
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</div>
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Previous
+</span>
+<div class="md-ellipsis">
+21. Military and Intelligence Satellites
+</div>
+</div>
+</a>
+<a href="ch23-mission-operations-and-ground-control.html" class="md-footer__link md-footer__link--next" aria-label="Next: 23. Mission Operations and Ground Control">
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Next
+</span>
+<div class="md-ellipsis">
+23. Mission Operations and Ground Control
+</div>
+</div>
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+</div>
+</a>
+</nav>
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+The Open Book Project &middot;
+<a href="../../about.html">About this library</a> &middot;
+<a href="../../publish.html">Publish your book</a> &middot;
+© The authors of the books
+</div>
+Made with
+<a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+Material for MkDocs
+</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "navigation.prune", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "toc.follow", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+<script src="../../assets/mathjax.js"></script>
+<script src="../../assets/viz.js"></script>
+<script src="../../assets/remote.js"></script>
+<script src="../../assets/scans.js"></script>
+<script src="../../assets/reader.js"></script>
+<script src="../../assets/app.js"></script>
+<script src="../../assets/slides.js"></script>
+<script src="../../assets/speak.js"></script>
+<script src="../../assets/quiz.js"></script>
+<script>
+    /* offline reading: the service worker at the site root (its scope is the whole site) */
+    if ("serviceWorker" in navigator && window.isSecureContext) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register(new URL("../../sw.js", location.href).href).catch(function () {});
+      });
+    }
+  </script>
+</body>
+</html>

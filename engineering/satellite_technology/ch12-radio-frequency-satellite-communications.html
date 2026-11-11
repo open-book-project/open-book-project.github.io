@@ -1,0 +1,1369 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="description" content="The Open Book Project: books on computer science, quantum computing, cyber security, science, the social sciences, university courses and languages, read page by page like an e-book, online or offline.">
+<meta name="author" content="The Open Book Project">
+<link rel="canonical" href="https://open-book-project.github.io/engineering/satellite_technology/ch12-radio-frequency-satellite-communications.html">
+<link rel="prev" href="ch11-telemetry-tracking-and-command-systems.html">
+<link rel="next" href="ch13-satellite-link-budget-analysis.html">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap"></noscript>
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Open Book">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="application-name" content="Open Book"><script src="../../assets/library-data.js"></script><script>
+    (function () {
+      var X = window.XMLHttpRequest, open, gate = new Promise(function (r) { open = r; });
+      if (!X) return;
+      var open0 = X.prototype.open, send0 = X.prototype.send;
+      X.prototype.open = function (method, url) {
+        this.__pkIndex = /\/search\/search_index\.json(\?|#|$)/.test(String(url));
+        return open0.apply(this, arguments);
+      };
+      X.prototype.send = function () {
+        if (!this.__pkIndex) return send0.apply(this, arguments);
+        var xhr = this, args = arguments;
+        gate.then(function () { send0.apply(xhr, args); });
+      };
+      function wake() { open(); }
+      document.addEventListener("focusin", function (e) { if (e.target && e.target.closest && e.target.closest(".md-search")) wake(); });
+      document.addEventListener("click", function (e) { if (e.target && e.target.closest && e.target.closest('label[for="__search"], .md-search')) wake(); }, true);
+      document.addEventListener("keydown", function (e) {
+        var k = e.key;
+        if ((k === "/" || k === "s" || k === "f" || k === "S" || k === "F") && !(e.target && e.target.closest && e.target.closest("input, textarea, [contenteditable]"))) wake();
+      }, true);
+      if (/[?&]q=/.test(location.search)) wake();
+    })();
+  </script><script>
+    try {
+      if ((window.matchMedia && (matchMedia("(display-mode: standalone)").matches || matchMedia("(display-mode: fullscreen)").matches)) || navigator.standalone === true) {
+        document.documentElement.className += " bjp-standalone";
+      }
+    } catch (e) { /* not an installed app */ }
+    /* the books of a subject or of the whole library as covers or as a list (assets/app.js): the reader's choice */
+    try {
+      var bv = localStorage.getItem("bjp.view");
+      if (bv === "list" || (bv !== "grid" && /\/books\.html$/.test(location.pathname))) document.documentElement.className += " bjp-view-list";
+    } catch (e) { /* no storage: covers */ }
+  </script>
+<script>
+    /* a book opened from its cover on the shelf: the page stays blank, in the cover's colour, until the reader is up */
+    try {
+      var cv = sessionStorage.getItem("bjp.reader.cover");
+      if (cv && sessionStorage.getItem("bjp.reader.open") === "1") {
+        var c = JSON.parse(cv), de = document.documentElement;
+        de.className += " bjp-booting";
+        if (c && /^#[0-9a-f]{3,8}$/i.test(c.bg || "")) de.style.background = c.bg;
+        setTimeout(function () { de.classList.remove("bjp-booting"); de.style.background = ""; }, 3000);
+      }
+    } catch (e) { /* no session storage: the page simply opens as usual */ }
+  </script>
+<title>12. Radio Frequency Satellite Communications - The Open Book Project</title>
+<link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+<link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+<link rel="stylesheet" href="../../assets/extra.css">
+<link rel="stylesheet" href="../../assets/reader.css">
+<link rel="stylesheet" href="../../assets/viz.css">
+<link rel="stylesheet" href="../../assets/app.css">
+<link rel="stylesheet" href="../../assets/theme.css">
+<link rel="stylesheet" href="../../assets/slides.css">
+<link rel="stylesheet" href="../../assets/remote.css">
+<link rel="stylesheet" href="../../assets/scans.css">
+<link rel="stylesheet" href="../../assets/speak.css">
+<link rel="stylesheet" href="../../assets/quiz.css">
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+<input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+<input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a href="#sec-why_satcom" class="md-skip">
+Skip to content
+</a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav class="md-header__inner md-grid" aria-label="Header">
+<a href="../../index.html" title="The Open Book Project" class="md-header__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+The Open Book Project
+</span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+12. Radio Frequency Satellite Communications
+</span>
+</div>
+</div>
+</div><a href="../../index.html" class="bjp-libbtn" aria-label="Library: all books" title="Library: all books">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V5h4v15M8 20V9h4v11M14 20L12.6 6l3.8-.8 3 14.2M3 20h18"/></svg><span>Library</span>
+</a>
+<a href="../../subjects/index.html" class="pk-catbtn" aria-haspopup="true" aria-expanded="false" title="Browse the books by category">
+<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><circle cx="17" cy="7" r="3.6"/><path d="M7 13.4l3.9 6.8H3.1z"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg><span>Categories</span>
+</a>
+<form class="md-header__option" data-md-component="palette">
+<input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+<label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+</label>
+<input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+<label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+<label class="md-search__icon md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</label>
+<nav class="md-search__options" aria-label="Search">
+<button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+Initializing search
+</div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--primary bjp-nav bjp-nav--book" aria-label="Navigation" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a href="../../index.html" title="The Open Book Project" class="md-nav__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+The Open Book Project
+</label>
+<ul class="md-nav__list" data-md-scrollfix>
+<li class="md-nav__item bjp-nav-all">
+<a href="../../index.html" class="md-nav__link" aria-label="All books: back to the library">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+<span class="md-ellipsis">All books</span>
+</a>
+</li>
+<li class="md-nav__item bjp-nav-book" role="presentation"><span class="bjp-nav-head">Satellite Technology</span></li>
+<li class="md-nav__item">
+<a href="index.html" class="md-nav__link">
+<span class="md-ellipsis">
+Overview and preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="list-of-abbreviations.html" class="md-nav__link">
+<span class="md-ellipsis">
+List of Abbreviations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch01-introduction-to-satellite-technology.html" class="md-nav__link">
+<span class="md-ellipsis">
+1. Introduction to Satellite Technology
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch02-orbital-mechanics.html" class="md-nav__link">
+<span class="md-ellipsis">
+2. Orbital Mechanics
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch03-the-space-environment.html" class="md-nav__link">
+<span class="md-ellipsis">
+3. The Space Environment
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch04-launch-systems-and-mission-design.html" class="md-nav__link">
+<span class="md-ellipsis">
+4. Launch Systems and Mission Design
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch05-satellite-architecture-and-systems-engineering.html" class="md-nav__link">
+<span class="md-ellipsis">
+5. Satellite Architecture and Systems Engineering
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch06-satellite-electrical-power-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+6. Satellite Electrical Power Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch07-attitude-determination-and-control-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+7. Attitude Determination and Control Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch08-satellite-propulsion-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+8. Satellite Propulsion Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch09-thermal-control-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+9. Thermal Control Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch10-on-board-data-handling.html" class="md-nav__link">
+<span class="md-ellipsis">
+10. On-Board Data Handling
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch11-telemetry-tracking-and-command-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+11. Telemetry, Tracking and Command Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+12. Radio Frequency Satellite Communications
+</span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a href="ch12-radio-frequency-satellite-communications.html" class="md-nav__link md-nav__link--active">
+<span class="md-ellipsis">
+12. Radio Frequency Satellite Communications
+</span>
+</a>
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#sec-why_satcom" class="md-nav__link">
+<span class="md-ellipsis">
+12.1 Why Satellite Communications?
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-frequency_bands" class="md-nav__link">
+<span class="md-ellipsis">
+12.2 ITU Frequency Band Allocations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-fspl" class="md-nav__link">
+<span class="md-ellipsis">
+12.3 Free-Space Path Loss
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-atmospheric" class="md-nav__link">
+<span class="md-ellipsis">
+12.4 Atmospheric Propagation Effects
+</span>
+</a>
+<nav class="md-nav" aria-label="12.4 Atmospheric Propagation Effects">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1241-rain-attenuation" class="md-nav__link">
+<span class="md-ellipsis">
+12.4.1 Rain Attenuation
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1242-gaseous-absorption" class="md-nav__link">
+<span class="md-ellipsis">
+12.4.2 Gaseous Absorption
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1243-ionospheric-effects" class="md-nav__link">
+<span class="md-ellipsis">
+12.4.3 Ionospheric Effects
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1244-tropospheric-scintillation" class="md-nav__link">
+<span class="md-ellipsis">
+12.4.4 Tropospheric Scintillation
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-transponder_ch12" class="md-nav__link">
+<span class="md-ellipsis">
+12.5 Transponder Architecture
+</span>
+</a>
+<nav class="md-nav" aria-label="12.5 Transponder Architecture">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1251-receive-chain" class="md-nav__link">
+<span class="md-ellipsis">
+12.5.1 Receive Chain
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1252-high-power-amplifiers" class="md-nav__link">
+<span class="md-ellipsis">
+12.5.2 High-Power Amplifiers
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-freq_reuse" class="md-nav__link">
+<span class="md-ellipsis">
+12.6 Frequency Reuse Techniques
+</span>
+</a>
+<nav class="md-nav" aria-label="12.6 Frequency Reuse Techniques">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1261-spatial-isolation-spot-beams" class="md-nav__link">
+<span class="md-ellipsis">
+12.6.1 Spatial Isolation (Spot Beams)
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1262-polarization-reuse" class="md-nav__link">
+<span class="md-ellipsis">
+12.6.2 Polarization Reuse
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1263-four-color-reuse-pattern" class="md-nav__link">
+<span class="md-ellipsis">
+12.6.3 Four-Color Reuse Pattern
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-capacity" class="md-nav__link">
+<span class="md-ellipsis">
+12.7 Shannon Capacity and Spectral Efficiency
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-geo_link" class="md-nav__link">
+<span class="md-ellipsis">
+12.8 GEO Link Characteristics
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-leo_link" class="md-nav__link">
+<span class="md-ellipsis">
+12.9 LEO Link Characteristics
+</span>
+</a>
+<nav class="md-nav" aria-label="12.9 LEO Link Characteristics">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1291-doppler-shift" class="md-nav__link">
+<span class="md-ellipsis">
+12.9.1 Doppler Shift
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1292-handover" class="md-nav__link">
+<span class="md-ellipsis">
+12.9.2 Handover
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1293-propagation-delay" class="md-nav__link">
+<span class="md-ellipsis">
+12.9.3 Propagation Delay
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-dtp" class="md-nav__link">
+<span class="md-ellipsis">
+12.10 Digital Transparent Processor
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-interference" class="md-nav__link">
+<span class="md-ellipsis">
+12.11 Interference Analysis
+</span>
+</a>
+<nav class="md-nav" aria-label="12.11 Interference Analysis">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#12111-adjacent-satellite-interference" class="md-nav__link">
+<span class="md-ellipsis">
+12.11.1 Adjacent Satellite Interference
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#12112-carrier-to-interference-ratio" class="md-nav__link">
+<span class="md-ellipsis">
+12.11.2 Carrier-to-Interference Ratio
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-rf_summary" class="md-nav__link">
+<span class="md-ellipsis">
+12.12 Summary
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="ch13-satellite-link-budget-analysis.html" class="md-nav__link">
+<span class="md-ellipsis">
+13. Satellite Link Budget Analysis
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch14-satellite-antenna-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+14. Satellite Antenna Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch15-digital-signal-processing-for-satellites.html" class="md-nav__link">
+<span class="md-ellipsis">
+15. Digital Signal Processing for Satellites
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch16-optical-satellite-communications.html" class="md-nav__link">
+<span class="md-ellipsis">
+16. Optical Satellite Communications
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch17-earth-observation-and-remote-sensing.html" class="md-nav__link">
+<span class="md-ellipsis">
+17. Earth Observation and Remote Sensing
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch18-global-navigation-satellite-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+18. Global Navigation Satellite Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch19-communication-satellites-and-services.html" class="md-nav__link">
+<span class="md-ellipsis">
+19. Communication Satellites and Services
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch20-scientific-satellites-and-space-observatories.html" class="md-nav__link">
+<span class="md-ellipsis">
+20. Scientific Satellites and Space Observatories
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch21-military-and-intelligence-satellites.html" class="md-nav__link">
+<span class="md-ellipsis">
+21. Military and Intelligence Satellites
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch22-ground-station-design-and-networks.html" class="md-nav__link">
+<span class="md-ellipsis">
+22. Ground Station Design and Networks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch23-mission-operations-and-ground-control.html" class="md-nav__link">
+<span class="md-ellipsis">
+23. Mission Operations and Ground Control
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch24-smallsats-cubesats-and-the-new-space-revolution.html" class="md-nav__link">
+<span class="md-ellipsis">
+24. SmallSats, CubeSats, and the New Space Revolution
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch25-mega-constellations-and-leo-broadband-networks.html" class="md-nav__link">
+<span class="md-ellipsis">
+25. Mega-Constellations and LEO Broadband Networks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch26-artificial-intelligence-and-machine-learning-in.html" class="md-nav__link">
+<span class="md-ellipsis">
+26. Artificial Intelligence and Machine Learning in Space
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch27-on-orbit-servicing-and-space-robotics.html" class="md-nav__link">
+<span class="md-ellipsis">
+27. On-Orbit Servicing and Space Robotics
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch28-space-debris-and-long-term-sustainability.html" class="md-nav__link">
+<span class="md-ellipsis">
+28. Space Debris and Long-Term Sustainability
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch29-quantum-communications-and-satellite-qkd.html" class="md-nav__link">
+<span class="md-ellipsis">
+29. Quantum Communications and Satellite QKD
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch30-6g-and-non-terrestrial-networks.html" class="md-nav__link">
+<span class="md-ellipsis">
+30. 6G and Non-Terrestrial Networks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch31-future-concepts-and-emerging-space-technologies.html" class="md-nav__link">
+<span class="md-ellipsis">
+31. Future Concepts and Emerging Space Technologies
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="classical-orbital-elements-and-coordinate.html" class="md-nav__link">
+<span class="md-ellipsis">
+Classical Orbital Elements and Coordinate Transformations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="satellite-frequency-allocations.html" class="md-nav__link">
+<span class="md-ellipsis">
+Satellite Frequency Allocations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="launch-vehicle-specifications.html" class="md-nav__link">
+<span class="md-ellipsis">
+Launch Vehicle Specifications
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="link-budget-templates-and-worked-examples.html" class="md-nav__link">
+<span class="md-ellipsis">
+Link Budget Templates and Worked Examples
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="key-standards-software-tools-and-references.html" class="md-nav__link">
+<span class="md-ellipsis">
+Key Standards, Software Tools, and References
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="bibliography.html" class="md-nav__link">
+<span class="md-ellipsis">
+Bibliography
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#sec-why_satcom" class="md-nav__link">
+<span class="md-ellipsis">
+12.1 Why Satellite Communications?
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-frequency_bands" class="md-nav__link">
+<span class="md-ellipsis">
+12.2 ITU Frequency Band Allocations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-fspl" class="md-nav__link">
+<span class="md-ellipsis">
+12.3 Free-Space Path Loss
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-atmospheric" class="md-nav__link">
+<span class="md-ellipsis">
+12.4 Atmospheric Propagation Effects
+</span>
+</a>
+<nav class="md-nav" aria-label="12.4 Atmospheric Propagation Effects">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1241-rain-attenuation" class="md-nav__link">
+<span class="md-ellipsis">
+12.4.1 Rain Attenuation
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1242-gaseous-absorption" class="md-nav__link">
+<span class="md-ellipsis">
+12.4.2 Gaseous Absorption
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1243-ionospheric-effects" class="md-nav__link">
+<span class="md-ellipsis">
+12.4.3 Ionospheric Effects
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1244-tropospheric-scintillation" class="md-nav__link">
+<span class="md-ellipsis">
+12.4.4 Tropospheric Scintillation
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-transponder_ch12" class="md-nav__link">
+<span class="md-ellipsis">
+12.5 Transponder Architecture
+</span>
+</a>
+<nav class="md-nav" aria-label="12.5 Transponder Architecture">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1251-receive-chain" class="md-nav__link">
+<span class="md-ellipsis">
+12.5.1 Receive Chain
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1252-high-power-amplifiers" class="md-nav__link">
+<span class="md-ellipsis">
+12.5.2 High-Power Amplifiers
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-freq_reuse" class="md-nav__link">
+<span class="md-ellipsis">
+12.6 Frequency Reuse Techniques
+</span>
+</a>
+<nav class="md-nav" aria-label="12.6 Frequency Reuse Techniques">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1261-spatial-isolation-spot-beams" class="md-nav__link">
+<span class="md-ellipsis">
+12.6.1 Spatial Isolation (Spot Beams)
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1262-polarization-reuse" class="md-nav__link">
+<span class="md-ellipsis">
+12.6.2 Polarization Reuse
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1263-four-color-reuse-pattern" class="md-nav__link">
+<span class="md-ellipsis">
+12.6.3 Four-Color Reuse Pattern
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-capacity" class="md-nav__link">
+<span class="md-ellipsis">
+12.7 Shannon Capacity and Spectral Efficiency
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-geo_link" class="md-nav__link">
+<span class="md-ellipsis">
+12.8 GEO Link Characteristics
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-leo_link" class="md-nav__link">
+<span class="md-ellipsis">
+12.9 LEO Link Characteristics
+</span>
+</a>
+<nav class="md-nav" aria-label="12.9 LEO Link Characteristics">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1291-doppler-shift" class="md-nav__link">
+<span class="md-ellipsis">
+12.9.1 Doppler Shift
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1292-handover" class="md-nav__link">
+<span class="md-ellipsis">
+12.9.2 Handover
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1293-propagation-delay" class="md-nav__link">
+<span class="md-ellipsis">
+12.9.3 Propagation Delay
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-dtp" class="md-nav__link">
+<span class="md-ellipsis">
+12.10 Digital Transparent Processor
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-interference" class="md-nav__link">
+<span class="md-ellipsis">
+12.11 Interference Analysis
+</span>
+</a>
+<nav class="md-nav" aria-label="12.11 Interference Analysis">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#12111-adjacent-satellite-interference" class="md-nav__link">
+<span class="md-ellipsis">
+12.11.1 Adjacent Satellite Interference
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#12112-carrier-to-interference-ratio" class="md-nav__link">
+<span class="md-ellipsis">
+12.11.2 Carrier-to-Interference Ratio
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-rf_summary" class="md-nav__link">
+<span class="md-ellipsis">
+12.12 Summary
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="ch-rf_communications">Chapter 12: Radio Frequency Satellite Communications<a class="headerlink" href="#ch-rf_communications" title="Permanent link">&para;</a></h1>
+<div class="admonition info box-keybox kind-concept">
+<p><strong>Key Concepts:</strong> ITU frequency band allocation, free-space path loss, atmospheric propagation effects, transponder architecture, TWTA and SSPA amplifiers, frequency reuse, Shannon capacity, GEO and LEO link characteristics, digital transparent processors, interference analysis.</p>
+</div>
+<p>Radio frequency (RF) communications via satellite constitute one of the most transformative technologies of the modern era. Since Early Bird (Intelsat I) demonstrated the first commercial transatlantic television relay in 1965, satellite communications have grown into a global industry exceeding &#36;280 billion annually (including services and hardware), providing connectivity for broadcast television, broadband internet, maritime and aviation communication, military command networks, and emergency services. This chapter presents the fundamental physical principles governing RF satellite links, the engineering of satellite transponder hardware, and the system-level design of GEO and LEO communication satellites.</p>
+<h2 id="sec-why_satcom"><span class="secnum">12.1</span> Why Satellite Communications?<a class="headerlink" href="#sec-why_satcom" title="Permanent link">&para;</a></h2>
+<p>The fundamental geometric advantage of satellite communications derives from the altitude of operation. A geostationary satellite at 35,786 km altitude has a radio horizon that encompasses approximately one-third of the Earth’s surface from a single vantage point. Three GEO satellites at 120 longitudinal separation provide near-global coverage (excluding polar regions above approximately 75 latitude). This geometry provides several unique capabilities:</p>
+<ul>
+<li>
+<p><strong>Broadcast and multicast:</strong> A single uplink transmission is received simultaneously by all terminals in the satellite’s footprint. Satellite is the only cost-effective solution for true broadcast to millions of simultaneous receivers.</p>
+</li>
+<li>
+<p><strong>Rural and remote coverage:</strong> Satellite reaches locations where terrestrial fiber or cellular infrastructure is economically infeasible – oil platforms, polar research stations, aircraft at 35,000 ft, ships in the Southern Ocean.</p>
+</li>
+<li>
+<p><strong>Mobility:</strong> Unlike point-to-point terrestrial links, satellite coverage follows wherever the antenna can see the sky.</p>
+</li>
+<li>
+<p><strong>Disaster recovery:</strong> Satellite infrastructure is independent of the terrestrial network; it functions when terrestrial networks are destroyed by earthquakes, floods, or conflict.</p>
+</li>
+<li>
+<p><strong>24/7 availability:</strong> GEO satellites appear stationary from the ground, requiring no antenna tracking and providing continuous service without handover.</p>
+</li>
+</ul>
+<p>The geometric coverage footprint of a satellite at altitude <span class="arithmatex">\(h\)</span> (km) above a spherical Earth of radius <span class="arithmatex">\(R_e = 6371\)</span> km is characterized by the nadir half-angle <span class="arithmatex">\(\rho\)</span> and the Earth central angle <span class="arithmatex">\(\lambda_0\)</span>:</p>
+<div id="eq-coverage"></div>
+<div class="arithmatex">\[\sin \rho = \frac{R_e}{R_e + h}, \quad \lambda_0 = 90^\circ - \rho - \varepsilon_{min}\tag{12.1}\]</div>
+<p>where <span class="arithmatex">\(\varepsilon_{min}\)</span> is the minimum elevation angle for acceptable link quality (typically 5–10 for GEO, 25–40 for LEO). For GEO (<span class="arithmatex">\(h = 35{,}786\)</span> km), <span class="arithmatex">\(\rho = 8.68\degree{}\)</span>, and the Earth central angle coverage radius <span class="arithmatex">\(\lambda_0 = 76.3\degree{}\)</span> (for <span class="arithmatex">\(\varepsilon_{min} = 5\degree{}\)</span>), corresponding to 42% of Earth’s surface.</p>
+<h2 id="sec-frequency_bands"><span class="secnum">12.2</span> ITU Frequency Band Allocations<a class="headerlink" href="#sec-frequency_bands" title="Permanent link">&para;</a></h2>
+<p>The International Telecommunication Union (ITU), through its Radio Regulations (Radio Regulations, 2020 edition), allocates specific frequency bands for satellite services. The primary services relevant to satellite communications are the Fixed Satellite Service (FSS), Broadcasting Satellite Service (BSS), Mobile Satellite Service (MSS), and the Earth Exploration Satellite Service (EESS) (<a href="bibliography.html#ref-maral2009">Maral et al. 2009</a>).</p>
+<div class="tbl" id="tab-frequency_bands">
+<div class="tbl-caption"><strong>Table 12.1.</strong> ITU Frequency Bands for Satellite Communications</div>
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Band</strong></th>
+<th style="text-align: left;"><strong>Frequency Range</strong></th>
+<th style="text-align: left;"><strong>Primary Satellite Use</strong></th>
+<th style="text-align: left;"><strong>Key Characteristics</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">L-band</td>
+<td style="text-align: left;">1–2 GHz</td>
+<td style="text-align: left;">MSS (Iridium, Inmarsat, GPS)</td>
+<td style="text-align: left;">Low rain attn.; large antenna</td>
+</tr>
+<tr>
+<td style="text-align: left;">S-band</td>
+<td style="text-align: left;">2–4 GHz</td>
+<td style="text-align: left;">MSS, feeder links, TT&amp;C</td>
+<td style="text-align: left;">Low rain attn.; GPS L2</td>
+</tr>
+<tr>
+<td style="text-align: left;">C-band</td>
+<td style="text-align: left;">4–8 GHz</td>
+<td style="text-align: left;">FSS (4/6 GHz), VSAT</td>
+<td style="text-align: left;">Low rain, earth station bias</td>
+</tr>
+<tr>
+<td style="text-align: left;">X-band</td>
+<td style="text-align: left;">8–12 GHz</td>
+<td style="text-align: left;">Military, EO data downlink</td>
+<td style="text-align: left;">Military priority</td>
+</tr>
+<tr>
+<td style="text-align: left;">Ku-band</td>
+<td style="text-align: left;">12–18 GHz</td>
+<td style="text-align: left;">BSS (12 GHz), FSS uplink 14 GHz</td>
+<td style="text-align: left;">Small dish; rain fading</td>
+</tr>
+<tr>
+<td style="text-align: left;">Ka-band</td>
+<td style="text-align: left;">26.5–40 GHz</td>
+<td style="text-align: left;">HTS, feeder links, O3b</td>
+<td style="text-align: left;">High rain fading; high capacity</td>
+</tr>
+<tr>
+<td style="text-align: left;">Q/V-band</td>
+<td style="text-align: left;">33–75 GHz</td>
+<td style="text-align: left;">Feeder links, future HTS</td>
+<td style="text-align: left;">Heavy rain fade; tech. frontier</td>
+</tr>
+<tr>
+<td style="text-align: left;">EHF (W)</td>
+<td style="text-align: left;">75–110 GHz</td>
+<td style="text-align: left;">Military (AEHF 44 GHz)</td>
+<td style="text-align: left;">Military anti-jam; experimental</td>
+</tr>
+</tbody>
+</table>
+</div></div>
+<p>The choice of operating frequency involves fundamental trade-offs between antenna size, rain attenuation, atmospheric noise, and available spectrum. Lower frequencies (L, S, C) suffer less rain attenuation and penetrate foliage but require larger antenna apertures (antenna gain scales as <span class="arithmatex">\((D/\lambda)^2\)</span>). Higher frequencies (Ku, Ka, Q/V) offer more spectrum bandwidth and smaller user terminals but are increasingly affected by rain-induced signal attenuation.</p>
+<p>The C-band allocation (3.7–4.2 GHz downlink, 5.925–6.425 GHz uplink) has been the primary commercial FSS band since the 1970s. The ITU revised the C-band lower boundary in Region 2 (Americas) to 3.98 GHz in 2020 as part of the FCC’s Flexible Use Order that auctioned 280 MHz (3.7–3.98 GHz) for terrestrial 5G, paying approximately &#36;81 billion in auction proceeds.</p>
+<h2 id="sec-fspl"><span class="secnum">12.3</span> Free-Space Path Loss<a class="headerlink" href="#sec-fspl" title="Permanent link">&para;</a></h2>
+<p>The free-space path loss (FSPL) is the fundamental propagation loss experienced by an isotropic radio wave expanding spherically from the transmitter. At range <span class="arithmatex">\(d\)</span> from an isotropic transmitter, the power flux density (W/m<span class="arithmatex">\(^2\)</span>) is:</p>
+<div id="eq-flux_density"></div>
+<div class="arithmatex">\[S = \frac{P_t G_t}{4\pi d^2}\tag{12.2}\]</div>
+<p>An isotropic receive antenna captures power proportional to its effective aperture <span class="arithmatex">\(A_{eff} = \lambda^2/(4\pi)\)</span>, giving the Friis transmission equation. The free-space path loss is:</p>
+<div id="eq-fspl"></div>
+<div class="arithmatex">\[L_{FS} = \left(\frac{4\pi d}{\lambda}\right)^2 = \left(\frac{4\pi d f}{c}\right)^2\tag{12.3}\]</div>
+<p>In decibels:</p>
+<div id="eq-fspl_db"></div>
+<div class="arithmatex">\[\text{FSPL [dB]} = 20\log_{10}\!\left(\frac{4\pi d}{\lambda}\right) = 20\log_{10}(d) + 20\log_{10}(f) + 92.45\tag{12.4}\]</div>
+<p>where <span class="arithmatex">\(d\)</span> is in km and <span class="arithmatex">\(f\)</span> is in GHz (the constant 92.45 = <span class="arithmatex">\(20\log_{10}(4\pi \times 10^{-6}/c)\)</span> absorbs unit conversions). For a GEO satellite at <span class="arithmatex">\(d = 35{,}786\)</span> km and Ku-band at <span class="arithmatex">\(f = 12\)</span> GHz:</p>
+<div id="eq-geofspl"></div>
+<div class="arithmatex">\[\text{FSPL} = 20\log_{10}(35786) + 20\log_{10}(12) + 92.45 = 91.07 + 21.58 + 92.45 \approx 205.1\,\mathrm{dB}\tag{12.5}\]</div>
+<p>This enormous free-space loss (over 200 dB) must be overcome by large antenna gains and high-power transmitters. At Ka-band (<span class="arithmatex">\(f = 30\)</span> GHz, uplink), FSPL <span class="arithmatex">\(\approx 213\)</span> dB. At L-band (<span class="arithmatex">\(f = 1.5\)</span> GHz), FSPL <span class="arithmatex">\(\approx 187\)</span> dB for GEO – illustrating why L-band mobile satellite services require very large satellites with powerful amplifiers to close the link to small handheld terminals (<a href="bibliography.html#ref-roddy2006">Roddy 2006</a>).</p>
+<h2 id="sec-atmospheric"><span class="secnum">12.4</span> Atmospheric Propagation Effects<a class="headerlink" href="#sec-atmospheric" title="Permanent link">&para;</a></h2>
+<p>Real satellite links are not in free space; the troposphere, ionosphere, and neutral atmosphere introduce additional losses and degradations beyond the geometric FSPL (<a href="bibliography.html#ref-pratt2003">Pratt et al. 2003</a>).</p>
+<h3 id="1241-rain-attenuation"><span class="secnum">12.4.1</span> Rain Attenuation<a class="headerlink" href="#1241-rain-attenuation" title="Permanent link">&para;</a></h3>
+<p>Rain is the dominant atmospheric impairment for frequencies above <span class="arithmatex">\(\sim\)</span>10 GHz. Rain droplets scatter and absorb microwave energy through mechanisms related to the dielectric properties of liquid water. The specific rain attenuation <span class="arithmatex">\(\gamma_R\)</span> (dB/km) is modeled by the ITU-R P.838 power-law relationship:</p>
+<div id="eq-rain_attn"></div>
+<div class="arithmatex">\[\gamma_R = k R^\alpha \quad [\mathrm{dB/km}]\tag{12.6}\]</div>
+<p>where <span class="arithmatex">\(R\)</span> is the rain rate (mm/hr) and <span class="arithmatex">\(k\)</span>, <span class="arithmatex">\(\alpha\)</span> are frequency and polarization-dependent coefficients tabulated in ITU-R P.838-3. At 12 GHz (Ku downlink): <span class="arithmatex">\(k_H = 0.0188\)</span>, <span class="arithmatex">\(\alpha_H = 1.217\)</span>; at 30 GHz (Ka uplink): <span class="arithmatex">\(k_H = 0.187\)</span>, <span class="arithmatex">\(\alpha_H = 1.021\)</span>.</p>
+<p>The total rain path attenuation <span class="arithmatex">\(A\)</span> (dB) depends on the effective rain path length through the rain cell:</p>
+<div id="eq-rain_total"></div>
+<div class="arithmatex">\[A = \gamma_R \cdot L_{eff} = \gamma_R \cdot L_s \cdot r\tag{12.7}\]</div>
+<p>where <span class="arithmatex">\(L_s\)</span> is the slant path length through rain (<span class="arithmatex">\(L_s = (h_R - h_s)/\sin\varepsilon\)</span> for rain height <span class="arithmatex">\(h_R\)</span> above mean sea level, station altitude <span class="arithmatex">\(h_s\)</span>, and elevation angle <span class="arithmatex">\(\varepsilon\)</span>) and <span class="arithmatex">\(r\)</span> is a rain path reduction factor accounting for the non-uniform horizontal extent of rain cells (ITU-R P.618-13 procedure). At 12 GHz and <span class="arithmatex">\(0.01\)</span>% annual exceedance (99.99% availability), <span class="arithmatex">\(A_{0.01}\)</span> is typically 2–4 dB for temperate climates and 10–15 dB for tropical regions. At Ka-band (30 GHz), rain attenuation is 4–7<span class="arithmatex">\(\times\)</span> larger in dB, driving the need for adaptive coding and modulation in Ka-band systems.</p>
+<h3 id="1242-gaseous-absorption"><span class="secnum">12.4.2</span> Gaseous Absorption<a class="headerlink" href="#1242-gaseous-absorption" title="Permanent link">&para;</a></h3>
+<p>Atmospheric gases (principally O<span class="arithmatex">\(_2\)</span> and H<span class="arithmatex">\(_2\)</span>O) absorb microwave energy at specific resonance frequencies. Oxygen has a strong absorption band centered at 60 GHz (making terrestrial 60 GHz links useful for spectrum reuse/security since the signal cannot propagate far) and a secondary resonance at 118.7 GHz. Water vapor has lines at 22.3 GHz, 183.3 GHz, and 325 GHz.</p>
+<p>For satellite links at elevation angles <span class="arithmatex">\(&gt; 10\degree{}\)</span>, zenith gaseous absorption at:</p>
+<ul>
+<li>
+<p>C-band (6 GHz): <span class="arithmatex">\(\sim\)</span>0.03 dB (negligible)</p>
+</li>
+<li>
+<p>Ku-band (14 GHz): <span class="arithmatex">\(\sim\)</span>0.07 dB (negligible)</p>
+</li>
+<li>
+<p>Ka-band (30 GHz): <span class="arithmatex">\(\sim\)</span>0.10 dB (small but non-negligible near 22.3 GHz water vapor line)</p>
+</li>
+<li>
+<p>Q-band (50 GHz): <span class="arithmatex">\(\sim\)</span>0.5–1 dB (significant; varies strongly with humidity)</p>
+</li>
+</ul>
+<h3 id="1243-ionospheric-effects"><span class="secnum">12.4.3</span> Ionospheric Effects<a class="headerlink" href="#1243-ionospheric-effects" title="Permanent link">&para;</a></h3>
+<p>The ionosphere (60–1000 km altitude) contains free electrons that affect radio waves below <span class="arithmatex">\(\sim\)</span>3 GHz through:</p>
+<ul>
+<li>
+<p><strong>Faraday rotation:</strong> The polarization plane of linearly polarized waves rotates by angle <span class="arithmatex">\(\Omega \propto f^{-2}\)</span> as the wave propagates through the ionosphere’s electron content (total electron content, TEC, in TEC units). At L-band (1.5 GHz), Faraday rotation can reach tens of degrees during geomagnetic storms, which is why circular polarization is standard for L-band satellite services.</p>
+</li>
+<li>
+<p><strong>Group delay and dispersion:</strong> Ionospheric electrons introduce a frequency-dependent group delay <span class="arithmatex">\(\tau_{iono} \propto \text{TEC}/f^2\)</span> that must be calibrated in navigation systems (GPS dual-frequency correction).</p>
+</li>
+<li>
+<p><strong>Scintillation:</strong> Electron density irregularities in the equatorial ionosphere (between <span class="arithmatex">\(\pm\)</span>20 magnetic latitude) and at auroral zones cause rapid amplitude and phase fluctuations (scintillation), particularly severe at frequencies <span class="arithmatex">\(&lt;\)</span> 3 GHz and during high solar activity (solar cycle 25, peak expected 2025, is active).</p>
+</li>
+</ul>
+<h3 id="1244-tropospheric-scintillation"><span class="secnum">12.4.4</span> Tropospheric Scintillation<a class="headerlink" href="#1244-tropospheric-scintillation" title="Permanent link">&para;</a></h3>
+<p>Even in clear weather, turbulent mixing in the troposphere creates refractive index fluctuations that cause amplitude and phase scintillation on satellite links. The Tatarski model gives scintillation variance:</p>
+<div id="eq-scintillation"></div>
+<div class="arithmatex">\[\sigma_\chi^2 = 0.527 k^{7/6} L^{11/6} C_n^2\tag{12.8}\]</div>
+<p>where <span class="arithmatex">\(k = 2\pi/\lambda\)</span> is the wavenumber, <span class="arithmatex">\(L\)</span> is the turbulence path length, and <span class="arithmatex">\(C_n^2\)</span> is the refractive index structure constant (typically <span class="arithmatex">\(10^{-16}\)</span>–<span class="arithmatex">\(10^{-14}\)</span> m<span class="arithmatex">\(^{-2/3}\)</span> in the lower troposphere). Tropospheric scintillation is most severe at low elevation angles (<span class="arithmatex">\(&lt; 10\degree{}\)</span>) and can reach 2–3 dB peak-to-peak at Ku-band for equatorial sites.</p>
+<h2 id="sec-transponder_ch12"><span class="secnum">12.5</span> Transponder Architecture<a class="headerlink" href="#sec-transponder_ch12" title="Permanent link">&para;</a></h2>
+<p>A satellite transponder receives an uplink signal, amplifies it, shifts it in frequency (or processes it digitally), and retransmits it as a downlink. The classical “bent-pipe” (frequency-converting) transponder architecture consists of the following functional stages (<a href="bibliography.html#ref-maral2009">Maral et al. 2009</a>; <a href="bibliography.html#ref-pratt2003">Pratt et al. 2003</a>):</p>
+<h3 id="1251-receive-chain"><span class="secnum">12.5.1</span> Receive Chain<a class="headerlink" href="#1251-receive-chain" title="Permanent link">&para;</a></h3>
+<ol>
+<li>
+<p><strong>Receive antenna:</strong> Large reflector dish (1.5–3 m for C/Ku-band GEO) focuses energy from the uplink coverage zone onto the feed horn or array feed.</p>
+</li>
+<li>
+<p><strong>Input Multiplexer (IMUX):</strong> Contiguous bandpass filters divide the received spectrum into individual transponder channels. Each transponder occupies a channel bandwidth of 27 MHz (standard) to 500 MHz (wideband) depending on frequency plan.</p>
+</li>
+<li>
+<p><strong>Low Noise Amplifier (LNA):</strong> The first amplification stage must minimize added noise since it directly sets the system noise temperature. Satellite LNAs use InP HEMT (indium phosphide high electron mobility transistor) or GaAs HEMT technology, achieving noise temperatures of 50–80 K (noise figures 0.7–1.1 dB) at ambient temperature operation in the spacecraft thermal environment.</p>
+</li>
+<li>
+<p><strong>Frequency Conversion:</strong> A local oscillator (LO) and mixer downconvert the uplink frequency (e.g., 14 GHz Ku-band uplink) to the transmit frequency (e.g., 12 GHz Ku-band downlink) using heterodyne mixing: <span class="arithmatex">\(f_{down} = f_{up} - f_{LO}\)</span> (or <span class="arithmatex">\(f_{up} + f_{LO}\)</span> for upconversion). GEO satellites typically use a frequency plan with a fixed offset (e.g., Ku FSS: 14 GHz up, 11.7 GHz down, <span class="arithmatex">\(\Delta f = 2.3\)</span> GHz).</p>
+</li>
+</ol>
+<h3 id="1252-high-power-amplifiers"><span class="secnum">12.5.2</span> High-Power Amplifiers<a class="headerlink" href="#1252-high-power-amplifiers" title="Permanent link">&para;</a></h3>
+<p>The transmit amplifier is the most power-consuming and thermally critical component of the transponder:</p>
+<p><strong>Traveling Wave Tube Amplifier (TWTA):</strong> A vacuum electron device where a pencil-like electron beam (from a thermionic electron gun) travels in close proximity to a helical slow-wave structure (SWS) carrying the RF signal. The phase velocity of the RF wave is reduced by the helix to match the electron beam velocity, enabling continuous energy transfer from the beam to the wave. Key features:</p>
+<ul>
+<li>
+<p>Gain: 40–60 dB over a wide bandwidth (<span class="arithmatex">\(&gt;\)</span> octave).</p>
+</li>
+<li>
+<p>Output power: 20–300 W per TWT at C, Ku, Ka, EHF bands.</p>
+</li>
+<li>
+<p>Efficiency: Without collector energy recovery, 20–35%. With a depressed multi-stage collector (3–5 stages recovering energy from electrons exiting the helix at different velocities), efficiency rises to 50–70%.</p>
+</li>
+<li>
+<p><strong>AM/AM and AM/PM nonlinearity:</strong> The TWT transfer characteristic is nonlinear near saturation. AM/AM distortion means output amplitude does not increase linearly with input; AM/PM conversion means output phase varies with input amplitude. For a single carrier, the TWT can be operated near saturation for maximum efficiency. For multi-carrier operation (multiple transponders sharing one TWT, or OFDM), back-off is required to reduce intermodulation distortion.</p>
+</li>
+<li>
+<p><strong>Output Back-Off (OBO):</strong> The multi-carrier output power must be backed off from saturation by OBO = IBO <span class="arithmatex">\(-\)</span> gain compression (OBO <span class="arithmatex">\(\approx\)</span> IBO + 5 dB for a Saleh model TWT). Typical OBO for multi-carrier is 3–7 dB, reducing effective power but ensuring acceptable <span class="arithmatex">\(C/I\)</span> ratios.</p>
+</li>
+</ul>
+<p>The complete TWTA unit includes the TWT, Electronic Power Conditioner (EPC, which provides regulated high voltages of 3–10 kV for the cathode, collector, helix, and focus electrodes), and thermal interface. A 120 W Ka-band TWTA (e.g., Tesat, L3Harris, Communications &amp; Power Industries CPI) operates at approximately 50% efficiency, dissipating 120 W of waste heat into the spacecraft thermal control system.</p>
+<p><strong>Solid-State Power Amplifier (SSPA):</strong> GaN (gallium nitride) HEMT transistors operating as power amplifiers offer an increasingly competitive alternative to TWTAs, particularly at lower frequencies and power levels:</p>
+<ul>
+<li>
+<p>GaN HEMT provides breakdown voltage of 100+ V (versus 15–20 V for GaAs), enabling high power density.</p>
+</li>
+<li>
+<p>Power Added Efficiency (PAE) of 40–45% at Ku-band, 35–40% at Ka-band.</p>
+</li>
+<li>
+<p>Single chip output power: 10 W at Ku-band, 5 W at Ka-band (2023 state of art), scalable by power combining.</p>
+</li>
+<li>
+<p>No vacuum device: eliminates filament heater power, aging mechanisms, and high-voltage power supply complexity.</p>
+</li>
+<li>
+<p>Better reliability in radiation environment: GaN is radiation-hard to <span class="arithmatex">\(&gt; 1\)</span> Mrad total ionizing dose.</p>
+</li>
+<li>
+<p>Disadvantages: lower single-device power than TWT; power combining requires careful impedance and phase matching; thermal management of high power density chip.</p>
+</li>
+</ul>
+<p>For CubeSats and small satellites, GaN SSPAs are exclusively used (at power levels of 2–10 W). For large GEO satellites requiring 100–300 W per transponder at Ku and Ka-band, TWTAs remain the dominant choice due to their combination of high power and high efficiency.</p>
+<div class="tbl" id="tab-twta_sspa">
+<div class="tbl-caption"><strong>Table 12.2.</strong> TWTA versus SSPA Comparison for Satellite Transponders</div>
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Parameter</strong></th>
+<th style="text-align: center;"><strong>TWTA (GaN collector)</strong></th>
+<th style="text-align: center;"><strong>GaN SSPA</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Output power (single unit)</td>
+<td style="text-align: center;">20–300 W</td>
+<td style="text-align: center;">5–30 W (chip); 50–150 W (combined)</td>
+</tr>
+<tr>
+<td style="text-align: left;">PAE / efficiency</td>
+<td style="text-align: center;">50–70% (w/ mult. collector)</td>
+<td style="text-align: center;">35–45%</td>
+</tr>
+<tr>
+<td style="text-align: left;">Bandwidth</td>
+<td style="text-align: center;">Octave+</td>
+<td style="text-align: center;">10–30% relative</td>
+</tr>
+<tr>
+<td style="text-align: left;">Linearity (OIP3)</td>
+<td style="text-align: center;">Moderate</td>
+<td style="text-align: center;">Better (Class A/AB)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Mass</td>
+<td style="text-align: center;"><span class="math inline">\(\sim\)</span>2–4 kg</td>
+<td style="text-align: center;"><span class="math inline">\(\sim\)</span>0.5–2 kg</td>
+</tr>
+<tr>
+<td style="text-align: left;">Radiation tolerance</td>
+<td style="text-align: center;">Moderate (vacuum device)</td>
+<td style="text-align: center;">High (GaN)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Operating frequency</td>
+<td style="text-align: center;">DC–100 GHz</td>
+<td style="text-align: center;">DC–100 GHz</td>
+</tr>
+<tr>
+<td style="text-align: left;">Heritage</td>
+<td style="text-align: center;">Excellent (60+ years)</td>
+<td style="text-align: center;">Growing (2000+)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Cost</td>
+<td style="text-align: center;">Higher (precision vacuum device)</td>
+<td style="text-align: center;">Lower (semiconductor)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Typical application</td>
+<td style="text-align: center;">GEO high-power Ku/Ka</td>
+<td style="text-align: center;">LEO, small GEO, all Ka <span class="math inline">\(&lt;\)</span>30 W</td>
+</tr>
+</tbody>
+</table>
+</div></div>
+<h2 id="sec-freq_reuse"><span class="secnum">12.6</span> Frequency Reuse Techniques<a class="headerlink" href="#sec-freq_reuse" title="Permanent link">&para;</a></h2>
+<p>The transponder bandwidth available to a GEO satellite is fixed by the ITU frequency plan (e.g., 500 MHz at C-band, 500 MHz at Ku-band, 2 GHz at Ka-band). To increase capacity beyond what a single global beam can support, frequency reuse multiplies spectral efficiency (<a href="bibliography.html#ref-pratt2003">Pratt et al. 2003</a>):</p>
+<h3 id="1261-spatial-isolation-spot-beams"><span class="secnum">12.6.1</span> Spatial Isolation (Spot Beams)<a class="headerlink" href="#1261-spatial-isolation-spot-beams" title="Permanent link">&para;</a></h3>
+<p>A satellite antenna with a narrow beam (spot beam) illuminates a small geographic area. The same frequency band can be reused in a distant spot beam without mutual interference, provided the antenna isolation between the two spots exceeds the required carrier-to-interference ratio (<span class="arithmatex">\(C/I\)</span>, typically 15–25 dB). Phased array antennas or multi-beam reflectors with cluster feeds (the “aplanatic lens” design used by Hughes Network Systems) can produce 50–1000 spot beams, each reusing the full frequency plan.</p>
+<p>ViaSat-1 (2011) produced 72 Ka-band spot beams over North America, each reusing the same 500 MHz, for a total spectrum utilization of 72 <span class="arithmatex">\(\times\)</span> 500 MHz and aggregate capacity of 140 Gbps. ViaSat-3 (2023) aims for <span class="arithmatex">\(&gt;\)</span> 1 Tbps using over 1000 spot beams per satellite.</p>
+<h3 id="1262-polarization-reuse"><span class="secnum">12.6.2</span> Polarization Reuse<a class="headerlink" href="#1262-polarization-reuse" title="Permanent link">&para;</a></h3>
+<p>Two orthogonal polarizations (right-hand circular polarization RHCP and left-hand circular polarization LHCP, or horizontal H and vertical V linear polarization) can occupy the same frequency band simultaneously if the cross-polarization isolation (XPI) exceeds the <span class="arithmatex">\(C/I\)</span> requirement. GEO satellites typically achieve 33–40 dB XPI from their main reflector, and even the atmospheric cross-polarization discrimination (XPD) loss of 2–5 dB at Ku-band in rain still leaves adequate margin.</p>
+<h3 id="1263-four-color-reuse-pattern"><span class="secnum">12.6.3</span> Four-Color Reuse Pattern<a class="headerlink" href="#1263-four-color-reuse-pattern" title="Permanent link">&para;</a></h3>
+<p>Combining spatial and polarization reuse, the “4-color” frequency plan uses two frequency sub-bands and two polarizations (2<span class="arithmatex">\(f \times\)</span> 2<span class="arithmatex">\(p\)</span>), providing four color regions that can be reused across non-adjacent spot beams. Each spot beam uses only 25% of the total available bandwidth but, with aggressive spatial reuse across many spot beams, the overall capacity scales with the number of beams.</p>
+<h2 id="sec-capacity"><span class="secnum">12.7</span> Shannon Capacity and Spectral Efficiency<a class="headerlink" href="#sec-capacity" title="Permanent link">&para;</a></h2>
+<p>The Shannon-Hartley theorem establishes the theoretical maximum data rate over a band-limited channel with additive white Gaussian noise (AWGN):</p>
+<div id="eq-shannon"></div>
+<div class="arithmatex">\[C = B \log_2\!\left(1 + \frac{S}{N}\right) = B \log_2\!\left(1 + \text{SNR}\right) \quad [\mathrm{bit/s}]\tag{12.9}\]</div>
+<p>where <span class="arithmatex">\(B\)</span> is the channel bandwidth (Hz) and SNR is the linear signal-to-noise ratio. The spectral efficiency <span class="arithmatex">\(\eta = C/B\)</span> (bit/s/Hz) is:</p>
+<div id="eq-spectral_efficiency"></div>
+<div class="arithmatex">\[\eta = \log_2(1 + \text{SNR}) \quad [\mathrm{bit/s/Hz}]\tag{12.10}\]</div>
+<p>Modern DVB-S2X modulations approach within 1–2 dB of the Shannon limit. For a typical Ka-band transponder with 500 MHz bandwidth and 15 dB SNR (<span class="arithmatex">\(\eta \approx 5\)</span> bit/s/Hz):</p>
+<div id="eq-transponder_capacity"></div>
+<div class="arithmatex">\[C = 500 \times 10^6 \times \log_2(1 + 31.6) \approx 500 \times 10^6 \times 5 = 2.5\,\mathrm{Gbps}\tag{12.11}\]</div>
+<p>High-Throughput Satellites (HTS) aggregate this across hundreds of spot beams. EchoStar Jupiter-3 (2023), with 500 MHz per beam and 108 Ka-band spot beams using 4-color reuse (effective <span class="arithmatex">\(108/4 \times 500\)</span> MHz = 13.5 GHz of spectrum), achieves approximately 500 Gbps aggregate capacity.</p>
+<h2 id="sec-geo_link"><span class="secnum">12.8</span> GEO Link Characteristics<a class="headerlink" href="#sec-geo_link" title="Permanent link">&para;</a></h2>
+<p>The geostationary orbit (GEO) at 35,786 km provides unique and favorable link characteristics for many applications (<a href="bibliography.html#ref-maral2009">Maral et al. 2009</a>):</p>
+<ul>
+<li>
+<p><strong>Coverage:</strong> <span class="arithmatex">\(\pm\)</span>75 latitude (approximately) from a single satellite. Fixed elevation angle from any given Earth terminal (no tracking required for fixed VSAT or dish).</p>
+</li>
+<li>
+<p><strong>Propagation delay:</strong> The one-way propagation delay is <span class="arithmatex">\(d/c = 35{,}786{,}000 / 299{,}792{,}458 \approx 119\)</span> ms for the subsatellite point. At non-subsatellite points (slant range up to <span class="arithmatex">\(\sim\)</span>42,000 km for <span class="arithmatex">\(\varepsilon = 5\degree{}\)</span>), the delay reaches 140 ms. Round-trip time (RTT) is approximately 240–280 ms. For a complete satellite hop (user terminal – satellite – hub – network – hub – satellite – user terminal), the total latency is approximately 550–600 ms.</p>
+</li>
+<li>
+<p><strong>Doppler shift:</strong> GEO satellites appear stationary (residual Doppler <span class="arithmatex">\(&lt; 0.001\)</span> Hz/s drift from orbital perturbations, effectively zero). No Doppler compensation is required.</p>
+</li>
+<li>
+<p><strong>Solar eclipse:</strong> GEO satellites experience eclipse (Earth’s shadow) for up to 70 minutes per day around equinoxes (March and September), requiring battery storage sized for the eclipse duration at full power.</p>
+</li>
+<li>
+<p><strong>Sun outage:</strong> Twice per year, the Sun passes within the receive antenna’s beamwidth as seen from the ground station, causing an outage lasting 5–30 minutes (broader beam = longer outage).</p>
+</li>
+</ul>
+<h2 id="sec-leo_link"><span class="secnum">12.9</span> LEO Link Characteristics<a class="headerlink" href="#sec-leo_link" title="Permanent link">&para;</a></h2>
+<p>Low Earth orbit satellites (300–2000 km altitude) present fundamentally different link engineering challenges compared to GEO (<a href="bibliography.html#ref-maral2009">Maral et al. 2009</a>):</p>
+<h3 id="1291-doppler-shift"><span class="secnum">12.9.1</span> Doppler Shift<a class="headerlink" href="#1291-doppler-shift" title="Permanent link">&para;</a></h3>
+<p>A LEO satellite at 550 km altitude orbits at <span class="arithmatex">\(v = \sqrt{\mu/r} = \sqrt{3.986 \times 10^{14} / (6{,}921{,}000)} \approx 7583\)</span> m/s. The Doppler shift experienced by a ground terminal varies from <span class="arithmatex">\(+f_0 v/c\)</span> (satellite approaching) to <span class="arithmatex">\(-f_0 v/c\)</span> (satellite receding):</p>
+<div id="eq-doppler"></div>
+<div class="arithmatex">\[\Delta f = f_0 \frac{v \cos\theta}{c}\tag{12.12}\]</div>
+<p>where <span class="arithmatex">\(\theta\)</span> is the angle between the satellite velocity vector and the direction to the ground terminal. The maximum Doppler shift occurs at <span class="arithmatex">\(\theta = 0\)</span> (horizon, directly ahead/behind), giving:</p>
+<div id="eq-doppler_max"></div>
+<div class="arithmatex">\[\Delta f_{max} = f_0 \frac{v}{c} = f_0 \frac{7583}{3 \times 10^8}\tag{12.13}\]</div>
+<p>At L-band (<span class="arithmatex">\(f_0 = 1.5\)</span> GHz): <span class="arithmatex">\(\Delta f_{max} = 1.5 \times 10^9 \times 7583 / (3 \times 10^8) \approx \pm 37.9\)</span> kHz. For Starlink at Ku-band (<span class="arithmatex">\(f_0 = 12\)</span> GHz): <span class="arithmatex">\(\Delta f_{max} \approx \pm 303\)</span> kHz. The Doppler rate (rate of change) is maximum at zenith pass and can reach several kHz/s at L-band. User terminals must implement either frequency pre-compensation (shifting the transmit frequency based on predicted satellite ephemeris) or fast Doppler tracking receivers.</p>
+<h3 id="1292-handover"><span class="secnum">12.9.2</span> Handover<a class="headerlink" href="#1292-handover" title="Permanent link">&para;</a></h3>
+<p>A 550 km altitude satellite (Starlink altitude) is visible for a maximum of approximately <span class="arithmatex">\(2 \times \sqrt{(R_e + h)^2 - R_e^2}/v \approx 6.3\)</span> minutes. Constellation operation requires seamless handover between satellites (and between beams within a satellite) as the satellite crosses the sky. The NTN (Non-Terrestrial Network) specifications in 3GPP Release 17 standardize procedures for LEO Doppler pre-compensation, timing advance, and handover execution within the NR (New Radio) frame structure (<a href="bibliography.html#ref-dvbs2">Digital Video Broadcasting (DVB); Second Generation Framing Structure, Channel Coding and Modulation Systems for Broadcasting, Interactive Services, News Gathering and Other Broadband Satellite Applications (DVB-S2) 2014</a>).</p>
+<h3 id="1293-propagation-delay"><span class="secnum">12.9.3</span> Propagation Delay<a class="headerlink" href="#1293-propagation-delay" title="Permanent link">&para;</a></h3>
+<p>At 550 km altitude and 40 elevation, the slant range is approximately 750 km, giving one-way delay of 2.5 ms. This is dramatically lower than GEO’s 250 ms and makes LEO satellite broadband competitive with terrestrial broadband for latency-sensitive applications (video conferencing, gaming, real-time control). Starlink’s stated latency target is <span class="arithmatex">\(&lt;\)</span>20 ms (including ground processing), achieved in practice at 20–50 ms.</p>
+<h2 id="sec-dtp"><span class="secnum">12.10</span> Digital Transparent Processor<a class="headerlink" href="#sec-dtp" title="Permanent link">&para;</a></h2>
+<p>Traditional analog bent-pipe transponders retransmit whatever signal they receive, without on-board signal processing. Digital Transparent Processors (DTPs), also called digital channelizers or on-board processors, perform on-board signal processing at the transponder level:</p>
+<ul>
+<li>
+<p><strong>Digitization:</strong> The received signal is digitized (typically 8–12 bits ADC at 500 MHz sampling rate) after the LNA and downconversion.</p>
+</li>
+<li>
+<p><strong>Channelization:</strong> A digital filter bank (FFT-based or polyphase filter bank) separates the wideband digitized signal into many narrowband channels (e.g., 200 channels of 5 MHz each from 1 GHz of total bandwidth).</p>
+</li>
+<li>
+<p><strong>Beam switching matrix:</strong> Each narrowband channel can be routed to any downlink beam independently, enabling real-time flexible beam assignment without hardware changes. This is the key feature enabling software-defined satellites.</p>
+</li>
+<li>
+<p><strong>Beam hopping:</strong> In time-division beam hopping, the full transponder power is directed to one beam for a short time slot (e.g., 1 ms), then switched to the next beam. Each beam receives power proportional to its demand, enabling flexible capacity allocation across the coverage area. BeamHopping is standardized in DVB-S2X Annex E.</p>
+</li>
+<li>
+<p><strong>TDMA scheduling:</strong> The on-board DTP implements burst scheduling for the return link (user-to-satellite) in TDMA or MF-TDMA schemes.</p>
+</li>
+</ul>
+<p>The Intelsat Intelsat Epic NG satellites (starting with IS-39, 2019) and Eutelsat Quantum (2021) feature DTPs enabling software-reconfigurable coverage and capacity. Eutelsat Quantum’s DTP (from Airbus/Cobham) supports fully flexible bandwidth-on-demand across 8 active beams. The O3b mPOWER satellites (SES, launched 2022–2023) use full on-board processing for beam-by-beam capacity allocation across 4 Tbps aggregate capacity.</p>
+<h2 id="sec-interference"><span class="secnum">12.11</span> Interference Analysis<a class="headerlink" href="#sec-interference" title="Permanent link">&para;</a></h2>
+<p>Satellite communication systems must manage interference from multiple sources (<a href="bibliography.html#ref-maral2009">Maral et al. 2009</a>):</p>
+<h3 id="12111-adjacent-satellite-interference"><span class="secnum">12.11.1</span> Adjacent Satellite Interference<a class="headerlink" href="#12111-adjacent-satellite-interference" title="Permanent link">&para;</a></h3>
+<p>At C and Ku bands, geostationary satellites are spaced as close as 2 in longitude (reduced from 3 after 2000 ITU decisions for Ku-band). The receive antenna’s sidelobe level toward the adjacent satellite at 2 angular separation determines the adjacent satellite interference (ASI):</p>
+<div id="eq-asi"></div>
+<div class="arithmatex">\[\frac{C}{I_{adj}} = G(\theta_0) - G(\theta_{adj}) + \frac{EIRP_{sat}}{EIRP_{adj}}\tag{12.14}\]</div>
+<p>where <span class="arithmatex">\(G(\theta_0)\)</span> is the main beam gain and <span class="arithmatex">\(G(\theta_{adj})\)</span> is the sidelobe gain toward the adjacent satellite (typically 15–25 dBi for a 0.6–1.8 m dish at Ku-band with 2 separation). The ITU minimum isolation standard for earth station antennas at Ku-band is <span class="arithmatex">\(G(\theta) \leq 32 - 25\log\theta\)</span> (dBi) for <span class="arithmatex">\(1\degree{} \leq \theta \leq 48\degree{}\)</span> – the reference radiation pattern (RRP).</p>
+<h3 id="12112-carrier-to-interference-ratio"><span class="secnum">12.11.2</span> Carrier-to-Interference Ratio<a class="headerlink" href="#12112-carrier-to-interference-ratio" title="Permanent link">&para;</a></h3>
+<p>The total noise-plus-interference experienced at the satellite or earth terminal is characterized by the carrier-to-noise-plus-interference ratio (C/(N+I)):</p>
+<div id="eq-cnplusi"></div>
+<div class="arithmatex">\[\frac{C}{N+I} = \frac{1}{\frac{1}{C/N_{thermal}} + \frac{1}{C/I_{adj}} + \frac{1}{C/I_{xpol}} + \frac{1}{C/I_{inter}}}\tag{12.15}\]</div>
+<p>Frequency coordination between operators (ITU-R S-series Recommendations, S.728, S.1062, S.1503) governs the regulatory process for resolving interference disputes between networks filing at the ITU.</p>
+<h2 id="sec-rf_summary"><span class="secnum">12.12</span> Summary<a class="headerlink" href="#sec-rf_summary" title="Permanent link">&para;</a></h2>
+<p>RF satellite communications exploit the geometric vantage of orbital altitude to provide global coverage, broadcast capability, and mobility services impossible with terrestrial infrastructure. The interplay between frequency selection, propagation effects (free-space path loss, rain attenuation, ionospheric effects), and hardware performance (LNA noise temperature, TWTA/SSPA efficiency, antenna gain) is captured in the link budget (Chapter 13). Shannon’s capacity theorem sets the theoretical ceiling that modern DVB-S2X and adaptive coding and modulation schemes approach to within 2 dB. The evolution from analog bent-pipe transponders to software-defined satellites with digital transparent processors and beam hopping represents the current frontier of commercial GEO satellite capability, while LEO constellations with phased array user terminals redefine the latency and mobility possibilities of satellite broadband (<a href="bibliography.html#ref-maral2009">Maral et al. 2009</a>; <a href="bibliography.html#ref-roddy2006">Roddy 2006</a>; <a href="bibliography.html#ref-pratt2003">Pratt et al. 2003</a>).</p>
+<div class="admonition info box-keybox kind-concept">
+<p><strong>Key Equations:</strong></p>
+<ul>
+<li>
+<p>FSPL: <span class="arithmatex">\(L_{FS}[\mathrm{dB}] = 20\log(d[\mathrm{km}]) + 20\log(f[\mathrm{GHz}]) + 92.45\)</span></p>
+</li>
+<li>
+<p>GEO at 12 GHz: FSPL <span class="arithmatex">\(\approx\)</span> 205 dB; GEO one-way delay <span class="arithmatex">\(\approx\)</span> 119 ms</p>
+</li>
+<li>
+<p>Rain attenuation: <span class="arithmatex">\(\gamma_R = kR^\alpha\)</span> [dB/km] (ITU-R P.838)</p>
+</li>
+<li>
+<p>Shannon: <span class="arithmatex">\(C = B\log_2(1+\mathrm{SNR})\)</span> [bit/s]</p>
+</li>
+<li>
+<p>LEO Doppler: <span class="arithmatex">\(\Delta f_{max} = f_0 v/c \approx \pm 38\)</span> kHz at L-band (550 km)</p>
+</li>
+</ul>
+</div>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button type="button" class="md-top md-icon" data-md-component="top" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+Back to top
+</button>
+</main>
+<footer class="md-footer">
+<nav class="md-footer__inner md-grid" aria-label="Footer" >
+<a href="ch11-telemetry-tracking-and-command-systems.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: 11. Telemetry, Tracking and Command Systems">
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</div>
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Previous
+</span>
+<div class="md-ellipsis">
+11. Telemetry, Tracking and Command Systems
+</div>
+</div>
+</a>
+<a href="ch13-satellite-link-budget-analysis.html" class="md-footer__link md-footer__link--next" aria-label="Next: 13. Satellite Link Budget Analysis">
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Next
+</span>
+<div class="md-ellipsis">
+13. Satellite Link Budget Analysis
+</div>
+</div>
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+</div>
+</a>
+</nav>
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+The Open Book Project &middot;
+<a href="../../about.html">About this library</a> &middot;
+<a href="../../publish.html">Publish your book</a> &middot;
+© The authors of the books
+</div>
+Made with
+<a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+Material for MkDocs
+</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "navigation.prune", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "toc.follow", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+<script src="../../assets/mathjax.js"></script>
+<script src="../../assets/viz.js"></script>
+<script src="../../assets/remote.js"></script>
+<script src="../../assets/scans.js"></script>
+<script src="../../assets/reader.js"></script>
+<script src="../../assets/app.js"></script>
+<script src="../../assets/slides.js"></script>
+<script src="../../assets/speak.js"></script>
+<script src="../../assets/quiz.js"></script>
+<script>
+    /* offline reading: the service worker at the site root (its scope is the whole site) */
+    if ("serviceWorker" in navigator && window.isSecureContext) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register(new URL("../../sw.js", location.href).href).catch(function () {});
+      });
+    }
+  </script>
+</body>
+</html>

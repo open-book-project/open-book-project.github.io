@@ -1,0 +1,1519 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="description" content="The Open Book Project: books on computer science, quantum computing, cyber security, science, the social sciences, university courses and languages, read page by page like an e-book, online or offline.">
+<meta name="author" content="The Open Book Project">
+<link rel="canonical" href="https://open-book-project.github.io/engineering/satellite_technology/ch29-quantum-communications-and-satellite-qkd.html">
+<link rel="prev" href="ch28-space-debris-and-long-term-sustainability.html">
+<link rel="next" href="ch30-6g-and-non-terrestrial-networks.html">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap"></noscript>
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Open Book">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="application-name" content="Open Book"><script src="../../assets/library-data.js"></script><script>
+    (function () {
+      var X = window.XMLHttpRequest, open, gate = new Promise(function (r) { open = r; });
+      if (!X) return;
+      var open0 = X.prototype.open, send0 = X.prototype.send;
+      X.prototype.open = function (method, url) {
+        this.__pkIndex = /\/search\/search_index\.json(\?|#|$)/.test(String(url));
+        return open0.apply(this, arguments);
+      };
+      X.prototype.send = function () {
+        if (!this.__pkIndex) return send0.apply(this, arguments);
+        var xhr = this, args = arguments;
+        gate.then(function () { send0.apply(xhr, args); });
+      };
+      function wake() { open(); }
+      document.addEventListener("focusin", function (e) { if (e.target && e.target.closest && e.target.closest(".md-search")) wake(); });
+      document.addEventListener("click", function (e) { if (e.target && e.target.closest && e.target.closest('label[for="__search"], .md-search')) wake(); }, true);
+      document.addEventListener("keydown", function (e) {
+        var k = e.key;
+        if ((k === "/" || k === "s" || k === "f" || k === "S" || k === "F") && !(e.target && e.target.closest && e.target.closest("input, textarea, [contenteditable]"))) wake();
+      }, true);
+      if (/[?&]q=/.test(location.search)) wake();
+    })();
+  </script><script>
+    try {
+      if ((window.matchMedia && (matchMedia("(display-mode: standalone)").matches || matchMedia("(display-mode: fullscreen)").matches)) || navigator.standalone === true) {
+        document.documentElement.className += " bjp-standalone";
+      }
+    } catch (e) { /* not an installed app */ }
+    /* the books of a subject or of the whole library as covers or as a list (assets/app.js): the reader's choice */
+    try {
+      var bv = localStorage.getItem("bjp.view");
+      if (bv === "list" || (bv !== "grid" && /\/books\.html$/.test(location.pathname))) document.documentElement.className += " bjp-view-list";
+    } catch (e) { /* no storage: covers */ }
+  </script>
+<script>
+    /* a book opened from its cover on the shelf: the page stays blank, in the cover's colour, until the reader is up */
+    try {
+      var cv = sessionStorage.getItem("bjp.reader.cover");
+      if (cv && sessionStorage.getItem("bjp.reader.open") === "1") {
+        var c = JSON.parse(cv), de = document.documentElement;
+        de.className += " bjp-booting";
+        if (c && /^#[0-9a-f]{3,8}$/i.test(c.bg || "")) de.style.background = c.bg;
+        setTimeout(function () { de.classList.remove("bjp-booting"); de.style.background = ""; }, 3000);
+      }
+    } catch (e) { /* no session storage: the page simply opens as usual */ }
+  </script>
+<title>29. Quantum Communications and Satellite QKD - The Open Book Project</title>
+<link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+<link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+<link rel="stylesheet" href="../../assets/extra.css">
+<link rel="stylesheet" href="../../assets/reader.css">
+<link rel="stylesheet" href="../../assets/viz.css">
+<link rel="stylesheet" href="../../assets/app.css">
+<link rel="stylesheet" href="../../assets/theme.css">
+<link rel="stylesheet" href="../../assets/slides.css">
+<link rel="stylesheet" href="../../assets/remote.css">
+<link rel="stylesheet" href="../../assets/scans.css">
+<link rel="stylesheet" href="../../assets/speak.css">
+<link rel="stylesheet" href="../../assets/quiz.css">
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+<input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+<input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a href="#sec-qc_intro" class="md-skip">
+Skip to content
+</a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav class="md-header__inner md-grid" aria-label="Header">
+<a href="../../index.html" title="The Open Book Project" class="md-header__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+The Open Book Project
+</span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+29. Quantum Communications and Satellite QKD
+</span>
+</div>
+</div>
+</div><a href="../../index.html" class="bjp-libbtn" aria-label="Library: all books" title="Library: all books">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V5h4v15M8 20V9h4v11M14 20L12.6 6l3.8-.8 3 14.2M3 20h18"/></svg><span>Library</span>
+</a>
+<a href="../../subjects/index.html" class="pk-catbtn" aria-haspopup="true" aria-expanded="false" title="Browse the books by category">
+<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><circle cx="17" cy="7" r="3.6"/><path d="M7 13.4l3.9 6.8H3.1z"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg><span>Categories</span>
+</a>
+<form class="md-header__option" data-md-component="palette">
+<input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+<label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+</label>
+<input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+<label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+<label class="md-search__icon md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</label>
+<nav class="md-search__options" aria-label="Search">
+<button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+Initializing search
+</div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--primary bjp-nav bjp-nav--book" aria-label="Navigation" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a href="../../index.html" title="The Open Book Project" class="md-nav__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+The Open Book Project
+</label>
+<ul class="md-nav__list" data-md-scrollfix>
+<li class="md-nav__item bjp-nav-all">
+<a href="../../index.html" class="md-nav__link" aria-label="All books: back to the library">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+<span class="md-ellipsis">All books</span>
+</a>
+</li>
+<li class="md-nav__item bjp-nav-book" role="presentation"><span class="bjp-nav-head">Satellite Technology</span></li>
+<li class="md-nav__item">
+<a href="index.html" class="md-nav__link">
+<span class="md-ellipsis">
+Overview and preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="list-of-abbreviations.html" class="md-nav__link">
+<span class="md-ellipsis">
+List of Abbreviations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch01-introduction-to-satellite-technology.html" class="md-nav__link">
+<span class="md-ellipsis">
+1. Introduction to Satellite Technology
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch02-orbital-mechanics.html" class="md-nav__link">
+<span class="md-ellipsis">
+2. Orbital Mechanics
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch03-the-space-environment.html" class="md-nav__link">
+<span class="md-ellipsis">
+3. The Space Environment
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch04-launch-systems-and-mission-design.html" class="md-nav__link">
+<span class="md-ellipsis">
+4. Launch Systems and Mission Design
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch05-satellite-architecture-and-systems-engineering.html" class="md-nav__link">
+<span class="md-ellipsis">
+5. Satellite Architecture and Systems Engineering
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch06-satellite-electrical-power-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+6. Satellite Electrical Power Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch07-attitude-determination-and-control-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+7. Attitude Determination and Control Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch08-satellite-propulsion-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+8. Satellite Propulsion Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch09-thermal-control-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+9. Thermal Control Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch10-on-board-data-handling.html" class="md-nav__link">
+<span class="md-ellipsis">
+10. On-Board Data Handling
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch11-telemetry-tracking-and-command-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+11. Telemetry, Tracking and Command Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch12-radio-frequency-satellite-communications.html" class="md-nav__link">
+<span class="md-ellipsis">
+12. Radio Frequency Satellite Communications
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch13-satellite-link-budget-analysis.html" class="md-nav__link">
+<span class="md-ellipsis">
+13. Satellite Link Budget Analysis
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch14-satellite-antenna-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+14. Satellite Antenna Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch15-digital-signal-processing-for-satellites.html" class="md-nav__link">
+<span class="md-ellipsis">
+15. Digital Signal Processing for Satellites
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch16-optical-satellite-communications.html" class="md-nav__link">
+<span class="md-ellipsis">
+16. Optical Satellite Communications
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch17-earth-observation-and-remote-sensing.html" class="md-nav__link">
+<span class="md-ellipsis">
+17. Earth Observation and Remote Sensing
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch18-global-navigation-satellite-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+18. Global Navigation Satellite Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch19-communication-satellites-and-services.html" class="md-nav__link">
+<span class="md-ellipsis">
+19. Communication Satellites and Services
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch20-scientific-satellites-and-space-observatories.html" class="md-nav__link">
+<span class="md-ellipsis">
+20. Scientific Satellites and Space Observatories
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch21-military-and-intelligence-satellites.html" class="md-nav__link">
+<span class="md-ellipsis">
+21. Military and Intelligence Satellites
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch22-ground-station-design-and-networks.html" class="md-nav__link">
+<span class="md-ellipsis">
+22. Ground Station Design and Networks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch23-mission-operations-and-ground-control.html" class="md-nav__link">
+<span class="md-ellipsis">
+23. Mission Operations and Ground Control
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch24-smallsats-cubesats-and-the-new-space-revolution.html" class="md-nav__link">
+<span class="md-ellipsis">
+24. SmallSats, CubeSats, and the New Space Revolution
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch25-mega-constellations-and-leo-broadband-networks.html" class="md-nav__link">
+<span class="md-ellipsis">
+25. Mega-Constellations and LEO Broadband Networks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch26-artificial-intelligence-and-machine-learning-in.html" class="md-nav__link">
+<span class="md-ellipsis">
+26. Artificial Intelligence and Machine Learning in Space
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch27-on-orbit-servicing-and-space-robotics.html" class="md-nav__link">
+<span class="md-ellipsis">
+27. On-Orbit Servicing and Space Robotics
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch28-space-debris-and-long-term-sustainability.html" class="md-nav__link">
+<span class="md-ellipsis">
+28. Space Debris and Long-Term Sustainability
+</span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+29. Quantum Communications and Satellite QKD
+</span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a href="ch29-quantum-communications-and-satellite-qkd.html" class="md-nav__link md-nav__link--active">
+<span class="md-ellipsis">
+29. Quantum Communications and Satellite QKD
+</span>
+</a>
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#sec-qc_intro" class="md-nav__link">
+<span class="md-ellipsis">
+29.1 Introduction to Quantum Communications
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-qm_fundamentals" class="md-nav__link">
+<span class="md-ellipsis">
+29.2 Quantum Mechanics Fundamentals for Communications
+</span>
+</a>
+<nav class="md-nav" aria-label="29.2 Quantum Mechanics Fundamentals for Communications">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-qubits" class="md-nav__link">
+<span class="md-ellipsis">
+29.2.1 Qubits and Superposition
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-entanglement" class="md-nav__link">
+<span class="md-ellipsis">
+29.2.2 Quantum Entanglement and Bell States
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-no_cloning" class="md-nav__link">
+<span class="md-ellipsis">
+29.2.3 No-Cloning Theorem
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-teleportation" class="md-nav__link">
+<span class="md-ellipsis">
+29.2.4 Quantum Teleportation
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-qkd_protocols" class="md-nav__link">
+<span class="md-ellipsis">
+29.3 QKD Protocols
+</span>
+</a>
+<nav class="md-nav" aria-label="29.3 QKD Protocols">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-bb84" class="md-nav__link">
+<span class="md-ellipsis">
+29.3.1 BB84 Protocol
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-decoy_state" class="md-nav__link">
+<span class="md-ellipsis">
+29.3.2 Decoy-State BB84
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-e91" class="md-nav__link">
+<span class="md-ellipsis">
+29.3.3 E91 Protocol
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-cv_qkd" class="md-nav__link">
+<span class="md-ellipsis">
+29.3.4 Continuous-Variable QKD
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-mdi_qkd" class="md-nav__link">
+<span class="md-ellipsis">
+29.3.5 Measurement-Device-Independent QKD
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-tf_qkd" class="md-nav__link">
+<span class="md-ellipsis">
+29.3.6 Twin-Field QKD
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-physical_impl" class="md-nav__link">
+<span class="md-ellipsis">
+29.4 Physical Implementations
+</span>
+</a>
+<nav class="md-nav" aria-label="29.4 Physical Implementations">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-spd" class="md-nav__link">
+<span class="md-ellipsis">
+29.4.1 Single-Photon Detectors
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-eps" class="md-nav__link">
+<span class="md-ellipsis">
+29.4.2 Entangled Photon Sources
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-fso_channel" class="md-nav__link">
+<span class="md-ellipsis">
+29.4.3 Free-Space Optical Channel and Link Efficiency
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-polarization_control" class="md-nav__link">
+<span class="md-ellipsis">
+29.4.4 Polarization Control and Reference Frame Alignment
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-sat_qkd_demos" class="md-nav__link">
+<span class="md-ellipsis">
+29.5 Satellite QKD Demonstrations
+</span>
+</a>
+<nav class="md-nav" aria-label="29.5 Satellite QKD Demonstrations">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-micius" class="md-nav__link">
+<span class="md-ellipsis">
+29.5.1 Micius/QUESS Satellite
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-intl_sat_qkd" class="md-nav__link">
+<span class="md-ellipsis">
+29.5.2 International Satellite QKD Programs
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-quantum_repeaters" class="md-nav__link">
+<span class="md-ellipsis">
+29.6 Quantum Repeaters and Long-Distance QKD
+</span>
+</a>
+<nav class="md-nav" aria-label="29.6 Quantum Repeaters and Long-Distance QKD">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-direct_qkd_limits" class="md-nav__link">
+<span class="md-ellipsis">
+29.6.1 Fundamental Limits of Direct QKD
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-repeater_arch" class="md-nav__link">
+<span class="md-ellipsis">
+29.6.2 Quantum Repeater Architecture
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-q_memory" class="md-nav__link">
+<span class="md-ellipsis">
+29.6.3 Quantum Memory Technologies
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-exp_qnetworks" class="md-nav__link">
+<span class="md-ellipsis">
+29.6.4 Experimental Quantum Networks
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-pqc" class="md-nav__link">
+<span class="md-ellipsis">
+29.7 Post-Quantum Cryptography
+</span>
+</a>
+<nav class="md-nav" aria-label="29.7 Post-Quantum Cryptography">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-quantum_threat" class="md-nav__link">
+<span class="md-ellipsis">
+29.7.1 The Quantum Threat to Classical Cryptography
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-nist_pqc" class="md-nav__link">
+<span class="md-ellipsis">
+29.7.2 NIST Post-Quantum Cryptography Standards 2024
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#chapter-summary" class="md-nav__link">
+<span class="md-ellipsis">
+Chapter Summary
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="ch30-6g-and-non-terrestrial-networks.html" class="md-nav__link">
+<span class="md-ellipsis">
+30. 6G and Non-Terrestrial Networks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch31-future-concepts-and-emerging-space-technologies.html" class="md-nav__link">
+<span class="md-ellipsis">
+31. Future Concepts and Emerging Space Technologies
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="classical-orbital-elements-and-coordinate.html" class="md-nav__link">
+<span class="md-ellipsis">
+Classical Orbital Elements and Coordinate Transformations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="satellite-frequency-allocations.html" class="md-nav__link">
+<span class="md-ellipsis">
+Satellite Frequency Allocations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="launch-vehicle-specifications.html" class="md-nav__link">
+<span class="md-ellipsis">
+Launch Vehicle Specifications
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="link-budget-templates-and-worked-examples.html" class="md-nav__link">
+<span class="md-ellipsis">
+Link Budget Templates and Worked Examples
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="key-standards-software-tools-and-references.html" class="md-nav__link">
+<span class="md-ellipsis">
+Key Standards, Software Tools, and References
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="bibliography.html" class="md-nav__link">
+<span class="md-ellipsis">
+Bibliography
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#sec-qc_intro" class="md-nav__link">
+<span class="md-ellipsis">
+29.1 Introduction to Quantum Communications
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-qm_fundamentals" class="md-nav__link">
+<span class="md-ellipsis">
+29.2 Quantum Mechanics Fundamentals for Communications
+</span>
+</a>
+<nav class="md-nav" aria-label="29.2 Quantum Mechanics Fundamentals for Communications">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-qubits" class="md-nav__link">
+<span class="md-ellipsis">
+29.2.1 Qubits and Superposition
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-entanglement" class="md-nav__link">
+<span class="md-ellipsis">
+29.2.2 Quantum Entanglement and Bell States
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-no_cloning" class="md-nav__link">
+<span class="md-ellipsis">
+29.2.3 No-Cloning Theorem
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-teleportation" class="md-nav__link">
+<span class="md-ellipsis">
+29.2.4 Quantum Teleportation
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-qkd_protocols" class="md-nav__link">
+<span class="md-ellipsis">
+29.3 QKD Protocols
+</span>
+</a>
+<nav class="md-nav" aria-label="29.3 QKD Protocols">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-bb84" class="md-nav__link">
+<span class="md-ellipsis">
+29.3.1 BB84 Protocol
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-decoy_state" class="md-nav__link">
+<span class="md-ellipsis">
+29.3.2 Decoy-State BB84
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-e91" class="md-nav__link">
+<span class="md-ellipsis">
+29.3.3 E91 Protocol
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-cv_qkd" class="md-nav__link">
+<span class="md-ellipsis">
+29.3.4 Continuous-Variable QKD
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-mdi_qkd" class="md-nav__link">
+<span class="md-ellipsis">
+29.3.5 Measurement-Device-Independent QKD
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-tf_qkd" class="md-nav__link">
+<span class="md-ellipsis">
+29.3.6 Twin-Field QKD
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-physical_impl" class="md-nav__link">
+<span class="md-ellipsis">
+29.4 Physical Implementations
+</span>
+</a>
+<nav class="md-nav" aria-label="29.4 Physical Implementations">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-spd" class="md-nav__link">
+<span class="md-ellipsis">
+29.4.1 Single-Photon Detectors
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-eps" class="md-nav__link">
+<span class="md-ellipsis">
+29.4.2 Entangled Photon Sources
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-fso_channel" class="md-nav__link">
+<span class="md-ellipsis">
+29.4.3 Free-Space Optical Channel and Link Efficiency
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-polarization_control" class="md-nav__link">
+<span class="md-ellipsis">
+29.4.4 Polarization Control and Reference Frame Alignment
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-sat_qkd_demos" class="md-nav__link">
+<span class="md-ellipsis">
+29.5 Satellite QKD Demonstrations
+</span>
+</a>
+<nav class="md-nav" aria-label="29.5 Satellite QKD Demonstrations">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-micius" class="md-nav__link">
+<span class="md-ellipsis">
+29.5.1 Micius/QUESS Satellite
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-intl_sat_qkd" class="md-nav__link">
+<span class="md-ellipsis">
+29.5.2 International Satellite QKD Programs
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-quantum_repeaters" class="md-nav__link">
+<span class="md-ellipsis">
+29.6 Quantum Repeaters and Long-Distance QKD
+</span>
+</a>
+<nav class="md-nav" aria-label="29.6 Quantum Repeaters and Long-Distance QKD">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-direct_qkd_limits" class="md-nav__link">
+<span class="md-ellipsis">
+29.6.1 Fundamental Limits of Direct QKD
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-repeater_arch" class="md-nav__link">
+<span class="md-ellipsis">
+29.6.2 Quantum Repeater Architecture
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-q_memory" class="md-nav__link">
+<span class="md-ellipsis">
+29.6.3 Quantum Memory Technologies
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-exp_qnetworks" class="md-nav__link">
+<span class="md-ellipsis">
+29.6.4 Experimental Quantum Networks
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-pqc" class="md-nav__link">
+<span class="md-ellipsis">
+29.7 Post-Quantum Cryptography
+</span>
+</a>
+<nav class="md-nav" aria-label="29.7 Post-Quantum Cryptography">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-quantum_threat" class="md-nav__link">
+<span class="md-ellipsis">
+29.7.1 The Quantum Threat to Classical Cryptography
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-nist_pqc" class="md-nav__link">
+<span class="md-ellipsis">
+29.7.2 NIST Post-Quantum Cryptography Standards 2024
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#chapter-summary" class="md-nav__link">
+<span class="md-ellipsis">
+Chapter Summary
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="ch-quantum_comms">Chapter 29: Quantum Communications and Satellite QKD<a class="headerlink" href="#ch-quantum_comms" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p><em>“Anyone who is not shocked by quantum theory has not understood it.”</em><br> <span class="srcline">— Niels Bohr</span></p>
+</blockquote>
+<p>The security of modern digital civilization rests on mathematical hardness assumptions—that factoring large integers or computing discrete logarithms is computationally infeasible. Quantum computers, leveraging Shor’s algorithm, threaten to invalidate these assumptions within the coming decades, rendering the public-key infrastructure protecting everything from financial transactions to military communications vulnerable. Quantum communications offers an alternative security paradigm grounded not in mathematical difficulty but in the fundamental laws of physics. Quantum Key Distribution (QKD), the most mature quantum communication technology, enables two parties to establish a shared secret key whose security is guaranteed by the no-cloning theorem and the postulates of quantum mechanics—any eavesdropper necessarily disturbs the quantum channel in a detectable manner.</p>
+<p>Satellite-based QKD is the enabling technology for global quantum-secure communications. Ground-based fiber QKD networks are limited by absorption losses: even at the optimal 1550 nm telecom wavelength, fiber attenuation of 0.2 dB/km means that photon survival probability falls to <span class="arithmatex">\(10^{-20}\)</span> over 1000 km, making direct fiber QKD at intercontinental distances impossible without quantum repeaters. Free-space satellite links exploit a fundamentally different loss mechanism: diffraction spreading over vacuum, with the bulk of atmospheric absorption confined to the lowest 10 km. The Micius satellite, launched by China in 2016, demonstrated satellite-to-ground (downlink) QKD over slant ranges up to 1200 km, satellite-to-ground entanglement distribution over 1203 km, and an intercontinental quantum-secured link relayed through the satellite—milestones that validated the satellite QKD approach and triggered a global race to deploy quantum communication satellites (<a href="bibliography.html#ref-liao2017"><span class="nocase">Liao et al.</span> 2017</a>).</p>
+<p>This chapter develops the quantum mechanical foundations necessary to understand QKD, describes the major QKD protocols in mathematical detail, examines the physical implementation challenges in free-space and satellite environments, surveys current and planned satellite QKD missions, and addresses the longer-term vision of quantum repeater networks and the relationship between QKD and post-quantum cryptography.</p>
+<h2 id="sec-qc_intro"><span class="secnum">29.1</span> Introduction to Quantum Communications<a class="headerlink" href="#sec-qc_intro" title="Permanent link">&para;</a></h2>
+<p>Quantum communications encompasses a family of technologies that exploit quantum mechanical phenomena—superposition, entanglement, and measurement—to perform communication tasks that are impossible or insecure classically. The field divides broadly into three areas: quantum key distribution (QKD), quantum teleportation, and quantum networks (including quantum repeaters and a future quantum internet).</p>
+<p>QKD is the most technologically mature application. In QKD, the quantum channel transmits not data directly but random key material whose security is guaranteed by physics. Classical cryptographic algorithms (AES, ChaCha20) then encrypt the actual data using this key in a one-time-pad or cipher mode. The quantum channel need not carry high bandwidth; the security benefit is entirely in the key generation process. QKD is complementary to, not a replacement for, classical encryption algorithms; it addresses the key distribution problem specifically.</p>
+<p>Quantum teleportation transfers an unknown quantum state from one party to another using a pre-shared entangled pair and a classical communication channel. It does not teleport matter or information faster than light; it consumes one shared entangled pair and two classical bits per qubit teleported. Teleportation is the fundamental primitive of quantum repeaters.</p>
+<p>Quantum networks aim to interconnect quantum processors, sensors, and communication nodes via entanglement distribution, enabling distributed quantum computing and fundamentally new sensing and clock-synchronization capabilities. The term “quantum internet” describes a global network providing these services as infrastructure.</p>
+<div class="admonition info box-keybox kind-concept">
+<p><strong>Core Principle of QKD Security:</strong> Any attempt by an eavesdropper to intercept or copy quantum states being transmitted necessarily perturbs those states, by the no-cloning theorem and measurement collapse. The resulting errors are detectable during classical post-processing, allowing Alice and Bob to bound the information acquired by any eavesdropper and amplify the remaining key privacy to an arbitrarily small information leakage. Security is guaranteed by physics, not by computational hardness.</p>
+</div>
+<p>The satellite link budget for QKD differs from classical satellite communications in one critical respect: the signal consists of individual photons. While classical links require <span class="arithmatex">\(E_b/N_0\)</span> ratios of 5–15 dB for reliable demodulation, QKD links operate at the single-photon level. The relevant figures of merit are photon detection rate (key sifted bits per second) and quantum bit error rate (QBER). A QBER below approximately 11% (for BB84) is required for positive secret key extraction; satellite QKD experiments have reported QBER of a few percent during night-time passes.</p>
+<h2 id="sec-qm_fundamentals"><span class="secnum">29.2</span> Quantum Mechanics Fundamentals for Communications<a class="headerlink" href="#sec-qm_fundamentals" title="Permanent link">&para;</a></h2>
+<h3 id="subsec-qubits"><span class="secnum">29.2.1</span> Qubits and Superposition<a class="headerlink" href="#subsec-qubits" title="Permanent link">&para;</a></h3>
+<p>The quantum bit, or <em>qubit</em>, is the fundamental unit of quantum information. Unlike a classical bit that takes value 0 or 1, a qubit can exist in any superposition of its two basis states. The general state of a qubit is: <span id="eq-qubit_state"></span></p>
+<div class="arithmatex">\[|\psi\rangle = \alpha|0\rangle + \beta|1\rangle, \quad \alpha,\beta \in \mathbb{C}, \quad |\alpha|^2 + |\beta|^2 = 1\tag{29.1}\]</div>
+<p>where <span class="arithmatex">\(|0\rangle\)</span> and <span class="arithmatex">\(|1\rangle\)</span> are the computational basis (Z-basis) states, <span class="arithmatex">\(\alpha\)</span> and <span class="arithmatex">\(\beta\)</span> are complex probability amplitudes, and the normalization condition <span class="arithmatex">\(|\alpha|^2 + |\beta|^2 = 1\)</span> ensures probabilities sum to unity. Upon measurement in the Z-basis, the qubit collapses irreversibly to <span class="arithmatex">\(|0\rangle\)</span> with probability <span class="arithmatex">\(|\alpha|^2\)</span> or to <span class="arithmatex">\(|1\rangle\)</span> with probability <span class="arithmatex">\(|\beta|^2\)</span>.</p>
+<p><strong>Bloch Sphere Representation:</strong> Any pure qubit state can be parameterized on the surface of a unit sphere (the Bloch sphere) as: <span id="eq-bloch_sphere"></span></p>
+<div class="arithmatex">\[|\psi\rangle = \cos\!\left(\frac{\theta}{2}\right)|0\rangle + e^{i\phi}\sin\!\left(\frac{\theta}{2}\right)|1\rangle\tag{29.2}\]</div>
+<p>with polar angle <span class="arithmatex">\(\theta \in [0,\pi]\)</span> and azimuthal angle <span class="arithmatex">\(\phi \in [0,2\pi)\)</span>. The north pole represents <span class="arithmatex">\(|0\rangle\)</span>; the south pole represents <span class="arithmatex">\(|1\rangle\)</span>. The equatorial plane contains equal-superposition states including <span class="arithmatex">\(|{+}\rangle = (|0\rangle+|1\rangle)/\sqrt{2}\)</span> (along <span class="arithmatex">\(+x\)</span>) and <span class="arithmatex">\(|{-}\rangle = (|0\rangle-|1\rangle)/\sqrt{2}\)</span> (along <span class="arithmatex">\(-x\)</span>).</p>
+<p><strong>Photon Polarization Encoding:</strong> For satellite QKD, qubits are encoded in the polarization of individual photons. The four polarization states used in BB84 are:</p>
+<div class="arithmatex">\[\begin{align*}
+|H\rangle &amp;= |0\rangle \quad \text{(horizontal, Z-basis)} \\
+|V\rangle &amp;= |1\rangle \quad \text{(vertical, Z-basis)} \\
+|D\rangle &amp;= \frac{|0\rangle + |1\rangle}{\sqrt{2}} \quad (\text{diagonal } +45^\circ,\ \text{X-basis}) \\
+|A\rangle &amp;= \frac{|0\rangle - |1\rangle}{\sqrt{2}} \quad (\text{anti-diagonal } -45^\circ,\ \text{X-basis})
+\end{align*}\]</div>
+<p>The Z-basis <span class="arithmatex">\(\{|H\rangle, |V\rangle\}\)</span> and X-basis <span class="arithmatex">\(\{|D\rangle, |A\rangle\}\)</span> are mutually unbiased: measuring a Z-basis state in the X-basis gives a uniformly random result with no information about the original state. This mutual unbiasedness is the foundation of BB84’s security against intercept-resend attacks.</p>
+<h3 id="subsec-entanglement"><span class="secnum">29.2.2</span> Quantum Entanglement and Bell States<a class="headerlink" href="#subsec-entanglement" title="Permanent link">&para;</a></h3>
+<p>A two-qubit system is <em>entangled</em> if its state cannot be written as a product of single-qubit states: <span class="arithmatex">\(|\Psi\rangle \neq |\psi_A\rangle \otimes |\psi_B\rangle\)</span>. The four maximally entangled two-qubit Bell states form a complete orthonormal basis for the two-qubit Hilbert space <span class="arithmatex">\(\mathcal{H}_2 \otimes \mathcal{H}_2\)</span>:</p>
+<div class="arithmatex">\[\begin{align*}
+|\Phi^+\rangle &amp;= \frac{|00\rangle + |11\rangle}{\sqrt{2}} \\
+|\Phi^-\rangle &amp;= \frac{|00\rangle - |11\rangle}{\sqrt{2}} \\
+|\Psi^+\rangle &amp;= \frac{|01\rangle + |10\rangle}{\sqrt{2}} \\
+|\Psi^-\rangle &amp;= \frac{|01\rangle - |10\rangle}{\sqrt{2}}
+\end{align*}\]</div>
+<p>In the <span class="arithmatex">\(|\Phi^-\rangle\)</span> state, measurement of particle A in any basis is perfectly anti-correlated with measurement of particle B in the same basis, regardless of their separation (Einstein–Podolsky–Rosen correlations). This non-local correlation cannot be explained by any local hidden variable theory, as demonstrated by violation of Bell inequalities. The E91 QKD protocol (<a href="bibliography.html#ref-ekert1991">Ekert 1991</a>) exploits entanglement as the physical resource for key generation, providing security from Bell inequality violation rather than basis randomness.</p>
+<div class="admonition note box-notebox kind-note">
+<p><strong>EPR Correlations and Relativistic Causality:</strong> The correlations in entangled pairs are instantaneous and independent of distance, seemingly violating relativity. However, measurement outcomes are fundamentally random and cannot be controlled by either party, so no information is transmitted faster than light. Entanglement enables coordination but not signaling, preserving relativistic causality. The non-local correlations are detectable only through classical post-processing of both parties’ results.</p>
+</div>
+<h3 id="subsec-no_cloning"><span class="secnum">29.2.3</span> No-Cloning Theorem<a class="headerlink" href="#subsec-no_cloning" title="Permanent link">&para;</a></h3>
+<p>The no-cloning theorem is the fundamental quantum mechanical result that prohibits any device from creating a perfect copy of an arbitrary unknown quantum state. This theorem is the ultimate security guarantee of QKD, preventing eavesdroppers from copying transmitted qubits.</p>
+<p><strong>Proof by contradiction:</strong> Assume that a unitary operation <span class="arithmatex">\(U\)</span> exists such that for any state <span class="arithmatex">\(|\psi\rangle\)</span>: <span id="eq-cloning_assumption"></span></p>
+<div class="arithmatex">\[U|\psi\rangle|0\rangle = |\psi\rangle|\psi\rangle\tag{29.11}\]</div>
+<p>Apply this to two orthogonal states:</p>
+<div class="arithmatex">\[\begin{align*}
+U|0\rangle|0\rangle &amp;= |0\rangle|0\rangle \\
+U|1\rangle|0\rangle &amp;= |1\rangle|1\rangle
+\end{align*}\]</div>
+<p>Now consider the superposition <span class="arithmatex">\(|\psi\rangle = (|0\rangle + |1\rangle)/\sqrt{2}\)</span>. By <em>linearity</em> of quantum mechanics:</p>
+<div class="arithmatex">\[U|\psi\rangle|0\rangle = \frac{U|0\rangle|0\rangle + U|1\rangle|0\rangle}{\sqrt{2}} = \frac{|00\rangle + |11\rangle}{\sqrt{2}} = |\Phi^+\rangle\]</div>
+<p>But the assumed cloning operation requires <span class="arithmatex">\(U|\psi\rangle|0\rangle = |\psi\rangle|\psi\rangle\)</span>, which evaluates to:</p>
+<div class="arithmatex">\[|\psi\rangle|\psi\rangle = \frac{(|0\rangle+|1\rangle)(|0\rangle+|1\rangle)}{2} = \frac{|00\rangle + |01\rangle + |10\rangle + |11\rangle}{2}\]</div>
+<p>Since <span class="arithmatex">\(|\Phi^+\rangle \neq |\psi\rangle|\psi\rangle\)</span>, we have a contradiction. Therefore no such unitary <span class="arithmatex">\(U\)</span> exists, and perfect cloning of arbitrary unknown quantum states is impossible. <span class="arithmatex">\(\square\)</span></p>
+<p>The no-cloning theorem means that an eavesdropper Eve cannot intercept a qubit, copy it, and forward the original. Any measurement she performs collapses the quantum state, introducing detectable errors in the QKD protocol.</p>
+<h3 id="subsec-teleportation"><span class="secnum">29.2.4</span> Quantum Teleportation<a class="headerlink" href="#subsec-teleportation" title="Permanent link">&para;</a></h3>
+<p>Quantum teleportation transfers an unknown qubit state <span class="arithmatex">\(|\chi\rangle = a|0\rangle + b|1\rangle\)</span> from Alice to Bob using a pre-shared entangled pair <span class="arithmatex">\(|\Phi^+\rangle_{AB}\)</span> and two classical bits. The four-step protocol:</p>
+<ol>
+<li>
+<p>Alice holds qubit <span class="arithmatex">\(|\chi\rangle\)</span> plus her entangled qubit. The joint state is <span class="arithmatex">\(|\chi\rangle_C \otimes |\Phi^+\rangle_{AB}\)</span>.</p>
+</li>
+<li>
+<p>Alice performs a Bell state measurement on <span class="arithmatex">\(C\)</span> and <span class="arithmatex">\(A\)</span>, obtaining one of four outcomes with equal probability <span class="arithmatex">\(1/4\)</span>, and projecting Bob’s qubit <span class="arithmatex">\(B\)</span> into a state related to <span class="arithmatex">\(|\chi\rangle\)</span> by a Pauli rotation.</p>
+</li>
+<li>
+<p>Alice sends the 2-bit measurement result to Bob via a classical channel (two classical bits).</p>
+</li>
+<li>
+<p>Bob applies the appropriate Pauli correction (<span class="arithmatex">\(I\)</span>, <span class="arithmatex">\(X\)</span>, <span class="arithmatex">\(Z\)</span>, or <span class="arithmatex">\(XZ\)</span>) based on Alice’s classical message, recovering <span class="arithmatex">\(|\chi\rangle\)</span> exactly.</p>
+</li>
+</ol>
+<p>The original qubit at Alice is destroyed in the Bell measurement, consistent with no-cloning. Teleportation requires classical communication and does not violate relativistic causality. It is the operational primitive enabling quantum repeater networks: entanglement swapping is teleportation of one entangled particle to a distant location.</p>
+<h2 id="sec-qkd_protocols"><span class="secnum">29.3</span> QKD Protocols<a class="headerlink" href="#sec-qkd_protocols" title="Permanent link">&para;</a></h2>
+<h3 id="subsec-bb84"><span class="secnum">29.3.1</span> BB84 Protocol<a class="headerlink" href="#subsec-bb84" title="Permanent link">&para;</a></h3>
+<p>The BB84 protocol (<a href="bibliography.html#ref-bennett1984">Bennett and Brassard 1984</a>), proposed by Bennett and Brassard in 1984, is the first and most widely deployed QKD protocol. Its security against arbitrary quantum attacks (including coherent attacks by an eavesdropper holding a quantum computer) has been rigorously proven in the finite-key regime.</p>
+<p><strong>Protocol Steps:</strong></p>
+<ol>
+<li>
+<p><strong>Qubit transmission:</strong> Alice randomly selects a bit value <span class="arithmatex">\(b \in \{0,1\}\)</span> and a basis <span class="arithmatex">\(\beta \in \{Z,X\}\)</span>, prepares the corresponding state (<span class="arithmatex">\(|H\rangle\)</span>, <span class="arithmatex">\(|V\rangle\)</span>, <span class="arithmatex">\(|D\rangle\)</span>, or <span class="arithmatex">\(|A\rangle\)</span>), and transmits it to Bob.</p>
+</li>
+<li>
+<p><strong>Measurement:</strong> Bob randomly selects a measurement basis <span class="arithmatex">\(\beta' \in \{Z,X\}\)</span> and records the outcome.</p>
+</li>
+<li>
+<p><strong>Sifting:</strong> Alice and Bob communicate their basis choices (not outcomes) over a public authenticated classical channel. They retain only the approximately 50% of rounds where <span class="arithmatex">\(\beta = \beta'\)</span>. This forms the <em>sifted key</em>.</p>
+</li>
+<li>
+<p><strong>Error estimation:</strong> Alice and Bob publicly compare a random subset (5–10%) of sifted key bits to estimate the QBER <span class="arithmatex">\(e\)</span>. Estimated bits are discarded.</p>
+</li>
+<li>
+<p><strong>Error correction:</strong> An information-reconciliation protocol corrects discrepancies. Cascade is interactive and achieves <span class="arithmatex">\(f \approx 1.16\)</span> efficiency; LDPC codes approach <span class="arithmatex">\(f \rightarrow 1\)</span> with one-way communication.</p>
+</li>
+<li>
+<p><strong>Privacy amplification:</strong> A universal hash function (Toeplitz matrix) compresses the error-corrected key by the estimated information leakage, producing a final key with arbitrarily small information available to any eavesdropper.</p>
+</li>
+</ol>
+<p><strong>Secret Key Rate:</strong> The asymptotic secret key rate (bits per transmitted pulse) against general (coherent) attacks for weak coherent pulse (WCP) sources with decoy states is: <span id="eq-bb84_keyrate"></span></p>
+<div class="arithmatex">\[R \geq Q_\mu \left[1 - h_2(e_1)\right] - Q_\mu \cdot f \cdot h_2(E_\mu)\tag{29.16}\]</div>
+<p>where the binary entropy function <span class="arithmatex">\(h_2\)</span> is: <span id="eq-binary_entropy"></span></p>
+<div class="arithmatex">\[h_2(e) = -e \log_2 e - (1-e)\log_2(1-e)\tag{29.17}\]</div>
+<p>Here <span class="arithmatex">\(Q_\mu\)</span> is the detection rate (counts per pulse sent), <span class="arithmatex">\(E_\mu\)</span> is the observed QBER, <span class="arithmatex">\(e_1\)</span> is the estimated phase error rate for single-photon pulses, and <span class="arithmatex">\(f \approx 1.16\)</span> is the error correction efficiency factor. For a channel transmission efficiency <span class="arithmatex">\(\eta_{ch}\)</span>, detector efficiency <span class="arithmatex">\(\eta_d\)</span>, and mean photon number <span class="arithmatex">\(\mu\)</span>: <span id="eq-detection_rate"></span></p>
+<div class="arithmatex">\[Q_\mu \approx \eta_{ch} \eta_d \mu \quad \text{(for small }\eta_{ch}\eta_d\mu\text{)}\tag{29.18}\]</div>
+<div class="admonition info box-keybox kind-concept">
+<p><strong>QBER Security Threshold:</strong> For BB84 with one-way error correction, the maximum tolerable QBER for positive key rate is <span class="arithmatex">\(e_{\max} = 11.0\%\)</span> (solution of <span class="arithmatex">\(1 - 2h_2(e) = 0\)</span>). Typical satellite QKD achieves QBER of 3–6%, well below threshold. Higher QBER, e.g., from strong atmospheric turbulence or eavesdropping, signals abort.</p>
+</div>
+<h3 id="subsec-decoy_state"><span class="secnum">29.3.2</span> Decoy-State BB84<a class="headerlink" href="#subsec-decoy_state" title="Permanent link">&para;</a></h3>
+<p>Practical QKD sources are weak coherent pulse (WCP) lasers with Poisson photon-number statistics: <span class="arithmatex">\(P(n|\mu) = e^{-\mu}\mu^n/n!\)</span> for mean photon number <span class="arithmatex">\(\mu \approx 0.1\)</span>. Multi-photon pulses (<span class="arithmatex">\(n \geq 2\)</span>) are vulnerable to the <em>photon-number-splitting (PNS) attack</em>: Eve intercepts the pulse, retains one photon in a quantum memory, and forwards one photon to Bob. She later measures when Alice reveals the basis, gaining full information on multi-photon pulses without introducing QBER.</p>
+<p>The decoy-state method (Lo–Ma–Chen 2005) counters PNS attacks. Alice randomly interleaves:</p>
+<ul>
+<li>
+<p>Signal pulses: <span class="arithmatex">\(\mu \approx 0.1\)</span> photons/pulse (key generation)</p>
+</li>
+<li>
+<p>Weak decoy: <span class="arithmatex">\(\mu' \approx 0.5\)</span> photons/pulse</p>
+</li>
+<li>
+<p>Vacuum decoy: <span class="arithmatex">\(\mu_0 = 0\)</span> (measures dark counts and stray light)</p>
+</li>
+</ul>
+<p>Differences in detection statistics between intensity levels allow tight estimation of the gain <span class="arithmatex">\(Q_1\)</span> and error rate <span class="arithmatex">\(e_1\)</span> of the single-photon component, enabling the key rate formula: <span id="eq-decoy_keyrate"></span></p>
+<div class="arithmatex">\[R \geq Q_1[1-h_2(e_1)] - Q_\mu \cdot f \cdot h_2(E_\mu)\tag{29.19}\]</div>
+<p>In its 2017 QKD experiment the Micius satellite transmitted decoy-state BB84 signals from orbit to a ground station (a satellite-to-ground downlink), obtaining key rates of the order of 1 kbps at a slant range of 1200 km and roughly an order of magnitude more at the shortest ranges of a pass (<a href="bibliography.html#ref-liao2017"><span class="nocase">Liao et al.</span> 2017</a>).</p>
+<h3 id="subsec-e91"><span class="secnum">29.3.3</span> E91 Protocol<a class="headerlink" href="#subsec-e91" title="Permanent link">&para;</a></h3>
+<p>The Ekert (E91) protocol (<a href="bibliography.html#ref-ekert1991">Ekert 1991</a>) replaces Alice’s photon preparation with a source of entangled photon pairs, distributing one photon to Alice and one to Bob. The source may reside on the satellite (satellite-to-two-ground-stations entanglement distribution) or at a ground station. Security is verified by measuring correlations that violate the CHSH inequality.</p>
+<p>The CHSH (Clauser–Horne–Shimony–Holt) inequality for measurement settings <span class="arithmatex">\(A_i\)</span> (Alice) and <span class="arithmatex">\(B_j\)</span> (Bob) is: <span id="eq-chsh"></span></p>
+<div class="arithmatex">\[S = \left|E(A_1,B_1) - E(A_1,B_2) + E(A_2,B_1) + E(A_2,B_2)\right| \leq 2 \quad \text{(local hidden variable theories)}\tag{29.20}\]</div>
+<p>where <span class="arithmatex">\(E(A_i,B_j) = \langle A_i B_j \rangle\)</span> is the correlation coefficient with outcomes <span class="arithmatex">\(\pm 1\)</span>. For the <span class="arithmatex">\(|\Phi^-\rangle\)</span> Bell state with optimal measurement angles (Alice: <span class="arithmatex">\(0^\circ, 45^\circ\)</span>; Bob: <span class="arithmatex">\(22.5^\circ, 67.5^\circ\)</span>): <span id="eq-chsh_quantum"></span></p>
+<div class="arithmatex">\[S_{\text{QM}} = 2\sqrt{2} \approx 2.828 \quad \text{(Tsirelson bound, maximum quantum value)}\tag{29.21}\]</div>
+<p>The Micius satellite demonstrated <span class="arithmatex">\(S = 2.37 \pm 0.09\)</span> across 1200 km separation, clearly exceeding <span class="arithmatex">\(S = 2\)</span> and confirming that entanglement survives the free-space satellite channel. If an eavesdropper intercepts or measures the entangled pairs, entanglement degrades (the state becomes mixed), reducing <span class="arithmatex">\(S\)</span> toward the classical bound and revealing the attack.</p>
+<h3 id="subsec-cv_qkd"><span class="secnum">29.3.4</span> Continuous-Variable QKD<a class="headerlink" href="#subsec-cv_qkd" title="Permanent link">&para;</a></h3>
+<p>Continuous-variable (CV) QKD encodes key information in the quadrature amplitudes <span class="arithmatex">\((\hat{X}, \hat{P})\)</span> of coherent laser states, rather than single-photon polarization. The GG02 protocol (Grosshans–Grangier 2002) operates as follows:</p>
+<ol>
+<li>
+<p>Alice draws random displacements <span class="arithmatex">\((x_A, p_A) \sim \mathcal{N}(0, V_A N_0)\)</span> from a Gaussian distribution with variance <span class="arithmatex">\(V_A\)</span> in shot-noise units <span class="arithmatex">\(N_0\)</span>.</p>
+</li>
+<li>
+<p>Alice prepares coherent states <span class="arithmatex">\(|\alpha\rangle\)</span> where <span class="arithmatex">\(\alpha = (x_A + ip_A)/2\)</span> and transmits them to Bob through the quantum channel.</p>
+</li>
+<li>
+<p>Bob measures either <span class="arithmatex">\(\hat{X}\)</span> or <span class="arithmatex">\(\hat{P}\)</span> quadrature using homodyne detection, or both using heterodyne detection.</p>
+</li>
+<li>
+<p>Post-processing: parameter estimation of channel transmissivity and excess noise, reverse reconciliation (Bob’s data is the reference), privacy amplification.</p>
+</li>
+</ol>
+<p>The asymptotic secret key rate against Gaussian collective attacks is: <span id="eq-cv_keyrate"></span></p>
+<div class="arithmatex">\[R \geq \beta I(A:B) - \chi(E:B)\tag{29.22}\]</div>
+<p>where <span class="arithmatex">\(I(A:B) = \log_2(1 + \text{SNR})\)</span> is the classical mutual information, <span class="arithmatex">\(\chi(E:B)\)</span> is the Holevo bound on Eve’s information about Bob’s key (computed from the channel covariance matrix), and <span class="arithmatex">\(\beta \leq 1\)</span> is the reconciliation efficiency. CV-QKD offers the practical advantage of using standard telecom components (no cryogenic single-photon detectors), with demonstrations reaching 100 km fiber at 100 kbps (NTT, 2021). For satellite applications, atmospheric fading channels require modified security analysis.</p>
+<h3 id="subsec-mdi_qkd"><span class="secnum">29.3.5</span> Measurement-Device-Independent QKD<a class="headerlink" href="#subsec-mdi_qkd" title="Permanent link">&para;</a></h3>
+<p>Practical QKD implementations face detector side-channel attacks: detector blinding (bright illumination forces InGaAs APDs into linear mode, making them responsive only to bright trigger pulses), time-shift attacks, and after-gate attacks exploit imperfections in real detectors. All such attacks are eliminated by measurement-device-independent QKD (MDI-QKD).</p>
+<p>In MDI-QKD, both Alice and Bob send independently prepared BB84 states to an untrusted relay node Charles, which may be controlled by the eavesdropper. Charles performs a Bell state measurement (BSM) and announces the result. The security proof shows that regardless of Charles’s actions, Alice-Bob correlations from successful BSM events satisfy the security requirements. The key rate with decoy states: <span id="eq-mdi_keyrate"></span></p>
+<div class="arithmatex">\[R \geq Q_{11}^{ZZ}\!\left[1 - h_2(e_{11}^X)\right] - Q_{\mu\nu}^{ZZ} \cdot f \cdot h_2(E_{\mu\nu}^{ZZ})\tag{29.23}\]</div>
+<p>where <span class="arithmatex">\(Q_{11}^{ZZ}\)</span> is the two-photon BSM gain for Z-basis transmissions, and <span class="arithmatex">\(e_{11}^X\)</span> is the X-basis phase error rate estimated from decoy statistics. MDI-QKD requires Hong–Ou–Mandel (HOM) interference at Charles between photons from Alice and Bob, demanding sub-picosecond timing synchronization and sub-picometer wavelength matching—challenging but achievable with clock distribution over fiber.</p>
+<h3 id="subsec-tf_qkd"><span class="secnum">29.3.6</span> Twin-Field QKD<a class="headerlink" href="#subsec-tf_qkd" title="Permanent link">&para;</a></h3>
+<p>The secret key capacity of any point-to-point quantum channel with transmissivity <span class="arithmatex">\(\eta\)</span> is bounded by the Pirandola–Laurenza–Ottaviani–Banchi (PLOB) bound: <span id="eq-plob_bound"></span></p>
+<div class="arithmatex">\[C \leq -\log_2(1-\eta) \approx \frac{\eta}{\ln 2} \quad (\eta \ll 1)\tag{29.24}\]</div>
+<p>This linear scaling with <span class="arithmatex">\(\eta\)</span> limits fiber QKD to impractical rates beyond <span class="arithmatex">\(\sim\)</span>500 km (where <span class="arithmatex">\(\eta \approx 10^{-10}\)</span>). Twin-field (TF) QKD surpasses the PLOB bound by using single-photon interference (not coincidence) at a central relay. Schematically, Alice and Bob each prepare phase-randomized WCP states and send them to a central station. The relay detects single photons by interference, and parity-check communication allows Alice and Bob to identify correlated outcomes. The key rate scales as <span class="arithmatex">\(\sqrt{\eta}\)</span>: <span id="eq-tf_scaling"></span></p>
+<div class="arithmatex">\[R_{\text{TF}} \propto \sqrt{\eta} \quad \text{vs.} \quad R_{\text{MDI}} \propto \eta\tag{29.25}\]</div>
+<p>This square-root advantage enables TF-QKD over 500 km of fiber with positive key rate. In 2021, TF-QKD was demonstrated at 508 km fiber with <span class="arithmatex">\(R &gt; 0\)</span>, using field-deployed fiber between two buildings in Shanghai with active phase stabilization. TF-QKD is the leading architecture for future ultra-long-distance fiber quantum backbone links.</p>
+<h2 id="sec-physical_impl"><span class="secnum">29.4</span> Physical Implementations<a class="headerlink" href="#sec-physical_impl" title="Permanent link">&para;</a></h2>
+<h3 id="subsec-spd"><span class="secnum">29.4.1</span> Single-Photon Detectors<a class="headerlink" href="#subsec-spd" title="Permanent link">&para;</a></h3>
+<p>Single-photon detector (SPD) performance determines the achievable key rate and maximum distance. Key metrics are detection efficiency <span class="arithmatex">\(\eta_d\)</span>, dark count rate (DCR) in counts per second, timing jitter <span class="arithmatex">\(\Delta t\)</span> (affecting pulse resolution), and maximum count rate. <a href="#tab-spd_comparison">Table 29.1</a> compares the three major SPD technologies.</p>
+<div class="tbl" id="tab-spd_comparison">
+<div class="tbl-caption"><strong>Table 29.1.</strong> Single-Photon Detector Technology Comparison for QKD Applications</div>
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Parameter</strong></th>
+<th style="text-align: center;"><strong>Si SPAD (800 nm)</strong></th>
+<th style="text-align: center;"><strong>InGaAs SPAD (1550 nm)</strong></th>
+<th style="text-align: center;"><strong>SNSPD (1550 nm)</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Detection efficiency</td>
+<td style="text-align: center;">70%</td>
+<td style="text-align: center;">25%</td>
+<td style="text-align: center;"><span class="math inline">\(&gt;\)</span>93%</td>
+</tr>
+<tr>
+<td style="text-align: left;">Dark count rate</td>
+<td style="text-align: center;">100 cps</td>
+<td style="text-align: center;">10<span>,</span>000 cps</td>
+<td style="text-align: center;"><span class="math inline">\(&lt;\)</span>1 cps</td>
+</tr>
+<tr>
+<td style="text-align: left;">Timing jitter</td>
+<td style="text-align: center;">350 ps</td>
+<td style="text-align: center;">200 ps</td>
+<td style="text-align: center;"><span class="math inline">\(&lt;\)</span>50 ps</td>
+</tr>
+<tr>
+<td style="text-align: left;">Max count rate</td>
+<td style="text-align: center;">20 Mcps</td>
+<td style="text-align: center;">10 Mcps</td>
+<td style="text-align: center;">100 Mcps</td>
+</tr>
+<tr>
+<td style="text-align: left;">Operating temperature</td>
+<td style="text-align: center;">300 K (TEC)</td>
+<td style="text-align: center;">240 K (TEC)</td>
+<td style="text-align: center;">0.8 K (cryocooler)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Dead time</td>
+<td style="text-align: center;">50 ns</td>
+<td style="text-align: center;">10 <span class="math inline">\(\mu\)</span>s (gated)</td>
+<td style="text-align: center;">10 ns</td>
+</tr>
+<tr>
+<td style="text-align: left;">Wavelength range</td>
+<td style="text-align: center;">400–1000 nm</td>
+<td style="text-align: center;">1000–1700 nm</td>
+<td style="text-align: center;">400–2000 nm</td>
+</tr>
+<tr>
+<td style="text-align: left;">Volume/complexity</td>
+<td style="text-align: center;">Small, low</td>
+<td style="text-align: center;">Moderate</td>
+<td style="text-align: center;">Large, cryocooler</td>
+</tr>
+</tbody>
+</table>
+</div></div>
+<p><strong>Superconducting Nanowire SPD (SNSPD):</strong> The SNSPD operates by maintaining a superconducting nanowire (NbN or WSi, width 50–100 nm, thickness <span class="arithmatex">\(\sim\)</span>5 nm) at <span class="arithmatex">\(\sim\)</span>0.8 K, biased just below the superconducting critical current. An absorbed photon locally destroys superconductivity via a hotspot mechanism, producing a voltage pulse detectable with a room-temperature RF amplifier. SNSPDs achieve detection efficiencies exceeding 93% at 1550 nm with <span class="arithmatex">\(&lt;\)</span>50 ps timing jitter and <span class="arithmatex">\(&lt;\)</span>1 cps dark count rate. The requirement for millikelvin operation (Gifford–McMahon or pulse-tube cryocoolers) is the primary integration challenge for satellite payloads. Future missions targeting 1550 nm operation will require miniaturized space-qualified cryocooler systems; progress in Joule–Thomson and Stirling-cycle miniaturization is relevant.</p>
+<p><strong>InGaAs/InP SPAD:</strong> InGaAs APDs in Geiger mode are the workhorse of terrestrial telecom-wavelength QKD. Gated operation (100 ps–1 ns gates at repetition rates up to 1 GHz) suppresses afterpulsing, limiting effective detection rates. Detection efficiency of 25% and DCR of <span class="arithmatex">\(10^4\)</span> cps are adequate for metropolitan fiber QKD but are inferior to SNSPDs for high-performance ground station receivers.</p>
+<p><strong>Si SPAD:</strong> Silicon APDs at 850 nm were used in the Micius satellite ground stations. High efficiency (70%) and moderate DCR make them suitable for 850 nm satellite QKD despite limited telecom-band response.</p>
+<h3 id="subsec-eps"><span class="secnum">29.4.2</span> Entangled Photon Sources<a class="headerlink" href="#subsec-eps" title="Permanent link">&para;</a></h3>
+<p>Spontaneous parametric down-conversion (SPDC) is the dominant method for generating entangled photon pairs. A pump photon (<span class="arithmatex">\(\omega_p\)</span>) is converted in a second-order nonlinear crystal (<span class="arithmatex">\(\chi^{(2)}\)</span> medium) into two lower-energy signal and idler photons satisfying:</p>
+<div class="arithmatex">\[\begin{align*}
+\omega_s + \omega_i &amp;= \omega_p \quad \text{(energy conservation)} \\
+\mathbf{k}_s + \mathbf{k}_i &amp;= \mathbf{k}_p \quad \text{(phase matching / momentum conservation)}
+\end{align*}\]</div>
+<p>Type-II phase matching in beta barium borate (BBO) or periodically poled potassium titanyl phosphate (PPKTP) crystals produces polarization-entangled pairs in the <span class="arithmatex">\(|\Phi^+\rangle\)</span> or <span class="arithmatex">\(|\Psi^-\rangle\)</span> Bell state with fidelity exceeding 99% in optimized laboratory sources.</p>
+<p><strong>Source performance metrics:</strong></p>
+<ul>
+<li>
+<p>Spectral brightness <span class="arithmatex">\(\mathcal{B}\)</span> (pairs/s/mW pump/nm bandwidth): characterizes SPDC efficiency. Bulk BBO achieves <span class="arithmatex">\(\sim 10^4\)</span> pairs/s/mW; fiber-coupled waveguide PPKTP sources achieve <span class="arithmatex">\(&gt;10^6\)</span> pairs/s/mW.</p>
+</li>
+<li>
+<p>Pair generation rate <span class="arithmatex">\(R_{\text{pair}}\)</span>: total emitted pairs per second. The Micius SPDC source was reported to generate about <span class="arithmatex">\(5.9 \times 10^6\)</span> pairs/s.</p>
+</li>
+<li>
+<p>Entanglement fidelity: fraction of generated pairs in the target Bell state. for Micius the fidelity after the satellite-to-ground channel was high enough to violate the CHSH inequality (<a href="#subsec-e91">Section 29.3.3</a>).</p>
+</li>
+<li>
+<p>Multi-pair probability: heralded two-photon state purity limited by multi-pair events <span class="arithmatex">\(\propto \mu^2/2\)</span>; must keep pump power low enough that <span class="arithmatex">\(\mu \ll 1\)</span>.</p>
+</li>
+</ul>
+<p><strong>Space qualification:</strong> The SpooQySats program (National University of Singapore) demonstrated a miniaturized polarization-entangled photon-pair source on a 2U CubeSat (SpooQy-1) deployed from the ISS in 2019, showing that an SPDC source can operate in the space environment, including thermal cycling and radiation.</p>
+<h3 id="subsec-fso_channel"><span class="secnum">29.4.3</span> Free-Space Optical Channel and Link Efficiency<a class="headerlink" href="#subsec-fso_channel" title="Permanent link">&para;</a></h3>
+<p>Total link efficiency for a satellite quantum channel is the product of all loss mechanisms: <span id="eq-link_efficiency"></span></p>
+<div class="arithmatex">\[\eta_{\text{link}} = \eta_{\text{atm}} \cdot \eta_{\text{pointing}} \cdot \eta_{\text{optical}} \cdot \eta_{\text{detector}}\tag{29.28}\]</div>
+<p><strong>Diffraction loss:</strong> For a Gaussian beam with transmitter aperture diameter <span class="arithmatex">\(D_t\)</span> and receiver aperture diameter <span class="arithmatex">\(D_r\)</span> at link range <span class="arithmatex">\(d\)</span> and wavelength <span class="arithmatex">\(\lambda\)</span>, in the far-field regime (<span class="arithmatex">\(d \gg D_t^2/\lambda\)</span>): <span id="eq-diffraction_loss"></span></p>
+<div class="arithmatex">\[\eta_{\text{diff}} = \left(\frac{\pi D_t D_r}{4\lambda d}\right)^2\tag{29.29}\]</div>
+<p>At 850 nm with <span class="arithmatex">\(D_t = 0.3\)</span> m, <span class="arithmatex">\(D_r = 1.0\)</span> m, <span class="arithmatex">\(d = 1200\)</span> km this ideal expression gives <span class="arithmatex">\(\eta_{\text{diff}} \approx 5 \times 10^{-2}\)</span> (about 13 dB). Real Gaussian beams, finite pointing and the practical divergence of the transmitter make the diffraction loss larger; a value of about 22 dB at 1200 km has been reported for Micius. Together with atmospheric, pointing and optical losses the total link loss is several tens of dB, which necessitates single-photon detection and explains why satellite QKD key rates are of the order of kbps rather than Gbps.</p>
+<p><strong>Pointing loss:</strong> For a Gaussian beam with far-field divergence half-angle <span class="arithmatex">\(\theta_{\text{div}} = 2\lambda/(\pi D_t)\)</span> and pointing error standard deviation <span class="arithmatex">\(\sigma_\theta\)</span>: <span id="eq-pointing_loss_ch29"></span></p>
+<div class="arithmatex">\[\eta_{\text{pointing}} = \exp\!\left(-\frac{8\sigma_\theta^2}{\theta_{\text{div}}^2}\right)\tag{29.30}\]</div>
+<p>Micius achieved sub-microradian to microradian pointing accuracy, small compared with its beam divergence, with pointing loss reported to be below 3 dB. Such accuracy requires a two-stage pointing system: a coarse gimbal followed by a fast fine-steering mirror.</p>
+<p><strong>Atmospheric transmission:</strong> Transmission through the turbulent atmosphere, dominated by the lowest <span class="arithmatex">\(\sim\)</span>30 km, follows Beer–Lambert attenuation: <span id="eq-beer_lambert_ch29"></span></p>
+<div class="arithmatex">\[\eta_{\text{atm}} = \exp\!\left(-\int_0^{\infty} \left[\alpha_{\text{abs}}(h) + \alpha_{\text{scat}}(h)\right] dh / \cos\theta_{\text{zen}}\right)\tag{29.31}\]</div>
+<p>Zenith transmission at 850 nm is 0.7–0.8 in clear conditions; at 45<span class="arithmatex">\(^\circ\)</span> elevation, <span class="arithmatex">\(\cos\theta_{\text{zen}} = 0.707\)</span> increases the effective path by <span class="arithmatex">\(\sqrt{2}\)</span>. Nighttime operation mitigates sky background, which at daytime would saturate SPDs with <span class="arithmatex">\(\sim 10^6\)</span> photons/s in a 1 nm filter bandwidth.</p>
+<h3 id="subsec-polarization_control"><span class="secnum">29.4.4</span> Polarization Control and Reference Frame Alignment<a class="headerlink" href="#subsec-polarization_control" title="Permanent link">&para;</a></h3>
+<p>Polarization-encoded QKD requires aligned reference frames between transmitter and receiver. During a satellite pass, orbital motion, attitude variations, and satellite rotation cause the polarization reference frame to rotate continuously. Two approaches address this:</p>
+<p><strong>Active polarization compensation:</strong> A beacon laser at a different wavelength co-propagates with the QKD photons. The receiver monitors beacon polarization and feeds back corrections to a Pockels cell electro-optic modulator (EOM) or motorized waveplate actuator. Space systems also use a beacon for pointing and for tracking the polarization reference during the pass.</p>
+<p><strong>Reference-frame-independent (RFI) QKD:</strong> The protocol is redesigned so that security does not require shared reference frames. Alice and Bob measure in three bases; two share a common alignment (Z), while a third (X-Y plane) is frame-independent. An additional parameter <span class="arithmatex">\(C = \langle A_x B_x \rangle^2 + \langle A_x B_y \rangle^2 + \langle A_y B_x \rangle^2 + \langle A_y B_y \rangle^2\)</span> replaces CHSH violation for security verification. RFI-QKD relaxes the need for active polarization control at the cost of a somewhat reduced key rate.</p>
+<h2 id="sec-sat_qkd_demos"><span class="secnum">29.5</span> Satellite QKD Demonstrations<a class="headerlink" href="#sec-sat_qkd_demos" title="Permanent link">&para;</a></h2>
+<h3 id="subsec-micius"><span class="secnum">29.5.1</span> Micius/QUESS Satellite<a class="headerlink" href="#subsec-micius" title="Permanent link">&para;</a></h3>
+<p>The Micius satellite (<em>Quantum Experiments at Space Scale</em>, QUESS), launched 16 August 2016 into a roughly 500 km sun-synchronous orbit, is generally regarded as the first dedicated quantum communication satellite (<a href="bibliography.html#ref-liao2017"><span class="nocase">Liao et al.</span> 2017</a>). Its mass was roughly 630 kg and its orbital period about 95 min. Key payload elements:</p>
+<ul>
+<li>
+<p>Spontaneous parametric down-conversion (SPDC) source of polarization-entangled photon pairs at 810–850 nm</p>
+</li>
+<li>
+<p>Decoy-state QKD transmitter at 850 nm</p>
+</li>
+<li>
+<p>Optical transmitter telescope with a two-stage acquisition, tracking and pointing system</p>
+</li>
+<li>
+<p>Beacon laser and timing synchronization with the ground station</p>
+</li>
+</ul>
+<p>Ground stations used in the experiments include Xinglong (near Beijing), Delingha (Qinghai), Lijiang (Yunnan), Nanshan (Urumqi), Ngari (Tibet, at high altitude, which reduces the atmospheric path) and, for the intercontinental link, the observatory at Graz in Austria.</p>
+<p><strong>Landmark Achievements:</strong></p>
+<ul>
+<li>
+<p><strong>Satellite-to-ground QKD (Nature 549, 2017) (<a href="bibliography.html#ref-liao2017"><span class="nocase">Liao et al.</span> 2017</a>):</strong> Decoy-state BB84 from Micius to the Xinglong ground station over 645–1200 km slant range, with key rates of the order of 1 kbps at the longest range. Demonstrates the feasibility of satellite QKD (a downlink: the quantum signal travels from satellite to ground).</p>
+</li>
+<li>
+<p><strong>Entanglement distribution (Science 356, 2017):</strong> Entangled photon pairs were sent simultaneously from the satellite to two ground stations, Delingha and Lijiang, separated by 1203 km (Yin et al., Science 356, 2017). Bell inequality <span class="arithmatex">\(S = 2.37 \pm 0.09 &gt; 2\)</span>: the first distribution of entanglement over more than 1000 km.</p>
+</li>
+<li>
+<p><strong>Quantum teleportation from ground to satellite (Nature 549, 2017):</strong> Independent photon prepared at Ngari ground station teleported to Micius satellite via entanglement shared between Ngari and the satellite, over <span class="arithmatex">\(\leq 1400\)</span> km slant range.</p>
+</li>
+<li>
+<p><strong>Intercontinental QKD (Phys. Rev. Lett. 120, 2018):</strong> Keys shared between Xinglong (China) and Graz (Austria) via Micius used to protect a video conference between the two countries over a ground distance of about 7600 km, with Micius acting as a trusted relay.</p>
+</li>
+</ul>
+<div class="admonition note box-notebox kind-note">
+<p><strong>Trusted Node Limitation:</strong> The Micius intercontinental relay operates as a “trusted node”: the satellite holds intermediate keys from both national networks and XORs them to relay the combined key. End-to-end information-theoretic security without trusting the satellite requires entanglement swapping with quantum repeaters, a longer-term technology goal.</p>
+</div>
+<h3 id="subsec-intl_sat_qkd"><span class="secnum">29.5.2</span> International Satellite QKD Programs<a class="headerlink" href="#subsec-intl_sat_qkd" title="Permanent link">&para;</a></h3>
+<p><a href="#tab-sat_qkd_missions">Table 29.2</a> summarizes current and planned satellite QKD missions.</p>
+<div class="tbl" id="tab-sat_qkd_missions">
+<div class="tbl-caption"><strong>Table 29.2.</strong> Satellite QKD Mission Overview</div>
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Mission / Country</strong></th>
+<th style="text-align: left;"><strong>Launch</strong></th>
+<th style="text-align: left;"><strong>Platform</strong></th>
+<th style="text-align: left;"><strong>Payload &amp; Approach</strong></th>
+<th style="text-align: left;"><strong>Achievement</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Micius / China</td>
+<td style="text-align: left;">2016</td>
+<td style="text-align: left;"><span class="math inline">\(\sim\)</span>500 km SSO, <span class="math inline">\(\sim\)</span>630 kg</td>
+<td style="text-align: left;">SPDC entangled source; decoy-state BB84 transmitter</td>
+<td style="text-align: left;">QKD to 1200 km; entanglement 1203 km; intercontinental key relay</td>
+</tr>
+<tr>
+<td style="text-align: left;">SpooQy-1 / Singapore</td>
+<td style="text-align: left;">2019</td>
+<td style="text-align: left;">2U CubeSat deployed from the ISS</td>
+<td style="text-align: left;">Miniaturized entangled photon-pair source</td>
+<td style="text-align: left;">Entangled photon source operated in orbit</td>
+</tr>
+<tr>
+<td style="text-align: left;">QEYSSat / Canada</td>
+<td style="text-align: left;">planned (launch later than 2025)</td>
+<td style="text-align: left;">LEO</td>
+<td style="text-align: left;">QKD receiver on the satellite; uplink architecture</td>
+<td style="text-align: left;">Planned ground-to-satellite (uplink) QKD demonstration</td>
+</tr>
+<tr>
+<td style="text-align: left;">Eagle-1 / ESA and SES</td>
+<td style="text-align: left;">planned (second half of the 2020s)</td>
+<td style="text-align: left;">LEO</td>
+<td style="text-align: left;">QKD payload; European QKD pathfinder</td>
+<td style="text-align: left;">Planned European QKD satellite demonstration</td>
+</tr>
+</tbody>
+</table>
+</div></div>
+<p><strong>QEYSSAT (Canada):</strong> The Quantum Encryption and Science Satellite carries a QKD <em>receiver</em> on the satellite—a key architectural inversion from Micius. Ground stations transmit quantum states upward to the receiver, which simplifies the satellite payload and lets several ground transmitters share one orbital receiver. The mission is led by the Canadian Space Agency with Canadian university and industry partners, and its launch date has moved several times; as of 2025 it has not flown.</p>
+<p><strong>Chinese Ground–Space Network (2021):</strong> China integrated a 2000 km fiber QKD backbone between Beijing and Shanghai (32 trusted relay nodes) and metropolitan QKD networks with satellite-to-ground links, forming an integrated space-to-ground quantum communication network of about 4600 km extent with more than 150 users (Chen et al., Nature 589, 2021).</p>
+<p><strong>Eagle-1 (ESA/SES):</strong> A planned European QKD satellite developed by an SES-led consortium with ESA and the European Commission, intended as a pathfinder for a European space segment for quantum key distribution. Its launch date has been announced for the second half of the 2020s and may change.</p>
+<h2 id="sec-quantum_repeaters"><span class="secnum">29.6</span> Quantum Repeaters and Long-Distance QKD<a class="headerlink" href="#sec-quantum_repeaters" title="Permanent link">&para;</a></h2>
+<h3 id="subsec-direct_qkd_limits"><span class="secnum">29.6.1</span> Fundamental Limits of Direct QKD<a class="headerlink" href="#subsec-direct_qkd_limits" title="Permanent link">&para;</a></h3>
+<p>The PLOB bound <span class="arithmatex">\(C \leq -\log_2(1-\eta)\)</span> limits direct QKD to impractical rates at intercontinental distances. For fiber at 0.2 dB/km:</p>
+<div class="arithmatex">\[\begin{align*}
+d = 100~\text{km}: &amp;\quad \eta = 10^{-2}, \quad C \leq 0.014 \text{ bits/use} \\
+d = 500~\text{km}: &amp;\quad \eta = 10^{-10}, \quad C \leq 1.4\times10^{-10} \text{ bits/use} \\
+d = 1000~\text{km}: &amp;\quad \eta = 10^{-20}, \quad C \leq 1.4\times10^{-20} \text{ bits/use}
+\end{align*}\]</div>
+<p>Even free-space satellite links are limited: at 10,000 km with 300 mm and 1 m apertures at 850 nm, ideal diffraction loss alone gives <span class="arithmatex">\(\eta \approx 8\times10^{-4}\)</span> (about 31 dB), and atmospheric turbulence, pointing and optical losses add further loss. Multi-hop trusted node relaying (as in Micius) circumvents this at the cost of trusting each relay.</p>
+<h3 id="subsec-repeater_arch"><span class="secnum">29.6.2</span> Quantum Repeater Architecture<a class="headerlink" href="#subsec-repeater_arch" title="Permanent link">&para;</a></h3>
+<p>The BDCZ (Briegel–Dür–Cirac–Zoller) quantum repeater divides a long link into <span class="arithmatex">\(N\)</span> elementary segments, creating entanglement across each segment and then extending via entanglement swapping:</p>
+<ol>
+<li>
+<p><strong>Entanglement generation:</strong> Create Bell pairs across each elementary link of length <span class="arithmatex">\(L_0 = L/N\)</span>, storing photons in quantum memories at repeater nodes. Success probability per attempt: <span class="arithmatex">\(p_0 \approx \eta_{\text{elem}} = e^{-L_0/L_{\text{att}}}\)</span>.</p>
+</li>
+<li>
+<p><strong>Entanglement swapping:</strong> Bell state measurement on two stored qubits at a repeater node creates entanglement across <span class="arithmatex">\(2L_0\)</span> without requiring those photons to travel the full distance.</p>
+</li>
+<li>
+<p><strong>Entanglement purification:</strong> Multiple lower-fidelity pairs are distilled to fewer higher-fidelity pairs via BBPSSW protocol: two pairs with fidelity <span class="arithmatex">\(F\)</span> yield one pair with <span class="arithmatex">\(F' = F^2/(F^2 + (1-F)^2) &gt; F\)</span> for <span class="arithmatex">\(F &gt; 1/2\)</span>.</p>
+</li>
+</ol>
+<p>The achievable key rate with ideal quantum memories scales as <span class="arithmatex">\(\eta_0^{1/N}\)</span> rather than <span class="arithmatex">\(\eta_0\)</span>, enabling exponential improvement. First-generation repeaters (in development as of 2025) require quantum memories and linear optical BSMs; second-generation repeaters additionally need quantum error correction; third-generation (“all-photonic”) repeaters use photonic cluster states.</p>
+<h3 id="subsec-q_memory"><span class="secnum">29.6.3</span> Quantum Memory Technologies<a class="headerlink" href="#subsec-q_memory" title="Permanent link">&para;</a></h3>
+<p>Quantum memories store and retrieve photonic qubits. <a href="#tab-q_memory">Table 29.3</a> gives indicative values for several platforms; the best published results differ from experiment to experiment and no single memory yet combines all the properties a repeater needs.</p>
+<div class="tbl" id="tab-q_memory">
+<div class="tbl-caption"><strong>Table 29.3.</strong> Quantum Memory Technology Platforms for Repeater Applications</div>
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Platform</strong></th>
+<th style="text-align: center;"><strong>Efficiency <span class="math inline">\(\eta_m\)</span></strong></th>
+<th style="text-align: center;"><strong>Storage Time <span class="math inline">\(\tau_s\)</span></strong></th>
+<th style="text-align: center;"><strong>Multimode <span class="math inline">\(M\)</span></strong></th>
+<th style="text-align: left;"><strong>Notes</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Rb vapor EIT</td>
+<td style="text-align: center;">50%</td>
+<td style="text-align: center;">1 ms</td>
+<td style="text-align: center;">10</td>
+<td style="text-align: left;">780 nm; room temperature</td>
+</tr>
+<tr>
+<td style="text-align: left;">Pr:Y<span class="math inline">\(_2\)</span>SiO<span class="math inline">\(_5\)</span> AFC</td>
+<td style="text-align: center;">90%</td>
+<td style="text-align: center;">7.7 ms</td>
+<td style="text-align: center;">1000</td>
+<td style="text-align: left;">605 nm; 3 K; spin-wave</td>
+</tr>
+<tr>
+<td style="text-align: left;">Eu:Y<span class="math inline">\(_2\)</span>SiO<span class="math inline">\(_5\)</span></td>
+<td style="text-align: center;">25%</td>
+<td style="text-align: center;">6 hours</td>
+<td style="text-align: center;">100</td>
+<td style="text-align: left;">580 nm; 2 K; record <span class="math inline">\(\tau_s\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;">NV centers (diamond)</td>
+<td style="text-align: center;">10%</td>
+<td style="text-align: center;">1 s (nuclear)</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: left;">637 nm; room temp. possible</td>
+</tr>
+<tr>
+<td style="text-align: left;">Tm:LiNbO<span class="math inline">\(_3\)</span> waveguide</td>
+<td style="text-align: center;">50%</td>
+<td style="text-align: center;">100 <span class="math inline">\(\mu\)</span>s</td>
+<td style="text-align: center;">100</td>
+<td style="text-align: left;">Telecom compatible</td>
+</tr>
+</tbody>
+</table>
+</div></div>
+<p>A spin coherence time of 6 hours has been demonstrated in Eu:Y<span class="arithmatex">\(_2\)</span>SiO<span class="arithmatex">\(_5\)</span> (Zhong et al., Nature 2015), and optical storage for about one hour has been reported in the same material system. These results show that very long storage is physically possible, although not yet together with the high efficiency, bandwidth and multimode capacity that quantum repeaters need.</p>
+<h3 id="subsec-exp_qnetworks"><span class="secnum">29.6.4</span> Experimental Quantum Networks<a class="headerlink" href="#subsec-exp_qnetworks" title="Permanent link">&para;</a></h3>
+<p>QuTech (Delft University of Technology) demonstrated a three-node quantum network of NV-center qubits in the laboratory in 2021 (Pompili et al., Science 372, 259). The nodes, called Alice, Bob and Charlie, were linked by short optical fiber, with entanglement heralded by photons emitted at 637 nm. The experiment demonstrated:</p>
+<ul>
+<li>
+<p>Heralded entanglement generation between non-adjacent nodes (Alice–Bob) via entanglement swapping at Charlie</p>
+</li>
+<li>
+<p>Quantum state storage in <span class="arithmatex">\(^{13}\)</span>C nuclear spin memories (<span class="arithmatex">\(\tau_s \approx 1\)</span> s)</p>
+</li>
+<li>
+<p>Classical post-processing for distillation and key extraction</p>
+</li>
+</ul>
+<p>This was a proof-of-principle of a multi-node quantum network with entanglement swapping between non-adjacent nodes. Later work has extended heralded entanglement between solid-state nodes to deployed fiber between cities.</p>
+<h2 id="sec-pqc"><span class="secnum">29.7</span> Post-Quantum Cryptography<a class="headerlink" href="#sec-pqc" title="Permanent link">&para;</a></h2>
+<h3 id="subsec-quantum_threat"><span class="secnum">29.7.1</span> The Quantum Threat to Classical Cryptography<a class="headerlink" href="#subsec-quantum_threat" title="Permanent link">&para;</a></h3>
+<p>Shor’s algorithm solves integer factorization (RSA) and discrete logarithm (DH, ECC) in polynomial time <span class="arithmatex">\(O(n^3)\)</span> on a quantum computer, where <span class="arithmatex">\(n\)</span> is the bit length of the modulus. A cryptographically relevant quantum computer (CRQC) capable of breaking 2048-bit RSA would need thousands of error-corrected logical qubits. Resource estimates by Gidney and Ekerå (2021) were about 20 million noisy physical qubits and 8 hours of running time with surface-code error correction at a physical error rate of <span class="arithmatex">\(10^{-3}\)</span>; later estimates are lower but still far beyond today’s machines. As of 2025, IBM Condor (1121 physical qubits, 2023) and Google Willow (105 qubits, 2024, error-correction demonstration) are examples of the state of the art.</p>
+<p>The “harvest-now-decrypt-later” (HNDL) threat is widely discussed: an adversary able to collect encrypted traffic today could store it until a future CRQC enables decryption. Data that must stay secret for 10–20 years (state secrets, financial records, medical data) is therefore a concern. Standards bodies therefore recommend starting the migration to quantum-resistant algorithms for such data now.</p>
+<h3 id="subsec-nist_pqc"><span class="secnum">29.7.2</span> NIST Post-Quantum Cryptography Standards 2024<a class="headerlink" href="#subsec-nist_pqc" title="Permanent link">&para;</a></h3>
+<p>NIST finalized three post-quantum cryptographic standards in 2024:</p>
+<ul>
+<li>
+<p><strong>FIPS 203 (ML-KEM, formerly CRYSTALS-Kyber):</strong> Module lattice-based key encapsulation mechanism. Security based on Module Learning With Errors (MLWE) hardness. Key sizes: ML-KEM-768 has 1184-byte public key, 1088-byte ciphertext. Replaces RSA/ECDH for key exchange.</p>
+</li>
+<li>
+<p><strong>FIPS 204 (ML-DSA, formerly CRYSTALS-Dilithium):</strong> Module lattice-based digital signature algorithm. Security based on Module Short Integer Solution (MSIS) and MLWE. Signature size: 2420 bytes (ML-DSA-44) to 3309 bytes (ML-DSA-65). Replaces RSA-PSS and ECDSA.</p>
+</li>
+<li>
+<p><strong>FIPS 205 (SLH-DSA, formerly SPHINCS+):</strong> Stateless hash-based signature scheme. Security based solely on hash function security (SHA-256/SHA3), with no algebraic structure to exploit. Conservative but larger signatures (roughly 8000 to 50,000 bytes).</p>
+</li>
+</ul>
+<p>FALCON (NTRU lattice-based signature) was also selected by NIST for standardization (as FN-DSA, in draft as of 2025), offering smaller signatures (about 666 bytes for Falcon-512, with an 897-byte public key) for bandwidth-constrained applications.</p>
+<div class="admonition info box-keybox kind-concept">
+<p><strong>QKD vs. PQC:</strong> <strong>QKD:</strong> Information-theoretically secure; guaranteed by physics; requires physical quantum channel and specialized hardware; limited key rate (<span class="arithmatex">\(\sim\)</span>kbps) and distance; vulnerable to implementation side-channel attacks. <strong>PQC:</strong> Computationally secure against known quantum algorithms; may be broken by future algorithms; software-only deployment on existing infrastructure; arbitrary throughput; standard implementation maturity. <strong>Recommended hybrid:</strong> session key <span class="arithmatex">\(= K_{\text{QKD}} \oplus K_{\text{PQC}}\)</span> (secure if either is secure).</p>
+</div>
+<p>For satellite systems, QKD provides quantum-secure key distribution over the satellite link (typically refreshing daily key material for ground network segments), while PQC algorithms protect routine command/telemetry channels and can be implemented in firmware updates without hardware changes. ETSI GS QKD 014 specifies the QKD application layer interface for integration with classical network security functions.</p>
+<h2 id="chapter-summary">Chapter Summary<a class="headerlink" href="#chapter-summary" title="Permanent link">&para;</a></h2>
+<p>Quantum communications exploits the postulates of quantum mechanics—superposition, entanglement, and the no-cloning theorem—to establish unconditionally secure key distribution. BB84 and decoy-state variants provide practical QKD with proven security; E91 uses Bell inequality violation for device-independent-like security; CV-QKD uses telecom components; MDI-QKD removes detector vulnerabilities; TF-QKD surpasses the PLOB bound. The Micius satellite achieved satellite-to-ground QKD over up to 1200 km (key rates of order 1 kbps), entanglement distribution over 1203 km (<span class="arithmatex">\(S = 2.37\)</span>), and an intercontinental key relay over about 7600 km, validating the satellite approach. Quantum repeaters based on entanglement swapping and quantum memories (demonstrated in 3-node QuTech network) are the path to intercontinental QKD without trusted nodes. NIST FIPS 203/204/205 provide immediately deployable post-quantum cryptography, with hybrid QKD+PQC the recommended architecture for critical satellite infrastructure.</p>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button type="button" class="md-top md-icon" data-md-component="top" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+Back to top
+</button>
+</main>
+<footer class="md-footer">
+<nav class="md-footer__inner md-grid" aria-label="Footer" >
+<a href="ch28-space-debris-and-long-term-sustainability.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: 28. Space Debris and Long-Term Sustainability">
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</div>
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Previous
+</span>
+<div class="md-ellipsis">
+28. Space Debris and Long-Term Sustainability
+</div>
+</div>
+</a>
+<a href="ch30-6g-and-non-terrestrial-networks.html" class="md-footer__link md-footer__link--next" aria-label="Next: 30. 6G and Non-Terrestrial Networks">
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Next
+</span>
+<div class="md-ellipsis">
+30. 6G and Non-Terrestrial Networks
+</div>
+</div>
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+</div>
+</a>
+</nav>
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+The Open Book Project &middot;
+<a href="../../about.html">About this library</a> &middot;
+<a href="../../publish.html">Publish your book</a> &middot;
+© The authors of the books
+</div>
+Made with
+<a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+Material for MkDocs
+</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "navigation.prune", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "toc.follow", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+<script src="../../assets/mathjax.js"></script>
+<script src="../../assets/viz.js"></script>
+<script src="../../assets/remote.js"></script>
+<script src="../../assets/scans.js"></script>
+<script src="../../assets/reader.js"></script>
+<script src="../../assets/app.js"></script>
+<script src="../../assets/slides.js"></script>
+<script src="../../assets/speak.js"></script>
+<script src="../../assets/quiz.js"></script>
+<script>
+    /* offline reading: the service worker at the site root (its scope is the whole site) */
+    if ("serviceWorker" in navigator && window.isSecureContext) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register(new URL("../../sw.js", location.href).href).catch(function () {});
+      });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,1613 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="description" content="The Open Book Project: books on computer science, quantum computing, cyber security, science, the social sciences, university courses and languages, read page by page like an e-book, online or offline.">
+<meta name="author" content="The Open Book Project">
+<link rel="canonical" href="https://open-book-project.github.io/engineering/satellite_technology/ch07-attitude-determination-and-control-systems.html">
+<link rel="prev" href="ch06-satellite-electrical-power-systems.html">
+<link rel="next" href="ch08-satellite-propulsion-systems.html">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap"></noscript>
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Open Book">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="application-name" content="Open Book"><script src="../../assets/library-data.js"></script><script>
+    (function () {
+      var X = window.XMLHttpRequest, open, gate = new Promise(function (r) { open = r; });
+      if (!X) return;
+      var open0 = X.prototype.open, send0 = X.prototype.send;
+      X.prototype.open = function (method, url) {
+        this.__pkIndex = /\/search\/search_index\.json(\?|#|$)/.test(String(url));
+        return open0.apply(this, arguments);
+      };
+      X.prototype.send = function () {
+        if (!this.__pkIndex) return send0.apply(this, arguments);
+        var xhr = this, args = arguments;
+        gate.then(function () { send0.apply(xhr, args); });
+      };
+      function wake() { open(); }
+      document.addEventListener("focusin", function (e) { if (e.target && e.target.closest && e.target.closest(".md-search")) wake(); });
+      document.addEventListener("click", function (e) { if (e.target && e.target.closest && e.target.closest('label[for="__search"], .md-search')) wake(); }, true);
+      document.addEventListener("keydown", function (e) {
+        var k = e.key;
+        if ((k === "/" || k === "s" || k === "f" || k === "S" || k === "F") && !(e.target && e.target.closest && e.target.closest("input, textarea, [contenteditable]"))) wake();
+      }, true);
+      if (/[?&]q=/.test(location.search)) wake();
+    })();
+  </script><script>
+    try {
+      if ((window.matchMedia && (matchMedia("(display-mode: standalone)").matches || matchMedia("(display-mode: fullscreen)").matches)) || navigator.standalone === true) {
+        document.documentElement.className += " bjp-standalone";
+      }
+    } catch (e) { /* not an installed app */ }
+    /* the books of a subject or of the whole library as covers or as a list (assets/app.js): the reader's choice */
+    try {
+      var bv = localStorage.getItem("bjp.view");
+      if (bv === "list" || (bv !== "grid" && /\/books\.html$/.test(location.pathname))) document.documentElement.className += " bjp-view-list";
+    } catch (e) { /* no storage: covers */ }
+  </script>
+<script>
+    /* a book opened from its cover on the shelf: the page stays blank, in the cover's colour, until the reader is up */
+    try {
+      var cv = sessionStorage.getItem("bjp.reader.cover");
+      if (cv && sessionStorage.getItem("bjp.reader.open") === "1") {
+        var c = JSON.parse(cv), de = document.documentElement;
+        de.className += " bjp-booting";
+        if (c && /^#[0-9a-f]{3,8}$/i.test(c.bg || "")) de.style.background = c.bg;
+        setTimeout(function () { de.classList.remove("bjp-booting"); de.style.background = ""; }, 3000);
+      }
+    } catch (e) { /* no session storage: the page simply opens as usual */ }
+  </script>
+<title>7. Attitude Determination and Control Systems - The Open Book Project</title>
+<link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+<link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+<link rel="stylesheet" href="../../assets/extra.css">
+<link rel="stylesheet" href="../../assets/reader.css">
+<link rel="stylesheet" href="../../assets/viz.css">
+<link rel="stylesheet" href="../../assets/app.css">
+<link rel="stylesheet" href="../../assets/theme.css">
+<link rel="stylesheet" href="../../assets/slides.css">
+<link rel="stylesheet" href="../../assets/remote.css">
+<link rel="stylesheet" href="../../assets/scans.css">
+<link rel="stylesheet" href="../../assets/speak.css">
+<link rel="stylesheet" href="../../assets/quiz.css">
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+<input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+<input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a href="#sec-adcs_intro" class="md-skip">
+Skip to content
+</a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav class="md-header__inner md-grid" aria-label="Header">
+<a href="../../index.html" title="The Open Book Project" class="md-header__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+The Open Book Project
+</span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+7. Attitude Determination and Control Systems
+</span>
+</div>
+</div>
+</div><a href="../../index.html" class="bjp-libbtn" aria-label="Library: all books" title="Library: all books">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V5h4v15M8 20V9h4v11M14 20L12.6 6l3.8-.8 3 14.2M3 20h18"/></svg><span>Library</span>
+</a>
+<a href="../../subjects/index.html" class="pk-catbtn" aria-haspopup="true" aria-expanded="false" title="Browse the books by category">
+<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><circle cx="17" cy="7" r="3.6"/><path d="M7 13.4l3.9 6.8H3.1z"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg><span>Categories</span>
+</a>
+<form class="md-header__option" data-md-component="palette">
+<input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+<label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+</label>
+<input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+<label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+<label class="md-search__icon md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</label>
+<nav class="md-search__options" aria-label="Search">
+<button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+Initializing search
+</div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--primary bjp-nav bjp-nav--book" aria-label="Navigation" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a href="../../index.html" title="The Open Book Project" class="md-nav__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+The Open Book Project
+</label>
+<ul class="md-nav__list" data-md-scrollfix>
+<li class="md-nav__item bjp-nav-all">
+<a href="../../index.html" class="md-nav__link" aria-label="All books: back to the library">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+<span class="md-ellipsis">All books</span>
+</a>
+</li>
+<li class="md-nav__item bjp-nav-book" role="presentation"><span class="bjp-nav-head">Satellite Technology</span></li>
+<li class="md-nav__item">
+<a href="index.html" class="md-nav__link">
+<span class="md-ellipsis">
+Overview and preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="list-of-abbreviations.html" class="md-nav__link">
+<span class="md-ellipsis">
+List of Abbreviations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch01-introduction-to-satellite-technology.html" class="md-nav__link">
+<span class="md-ellipsis">
+1. Introduction to Satellite Technology
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch02-orbital-mechanics.html" class="md-nav__link">
+<span class="md-ellipsis">
+2. Orbital Mechanics
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch03-the-space-environment.html" class="md-nav__link">
+<span class="md-ellipsis">
+3. The Space Environment
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch04-launch-systems-and-mission-design.html" class="md-nav__link">
+<span class="md-ellipsis">
+4. Launch Systems and Mission Design
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch05-satellite-architecture-and-systems-engineering.html" class="md-nav__link">
+<span class="md-ellipsis">
+5. Satellite Architecture and Systems Engineering
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch06-satellite-electrical-power-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+6. Satellite Electrical Power Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+7. Attitude Determination and Control Systems
+</span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a href="ch07-attitude-determination-and-control-systems.html" class="md-nav__link md-nav__link--active">
+<span class="md-ellipsis">
+7. Attitude Determination and Control Systems
+</span>
+</a>
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#sec-adcs_intro" class="md-nav__link">
+<span class="md-ellipsis">
+7.1 Introduction to Attitude Determination and Control
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-reference_frames" class="md-nav__link">
+<span class="md-ellipsis">
+7.2 Reference Frames
+</span>
+</a>
+<nav class="md-nav" aria-label="7.2 Reference Frames">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-eci_ch07" class="md-nav__link">
+<span class="md-ellipsis">
+7.2.1 Earth-Centred Inertial Frame (ECI)
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-ecef_ch07" class="md-nav__link">
+<span class="md-ellipsis">
+7.2.2 Earth-Centred Earth-Fixed Frame (ECEF)
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-rsw" class="md-nav__link">
+<span class="md-ellipsis">
+7.2.3 Orbital (RSW) Frame
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-body" class="md-nav__link">
+<span class="md-ellipsis">
+7.2.4 Body Frame
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-attitude_representations" class="md-nav__link">
+<span class="md-ellipsis">
+7.3 Attitude Representations
+</span>
+</a>
+<nav class="md-nav" aria-label="7.3 Attitude Representations">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-euler_angles" class="md-nav__link">
+<span class="md-ellipsis">
+7.3.1 Euler Angles
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-dcm" class="md-nav__link">
+<span class="md-ellipsis">
+7.3.2 Direction Cosine Matrix
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-quaternions" class="md-nav__link">
+<span class="md-ellipsis">
+7.3.3 Quaternions
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-mrp" class="md-nav__link">
+<span class="md-ellipsis">
+7.3.4 Modified Rodrigues Parameters
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-dynamics" class="md-nav__link">
+<span class="md-ellipsis">
+7.4 Equations of Motion
+</span>
+</a>
+<nav class="md-nav" aria-label="7.4 Equations of Motion">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-kinematics" class="md-nav__link">
+<span class="md-ellipsis">
+7.4.1 Kinematic Equations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-eulers_equations" class="md-nav__link">
+<span class="md-ellipsis">
+7.4.2 Euler’s Rotational Equations of Motion
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-disturbances" class="md-nav__link">
+<span class="md-ellipsis">
+7.5 Environmental Disturbance Torques
+</span>
+</a>
+<nav class="md-nav" aria-label="7.5 Environmental Disturbance Torques">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-srp_torque" class="md-nav__link">
+<span class="md-ellipsis">
+7.5.1 Solar Radiation Pressure Torque
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-gg_torque" class="md-nav__link">
+<span class="md-ellipsis">
+7.5.2 Gravity Gradient Torque
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-aero_torque" class="md-nav__link">
+<span class="md-ellipsis">
+7.5.3 Aerodynamic Torque
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-magnetic_torque" class="md-nav__link">
+<span class="md-ellipsis">
+7.5.4 Residual Magnetic Dipole Torque
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-sensors" class="md-nav__link">
+<span class="md-ellipsis">
+7.6 Attitude Sensors
+</span>
+</a>
+<nav class="md-nav" aria-label="7.6 Attitude Sensors">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-star_trackers" class="md-nav__link">
+<span class="md-ellipsis">
+7.6.1 Star Trackers
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-sun_sensors" class="md-nav__link">
+<span class="md-ellipsis">
+7.6.2 Sun Sensors
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-magnetometers" class="md-nav__link">
+<span class="md-ellipsis">
+7.6.3 Magnetometers
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-horizon_sensors" class="md-nav__link">
+<span class="md-ellipsis">
+7.6.4 Earth Horizon Sensors
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-gyroscopes" class="md-nav__link">
+<span class="md-ellipsis">
+7.6.5 Gyroscopes
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-determination_algorithms" class="md-nav__link">
+<span class="md-ellipsis">
+7.7 Attitude Determination Algorithms
+</span>
+</a>
+<nav class="md-nav" aria-label="7.7 Attitude Determination Algorithms">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-ekf" class="md-nav__link">
+<span class="md-ellipsis">
+7.7.1 Extended Kalman Filter for Attitude Estimation
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-actuators" class="md-nav__link">
+<span class="md-ellipsis">
+7.8 Attitude Actuators
+</span>
+</a>
+<nav class="md-nav" aria-label="7.8 Attitude Actuators">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-reaction_wheels" class="md-nav__link">
+<span class="md-ellipsis">
+7.8.1 Reaction Wheels
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-cmg" class="md-nav__link">
+<span class="md-ellipsis">
+7.8.2 Control Moment Gyroscopes
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-magnetorquers" class="md-nav__link">
+<span class="md-ellipsis">
+7.8.3 Magnetorquers
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-thruster_attitude" class="md-nav__link">
+<span class="md-ellipsis">
+7.8.4 Thruster-Based Attitude Control
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-control_laws" class="md-nav__link">
+<span class="md-ellipsis">
+7.9 Control Laws
+</span>
+</a>
+<nav class="md-nav" aria-label="7.9 Control Laws">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-pd_controller" class="md-nav__link">
+<span class="md-ellipsis">
+7.9.1 PD Controller
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-lqr" class="md-nav__link">
+<span class="md-ellipsis">
+7.9.2 LQR Optimal Control
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-nonlinear_control" class="md-nav__link">
+<span class="md-ellipsis">
+7.9.3 Nonlinear and Robust Control
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-pointing_modes" class="md-nav__link">
+<span class="md-ellipsis">
+7.10 Pointing Modes and Mission Operations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-adcs_architecture" class="md-nav__link">
+<span class="md-ellipsis">
+7.11 ADCS Block Diagram and System Architecture
+</span>
+</a>
+<nav class="md-nav" aria-label="7.11 ADCS Block Diagram and System Architecture">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-sensor_comparison" class="md-nav__link">
+<span class="md-ellipsis">
+7.11.1 Sensor Suite Comparison
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-microvib" class="md-nav__link">
+<span class="md-ellipsis">
+7.12 Micro-Vibration and Jitter Analysis
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-adcs_summary" class="md-nav__link">
+<span class="md-ellipsis">
+7.13 Summary
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="ch08-satellite-propulsion-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+8. Satellite Propulsion Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch09-thermal-control-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+9. Thermal Control Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch10-on-board-data-handling.html" class="md-nav__link">
+<span class="md-ellipsis">
+10. On-Board Data Handling
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch11-telemetry-tracking-and-command-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+11. Telemetry, Tracking and Command Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch12-radio-frequency-satellite-communications.html" class="md-nav__link">
+<span class="md-ellipsis">
+12. Radio Frequency Satellite Communications
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch13-satellite-link-budget-analysis.html" class="md-nav__link">
+<span class="md-ellipsis">
+13. Satellite Link Budget Analysis
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch14-satellite-antenna-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+14. Satellite Antenna Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch15-digital-signal-processing-for-satellites.html" class="md-nav__link">
+<span class="md-ellipsis">
+15. Digital Signal Processing for Satellites
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch16-optical-satellite-communications.html" class="md-nav__link">
+<span class="md-ellipsis">
+16. Optical Satellite Communications
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch17-earth-observation-and-remote-sensing.html" class="md-nav__link">
+<span class="md-ellipsis">
+17. Earth Observation and Remote Sensing
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch18-global-navigation-satellite-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+18. Global Navigation Satellite Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch19-communication-satellites-and-services.html" class="md-nav__link">
+<span class="md-ellipsis">
+19. Communication Satellites and Services
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch20-scientific-satellites-and-space-observatories.html" class="md-nav__link">
+<span class="md-ellipsis">
+20. Scientific Satellites and Space Observatories
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch21-military-and-intelligence-satellites.html" class="md-nav__link">
+<span class="md-ellipsis">
+21. Military and Intelligence Satellites
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch22-ground-station-design-and-networks.html" class="md-nav__link">
+<span class="md-ellipsis">
+22. Ground Station Design and Networks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch23-mission-operations-and-ground-control.html" class="md-nav__link">
+<span class="md-ellipsis">
+23. Mission Operations and Ground Control
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch24-smallsats-cubesats-and-the-new-space-revolution.html" class="md-nav__link">
+<span class="md-ellipsis">
+24. SmallSats, CubeSats, and the New Space Revolution
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch25-mega-constellations-and-leo-broadband-networks.html" class="md-nav__link">
+<span class="md-ellipsis">
+25. Mega-Constellations and LEO Broadband Networks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch26-artificial-intelligence-and-machine-learning-in.html" class="md-nav__link">
+<span class="md-ellipsis">
+26. Artificial Intelligence and Machine Learning in Space
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch27-on-orbit-servicing-and-space-robotics.html" class="md-nav__link">
+<span class="md-ellipsis">
+27. On-Orbit Servicing and Space Robotics
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch28-space-debris-and-long-term-sustainability.html" class="md-nav__link">
+<span class="md-ellipsis">
+28. Space Debris and Long-Term Sustainability
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch29-quantum-communications-and-satellite-qkd.html" class="md-nav__link">
+<span class="md-ellipsis">
+29. Quantum Communications and Satellite QKD
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch30-6g-and-non-terrestrial-networks.html" class="md-nav__link">
+<span class="md-ellipsis">
+30. 6G and Non-Terrestrial Networks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch31-future-concepts-and-emerging-space-technologies.html" class="md-nav__link">
+<span class="md-ellipsis">
+31. Future Concepts and Emerging Space Technologies
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="classical-orbital-elements-and-coordinate.html" class="md-nav__link">
+<span class="md-ellipsis">
+Classical Orbital Elements and Coordinate Transformations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="satellite-frequency-allocations.html" class="md-nav__link">
+<span class="md-ellipsis">
+Satellite Frequency Allocations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="launch-vehicle-specifications.html" class="md-nav__link">
+<span class="md-ellipsis">
+Launch Vehicle Specifications
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="link-budget-templates-and-worked-examples.html" class="md-nav__link">
+<span class="md-ellipsis">
+Link Budget Templates and Worked Examples
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="key-standards-software-tools-and-references.html" class="md-nav__link">
+<span class="md-ellipsis">
+Key Standards, Software Tools, and References
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="bibliography.html" class="md-nav__link">
+<span class="md-ellipsis">
+Bibliography
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#sec-adcs_intro" class="md-nav__link">
+<span class="md-ellipsis">
+7.1 Introduction to Attitude Determination and Control
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-reference_frames" class="md-nav__link">
+<span class="md-ellipsis">
+7.2 Reference Frames
+</span>
+</a>
+<nav class="md-nav" aria-label="7.2 Reference Frames">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-eci_ch07" class="md-nav__link">
+<span class="md-ellipsis">
+7.2.1 Earth-Centred Inertial Frame (ECI)
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-ecef_ch07" class="md-nav__link">
+<span class="md-ellipsis">
+7.2.2 Earth-Centred Earth-Fixed Frame (ECEF)
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-rsw" class="md-nav__link">
+<span class="md-ellipsis">
+7.2.3 Orbital (RSW) Frame
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-body" class="md-nav__link">
+<span class="md-ellipsis">
+7.2.4 Body Frame
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-attitude_representations" class="md-nav__link">
+<span class="md-ellipsis">
+7.3 Attitude Representations
+</span>
+</a>
+<nav class="md-nav" aria-label="7.3 Attitude Representations">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-euler_angles" class="md-nav__link">
+<span class="md-ellipsis">
+7.3.1 Euler Angles
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-dcm" class="md-nav__link">
+<span class="md-ellipsis">
+7.3.2 Direction Cosine Matrix
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-quaternions" class="md-nav__link">
+<span class="md-ellipsis">
+7.3.3 Quaternions
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-mrp" class="md-nav__link">
+<span class="md-ellipsis">
+7.3.4 Modified Rodrigues Parameters
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-dynamics" class="md-nav__link">
+<span class="md-ellipsis">
+7.4 Equations of Motion
+</span>
+</a>
+<nav class="md-nav" aria-label="7.4 Equations of Motion">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-kinematics" class="md-nav__link">
+<span class="md-ellipsis">
+7.4.1 Kinematic Equations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-eulers_equations" class="md-nav__link">
+<span class="md-ellipsis">
+7.4.2 Euler’s Rotational Equations of Motion
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-disturbances" class="md-nav__link">
+<span class="md-ellipsis">
+7.5 Environmental Disturbance Torques
+</span>
+</a>
+<nav class="md-nav" aria-label="7.5 Environmental Disturbance Torques">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-srp_torque" class="md-nav__link">
+<span class="md-ellipsis">
+7.5.1 Solar Radiation Pressure Torque
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-gg_torque" class="md-nav__link">
+<span class="md-ellipsis">
+7.5.2 Gravity Gradient Torque
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-aero_torque" class="md-nav__link">
+<span class="md-ellipsis">
+7.5.3 Aerodynamic Torque
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-magnetic_torque" class="md-nav__link">
+<span class="md-ellipsis">
+7.5.4 Residual Magnetic Dipole Torque
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-sensors" class="md-nav__link">
+<span class="md-ellipsis">
+7.6 Attitude Sensors
+</span>
+</a>
+<nav class="md-nav" aria-label="7.6 Attitude Sensors">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-star_trackers" class="md-nav__link">
+<span class="md-ellipsis">
+7.6.1 Star Trackers
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-sun_sensors" class="md-nav__link">
+<span class="md-ellipsis">
+7.6.2 Sun Sensors
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-magnetometers" class="md-nav__link">
+<span class="md-ellipsis">
+7.6.3 Magnetometers
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-horizon_sensors" class="md-nav__link">
+<span class="md-ellipsis">
+7.6.4 Earth Horizon Sensors
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-gyroscopes" class="md-nav__link">
+<span class="md-ellipsis">
+7.6.5 Gyroscopes
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-determination_algorithms" class="md-nav__link">
+<span class="md-ellipsis">
+7.7 Attitude Determination Algorithms
+</span>
+</a>
+<nav class="md-nav" aria-label="7.7 Attitude Determination Algorithms">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-ekf" class="md-nav__link">
+<span class="md-ellipsis">
+7.7.1 Extended Kalman Filter for Attitude Estimation
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-actuators" class="md-nav__link">
+<span class="md-ellipsis">
+7.8 Attitude Actuators
+</span>
+</a>
+<nav class="md-nav" aria-label="7.8 Attitude Actuators">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-reaction_wheels" class="md-nav__link">
+<span class="md-ellipsis">
+7.8.1 Reaction Wheels
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-cmg" class="md-nav__link">
+<span class="md-ellipsis">
+7.8.2 Control Moment Gyroscopes
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-magnetorquers" class="md-nav__link">
+<span class="md-ellipsis">
+7.8.3 Magnetorquers
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-thruster_attitude" class="md-nav__link">
+<span class="md-ellipsis">
+7.8.4 Thruster-Based Attitude Control
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-control_laws" class="md-nav__link">
+<span class="md-ellipsis">
+7.9 Control Laws
+</span>
+</a>
+<nav class="md-nav" aria-label="7.9 Control Laws">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-pd_controller" class="md-nav__link">
+<span class="md-ellipsis">
+7.9.1 PD Controller
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-lqr" class="md-nav__link">
+<span class="md-ellipsis">
+7.9.2 LQR Optimal Control
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-nonlinear_control" class="md-nav__link">
+<span class="md-ellipsis">
+7.9.3 Nonlinear and Robust Control
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-pointing_modes" class="md-nav__link">
+<span class="md-ellipsis">
+7.10 Pointing Modes and Mission Operations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-adcs_architecture" class="md-nav__link">
+<span class="md-ellipsis">
+7.11 ADCS Block Diagram and System Architecture
+</span>
+</a>
+<nav class="md-nav" aria-label="7.11 ADCS Block Diagram and System Architecture">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-sensor_comparison" class="md-nav__link">
+<span class="md-ellipsis">
+7.11.1 Sensor Suite Comparison
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-microvib" class="md-nav__link">
+<span class="md-ellipsis">
+7.12 Micro-Vibration and Jitter Analysis
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-adcs_summary" class="md-nav__link">
+<span class="md-ellipsis">
+7.13 Summary
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="ch-adcs">Chapter 7: Attitude Determination and Control Systems<a class="headerlink" href="#ch-adcs" title="Permanent link">&para;</a></h1>
+<div class="admonition info box-keybox kind-concept">
+<p><strong>Key Concepts in This Chapter</strong></p>
+<ul>
+<li>
+<p>Reference frames: ECI, ECEF, orbital (RSW), and body frames</p>
+</li>
+<li>
+<p>Attitude representations: Euler angles, DCM, quaternions, and Modified Rodrigues Parameters</p>
+</li>
+<li>
+<p>Kinematic and dynamic equations of motion for a rigid spacecraft</p>
+</li>
+<li>
+<p>Environmental disturbance torques: solar radiation pressure, gravity gradient, aerodynamic, and magnetic</p>
+</li>
+<li>
+<p>Attitude sensors: star trackers, sun sensors, magnetometers, gyroscopes, and GPS</p>
+</li>
+<li>
+<p>Attitude determination algorithms: TRIAD, QUEST, and Extended Kalman Filter</p>
+</li>
+<li>
+<p>Attitude actuators: reaction wheels, CMGs, magnetorquers, and thrusters</p>
+</li>
+<li>
+<p>Control laws: PD controller, LQR, and sliding mode control</p>
+</li>
+</ul>
+</div>
+<h2 id="sec-adcs_intro"><span class="secnum">7.1</span> Introduction to Attitude Determination and Control<a class="headerlink" href="#sec-adcs_intro" title="Permanent link">&para;</a></h2>
+<p>The Attitude Determination and Control System (ADCS) is the spacecraft subsystem responsible for measuring the spacecraft’s orientation in space and actively controlling it to the commanded state. The attitude of a spacecraft—its three-dimensional orientation relative to some reference frame—determines fundamentally important quantities: whether the solar arrays face the Sun, whether the antennas point toward the ground, whether the imaging instruments view the intended targets, and whether the thrusters fire in the correct direction.</p>
+<p>ADCS design spans an enormous range of complexity, from passively spin-stabilised or gravity-gradient-stabilised spacecraft with no active control at all, to highly agile Earth observation satellites with arc-second pointing accuracy maintained by reaction wheel systems and precision star trackers, to interplanetary probes that must point radio antennas with milli-degree accuracy across billions of kilometres. The unifying mathematical framework for all these applications is the subject of this chapter.</p>
+<h2 id="sec-reference_frames"><span class="secnum">7.2</span> Reference Frames<a class="headerlink" href="#sec-reference_frames" title="Permanent link">&para;</a></h2>
+<p>Attitude is always defined relative to a reference frame. The major frames used in spacecraft engineering are:</p>
+<h3 id="subsec-eci_ch07"><span class="secnum">7.2.1</span> Earth-Centred Inertial Frame (ECI)<a class="headerlink" href="#subsec-eci_ch07" title="Permanent link">&para;</a></h3>
+<p>The ECI frame is a (quasi-)inertial frame with its origin at the Earth’s centre. The fundamental realisation is the International Celestial Reference Frame (ICRF), implemented through the J2000.0 epoch:</p>
+<ul>
+<li>
+<p><span class="arithmatex">\(\hat{x}_I\)</span>: Points toward the vernal equinox (direction of the Sun on the first day of spring) at epoch J2000.0 (1 January 2000, 12:00 TT)</p>
+</li>
+<li>
+<p><span class="arithmatex">\(\hat{z}_I\)</span>: Points toward the North Celestial Pole (NCP), aligned with the Earth’s mean rotation axis at J2000.0</p>
+</li>
+<li>
+<p><span class="arithmatex">\(\hat{y}_I = \hat{z}_I \times \hat{x}_I\)</span>: Completes the right-handed triad</p>
+</li>
+</ul>
+<p>The ECI frame does not rotate with the Earth; it is approximately inertial over mission timescales (precession of the equinoxes causes slow drift, corrected through proper motion updates). Spacecraft positions and velocities in orbital mechanics are primarily expressed in ECI (<a href="bibliography.html#ref-vallado2013">Vallado 2013</a>).</p>
+<h3 id="subsec-ecef_ch07"><span class="secnum">7.2.2</span> Earth-Centred Earth-Fixed Frame (ECEF)<a class="headerlink" href="#subsec-ecef_ch07" title="Permanent link">&para;</a></h3>
+<p>The ECEF frame rotates with the Earth, with <span class="arithmatex">\(\hat{x}_E\)</span> pointing toward the prime meridian at the equator, <span class="arithmatex">\(\hat{z}_E\)</span> toward the geographic North Pole. Its relationship to ECI involves a rotation by the Greenwich Apparent Sidereal Time (GAST) angle <span class="arithmatex">\(\theta_{GAST}\)</span> about the <span class="arithmatex">\(\hat{z}\)</span> axis, plus small corrections for polar wander and UT1-UTC offset. Ground station coordinates, coverage analysis, and geolocation computations use ECEF.</p>
+<h3 id="subsec-rsw"><span class="secnum">7.2.3</span> Orbital (RSW) Frame<a class="headerlink" href="#subsec-rsw" title="Permanent link">&para;</a></h3>
+<p>The Local Vertical Local Horizontal (LVLH) or RSW frame (also called the Hill frame) is defined relative to the spacecraft’s orbital position:</p>
+<ul>
+<li>
+<p><span class="arithmatex">\(\hat{r}\)</span> (Radial): Points from Earth’s centre outward through the spacecraft (nadir direction is <span class="arithmatex">\(-\hat{r}\)</span>)</p>
+</li>
+<li>
+<p><span class="arithmatex">\(\hat{s}\)</span> (Along-track): In the orbital plane, perpendicular to <span class="arithmatex">\(\hat{r}\)</span>, in the direction of spacecraft velocity for circular orbits</p>
+</li>
+<li>
+<p><span class="arithmatex">\(\hat{w}\)</span> (Cross-track): Normal to the orbital plane, <span class="arithmatex">\(\hat{w} = \hat{r} \times \hat{s}\)</span> (for prograde orbit, <span class="arithmatex">\(\hat{w}\)</span> points north)</p>
+</li>
+</ul>
+<p>For a nadir-pointing Earth observation satellite, the nominal attitude has the payload boresight along <span class="arithmatex">\(-\hat{r}\)</span>. Deviations from nadir pointing are the Euler angles roll, pitch, and yaw in the RSW frame.</p>
+<h3 id="subsec-body"><span class="secnum">7.2.4</span> Body Frame<a class="headerlink" href="#subsec-body" title="Permanent link">&para;</a></h3>
+<p>The body frame is fixed to the spacecraft structure, typically aligned with the spacecraft’s principal axes of inertia. Attitude sensors, actuators, and payload boresights are defined in the body frame. The ADCS task is to drive the rotation from the body frame to the desired reference frame (e.g., the orbital frame for nadir pointing) to zero (or to a commanded target).</p>
+<h2 id="sec-attitude_representations"><span class="secnum">7.3</span> Attitude Representations<a class="headerlink" href="#sec-attitude_representations" title="Permanent link">&para;</a></h2>
+<h3 id="subsec-euler_angles"><span class="secnum">7.3.1</span> Euler Angles<a class="headerlink" href="#subsec-euler_angles" title="Permanent link">&para;</a></h3>
+<p>Euler angles describe a sequence of three elemental rotations. The 3-2-1 (or 321) sequence, corresponding to yaw-pitch-roll, is most common in aerospace:</p>
+<ol>
+<li>
+<p>Rotate by <span class="arithmatex">\(\psi\)</span> (yaw) about <span class="arithmatex">\(\hat{z}\)</span></p>
+</li>
+<li>
+<p>Rotate by <span class="arithmatex">\(\theta\)</span> (pitch) about the new <span class="arithmatex">\(\hat{y}'\)</span></p>
+</li>
+<li>
+<p>Rotate by <span class="arithmatex">\(\phi\)</span> (roll) about the new <span class="arithmatex">\(\hat{x}”\)</span></p>
+</li>
+</ol>
+<p>The composite rotation matrix (Direction Cosine Matrix, DCM) is:</p>
+<div id="eq-euler_dcm"></div>
+<div class="arithmatex">\[C = R_1(\phi) R_2(\theta) R_3(\psi)\tag{7.1}\]</div>
+<p>where:</p>
+<div class="arithmatex">\[R_1(\phi) = \begin{bmatrix} 1 &amp; 0 &amp; 0 \\ 0 &amp; \cos\phi &amp; \sin\phi \\ 0 &amp; -\sin\phi &amp; \cos\phi \end{bmatrix}, \quad
+R_2(\theta) = \begin{bmatrix} \cos\theta &amp; 0 &amp; -\sin\theta \\ 0 &amp; 1 &amp; 0 \\ \sin\theta &amp; 0 &amp; \cos\theta \end{bmatrix}\]</div>
+<p>Euler angles suffer from the <em>gimbal lock</em> singularity: when <span class="arithmatex">\(\theta = \pm 90\degree{}\)</span> for the 321 sequence, the first and third rotations become about the same axis and the representation is degenerate. This limits the use of Euler angles in attitude control software for highly manoeuvrable spacecraft.</p>
+<h3 id="subsec-dcm"><span class="secnum">7.3.2</span> Direction Cosine Matrix<a class="headerlink" href="#subsec-dcm" title="Permanent link">&para;</a></h3>
+<p>The DCM <span class="arithmatex">\(C \in \mathbb{R}^{3\times3}\)</span> is a proper orthogonal matrix (<span class="arithmatex">\(C^T C = I\)</span>, <span class="arithmatex">\(\det(C) = +1\)</span>) with 9 elements satisfying 6 orthogonality constraints, leaving 3 independent parameters encoding the attitude. The DCM transforms a vector <span class="arithmatex">\(\mathbf{v}_A\)</span> expressed in frame <span class="arithmatex">\(A\)</span> to its representation <span class="arithmatex">\(\mathbf{v}_B\)</span> in frame <span class="arithmatex">\(B\)</span>:</p>
+<div class="arithmatex">\[\mathbf{v}_B = C_{BA} \mathbf{v}_A\]</div>
+<p>The kinematic differential equation for the DCM is: <span id="eq-dcm_kinematics"></span></p>
+<div class="arithmatex">\[\dot{C} = -[\boldsymbol{\omega}]_\times C\tag{7.4}\]</div>
+<p>where <span class="arithmatex">\([\boldsymbol{\omega}]_\times\)</span> is the skew-symmetric cross-product matrix of the angular velocity vector <span class="arithmatex">\(\boldsymbol{\omega}\)</span>:</p>
+<div class="arithmatex">\[[\boldsymbol{\omega}]_\times = \begin{bmatrix} 0 &amp; -\omega_3 &amp; \omega_2 \\ \omega_3 &amp; 0 &amp; -\omega_1 \\ -\omega_2 &amp; \omega_1 &amp; 0 \end{bmatrix}\]</div>
+<h3 id="subsec-quaternions"><span class="secnum">7.3.3</span> Quaternions<a class="headerlink" href="#subsec-quaternions" title="Permanent link">&para;</a></h3>
+<p>The unit quaternion (also called Euler parameter or rotation quaternion) provides a singularity-free attitude representation with only one constraint (unit norm). By Euler’s theorem, any attitude can be represented as a single rotation by angle <span class="arithmatex">\(\Phi\)</span> about a unit vector <span class="arithmatex">\(\hat{\mathbf{e}}\)</span> (the Euler axis). The quaternion is defined as:</p>
+<div id="eq-quaternion_def"></div>
+<div class="arithmatex">\[\mathbf{q} = \begin{bmatrix} \boldsymbol{\varepsilon} \\ \eta \end{bmatrix} = \begin{bmatrix} \hat{\mathbf{e}} \sin(\Phi/2) \\ \cos(\Phi/2) \end{bmatrix} = \begin{bmatrix} q_1 \\ q_2 \\ q_3 \\ q_4 \end{bmatrix}\tag{7.6}\]</div>
+<p>with the constraint <span class="arithmatex">\(\|\mathbf{q}\| = q_1^2 + q_2^2 + q_3^2 + q_4^2 = 1\)</span>.</p>
+<p>The quaternion kinematic equation is:</p>
+<div id="eq-quat_kinematics"></div>
+<div class="arithmatex">\[\dot{\mathbf{q}} = \frac{1}{2} \Xi(\mathbf{q}) \boldsymbol{\omega}\tag{7.7}\]</div>
+<p>where the <span class="arithmatex">\(4\times3\)</span> matrix <span class="arithmatex">\(\Xi(\mathbf{q})\)</span> is:</p>
+<div class="arithmatex">\[\Xi(\mathbf{q}) = \begin{bmatrix} \eta I_3 + [\boldsymbol{\varepsilon}]_\times \\ -\boldsymbol{\varepsilon}^T \end{bmatrix}\]</div>
+<p>Quaternion multiplication for composing two rotations <span class="arithmatex">\(\mathbf{q}_1\)</span> followed by <span class="arithmatex">\(\mathbf{q}_2\)</span> gives:</p>
+<div id="eq-quat_multiply"></div>
+<div class="arithmatex">\[\mathbf{q}_2 \otimes \mathbf{q}_1 = \begin{bmatrix} \eta_2 \boldsymbol{\varepsilon}_1 + \eta_1 \boldsymbol{\varepsilon}_2 - \boldsymbol{\varepsilon}_2 \times \boldsymbol{\varepsilon}_1 \\ \eta_1 \eta_2 - \boldsymbol{\varepsilon}_1 \cdot \boldsymbol{\varepsilon}_2 \end{bmatrix}\tag{7.9}\]</div>
+<p>The inverse (conjugate) quaternion <span class="arithmatex">\(\mathbf{q}^{-1} = [-\boldsymbol{\varepsilon}; \eta]\)</span> represents the reverse rotation. The attitude error quaternion between current attitude <span class="arithmatex">\(\mathbf{q}\)</span> and commanded attitude <span class="arithmatex">\(\mathbf{q}_c\)</span> is <span class="arithmatex">\(\delta\mathbf{q} = \mathbf{q}_c^{-1} \otimes \mathbf{q}\)</span>.</p>
+<h3 id="subsec-mrp"><span class="secnum">7.3.4</span> Modified Rodrigues Parameters<a class="headerlink" href="#subsec-mrp" title="Permanent link">&para;</a></h3>
+<p>The Modified Rodrigues Parameters (MRP) offer a minimal three-parameter attitude representation:</p>
+<div id="eq-mrp_def"></div>
+<div class="arithmatex">\[\boldsymbol{\sigma} = \frac{\boldsymbol{\varepsilon}}{1 + \eta} = \hat{\mathbf{e}} \tan(\Phi/4)\tag{7.10}\]</div>
+<p>MRPs have a singularity at <span class="arithmatex">\(\Phi = 360\degree{}\)</span> (a full rotation), which can be avoided in practice by switching between the “shadow” MRPs <span class="arithmatex">\(\boldsymbol{\sigma}^s = -\boldsymbol{\sigma}/\|\boldsymbol{\sigma}\|^2\)</span> when <span class="arithmatex">\(\|\boldsymbol{\sigma}\| &gt; 1\)</span>. MRPs are differentiable everywhere (except the singularity) and are useful in optimal control and estimation formulations.</p>
+<h2 id="sec-dynamics"><span class="secnum">7.4</span> Equations of Motion<a class="headerlink" href="#sec-dynamics" title="Permanent link">&para;</a></h2>
+<h3 id="subsec-kinematics"><span class="secnum">7.4.1</span> Kinematic Equations<a class="headerlink" href="#subsec-kinematics" title="Permanent link">&para;</a></h3>
+<p>The kinematic equations relate the time derivative of the attitude representation to the angular velocity <span class="arithmatex">\(\boldsymbol{\omega}\)</span> of the body frame relative to the inertial frame, expressed in the body frame. For quaternions, <a href="#eq-quat_kinematics">Equation (7.7)</a> applies. For the DCM, <a href="#eq-dcm_kinematics">Equation (7.4)</a> applies.</p>
+<h3 id="subsec-eulers_equations"><span class="secnum">7.4.2</span> Euler’s Rotational Equations of Motion<a class="headerlink" href="#subsec-eulers_equations" title="Permanent link">&para;</a></h3>
+<p>For a rigid body, Euler’s rotational equations of motion relate the angular momentum of the spacecraft to the applied external torques. Written in the body frame:</p>
+<div id="eq-eulers_equations"></div>
+<div class="arithmatex">\[I \dot{\boldsymbol{\omega}} + \boldsymbol{\omega} \times (I \boldsymbol{\omega}) = \mathbf{T}_{\mathrm{ext}}\tag{7.11}\]</div>
+<p>where <span class="arithmatex">\(I \in \mathbb{R}^{3\times3}\)</span> is the spacecraft inertia tensor (symmetric, positive definite), <span class="arithmatex">\(\boldsymbol{\omega}\)</span> is the angular velocity in body frame (rad/s), and <span class="arithmatex">\(\mathbf{T}_{\mathrm{ext}}\)</span> is the total external torque vector including control torques and environmental disturbances.</p>
+<p>When the spacecraft carries rotating wheels (reaction wheels or CMGs), the wheel angular momentum <span class="arithmatex">\(\mathbf{H}_w\)</span> must be included:</p>
+<div id="eq-eulers_with_wheels"></div>
+<div class="arithmatex">\[I \dot{\boldsymbol{\omega}} = -\boldsymbol{\omega} \times (I\boldsymbol{\omega} + \mathbf{H}_w) + \mathbf{T}_{\mathrm{ext}} - \dot{\mathbf{H}}_w\tag{7.12}\]</div>
+<p>The control torque applied by a reaction wheel is <span class="arithmatex">\(\mathbf{T}_c = -\dot{\mathbf{H}}_w\)</span> (the reaction to the torque applied to the wheel).</p>
+<h2 id="sec-disturbances"><span class="secnum">7.5</span> Environmental Disturbance Torques<a class="headerlink" href="#sec-disturbances" title="Permanent link">&para;</a></h2>
+<h3 id="subsec-srp_torque"><span class="secnum">7.5.1</span> Solar Radiation Pressure Torque<a class="headerlink" href="#subsec-srp_torque" title="Permanent link">&para;</a></h3>
+<p>Solar radiation pressure (SRP) exerts a force on any surface exposed to sunlight. The SRP force on a flat surface depends on whether the surface is perfectly absorbing (black), specularly reflecting, or diffusely reflecting. For a spacecraft with solar radiation pressure force <span class="arithmatex">\(\mathbf{F}_{\mathrm{srp}}\)</span> not acting through the centre of mass:</p>
+<div id="eq-srp_torque"></div>
+<div class="arithmatex">\[\mathbf{T}_{\mathrm{srp}} = \mathbf{d}_{\mathrm{cpa}} \times \mathbf{F}_{\mathrm{srp}}\tag{7.13}\]</div>
+<p>where <span class="arithmatex">\(\mathbf{d}_{\mathrm{cpa}}\)</span> is the vector from the centre of mass to the centre of pressure. The SRP pressure is <span class="arithmatex">\(P_{\mathrm{srp}} = S/c = 1361/2.998\times10^8 = 4.56 \times 10^{-6}\)</span> N/m<span class="arithmatex">\(^2\)</span> at 1 AU. For a total absorbing plate of area <span class="arithmatex">\(A\)</span> perpendicular to the Sun, <span class="arithmatex">\(F = P \cdot A\)</span>. For a reflective surface with reflectivity <span class="arithmatex">\(\rho\)</span>, <span class="arithmatex">\(F = P \cdot A \cdot (1 + \rho)\)</span>. Asymmetric solar array deployment, unequal surface properties, or offset centres of mass versus centres of pressure create residual SRP torques that the ADCS must overcome.</p>
+<h3 id="subsec-gg_torque"><span class="secnum">7.5.2</span> Gravity Gradient Torque<a class="headerlink" href="#subsec-gg_torque" title="Permanent link">&para;</a></h3>
+<p>The non-uniform gravitational field of the Earth exerts differential forces on extended bodies, producing a <em>gravity gradient torque</em> that tends to align the spacecraft’s long axis with the local vertical. For a spacecraft with principal moments of inertia <span class="arithmatex">\(I_x, I_y, I_z\)</span> (with <span class="arithmatex">\(I_z\)</span> along the orbit normal), the gravity gradient torque components in the orbital frame are approximately:</p>
+<div id="eq-gg_torque_x"></div>
+<div class="arithmatex">\[T_{gg,x} = 3\omega_o^2 (I_z - I_y) \sin\phi \cos\phi \approx 3\omega_o^2 (I_z - I_y) \phi\tag{7.14}\]</div>
+<div id="eq-gg_torque_y"></div>
+<div class="arithmatex">\[T_{gg,y} = \frac{3\mu}{r^3}(I_x - I_z)\sin\theta\cos\theta \approx \frac{3\mu}{r^3}(I_x - I_z)\theta\tag{7.15}\]</div>
+<p>where <span class="arithmatex">\(\omega_o = \sqrt{\mu/r^3}\)</span> is the mean orbital rate. The gravity gradient effect can be exploited for passive attitude stabilisation in LEO by deliberately designing an elongated spacecraft with <span class="arithmatex">\(I_z \ll I_x, I_y\)</span>.</p>
+<h3 id="subsec-aero_torque"><span class="secnum">7.5.3</span> Aerodynamic Torque<a class="headerlink" href="#subsec-aero_torque" title="Permanent link">&para;</a></h3>
+<p>In low Earth orbit below approximately 600 km, residual atmospheric drag produces torques analogous to those from SRP when the centre of atmospheric pressure does not coincide with the centre of mass. The aerodynamic torque is:</p>
+<div id="eq-aero_torque"></div>
+<div class="arithmatex">\[T_{\mathrm{aero}} = \frac{1}{2} \rho v^2 C_D A \cdot d_{cp}\tag{7.16}\]</div>
+<p>where <span class="arithmatex">\(\rho\)</span> is the atmospheric density (strongly dependent on altitude and solar activity, from <span class="arithmatex">\(\sim 10^{-7}\)</span> kg/m<span class="arithmatex">\(^3\)</span> at 400 km to <span class="arithmatex">\(\sim 10^{-12}\)</span> kg/m<span class="arithmatex">\(^3\)</span> at 800 km per NRLMSISE-00 model), <span class="arithmatex">\(v\)</span> is the orbital velocity, <span class="arithmatex">\(C_D\)</span> is the drag coefficient (typically 2.2–2.5 for spacecraft in free molecular flow), <span class="arithmatex">\(A\)</span> is the cross-sectional area, and <span class="arithmatex">\(d_{cp}\)</span> is the moment arm. Aerodynamic torques dominate the disturbance environment for spacecraft below 500 km.</p>
+<h3 id="subsec-magnetic_torque"><span class="secnum">7.5.4</span> Residual Magnetic Dipole Torque<a class="headerlink" href="#subsec-magnetic_torque" title="Permanent link">&para;</a></h3>
+<p>Spacecraft carry residual magnetic dipole moments from current-carrying conductors, magnetised materials, and hysteresis losses. The resulting torque is:</p>
+<div id="eq-magnetic_torque"></div>
+<div class="arithmatex">\[\mathbf{T}_{\mathrm{mag}} = \mathbf{m}_{\mathrm{res}} \times \mathbf{B}\tag{7.17}\]</div>
+<p>where <span class="arithmatex">\(\mathbf{m}_{\mathrm{res}}\)</span> is the residual magnetic dipole moment (A<span class="arithmatex">\(\cdot\)</span>m<span class="arithmatex">\(^2\)</span>) and <span class="arithmatex">\(\mathbf{B}\)</span> is the geomagnetic field vector. This torque is cyclic (varies with the changing direction of <span class="arithmatex">\(\mathbf{B}\)</span> along the orbit) and typically has a zero-mean over an orbit, but peak values can reach <span class="arithmatex">\(10^{-5}\)</span> N<span class="arithmatex">\(\cdot\)</span>m for a 1 A<span class="arithmatex">\(\cdot\)</span>m<span class="arithmatex">\(^2\)</span> residual dipole at LEO field strengths of <span class="arithmatex">\(\sim 3\times10^{-5}\)</span> T.</p>
+<h2 id="sec-sensors"><span class="secnum">7.6</span> Attitude Sensors<a class="headerlink" href="#sec-sensors" title="Permanent link">&para;</a></h2>
+<h3 id="subsec-star_trackers"><span class="secnum">7.6.1</span> Star Trackers<a class="headerlink" href="#subsec-star_trackers" title="Permanent link">&para;</a></h3>
+<p>The star tracker (or star camera) is the most accurate attitude sensor in operational use. It captures images of the star field using a CCD or CMOS focal plane array and determines the spacecraft’s three-axis attitude by pattern matching against an on-board star catalogue. Modern star trackers achieve attitude determination accuracy of 1–10 arcseconds per axis (1<span class="arithmatex">\(\sigma\)</span>) with an update rate of 1–10 Hz.</p>
+<p>The lost-in-space (LIS) problem—identifying star patterns without prior knowledge of attitude—is solved by algorithms such as:</p>
+<p><strong>TRIAD</strong>: Uses two non-collinear measured unit vectors (in body frame) and their known inertial counterparts to compute the DCM directly. Deterministic and fast but uses only two measurements.</p>
+<p><strong>QUEST (Quaternion Estimator)</strong>: Minimises Wahba’s loss function: <span id="eq-wahba"></span></p>
+<div class="arithmatex">\[L(C) = \frac{1}{2} \sum_{i=1}^N w_i \|\mathbf{b}_i - C \mathbf{r}_i\|^2\tag{7.18}\]</div>
+<p>where <span class="arithmatex">\(\mathbf{b}_i\)</span> are measured unit vectors in body frame, <span class="arithmatex">\(\mathbf{r}_i\)</span> are corresponding known reference vectors in inertial frame, and <span class="arithmatex">\(w_i\)</span> are weights. QUEST reformulates this as an eigenvalue problem and yields the optimal attitude quaternion.</p>
+<p><strong>FOAM (Fast Optimal Attitude Matrix)</strong>: A computationally efficient variant using SVD.</p>
+<p>Star trackers are vulnerable to Solar or lunar blinding when bright objects enter or approach the field of view, and to centroid errors caused by radiation-induced detector hot pixels. Radiation-hardened designs and anti-blinding baffles address these issues.</p>
+<h3 id="subsec-sun_sensors"><span class="secnum">7.6.2</span> Sun Sensors<a class="headerlink" href="#subsec-sun_sensors" title="Permanent link">&para;</a></h3>
+<p>Sun sensors measure the direction of the Sun vector in the body frame. Two types are used:</p>
+<p><strong>Coarse Sun Sensors (CSS)</strong>: Simple photodiode arrays on each spacecraft face. The ratio of illumination levels on adjacent diodes gives the Sun vector direction with accuracy of <span class="arithmatex">\(\pm 1--5\degree{}\)</span>. Extremely robust and used in safe/acquisition modes when the attitude is highly uncertain.</p>
+<p><strong>Fine Sun Sensors (FSS)</strong>: Two-dimensional quadrant or lateral effect photodiodes, or digital sun sensors with slit apertures, achieving accuracies of <span class="arithmatex">\(\pm 0.01--0.1\degree{}\)</span> over a field of view of <span class="arithmatex">\(\pm 30--60\degree{}\)</span>. Used in nominal operations for solar array pointing verification and as a backup to the star tracker.</p>
+<h3 id="subsec-magnetometers"><span class="secnum">7.6.3</span> Magnetometers<a class="headerlink" href="#subsec-magnetometers" title="Permanent link">&para;</a></h3>
+<p>Three-axis fluxgate magnetometers measure the geomagnetic field vector <span class="arithmatex">\(\mathbf{B}\)</span> in the body frame to accuracies of 1–100 nT. Comparing the measured <span class="arithmatex">\(\mathbf{B}\)</span> with the IGRF (International Geomagnetic Reference Field) model prediction gives attitude information, but with low accuracy (typically <span class="arithmatex">\(\pm 1--5\degree{}\)</span>) because the IGRF model itself has errors and the geomagnetic field direction varies slowly. Magnetometers are most useful in LEO and as a sensor for magnetorquer control loops; above 1000 km altitude the field weakens and measurement errors become more significant.</p>
+<h3 id="subsec-horizon_sensors"><span class="secnum">7.6.4</span> Earth Horizon Sensors<a class="headerlink" href="#subsec-horizon_sensors" title="Permanent link">&para;</a></h3>
+<p>Infrared horizon sensors detect the boundary between the warm Earth (<span class="arithmatex">\(\sim 255\)</span> K mean) and cold space (<span class="arithmatex">\(\sim 3\)</span> K) in the thermal infrared (<span class="arithmatex">\(14--16~\mu\)</span>m CO<span class="arithmatex">\(_2\)</span> emission band). Scanning or static two-axis sensors determine the nadir vector direction with accuracy of <span class="arithmatex">\(\pm 0.05--0.1\degree{}\)</span> in LEO. Horizon sensors were the primary attitude sensor for earlier spacecraft generations; star trackers have largely replaced them for accuracy-critical applications but they remain in use as robust backup sensors.</p>
+<h3 id="subsec-gyroscopes"><span class="secnum">7.6.5</span> Gyroscopes<a class="headerlink" href="#subsec-gyroscopes" title="Permanent link">&para;</a></h3>
+<p>Gyroscopes measure angular velocity and, by integration, can propagate attitude estimates between absolute sensor updates. Four principal types are used in space:</p>
+<div class="tbl" id="tab-gyro_comparison">
+<div class="tbl-caption"><strong>Table 7.1.</strong> Comparison of gyroscope types for space applications.</div>
+<div class="tbl-scroll">
+<table>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Type</strong></td>
+<td style="text-align: center;"><strong>ARW</strong></td>
+<td style="text-align: center;"><strong>Bias Instability</strong></td>
+<td style="text-align: center;"><strong>Mass</strong></td>
+<td style="text-align: center;"><strong>Applications</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: center;">(/<span class="math inline">\(\sqrt{\mathrm{h}}\)</span>)</td>
+<td style="text-align: center;">(/h)</td>
+<td style="text-align: center;">(kg)</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">MEMS (ADXRS, IMU)</td>
+<td style="text-align: center;">0.1–1.0</td>
+<td style="text-align: center;">1–100</td>
+<td style="text-align: center;">0.01–0.1</td>
+<td style="text-align: center;">CubeSats, attitude rate sensing</td>
+</tr>
+<tr>
+<td style="text-align: left;">Fiber Optic (FOG)</td>
+<td style="text-align: center;">0.001–0.1</td>
+<td style="text-align: center;">0.01–1.0</td>
+<td style="text-align: center;">0.2–2</td>
+<td style="text-align: center;">LEO, medium accuracy</td>
+</tr>
+<tr>
+<td style="text-align: left;">Ring Laser (RLG)</td>
+<td style="text-align: center;">0.001–0.01</td>
+<td style="text-align: center;">0.001–0.1</td>
+<td style="text-align: center;">0.5–3</td>
+<td style="text-align: center;">High accuracy, legacy systems</td>
+</tr>
+<tr>
+<td style="text-align: left;">Hemispherical Resonator (HRG)</td>
+<td style="text-align: center;">0.0001–0.001</td>
+<td style="text-align: center;">0.0001–0.01</td>
+<td style="text-align: center;">0.5–2</td>
+<td style="text-align: center;">Long-life precision missions</td>
+</tr>
+</tbody>
+</table>
+</div></div>
+<p>The HRG (Northrop Grumman) uses the Coriolis effect in a fused quartz hemispherical shell vibrating at its fundamental mode. With no moving parts and solid-state operation, it offers unmatched lifetime (&gt; 20 years demonstrated) and is the sensor of choice for high-reliability long-duration missions.</p>
+<p>Angle Random Walk (ARW) characterises high-frequency noise in the angular rate measurement; it causes attitude estimation error to grow as <span class="arithmatex">\(\sqrt{t}\)</span> during gyro-only propagation. Bias instability characterises the low-frequency drift of the gyro output; it dominates attitude error over long time intervals between absolute sensor updates.</p>
+<h2 id="sec-determination_algorithms"><span class="secnum">7.7</span> Attitude Determination Algorithms<a class="headerlink" href="#sec-determination_algorithms" title="Permanent link">&para;</a></h2>
+<h3 id="subsec-ekf"><span class="secnum">7.7.1</span> Extended Kalman Filter for Attitude Estimation<a class="headerlink" href="#subsec-ekf" title="Permanent link">&para;</a></h3>
+<p>The Extended Kalman Filter (EKF) is the standard algorithm for fusing gyroscope measurements with periodic absolute attitude measurements from star trackers or other sensors. The state vector for attitude estimation is:</p>
+<div id="eq-ekf_state"></div>
+<div class="arithmatex">\[\mathbf{x} = \begin{bmatrix} \delta\boldsymbol{\theta} \\ \boldsymbol{\beta} \end{bmatrix} \in \mathbb{R}^6\tag{7.19}\]</div>
+<p>where <span class="arithmatex">\(\delta\boldsymbol{\theta} \in \mathbb{R}^3\)</span> is the small-angle attitude error (Gibbs vector or MRP of error quaternion), and <span class="arithmatex">\(\boldsymbol{\beta} \in \mathbb{R}^3\)</span> is the gyro bias estimate vector. The propagation (predict) step uses the gyro measurement <span class="arithmatex">\(\tilde{\boldsymbol{\omega}}\)</span>:</p>
+<div id="eq-ekf_propagate"></div>
+<div class="arithmatex">\[\dot{\hat{\mathbf{q}}} = \frac{1}{2}\Xi(\hat{\mathbf{q}})(\tilde{\boldsymbol{\omega}} - \hat{\boldsymbol{\beta}})\tag{7.20}\]</div>
+<div id="eq-ekf_bias_propagate"></div>
+<div class="arithmatex">\[\dot{\hat{\boldsymbol{\beta}}} = \mathbf{0}\tag{7.21}\]</div>
+<p>The state error covariance <span class="arithmatex">\(P\)</span> is propagated via:</p>
+<div id="eq-ekf_cov_propagate"></div>
+<div class="arithmatex">\[\dot{P} = F P + P F^T + G Q G^T\tag{7.22}\]</div>
+<p>where <span class="arithmatex">\(F\)</span> is the linearised system matrix, <span class="arithmatex">\(Q\)</span> is the process noise covariance (characterised by the gyro ARW and bias random walk), and <span class="arithmatex">\(G\)</span> maps noise into the state.</p>
+<p>When a star tracker measurement <span class="arithmatex">\(\mathbf{q}_{\mathrm{meas}}\)</span> arrives, the measurement update (correct) step is:</p>
+<div id="eq-ekf_meas"></div>
+<div class="arithmatex">\[\delta\boldsymbol{\theta}_{\mathrm{meas}} = 2 \boldsymbol{\varepsilon}(\hat{\mathbf{q}}^{-1} \otimes \mathbf{q}_{\mathrm{meas}})\tag{7.23}\]</div>
+<div id="eq-ekf_kalman_gain"></div>
+<div class="arithmatex">\[K = P H^T (H P H^T + R)^{-1}\tag{7.24}\]</div>
+<div id="eq-ekf_update"></div>
+<div class="arithmatex">\[\hat{\mathbf{x}}^+ = \hat{\mathbf{x}}^- + K (\delta\boldsymbol{\theta}_{\mathrm{meas}} - H \hat{\mathbf{x}}^-)\tag{7.25}\]</div>
+<div id="eq-ekf_cov_update"></div>
+<div class="arithmatex">\[P^+ = (I - KH) P^-\tag{7.26}\]</div>
+<p>where <span class="arithmatex">\(R\)</span> is the measurement noise covariance and <span class="arithmatex">\(H = [I_3 \; \mathbf{0}_{3\times3}]\)</span> (star tracker measures attitude error, not bias). The attitude estimate <span class="arithmatex">\(\hat{\mathbf{q}}\)</span> is then updated by rotating by the estimated error <span class="arithmatex">\(\delta\boldsymbol{\theta}\)</span>.</p>
+<h2 id="sec-actuators"><span class="secnum">7.8</span> Attitude Actuators<a class="headerlink" href="#sec-actuators" title="Permanent link">&para;</a></h2>
+<h3 id="subsec-reaction_wheels"><span class="secnum">7.8.1</span> Reaction Wheels<a class="headerlink" href="#subsec-reaction_wheels" title="Permanent link">&para;</a></h3>
+<p>A reaction wheel (RW) is a motor-driven flywheel mounted in the spacecraft body. By accelerating or decelerating the flywheel, the ADCS exchanges angular momentum with the spacecraft body, generating a control torque. The torque provided by a single reaction wheel is:</p>
+<div id="eq-rw_torque"></div>
+<div class="arithmatex">\[T_{rw} = \dot{h}_w = I_w \dot{\Omega}_w\tag{7.27}\]</div>
+<p>where <span class="arithmatex">\(I_w\)</span> is the wheel moment of inertia and <span class="arithmatex">\(\Omega_w\)</span> is the wheel spin speed. The angular momentum stored in the wheel is <span class="arithmatex">\(h_w = I_w \Omega_w\)</span>.</p>
+<p>For three-axis attitude control, at least three reaction wheels (one per axis) are required, though most spacecraft use four wheels in a pyramidal or skewed arrangement to provide redundancy against single-wheel failure. Standard wheel speed range is <span class="arithmatex">\(\pm 3000\)</span>–<span class="arithmatex">\(6000\)</span> RPM; momentum capacity ranges from 0.4 Nms for a small LEO satellite to 100 Nms for a large GEO platform.</p>
+<figure class="fig" id="fig-rw_envelope">
+<figcaption><strong>Figure 7.1.</strong> Angular momentum envelope for a four-reaction-wheel system in a pyramidal configuration. Each wheel can store momentum <span class="math inline">\(h_w\)</span>; the combined momentum is the vector sum. When any wheel approaches its saturation speed <span class="math inline">\(\Omega_{\max}\)</span>, momentum must be dumped using an external torque source (magnetorquers or thrusters).</figcaption>
+</figure>
+<p><strong>Momentum desaturation</strong>: Over time, reaction wheels accumulate angular momentum from residual environmental disturbance torques that have a mean value. The wheels gradually spin up (or down) toward their speed limits. Momentum must be periodically unloaded using external torque sources: magnetorquers exploit the Earth’s magnetic field (usable in LEO but not in GEO), or thrusters fire in pairs to generate a net torque without translational acceleration.</p>
+<p><strong>Micro-vibrations</strong>: Reaction wheel imbalance (both static and dynamic) generates harmonic vibrations at the wheel spin frequency and harmonics. These micro-vibrations propagate through the spacecraft structure and can limit the pointing accuracy of sensitive optical instruments. Vibration isolation mounts (passive: elastomeric bushings; active: piezoelectric actuators in hexapod arrangements) attenuate micro-vibrations. The SOFIA airborne observatory and the Hubble Space Telescope have employed wheel isolation systems for this reason.</p>
+<h3 id="subsec-cmg"><span class="secnum">7.8.2</span> Control Moment Gyroscopes<a class="headerlink" href="#subsec-cmg" title="Permanent link">&para;</a></h3>
+<p>A Control Moment Gyroscope (CMG) is a device in which a spinning flywheel is mounted in gimbals. The flywheel spins at constant high speed, and the output torque is generated by rotating (gimballing) the spinning wheel. The gyroscopic effect amplifies the gimbal input torque into a much larger output torque on the spacecraft.</p>
+<p>For a single-gimbal CMG (SGCMG), the output torque is: <span id="eq-cmg_torque"></span></p>
+<div class="arithmatex">\[\mathbf{T}_{\mathrm{cmg}} = h_0 \dot{\delta} \hat{\mathbf{t}}\tag{7.28}\]</div>
+<p>where <span class="arithmatex">\(h_0\)</span> is the constant flywheel angular momentum magnitude, <span class="arithmatex">\(\dot{\delta}\)</span> is the gimbal rate, and <span class="arithmatex">\(\hat{\mathbf{t}}\)</span> is the torque direction (perpendicular to both the spin axis and gimbal axis). CMGs can provide torques 10–100 times greater than reaction wheels of equivalent mass, making them attractive for agile Earth observation satellites (e.g., Pleiades, WorldView series).</p>
+<p>The fundamental challenge of CMG arrays is the <em>singularity problem</em>: for certain combinations of gimbal angles, the output torque vectors of all CMGs become coplanar and no torque can be produced in the orthogonal direction. Singularity avoidance and escape algorithms are an active research area.</p>
+<h3 id="subsec-magnetorquers"><span class="secnum">7.8.3</span> Magnetorquers<a class="headerlink" href="#subsec-magnetorquers" title="Permanent link">&para;</a></h3>
+<p>Magnetorquers (also called torque coils or magnetic torque rods) generate a magnetic dipole moment <span class="arithmatex">\(\mathbf{m}\)</span> by passing current through a coil or rod (ferromagnetic core wound with wire), which interacts with the Earth’s geomagnetic field to produce a torque:</p>
+<div id="eq-magnetorquer_torque"></div>
+<div class="arithmatex">\[\mathbf{T} = \mathbf{m} \times \mathbf{B}\tag{7.29}\]</div>
+<p>The dipole moment is <span class="arithmatex">\(\mathbf{m} = N I A \hat{\mathbf{n}}\)</span> where <span class="arithmatex">\(N\)</span> is the number of turns, <span class="arithmatex">\(I\)</span> is the current, <span class="arithmatex">\(A\)</span> is the coil area, and <span class="arithmatex">\(\hat{\mathbf{n}}\)</span> is the coil normal. The fundamental limitation of magnetorquers is that the torque is always perpendicular to <span class="arithmatex">\(\mathbf{B}\)</span>: full three-axis control is not possible at any given instant. Over time (one orbit or fraction thereof), the varying direction of <span class="arithmatex">\(\mathbf{B}\)</span> allows three-axis control authority. Magnetorquers are widely used for momentum desaturation and detumbling in LEO satellites, where field strengths of <span class="arithmatex">\(20\)</span>–<span class="arithmatex">\(60~\mu\)</span>T are available.</p>
+<h3 id="subsec-thruster_attitude"><span class="secnum">7.8.4</span> Thruster-Based Attitude Control<a class="headerlink" href="#subsec-thruster_attitude" title="Permanent link">&para;</a></h3>
+<p>Chemical thrusters provide attitude control torques in several operational modes: large-angle slews during LEOP, emergency de-tumbling, momentum desaturation (especially in GEO where magnetorquers cannot be used), and reorientation manoeuvres during orbit maintenance burns. Thrust is typically provided in on/off pulsed mode; the minimum impulse bit (the smallest controllable impulse) is an important parameter for fine attitude control. Plume impingement on solar arrays, antennas, and sensors is a critical concern in thruster placement.</p>
+<h2 id="sec-control_laws"><span class="secnum">7.9</span> Control Laws<a class="headerlink" href="#sec-control_laws" title="Permanent link">&para;</a></h2>
+<h3 id="subsec-pd_controller"><span class="secnum">7.9.1</span> PD Controller<a class="headerlink" href="#subsec-pd_controller" title="Permanent link">&para;</a></h3>
+<p>The classical three-axis PD (Proportional-Derivative) attitude controller is:</p>
+<div id="eq-pd_controller"></div>
+<div class="arithmatex">\[\mathbf{T}_c = -K_p \delta\boldsymbol{\theta} - K_d \boldsymbol{\omega}\tag{7.30}\]</div>
+<p>where <span class="arithmatex">\(\delta\boldsymbol{\theta}\)</span> is the attitude error vector (small angle representation), <span class="arithmatex">\(\boldsymbol{\omega}\)</span> is the angular velocity error (actual minus commanded), <span class="arithmatex">\(K_p\)</span> is the proportional gain matrix, and <span class="arithmatex">\(K_d\)</span> is the derivative gain matrix. For a symmetric spacecraft with diagonal inertia matrix <span class="arithmatex">\(I = \mathrm{diag}(I_x, I_y, I_z)\)</span>, the gains are decoupled: <span class="arithmatex">\(K_{p,i} = I_i \omega_{n,i}^2\)</span> and <span class="arithmatex">\(K_{d,i} = 2 \zeta_i \omega_{n,i} I_i\)</span> where <span class="arithmatex">\(\omega_{n,i}\)</span> is the natural frequency and <span class="arithmatex">\(\zeta_i\)</span> is the damping ratio of each axis. Critical damping is achieved at <span class="arithmatex">\(\zeta = 1\)</span>.</p>
+<p>The PD controller eliminates constant disturbances only if an integrating term (PID) is added, or if integral action is implemented through a reaction wheel bias (momentum-bias system). For disturbances that are constant in the body frame, the PD controller will exhibit a steady-state pointing error.</p>
+<h3 id="subsec-lqr"><span class="secnum">7.9.2</span> LQR Optimal Control<a class="headerlink" href="#subsec-lqr" title="Permanent link">&para;</a></h3>
+<p>The Linear Quadratic Regulator (LQR) provides an optimal control law minimising the cost functional:</p>
+<div id="eq-lqr_cost"></div>
+<div class="arithmatex">\[J = \int_0^\infty \left( \mathbf{x}^T Q \mathbf{x} + \mathbf{u}^T R \mathbf{u} \right) dt\tag{7.31}\]</div>
+<p>where <span class="arithmatex">\(\mathbf{x}\)</span> is the state vector (attitude error and angular velocity), <span class="arithmatex">\(\mathbf{u}\)</span> is the control input (wheel torques), <span class="arithmatex">\(Q \geq 0\)</span> is the state weighting matrix, and <span class="arithmatex">\(R &gt; 0\)</span> is the control effort weighting matrix. The optimal control is:</p>
+<div id="eq-lqr_control"></div>
+<div class="arithmatex">\[\mathbf{u}^* = -K_{\mathrm{LQR}} \mathbf{x}\tag{7.32}\]</div>
+<p>where <span class="arithmatex">\(K_{\mathrm{LQR}} = R^{-1} B^T P_\infty\)</span> and <span class="arithmatex">\(P_\infty\)</span> is the solution to the algebraic Riccati equation:</p>
+<div id="eq-riccati"></div>
+<div class="arithmatex">\[P A + A^T P - P B R^{-1} B^T P + Q = 0\tag{7.33}\]</div>
+<p>LQR provides a structured trade-off between pointing accuracy (weight <span class="arithmatex">\(Q\)</span>) and actuator usage (weight <span class="arithmatex">\(R\)</span>), and guarantees stability margins of at least 6 dB gain margin and <span class="arithmatex">\(\pm 60\degree{}\)</span> phase margin for the linear system.</p>
+<h3 id="subsec-nonlinear_control"><span class="secnum">7.9.3</span> Nonlinear and Robust Control<a class="headerlink" href="#subsec-nonlinear_control" title="Permanent link">&para;</a></h3>
+<p>For highly manoeuvrable spacecraft or in the presence of significant inertia uncertainty, nonlinear control laws are preferred. Sliding mode control (SMC) is robust to parameter uncertainties and external disturbances up to a known bound. The sliding surface is defined as:</p>
+<div id="eq-sliding_surface"></div>
+<div class="arithmatex">\[\mathbf{s} = \dot{\boldsymbol{\varepsilon}} + \lambda \boldsymbol{\varepsilon}\tag{7.34}\]</div>
+<p>and the control law drives the system onto the surface <span class="arithmatex">\(\mathbf{s} = 0\)</span> and keeps it there, regardless of bounded disturbances and inertia uncertainty. The chattering phenomenon (high-frequency switching) in classical SMC is mitigated by using boundary layer methods or higher-order sliding mode approaches.</p>
+<h2 id="sec-pointing_modes"><span class="secnum">7.10</span> Pointing Modes and Mission Operations<a class="headerlink" href="#sec-pointing_modes" title="Permanent link">&para;</a></h2>
+<p>Modern spacecraft operate in multiple pointing modes depending on mission phase and science/communications objectives:</p>
+<p><strong>Sun acquisition mode</strong>: Used during LEOP and after contingencies. The spacecraft manoeuvres to a Sun-pointing attitude using coarse sun sensors and magnetometers/gyros, to ensure solar array power. Once Sun is acquired, the spacecraft can proceed to safe mode or nominal mode checkout.</p>
+<p><strong>Nadir pointing (Earth observation mode)</strong>: The payload boresight is maintained along the nadir direction (<span class="arithmatex">\(-\hat{r}\)</span>), with the spacecraft yaw compensated for the Sun angle to maintain solar array illumination. This requires continuous attitude maintenance against orbital mechanics perturbations. Tracking a ground target (spotlight mode) requires attitude manoeuvres at the orbital rate modified by the target geometry.</p>
+<p><strong>Inertial pointing (science mode)</strong>: The spacecraft is pointed at a fixed inertial direction (star, planet, deep field), with the orbital motion causing the Earth to drift through the field of view. Gyroscopes and star trackers provide attitude hold.</p>
+<p><strong>Spin stabilisation</strong>: Early spacecraft and some modern missions (e.g., spin-stabilised kick motors, some planetary probes) use body spin for gyroscopic stiffness. The angular momentum vector is fixed in inertial space, providing passive attitude stability. Three-axis control is not available in pure spin stabilisation but can be augmented by precession manoeuvres.</p>
+<h2 id="sec-adcs_architecture"><span class="secnum">7.11</span> ADCS Block Diagram and System Architecture<a class="headerlink" href="#sec-adcs_architecture" title="Permanent link">&para;</a></h2>
+<figure class="fig" id="fig-adcs_block">
+<figcaption><strong>Figure 7.2.</strong> ADCS functional block diagram. Sensor data flows to the ADCS computer, which performs attitude determination (EKF fusing gyro and absolute sensor data), orbit determination, and control law computation. Actuator commands are distributed to reaction wheels, magnetorquers, and thrusters. The ADCS computer also manages wheel desaturation logic and mode transitions.</figcaption>
+</figure>
+<h3 id="subsec-sensor_comparison"><span class="secnum">7.11.1</span> Sensor Suite Comparison<a class="headerlink" href="#subsec-sensor_comparison" title="Permanent link">&para;</a></h3>
+<div class="tbl" id="tab-sensor_comparison">
+<div class="tbl-caption"><strong>Table 7.2.</strong> Comparison of attitude sensor specifications for space applications.</div>
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Sensor</strong></th>
+<th style="text-align: center;"><strong>Accuracy</strong></th>
+<th style="text-align: center;"><strong>Update Rate</strong></th>
+<th style="text-align: center;"><strong>Mass (kg)</strong></th>
+<th style="text-align: center;"><strong>Typical Use</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Star Tracker</td>
+<td style="text-align: center;">1–10 arcsec</td>
+<td style="text-align: center;">1–10 Hz</td>
+<td style="text-align: center;">0.3–2.0</td>
+<td style="text-align: center;">Precision 3-axis</td>
+</tr>
+<tr>
+<td style="text-align: left;">Fine Sun Sensor</td>
+<td style="text-align: center;">0.01–0.1</td>
+<td style="text-align: center;">10–100 Hz</td>
+<td style="text-align: center;">0.05–0.3</td>
+<td style="text-align: center;">Sun vector, array pointing</td>
+</tr>
+<tr>
+<td style="text-align: left;">Coarse Sun Sensor</td>
+<td style="text-align: center;">1–5</td>
+<td style="text-align: center;"><span class="math inline">\(&gt;\)</span>100 Hz</td>
+<td style="text-align: center;">0.01–0.05</td>
+<td style="text-align: center;">Acquisition, safe mode</td>
+</tr>
+<tr>
+<td style="text-align: left;">Earth Horizon Sensor</td>
+<td style="text-align: center;">0.05–0.1</td>
+<td style="text-align: center;">1–10 Hz</td>
+<td style="text-align: center;">0.3–1.5</td>
+<td style="text-align: center;">Nadir vector, backup</td>
+</tr>
+<tr>
+<td style="text-align: left;">Magnetometer (FOG)</td>
+<td style="text-align: center;"><span class="math inline">\(\pm 1\)</span>–100 nT</td>
+<td style="text-align: center;">1–100 Hz</td>
+<td style="text-align: center;">0.05–0.5</td>
+<td style="text-align: center;">Rate sensing, LEO</td>
+</tr>
+<tr>
+<td style="text-align: left;">MEMS Gyroscope</td>
+<td style="text-align: center;">0.1–1/<span class="math inline">\(\sqrt{\mathrm{h}}\)</span> ARW</td>
+<td style="text-align: center;">100–1000 Hz</td>
+<td style="text-align: center;">0.01–0.2</td>
+<td style="text-align: center;">Rate sensing, CubeSats</td>
+</tr>
+<tr>
+<td style="text-align: left;">HRG</td>
+<td style="text-align: center;">0.0001/<span class="math inline">\(\sqrt{\mathrm{h}}\)</span> ARW</td>
+<td style="text-align: center;">200–400 Hz</td>
+<td style="text-align: center;">0.5–2.0</td>
+<td style="text-align: center;">Precision, long-life</td>
+</tr>
+<tr>
+<td style="text-align: left;">GPS (single)</td>
+<td style="text-align: center;">3–10 m position</td>
+<td style="text-align: center;">1–10 Hz</td>
+<td style="text-align: center;">0.1–0.5</td>
+<td style="text-align: center;">Orbit determination</td>
+</tr>
+<tr>
+<td style="text-align: left;">GPS (multi-antenna)</td>
+<td style="text-align: center;">0.1–1 attitude</td>
+<td style="text-align: center;">1–10 Hz</td>
+<td style="text-align: center;">0.5–2.0</td>
+<td style="text-align: center;">Attitude, baselines</td>
+</tr>
+</tbody>
+</table>
+</div></div>
+<h2 id="sec-microvib"><span class="secnum">7.12</span> Micro-Vibration and Jitter Analysis<a class="headerlink" href="#sec-microvib" title="Permanent link">&para;</a></h2>
+<p>For optical imaging satellites with resolution requirements of sub-meter at altitude, micro-vibration from rotating machinery (reaction wheels, cryocoolers, compressors) can be the dominant error source limiting image quality. The metric is the line-of-sight (LOS) jitter expressed as an angle (arcseconds RMS) in the focal plane.</p>
+<p>Reaction wheel imbalance produces disturbances at the wheel spin frequency <span class="arithmatex">\(f_w\)</span> and harmonics <span class="arithmatex">\(n f_w\)</span>. The structural response of the spacecraft amplifies disturbances near modal frequencies. The LOS jitter is computed through a transfer function from wheel force/torque to LOS angle, integrated over all wheel speeds and frequencies.</p>
+<p>Passive isolation mounts (such as the Moog CSA hexapod isolator) provide 6-DOF isolation, attenuating disturbances above the corner frequency (typically 10–40 Hz) by 20–40 dB/decade. Active isolation using accelerometer-based control further extends the isolation bandwidth.</p>
+<h2 id="sec-adcs_summary"><span class="secnum">7.13</span> Summary<a class="headerlink" href="#sec-adcs_summary" title="Permanent link">&para;</a></h2>
+<p>The ADCS constitutes one of the most mathematically rich subsystems of the spacecraft. From the reference frames that define the context for attitude measurement, through the singularity-free quaternion representation of attitude and its kinematic equations, to the Euler rigid-body equations of motion coupling attitude dynamics to external torques—the theoretical foundation provides the tools for analysis. Environmental disturbances (SRP, gravity gradient, aerodynamic, magnetic) drive the actuator sizing. Sensor technologies spanning coarse photodiodes to precision star trackers and HRG gyroscopes provide the measurements for the EKF attitude estimator. Reaction wheels provide precision torque; magnetorquers enable efficient momentum management in LEO; CMGs provide high agility. The PD and LQR control laws, with their known stability properties, complete the closed-loop system. <a href="ch08-satellite-propulsion-systems.html#ch-propulsion">Chapter 8</a> addresses the propulsion system, which interfaces closely with the ADCS through orbit maintenance manoeuvres and angular momentum desaturation.</p>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button type="button" class="md-top md-icon" data-md-component="top" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+Back to top
+</button>
+</main>
+<footer class="md-footer">
+<nav class="md-footer__inner md-grid" aria-label="Footer" >
+<a href="ch06-satellite-electrical-power-systems.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: 6. Satellite Electrical Power Systems">
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</div>
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Previous
+</span>
+<div class="md-ellipsis">
+6. Satellite Electrical Power Systems
+</div>
+</div>
+</a>
+<a href="ch08-satellite-propulsion-systems.html" class="md-footer__link md-footer__link--next" aria-label="Next: 8. Satellite Propulsion Systems">
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Next
+</span>
+<div class="md-ellipsis">
+8. Satellite Propulsion Systems
+</div>
+</div>
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+</div>
+</a>
+</nav>
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+The Open Book Project &middot;
+<a href="../../about.html">About this library</a> &middot;
+<a href="../../publish.html">Publish your book</a> &middot;
+© The authors of the books
+</div>
+Made with
+<a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+Material for MkDocs
+</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "navigation.prune", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "toc.follow", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+<script src="../../assets/mathjax.js"></script>
+<script src="../../assets/viz.js"></script>
+<script src="../../assets/remote.js"></script>
+<script src="../../assets/scans.js"></script>
+<script src="../../assets/reader.js"></script>
+<script src="../../assets/app.js"></script>
+<script src="../../assets/slides.js"></script>
+<script src="../../assets/speak.js"></script>
+<script src="../../assets/quiz.js"></script>
+<script>
+    /* offline reading: the service worker at the site root (its scope is the whole site) */
+    if ("serviceWorker" in navigator && window.isSecureContext) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register(new URL("../../sw.js", location.href).href).catch(function () {});
+      });
+    }
+  </script>
+</body>
+</html>

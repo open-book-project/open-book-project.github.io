@@ -1,0 +1,1825 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="description" content="The Open Book Project: books on computer science, quantum computing, cyber security, science, the social sciences, university courses and languages, read page by page like an e-book, online or offline.">
+<meta name="author" content="The Open Book Project">
+<link rel="canonical" href="https://open-book-project.github.io/engineering/satellite_technology/ch10-on-board-data-handling.html">
+<link rel="prev" href="ch09-thermal-control-systems.html">
+<link rel="next" href="ch11-telemetry-tracking-and-command-systems.html">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap"></noscript>
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Open Book">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="application-name" content="Open Book"><script src="../../assets/library-data.js"></script><script>
+    (function () {
+      var X = window.XMLHttpRequest, open, gate = new Promise(function (r) { open = r; });
+      if (!X) return;
+      var open0 = X.prototype.open, send0 = X.prototype.send;
+      X.prototype.open = function (method, url) {
+        this.__pkIndex = /\/search\/search_index\.json(\?|#|$)/.test(String(url));
+        return open0.apply(this, arguments);
+      };
+      X.prototype.send = function () {
+        if (!this.__pkIndex) return send0.apply(this, arguments);
+        var xhr = this, args = arguments;
+        gate.then(function () { send0.apply(xhr, args); });
+      };
+      function wake() { open(); }
+      document.addEventListener("focusin", function (e) { if (e.target && e.target.closest && e.target.closest(".md-search")) wake(); });
+      document.addEventListener("click", function (e) { if (e.target && e.target.closest && e.target.closest('label[for="__search"], .md-search')) wake(); }, true);
+      document.addEventListener("keydown", function (e) {
+        var k = e.key;
+        if ((k === "/" || k === "s" || k === "f" || k === "S" || k === "F") && !(e.target && e.target.closest && e.target.closest("input, textarea, [contenteditable]"))) wake();
+      }, true);
+      if (/[?&]q=/.test(location.search)) wake();
+    })();
+  </script><script>
+    try {
+      if ((window.matchMedia && (matchMedia("(display-mode: standalone)").matches || matchMedia("(display-mode: fullscreen)").matches)) || navigator.standalone === true) {
+        document.documentElement.className += " bjp-standalone";
+      }
+    } catch (e) { /* not an installed app */ }
+    /* the books of a subject or of the whole library as covers or as a list (assets/app.js): the reader's choice */
+    try {
+      var bv = localStorage.getItem("bjp.view");
+      if (bv === "list" || (bv !== "grid" && /\/books\.html$/.test(location.pathname))) document.documentElement.className += " bjp-view-list";
+    } catch (e) { /* no storage: covers */ }
+  </script>
+<script>
+    /* a book opened from its cover on the shelf: the page stays blank, in the cover's colour, until the reader is up */
+    try {
+      var cv = sessionStorage.getItem("bjp.reader.cover");
+      if (cv && sessionStorage.getItem("bjp.reader.open") === "1") {
+        var c = JSON.parse(cv), de = document.documentElement;
+        de.className += " bjp-booting";
+        if (c && /^#[0-9a-f]{3,8}$/i.test(c.bg || "")) de.style.background = c.bg;
+        setTimeout(function () { de.classList.remove("bjp-booting"); de.style.background = ""; }, 3000);
+      }
+    } catch (e) { /* no session storage: the page simply opens as usual */ }
+  </script>
+<title>10. On-Board Data Handling - The Open Book Project</title>
+<link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+<link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+<link rel="stylesheet" href="../../assets/extra.css">
+<link rel="stylesheet" href="../../assets/reader.css">
+<link rel="stylesheet" href="../../assets/viz.css">
+<link rel="stylesheet" href="../../assets/app.css">
+<link rel="stylesheet" href="../../assets/theme.css">
+<link rel="stylesheet" href="../../assets/slides.css">
+<link rel="stylesheet" href="../../assets/remote.css">
+<link rel="stylesheet" href="../../assets/scans.css">
+<link rel="stylesheet" href="../../assets/speak.css">
+<link rel="stylesheet" href="../../assets/quiz.css">
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+<input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+<input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a href="#sec-obdh_intro" class="md-skip">
+Skip to content
+</a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav class="md-header__inner md-grid" aria-label="Header">
+<a href="../../index.html" title="The Open Book Project" class="md-header__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+The Open Book Project
+</span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+10. On-Board Data Handling
+</span>
+</div>
+</div>
+</div><a href="../../index.html" class="bjp-libbtn" aria-label="Library: all books" title="Library: all books">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V5h4v15M8 20V9h4v11M14 20L12.6 6l3.8-.8 3 14.2M3 20h18"/></svg><span>Library</span>
+</a>
+<a href="../../subjects/index.html" class="pk-catbtn" aria-haspopup="true" aria-expanded="false" title="Browse the books by category">
+<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><circle cx="17" cy="7" r="3.6"/><path d="M7 13.4l3.9 6.8H3.1z"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg><span>Categories</span>
+</a>
+<form class="md-header__option" data-md-component="palette">
+<input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+<label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+</label>
+<input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+<label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+<label class="md-search__icon md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</label>
+<nav class="md-search__options" aria-label="Search">
+<button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+Initializing search
+</div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--primary bjp-nav bjp-nav--book" aria-label="Navigation" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a href="../../index.html" title="The Open Book Project" class="md-nav__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+The Open Book Project
+</label>
+<ul class="md-nav__list" data-md-scrollfix>
+<li class="md-nav__item bjp-nav-all">
+<a href="../../index.html" class="md-nav__link" aria-label="All books: back to the library">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+<span class="md-ellipsis">All books</span>
+</a>
+</li>
+<li class="md-nav__item bjp-nav-book" role="presentation"><span class="bjp-nav-head">Satellite Technology</span></li>
+<li class="md-nav__item">
+<a href="index.html" class="md-nav__link">
+<span class="md-ellipsis">
+Overview and preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="list-of-abbreviations.html" class="md-nav__link">
+<span class="md-ellipsis">
+List of Abbreviations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch01-introduction-to-satellite-technology.html" class="md-nav__link">
+<span class="md-ellipsis">
+1. Introduction to Satellite Technology
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch02-orbital-mechanics.html" class="md-nav__link">
+<span class="md-ellipsis">
+2. Orbital Mechanics
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch03-the-space-environment.html" class="md-nav__link">
+<span class="md-ellipsis">
+3. The Space Environment
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch04-launch-systems-and-mission-design.html" class="md-nav__link">
+<span class="md-ellipsis">
+4. Launch Systems and Mission Design
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch05-satellite-architecture-and-systems-engineering.html" class="md-nav__link">
+<span class="md-ellipsis">
+5. Satellite Architecture and Systems Engineering
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch06-satellite-electrical-power-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+6. Satellite Electrical Power Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch07-attitude-determination-and-control-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+7. Attitude Determination and Control Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch08-satellite-propulsion-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+8. Satellite Propulsion Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch09-thermal-control-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+9. Thermal Control Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+10. On-Board Data Handling
+</span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a href="ch10-on-board-data-handling.html" class="md-nav__link md-nav__link--active">
+<span class="md-ellipsis">
+10. On-Board Data Handling
+</span>
+</a>
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#sec-obdh_intro" class="md-nav__link">
+<span class="md-ellipsis">
+10.1 Introduction and System Architecture Overview
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-obc_architectures" class="md-nav__link">
+<span class="md-ellipsis">
+10.2 On-Board Computer Architectures
+</span>
+</a>
+<nav class="md-nav" aria-label="10.2 On-Board Computer Architectures">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-radiation_effects" class="md-nav__link">
+<span class="md-ellipsis">
+10.2.1 Radiation Environment and Its Effects on Electronics
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-rad_hard_processors" class="md-nav__link">
+<span class="md-ellipsis">
+10.2.2 Radiation-Hardened Processor Options
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-fpgas" class="md-nav__link">
+<span class="md-ellipsis">
+10.2.3 FPGAs in Space
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-memory" class="md-nav__link">
+<span class="md-ellipsis">
+10.3 Memory Technologies and Error Correction
+</span>
+</a>
+<nav class="md-nav" aria-label="10.3 Memory Technologies and Error Correction">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-edac" class="md-nav__link">
+<span class="md-ellipsis">
+10.3.1 Error Detection and Correction (EDAC)
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-scrubbing" class="md-nav__link">
+<span class="md-ellipsis">
+10.3.2 Memory Scrubbing
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-nonvolatile" class="md-nav__link">
+<span class="md-ellipsis">
+10.3.3 Non-Volatile Memory
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-data_buses" class="md-nav__link">
+<span class="md-ellipsis">
+10.4 Spacecraft Data Buses
+</span>
+</a>
+<nav class="md-nav" aria-label="10.4 Spacecraft Data Buses">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-mil1553" class="md-nav__link">
+<span class="md-ellipsis">
+10.4.1 MIL-STD-1553B
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-spacewire" class="md-nav__link">
+<span class="md-ellipsis">
+10.4.2 SpaceWire
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-can" class="md-nav__link">
+<span class="md-ellipsis">
+10.4.3 CAN Bus and Low-Speed Interfaces
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-ccsds" class="md-nav__link">
+<span class="md-ellipsis">
+10.5 CCSDS Standards for Space Data Systems
+</span>
+</a>
+<nav class="md-nav" aria-label="10.5 CCSDS Standards for Space Data Systems">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-space_packet" class="md-nav__link">
+<span class="md-ellipsis">
+10.5.1 Space Packet Structure
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-cfdp" class="md-nav__link">
+<span class="md-ellipsis">
+10.5.2 CCSDS File Delivery Protocol (CFDP)
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-flight_software" class="md-nav__link">
+<span class="md-ellipsis">
+10.6 Flight Software Design
+</span>
+</a>
+<nav class="md-nav" aria-label="10.6 Flight Software Design">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-rtos" class="md-nav__link">
+<span class="md-ellipsis">
+10.6.1 Real-Time Operating System Selection
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-scheduling" class="md-nav__link">
+<span class="md-ellipsis">
+10.6.2 Scheduling Theory
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-sw_standards" class="md-nav__link">
+<span class="md-ellipsis">
+10.6.3 Software Development Standards
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-fdir" class="md-nav__link">
+<span class="md-ellipsis">
+10.7 Autonomy and Failure Detection, Isolation, and Recovery
+</span>
+</a>
+<nav class="md-nav" aria-label="10.7 Autonomy and Failure Detection, Isolation, and Recovery">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-fdir_hierarchy" class="md-nav__link">
+<span class="md-ellipsis">
+10.7.1 FDIR Hierarchy
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-watchdog" class="md-nav__link">
+<span class="md-ellipsis">
+10.7.2 Watchdog Timer
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-payload_data" class="md-nav__link">
+<span class="md-ellipsis">
+10.8 Payload Data Handling and Mass Memory
+</span>
+</a>
+<nav class="md-nav" aria-label="10.8 Payload Data Handling and Mass Memory">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-mass_memory_sizing" class="md-nav__link">
+<span class="md-ellipsis">
+10.8.1 Mass Memory Sizing
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-compression" class="md-nav__link">
+<span class="md-ellipsis">
+10.8.2 On-Board Data Compression
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-onboard_ai" class="md-nav__link">
+<span class="md-ellipsis">
+10.9 On-Board AI Processing
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-obdh_budgets" class="md-nav__link">
+<span class="md-ellipsis">
+10.10 OBDH System Budgets and Typical Parameters
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-sentinel1_example" class="md-nav__link">
+<span class="md-ellipsis">
+10.11 Design Example: Copernicus Sentinel-1 OBDH Architecture
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-obdh_summary" class="md-nav__link">
+<span class="md-ellipsis">
+10.12 Summary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#further-reading" class="md-nav__link">
+<span class="md-ellipsis">
+Further Reading
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="ch11-telemetry-tracking-and-command-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+11. Telemetry, Tracking and Command Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch12-radio-frequency-satellite-communications.html" class="md-nav__link">
+<span class="md-ellipsis">
+12. Radio Frequency Satellite Communications
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch13-satellite-link-budget-analysis.html" class="md-nav__link">
+<span class="md-ellipsis">
+13. Satellite Link Budget Analysis
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch14-satellite-antenna-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+14. Satellite Antenna Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch15-digital-signal-processing-for-satellites.html" class="md-nav__link">
+<span class="md-ellipsis">
+15. Digital Signal Processing for Satellites
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch16-optical-satellite-communications.html" class="md-nav__link">
+<span class="md-ellipsis">
+16. Optical Satellite Communications
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch17-earth-observation-and-remote-sensing.html" class="md-nav__link">
+<span class="md-ellipsis">
+17. Earth Observation and Remote Sensing
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch18-global-navigation-satellite-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+18. Global Navigation Satellite Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch19-communication-satellites-and-services.html" class="md-nav__link">
+<span class="md-ellipsis">
+19. Communication Satellites and Services
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch20-scientific-satellites-and-space-observatories.html" class="md-nav__link">
+<span class="md-ellipsis">
+20. Scientific Satellites and Space Observatories
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch21-military-and-intelligence-satellites.html" class="md-nav__link">
+<span class="md-ellipsis">
+21. Military and Intelligence Satellites
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch22-ground-station-design-and-networks.html" class="md-nav__link">
+<span class="md-ellipsis">
+22. Ground Station Design and Networks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch23-mission-operations-and-ground-control.html" class="md-nav__link">
+<span class="md-ellipsis">
+23. Mission Operations and Ground Control
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch24-smallsats-cubesats-and-the-new-space-revolution.html" class="md-nav__link">
+<span class="md-ellipsis">
+24. SmallSats, CubeSats, and the New Space Revolution
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch25-mega-constellations-and-leo-broadband-networks.html" class="md-nav__link">
+<span class="md-ellipsis">
+25. Mega-Constellations and LEO Broadband Networks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch26-artificial-intelligence-and-machine-learning-in.html" class="md-nav__link">
+<span class="md-ellipsis">
+26. Artificial Intelligence and Machine Learning in Space
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch27-on-orbit-servicing-and-space-robotics.html" class="md-nav__link">
+<span class="md-ellipsis">
+27. On-Orbit Servicing and Space Robotics
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch28-space-debris-and-long-term-sustainability.html" class="md-nav__link">
+<span class="md-ellipsis">
+28. Space Debris and Long-Term Sustainability
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch29-quantum-communications-and-satellite-qkd.html" class="md-nav__link">
+<span class="md-ellipsis">
+29. Quantum Communications and Satellite QKD
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch30-6g-and-non-terrestrial-networks.html" class="md-nav__link">
+<span class="md-ellipsis">
+30. 6G and Non-Terrestrial Networks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch31-future-concepts-and-emerging-space-technologies.html" class="md-nav__link">
+<span class="md-ellipsis">
+31. Future Concepts and Emerging Space Technologies
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="classical-orbital-elements-and-coordinate.html" class="md-nav__link">
+<span class="md-ellipsis">
+Classical Orbital Elements and Coordinate Transformations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="satellite-frequency-allocations.html" class="md-nav__link">
+<span class="md-ellipsis">
+Satellite Frequency Allocations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="launch-vehicle-specifications.html" class="md-nav__link">
+<span class="md-ellipsis">
+Launch Vehicle Specifications
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="link-budget-templates-and-worked-examples.html" class="md-nav__link">
+<span class="md-ellipsis">
+Link Budget Templates and Worked Examples
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="key-standards-software-tools-and-references.html" class="md-nav__link">
+<span class="md-ellipsis">
+Key Standards, Software Tools, and References
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="bibliography.html" class="md-nav__link">
+<span class="md-ellipsis">
+Bibliography
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#sec-obdh_intro" class="md-nav__link">
+<span class="md-ellipsis">
+10.1 Introduction and System Architecture Overview
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-obc_architectures" class="md-nav__link">
+<span class="md-ellipsis">
+10.2 On-Board Computer Architectures
+</span>
+</a>
+<nav class="md-nav" aria-label="10.2 On-Board Computer Architectures">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-radiation_effects" class="md-nav__link">
+<span class="md-ellipsis">
+10.2.1 Radiation Environment and Its Effects on Electronics
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-rad_hard_processors" class="md-nav__link">
+<span class="md-ellipsis">
+10.2.2 Radiation-Hardened Processor Options
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-fpgas" class="md-nav__link">
+<span class="md-ellipsis">
+10.2.3 FPGAs in Space
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-memory" class="md-nav__link">
+<span class="md-ellipsis">
+10.3 Memory Technologies and Error Correction
+</span>
+</a>
+<nav class="md-nav" aria-label="10.3 Memory Technologies and Error Correction">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-edac" class="md-nav__link">
+<span class="md-ellipsis">
+10.3.1 Error Detection and Correction (EDAC)
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-scrubbing" class="md-nav__link">
+<span class="md-ellipsis">
+10.3.2 Memory Scrubbing
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-nonvolatile" class="md-nav__link">
+<span class="md-ellipsis">
+10.3.3 Non-Volatile Memory
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-data_buses" class="md-nav__link">
+<span class="md-ellipsis">
+10.4 Spacecraft Data Buses
+</span>
+</a>
+<nav class="md-nav" aria-label="10.4 Spacecraft Data Buses">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-mil1553" class="md-nav__link">
+<span class="md-ellipsis">
+10.4.1 MIL-STD-1553B
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-spacewire" class="md-nav__link">
+<span class="md-ellipsis">
+10.4.2 SpaceWire
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-can" class="md-nav__link">
+<span class="md-ellipsis">
+10.4.3 CAN Bus and Low-Speed Interfaces
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-ccsds" class="md-nav__link">
+<span class="md-ellipsis">
+10.5 CCSDS Standards for Space Data Systems
+</span>
+</a>
+<nav class="md-nav" aria-label="10.5 CCSDS Standards for Space Data Systems">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-space_packet" class="md-nav__link">
+<span class="md-ellipsis">
+10.5.1 Space Packet Structure
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-cfdp" class="md-nav__link">
+<span class="md-ellipsis">
+10.5.2 CCSDS File Delivery Protocol (CFDP)
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-flight_software" class="md-nav__link">
+<span class="md-ellipsis">
+10.6 Flight Software Design
+</span>
+</a>
+<nav class="md-nav" aria-label="10.6 Flight Software Design">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-rtos" class="md-nav__link">
+<span class="md-ellipsis">
+10.6.1 Real-Time Operating System Selection
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-scheduling" class="md-nav__link">
+<span class="md-ellipsis">
+10.6.2 Scheduling Theory
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-sw_standards" class="md-nav__link">
+<span class="md-ellipsis">
+10.6.3 Software Development Standards
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-fdir" class="md-nav__link">
+<span class="md-ellipsis">
+10.7 Autonomy and Failure Detection, Isolation, and Recovery
+</span>
+</a>
+<nav class="md-nav" aria-label="10.7 Autonomy and Failure Detection, Isolation, and Recovery">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-fdir_hierarchy" class="md-nav__link">
+<span class="md-ellipsis">
+10.7.1 FDIR Hierarchy
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-watchdog" class="md-nav__link">
+<span class="md-ellipsis">
+10.7.2 Watchdog Timer
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-payload_data" class="md-nav__link">
+<span class="md-ellipsis">
+10.8 Payload Data Handling and Mass Memory
+</span>
+</a>
+<nav class="md-nav" aria-label="10.8 Payload Data Handling and Mass Memory">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-mass_memory_sizing" class="md-nav__link">
+<span class="md-ellipsis">
+10.8.1 Mass Memory Sizing
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-compression" class="md-nav__link">
+<span class="md-ellipsis">
+10.8.2 On-Board Data Compression
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-onboard_ai" class="md-nav__link">
+<span class="md-ellipsis">
+10.9 On-Board AI Processing
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-obdh_budgets" class="md-nav__link">
+<span class="md-ellipsis">
+10.10 OBDH System Budgets and Typical Parameters
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-sentinel1_example" class="md-nav__link">
+<span class="md-ellipsis">
+10.11 Design Example: Copernicus Sentinel-1 OBDH Architecture
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-obdh_summary" class="md-nav__link">
+<span class="md-ellipsis">
+10.12 Summary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#further-reading" class="md-nav__link">
+<span class="md-ellipsis">
+Further Reading
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="ch-obdh">Chapter 10: On-Board Data Handling<a class="headerlink" href="#ch-obdh" title="Permanent link">&para;</a></h1>
+<div class="admonition info box-keybox kind-concept">
+<p><strong>Key Concepts in This Chapter</strong></p>
+<ul>
+<li>
+<p>OBDH functions: data acquisition, command distribution, housekeeping telemetry, and payload data handling</p>
+</li>
+<li>
+<p>Radiation-hardened and radiation-tolerant processor architectures for space</p>
+</li>
+<li>
+<p>Memory technologies and error correction: EDAC, scrubbing, and Triple Modular Redundancy</p>
+</li>
+<li>
+<p>Space data buses: MIL-STD-1553B, SpaceWire, and high-speed interfaces</p>
+</li>
+<li>
+<p>CCSDS standards governing spacecraft data communications</p>
+</li>
+<li>
+<p>Flight software design principles, RTOS selection, and autonomy/FDIR</p>
+</li>
+<li>
+<p>On-board AI processing for next-generation payload autonomy</p>
+</li>
+</ul>
+</div>
+<h2 id="sec-obdh_intro"><span class="secnum">10.1</span> Introduction and System Architecture Overview<a class="headerlink" href="#sec-obdh_intro" title="Permanent link">&para;</a></h2>
+<p>The On-Board Data Handling (OBDH) subsystem is the electronic nervous system of a spacecraft. It acquires measurement data from sensors distributed throughout the satellite, decodes and distributes commands received from the ground, maintains the spacecraft’s health through telemetry generation, manages on-board time, stores payload and housekeeping data, and executes the autonomous on-board software that controls every other subsystem (<a href="bibliography.html#ref-wertz2011">Wertz et al. 2011</a>).</p>
+<p>The OBDH architecture of a modern spacecraft can be understood as a layered hierarchy:</p>
+<ol>
+<li>
+<p><strong>Sensor/actuator layer</strong>: raw measurements from temperature sensors, current monitors, position encoders, and payload detectors; actuator interfaces to reaction wheels, heaters, and pyrotechnics.</p>
+</li>
+<li>
+<p><strong>Remote Terminal Unit (RTU) layer</strong>: data concentrators that aggregate analogue and discrete measurements from the sensor layer and communicate digitally with the central computer via a data bus.</p>
+</li>
+<li>
+<p><strong>On-Board Computer (OBC) layer</strong>: central processing unit that executes flight software, performs command decoding, schedules activities, and manages data flow.</p>
+</li>
+<li>
+<p><strong>Mass memory layer</strong>: solid-state recorder or mass memory unit that stores payload science data pending downlink.</p>
+</li>
+<li>
+<p><strong>Data bus layer</strong>: the communication backbone connecting all elements.</p>
+</li>
+</ol>
+<figure class="fig" id="fig-obdh_block">
+<figcaption><strong>Figure 10.1.</strong> Representative OBDH block diagram for a medium-sized LEO Earth observation satellite, showing the SpaceWire backbone connecting the OBC, payload interface unit, mass memory unit, and remote terminal units.</figcaption>
+</figure>
+<h2 id="sec-obc_architectures"><span class="secnum">10.2</span> On-Board Computer Architectures<a class="headerlink" href="#sec-obc_architectures" title="Permanent link">&para;</a></h2>
+<h3 id="subsec-radiation_effects"><span class="secnum">10.2.1</span> Radiation Environment and Its Effects on Electronics<a class="headerlink" href="#subsec-radiation_effects" title="Permanent link">&para;</a></h3>
+<p>The space radiation environment consists of galactic cosmic rays (GCR), solar energetic particles (SEP), and trapped particles in the Van Allen belts. These produce several classes of radiation-induced failures in microelectronics:</p>
+<ul>
+<li><strong>Single Event Upset (SEU)</strong>: a heavy ion or proton deposits sufficient charge along its track to flip a memory bit from 0 to 1 or vice versa (a “soft error”). The cross-section for SEU depends on the linear energy transfer (LET) of the particle and the critical charge <span class="arithmatex">\(Q_c\)</span> of the cell. The SEU rate is:</li>
+</ul>
+<div id="eq-seu_rate"></div>
+<div class="arithmatex">\[R_{\mathrm{SEU}} = \int_{LET_c}^{\infty} \sigma(LET) \cdot \Phi(LET) \, d(LET)\tag{10.1}\]</div>
+<p>where <span class="arithmatex">\(\sigma(LET)\)</span> is the cell cross-section as a function of LET and <span class="arithmatex">\(\Phi(LET)\)</span> is the differential particle fluence spectrum.</p>
+<ul>
+<li>
+<p><strong>Single Event Latchup (SEL)</strong>: an ion triggers a parasitic thyristor structure in CMOS logic, creating a low-impedance path from supply to ground. SEL is destructive unless power is cycled within milliseconds.</p>
+</li>
+<li>
+<p><strong>Total Ionising Dose (TID)</strong>: cumulative ionisation in gate oxides shifts threshold voltages and degrades transistor gain. Expressed in Gray or rad(Si), typical TID limits are <span class="arithmatex">\(20\)</span>–<span class="arithmatex">\(300\,\mathrm{krad(Si)}\)</span> for radiation-hardened devices.</p>
+</li>
+<li>
+<p><strong>Displacement Damage</strong>: non-ionising energy loss (NIEL) from protons and neutrons creates crystal lattice defects, degrading minority carrier lifetime in bipolar transistors and CCDs.</p>
+</li>
+</ul>
+<h3 id="subsec-rad_hard_processors"><span class="secnum">10.2.2</span> Radiation-Hardened Processor Options<a class="headerlink" href="#subsec-rad_hard_processors" title="Permanent link">&para;</a></h3>
+<div class="tbl" id="tab-processors">
+<div class="tbl-caption"><strong>Table 10.1.</strong> Radiation-hardened and radiation-tolerant processor options for space applications. Performance figures are typical; exact values depend on operating frequency and configuration.</div>
+<div class="tbl-scroll">
+<table>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Processor</strong></td>
+<td style="text-align: left;"><strong>Architecture</strong></td>
+<td style="text-align: center;"><strong>Frequency</strong></td>
+<td style="text-align: center;"><strong>TID</strong></td>
+<td style="text-align: center;"><strong>Power</strong></td>
+<td style="text-align: center;"><strong>Heritage</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: center;"><strong>(MHz)</strong></td>
+<td style="text-align: center;"><strong>(krad)</strong></td>
+<td style="text-align: center;"><strong>(W)</strong></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">LEON3-FT (GR712RC)</td>
+<td style="text-align: left;">SPARC V8, dual-core</td>
+<td style="text-align: center;">80</td>
+<td style="text-align: center;">300</td>
+<td style="text-align: center;">0.5</td>
+<td style="text-align: center;">ESA, ATV, Galileo</td>
+</tr>
+<tr>
+<td style="text-align: left;">LEON4-FT (GR740)</td>
+<td style="text-align: left;">SPARC V8, quad-core</td>
+<td style="text-align: center;">250</td>
+<td style="text-align: center;">100</td>
+<td style="text-align: center;">2.0</td>
+<td style="text-align: center;">ExoMars, Hera</td>
+</tr>
+<tr>
+<td style="text-align: left;">RAD750</td>
+<td style="text-align: left;">PowerPC 750</td>
+<td style="text-align: center;">33–166</td>
+<td style="text-align: center;">1000</td>
+<td style="text-align: center;">5.0</td>
+<td style="text-align: center;">MRO, Curiosity, Dawn</td>
+</tr>
+<tr>
+<td style="text-align: left;">RAD5545</td>
+<td style="text-align: left;">PowerPC e6500, 4-core</td>
+<td style="text-align: center;">600–1000</td>
+<td style="text-align: center;">300</td>
+<td style="text-align: center;">10.0</td>
+<td style="text-align: center;">GPS III, GOES-R</td>
+</tr>
+<tr>
+<td style="text-align: left;">BAE MIPS R3000</td>
+<td style="text-align: left;">MIPS R3000</td>
+<td style="text-align: center;">20</td>
+<td style="text-align: center;">1000</td>
+<td style="text-align: center;">3.5</td>
+<td style="text-align: center;">MSL entry descent</td>
+</tr>
+<tr>
+<td style="text-align: left;">Vorago VA10820</td>
+<td style="text-align: left;">ARM Cortex-M0</td>
+<td style="text-align: center;">116</td>
+<td style="text-align: center;">1000</td>
+<td style="text-align: center;">0.1</td>
+<td style="text-align: center;">CubeSats</td>
+</tr>
+<tr>
+<td style="text-align: left;">Space Micro P50</td>
+<td style="text-align: left;">ARM Cortex-A53</td>
+<td style="text-align: center;">1000</td>
+<td style="text-align: center;">100</td>
+<td style="text-align: center;">2.5</td>
+<td style="text-align: center;">Commercial LEO</td>
+</tr>
+<tr>
+<td style="text-align: left;">Xilinx Virtex-5QV</td>
+<td style="text-align: left;">Xilinx FPGA</td>
+<td style="text-align: center;">400 (LUT)</td>
+<td style="text-align: center;">1000</td>
+<td style="text-align: center;">10–20</td>
+<td style="text-align: center;">GOES-R, MMS</td>
+</tr>
+</tbody>
+</table>
+</div></div>
+<p>The LEON family of SPARC-V8 processors was developed by ESA/ESTEC and is now maintained by Cobham Gaisler. The GRLIB IP library provides a complete SoC platform including the LEON processor core, memory controllers, UART, SpaceWire controller, MIL-STD-1553 interface, and PCI. The LEON3-FT implements hardware fault-tolerance through:</p>
+<ul>
+<li>
+<p>Register file with parity and retry</p>
+</li>
+<li>
+<p>Cache memory protected with EDAC</p>
+</li>
+<li>
+<p>On-chip scrubbing controller</p>
+</li>
+<li>
+<p>Processor lock-step with comparison</p>
+</li>
+</ul>
+<p>The RAD750 from BAE Systems is derived from the IBM PowerPC 750 and is manufactured using radiation-hardened silicon-on-insulator (SOI) process technology, giving TID immunity up to <span class="arithmatex">\(1\,\mathrm{Mrad(Si)}\)</span>. It has accumulated an exceptional heritage record: Mars Reconnaissance Orbiter, Curiosity rover, Mars 2020 Perseverance, Lunar Reconnaissance Orbiter, and many others.</p>
+<h3 id="subsec-fpgas"><span class="secnum">10.2.3</span> FPGAs in Space<a class="headerlink" href="#subsec-fpgas" title="Permanent link">&para;</a></h3>
+<p>Field-Programmable Gate Arrays (FPGAs) are used extensively in space for:</p>
+<ul>
+<li>
+<p>High-speed data routing and signal processing (where CPUs are too slow)</p>
+</li>
+<li>
+<p>Custom peripheral controllers (SpaceWire routers, codec implementations)</p>
+</li>
+<li>
+<p>Reconfigurable payload processing pipelines</p>
+</li>
+</ul>
+<p>The Xilinx Virtex-4QV and Virtex-5QV are radiation-hardened versions using configuration SRAM cells designed to be SEU-immune. The ProASIC3 from Microsemi uses a flash-based configuration memory that is inherently immune to SEU (since flash cells require erase voltage to change state), making it “zero configuration scrubbing” required.</p>
+<p>For commercial/NewSpace missions with lower radiation requirements (LEO, <span class="arithmatex">\(&lt;2\)</span> years), Commercial Off-The-Shelf (COTS) FPGAs (Xilinx Zynq, Intel/Altera Cyclone/Arria) are used with Triple Modular Redundancy (TMR) implemented in the FPGA fabric. In TMR, the logic is triplicated and a majority voter selects the output, tolerating a single SEU in any one copy:</p>
+<div id="eq-tmr_failure_prob"></div>
+<div class="arithmatex">\[F_{\mathrm{TMR}} = 3 F_{\mathrm{single}}^2 (1 - F_{\mathrm{single}}) + F_{\mathrm{single}}^3\tag{10.2}\]</div>
+<p>where <span class="arithmatex">\(F_{\mathrm{single}}\)</span> is the probability of failure for a single module over the mission period.</p>
+<h2 id="sec-memory"><span class="secnum">10.3</span> Memory Technologies and Error Correction<a class="headerlink" href="#sec-memory" title="Permanent link">&para;</a></h2>
+<h3 id="subsec-edac"><span class="secnum">10.3.1</span> Error Detection and Correction (EDAC)<a class="headerlink" href="#subsec-edac" title="Permanent link">&para;</a></h3>
+<p>SRAM memories in space are susceptible to SEU-induced bit flips. The standard mitigation is Error Detection and Correction (EDAC) based on a Hamming code with Single Error Correction, Double Error Detection (SECDED). For a data word of <span class="arithmatex">\(k\)</span> bits, the minimum number of parity check bits <span class="arithmatex">\(p\)</span> satisfying the SECDED condition is:</p>
+<div id="eq-hamming_bits"></div>
+<div class="arithmatex">\[2^p \geq k + p + 1\tag{10.3}\]</div>
+<p>For <span class="arithmatex">\(k = 32\)</span>: <span class="arithmatex">\(p = 6\)</span> (total codeword: 38 bits). For <span class="arithmatex">\(k = 64\)</span>: <span class="arithmatex">\(p = 7\)</span> (total codeword: 71 bits). The parity check matrix <span class="arithmatex">\(\mathbf{H}\)</span> defines the syndrome <span class="arithmatex">\(\mathbf{s}\)</span>:</p>
+<div id="eq-syndrome"></div>
+<div class="arithmatex">\[\mathbf{s} = \mathbf{H} \, \mathbf{r}\tag{10.4}\]</div>
+<p>where <span class="arithmatex">\(\mathbf{r}\)</span> is the received codeword. A non-zero syndrome indicates an error; the syndrome value identifies the position of a single-bit error, which is then corrected by flipping that bit.</p>
+<h3 id="subsec-scrubbing"><span class="secnum">10.3.2</span> Memory Scrubbing<a class="headerlink" href="#subsec-scrubbing" title="Permanent link">&para;</a></h3>
+<p>Even with EDAC, over time multiple SEUs may accumulate in the same word, eventually overwhelming the single-error correction capability. Memory scrubbing is the periodic re-reading and re-writing of memory to correct accumulated errors before they compound. The scrubbing rate must be set such that the probability of a second SEU in the same word between scrub passes remains negligible:</p>
+<div id="eq-double_seu"></div>
+<div class="arithmatex">\[P_{\mathrm{double}} = \left( \lambda_{\mathrm{SEU}} \cdot \tau_{\mathrm{scrub}} \right)^2 / 2\tag{10.5}\]</div>
+<p>where <span class="arithmatex">\(\lambda_{\mathrm{SEU}}\)</span> is the per-word SEU rate and <span class="arithmatex">\(\tau_{\mathrm{scrub}}\)</span> is the scrub interval. Typical scrub rates are <span class="arithmatex">\(0.1\)</span>–<span class="arithmatex">\(1\,\mathrm{Hz}\)</span> for program memory, <span class="arithmatex">\(0.01\)</span>–<span class="arithmatex">\(0.1\,\mathrm{Hz}\)</span> for mass memory.</p>
+<h3 id="subsec-nonvolatile"><span class="secnum">10.3.3</span> Non-Volatile Memory<a class="headerlink" href="#subsec-nonvolatile" title="Permanent link">&para;</a></h3>
+<p>Non-volatile storage is required for:</p>
+<ul>
+<li>
+<p>Boot software (typically PROM or radiation-hardened EEPROM)</p>
+</li>
+<li>
+<p>Non-volatile parameters (orbit ephemeris, attitude reference, mission timeline)</p>
+</li>
+<li>
+<p>Payload science data (mass memory)</p>
+</li>
+</ul>
+<p>EEPROM (electrically erasable PROM) stores <span class="arithmatex">\(1\)</span>–<span class="arithmatex">\(8\,\mathrm{Mbit}\)</span> of configuration data with <span class="arithmatex">\(10^5\)</span> erase/write cycles and <span class="arithmatex">\(&gt;10\)</span> year data retention. NAND flash provides <span class="arithmatex">\(&gt;1\,\mathrm{Tbit/chip}\)</span> density but requires wear-levelling algorithms and ECC to manage finite program/erase cycles (<span class="arithmatex">\(10^4\)</span>–<span class="arithmatex">\(10^5\)</span>) and ECC to handle multi-bit errors characteristic of NAND flash.</p>
+<h2 id="sec-data_buses"><span class="secnum">10.4</span> Spacecraft Data Buses<a class="headerlink" href="#sec-data_buses" title="Permanent link">&para;</a></h2>
+<h3 id="subsec-mil1553"><span class="secnum">10.4.1</span> MIL-STD-1553B<a class="headerlink" href="#subsec-mil1553" title="Permanent link">&para;</a></h3>
+<p>MIL-STD-1553B is the dominant spacecraft data bus for command and housekeeping data. The bus architecture is:</p>
+<ul>
+<li>
+<p><strong>Bus Controller (BC)</strong>: one BC manages all transfers on the bus, polling Remote Terminals in turn.</p>
+</li>
+<li>
+<p><strong>Remote Terminals (RT)</strong>: up to 31 RTs (each addressed 0–30), each representing a subsystem (ADCS, power, propulsion, etc.).</p>
+</li>
+<li>
+<p><strong>Bus Monitor (BM)</strong>: passive listener for bus traffic logging.</p>
+</li>
+<li>
+<p><strong>Dual redundant bus</strong>: two physically independent twisted-shielded pairs (Bus A and Bus B); the BC switches to Bus B on failure detection.</p>
+</li>
+</ul>
+<figure class="fig" id="fig-mil1553">
+<figcaption><strong>Figure 10.2.</strong> MIL-STD-1553B dual redundant bus architecture. The Bus Controller (BC, implemented in the OBC) polls each Remote Terminal (RT) in a deterministic round-robin schedule. Coupling transformers at each stub connection provide electrical isolation.</figcaption>
+</figure>
+<p>Data encoding uses Manchester biphase-level encoding, providing inherent DC balance and clock recovery without a separate clock signal. Each 1553 word is 20 bits: 3 sync bits + 16 data bits + 1 parity bit. The bus operates at a fixed <span class="arithmatex">\(1\,\mathrm{Mbps}\)</span> data rate with a maximum cable length of <span class="arithmatex">\(300\,\mathrm{m}\)</span> at <span class="arithmatex">\(\leq 33\,\Omega/\mathrm{km}\)</span> characteristic impedance.</p>
+<p>A typical BC-to-RT command transfer consists of:</p>
+<ol>
+<li>
+<p>BC transmits Command Word: RT address (5 bits) + T/R bit + subaddress (5 bits) + word count (5 bits)</p>
+</li>
+<li>
+<p>RT transmits Status Word after a response time of <span class="arithmatex">\(4\)</span>–<span class="arithmatex">\(12\,\mu\mathrm{s}\)</span></p>
+</li>
+<li>
+<p>RT transmits <span class="arithmatex">\(1\)</span>–<span class="arithmatex">\(32\)</span> data words (if command was “Transmit”)</p>
+</li>
+</ol>
+<p>The total bus cycle time for 16 RTs each exchanging 32 words is <span class="arithmatex">\(\sim 5\,\mathrm{ms}\)</span>, giving an effective bus utilisation of <span class="arithmatex">\(200\,\mathrm{Hz}\)</span> polling rate per RT. This is more than adequate for housekeeping data but insufficient for high-speed payload data.</p>
+<h3 id="subsec-spacewire"><span class="secnum">10.4.2</span> SpaceWire<a class="headerlink" href="#subsec-spacewire" title="Permanent link">&para;</a></h3>
+<p>SpaceWire (ECSS-E-ST-50-12C, based on IEEE Std 1355) is a high-speed serial data bus designed for spacecraft payload data. Key characteristics:</p>
+<ul>
+<li>
+<p>Serial, full-duplex, point-to-point links (or via routers)</p>
+</li>
+<li>
+<p>Low-voltage differential signalling (LVDS): <span class="arithmatex">\(\pm 200\,\mathrm{mV}\)</span> differential, robust to EMC</p>
+</li>
+<li>
+<p>Data rate: <span class="arithmatex">\(2\)</span>–<span class="arithmatex">\(400\,\mathrm{Mbps}\)</span> (auto-negotiated per link)</p>
+</li>
+<li>
+<p>Packet-switched network: SpaceWire routers switch packets between ports</p>
+</li>
+<li>
+<p>Character-level encoding: Data-Strobe (DS) encoding provides clock recovery</p>
+</li>
+<li>
+<p>End-to-end error control via Error Control Codes (ECC) at the packet level</p>
+</li>
+</ul>
+<p>The SpaceWire character encoding transmits data and strobe signals on two LVDS pairs. The strobe signal <span class="arithmatex">\(S\)</span> is defined as:</p>
+<div id="eq-ds_encoding"></div>
+<div class="arithmatex">\[S_n = S_{n-1} \oplus D_n\tag{10.6}\]</div>
+<p>where <span class="arithmatex">\(D_n\)</span> is the current data bit. The receiver recovers the clock by XOR-ing data and strobe. This eliminates the need for a separate clock signal and provides inherent tolerance to skew between the signal pairs. SpaceWire networks are used as the payload data backbone on the Sentinel-1, Sentinel-2, Sentinel-3, JUICE, BepiColombo, Solar Orbiter, and ExoMars missions.</p>
+<h3 id="subsec-can"><span class="secnum">10.4.3</span> CAN Bus and Low-Speed Interfaces<a class="headerlink" href="#subsec-can" title="Permanent link">&para;</a></h3>
+<p>The Controller Area Network (CAN) bus, operating at up to <span class="arithmatex">\(1\,\mathrm{Mbps}\)</span> with inherent multi-master arbitration and error detection, is increasingly used in small satellites (<span class="arithmatex">\(&lt;100\,\mathrm{kg}\)</span>) where the lower mass and cost compared to 1553 are attractive. I2C (up to <span class="arithmatex">\(3.4\,\mathrm{Mbps}\)</span>) and SPI (up to <span class="arithmatex">\(25\,\mathrm{Mbps}\)</span>) are used for board-level sensor interfaces (temperature sensors, ADC/DAC converters, gyroscopes on the same PCB as the OBC).</p>
+<h2 id="sec-ccsds"><span class="secnum">10.5</span> CCSDS Standards for Space Data Systems<a class="headerlink" href="#sec-ccsds" title="Permanent link">&para;</a></h2>
+<p>The Consultative Committee for Space Data Systems (CCSDS) develops internationally agreed standards for space data communications, adopted by ESA, NASA, JAXA, ISRO, CNSA, and all major space agencies. The key standards form a layered protocol architecture:</p>
+<div class="tbl" id="tab-ccsds_standards">
+<div class="tbl-caption"><strong>Table 10.2.</strong> Key CCSDS standards and their application in spacecraft OBDH design.</div>
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>CCSDS Standard</strong></th>
+<th style="text-align: left;"><strong>Short Name</strong></th>
+<th style="text-align: left;"><strong>Function</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">CCSDS 132.0-B-2</td>
+<td style="text-align: left;">TM Space Data Link</td>
+<td style="text-align: left;">Telemetry framing: Virtual Channels, FECF, Frame Header</td>
+</tr>
+<tr>
+<td style="text-align: left;">CCSDS 232.0-B-3</td>
+<td style="text-align: left;">TC Space Data Link</td>
+<td style="text-align: left;">Telecommand framing: CLTU, Frame Error Control</td>
+</tr>
+<tr>
+<td style="text-align: left;">CCSDS 131.0-B-3</td>
+<td style="text-align: left;">TM Synchronization</td>
+<td style="text-align: left;">Frame sync, pseudo-randomisation</td>
+</tr>
+<tr>
+<td style="text-align: left;">CCSDS 401.0-B-29</td>
+<td style="text-align: left;">Radio Frequency/Modulation</td>
+<td style="text-align: left;">TM/TC modulation standards</td>
+</tr>
+<tr>
+<td style="text-align: left;">CCSDS 133.0-B-1</td>
+<td style="text-align: left;">Space Packet</td>
+<td style="text-align: left;">Packet structure: Primary Header + User Data Field</td>
+</tr>
+<tr>
+<td style="text-align: left;">CCSDS 727.0-B-4</td>
+<td style="text-align: left;">CFDP</td>
+<td style="text-align: left;">File delivery: reliable transfer, segmentation, error recovery</td>
+</tr>
+<tr>
+<td style="text-align: left;">CCSDS 122.0-B-1</td>
+<td style="text-align: left;">Image Data Compression</td>
+<td style="text-align: left;">Lossless image compression for EO data</td>
+</tr>
+<tr>
+<td style="text-align: left;">CCSDS 123.0-B-2</td>
+<td style="text-align: left;">Hyperspectral Compression</td>
+<td style="text-align: left;">Near-lossless hyperspectral data compression</td>
+</tr>
+<tr>
+<td style="text-align: left;">CCSDS 350.0-G-3</td>
+<td style="text-align: left;">Security Overview</td>
+<td style="text-align: left;">CCSDS Space Data Link Security (SDLS) framework</td>
+</tr>
+</tbody>
+</table>
+</div></div>
+<h3 id="subsec-space_packet"><span class="secnum">10.5.1</span> Space Packet Structure<a class="headerlink" href="#subsec-space_packet" title="Permanent link">&para;</a></h3>
+<p>The CCSDS Space Packet (CCSDS 133.0-B-1) is the fundamental data unit used in spacecraft telemetry. The packet structure is:</p>
+<div class="tbl" id="tab-ccsds_packet">
+<div class="tbl-caption"><strong>Table 10.3.</strong> CCSDS Space Packet primary header field structure (6 octets total).</div>
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Field</strong></th>
+<th style="text-align: left;"><strong>Content</strong></th>
+<th style="text-align: center;"><strong>Bits</strong></th>
+<th style="text-align: center;"><strong>Value/Range</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Version Number</td>
+<td style="text-align: left;">Always 000</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr>
+<td style="text-align: left;">Packet Type</td>
+<td style="text-align: left;">0 = TM, 1 = TC</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0 or 1</td>
+</tr>
+<tr>
+<td style="text-align: left;">Secondary Header Flag</td>
+<td style="text-align: left;">1 if secondary header present</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0 or 1</td>
+</tr>
+<tr>
+<td style="text-align: left;">APID (Application ID)</td>
+<td style="text-align: left;">Source/destination identifier</td>
+<td style="text-align: center;">11</td>
+<td style="text-align: center;">0–2047</td>
+</tr>
+<tr>
+<td style="text-align: left;">Sequence Flags</td>
+<td style="text-align: left;">11 = standalone packet</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">01, 10, 11</td>
+</tr>
+<tr>
+<td style="text-align: left;">Packet Sequence Count</td>
+<td style="text-align: left;">Rolling counter per APID</td>
+<td style="text-align: center;">14</td>
+<td style="text-align: center;">0–16383</td>
+</tr>
+<tr>
+<td style="text-align: left;">Packet Data Length</td>
+<td style="text-align: left;">Total packet length <span class="math inline">\(-7\)</span> (octets)</td>
+<td style="text-align: center;">16</td>
+<td style="text-align: center;">0–65535</td>
+</tr>
+<tr>
+<td colspan="2" style="text-align: left;">Secondary Header (optional)</td>
+<td style="text-align: center;">variable</td>
+<td style="text-align: center;">APID-specific</td>
+</tr>
+<tr>
+<td colspan="2" style="text-align: left;">User Data Field</td>
+<td style="text-align: center;">variable</td>
+<td style="text-align: center;">Science / HK data</td>
+</tr>
+</tbody>
+</table>
+</div></div>
+<p>Packets are multiplexed into Transfer Frames by the TM Space Data Link layer. Each Transfer Frame carries a fixed-length payload of <span class="arithmatex">\(\leq 65536\)</span> octets, with a mandatory 6-octet frame primary header (spacecraft ID, virtual channel ID, frame counter) and optional Frame Error Control Field (FECF, CRC-16-CCITT). Multiple Virtual Channels (VCs) within one physical link allow multiplexing of science, housekeeping, and playback data streams.</p>
+<h3 id="subsec-cfdp"><span class="secnum">10.5.2</span> CCSDS File Delivery Protocol (CFDP)<a class="headerlink" href="#subsec-cfdp" title="Permanent link">&para;</a></h3>
+<p>CFDP (CCSDS 727.0-B-4) provides reliable file transfer over lossy space links. Two classes of service exist:</p>
+<ul>
+<li>
+<p><strong>Class 1 (Unreliable)</strong>: no acknowledgement, used for low-priority downlink</p>
+</li>
+<li>
+<p><strong>Class 2 (Reliable)</strong>: positive/negative acknowledgement, automatic retransmission of lost segments, used for critical command files and software uploads</p>
+</li>
+</ul>
+<p>CFDP handles segmentation of large files into Protocol Data Units (PDUs) that fit within the available Transfer Frame data field, managing reassembly autonomously at the receiving end. It also provides file checksum verification and directory listing services.</p>
+<h2 id="sec-flight_software"><span class="secnum">10.6</span> Flight Software Design<a class="headerlink" href="#sec-flight_software" title="Permanent link">&para;</a></h2>
+<h3 id="subsec-rtos"><span class="secnum">10.6.1</span> Real-Time Operating System Selection<a class="headerlink" href="#subsec-rtos" title="Permanent link">&para;</a></h3>
+<p>The flight software executes on a Real-Time Operating System (RTOS) that provides:</p>
+<ul>
+<li>
+<p>Deterministic task scheduling with bounded worst-case execution time (WCET)</p>
+</li>
+<li>
+<p>Priority-based preemption (higher-priority tasks immediately preempt lower)</p>
+</li>
+<li>
+<p>Semaphores, mutexes, and message queues for inter-task communication</p>
+</li>
+<li>
+<p>Memory protection (optionally via MMU)</p>
+</li>
+<li>
+<p>POSIX-compatible API for portability</p>
+</li>
+</ul>
+<div class="tbl" id="tab-rtos">
+<div class="tbl-caption"><strong>Table 10.4.</strong> RTOS options used in spacecraft flight software, with their key characteristics and mission heritage.</div>
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>RTOS</strong></th>
+<th style="text-align: left;"><strong>Licence</strong></th>
+<th style="text-align: left;"><strong>Heritage</strong></th>
+<th style="text-align: left;"><strong>Notes</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">VxWorks (Wind River)</td>
+<td style="text-align: left;">Commercial</td>
+<td style="text-align: left;">ISS, Hubble, MRO, Curiosity, many GEO</td>
+<td style="text-align: left;">DO-178C certified, POSIX</td>
+</tr>
+<tr>
+<td style="text-align: left;">RTEMS</td>
+<td style="text-align: left;">Open source (BSD)</td>
+<td style="text-align: left;">ESA: Rosetta, Mars Express, BepiColombo</td>
+<td style="text-align: left;">Free, POSIX, active community</td>
+</tr>
+<tr>
+<td style="text-align: left;">LynxOS-178</td>
+<td style="text-align: left;">Commercial</td>
+<td style="text-align: left;">Military satellites</td>
+<td style="text-align: left;">DO-178C Level A</td>
+</tr>
+<tr>
+<td style="text-align: left;">FreeRTOS</td>
+<td style="text-align: left;">MIT open source</td>
+<td style="text-align: left;">CubeSats, university missions</td>
+<td style="text-align: left;">Lightweight, large ecosystem</td>
+</tr>
+<tr>
+<td style="text-align: left;">INTEGRITY (GHS)</td>
+<td style="text-align: left;">Commercial</td>
+<td style="text-align: left;">Various defence missions</td>
+<td style="text-align: left;">High-assurance, POSIX</td>
+</tr>
+<tr>
+<td style="text-align: left;">Nucleus RTOS</td>
+<td style="text-align: left;">Commercial</td>
+<td style="text-align: left;">Small satellites</td>
+<td style="text-align: left;">Low footprint</td>
+</tr>
+</tbody>
+</table>
+</div></div>
+<h3 id="subsec-scheduling"><span class="secnum">10.6.2</span> Scheduling Theory<a class="headerlink" href="#subsec-scheduling" title="Permanent link">&para;</a></h3>
+<p>Flight software tasks have hard real-time deadlines. Rate Monotonic Scheduling (RMS) assigns fixed priorities based on task period: shorter period = higher priority. The schedulability condition for <span class="arithmatex">\(n\)</span> tasks is:</p>
+<div id="eq-rms_utilisation"></div>
+<div class="arithmatex">\[U = \sum_{i=1}^{n} \frac{C_i}{T_i} \leq n \left( 2^{1/n} - 1 \right)\tag{10.7}\]</div>
+<p>where <span class="arithmatex">\(C_i\)</span> is the worst-case execution time (WCET) and <span class="arithmatex">\(T_i\)</span> is the period of task <span class="arithmatex">\(i\)</span>. As <span class="arithmatex">\(n \to \infty\)</span>, the bound converges to <span class="arithmatex">\(\ln 2 \approx 0.693\)</span>. Earliest Deadline First (EDF) is an optimal dynamic scheduler that achieves full processor utilisation (<span class="arithmatex">\(U \leq 1\)</span>) but has more complex implementation and less predictable behaviour under overload.</p>
+<h3 id="subsec-sw_standards"><span class="secnum">10.6.3</span> Software Development Standards<a class="headerlink" href="#subsec-sw_standards" title="Permanent link">&para;</a></h3>
+<p>Space flight software is developed to rigorous standards:</p>
+<ul>
+<li>
+<p><strong>ECSS-E-ST-40C</strong> : ESA software engineering standard, covering software life cycle, planning, requirements, design, testing, and documentation.</p>
+</li>
+<li>
+<p><strong>NASA NPR 7150.2</strong>: NASA software engineering requirements, defining software classification (Class A through D) by criticality.</p>
+</li>
+<li>
+<p><strong>MISRA-C:2012</strong>: a subset of ISO C with 225 coding rules eliminating undefined behaviour and common error patterns. Applied to safety-critical software.</p>
+</li>
+<li>
+<p><strong>DO-178C</strong>: aviation software certification standard increasingly applied by analogy to spacecraft software for highest assurance levels.</p>
+</li>
+</ul>
+<p>Software complexity is managed through the Architecture Framework and the concept of <em>software partitioning</em>: functionally independent modules (FDIR monitor, attitude control law, command decoder) execute in separate protected address spaces, preventing a bug in one from corrupting another.</p>
+<h2 id="sec-fdir"><span class="secnum">10.7</span> Autonomy and Failure Detection, Isolation, and Recovery<a class="headerlink" href="#sec-fdir" title="Permanent link">&para;</a></h2>
+<h3 id="subsec-fdir_hierarchy"><span class="secnum">10.7.1</span> FDIR Hierarchy<a class="headerlink" href="#subsec-fdir_hierarchy" title="Permanent link">&para;</a></h3>
+<p>FDIR is structured in levels of increasing severity:</p>
+<ol>
+<li>
+<p><strong>Level 0 – Local FDIR</strong>: hardware-level protection (current limiters, watchdog timers, redundancy switching). Response time: <span class="arithmatex">\(\mu\)</span>s–ms.</p>
+</li>
+<li>
+<p><strong>Level 1 – Unit FDIR</strong>: unit-level self-tests and resets. Response time: ms–s.</p>
+</li>
+<li>
+<p><strong>Level 2 – Mode FDIR</strong>: OBC-executed function checks; transitions between nominal and degraded operational modes. Response time: 1–60 s.</p>
+</li>
+<li>
+<p><strong>Level 3 – Safe Mode FDIR</strong>: autonomous entry into Safe Mode triggered by critical anomalies. Response time: <span class="arithmatex">\(&lt;30\,\mathrm{s}\)</span>.</p>
+</li>
+</ol>
+<p>Safe Mode entry is triggered when any of the following conditions are detected:</p>
+<ul>
+<li>
+<p>Attitude error exceeding threshold (e.g., <span class="arithmatex">\(&gt;10^{\circ}\)</span> from Sun-pointing): risk of solar array depowering or thermal damage</p>
+</li>
+<li>
+<p>Battery state of charge (SoC) below critical threshold (e.g., <span class="arithmatex">\(&lt;30\%\)</span>): risk of deep discharge and permanent damage</p>
+</li>
+<li>
+<p>Critical bus voltage out of range</p>
+</li>
+<li>
+<p>Communication loss for more than a specified number of orbits</p>
+</li>
+<li>
+<p>OBC hardware watchdog timer expiry</p>
+</li>
+</ul>
+<p>In Safe Mode, the spacecraft achieves a minimum viable configuration: solar arrays oriented toward the Sun via magnetorquers or Sun-search manoeuvre, non-essential loads powered off, beacon telemetry transmitted on omni-directional antenna at a slow, robust downlink rate (<span class="arithmatex">\(\leq 2\,\mathrm{kbps}\)</span>), and the ground notified to re-establish contact.</p>
+<h3 id="subsec-watchdog"><span class="secnum">10.7.2</span> Watchdog Timer<a class="headerlink" href="#subsec-watchdog" title="Permanent link">&para;</a></h3>
+<p>The watchdog timer is a hardware counter that counts down from a preset value (<span class="arithmatex">\(\sim 1\)</span>–<span class="arithmatex">\(30\,\mathrm{s}\)</span>). If the flight software fails to “kick” the watchdog within the timeout period (indicating software has hung or entered an infinite loop), the timer reaches zero and asserts a hardware reset signal to the OBC. The reset vector then reloads the boot software from non-volatile memory and restarts the system.</p>
+<p>Proper watchdog design requires that the “kick” be performed only after completing a health check of critical software tasks (not simply in an interrupt service routine), to ensure the kick reflects genuine software liveness.</p>
+<h2 id="sec-payload_data"><span class="secnum">10.8</span> Payload Data Handling and Mass Memory<a class="headerlink" href="#sec-payload_data" title="Permanent link">&para;</a></h2>
+<h3 id="subsec-mass_memory_sizing"><span class="secnum">10.8.1</span> Mass Memory Sizing<a class="headerlink" href="#subsec-mass_memory_sizing" title="Permanent link">&para;</a></h3>
+<p>The on-board mass memory must store payload data accumulated during the orbit arc where no ground contact is available, until the next downlink pass. The memory requirement is:</p>
+<div id="eq-memory_sizing"></div>
+<div class="arithmatex">\[M_{\mathrm{mem}} = R_{\mathrm{payload}} \cdot t_{\mathrm{store}} \cdot C_{\mathrm{margin}} + M_{\mathrm{HK}}\tag{10.8}\]</div>
+<p>where <span class="arithmatex">\(R_{\mathrm{payload}}\)</span> is the payload data rate (bits/s), <span class="arithmatex">\(t_{\mathrm{store}}\)</span> is the maximum storage interval between downlinks, and <span class="arithmatex">\(C_{\mathrm{margin}} \geq 1.25\)</span> is a design margin factor. For a Sentinel-2A type multi-spectral imager generating <span class="arithmatex">\(450\,\mathrm{Gbits/orbit}\)</span> with 2 orbits between downlinks:</p>
+<div id="eq-sentinel2_memory"></div>
+<div class="arithmatex">\[M_{\mathrm{mem}} \approx 450 \times 2 \times 1.25 = 1125\,\mathrm{Gbits} \approx 140\,\mathrm{GB}\tag{10.9}\]</div>
+<p>Typical modern EO satellite mass memories range from 256 GB to 2 TB, implemented with radiation-tolerant NAND flash arrays in a Reed-Solomon or LDPC ECC-protected configuration.</p>
+<h3 id="subsec-compression"><span class="secnum">10.8.2</span> On-Board Data Compression<a class="headerlink" href="#subsec-compression" title="Permanent link">&para;</a></h3>
+<p>On-board compression reduces downlink volume and thus ground station contact time requirements:</p>
+<ul>
+<li>
+<p><strong>CCSDS 122.0-B-1 Lossless</strong>: based on a 2D discrete wavelet transform with adaptive entropy coding, achieving compression ratios of <span class="arithmatex">\(1.5\)</span>–<span class="arithmatex">\(3\times\)</span> for typical Earth imagery with no information loss. Suitable for scientific data where radiometric accuracy is essential.</p>
+</li>
+<li>
+<p><strong>JPEG-2000 Lossy</strong>: wavelet-based with quantisation; compression ratios of <span class="arithmatex">\(5\)</span>–<span class="arithmatex">\(20\times\)</span> at acceptable image quality degradation. Used for browse products and non-scientific commercial imagery.</p>
+</li>
+<li>
+<p><strong>CCSDS 123.0-B-2</strong>: near-lossless hyperspectral data compression, exploiting spatial and spectral correlation, achieving <span class="arithmatex">\(3\)</span>–<span class="arithmatex">\(10\times\)</span> compression.</p>
+</li>
+</ul>
+<h2 id="sec-onboard_ai"><span class="secnum">10.9</span> On-Board AI Processing<a class="headerlink" href="#sec-onboard_ai" title="Permanent link">&para;</a></h2>
+<p>The increasing computational demands of autonomous on-board processing—object detection, change detection, cloud screening, anomaly detection—have driven the development of dedicated AI inference accelerators for space:</p>
+<div class="tbl" id="tab-ai_processors">
+<div class="tbl-caption"><strong>Table 10.5.</strong> On-board AI processing hardware options for spacecraft applications.</div>
+<div class="tbl-scroll">
+<table>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Processor</strong></td>
+<td style="text-align: left;"><strong>Architecture</strong></td>
+<td style="text-align: center;"><strong>Performance</strong></td>
+<td style="text-align: center;"><strong>Power</strong></td>
+<td style="text-align: left;"><strong>Status</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: center;"><strong>(TOPS)</strong></td>
+<td style="text-align: center;"><strong>(W)</strong></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">Intel Myriad X (MA2485)</td>
+<td style="text-align: left;">16<span class="math inline">\(\times\)</span> SHAVE VPU</td>
+<td style="text-align: center;">1.0</td>
+<td style="text-align: center;">1.0</td>
+<td style="text-align: left;">COTS, flown</td>
+</tr>
+<tr>
+<td style="text-align: left;">Ubotica CogniSAT-XE1</td>
+<td style="text-align: left;">ARM + Myriad X</td>
+<td style="text-align: center;">1.0</td>
+<td style="text-align: center;">3.0</td>
+<td style="text-align: left;">NewSpace product</td>
+</tr>
+<tr>
+<td style="text-align: left;">NVIDIA Jetson Nano</td>
+<td style="text-align: left;">128-core Maxwell GPU</td>
+<td style="text-align: center;">0.5</td>
+<td style="text-align: center;">5.0</td>
+<td style="text-align: left;">COTS (low TID)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Xilinx Versal ACAP</td>
+<td style="text-align: left;">ARM + AI Engine</td>
+<td style="text-align: center;">2.5</td>
+<td style="text-align: center;">20</td>
+<td style="text-align: left;">COTS with TMR</td>
+</tr>
+<tr>
+<td style="text-align: left;">Space Micro Proton 200k</td>
+<td style="text-align: left;">ARM + FPGA</td>
+<td style="text-align: center;">0.5</td>
+<td style="text-align: center;">10</td>
+<td style="text-align: left;">Rad-tolerant</td>
+</tr>
+<tr>
+<td style="text-align: left;">PHI COTS (ESA study)</td>
+<td style="text-align: left;">Myriad 2 hardened</td>
+<td style="text-align: center;">0.5</td>
+<td style="text-align: center;">2.0</td>
+<td style="text-align: left;">In development</td>
+</tr>
+</tbody>
+</table>
+</div></div>
+<p>The Intel Myriad X has been demonstrated on several commercial Earth observation CubeSats (Ubotica onboard the ESA PhiSat-1 mission, launched 2020) performing on-board cloud screening using a convolutional neural network (CNN) to eliminate cloud-contaminated scenes before downlink, reducing wasted downlink capacity by <span class="arithmatex">\(\sim 50\%\)</span> (<a href="bibliography.html#ref-giuffrida2021"><span class="nocase">Giuffrida et al.</span> 2020</a>).</p>
+<h2 id="sec-obdh_budgets"><span class="secnum">10.10</span> OBDH System Budgets and Typical Parameters<a class="headerlink" href="#sec-obdh_budgets" title="Permanent link">&para;</a></h2>
+<div class="tbl" id="tab-obdh_budgets">
+<div class="tbl-caption"><strong>Table 10.6.</strong> Typical OBDH subsystem mass and power budgets for different spacecraft classes.</div>
+<div class="tbl-scroll">
+<table>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Spacecraft Class</strong></td>
+<td style="text-align: center;"><strong>OBC Mass</strong></td>
+<td style="text-align: center;"><strong>OBC Power</strong></td>
+<td style="text-align: center;"><strong>Memory</strong></td>
+<td style="text-align: left;"><strong>Example</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: center;"><strong>(kg)</strong></td>
+<td style="text-align: center;"><strong>(W)</strong></td>
+<td style="text-align: center;"><strong>(GB)</strong></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">3U CubeSat</td>
+<td style="text-align: center;">0.05–0.1</td>
+<td style="text-align: center;">0.5–2</td>
+<td style="text-align: center;">4–16</td>
+<td style="text-align: left;">ISIS IOBC, GomSpace NanoCom</td>
+</tr>
+<tr>
+<td style="text-align: left;">6U–12U CubeSat</td>
+<td style="text-align: center;">0.1–0.3</td>
+<td style="text-align: center;">1–5</td>
+<td style="text-align: center;">16–128</td>
+<td style="text-align: left;">SpaceCube Mini, Gomspace</td>
+</tr>
+<tr>
+<td style="text-align: left;">Small satellite (50–200 kg)</td>
+<td style="text-align: center;">0.5–2</td>
+<td style="text-align: center;">3–10</td>
+<td style="text-align: center;">64–512</td>
+<td style="text-align: left;">Astrobus S, SSTL 100</td>
+</tr>
+<tr>
+<td style="text-align: left;">Medium satellite (200 kg–1 t)</td>
+<td style="text-align: center;">2–5</td>
+<td style="text-align: center;">10–25</td>
+<td style="text-align: center;">256–2000</td>
+<td style="text-align: left;">Sentinel-1, -2, -3</td>
+</tr>
+<tr>
+<td style="text-align: left;">Large GEO (&gt;3 t)</td>
+<td style="text-align: center;">5–15</td>
+<td style="text-align: center;">20–50</td>
+<td style="text-align: center;">32–256</td>
+<td style="text-align: left;">Eurostar E3000, Boeing 702</td>
+</tr>
+<tr>
+<td style="text-align: left;">Deep space (planetary)</td>
+<td style="text-align: center;">3–8</td>
+<td style="text-align: center;">10–30</td>
+<td style="text-align: center;">8–64</td>
+<td style="text-align: left;">Curiosity (RAD750)</td>
+</tr>
+</tbody>
+</table>
+</div></div>
+<h2 id="sec-sentinel1_example"><span class="secnum">10.11</span> Design Example: Copernicus Sentinel-1 OBDH Architecture<a class="headerlink" href="#sec-sentinel1_example" title="Permanent link">&para;</a></h2>
+<p>The Copernicus Sentinel-1 SAR satellite employs a dual-string OBDH architecture for full cold redundancy. The main elements are:</p>
+<ul>
+<li>
+<p><strong>OBC</strong>: Dual LEON3-FT processors (GR712RC), operating at 80 MHz, with 64 Mbyte SRAM (EDAC-protected) and 4 Mbyte EEPROM for boot software.</p>
+</li>
+<li>
+<p><strong>Data handling backbone</strong>: SpaceWire network at 200 Mbps connecting the OBC, SAR Instrument Control Unit (ICU), Mass Memory Unit (MMU), TT&amp;C transponder interface, and ADCS computer.</p>
+</li>
+<li>
+<p><strong>Mass Memory Unit</strong>: 1.7 Tbits solid-state NAND flash recorder for SAR Level-0 data.</p>
+</li>
+<li>
+<p><strong>Housekeeping bus</strong>: MIL-STD-1553B connecting 18 remote terminal units for platform housekeeping.</p>
+</li>
+<li>
+<p><strong>Flight software</strong>: RTEMS RTOS with ECSS-E-ST-40C compliant software, <span class="arithmatex">\(\sim\)</span>800 kLOC including FDIR, ADCS control laws, and CCSDS protocol stacks.</p>
+</li>
+</ul>
+<p>The SAR instrument generates raw data at approximately <span class="arithmatex">\(1.2\,\mathrm{Gbps}\)</span> during imaging windows. This data is written to the MMU in real time by a dedicated SAR data processing unit, independent of the main OBC, which manages the SpaceWire data routing through a custom 4-port SpaceWire router.</p>
+<h2 id="sec-obdh_summary"><span class="secnum">10.12</span> Summary<a class="headerlink" href="#sec-obdh_summary" title="Permanent link">&para;</a></h2>
+<p>The OBDH subsystem integrates the computational intelligence of the spacecraft, bridging sensor data acquisition, command management, autonomous operations, and payload data handling. The radiation environment imposes fundamental constraints on processor selection, memory protection, and software design that distinguish space computing from terrestrial embedded systems.</p>
+<p>The convergence of high-performance COTS processors, TMR-protected FPGAs, and AI inference accelerators is transforming on-board data handling capabilities, enabling spacecraft to perform increasingly sophisticated on-board science analysis and autonomous decision-making that reduces dependence on continuous ground contact. This trend toward edge computing in orbit is a defining technological shift of the 2020s in spacecraft engineering.</p>
+<h2 id="further-reading">Further Reading<a class="headerlink" href="#further-reading" title="Permanent link">&para;</a></h2>
+<ul>
+<li>
+<p>Larson, W. J., Wertz, J. R. (Eds.): <em>Space Mission Analysis and Design</em>, 3rd edn., Microcosm Press, Torrance (1999).</p>
+</li>
+<li>
+<p>Cote, K., et al.: <em>On-Board Data Handling for Small Satellites</em>, IAC (2014).</p>
+</li>
+<li>
+<p>ESA: ECSS-E-ST-40C: <em>Software Engineering Standard</em>, ECSS Secretariat, Noordwijk (2009).</p>
+</li>
+<li>
+<p>CCSDS: <em>Space Packet Protocol</em>, CCSDS 133.0-B-1, Washington DC (2012).</p>
+</li>
+<li>
+<p>Giuffrida, G., et al.: “<em>CloudScout: A Neural Network for On-Board Cloud Cover Detection</em>”, Remote Sensing, 12(14), 2357 (2021).</p>
+</li>
+<li>
+<p>Nicolaidis, M. (Ed.): <em>Soft Errors in Modern Electronic Systems</em>, Springer (2011).</p>
+</li>
+</ul>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button type="button" class="md-top md-icon" data-md-component="top" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+Back to top
+</button>
+</main>
+<footer class="md-footer">
+<nav class="md-footer__inner md-grid" aria-label="Footer" >
+<a href="ch09-thermal-control-systems.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: 9. Thermal Control Systems">
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</div>
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Previous
+</span>
+<div class="md-ellipsis">
+9. Thermal Control Systems
+</div>
+</div>
+</a>
+<a href="ch11-telemetry-tracking-and-command-systems.html" class="md-footer__link md-footer__link--next" aria-label="Next: 11. Telemetry, Tracking and Command Systems">
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Next
+</span>
+<div class="md-ellipsis">
+11. Telemetry, Tracking and Command Systems
+</div>
+</div>
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+</div>
+</a>
+</nav>
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+The Open Book Project &middot;
+<a href="../../about.html">About this library</a> &middot;
+<a href="../../publish.html">Publish your book</a> &middot;
+© The authors of the books
+</div>
+Made with
+<a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+Material for MkDocs
+</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "navigation.prune", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "toc.follow", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+<script src="../../assets/mathjax.js"></script>
+<script src="../../assets/viz.js"></script>
+<script src="../../assets/remote.js"></script>
+<script src="../../assets/scans.js"></script>
+<script src="../../assets/reader.js"></script>
+<script src="../../assets/app.js"></script>
+<script src="../../assets/slides.js"></script>
+<script src="../../assets/speak.js"></script>
+<script src="../../assets/quiz.js"></script>
+<script>
+    /* offline reading: the service worker at the site root (its scope is the whole site) */
+    if ("serviceWorker" in navigator && window.isSecureContext) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register(new URL("../../sw.js", location.href).href).catch(function () {});
+      });
+    }
+  </script>
+</body>
+</html>

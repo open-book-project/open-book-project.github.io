@@ -1,0 +1,1531 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="description" content="The Open Book Project: books on computer science, quantum computing, cyber security, science, the social sciences, university courses and languages, read page by page like an e-book, online or offline.">
+<meta name="author" content="The Open Book Project">
+<link rel="canonical" href="https://open-book-project.github.io/engineering/satellite_technology/ch05-satellite-architecture-and-systems-engineering.html">
+<link rel="prev" href="ch04-launch-systems-and-mission-design.html">
+<link rel="next" href="ch06-satellite-electrical-power-systems.html">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap"></noscript>
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Open Book">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="application-name" content="Open Book"><script src="../../assets/library-data.js"></script><script>
+    (function () {
+      var X = window.XMLHttpRequest, open, gate = new Promise(function (r) { open = r; });
+      if (!X) return;
+      var open0 = X.prototype.open, send0 = X.prototype.send;
+      X.prototype.open = function (method, url) {
+        this.__pkIndex = /\/search\/search_index\.json(\?|#|$)/.test(String(url));
+        return open0.apply(this, arguments);
+      };
+      X.prototype.send = function () {
+        if (!this.__pkIndex) return send0.apply(this, arguments);
+        var xhr = this, args = arguments;
+        gate.then(function () { send0.apply(xhr, args); });
+      };
+      function wake() { open(); }
+      document.addEventListener("focusin", function (e) { if (e.target && e.target.closest && e.target.closest(".md-search")) wake(); });
+      document.addEventListener("click", function (e) { if (e.target && e.target.closest && e.target.closest('label[for="__search"], .md-search')) wake(); }, true);
+      document.addEventListener("keydown", function (e) {
+        var k = e.key;
+        if ((k === "/" || k === "s" || k === "f" || k === "S" || k === "F") && !(e.target && e.target.closest && e.target.closest("input, textarea, [contenteditable]"))) wake();
+      }, true);
+      if (/[?&]q=/.test(location.search)) wake();
+    })();
+  </script><script>
+    try {
+      if ((window.matchMedia && (matchMedia("(display-mode: standalone)").matches || matchMedia("(display-mode: fullscreen)").matches)) || navigator.standalone === true) {
+        document.documentElement.className += " bjp-standalone";
+      }
+    } catch (e) { /* not an installed app */ }
+    /* the books of a subject or of the whole library as covers or as a list (assets/app.js): the reader's choice */
+    try {
+      var bv = localStorage.getItem("bjp.view");
+      if (bv === "list" || (bv !== "grid" && /\/books\.html$/.test(location.pathname))) document.documentElement.className += " bjp-view-list";
+    } catch (e) { /* no storage: covers */ }
+  </script>
+<script>
+    /* a book opened from its cover on the shelf: the page stays blank, in the cover's colour, until the reader is up */
+    try {
+      var cv = sessionStorage.getItem("bjp.reader.cover");
+      if (cv && sessionStorage.getItem("bjp.reader.open") === "1") {
+        var c = JSON.parse(cv), de = document.documentElement;
+        de.className += " bjp-booting";
+        if (c && /^#[0-9a-f]{3,8}$/i.test(c.bg || "")) de.style.background = c.bg;
+        setTimeout(function () { de.classList.remove("bjp-booting"); de.style.background = ""; }, 3000);
+      }
+    } catch (e) { /* no session storage: the page simply opens as usual */ }
+  </script>
+<title>5. Satellite Architecture and Systems Engineering - The Open Book Project</title>
+<link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+<link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+<link rel="stylesheet" href="../../assets/extra.css">
+<link rel="stylesheet" href="../../assets/reader.css">
+<link rel="stylesheet" href="../../assets/viz.css">
+<link rel="stylesheet" href="../../assets/app.css">
+<link rel="stylesheet" href="../../assets/theme.css">
+<link rel="stylesheet" href="../../assets/slides.css">
+<link rel="stylesheet" href="../../assets/remote.css">
+<link rel="stylesheet" href="../../assets/scans.css">
+<link rel="stylesheet" href="../../assets/speak.css">
+<link rel="stylesheet" href="../../assets/quiz.css">
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+<input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+<input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a href="#sec-arch_intro" class="md-skip">
+Skip to content
+</a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav class="md-header__inner md-grid" aria-label="Header">
+<a href="../../index.html" title="The Open Book Project" class="md-header__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+The Open Book Project
+</span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+5. Satellite Architecture and Systems Engineering
+</span>
+</div>
+</div>
+</div><a href="../../index.html" class="bjp-libbtn" aria-label="Library: all books" title="Library: all books">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V5h4v15M8 20V9h4v11M14 20L12.6 6l3.8-.8 3 14.2M3 20h18"/></svg><span>Library</span>
+</a>
+<a href="../../subjects/index.html" class="pk-catbtn" aria-haspopup="true" aria-expanded="false" title="Browse the books by category">
+<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><circle cx="17" cy="7" r="3.6"/><path d="M7 13.4l3.9 6.8H3.1z"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg><span>Categories</span>
+</a>
+<form class="md-header__option" data-md-component="palette">
+<input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+<label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+</label>
+<input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+<label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+<label class="md-search__icon md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</label>
+<nav class="md-search__options" aria-label="Search">
+<button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+Initializing search
+</div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--primary bjp-nav bjp-nav--book" aria-label="Navigation" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a href="../../index.html" title="The Open Book Project" class="md-nav__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+The Open Book Project
+</label>
+<ul class="md-nav__list" data-md-scrollfix>
+<li class="md-nav__item bjp-nav-all">
+<a href="../../index.html" class="md-nav__link" aria-label="All books: back to the library">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+<span class="md-ellipsis">All books</span>
+</a>
+</li>
+<li class="md-nav__item bjp-nav-book" role="presentation"><span class="bjp-nav-head">Satellite Technology</span></li>
+<li class="md-nav__item">
+<a href="index.html" class="md-nav__link">
+<span class="md-ellipsis">
+Overview and preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="list-of-abbreviations.html" class="md-nav__link">
+<span class="md-ellipsis">
+List of Abbreviations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch01-introduction-to-satellite-technology.html" class="md-nav__link">
+<span class="md-ellipsis">
+1. Introduction to Satellite Technology
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch02-orbital-mechanics.html" class="md-nav__link">
+<span class="md-ellipsis">
+2. Orbital Mechanics
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch03-the-space-environment.html" class="md-nav__link">
+<span class="md-ellipsis">
+3. The Space Environment
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch04-launch-systems-and-mission-design.html" class="md-nav__link">
+<span class="md-ellipsis">
+4. Launch Systems and Mission Design
+</span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+5. Satellite Architecture and Systems Engineering
+</span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a href="ch05-satellite-architecture-and-systems-engineering.html" class="md-nav__link md-nav__link--active">
+<span class="md-ellipsis">
+5. Satellite Architecture and Systems Engineering
+</span>
+</a>
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#sec-arch_intro" class="md-nav__link">
+<span class="md-ellipsis">
+5.1 Introduction to Satellite Systems Engineering
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-vmodel" class="md-nav__link">
+<span class="md-ellipsis">
+5.2 The Systems Engineering V-Model
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-bus_payload" class="md-nav__link">
+<span class="md-ellipsis">
+5.3 Spacecraft Architecture: Bus and Payload
+</span>
+</a>
+<nav class="md-nav" aria-label="5.3 Spacecraft Architecture: Bus and Payload">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-bus" class="md-nav__link">
+<span class="md-ellipsis">
+5.3.1 The Spacecraft Bus
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-payload" class="md-nav__link">
+<span class="md-ellipsis">
+5.3.2 The Payload
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-mission_phases" class="md-nav__link">
+<span class="md-ellipsis">
+5.4 Mission Phases
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-requirements" class="md-nav__link">
+<span class="md-ellipsis">
+5.5 Requirements Hierarchy and Derivation
+</span>
+</a>
+<nav class="md-nav" aria-label="5.5 Requirements Hierarchy and Derivation">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-mission_req" class="md-nav__link">
+<span class="md-ellipsis">
+5.5.1 Mission Requirements
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-system_req" class="md-nav__link">
+<span class="md-ellipsis">
+5.5.2 System Requirements
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-subsystem_req" class="md-nav__link">
+<span class="md-ellipsis">
+5.5.3 Subsystem Requirements
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-component_req" class="md-nav__link">
+<span class="md-ellipsis">
+5.5.4 Component Requirements
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-mass_budget" class="md-nav__link">
+<span class="md-ellipsis">
+5.6 Spacecraft Mass Budget
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-power_budget" class="md-nav__link">
+<span class="md-ellipsis">
+5.7 Power Budget
+</span>
+</a>
+<nav class="md-nav" aria-label="5.7 Power Budget">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-power_load" class="md-nav__link">
+<span class="md-ellipsis">
+5.7.1 Power Load Analysis
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-eol_power" class="md-nav__link">
+<span class="md-ellipsis">
+5.7.2 End-of-Life Power Generation
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-deltav_budget" class="md-nav__link">
+<span class="md-ellipsis">
+5.7.3 Delta-V Budget
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-data_budget" class="md-nav__link">
+<span class="md-ellipsis">
+5.8 Data Budget
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-fmea" class="md-nav__link">
+<span class="md-ellipsis">
+5.9 Failure Modes, Effects, and Criticality Analysis
+</span>
+</a>
+<nav class="md-nav" aria-label="5.9 Failure Modes, Effects, and Criticality Analysis">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-fmea_method" class="md-nav__link">
+<span class="md-ellipsis">
+5.9.1 FMEA Methodology
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-spf" class="md-nav__link">
+<span class="md-ellipsis">
+5.9.2 Single Point Failures
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-margins" class="md-nav__link">
+<span class="md-ellipsis">
+5.10 Design Margin Policy
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-modes" class="md-nav__link">
+<span class="md-ellipsis">
+5.11 Spacecraft Operating Modes
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-mbse" class="md-nav__link">
+<span class="md-ellipsis">
+5.12 Model-Based Systems Engineering
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-trl" class="md-nav__link">
+<span class="md-ellipsis">
+5.13 Technology Readiness Levels
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-ait" class="md-nav__link">
+<span class="md-ellipsis">
+5.14 Assembly, Integration, and Testing
+</span>
+</a>
+<nav class="md-nav" aria-label="5.14 Assembly, Integration, and Testing">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-cleanroom" class="md-nav__link">
+<span class="md-ellipsis">
+5.14.1 Cleanroom Requirements
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-mass_props" class="md-nav__link">
+<span class="md-ellipsis">
+5.14.2 Mass Properties Measurement
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-env_test" class="md-nav__link">
+<span class="md-ellipsis">
+5.14.3 Environmental Test Campaign
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-arch_summary" class="md-nav__link">
+<span class="md-ellipsis">
+5.15 Summary
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="ch06-satellite-electrical-power-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+6. Satellite Electrical Power Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch07-attitude-determination-and-control-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+7. Attitude Determination and Control Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch08-satellite-propulsion-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+8. Satellite Propulsion Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch09-thermal-control-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+9. Thermal Control Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch10-on-board-data-handling.html" class="md-nav__link">
+<span class="md-ellipsis">
+10. On-Board Data Handling
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch11-telemetry-tracking-and-command-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+11. Telemetry, Tracking and Command Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch12-radio-frequency-satellite-communications.html" class="md-nav__link">
+<span class="md-ellipsis">
+12. Radio Frequency Satellite Communications
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch13-satellite-link-budget-analysis.html" class="md-nav__link">
+<span class="md-ellipsis">
+13. Satellite Link Budget Analysis
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch14-satellite-antenna-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+14. Satellite Antenna Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch15-digital-signal-processing-for-satellites.html" class="md-nav__link">
+<span class="md-ellipsis">
+15. Digital Signal Processing for Satellites
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch16-optical-satellite-communications.html" class="md-nav__link">
+<span class="md-ellipsis">
+16. Optical Satellite Communications
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch17-earth-observation-and-remote-sensing.html" class="md-nav__link">
+<span class="md-ellipsis">
+17. Earth Observation and Remote Sensing
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch18-global-navigation-satellite-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+18. Global Navigation Satellite Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch19-communication-satellites-and-services.html" class="md-nav__link">
+<span class="md-ellipsis">
+19. Communication Satellites and Services
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch20-scientific-satellites-and-space-observatories.html" class="md-nav__link">
+<span class="md-ellipsis">
+20. Scientific Satellites and Space Observatories
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch21-military-and-intelligence-satellites.html" class="md-nav__link">
+<span class="md-ellipsis">
+21. Military and Intelligence Satellites
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch22-ground-station-design-and-networks.html" class="md-nav__link">
+<span class="md-ellipsis">
+22. Ground Station Design and Networks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch23-mission-operations-and-ground-control.html" class="md-nav__link">
+<span class="md-ellipsis">
+23. Mission Operations and Ground Control
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch24-smallsats-cubesats-and-the-new-space-revolution.html" class="md-nav__link">
+<span class="md-ellipsis">
+24. SmallSats, CubeSats, and the New Space Revolution
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch25-mega-constellations-and-leo-broadband-networks.html" class="md-nav__link">
+<span class="md-ellipsis">
+25. Mega-Constellations and LEO Broadband Networks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch26-artificial-intelligence-and-machine-learning-in.html" class="md-nav__link">
+<span class="md-ellipsis">
+26. Artificial Intelligence and Machine Learning in Space
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch27-on-orbit-servicing-and-space-robotics.html" class="md-nav__link">
+<span class="md-ellipsis">
+27. On-Orbit Servicing and Space Robotics
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch28-space-debris-and-long-term-sustainability.html" class="md-nav__link">
+<span class="md-ellipsis">
+28. Space Debris and Long-Term Sustainability
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch29-quantum-communications-and-satellite-qkd.html" class="md-nav__link">
+<span class="md-ellipsis">
+29. Quantum Communications and Satellite QKD
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch30-6g-and-non-terrestrial-networks.html" class="md-nav__link">
+<span class="md-ellipsis">
+30. 6G and Non-Terrestrial Networks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch31-future-concepts-and-emerging-space-technologies.html" class="md-nav__link">
+<span class="md-ellipsis">
+31. Future Concepts and Emerging Space Technologies
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="classical-orbital-elements-and-coordinate.html" class="md-nav__link">
+<span class="md-ellipsis">
+Classical Orbital Elements and Coordinate Transformations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="satellite-frequency-allocations.html" class="md-nav__link">
+<span class="md-ellipsis">
+Satellite Frequency Allocations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="launch-vehicle-specifications.html" class="md-nav__link">
+<span class="md-ellipsis">
+Launch Vehicle Specifications
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="link-budget-templates-and-worked-examples.html" class="md-nav__link">
+<span class="md-ellipsis">
+Link Budget Templates and Worked Examples
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="key-standards-software-tools-and-references.html" class="md-nav__link">
+<span class="md-ellipsis">
+Key Standards, Software Tools, and References
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="bibliography.html" class="md-nav__link">
+<span class="md-ellipsis">
+Bibliography
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#sec-arch_intro" class="md-nav__link">
+<span class="md-ellipsis">
+5.1 Introduction to Satellite Systems Engineering
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-vmodel" class="md-nav__link">
+<span class="md-ellipsis">
+5.2 The Systems Engineering V-Model
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-bus_payload" class="md-nav__link">
+<span class="md-ellipsis">
+5.3 Spacecraft Architecture: Bus and Payload
+</span>
+</a>
+<nav class="md-nav" aria-label="5.3 Spacecraft Architecture: Bus and Payload">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-bus" class="md-nav__link">
+<span class="md-ellipsis">
+5.3.1 The Spacecraft Bus
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-payload" class="md-nav__link">
+<span class="md-ellipsis">
+5.3.2 The Payload
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-mission_phases" class="md-nav__link">
+<span class="md-ellipsis">
+5.4 Mission Phases
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-requirements" class="md-nav__link">
+<span class="md-ellipsis">
+5.5 Requirements Hierarchy and Derivation
+</span>
+</a>
+<nav class="md-nav" aria-label="5.5 Requirements Hierarchy and Derivation">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-mission_req" class="md-nav__link">
+<span class="md-ellipsis">
+5.5.1 Mission Requirements
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-system_req" class="md-nav__link">
+<span class="md-ellipsis">
+5.5.2 System Requirements
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-subsystem_req" class="md-nav__link">
+<span class="md-ellipsis">
+5.5.3 Subsystem Requirements
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-component_req" class="md-nav__link">
+<span class="md-ellipsis">
+5.5.4 Component Requirements
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-mass_budget" class="md-nav__link">
+<span class="md-ellipsis">
+5.6 Spacecraft Mass Budget
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-power_budget" class="md-nav__link">
+<span class="md-ellipsis">
+5.7 Power Budget
+</span>
+</a>
+<nav class="md-nav" aria-label="5.7 Power Budget">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-power_load" class="md-nav__link">
+<span class="md-ellipsis">
+5.7.1 Power Load Analysis
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-eol_power" class="md-nav__link">
+<span class="md-ellipsis">
+5.7.2 End-of-Life Power Generation
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-deltav_budget" class="md-nav__link">
+<span class="md-ellipsis">
+5.7.3 Delta-V Budget
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-data_budget" class="md-nav__link">
+<span class="md-ellipsis">
+5.8 Data Budget
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-fmea" class="md-nav__link">
+<span class="md-ellipsis">
+5.9 Failure Modes, Effects, and Criticality Analysis
+</span>
+</a>
+<nav class="md-nav" aria-label="5.9 Failure Modes, Effects, and Criticality Analysis">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-fmea_method" class="md-nav__link">
+<span class="md-ellipsis">
+5.9.1 FMEA Methodology
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-spf" class="md-nav__link">
+<span class="md-ellipsis">
+5.9.2 Single Point Failures
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-margins" class="md-nav__link">
+<span class="md-ellipsis">
+5.10 Design Margin Policy
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-modes" class="md-nav__link">
+<span class="md-ellipsis">
+5.11 Spacecraft Operating Modes
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-mbse" class="md-nav__link">
+<span class="md-ellipsis">
+5.12 Model-Based Systems Engineering
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-trl" class="md-nav__link">
+<span class="md-ellipsis">
+5.13 Technology Readiness Levels
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-ait" class="md-nav__link">
+<span class="md-ellipsis">
+5.14 Assembly, Integration, and Testing
+</span>
+</a>
+<nav class="md-nav" aria-label="5.14 Assembly, Integration, and Testing">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-cleanroom" class="md-nav__link">
+<span class="md-ellipsis">
+5.14.1 Cleanroom Requirements
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-mass_props" class="md-nav__link">
+<span class="md-ellipsis">
+5.14.2 Mass Properties Measurement
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-env_test" class="md-nav__link">
+<span class="md-ellipsis">
+5.14.3 Environmental Test Campaign
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-arch_summary" class="md-nav__link">
+<span class="md-ellipsis">
+5.15 Summary
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="ch-satellite_architecture">Chapter 5: Satellite Architecture and Systems Engineering<a class="headerlink" href="#ch-satellite_architecture" title="Permanent link">&para;</a></h1>
+<div class="admonition info box-keybox kind-concept">
+<p><strong>Key Concepts in This Chapter</strong></p>
+<ul>
+<li>
+<p>The systems engineering V-model applied to space mission development</p>
+</li>
+<li>
+<p>Spacecraft bus versus payload decomposition and mass/power/data budgets</p>
+</li>
+<li>
+<p>Mission phase definitions from pre-Phase A through Phase F disposal</p>
+</li>
+<li>
+<p>Requirements hierarchy and derivation methodology</p>
+</li>
+<li>
+<p>Reliability analysis using FMEA/FMECA</p>
+</li>
+<li>
+<p>Model-based systems engineering and Technology Readiness Levels</p>
+</li>
+<li>
+<p>Assembly, integration, and testing philosophy and environmental test campaigns</p>
+</li>
+</ul>
+</div>
+<h2 id="sec-arch_intro"><span class="secnum">5.1</span> Introduction to Satellite Systems Engineering<a class="headerlink" href="#sec-arch_intro" title="Permanent link">&para;</a></h2>
+<p>The development of a space system is among the most demanding engineering undertakings in modern technology. Unlike terrestrial products, a satellite once launched cannot be physically serviced, replaced, or repaired under normal circumstances. Every design decision made on the ground will influence mission success for the entire operational lifetime, which for geostationary orbit (GEO) commercial telecommunications satellites now routinely extends to 15 years or more. This irreversibility imposes a discipline on space engineers that pervades every aspect of mission design: a rigorous, structured, and thoroughly documented approach known as <em>systems engineering</em>.</p>
+<p>Systems engineering, as applied to space missions, is not merely a set of administrative processes. It is a holistic methodology for managing complexity, ensuring that all subsystems work together coherently, that requirements are traceable from mission objectives down to individual component specifications, and that every design claim is backed by verified analysis or test evidence. The European Cooperation for Space Standardization (ECSS) and NASA both publish detailed standards that codify systems engineering practice for space, with ECSS-E-ST-10 series and NASA Systems Engineering Handbook (SP-2016-6105) being the primary references.</p>
+<p>This chapter presents the foundational tools and processes of satellite systems engineering: the V-model lifecycle, spacecraft architecture decomposition, budgeting methods, reliability analysis, model-based systems engineering, and the assembly and test philosophy. These concepts apply whether the spacecraft in question is a 3-unit CubeSat developed by a university team in eighteen months or a multi-tonne commercial GEO satellite representing a billion-dollar investment over seven years.</p>
+<h2 id="sec-vmodel"><span class="secnum">5.2</span> The Systems Engineering V-Model<a class="headerlink" href="#sec-vmodel" title="Permanent link">&para;</a></h2>
+<p>The V-model is the canonical lifecycle model for space mission development. It is so named because when depicted graphically, the development flow descends on the left side through successive levels of decomposition and design, reaches the component level at the bottom vertex, and then ascends on the right side through successive levels of integration and verification. At every level on the right side, the verification activities correspond directly to the design activities at the equivalent level on the left.</p>
+<p>The left side of the V encompasses:</p>
+<ol>
+<li>
+<p><strong>Mission Requirements Definition</strong>: The top-level statement of what the mission must accomplish, expressed in terms observable by the customer or user. Examples include “The system shall provide global coverage of tropical precipitation at a revisit time of no more than 3 hours.”</p>
+</li>
+<li>
+<p><strong>System Requirements</strong>: Derived from mission requirements, these specify what the spacecraft system as a whole must do to satisfy the mission needs, without yet prescribing how.</p>
+</li>
+<li>
+<p><strong>Subsystem Requirements</strong>: Each functional subsystem (power, attitude control, propulsion, thermal, communication, on-board data handling, structure) receives a set of allocated requirements derived from the system requirements through a process of functional decomposition and requirements allocation.</p>
+</li>
+<li>
+<p><strong>Equipment/Component Requirements</strong>: The lowest level specifications, applicable to individual units, assemblies, or components.</p>
+</li>
+</ol>
+<p>The right side of the V encompasses the verification activities:</p>
+<ol>
+<li>
+<p><strong>Unit Qualification and Acceptance Testing</strong>: Individual components and assemblies are tested against their specifications, first at qualification levels to demonstrate design margins, and subsequently at acceptance levels for each flight unit.</p>
+</li>
+<li>
+<p><strong>Subsystem Verification</strong>: Assembled subsystems are tested in relevant environments. For example, the propulsion subsystem may be leak-tested and functionally checked before integration into the spacecraft.</p>
+</li>
+<li>
+<p><strong>System Qualification and Acceptance Testing</strong>: The complete spacecraft is subjected to the environmental test campaign described in <a href="#sec-ait">Section 5.14</a>.</p>
+</li>
+<li>
+<p><strong>Mission Verification</strong>: During launch campaign, in-orbit commissioning, and early operations, all mission-level requirements are demonstrated.</p>
+</li>
+</ol>
+<figure class="fig" id="fig-vmodel">
+<figcaption><strong>Figure 5.1.</strong> The systems engineering V-model for space mission development. The left branch represents successive decomposition and design; the right branch represents successive integration and verification. Horizontal dashed lines connect each design level to its corresponding verification activities.</figcaption>
+</figure>
+<p>A critical concept within the V-model is that verification methods must be defined at the same time as requirements. ECSS-E-ST-10-02 specifies four acceptable verification methods: <em>Analysis</em> (mathematical or simulation-based), <em>Test</em> (empirical demonstration), <em>Review of Design</em> (inspection of drawings and procedures), and <em>Similarity</em> (heritage from a previously qualified item). Each requirement must be assigned at least one verification method, and the choice has significant cost and schedule implications.</p>
+<h2 id="sec-bus_payload"><span class="secnum">5.3</span> Spacecraft Architecture: Bus and Payload<a class="headerlink" href="#sec-bus_payload" title="Permanent link">&para;</a></h2>
+<p>A spacecraft is conventionally decomposed into two principal elements: the <em>platform</em> (or bus) and the <em>payload</em>. This distinction reflects the fundamental separation between mission-specific functionality and the supporting infrastructure that enables it to operate in space.</p>
+<h3 id="subsec-bus"><span class="secnum">5.3.1</span> The Spacecraft Bus<a class="headerlink" href="#subsec-bus" title="Permanent link">&para;</a></h3>
+<p>The spacecraft bus comprises all subsystems that are not part of the primary mission instrument or communication payload. The bus provides power generation and storage, attitude control and navigation, thermal regulation, mechanical structure and mechanisms, inter-satellite and ground communications (TT&amp;C), on-board data handling and storage, and propulsion. Each of these is a complex engineering subsystem in its own right.</p>
+<p>Major commercial bus platforms have been developed by the prime spacecraft manufacturers and are used across multiple satellite programs, amortizing development costs and leveraging flight heritage:</p>
+<ul>
+<li>
+<p><strong>Boeing 702</strong>: A modular GEO platform available in 702MP (medium power, up to 18 kW) and 702SP (small platform, all-electric). The 702HP variant accommodates over 25 kW of payload power. Notable satellites include the Intelsat series and SES deployments.</p>
+</li>
+<li>
+<p><strong>Airbus Eurostar 3000</strong>: Europe’s dominant GEO commercial platform, designed for 15+ year lifetime at up to 22 kW. The Neo variant uses an all-electric propulsion option with Hall Effect Thrusters for orbit raising.</p>
+</li>
+<li>
+<p><strong>Thales Alenia Space Spacebus 4000</strong>: French GEO platform offering 10–20 kW power capacity, used for Arabsat, SES, and Telenor satellites.</p>
+</li>
+<li>
+<p><strong>Lockheed Martin A2100</strong>: Modular GEO bus, the most numerous platform in the Lockheed Martin portfolio, with variants serving military (AEHF, SBIRS) and commercial customers.</p>
+</li>
+<li>
+<p><strong>SSTL-300 and SSTL-1500</strong>: Surrey Satellite Technology Ltd LEO platforms optimised for Earth Observation, offering 300 kg and 1500 kg class spacecraft respectively with standardised interfaces.</p>
+</li>
+</ul>
+<h3 id="subsec-payload"><span class="secnum">5.3.2</span> The Payload<a class="headerlink" href="#subsec-payload" title="Permanent link">&para;</a></h3>
+<p>The payload is the mission-specific element. For a telecommunications satellite, the payload is the transponder chain: antennas, low-noise amplifiers, filters, frequency converters, high-power amplifiers (typically TWTAs or SSPAs), and the multiplexing network. For an Earth observation satellite, the payload is the imaging instrument: the telescope optics, focal plane arrays, on-board image processing electronics, and associated calibration devices. For a scientific mission, the payload may be a suite of instruments measuring particle fluxes, electromagnetic fields, or atmospheric composition.</p>
+<p>The payload requirements drive the spacecraft design in a top-down manner. If the science instrument requires the telescope to point at a target with an accuracy of 0.01 arcseconds, this translates directly into stringent attitude control and micro-vibration requirements on the bus. If the payload data rate is 1 Gbps, this flows down to the data handling and downlink subsystem sizing.</p>
+<figure class="fig" id="fig-satellite_block">
+<figcaption><strong>Figure 5.2.</strong> Simplified satellite block diagram showing the principal functional interfaces between the bus subsystems and the payload. The OBDH serves as the central data processing node, while the PCDU manages all power flows.</figcaption>
+</figure>
+<h2 id="sec-mission_phases"><span class="secnum">5.4</span> Mission Phases<a class="headerlink" href="#sec-mission_phases" title="Permanent link">&para;</a></h2>
+<p>The lifecycle of a space mission is divided into phases by both ESA and NASA, with broadly equivalent definitions. The ECSS framework defines seven phases labelled 0 through F:</p>
+<p><strong>Pre-Phase A (Phase 0): Mission Analysis and Needs Identification.</strong> This is the conceptual exploration phase, typically lasting 3–12 months. The objective is to determine whether a mission concept is technically feasible and scientifically or commercially justified. Trade studies are performed at a high level of abstraction. Mission analysis tools are used to size orbits, coverage patterns, and delta-v requirements. Preliminary budgets are developed with large margins (<span class="arithmatex">\(\pm\)</span>50% or more). The deliverable is a Mission Analysis Report and a recommendation to proceed (or not) to Phase A.</p>
+<p><strong>Phase A: Feasibility.</strong> A more detailed feasibility study lasting 6–18 months. Multiple competing concepts may be studied. The key questions are whether the mission can be achieved within the available resources (cost, schedule, technology). The Mission Concept Review (MCR) or System Requirements Review (SRR) gates this phase. TRL requirements are assessed and technology development plans are initiated for any item below TRL 5.</p>
+<p><strong>Phase B: Preliminary Design.</strong> The selected concept is developed to a preliminary design level. All subsystem architectures are defined. Preliminary Design Review (PDR) is the exit gate. Mass, power, and delta-v budgets are tightened to <span class="arithmatex">\(\pm\)</span>20% margins. Key design decisions are made and documented in a System Design Document (SDD). Long-lead items for procurement are identified.</p>
+<p><strong>Phase C: Detailed Design.</strong> Full design detail is developed down to the component level. All drawings, interface control documents (ICDs), and manufacturing specifications are produced. Critical Design Review (CDR) is the exit gate. After CDR, no further design changes are permitted without formal change control. Mass and power budgets are at <span class="arithmatex">\(\pm\)</span>5–10% confidence.</p>
+<p><strong>Phase D: Manufacturing, Assembly, Integration and Test (AIT).</strong> Hardware is procured and manufactured, assembled at unit level, integrated into subsystems, and integrated into the complete spacecraft. The full environmental test campaign (<a href="#sec-ait">Section 5.14</a>) is completed. Flight Acceptance Review (FAR) gates delivery to the launch campaign. Launch Readiness Review (LRR) approves the launch.</p>
+<p><strong>Phase E: Operations.</strong> The mission is launched and operated. This phase includes Launch and Early Orbit Phase (LEOP), in-orbit commissioning, and routine operations. Mission performance is monitored against requirements. Anomaly resolution activities are conducted as needed.</p>
+<p><strong>Phase F: Disposal.</strong> At end of life, the spacecraft is deorbited (LEO) or moved to a graveyard orbit (GEO) in accordance with inter-agency debris mitigation guidelines. Propellant tanks are vented and batteries are passivated to prevent accidental fragmentation.</p>
+<h2 id="sec-requirements"><span class="secnum">5.5</span> Requirements Hierarchy and Derivation<a class="headerlink" href="#sec-requirements" title="Permanent link">&para;</a></h2>
+<p>The requirements hierarchy is the formal structure that connects the mission objectives to the lowest-level component specifications. Each level of the hierarchy must satisfy the level above it, and derivation of lower-level requirements from higher-level ones must be traceable, justified, and documented.</p>
+<h3 id="subsec-mission_req"><span class="secnum">5.5.1</span> Mission Requirements<a class="headerlink" href="#subsec-mission_req" title="Permanent link">&para;</a></h3>
+<p>Mission requirements are expressed from the perspective of the mission stakeholder (customer, science community, operational agency) and describe what the mission must achieve, not how. They are typically expressed in terms of mission-level observables: coverage, resolution, revisit time, data latency, link availability, capacity, accuracy. A mission requirement for an Earth observation mission might read: “<em>The system shall image any point on the Earth’s surface between latitudes 60N and 60S with a ground sample distance of 1 m or better at least once every 24 hours.</em>”</p>
+<h3 id="subsec-system_req"><span class="secnum">5.5.2</span> System Requirements<a class="headerlink" href="#subsec-system_req" title="Permanent link">&para;</a></h3>
+<p>System requirements are derived from mission requirements by identifying the physical and functional characteristics that the complete spacecraft system must possess to meet those mission needs. The derivation process involves analysis, simulation, and trade studies. The 1 m GSD, 24-hour revisit example above leads directly to orbit selection (sun-synchronous LEO at 500–600 km, driving specific altitude and inclination constraints), instrument aperture sizing (at least 0.5 m primary mirror for 1 m GSD at 500 km), and swath width/agility requirements (number of imaging opportunities per day needed to achieve 24-hour revisit at any point on Earth).</p>
+<h3 id="subsec-subsystem_req"><span class="secnum">5.5.3</span> Subsystem Requirements<a class="headerlink" href="#subsec-subsystem_req" title="Permanent link">&para;</a></h3>
+<p>Subsystem requirements are the allocations from system level to each functional subsystem. Requirements allocation must be self-consistent: the sum of allocations must not exceed what the system-level budgets provide. A power budget allocating 100 W to the payload must leave sufficient margin when summed with all other subsystem allocations. Mechanical interface requirements (envelope, mass, centre of mass location, first-mode frequency) are derived from launch vehicle interface requirements and spacecraft structural analysis.</p>
+<h3 id="subsec-component_req"><span class="secnum">5.5.4</span> Component Requirements<a class="headerlink" href="#subsec-component_req" title="Permanent link">&para;</a></h3>
+<p>Component requirements specify the performance, environmental robustness, reliability, and interface characteristics of individual procurement items. They are the inputs to supplier statements of work. Critical components such as processors, memory devices, power semiconductors, and precision optical elements have radiation tolerance requirements derived from the orbit radiation environment analysis.</p>
+<h2 id="sec-mass_budget"><span class="secnum">5.6</span> Spacecraft Mass Budget<a class="headerlink" href="#sec-mass_budget" title="Permanent link">&para;</a></h2>
+<p>The mass budget is one of the most fundamental engineering control documents for a spacecraft program. Launch vehicle capability is a fixed constraint; the total wet mass (including propellant) of the spacecraft must not exceed the available launch mass at the specified orbit injection point. Mass budgets must be maintained throughout the program with associated confidence levels and margins.</p>
+<p>Typical mass allocations as fractions of dry spacecraft mass are shown in <a href="#tab-mass_budget">Table 5.1</a>. These ranges reflect the diversity of spacecraft designs, from lightweight remote sensing satellites with modest power needs to high-power telecommunications platforms with large deployable solar arrays.</p>
+<div class="tbl" id="tab-mass_budget">
+<div class="tbl-caption"><strong>Table 5.1.</strong> Typical spacecraft subsystem mass allocations as percentage of total dry mass for three representative mission classes.</div>
+<div class="tbl-scroll">
+<table>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Subsystem</strong></td>
+<td style="text-align: center;"><strong>Typical Range (%)</strong></td>
+<td style="text-align: center;"><strong>500 kg GEO</strong></td>
+<td style="text-align: center;"><strong>100 kg LEO EO</strong></td>
+<td style="text-align: center;"><strong>3U CubeSat</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"><strong>(kg)</strong></td>
+<td style="text-align: center;"><strong>(kg)</strong></td>
+<td style="text-align: center;"><strong>(kg)</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;">Structure</td>
+<td style="text-align: center;">15–25</td>
+<td style="text-align: center;">100</td>
+<td style="text-align: center;">20</td>
+<td style="text-align: center;">0.30</td>
+</tr>
+<tr>
+<td style="text-align: left;">Propulsion (dry)</td>
+<td style="text-align: center;">5–20</td>
+<td style="text-align: center;">60</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">0.05</td>
+</tr>
+<tr>
+<td style="text-align: left;">Power (arrays+PCDU)</td>
+<td style="text-align: center;">15–25</td>
+<td style="text-align: center;">90</td>
+<td style="text-align: center;">18</td>
+<td style="text-align: center;">0.25</td>
+</tr>
+<tr>
+<td style="text-align: left;">Thermal</td>
+<td style="text-align: center;">2–5</td>
+<td style="text-align: center;">20</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">0.05</td>
+</tr>
+<tr>
+<td style="text-align: left;">ADCS</td>
+<td style="text-align: center;">5–10</td>
+<td style="text-align: center;">40</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">0.15</td>
+</tr>
+<tr>
+<td style="text-align: left;">TT&amp;C</td>
+<td style="text-align: center;">2–5</td>
+<td style="text-align: center;">15</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">0.10</td>
+</tr>
+<tr>
+<td style="text-align: left;">OBDH</td>
+<td style="text-align: center;">2–3</td>
+<td style="text-align: center;">10</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">0.10</td>
+</tr>
+<tr>
+<td style="text-align: left;">Harness</td>
+<td style="text-align: center;">3–5</td>
+<td style="text-align: center;">20</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">0.05</td>
+</tr>
+<tr>
+<td style="text-align: left;">Payload</td>
+<td style="text-align: center;">20–40</td>
+<td style="text-align: center;">120</td>
+<td style="text-align: center;">30</td>
+<td style="text-align: center;">0.70</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Dry Mass Total</strong></td>
+<td style="text-align: center;">–</td>
+<td style="text-align: center;"><strong>475</strong></td>
+<td style="text-align: center;"><strong>94</strong></td>
+<td style="text-align: center;"><strong>1.75</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;">System Margin (15–20%)</td>
+<td style="text-align: center;">–</td>
+<td style="text-align: center;">25</td>
+<td style="text-align: center;">6</td>
+<td style="text-align: center;">0.25</td>
+</tr>
+<tr>
+<td style="text-align: left;">Propellant</td>
+<td style="text-align: center;">–</td>
+<td style="text-align: center;">–</td>
+<td style="text-align: center;">–</td>
+<td style="text-align: center;">–</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Total Wet Mass</strong></td>
+<td style="text-align: center;">–</td>
+<td style="text-align: center;"><strong>500+prop</strong></td>
+<td style="text-align: center;"><strong>100+prop</strong></td>
+<td style="text-align: center;"><strong>2.00+prop</strong></td>
+</tr>
+</tbody>
+</table>
+</div></div>
+<p>The ECSS standard ECSS-E-ST-10-02 specifies that system-level mass margin (also called <em>system margin</em> or <em>design maturity margin</em>) shall be applied on top of all subsystem mass estimates. The margin level depends on the maturity of the design: at system requirements review the margin is typically 20%, reducing to 10% by CDR, and to 5% for the flight model at delivery.</p>
+<h2 id="sec-power_budget"><span class="secnum">5.7</span> Power Budget<a class="headerlink" href="#sec-power_budget" title="Permanent link">&para;</a></h2>
+<p>The power budget establishes that the electrical power generation capacity of the spacecraft exceeds the total power demand at all times during the mission, including the most demanding operational scenarios and end-of-life conditions.</p>
+<h3 id="subsec-power_load"><span class="secnum">5.7.1</span> Power Load Analysis<a class="headerlink" href="#subsec-power_load" title="Permanent link">&para;</a></h3>
+<p>Power loads are compiled from the peak and average power consumption of every electrical unit on the spacecraft. Three operational modes are typically analysed:</p>
+<ul>
+<li>
+<p><strong>Sunlight nominal</strong>: All subsystems operating in their nominal configuration, solar arrays generating power, batteries on float charge.</p>
+</li>
+<li>
+<p><strong>Eclipse</strong>: Solar arrays offline, batteries supplying all loads. Power management may reduce non-essential loads.</p>
+</li>
+<li>
+<p><strong>Peak</strong>: Brief periods of high power demand, such as during orbit manoeuvres or high-duty-cycle payload operation.</p>
+</li>
+</ul>
+<h3 id="subsec-eol_power"><span class="secnum">5.7.2</span> End-of-Life Power Generation<a class="headerlink" href="#subsec-eol_power" title="Permanent link">&para;</a></h3>
+<p>Solar array power output degrades over the mission lifetime due to radiation damage, UV darkening of the coverglass adhesive, and micro-meteoroid impacts. The beginning-of-life (BOL) and end-of-life (EOL) array power outputs are related by:</p>
+<div id="eq-eol_power"></div>
+<div class="arithmatex">\[P_{\mathrm{EOL}} = P_{\mathrm{BOL}} \times \mathrm{RF} \times \cos(\theta)\tag{5.1}\]</div>
+<p>where RF is the remaining factor accounting for all degradation mechanisms, and <span class="arithmatex">\(\theta\)</span> is the sun angle incidence (off-normal) at worst case. For a typical triple-junction GaAs array in GEO over 15 years, RF is approximately 0.77–0.82.</p>
+<p>A design margin of at least 20% on the EOL power generation is typically required by ECSS, meaning the array must generate 120% of the required load at EOL under worst-case sun angle.</p>
+<h3 id="subsec-deltav_budget"><span class="secnum">5.7.3</span> Delta-V Budget<a class="headerlink" href="#subsec-deltav_budget" title="Permanent link">&para;</a></h3>
+<p>The delta-v (<span class="arithmatex">\(\Delta v\)</span>) budget quantifies the total propulsive manoeuvre capability the spacecraft must provide. Using the Tsiolkovsky rocket equation, the required propellant mass is:</p>
+<div id="eq-tsiolkovsky_ch05"></div>
+<div class="arithmatex">\[m_{\mathrm{prop}} = m_f \left( e^{\Delta v / (I_{sp} \cdot g_0)} - 1 \right)\tag{5.2}\]</div>
+<p>where <span class="arithmatex">\(m_f\)</span> is the final (dry + residual propellant) mass, <span class="arithmatex">\(I_{sp}\)</span> is the specific impulse of the propulsion system, and <span class="arithmatex">\(g_0 = 9.80665\)</span> m/s<span class="arithmatex">\(^2\)</span> is the standard gravitational acceleration.</p>
+<p>A representative delta-v budget for a GEO telecommunications satellite is:</p>
+<div class="tbl" id="tab-deltav_budget">
+<div class="tbl-caption"><strong>Table 5.2.</strong> Representative delta-v budget for a GEO telecommunications satellite (15-year mission).</div>
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Manoeuvre</strong></th>
+<th style="text-align: center;"><strong><span class="math inline">\(\Delta v\)</span> (m/s)</strong></th>
+<th style="text-align: center;"><strong>Notes</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">GTO to GEO apogee raise</td>
+<td style="text-align: center;">1500</td>
+<td style="text-align: center;">Apogee kick motor or EP orbit raising</td>
+</tr>
+<tr>
+<td style="text-align: left;">North-south station keeping</td>
+<td style="text-align: center;">750</td>
+<td style="text-align: center;">50 m/s/year <span class="math inline">\(\times\)</span> 15 years</td>
+</tr>
+<tr>
+<td style="text-align: left;">East-west station keeping</td>
+<td style="text-align: center;">30</td>
+<td style="text-align: center;">2 m/s/year <span class="math inline">\(\times\)</span> 15 years</td>
+</tr>
+<tr>
+<td style="text-align: left;">Attitude control (angular momentum dump)</td>
+<td style="text-align: center;">30</td>
+<td style="text-align: center;">Thruster desaturation</td>
+</tr>
+<tr>
+<td style="text-align: left;">Orbit maintenance (eccentricity control)</td>
+<td style="text-align: center;">10</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">End-of-life disposal (to graveyard)</td>
+<td style="text-align: center;">11</td>
+<td style="text-align: center;">300 km above GEO</td>
+</tr>
+<tr>
+<td style="text-align: left;">Subtotal</td>
+<td style="text-align: center;">2331</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">Contingency (5%)</td>
+<td style="text-align: center;">117</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Total</strong></td>
+<td style="text-align: center;"><strong>2448</strong></td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
+</div></div>
+<p>North-south station keeping dominates GEO propellant consumption because of the luni-solar perturbations that cause orbital inclination drift. A GEO spacecraft that does not perform north-south station keeping will accumulate inclination at approximately 0.75/year, causing the sub-satellite point to trace a figure-eight pattern (analemma) that degrades antenna pointing from fixed Earth terminals.</p>
+<h2 id="sec-data_budget"><span class="secnum">5.8</span> Data Budget<a class="headerlink" href="#sec-data_budget" title="Permanent link">&para;</a></h2>
+<p>The data budget ensures that the spacecraft can acquire, store, process, and downlink the volume of data generated by the payload within the constraints of the mission design. For an Earth observation mission, the key parameters are:</p>
+<div id="eq-data_volume"></div>
+<div class="arithmatex">\[V_{\mathrm{daily}} = R_{\mathrm{payload}} \times t_{\mathrm{imaging}} \times \eta_{\mathrm{compression}}\tag{5.3}\]</div>
+<p>where <span class="arithmatex">\(R_{\mathrm{payload}}\)</span> is the raw data rate of the instrument in bits per second, <span class="arithmatex">\(t_{\mathrm{imaging}}\)</span> is the daily imaging time, and <span class="arithmatex">\(\eta_{\mathrm{compression}}\)</span> is the compression ratio applied by on-board processing. The resulting daily data volume must be downlinked within the available contact time, which depends on the ground station network geometry and link budget. For LEO satellites, typical X-band downlink rates of 300–800 Mbps and 2–4 contact passes per day of 5–10 minutes each provide downlink capacities of 100–300 Gbits per day.</p>
+<h2 id="sec-fmea"><span class="secnum">5.9</span> Failure Modes, Effects, and Criticality Analysis<a class="headerlink" href="#sec-fmea" title="Permanent link">&para;</a></h2>
+<p>Failure Modes, Effects, and Criticality Analysis (FMEA/FMECA) is the systematic methodology for identifying how individual component failures propagate through the spacecraft system, and for assessing the severity (criticality) of the resulting mission impact. It is a required activity for space missions under both ECSS and NASA standards.</p>
+<h3 id="subsec-fmea_method"><span class="secnum">5.9.1</span> FMEA Methodology<a class="headerlink" href="#subsec-fmea_method" title="Permanent link">&para;</a></h3>
+<p>For each identifiable failure mode of each component or unit, the FMEA documents:</p>
+<ol>
+<li>
+<p><strong>Failure mode</strong>: The specific way in which the item fails (e.g., open circuit, short circuit, mechanical seizure, sensor drift).</p>
+</li>
+<li>
+<p><strong>Failure cause</strong>: The physical mechanism that leads to the failure mode (e.g., electromigration, fatigue crack, radiation single event latch-up).</p>
+</li>
+<li>
+<p><strong>Local effect</strong>: What happens at the failing component level.</p>
+</li>
+<li>
+<p><strong>Next higher level effect</strong>: The consequence at the subsystem level.</p>
+</li>
+<li>
+<p><strong>End effect</strong>: The consequence at the mission/spacecraft level.</p>
+</li>
+<li>
+<p><strong>Detection method</strong>: How the failure can be detected by telemetry or built-in test.</p>
+</li>
+<li>
+<p><strong>Compensating provisions</strong>: Redundancy, workarounds, or operational mitigations.</p>
+</li>
+<li>
+<p><strong>Criticality category</strong>: Typically Category I (catastrophic/loss of mission), Category II (critical/major mission degradation), Category III (marginal), Category IV (minor).</p>
+</li>
+</ol>
+<h3 id="subsec-spf"><span class="secnum">5.9.2</span> Single Point Failures<a class="headerlink" href="#subsec-spf" title="Permanent link">&para;</a></h3>
+<p>A single point failure (SPF) is a failure mode that, if it occurs, directly causes a Category I or II outcome without any redundancy providing relief. The goal of reliability design is to eliminate or contain SPFs. For space missions, ECSS requires that all Category I SPFs be identified, and that either design redundancy eliminates them or the program formally accepts the risk with appropriate justification.</p>
+<p>Criticality number (CN) in FMECA is computed as: <span id="eq-criticality"></span></p>
+<div class="arithmatex">\[\mathrm{CN}_{ij} = \beta_{ij} \times \alpha_j \times \lambda_p \times t\tag{5.4}\]</div>
+<p>where <span class="arithmatex">\(\beta_{ij}\)</span> is the conditional probability that the failure mode causes the end effect, <span class="arithmatex">\(\alpha_j\)</span> is the failure mode ratio (fraction of item failure rate attributable to this mode), <span class="arithmatex">\(\lambda_p\)</span> is the part failure rate (per hour), and <span class="arithmatex">\(t\)</span> is the mission duration in hours.</p>
+<h2 id="sec-margins"><span class="secnum">5.10</span> Design Margin Policy<a class="headerlink" href="#sec-margins" title="Permanent link">&para;</a></h2>
+<p>Design margins are the quantified safety buffers between the design capability and the predicted extreme conditions the spacecraft will experience. They are required by ECSS-E-ST-10-02 at all levels of the design hierarchy. Key margin policies include:</p>
+<ul>
+<li>
+<p><strong>Structure</strong>: Factor of Safety (FoS) of 1.25 on yield strength and 1.5 on ultimate strength for metallic structures. Composite structures typically carry higher factors due to greater statistical variability.</p>
+</li>
+<li>
+<p><strong>Power</strong>: Beginning-of-life solar array power shall exceed the maximum load by at least 20%. EOL array power shall meet load requirements with 5% margin.</p>
+</li>
+<li>
+<p><strong>Link budget</strong>: Telecommunications links shall include a minimum margin of 3 dB above the required carrier-to-noise ratio.</p>
+</li>
+<li>
+<p><strong>Thermal</strong>: Component temperatures shall remain within qualification limits with a margin of at least 5–10C.</p>
+</li>
+<li>
+<p><strong>Data storage</strong>: On-board mass memory shall provide at least 20% more capacity than the maximum expected data volume.</p>
+</li>
+<li>
+<p><strong>Delta-v</strong>: Propellant budget shall include a system margin of 5–10% on top of all identified manoeuvre requirements.</p>
+</li>
+</ul>
+<h2 id="sec-modes"><span class="secnum">5.11</span> Spacecraft Operating Modes<a class="headerlink" href="#sec-modes" title="Permanent link">&para;</a></h2>
+<p>Modern spacecraft are designed with a hierarchy of operating modes that provide graceful degradation in the event of anomalies. The mode hierarchy is typically managed by the On-Board Software (OBSW) and defined in the spacecraft’s Functional Requirements Document:</p>
+<p><strong>Launch and Early Orbit Phase (LEOP) Mode</strong>: The spacecraft is in this mode from separation from the launcher to completion of solar array deployment and initial attitude acquisition. The spacecraft is in a power-constrained, body-stabilised or spinning configuration. Only essential systems are active.</p>
+<p><strong>Safe Mode</strong>: An autonomous on-board protection mode triggered by critical anomalies such as under-voltage, thermal over-limit, or loss of ground contact for an extended period. In safe mode, the spacecraft enters a Sun-pointing or minimum-power attitude, sheds non-essential loads, and waits for ground intervention. Safe mode software is held in non-volatile protected memory and is itself protected against software corruption.</p>
+<p><strong>Survival Mode</strong>: The most power-constrained mode, triggered by extremely low battery state of charge. Only the on-board computer, receiver, and essential heaters remain powered. This mode ensures the spacecraft survives worst-case eclipse or contingency situations.</p>
+<p><strong>Nominal Operational Mode</strong>: The spacecraft is in its designed operational configuration, with payload active, all subsystems in their intended states, and ground operations following routine procedures.</p>
+<p><strong>Manoeuvre Mode</strong>: During orbit correction or station-keeping manoeuvres, the spacecraft transitions to a dedicated attitude and power mode that accommodates thruster operations. Star trackers may be excluded from use during thruster burns due to plume contamination risk.</p>
+<h2 id="sec-mbse"><span class="secnum">5.12</span> Model-Based Systems Engineering<a class="headerlink" href="#sec-mbse" title="Permanent link">&para;</a></h2>
+<p>Model-Based Systems Engineering (MBSE) represents the transition from document-centric to model-centric development. Rather than maintaining consistency across dozens of separate Word documents and Excel spreadsheets, MBSE uses a formal system model as the authoritative source of truth for requirements, architecture, interfaces, and verification status.</p>
+<p>The primary modelling language for MBSE in space applications is SysML (Systems Modelling Language), which provides standardised diagram types:</p>
+<ul>
+<li>
+<p><strong>Block Definition Diagrams (BDD)</strong>: Define the hierarchical decomposition of the system into subsystems, assemblies, and components.</p>
+</li>
+<li>
+<p><strong>Internal Block Diagrams (IBD)</strong>: Show the internal structure of a block and its interconnections, including power, data, and mechanical interfaces.</p>
+</li>
+<li>
+<p><strong>Requirements Diagrams</strong>: Capture requirements as model elements with formal derivation and verification links.</p>
+</li>
+<li>
+<p><strong>Activity Diagrams</strong>: Describe functional behaviours and operational scenarios.</p>
+</li>
+<li>
+<p><strong>Parametric Diagrams</strong>: Encode quantitative constraints and enable model-based trade studies through parameter binding.</p>
+</li>
+</ul>
+<p>Tools commonly used in space MBSE practice include Cameo Systems Modeler (formerly MagicDraw) for SysML modelling, IBM DOORS (Dynamic Object-Oriented Requirements System) for requirements management, STK (Systems Tool Kit) for orbital analysis, and MATLAB/Simulink for simulation-based verification.</p>
+<p>The key advantage of MBSE is consistency maintenance: a change to a requirement automatically propagates to all linked design elements and verification items, eliminating the common problem of “requirements drift” where documents become inconsistent over time.</p>
+<h2 id="sec-trl"><span class="secnum">5.13</span> Technology Readiness Levels<a class="headerlink" href="#sec-trl" title="Permanent link">&para;</a></h2>
+<p>Technology Readiness Level (TRL) is a standardised scale, originally developed by NASA, for assessing the maturity of a technology or engineering development. The ESA adaptation used in European space programs assigns TRL values from 1 (lowest, basic principles observed) to 9 (highest, actual system qualified through successful mission operations):</p>
+<div class="tbl" id="tab-trl">
+<div class="tbl-caption"><strong>Table 5.3.</strong> Technology Readiness Level (TRL) definitions as applied in space mission development.</div>
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: center;"><strong>TRL</strong></th>
+<th style="text-align: left;"><strong>Definition</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: left;">Basic principles observed and reported</td>
+</tr>
+<tr>
+<td style="text-align: center;">2</td>
+<td style="text-align: left;">Technology concept and/or application formulated</td>
+</tr>
+<tr>
+<td style="text-align: center;">3</td>
+<td style="text-align: left;">Analytical and experimental critical function or characteristic proof of concept</td>
+</tr>
+<tr>
+<td style="text-align: center;">4</td>
+<td style="text-align: left;">Component and/or breadboard validation in laboratory environment</td>
+</tr>
+<tr>
+<td style="text-align: center;">5</td>
+<td style="text-align: left;">Component and/or breadboard validation in relevant environment</td>
+</tr>
+<tr>
+<td style="text-align: center;">6</td>
+<td style="text-align: left;">Model or prototype demonstration in relevant environment (ground or space)</td>
+</tr>
+<tr>
+<td style="text-align: center;">7</td>
+<td style="text-align: left;">System prototype demonstration in space environment</td>
+</tr>
+<tr>
+<td style="text-align: center;">8</td>
+<td style="text-align: left;">Actual system completed and flight qualified through test and demonstration</td>
+</tr>
+<tr>
+<td style="text-align: center;">9</td>
+<td style="text-align: left;">Actual system proven through successful mission operations</td>
+</tr>
+</tbody>
+</table>
+</div></div>
+<p>Space mission programs typically require that all technologies used in flight equipment achieve TRL 6 by the time of Preliminary Design Review (PDR) and TRL 7 by Critical Design Review (CDR). Technology development programs (TDPs) are initiated early in the mission lifecycle to mature critical technologies from lower TRL levels. The use of below-TRL technologies is a major risk driver and cost/schedule risk for space programs.</p>
+<h2 id="sec-ait"><span class="secnum">5.14</span> Assembly, Integration, and Testing<a class="headerlink" href="#sec-ait" title="Permanent link">&para;</a></h2>
+<p>The AIT phase (Phase D) is where the spacecraft hardware comes together and is subjected to a rigorous campaign of functional and environmental testing to demonstrate fitness for flight. AIT philosophy distinguishes between:</p>
+<ul>
+<li>
+<p><strong>Qualification testing</strong>: Demonstrates that the design withstands conditions exceeding the mission environment by defined margins (qualification levels). Performed on qualification models (QM) or on the first of a series (proto-flight model, PFM) to a qualification test level.</p>
+</li>
+<li>
+<p><strong>Acceptance testing</strong>: Demonstrates that each individual flight unit is free of workmanship defects. Performed at lower levels (acceptance levels, typically equal to the mission qualification level with reduced test duration).</p>
+</li>
+</ul>
+<h3 id="subsec-cleanroom"><span class="secnum">5.14.1</span> Cleanroom Requirements<a class="headerlink" href="#subsec-cleanroom" title="Permanent link">&para;</a></h3>
+<p>Spacecraft integration is performed in a cleanroom environment to protect sensitive optical surfaces, connectors, and mechanical interfaces from particulate contamination. The cleanliness level is specified according to ISO 14644-1:</p>
+<ul>
+<li>
+<p><strong>ISO Class 7</strong> (formerly Class 10,000): Maximum <span class="arithmatex">\(352,000\)</span> particles/m<span class="arithmatex">\(^3\)</span> of <span class="arithmatex">\(\geq 0.5~\mu\)</span>m. Suitable for spacecraft integration, antenna assembly, and general AIT activities.</p>
+</li>
+<li>
+<p><strong>ISO Class 6</strong> or better: Required for focal plane array installation, laser optics assembly, and contamination-critical mirror surfaces.</p>
+</li>
+</ul>
+<p>Electrostatic Discharge (ESD) protection is equally critical. All personnel working with spacecraft electronics must wear grounded wrist straps or ESD-safe footwear, and all work surfaces, tools, and storage containers must be ESD-safe. Single-event latch-up susceptible devices and sensitive CMOS components are particularly vulnerable to ESD damage, which may cause latent failures not detectable until the component is in orbit.</p>
+<h3 id="subsec-mass_props"><span class="secnum">5.14.2</span> Mass Properties Measurement<a class="headerlink" href="#subsec-mass_props" title="Permanent link">&para;</a></h3>
+<p>Before and after integration, the spacecraft mass properties (total mass, centre of mass location, and moments of inertia tensor) are measured using precision weighing, CG measurement, and bifilar/trifilar suspension pendulum methods. Mass properties data are inputs to launch vehicle separation analysis and to the spacecraft’s attitude control system design. Typical measurement accuracy requirements are:</p>
+<ul>
+<li>
+<p>Mass: <span class="arithmatex">\(\pm 0.1\%\)</span></p>
+</li>
+<li>
+<p>Centre of mass: <span class="arithmatex">\(\pm 1\)</span> mm per axis</p>
+</li>
+<li>
+<p>Moments of inertia: <span class="arithmatex">\(\pm 2\%\)</span></p>
+</li>
+</ul>
+<h3 id="subsec-env_test"><span class="secnum">5.14.3</span> Environmental Test Campaign<a class="headerlink" href="#subsec-env_test" title="Permanent link">&para;</a></h3>
+<p>The environmental test campaign demonstrates that the spacecraft survives the launch environment and functions correctly in the space thermal/vacuum environment:</p>
+<p><strong>Sinusoidal Vibration</strong>: Simulates the quasi-static and low-frequency dynamic loads during launch. The spacecraft is swept from 5 to 100 Hz at a specified acceleration level (typically 0.5–1.0 g for low-frequency sweep) in each of the three orthogonal axes. Notching at structural resonances is applied based on interface force limits agreed with the launch vehicle authority.</p>
+<p><strong>Random Vibration</strong>: Simulates the broadband excitation from launch acoustic and aerodynamic loads, particularly during transonic and maximum dynamic pressure phases. Specified as a Power Spectral Density (PSD) in g<span class="arithmatex">\(^2\)</span>/Hz over the 20–2000 Hz range. Typical qualification levels are 6–10 dB above the predicted flight environment.</p>
+<p><strong>Acoustic Testing</strong>: Large spacecraft for which acoustic excitation dominates over direct mechanical excitation are tested in an acoustic chamber (reverberant facility). Sound pressure levels of 130–145 dB at qualification level are typical for medium to large spacecraft.</p>
+<p><strong>Shock Testing</strong>: Simulates the pyrotechnic shock generated by stage separation, fairing jettison, appendage deployment, and spacecraft separation events. Shock Response Spectra (SRS) of 1000–3000 g at high frequencies (<span class="arithmatex">\(&gt; 1\)</span> kHz) are typical. Shock levels attenuate rapidly with distance from the pyrotechnic device, so sensitive components are mounted away from shock sources.</p>
+<p><strong>Thermal Vacuum (TV) Testing</strong>: The spacecraft is placed in a large vacuum chamber (pressure <span class="arithmatex">\(\leq 10^{-5}\)</span> mbar) and thermally cycled between hot and cold operational limits (typically <span class="arithmatex">\(-30\degree{}\)</span>C to <span class="arithmatex">\(+70\degree{}\)</span>C for non-extreme cases) while fully functional. TV testing reveals workmanship defects such as cold solder joints, connector fretting, and adhesive outgassing that are not detectable in ambient conditions. Thermal balance testing during the same campaign validates the thermal mathematical model.</p>
+<p><strong>Electromagnetic Compatibility (EMC)</strong>: Conducted and radiated emissions from the spacecraft are measured and compared against limits. Conducted and radiated susceptibility to external fields is tested. EMC testing ensures the spacecraft does not interfere with its own subsystems or with the launch vehicle avionics, and verifies immunity to radio frequency interference (RFI) in the operational environment.</p>
+<h2 id="sec-arch_summary"><span class="secnum">5.15</span> Summary<a class="headerlink" href="#sec-arch_summary" title="Permanent link">&para;</a></h2>
+<p>This chapter has presented the foundational framework of satellite systems engineering. The V-model provides the lifecycle structure within which requirements flow down from mission objectives to component specifications, and verification evidence flows back up to close requirements at each level. The bus/payload decomposition, combined with rigorous mass, power, delta-v, and data budgets, gives the systems engineer the tools to allocate resources across subsystems in a controlled manner. FMEA/FMECA provides a structured method for identifying and managing reliability risks, while design margin policies quantify the safety buffers against uncertainty. The MBSE paradigm, implementing requirements in DOORS and architecture in SysML tools such as Cameo, is progressively replacing document-centric practices in major space programs. TRL management ensures that technology maturity risks are identified and mitigated before they threaten mission schedule and cost. Finally, the AIT phase closes the V-model loop by subjecting the integrated spacecraft to a comprehensive environmental test campaign that gives confidence that the spacecraft will survive launch and perform correctly throughout its operational life.</p>
+<p>The subsystems that populate the spacecraft bus—power, attitude control, propulsion, thermal, communications, and data handling—are addressed in depth in the following chapters, building on the architectural foundation established here.</p>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button type="button" class="md-top md-icon" data-md-component="top" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+Back to top
+</button>
+</main>
+<footer class="md-footer">
+<nav class="md-footer__inner md-grid" aria-label="Footer" >
+<a href="ch04-launch-systems-and-mission-design.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: 4. Launch Systems and Mission Design">
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</div>
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Previous
+</span>
+<div class="md-ellipsis">
+4. Launch Systems and Mission Design
+</div>
+</div>
+</a>
+<a href="ch06-satellite-electrical-power-systems.html" class="md-footer__link md-footer__link--next" aria-label="Next: 6. Satellite Electrical Power Systems">
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Next
+</span>
+<div class="md-ellipsis">
+6. Satellite Electrical Power Systems
+</div>
+</div>
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+</div>
+</a>
+</nav>
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+The Open Book Project &middot;
+<a href="../../about.html">About this library</a> &middot;
+<a href="../../publish.html">Publish your book</a> &middot;
+© The authors of the books
+</div>
+Made with
+<a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+Material for MkDocs
+</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "navigation.prune", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "toc.follow", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+<script src="../../assets/mathjax.js"></script>
+<script src="../../assets/viz.js"></script>
+<script src="../../assets/remote.js"></script>
+<script src="../../assets/scans.js"></script>
+<script src="../../assets/reader.js"></script>
+<script src="../../assets/app.js"></script>
+<script src="../../assets/slides.js"></script>
+<script src="../../assets/speak.js"></script>
+<script src="../../assets/quiz.js"></script>
+<script>
+    /* offline reading: the service worker at the site root (its scope is the whole site) */
+    if ("serviceWorker" in navigator && window.isSecureContext) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register(new URL("../../sw.js", location.href).href).catch(function () {});
+      });
+    }
+  </script>
+</body>
+</html>

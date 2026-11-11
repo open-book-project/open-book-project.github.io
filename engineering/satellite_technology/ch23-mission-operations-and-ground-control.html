@@ -1,0 +1,1879 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="description" content="The Open Book Project: books on computer science, quantum computing, cyber security, science, the social sciences, university courses and languages, read page by page like an e-book, online or offline.">
+<meta name="author" content="The Open Book Project">
+<link rel="canonical" href="https://open-book-project.github.io/engineering/satellite_technology/ch23-mission-operations-and-ground-control.html">
+<link rel="prev" href="ch22-ground-station-design-and-networks.html">
+<link rel="next" href="ch24-smallsats-cubesats-and-the-new-space-revolution.html">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap"></noscript>
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Open Book">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="application-name" content="Open Book"><script src="../../assets/library-data.js"></script><script>
+    (function () {
+      var X = window.XMLHttpRequest, open, gate = new Promise(function (r) { open = r; });
+      if (!X) return;
+      var open0 = X.prototype.open, send0 = X.prototype.send;
+      X.prototype.open = function (method, url) {
+        this.__pkIndex = /\/search\/search_index\.json(\?|#|$)/.test(String(url));
+        return open0.apply(this, arguments);
+      };
+      X.prototype.send = function () {
+        if (!this.__pkIndex) return send0.apply(this, arguments);
+        var xhr = this, args = arguments;
+        gate.then(function () { send0.apply(xhr, args); });
+      };
+      function wake() { open(); }
+      document.addEventListener("focusin", function (e) { if (e.target && e.target.closest && e.target.closest(".md-search")) wake(); });
+      document.addEventListener("click", function (e) { if (e.target && e.target.closest && e.target.closest('label[for="__search"], .md-search')) wake(); }, true);
+      document.addEventListener("keydown", function (e) {
+        var k = e.key;
+        if ((k === "/" || k === "s" || k === "f" || k === "S" || k === "F") && !(e.target && e.target.closest && e.target.closest("input, textarea, [contenteditable]"))) wake();
+      }, true);
+      if (/[?&]q=/.test(location.search)) wake();
+    })();
+  </script><script>
+    try {
+      if ((window.matchMedia && (matchMedia("(display-mode: standalone)").matches || matchMedia("(display-mode: fullscreen)").matches)) || navigator.standalone === true) {
+        document.documentElement.className += " bjp-standalone";
+      }
+    } catch (e) { /* not an installed app */ }
+    /* the books of a subject or of the whole library as covers or as a list (assets/app.js): the reader's choice */
+    try {
+      var bv = localStorage.getItem("bjp.view");
+      if (bv === "list" || (bv !== "grid" && /\/books\.html$/.test(location.pathname))) document.documentElement.className += " bjp-view-list";
+    } catch (e) { /* no storage: covers */ }
+  </script>
+<script>
+    /* a book opened from its cover on the shelf: the page stays blank, in the cover's colour, until the reader is up */
+    try {
+      var cv = sessionStorage.getItem("bjp.reader.cover");
+      if (cv && sessionStorage.getItem("bjp.reader.open") === "1") {
+        var c = JSON.parse(cv), de = document.documentElement;
+        de.className += " bjp-booting";
+        if (c && /^#[0-9a-f]{3,8}$/i.test(c.bg || "")) de.style.background = c.bg;
+        setTimeout(function () { de.classList.remove("bjp-booting"); de.style.background = ""; }, 3000);
+      }
+    } catch (e) { /* no session storage: the page simply opens as usual */ }
+  </script>
+<title>23. Mission Operations and Ground Control - The Open Book Project</title>
+<link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+<link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+<link rel="stylesheet" href="../../assets/extra.css">
+<link rel="stylesheet" href="../../assets/reader.css">
+<link rel="stylesheet" href="../../assets/viz.css">
+<link rel="stylesheet" href="../../assets/app.css">
+<link rel="stylesheet" href="../../assets/theme.css">
+<link rel="stylesheet" href="../../assets/slides.css">
+<link rel="stylesheet" href="../../assets/remote.css">
+<link rel="stylesheet" href="../../assets/scans.css">
+<link rel="stylesheet" href="../../assets/speak.css">
+<link rel="stylesheet" href="../../assets/quiz.css">
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+<input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+<input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a href="#sec-mo_intro" class="md-skip">
+Skip to content
+</a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav class="md-header__inner md-grid" aria-label="Header">
+<a href="../../index.html" title="The Open Book Project" class="md-header__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+The Open Book Project
+</span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+23. Mission Operations and Ground Control
+</span>
+</div>
+</div>
+</div><a href="../../index.html" class="bjp-libbtn" aria-label="Library: all books" title="Library: all books">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V5h4v15M8 20V9h4v11M14 20L12.6 6l3.8-.8 3 14.2M3 20h18"/></svg><span>Library</span>
+</a>
+<a href="../../subjects/index.html" class="pk-catbtn" aria-haspopup="true" aria-expanded="false" title="Browse the books by category">
+<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><circle cx="17" cy="7" r="3.6"/><path d="M7 13.4l3.9 6.8H3.1z"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg><span>Categories</span>
+</a>
+<form class="md-header__option" data-md-component="palette">
+<input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+<label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+</label>
+<input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+<label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+<label class="md-search__icon md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</label>
+<nav class="md-search__options" aria-label="Search">
+<button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+Initializing search
+</div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--primary bjp-nav bjp-nav--book" aria-label="Navigation" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a href="../../index.html" title="The Open Book Project" class="md-nav__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+The Open Book Project
+</label>
+<ul class="md-nav__list" data-md-scrollfix>
+<li class="md-nav__item bjp-nav-all">
+<a href="../../index.html" class="md-nav__link" aria-label="All books: back to the library">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+<span class="md-ellipsis">All books</span>
+</a>
+</li>
+<li class="md-nav__item bjp-nav-book" role="presentation"><span class="bjp-nav-head">Satellite Technology</span></li>
+<li class="md-nav__item">
+<a href="index.html" class="md-nav__link">
+<span class="md-ellipsis">
+Overview and preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="list-of-abbreviations.html" class="md-nav__link">
+<span class="md-ellipsis">
+List of Abbreviations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch01-introduction-to-satellite-technology.html" class="md-nav__link">
+<span class="md-ellipsis">
+1. Introduction to Satellite Technology
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch02-orbital-mechanics.html" class="md-nav__link">
+<span class="md-ellipsis">
+2. Orbital Mechanics
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch03-the-space-environment.html" class="md-nav__link">
+<span class="md-ellipsis">
+3. The Space Environment
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch04-launch-systems-and-mission-design.html" class="md-nav__link">
+<span class="md-ellipsis">
+4. Launch Systems and Mission Design
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch05-satellite-architecture-and-systems-engineering.html" class="md-nav__link">
+<span class="md-ellipsis">
+5. Satellite Architecture and Systems Engineering
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch06-satellite-electrical-power-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+6. Satellite Electrical Power Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch07-attitude-determination-and-control-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+7. Attitude Determination and Control Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch08-satellite-propulsion-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+8. Satellite Propulsion Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch09-thermal-control-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+9. Thermal Control Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch10-on-board-data-handling.html" class="md-nav__link">
+<span class="md-ellipsis">
+10. On-Board Data Handling
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch11-telemetry-tracking-and-command-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+11. Telemetry, Tracking and Command Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch12-radio-frequency-satellite-communications.html" class="md-nav__link">
+<span class="md-ellipsis">
+12. Radio Frequency Satellite Communications
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch13-satellite-link-budget-analysis.html" class="md-nav__link">
+<span class="md-ellipsis">
+13. Satellite Link Budget Analysis
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch14-satellite-antenna-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+14. Satellite Antenna Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch15-digital-signal-processing-for-satellites.html" class="md-nav__link">
+<span class="md-ellipsis">
+15. Digital Signal Processing for Satellites
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch16-optical-satellite-communications.html" class="md-nav__link">
+<span class="md-ellipsis">
+16. Optical Satellite Communications
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch17-earth-observation-and-remote-sensing.html" class="md-nav__link">
+<span class="md-ellipsis">
+17. Earth Observation and Remote Sensing
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch18-global-navigation-satellite-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+18. Global Navigation Satellite Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch19-communication-satellites-and-services.html" class="md-nav__link">
+<span class="md-ellipsis">
+19. Communication Satellites and Services
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch20-scientific-satellites-and-space-observatories.html" class="md-nav__link">
+<span class="md-ellipsis">
+20. Scientific Satellites and Space Observatories
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch21-military-and-intelligence-satellites.html" class="md-nav__link">
+<span class="md-ellipsis">
+21. Military and Intelligence Satellites
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch22-ground-station-design-and-networks.html" class="md-nav__link">
+<span class="md-ellipsis">
+22. Ground Station Design and Networks
+</span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+23. Mission Operations and Ground Control
+</span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a href="ch23-mission-operations-and-ground-control.html" class="md-nav__link md-nav__link--active">
+<span class="md-ellipsis">
+23. Mission Operations and Ground Control
+</span>
+</a>
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#sec-mo_intro" class="md-nav__link">
+<span class="md-ellipsis">
+23.1 Introduction to Mission Operations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-moc_architecture" class="md-nav__link">
+<span class="md-ellipsis">
+23.2 Mission Operations Center Architecture
+</span>
+</a>
+<nav class="md-nav" aria-label="23.2 Mission Operations Center Architecture">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#2321-organisational-structure" class="md-nav__link">
+<span class="md-ellipsis">
+23.2.1 Organisational Structure
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2322-redundancy-and-fault-tolerance" class="md-nav__link">
+<span class="md-ellipsis">
+23.2.2 Redundancy and Fault Tolerance
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2323-moc-infrastructure" class="md-nav__link">
+<span class="md-ellipsis">
+23.2.3 MOC Infrastructure
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2324-representative-mocs" class="md-nav__link">
+<span class="md-ellipsis">
+23.2.4 Representative MOCs
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2325-operations-readiness-review" class="md-nav__link">
+<span class="md-ellipsis">
+23.2.5 Operations Readiness Review
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-sc_monitoring" class="md-nav__link">
+<span class="md-ellipsis">
+23.3 Spacecraft Monitoring and Control
+</span>
+</a>
+<nav class="md-nav" aria-label="23.3 Spacecraft Monitoring and Control">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#2331-telemetry-processing" class="md-nav__link">
+<span class="md-ellipsis">
+23.3.1 Telemetry Processing
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2332-commanding" class="md-nav__link">
+<span class="md-ellipsis">
+23.3.2 Commanding
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2333-health-and-safety-monitoring" class="md-nav__link">
+<span class="md-ellipsis">
+23.3.3 Health and Safety Monitoring
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2334-real-time-anomaly-resolution" class="md-nav__link">
+<span class="md-ellipsis">
+23.3.4 Real-Time Anomaly Resolution
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-od_manoeuvre" class="md-nav__link">
+<span class="md-ellipsis">
+23.4 Orbit Determination and Manoeuvre Planning
+</span>
+</a>
+<nav class="md-nav" aria-label="23.4 Orbit Determination and Manoeuvre Planning">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#2341-orbit-determination-process" class="md-nav__link">
+<span class="md-ellipsis">
+23.4.1 Orbit Determination Process
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2342-orbit-manoeuvre-design" class="md-nav__link">
+<span class="md-ellipsis">
+23.4.2 Orbit Manoeuvre Design
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2343-station-keeping" class="md-nav__link">
+<span class="md-ellipsis">
+23.4.3 Station-Keeping
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2344-conjunction-avoidance" class="md-nav__link">
+<span class="md-ellipsis">
+23.4.4 Conjunction Avoidance
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-leop_ch23" class="md-nav__link">
+<span class="md-ellipsis">
+23.5 Launch and Early Orbit Phase
+</span>
+</a>
+<nav class="md-nav" aria-label="23.5 Launch and Early Orbit Phase">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#2351-critical-events" class="md-nav__link">
+<span class="md-ellipsis">
+23.5.1 Critical Events
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2352-anomaly-handling-during-leop" class="md-nav__link">
+<span class="md-ellipsis">
+23.5.2 Anomaly Handling During LEOP
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2353-safe-mode" class="md-nav__link">
+<span class="md-ellipsis">
+23.5.3 Safe Mode
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-mission_planning" class="md-nav__link">
+<span class="md-ellipsis">
+23.6 Mission Planning and Scheduling
+</span>
+</a>
+<nav class="md-nav" aria-label="23.6 Mission Planning and Scheduling">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#2361-contact-window-prediction" class="md-nav__link">
+<span class="md-ellipsis">
+23.6.1 Contact Window Prediction
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2362-science-observation-planning" class="md-nav__link">
+<span class="md-ellipsis">
+23.6.2 Science Observation Planning
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2363-data-volume-planning" class="md-nav__link">
+<span class="md-ellipsis">
+23.6.3 Data Volume Planning
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2364-resource-allocation" class="md-nav__link">
+<span class="md-ellipsis">
+23.6.4 Resource Allocation
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-gds" class="md-nav__link">
+<span class="md-ellipsis">
+23.7 Ground Data Systems
+</span>
+</a>
+<nav class="md-nav" aria-label="23.7 Ground Data Systems">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#2371-scos-2000" class="md-nav__link">
+<span class="md-ellipsis">
+23.7.1 SCOS-2000
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2372-ammos" class="md-nav__link">
+<span class="md-ellipsis">
+23.7.2 AMMOS
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2373-gmat" class="md-nav__link">
+<span class="md-ellipsis">
+23.7.3 GMAT
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2374-cfdp" class="md-nav__link">
+<span class="md-ellipsis">
+23.7.4 CFDP
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2375-mission-database" class="md-nav__link">
+<span class="md-ellipsis">
+23.7.5 Mission Database
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-automation_ch23" class="md-nav__link">
+<span class="md-ellipsis">
+23.8 Automation and Autonomous Operations
+</span>
+</a>
+<nav class="md-nav" aria-label="23.8 Automation and Autonomous Operations">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#2381-automated-monitoring" class="md-nav__link">
+<span class="md-ellipsis">
+23.8.1 Automated Monitoring
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2382-operations-automation-trends" class="md-nav__link">
+<span class="md-ellipsis">
+23.8.2 Operations Automation Trends
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2383-ai-for-mission-operations" class="md-nav__link">
+<span class="md-ellipsis">
+23.8.3 AI for Mission Operations
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-eol_ops" class="md-nav__link">
+<span class="md-ellipsis">
+23.9 End-of-Life Operations
+</span>
+</a>
+<nav class="md-nav" aria-label="23.9 End-of-Life Operations">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#2391-passivation" class="md-nav__link">
+<span class="md-ellipsis">
+23.9.1 Passivation
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2392-leo-deorbit-manoeuvre-design" class="md-nav__link">
+<span class="md-ellipsis">
+23.9.2 LEO Deorbit Manoeuvre Design
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2393-geo-disposal" class="md-nav__link">
+<span class="md-ellipsis">
+23.9.3 GEO Disposal
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2394-handover-documentation" class="md-nav__link">
+<span class="md-ellipsis">
+23.9.4 Handover Documentation
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#summary" class="md-nav__link">
+<span class="md-ellipsis">
+Summary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#problems" class="md-nav__link">
+<span class="md-ellipsis">
+Problems
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="ch24-smallsats-cubesats-and-the-new-space-revolution.html" class="md-nav__link">
+<span class="md-ellipsis">
+24. SmallSats, CubeSats, and the New Space Revolution
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch25-mega-constellations-and-leo-broadband-networks.html" class="md-nav__link">
+<span class="md-ellipsis">
+25. Mega-Constellations and LEO Broadband Networks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch26-artificial-intelligence-and-machine-learning-in.html" class="md-nav__link">
+<span class="md-ellipsis">
+26. Artificial Intelligence and Machine Learning in Space
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch27-on-orbit-servicing-and-space-robotics.html" class="md-nav__link">
+<span class="md-ellipsis">
+27. On-Orbit Servicing and Space Robotics
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch28-space-debris-and-long-term-sustainability.html" class="md-nav__link">
+<span class="md-ellipsis">
+28. Space Debris and Long-Term Sustainability
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch29-quantum-communications-and-satellite-qkd.html" class="md-nav__link">
+<span class="md-ellipsis">
+29. Quantum Communications and Satellite QKD
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch30-6g-and-non-terrestrial-networks.html" class="md-nav__link">
+<span class="md-ellipsis">
+30. 6G and Non-Terrestrial Networks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch31-future-concepts-and-emerging-space-technologies.html" class="md-nav__link">
+<span class="md-ellipsis">
+31. Future Concepts and Emerging Space Technologies
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="classical-orbital-elements-and-coordinate.html" class="md-nav__link">
+<span class="md-ellipsis">
+Classical Orbital Elements and Coordinate Transformations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="satellite-frequency-allocations.html" class="md-nav__link">
+<span class="md-ellipsis">
+Satellite Frequency Allocations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="launch-vehicle-specifications.html" class="md-nav__link">
+<span class="md-ellipsis">
+Launch Vehicle Specifications
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="link-budget-templates-and-worked-examples.html" class="md-nav__link">
+<span class="md-ellipsis">
+Link Budget Templates and Worked Examples
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="key-standards-software-tools-and-references.html" class="md-nav__link">
+<span class="md-ellipsis">
+Key Standards, Software Tools, and References
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="bibliography.html" class="md-nav__link">
+<span class="md-ellipsis">
+Bibliography
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#sec-mo_intro" class="md-nav__link">
+<span class="md-ellipsis">
+23.1 Introduction to Mission Operations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-moc_architecture" class="md-nav__link">
+<span class="md-ellipsis">
+23.2 Mission Operations Center Architecture
+</span>
+</a>
+<nav class="md-nav" aria-label="23.2 Mission Operations Center Architecture">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#2321-organisational-structure" class="md-nav__link">
+<span class="md-ellipsis">
+23.2.1 Organisational Structure
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2322-redundancy-and-fault-tolerance" class="md-nav__link">
+<span class="md-ellipsis">
+23.2.2 Redundancy and Fault Tolerance
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2323-moc-infrastructure" class="md-nav__link">
+<span class="md-ellipsis">
+23.2.3 MOC Infrastructure
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2324-representative-mocs" class="md-nav__link">
+<span class="md-ellipsis">
+23.2.4 Representative MOCs
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2325-operations-readiness-review" class="md-nav__link">
+<span class="md-ellipsis">
+23.2.5 Operations Readiness Review
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-sc_monitoring" class="md-nav__link">
+<span class="md-ellipsis">
+23.3 Spacecraft Monitoring and Control
+</span>
+</a>
+<nav class="md-nav" aria-label="23.3 Spacecraft Monitoring and Control">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#2331-telemetry-processing" class="md-nav__link">
+<span class="md-ellipsis">
+23.3.1 Telemetry Processing
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2332-commanding" class="md-nav__link">
+<span class="md-ellipsis">
+23.3.2 Commanding
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2333-health-and-safety-monitoring" class="md-nav__link">
+<span class="md-ellipsis">
+23.3.3 Health and Safety Monitoring
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2334-real-time-anomaly-resolution" class="md-nav__link">
+<span class="md-ellipsis">
+23.3.4 Real-Time Anomaly Resolution
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-od_manoeuvre" class="md-nav__link">
+<span class="md-ellipsis">
+23.4 Orbit Determination and Manoeuvre Planning
+</span>
+</a>
+<nav class="md-nav" aria-label="23.4 Orbit Determination and Manoeuvre Planning">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#2341-orbit-determination-process" class="md-nav__link">
+<span class="md-ellipsis">
+23.4.1 Orbit Determination Process
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2342-orbit-manoeuvre-design" class="md-nav__link">
+<span class="md-ellipsis">
+23.4.2 Orbit Manoeuvre Design
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2343-station-keeping" class="md-nav__link">
+<span class="md-ellipsis">
+23.4.3 Station-Keeping
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2344-conjunction-avoidance" class="md-nav__link">
+<span class="md-ellipsis">
+23.4.4 Conjunction Avoidance
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-leop_ch23" class="md-nav__link">
+<span class="md-ellipsis">
+23.5 Launch and Early Orbit Phase
+</span>
+</a>
+<nav class="md-nav" aria-label="23.5 Launch and Early Orbit Phase">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#2351-critical-events" class="md-nav__link">
+<span class="md-ellipsis">
+23.5.1 Critical Events
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2352-anomaly-handling-during-leop" class="md-nav__link">
+<span class="md-ellipsis">
+23.5.2 Anomaly Handling During LEOP
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2353-safe-mode" class="md-nav__link">
+<span class="md-ellipsis">
+23.5.3 Safe Mode
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-mission_planning" class="md-nav__link">
+<span class="md-ellipsis">
+23.6 Mission Planning and Scheduling
+</span>
+</a>
+<nav class="md-nav" aria-label="23.6 Mission Planning and Scheduling">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#2361-contact-window-prediction" class="md-nav__link">
+<span class="md-ellipsis">
+23.6.1 Contact Window Prediction
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2362-science-observation-planning" class="md-nav__link">
+<span class="md-ellipsis">
+23.6.2 Science Observation Planning
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2363-data-volume-planning" class="md-nav__link">
+<span class="md-ellipsis">
+23.6.3 Data Volume Planning
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2364-resource-allocation" class="md-nav__link">
+<span class="md-ellipsis">
+23.6.4 Resource Allocation
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-gds" class="md-nav__link">
+<span class="md-ellipsis">
+23.7 Ground Data Systems
+</span>
+</a>
+<nav class="md-nav" aria-label="23.7 Ground Data Systems">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#2371-scos-2000" class="md-nav__link">
+<span class="md-ellipsis">
+23.7.1 SCOS-2000
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2372-ammos" class="md-nav__link">
+<span class="md-ellipsis">
+23.7.2 AMMOS
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2373-gmat" class="md-nav__link">
+<span class="md-ellipsis">
+23.7.3 GMAT
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2374-cfdp" class="md-nav__link">
+<span class="md-ellipsis">
+23.7.4 CFDP
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2375-mission-database" class="md-nav__link">
+<span class="md-ellipsis">
+23.7.5 Mission Database
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-automation_ch23" class="md-nav__link">
+<span class="md-ellipsis">
+23.8 Automation and Autonomous Operations
+</span>
+</a>
+<nav class="md-nav" aria-label="23.8 Automation and Autonomous Operations">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#2381-automated-monitoring" class="md-nav__link">
+<span class="md-ellipsis">
+23.8.1 Automated Monitoring
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2382-operations-automation-trends" class="md-nav__link">
+<span class="md-ellipsis">
+23.8.2 Operations Automation Trends
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2383-ai-for-mission-operations" class="md-nav__link">
+<span class="md-ellipsis">
+23.8.3 AI for Mission Operations
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-eol_ops" class="md-nav__link">
+<span class="md-ellipsis">
+23.9 End-of-Life Operations
+</span>
+</a>
+<nav class="md-nav" aria-label="23.9 End-of-Life Operations">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#2391-passivation" class="md-nav__link">
+<span class="md-ellipsis">
+23.9.1 Passivation
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2392-leo-deorbit-manoeuvre-design" class="md-nav__link">
+<span class="md-ellipsis">
+23.9.2 LEO Deorbit Manoeuvre Design
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2393-geo-disposal" class="md-nav__link">
+<span class="md-ellipsis">
+23.9.3 GEO Disposal
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#2394-handover-documentation" class="md-nav__link">
+<span class="md-ellipsis">
+23.9.4 Handover Documentation
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#summary" class="md-nav__link">
+<span class="md-ellipsis">
+Summary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#problems" class="md-nav__link">
+<span class="md-ellipsis">
+Problems
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="ch-mission_operations">Chapter 23: Mission Operations and Ground Control<a class="headerlink" href="#ch-mission_operations" title="Permanent link">&para;</a></h1>
+<h2 id="sec-mo_intro"><span class="secnum">23.1</span> Introduction to Mission Operations<a class="headerlink" href="#sec-mo_intro" title="Permanent link">&para;</a></h2>
+<p>Mission operations encompass the complete set of activities required to fly a spacecraft from launch through end-of-life disposal. Unlike the design and manufacturing phases, operations must be sustained continuously for years or decades, translating engineering intent into daily commands and ensuring that scientific or commercial objectives are met within a resource-constrained environment.</p>
+<p>The scope of modern mission operations has expanded considerably. Early missions relied on a small team of engineers who knew every switch and relay. Today, large programmes such as the <em>James Webb Space Telescope</em> or the Galileo navigation constellation employ hundreds of specialists spanning multiple time zones, integrated through networked Mission Operations Centers (MOCs) and ground data systems capable of processing millions of telemetry points per hour. At the other extreme, New Space missions may operate constellations of hundreds of small satellites with skeleton crews empowered by high levels of automation.</p>
+<div class="admonition info box-keybox kind-concept">
+<p>Core Mission Operations Functions <strong>Monitoring</strong>: Continuous receipt and evaluation of spacecraft telemetry to verify health and safety of all subsystems.<br> <strong>Commanding</strong>: Uplink of telecommands for routine operations, special events, and anomaly recovery.<br> <strong>Orbit Determination</strong>: Tracking of the spacecraft trajectory and propagation of state vectors for contact prediction and manoeuvre planning.<br> <strong>Flight Dynamics</strong>: Manoeuvre design, attitude reconstruction, and orbit control.<br> <strong>Planning and Scheduling</strong>: Coordination of ground station contacts, science observations, and payload operations within power, thermal, and data constraints.<br> <strong>Anomaly Resolution</strong>: Detection, isolation, and recovery from both on-board and ground-based anomalies.</p>
+</div>
+<p>This chapter describes each of these functions in detail. <a href="#sec-moc_architecture">Section 23.2</a> covers the physical and organisational architecture of a MOC. <a href="#sec-sc_monitoring">Sections 23.3</a>–<a href="#sec-eol_ops">23.9</a> address monitoring, commanding, orbit determination, manoeuvre planning, LEOP, scheduling, and end-of-life procedures. <a href="#sec-gds">Section 23.7</a> introduces the software systems underlying modern operations, and <a href="#sec-automation_ch23">Section 23.8</a> examines the increasing role of automation and artificial intelligence.</p>
+<h2 id="sec-moc_architecture"><span class="secnum">23.2</span> Mission Operations Center Architecture<a class="headerlink" href="#sec-moc_architecture" title="Permanent link">&para;</a></h2>
+<h3 id="2321-organisational-structure"><span class="secnum">23.2.1</span> Organisational Structure<a class="headerlink" href="#2321-organisational-structure" title="Permanent link">&para;</a></h3>
+<p>A Mission Operations Center integrates multiple specialist teams around a common operational picture. For a large science or telecommunications mission the typical organisational chart includes:</p>
+<ul>
+<li>
+<p><strong>Flight Operations Team (FOT)</strong>: Real-time spacecraft controllers who monitor telemetry, execute commands, and interface with ground station networks. Operating in rotating 8–12-hour shifts, the FOT is the first line of response to anomalies.</p>
+</li>
+<li>
+<p><strong>Mission Planners</strong>: Develop the short-range (daily) and medium-range (weekly) activity plans, resolving conflicts between payload demands, tracking contacts, and resource budgets. They maintain the master schedule driving all operations.</p>
+</li>
+<li>
+<p><strong>Spacecraft System Engineers (SSE)</strong>: Subsystem specialists (power, thermal, ADCS, propulsion, TT&amp;C) who provide technical authority on configuration changes and anomaly resolution. They typically work day shifts with on-call rotation.</p>
+</li>
+<li>
+<p><strong>Ground Station Engineers</strong>: Responsible for the health of each Earth terminal in the tracking network, managing antenna pointing predictions, modulation settings, and ranging equipment calibration.</p>
+</li>
+<li>
+<p><strong>Science/Payload Team</strong>: For science missions, these specialists define observation sequences and assess data quality. For commercial missions an equivalent operations team manages the payload functional performance.</p>
+</li>
+<li>
+<p><strong>Flight Dynamics (FD) Team</strong>: Performs orbit determination, generates predicted ephemerides for contact prediction, designs manoeuvres, and assesses conjunction risk.</p>
+</li>
+</ul>
+<h3 id="2322-redundancy-and-fault-tolerance"><span class="secnum">23.2.2</span> Redundancy and Fault Tolerance<a class="headerlink" href="#2322-redundancy-and-fault-tolerance" title="Permanent link">&para;</a></h3>
+<p>A MOC must never be a single point of failure. Standard approaches to redundancy include:</p>
+<p><strong>Hot standby primary/backup</strong>: Two parallel sets of mission control workstations continuously mirror operational state. If the primary fails, the backup assumes control without interrupting downlink processing. At ESA’s ESOC the backup control room (BCR) mirrors the Main Control Room (MCR) in real time.</p>
+<p><strong>Geographic distribution</strong>: Critical missions operate from geographically separated facilities. NASA’s Deep Space Network (DSN) divides between Goldstone CA, Madrid, and Canberra, ensuring continuous contact with deep-space assets regardless of Earth rotation. For LEO missions, a backup MOC in a separate city protects against local disasters.</p>
+<p><strong>Network redundancy</strong>: MOC communications rely on dedicated leased lines, VPN-encrypted internet paths, and satellite backup links. Voice networks provide POTS fallback when IP infrastructure fails.</p>
+<h3 id="2323-moc-infrastructure"><span class="secnum">23.2.3</span> MOC Infrastructure<a class="headerlink" href="#2323-moc-infrastructure" title="Permanent link">&para;</a></h3>
+<ul>
+<li>
+<p><strong>Large display walls</strong>: Typically tiled LCD arrays (6<span class="arithmatex">\(\times\)</span>4 to 12<span class="arithmatex">\(\times\)</span>4 panels) showing real-time orbit track, telemetry overview pages, alarm summaries, and network status. Matrox or similar video routing allows flexible assignment of sources to display segments.</p>
+</li>
+<li>
+<p><strong>Telemetry display workstations</strong>: Each position runs the mission control system client displaying engineering unit values, limit-check colouring (green/yellow/red), historical trend plots, and parameter lists. Dual-monitor configurations are standard.</p>
+</li>
+<li>
+<p><strong>KVM (Keyboard-Video-Mouse) systems</strong>: Reduce physical hardware at each operations desk by allowing a single keyboard and display to switch between multiple server connections. Crash-cart KVMs provide direct access to server back-planes during outages.</p>
+</li>
+<li>
+<p><strong>Voice networks</strong>: Dedicated closed-loop intercom systems (Telex, RTS, Clear-Com) connect controllers to ground station operators, launch control, and management. Phone patching loops allow external agency integration during launch.</p>
+</li>
+<li>
+<p><strong>Cyber-security boundary</strong>: Mission networks are physically or logically isolated from corporate IT. One-way data diodes prevent exfiltration of proprietary telemetry, while allow-listed command paths enforce access control.</p>
+</li>
+</ul>
+<h3 id="2324-representative-mocs"><span class="secnum">23.2.4</span> Representative MOCs<a class="headerlink" href="#2324-representative-mocs" title="Permanent link">&para;</a></h3>
+<p><a href="#tab-moc_examples">Table 23.1</a> summarises the principal mission operations facilities operated by major space agencies.</p>
+<div class="tbl" id="tab-moc_examples">
+<div class="tbl-caption"><strong>Table 23.1.</strong> Major Mission Operations Centers and representative programmes</div>
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Facility</strong></th>
+<th style="text-align: left;"><strong>Agency</strong></th>
+<th style="text-align: left;"><strong>Location</strong></th>
+<th style="text-align: left;"><strong>Key Missions</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">ESOC</td>
+<td style="text-align: left;">ESA</td>
+<td style="text-align: left;">Darmstadt, Germany</td>
+<td style="text-align: left;">Rosetta, Herschel, Gaia, Mars Express</td>
+</tr>
+<tr>
+<td style="text-align: left;">JPL/SFOF</td>
+<td style="text-align: left;">NASA</td>
+<td style="text-align: left;">Pasadena CA, USA</td>
+<td style="text-align: left;">Mars rovers, Voyager, NISAR</td>
+</tr>
+<tr>
+<td style="text-align: left;">GSFC/SOCC</td>
+<td style="text-align: left;">NASA</td>
+<td style="text-align: left;">Greenbelt MD, USA</td>
+<td style="text-align: left;">Hubble, Swift, TESS, JWST</td>
+</tr>
+<tr>
+<td style="text-align: left;">NASA JSC</td>
+<td style="text-align: left;">NASA</td>
+<td style="text-align: left;">Houston TX, USA</td>
+<td style="text-align: left;">ISS, crewed Orion missions</td>
+</tr>
+<tr>
+<td style="text-align: left;">JAXA ISAS</td>
+<td style="text-align: left;">JAXA</td>
+<td style="text-align: left;">Sagamihara, Japan</td>
+<td style="text-align: left;">Hayabusa2, SLIM</td>
+</tr>
+<tr>
+<td style="text-align: left;">ISRO ISTRAC</td>
+<td style="text-align: left;">ISRO</td>
+<td style="text-align: left;">Bengaluru, India</td>
+<td style="text-align: left;">Chandrayaan, Mars Orbiter</td>
+</tr>
+</tbody>
+</table>
+</div></div>
+<h3 id="2325-operations-readiness-review"><span class="secnum">23.2.5</span> Operations Readiness Review<a class="headerlink" href="#2325-operations-readiness-review" title="Permanent link">&para;</a></h3>
+<p>Before the first command is uplinked to a newly launched spacecraft, agencies mandate an Operations Readiness Review (ORR). The ORR formally certifies that all elements required for safe flight operations are in place:</p>
+<ol>
+<li>
+<p>Mission control system integration testing completed and open anomalies closed</p>
+</li>
+<li>
+<p>Ground station network verified end-to-end against flight hardware simulators</p>
+</li>
+<li>
+<p>Mission database (TM/TC definitions, calibration curves, limits) validated and version-controlled</p>
+</li>
+<li>
+<p>Flight procedures reviewed, simulated, and signed off by subsystem engineers</p>
+</li>
+<li>
+<p>Flight Operations Team trained to proficiency, with staffing plans covering 24/7 LEOP</p>
+</li>
+<li>
+<p>Communication links (voice, data, video) tested to all network sites</p>
+</li>
+<li>
+<p>Anomaly resolution procedures documented and responsibility matrix agreed</p>
+</li>
+</ol>
+<p>The ORR outcome is a formal go/no-go decision recorded in a review data package that becomes a permanent mission archive artefact.</p>
+<h2 id="sec-sc_monitoring"><span class="secnum">23.3</span> Spacecraft Monitoring and Control<a class="headerlink" href="#sec-sc_monitoring" title="Permanent link">&para;</a></h2>
+<h3 id="2331-telemetry-processing"><span class="secnum">23.3.1</span> Telemetry Processing<a class="headerlink" href="#2331-telemetry-processing" title="Permanent link">&para;</a></h3>
+<p>Modern spacecraft telemetry follows the CCSDS (Consultative Committee for Space Data Systems) standard packet telemetry architecture, defined in CCSDS 102.0-B-5 and 133.0-B-2.</p>
+<p><strong>Telemetry frames</strong>: The space data link layer groups source packets into fixed-length Transfer Frames (TF). Each frame carries a Master Channel Identifier (MCID), Virtual Channel Identifier (VCID), frame counter, and operational control field. Virtual channels allow a single physical downlink to carry multiple independent data streams simultaneously—for example, housekeeping telemetry on VCID 0, science data on VCID 1, and replay memory dumps on VCID 2.</p>
+<p><strong>Source packets</strong>: Within each frame, CCSDS Space Packets (CCSDS 133.0-B-2) carry application data. Each packet contains a primary header (6 bytes) with Application Process Identifier (APID), sequence count, and data length, followed by user data including a time stamp and the telemetry parameters themselves.</p>
+<p><strong>Calibration</strong>: Raw instrument counts received from analogue-to-digital converters must be converted to engineering units. Two calibration approaches are used:</p>
+<ul>
+<li>
+<p><strong>Polynomial calibration</strong>: <span class="arithmatex">\(y = a_0 + a_1 x + a_2 x^2 + \cdots + a_n x^n\)</span>, where <span class="arithmatex">\(x\)</span> is the raw count and coefficients <span class="arithmatex">\(a_i\)</span> are derived from ground calibration data. Efficient for well-behaved sensors such as temperature sensors with known response curves.</p>
+</li>
+<li>
+<p><strong>Table (look-up) calibration</strong>: A piecewise-linear interpolation between <span class="arithmatex">\((x_i,\, y_i)\)</span> pairs from the calibration table. Used for nonlinear sensors such as thermistors or for curves that cannot be well-approximated by a low-degree polynomial.</p>
+</li>
+</ul>
+<p><strong>Limit checking</strong>: Each telemetry parameter is assigned soft (yellow) and hard (red) limit bands:</p>
+<ul>
+<li>
+<p><strong>Yellow limits</strong>: Out-of-nominal but not immediately dangerous. Triggers a visual alert and email/SMS notification. The operator investigates but no automated action is taken.</p>
+</li>
+<li>
+<p><strong>Red limits</strong>: Critical violation requiring immediate response. Triggers audible alarm, automatic event logging, and may initiate an on-board FDIR response.</p>
+</li>
+</ul>
+<p><strong>Persistent violation alerting</strong> suppresses nuisance alarms by requiring a parameter to remain outside limits for <span class="arithmatex">\(N\)</span> consecutive samples (typically 3–5) before the alarm is raised, preventing single-sample noise spikes from disrupting operations.</p>
+<h3 id="2332-commanding"><span class="secnum">23.3.2</span> Commanding<a class="headerlink" href="#2332-commanding" title="Permanent link">&para;</a></h3>
+<p>The CCSDS Telecommand standard (CCSDS 231.0-B-4) defines the uplink data link for spacecraft commanding. Commands traverse the following path:</p>
+<ol>
+<li>
+<p><strong>Command entry</strong>: Operator selects command from mission database at MOC workstation. Critical commands require two-person integrity (TPI)—a second authorised person independently verifies and approves before uplink.</p>
+</li>
+<li>
+<p><strong>TC packet generation</strong>: The mission control system encodes the command into a CCSDS Telecommand (TC) packet with a command word, parameters, and error control field (BCH or CRC).</p>
+</li>
+<li>
+<p><strong>CLTU (Command Link Transfer Unit)</strong>: TC packets are encapsulated in CLTUs with start sequence, BCH error protection, and idle fill for the physical layer.</p>
+</li>
+<li>
+<p><strong>Uplink</strong>: The MOC transmits to the ground station via terrestrial link; the station modulates the CLTU on the RF carrier (typically S-band or X-band) for uplink to the spacecraft.</p>
+</li>
+<li>
+<p><strong>Decoder</strong>: The on-board radiation-hardened TC receiver demodulates, decodes, and validates the BCH, rejecting corrupt CLTUs before they reach the command decoder.</p>
+</li>
+<li>
+<p><strong>TC verification</strong>: Three-stage verification: (a) TC uplink confirmed by ground station lock/signal indicator; (b) TC execution confirmed by spacecraft event packet (EVR—Event Record); (c) housekeeping TM confirms the commanded action (e.g., a valve confirmed open by pressure telemetry rise).</p>
+</li>
+</ol>
+<div class="admonition note box-notebox kind-note">
+<p>Two-Person Integrity for Critical Commands Commands that are irreversible or safety-critical—such as propulsion valve opens, pyrotechnic firing, or safe-mode override—require two-person integrity (TPI). The primary operator enters and verifies the command; an independent second operator (or supervisor) authenticates via a separate console session before transmission is enabled. This mirrors nuclear-launch protocols and is mandated by most agency flight rules to prevent single-point human error.</p>
+</div>
+<h3 id="2333-health-and-safety-monitoring"><span class="secnum">23.3.3</span> Health and Safety Monitoring<a class="headerlink" href="#2333-health-and-safety-monitoring" title="Permanent link">&para;</a></h3>
+<p><strong>FDIR (Fault Detection, Isolation, and Recovery)</strong>: On-board autonomy software continuously monitors critical parameters against pre-defined thresholds. When a fault is detected, the FDIR logic executes a three-phase response:</p>
+<ol>
+<li>
+<p><strong>Detect</strong>: Identifies the out-of-limit condition on a subsystem parameter using threshold comparison or rate-of-change monitoring.</p>
+</li>
+<li>
+<p><strong>Isolate</strong>: Determines the probable failed unit by cross-checking related parameters (e.g., differencing primary and redundant sensor readings).</p>
+</li>
+<li>
+<p><strong>Recover</strong>: Executes a pre-programmed recovery action—switch to redundant unit, reduce power draw, or initiate safe mode.</p>
+</li>
+</ol>
+<p><strong>Safe mode</strong>: A minimum-functionality spacecraft state entered when a critical anomaly is detected on-board. Criteria for autonomous safe mode entry typically include: battery depth of discharge below 20%, loss of Earth/Sun pointing beyond a set angle, onboard computer (OBC) watchdog timer expiry, or thermal limits exceeded. In safe mode the spacecraft autonomously:</p>
+<ul>
+<li>
+<p>Points solar arrays toward the Sun for maximum power generation regardless of mission attitude</p>
+</li>
+<li>
+<p>Disables non-essential payloads and non-survival heaters</p>
+</li>
+<li>
+<p>Transmits a reduced-rate beacon or safe-mode telemetry stream for ground AOS on an omni antenna</p>
+</li>
+<li>
+<p>Waits for ground intervention for a configurable hold period before attempting autonomous recovery</p>
+</li>
+</ul>
+<p><strong>OBCP (On-Board Control Procedure)</strong>: Scripted command sequences stored in spacecraft memory and executed autonomously. OBCPs handle complex multi-step recovery scenarios—for example, re-initialising a star tracker after a bright-object entry—without requiring real-time human intervention. This is critical for bridging ground station contact gaps, particularly for interplanetary missions with communication delays of tens of minutes.</p>
+<h3 id="2334-real-time-anomaly-resolution"><span class="secnum">23.3.4</span> Real-Time Anomaly Resolution<a class="headerlink" href="#2334-real-time-anomaly-resolution" title="Permanent link">&para;</a></h3>
+<p>When an anomaly occurs, the operations team follows a structured resolution process:</p>
+<ol>
+<li>
+<p><strong>Anomaly Report (AR)</strong>: The controller documents the initial observation—time, affected parameters, spacecraft state, and ground station configuration—creating a time-stamped record that becomes the foundation of the investigation.</p>
+</li>
+<li>
+<p><strong>Preliminary assessment</strong>: The subsystem specialist conducts an initial technical assessment within 1–4 hours, classifying severity and identifying immediate workarounds to restore safe operations.</p>
+</li>
+<li>
+<p><strong>Root Cause Analysis (RCA)</strong>: A formal engineering investigation involving telemetry reconstruction, hardware review, and ground test correlation. May take days to weeks for complex anomalies involving novel failure modes.</p>
+</li>
+<li>
+<p><strong>Corrective action</strong>: Implementation of a patch (flight software update, parameter table change, procedure revision) to prevent recurrence and restore full mission capability.</p>
+</li>
+<li>
+<p><strong>Non-Conformance Report (NCR)</strong>: Formal documentation of the anomaly, RCA outcome, corrective action, and lessons learned. NCRs are archived and shared across programmes to prevent repeat occurrences on subsequent missions.</p>
+</li>
+</ol>
+<h2 id="sec-od_manoeuvre"><span class="secnum">23.4</span> Orbit Determination and Manoeuvre Planning<a class="headerlink" href="#sec-od_manoeuvre" title="Permanent link">&para;</a></h2>
+<h3 id="2341-orbit-determination-process"><span class="secnum">23.4.1</span> Orbit Determination Process<a class="headerlink" href="#2341-orbit-determination-process" title="Permanent link">&para;</a></h3>
+<p>Orbit determination (OD) is the process of estimating the spacecraft state vector <span class="arithmatex">\(\mathbf{x} = [\mathbf{r},\, \mathbf{v},\, p_1, …, p_n]^T\)</span> from tracking measurements, where <span class="arithmatex">\(\mathbf{r}\)</span> is position, <span class="arithmatex">\(\mathbf{v}\)</span> is velocity, and <span class="arithmatex">\(p_i\)</span> are force-model parameters such as solar radiation pressure coefficient or atmospheric drag coefficient. The primary measurement types are:</p>
+<ul>
+<li>
+<p><strong>Two-way ranging</strong>: A tone or pseudorandom code modulated on the uplink is coherently transponded by the spacecraft and the round-trip delay is measured as two-way range. Range residuals feed the OD filter. The CCSDS TRK-2-34 standard defines the Tracking Data Message (TDM) format used to exchange measurements between DSN stations and navigation teams.</p>
+</li>
+<li>
+<p><strong>Doppler</strong>: Two-way Doppler shift measures the rate of change of slant range <span class="arithmatex">\(\dot{\rho}\)</span>, directly sensitive to the velocity component along the line-of-sight. Combined with ranging, provides a complete 3-D state determination from a single pass.</p>
+</li>
+<li>
+<p><strong>VLBI (Very Long Baseline Interferometry)</strong>: Two geographically separated stations simultaneously receive the spacecraft downlink. The differential time of arrival (DTOA) constrains the plane-of-sky position to milliarcsecond accuracy, used for precision navigation on interplanetary missions.</p>
+</li>
+<li>
+<p><strong>Angles-only</strong>: Azimuth and elevation measurements from a single ground station, used during LEOP when two-way ranging equipment may not yet be initialised. Accuracy is limited (<span class="arithmatex">\(\sim\)</span>1 km) but sufficient for initial AOS establishment and coarse state vector.</p>
+</li>
+</ul>
+<p>Two estimation approaches are used depending on mission phase and computational constraints:</p>
+<p><strong>Batch least-squares</strong>: All measurements over a tracking arc are processed simultaneously to minimise the weighted sum of squared residuals: <span id="eq-batch_od"></span></p>
+<div class="arithmatex">\[\hat{\mathbf{x}} = \arg\min_{\mathbf{x}} \left[ \mathbf{z} - h(\mathbf{x}) \right]^T \mathbf{W} \left[ \mathbf{z} - h(\mathbf{x}) \right]\tag{23.1}\]</div>
+<p>where <span class="arithmatex">\(\mathbf{z}\)</span> is the observation vector, <span class="arithmatex">\(h(\mathbf{x})\)</span> the computed (predicted) observation function, and <span class="arithmatex">\(\mathbf{W}\)</span> the weighting matrix inversely proportional to measurement noise covariance. A 24-hour tracking arc combining Doppler and range data from two stations yields LEO position accuracy of approximately 10 m (3-<span class="arithmatex">\(\sigma\)</span>).</p>
+<p><strong>Sequential Kalman filter</strong>: Measurements are processed one at a time, updating the state estimate and error covariance matrix <span class="arithmatex">\(\mathbf{P}\)</span> recursively. The covariance update step is: <span id="eq-kalman_cov"></span></p>
+<div class="arithmatex">\[\mathbf{P}_{k|k} = \left( \mathbf{I} - \mathbf{K}_k \mathbf{H}_k \right) \mathbf{P}_{k|k-1}\tag{23.2}\]</div>
+<p>where <span class="arithmatex">\(\mathbf{K}_k = \mathbf{P}_{k|k-1}\mathbf{H}_k^T \left(\mathbf{H}_k \mathbf{P}_{k|k-1} \mathbf{H}_k^T + \mathbf{R}_k\right)^{-1}\)</span> is the Kalman gain, <span class="arithmatex">\(\mathbf{H}_k\)</span> the observation sensitivity matrix, and <span class="arithmatex">\(\mathbf{R}_k\)</span> the measurement noise covariance. The covariance propagation between measurements uses the state transition matrix <span class="arithmatex">\(\boldsymbol{\Phi}\)</span>: <span id="eq-cov_prop"></span></p>
+<div class="arithmatex">\[\mathbf{P}_{k+1|k} = \boldsymbol{\Phi}_k \mathbf{P}_{k|k} \boldsymbol{\Phi}_k^T + \mathbf{Q}_k\tag{23.3}\]</div>
+<p>where <span class="arithmatex">\(\mathbf{Q}_k\)</span> is the process noise covariance accounting for unmodelled force perturbations. The sequential filter is better suited to real-time tracking during LEOP or post-manoeuvre recovery.</p>
+<h3 id="2342-orbit-manoeuvre-design"><span class="secnum">23.4.2</span> Orbit Manoeuvre Design<a class="headerlink" href="#2342-orbit-manoeuvre-design" title="Permanent link">&para;</a></h3>
+<p>A velocity change <span class="arithmatex">\(\Delta v\)</span> achieves a desired orbit modification. For impulsive burns (thrust duration much less than orbital period), the manoeuvre is treated as an instantaneous velocity increment. For finite burns, the required propellant mass follows the Tsiolkovsky rocket equation and the burn duration is: <span id="eq-burn_duration"></span></p>
+<div class="arithmatex">\[t_{\text{burn}} = \frac{m_0 \left(1 - e^{-\Delta v / (g_0 I_{sp})}\right) g_0 I_{sp}}{F_{\text{thrust}}}\tag{23.4}\]</div>
+<p>where <span class="arithmatex">\(m_0\)</span> is the spacecraft wet mass (kg), <span class="arithmatex">\(F_{\text{thrust}}\)</span> is the thrust force (N), <span class="arithmatex">\(g_0 = 9.80665\)</span> m/s<span class="arithmatex">\(^2\)</span> is standard gravity, and <span class="arithmatex">\(I_{sp}\)</span> is the thruster specific impulse (s). For small <span class="arithmatex">\(\Delta v\)</span> relative to the effective exhaust velocity <span class="arithmatex">\(c = g_0 I_{sp}\)</span>, this simplifies to: <span id="eq-burn_approx"></span></p>
+<div class="arithmatex">\[t_{\text{burn}} \approx \frac{\Delta v \cdot m_0}{F_{\text{thrust}}}\tag{23.5}\]</div>
+<p>The manoeuvre execution timeline follows a standard operations workflow: flight dynamics team produces a manoeuvre recommendation <span class="arithmatex">\(\to\)</span> operations team and propulsion SSE review <span class="arithmatex">\(\to\)</span> command sequence generated and verified <span class="arithmatex">\(\to\)</span> TPI authorisation obtained <span class="arithmatex">\(\to\)</span> command uplink during contact window <span class="arithmatex">\(\to\)</span> telemetry monitored during burn (attitude, thrust duration, propellant mass flow) <span class="arithmatex">\(\to\)</span> post-manoeuvre OD within 4 hours to verify achieved orbit against design requirement.</p>
+<h3 id="2343-station-keeping"><span class="secnum">23.4.3</span> Station-Keeping<a class="headerlink" href="#2343-station-keeping" title="Permanent link">&para;</a></h3>
+<p><strong>GEO station-keeping</strong>: Geostationary satellites experience perturbations that must be counteracted by periodic manoeuvres to remain within their designated orbital box:</p>
+<ul>
+<li>
+<p><strong>North/South (N/S) station-keeping</strong>: The gravitational attraction of the Sun and Moon acting on the inclined orbital plane causes inclination growth at approximately <span class="arithmatex">\(0.75^\circ\)</span>/year if uncorrected. Corrective manoeuvres require approximately 50 m/s per year of <span class="arithmatex">\(\Delta v\)</span> to maintain the satellite within a <span class="arithmatex">\(\pm 0.1^\circ\)</span> latitude dead-band. N/S manoeuvres dominate the GEO station-keeping budget.</p>
+</li>
+<li>
+<p><strong>East/West (E/W) station-keeping</strong>: The triaxiality of Earth’s gravitational field creates two stable (<span class="arithmatex">\(75^\circ\)</span>E, <span class="arithmatex">\(105^\circ\)</span>W) and two unstable (<span class="arithmatex">\(10^\circ\)</span>W, <span class="arithmatex">\(170^\circ\)</span>E) equilibrium longitudes. Satellites drift toward the nearest stable point unless corrected with approximately 2 m/s per year within a <span class="arithmatex">\(\pm 0.1^\circ\)</span> longitude dead-band.</p>
+</li>
+</ul>
+<p><strong>LEO drag compensation</strong>: Atmospheric drag at LEO altitudes (400–800 km) continuously reduces the semi-major axis, causing orbital decay. Drag makeup manoeuvres using the propulsion system maintain the target altitude. At 550 km, solar activity variations cause atmospheric density changes of up to a factor of 10 between solar minimum and maximum, requiring adaptive manoeuvre planning and frequent re-optimisation of the station-keeping budget.</p>
+<h3 id="2344-conjunction-avoidance"><span class="secnum">23.4.4</span> Conjunction Avoidance<a class="headerlink" href="#2344-conjunction-avoidance" title="Permanent link">&para;</a></h3>
+<p>The US Space Surveillance Network (SSN) operated by 18th Space Control Squadron tracks <span class="arithmatex">\(&gt;\)</span>30,000 objects and generates Conjunction Data Messages (CDMs) when a tracked object passes within a defined screening volume around a satellite. The standard workflow is:</p>
+<ol>
+<li>
+<p><strong>SSN alert</strong>: CDM (CCSDS 508.0-B-1) received listing the secondary object, Time of Closest Approach (TCA), nominal miss distance, combined position covariance, and relative velocity.</p>
+</li>
+<li>
+<p><strong>CARA assessment</strong>: NASA’s Conjunction Assessment Risk Analysis (CARA) team evaluates the Probability of Collision (<span class="arithmatex">\(P_c\)</span>) by integrating the combined position probability density function over the collision cross-section area (typically 10–100 m<span class="arithmatex">\(^2\)</span> depending on satellite size).</p>
+</li>
+<li>
+<p><strong>Go/no-go threshold</strong>: If <span class="arithmatex">\(P_c &gt; 10^{-4}\)</span> (1-in-10,000) with TCA within 72 hours, a manoeuvre is considered. If <span class="arithmatex">\(P_c &gt; 10^{-3}\)</span>, a manoeuvre is planned unless TCA is less than 4 hours (insufficient response time).</p>
+</li>
+<li>
+<p><strong>Manoeuvre design</strong>: A small <span class="arithmatex">\(\Delta v\)</span> (typically 0.1–1 m/s) applied 24 hours before TCA shifts the orbital trajectory sufficiently to reduce <span class="arithmatex">\(P_c\)</span> below threshold. Direction is chosen to minimise propellant expenditure while maintaining mission geometry.</p>
+</li>
+<li>
+<p><strong>Post-manoeuvre confirmation</strong>: Updated tracking from SSN or on-board GPS confirms achieved orbit; CARA reassesses <span class="arithmatex">\(P_c\)</span> with updated post-manoeuvre covariance, typically reducing it to below <span class="arithmatex">\(10^{-6}\)</span>.</p>
+</li>
+</ol>
+<h2 id="sec-leop_ch23"><span class="secnum">23.5</span> Launch and Early Orbit Phase<a class="headerlink" href="#sec-leop_ch23" title="Permanent link">&para;</a></h2>
+<p>The Launch and Early Orbit Phase (LEOP) is the highest-risk operational period. Every deployment must be verified against tight timelines, and anomalies must be resolved before on-board power or propellant is exhausted. The MOC is fully staffed 24/7 with senior engineers on console and subsystem experts available on call. <a href="#tab-leop_timeline">Table 23.2</a> shows a representative timeline for a GEO telecommunications mission.</p>
+<div class="tbl" id="tab-leop_timeline">
+<div class="tbl-caption"><strong>Table 23.2.</strong> Representative LEOP timeline for a GEO telecommunications satellite</div>
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>MET</strong></th>
+<th style="text-align: left;"><strong>Event</strong></th>
+<th style="text-align: left;"><strong>Description</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">T+0 min</td>
+<td style="text-align: left;">Separation</td>
+<td style="text-align: left;">Satellite separates from upper stage; separation switch opens; OBC wakes from launch sleep mode</td>
+</tr>
+<tr>
+<td style="text-align: left;">T+0 to T+15 min</td>
+<td style="text-align: left;">First AOS</td>
+<td style="text-align: left;">Ground station acquires S-band beacon; TM lock; first telemetry pages verified nominal</td>
+</tr>
+<tr>
+<td style="text-align: left;">T+15 to T+60 min</td>
+<td style="text-align: left;">TM/TC checkout</td>
+<td style="text-align: left;">Verify all subsystem telemetry valid; check power positive; execute initial command checkout sequence</td>
+</tr>
+<tr>
+<td style="text-align: left;">T+1 to T+2 h</td>
+<td style="text-align: left;">Sun acquisition</td>
+<td style="text-align: left;">Coarse attitude manoeuvre to Sun-pointing using magnetorquers and coarse Sun sensors; solar arrays generating survival power</td>
+</tr>
+<tr>
+<td style="text-align: left;">T+2 to T+4 h</td>
+<td style="text-align: left;">Solar array deployment</td>
+<td style="text-align: left;">Pyrotechnic release of array hold-down; deployment confirmed by motor telemetry and power bus current increase</td>
+</tr>
+<tr>
+<td style="text-align: left;">T+4 to T+12 h</td>
+<td style="text-align: left;">Apogee kick (LAM burn 1)</td>
+<td style="text-align: left;">Liquid apogee motor burn raises apogee; Doppler tracking confirms <span class="math inline">\(\Delta v\)</span>; thermal monitoring during 60-minute burn</td>
+</tr>
+<tr>
+<td style="text-align: left;">T+12 to T+24 h</td>
+<td style="text-align: left;">GEO injection</td>
+<td style="text-align: left;">Second LAM firing circularises orbit at 35,786 km; final inclination correction burn</td>
+</tr>
+<tr>
+<td style="text-align: left;">T+24 to T+72 h</td>
+<td style="text-align: left;">72-hour checkout</td>
+<td style="text-align: left;">Systematic functional checkout of all subsystems: thermal, AOCS fine-pointing, propulsion blowdown, TT&amp;C</td>
+</tr>
+<tr>
+<td style="text-align: left;">T+72 to T+96 h</td>
+<td style="text-align: left;">Payload switch-on</td>
+<td style="text-align: left;">Transponder and antenna deployment; payload functional verification; handover to operations team</td>
+</tr>
+</tbody>
+</table>
+</div></div>
+<h3 id="2351-critical-events"><span class="secnum">23.5.1</span> Critical Events<a class="headerlink" href="#2351-critical-events" title="Permanent link">&para;</a></h3>
+<p>Pyrotechnic events (solar array release, antenna reflector deployment, nutation damper release) are the most irreversible acts in the LEOP timeline. Each is verified by:</p>
+<ul>
+<li>
+<p>A dedicated pyrotechnic firing command with TPI authorisation</p>
+</li>
+<li>
+<p>Current sensing on the initiator circuit (squib fire confirmed by current pulse in housekeeping telemetry)</p>
+</li>
+<li>
+<p>Secondary confirmation via deployment switch position telemetry or structural change in attitude rates</p>
+</li>
+<li>
+<p>Accelerometer data showing the mechanical shock signature associated with mechanism release</p>
+</li>
+</ul>
+<p>Propulsion pressurisation sequences open pyrotechnic valves to feed propellant from tank to thruster, irreversibly committing the propulsion system to flight configuration. These require pre-arming commands, intermediate verifications, and a separate firing command with appropriate hold time for valve stabilisation.</p>
+<h3 id="2352-anomaly-handling-during-leop"><span class="secnum">23.5.2</span> Anomaly Handling During LEOP<a class="headerlink" href="#2352-anomaly-handling-during-leop" title="Permanent link">&para;</a></h3>
+<p>LEOP anomaly response is governed by pre-planned contingency procedures:</p>
+<ul>
+<li>
+<p><strong>Redundant command paths</strong>: If the prime ground station loses signal, pre-designated backup stations around the globe take over. A minimum of two independent tracking sites maintain visibility during critical events through cross-support agreements with ESA, KSAT, or SSC.</p>
+</li>
+<li>
+<p><strong>Safe mode recovery</strong>: If the spacecraft enters safe mode autonomously during LEOP, the MOC sends recovery commands via backup S-band patch antenna if the primary high-gain antenna (HGA) has not yet deployed.</p>
+</li>
+<li>
+<p><strong>Alternative AOS</strong>: Cross-support agreements with DSN, ESTRACK, or KSAT allow emergency contact if home-network stations fail during critical events.</p>
+</li>
+<li>
+<p><strong>Extended hold</strong>: For some missions, the on-board OBCP holds the current configuration indefinitely awaiting a ground command rather than proceeding autonomously into the next critical phase, ensuring ground control is always in the loop.</p>
+</li>
+</ul>
+<h3 id="2353-safe-mode"><span class="secnum">23.5.3</span> Safe Mode<a class="headerlink" href="#2353-safe-mode" title="Permanent link">&para;</a></h3>
+<p>Safe mode is designed to be survivable from any spacecraft state and to provide a stable, low-power configuration from which recovery is always possible:</p>
+<ul>
+<li>
+<p>Sun-pointing attitude maintained by body-mounted panels providing minimum 40% of beginning-of-life (BOL) power generation</p>
+</li>
+<li>
+<p>Load-shedding reduces power draw: heaters on survival setpoints only, payload off, data recorder halted</p>
+</li>
+<li>
+<p>Omni or medium-gain antenna used for beacon transmission at reduced data rate (e.g., 256 bps) to ensure AOS even from off-nominal attitude</p>
+</li>
+<li>
+<p>After a configurable hold (typically 60–120 minutes), the OBCP may attempt an autonomous recovery sequence if no ground contact has been established within that window</p>
+</li>
+</ul>
+<h2 id="sec-mission_planning"><span class="secnum">23.6</span> Mission Planning and Scheduling<a class="headerlink" href="#sec-mission_planning" title="Permanent link">&para;</a></h2>
+<h3 id="2361-contact-window-prediction"><span class="secnum">23.6.1</span> Contact Window Prediction<a class="headerlink" href="#2361-contact-window-prediction" title="Permanent link">&para;</a></h3>
+<p>Ground station contact windows are determined by orbital geometry: the spacecraft must be above the minimum elevation angle <span class="arithmatex">\(E_{\min}\)</span> (typically <span class="arithmatex">\(5^\circ\)</span>) as seen from the station. For a circular orbit at altitude <span class="arithmatex">\(h\)</span>, the Earth central angle <span class="arithmatex">\(\rho\)</span> subtended by the coverage arc satisfies: <span id="eq-contact_radius"></span></p>
+<div class="arithmatex">\[\cos\rho = \frac{R_E \cos E_{\min}}{R_E + h}\tag{23.6}\]</div>
+<p>The contact window duration for a specific pass depends on orbit geometry and station location and is computed by propagating the orbit using tools such as STK (Ansys Systems Tool Kit), GMAT (NASA/GSFC), or Orekit (CS Group, open-source). For a LEO satellite at 500 km altitude in a 51.6 inclination orbit, a station at <span class="arithmatex">\(51^\circ\)</span>N with <span class="arithmatex">\(E_{\min} = 10^\circ\)</span> sees contact windows of 8–12 minutes with 3–6 passes per day.</p>
+<p>The approximate contact window duration at maximum elevation is: <span id="eq-contact_duration"></span></p>
+<div class="arithmatex">\[t_{\text{contact}} \approx \frac{2\,\rho_{\max}(R_E + h)}{v_{\text{orb}}\,R_E}\tag{23.7}\]</div>
+<p>where <span class="arithmatex">\(v_{\text{orb}} = \sqrt{\mu/(R_E+h)}\)</span> is the orbital speed (<span class="arithmatex">\(\approx\)</span>7.6 km/s at 500 km) and <span class="arithmatex">\(\rho_{\max}\)</span> is the half-angle of the coverage arc from <a href="#eq-contact_radius">Equation (23.6)</a>. A 10-minute contact at 7.6 km/s spans approximately 4600 km of ground track.</p>
+<h3 id="2362-science-observation-planning"><span class="secnum">23.6.2</span> Science Observation Planning<a class="headerlink" href="#2362-science-observation-planning" title="Permanent link">&para;</a></h3>
+<p>Constraint-driven scheduling resolves competing demands on the spacecraft resource budget:</p>
+<ul>
+<li>
+<p><strong>Eclipse constraints</strong>: Some instruments (optical, thermal infrared) are restricted to sunlit or eclipsed periods; stray-light avoidance angles constrain pointing geometry relative to the Sun.</p>
+</li>
+<li>
+<p><strong>Power budget</strong>: Instrument duty cycles are limited by battery depth of discharge during eclipse and available power margin during daylight.</p>
+</li>
+<li>
+<p><strong>Thermal limits</strong>: Pointing manoeuvres must avoid Sun-avoidance keep-out zones (<span class="arithmatex">\(\pm 45^\circ\)</span> from aperture axis, typically); some instruments require cool-down periods between long exposures.</p>
+</li>
+<li>
+<p><strong>Downlink capacity</strong>: Science data volume acquired must not exceed the on-board solid-state recorder (SSR) capacity or scheduled downlink allocation.</p>
+</li>
+<li>
+<p><strong>Priority ranking</strong>: Targets are ranked by science priority; the scheduler maximises weighted science return subject to all constraints.</p>
+</li>
+</ul>
+<h3 id="2363-data-volume-planning"><span class="secnum">23.6.3</span> Data Volume Planning<a class="headerlink" href="#2363-data-volume-planning" title="Permanent link">&para;</a></h3>
+<p>The fundamental data balance for a satellite contact pass is: <span id="eq-data_volume_ch23"></span></p>
+<div class="arithmatex">\[V_{\text{downlink}} = R_{\text{link}} \times t_{\text{contact}} \times \eta_{\text{eff}}\tag{23.8}\]</div>
+<p>where <span class="arithmatex">\(R_{\text{link}}\)</span> is the link data rate (bps), <span class="arithmatex">\(t_{\text{contact}}\)</span> is the contact duration (s), and <span class="arithmatex">\(\eta_{\text{eff}}\)</span> is the link efficiency accounting for coding overhead, frame synchronisation, and antenna acquisition time (typically 0.85–0.95). For the on-board data budget to remain balanced:</p>
+<div class="arithmatex">\[V_{\text{acquired}} \leq V_{\text{downlink}} + \Delta V_{\text{storage}}\]</div>
+<p>where <span class="arithmatex">\(\Delta V_{\text{storage}}\)</span> is the net change in SSR fill level. If science acquisition rates consistently exceed downlink capacity, either observation duty cycles must be reduced or additional ground contacts must be scheduled at backup stations.</p>
+<h3 id="2364-resource-allocation"><span class="secnum">23.6.4</span> Resource Allocation<a class="headerlink" href="#2364-resource-allocation" title="Permanent link">&para;</a></h3>
+<p><strong>Power profile</strong>: Each spacecraft operating mode has a defined power budget driven by the electrical power system (EPS) analysis. The worst case is typically the longest eclipse with maximum payload load. Power modes include:</p>
+<ul>
+<li>
+<p><em>Nominal sunlit</em>: full payload, heaters off, battery charging (<span class="arithmatex">\(\sim\)</span>30 A excess current for a 28 V bus)</p>
+</li>
+<li>
+<p><em>Eclipse</em>: payload on, battery discharge limited to 30% depth of discharge (DoD) for Li-ion cells</p>
+</li>
+<li>
+<p><em>Safe mode</em>: payload off, survival heaters, battery charge recovery from reduced solar array current</p>
+</li>
+</ul>
+<p><strong>Propellant budget tracking</strong>: The mission propellant balance is maintained as: <span id="eq-prop_budget"></span></p>
+<div class="arithmatex">\[m_{\text{prop,remaining}} = m_{\text{prop,BOL}} - \sum_{i} \Delta m_{\Delta v,i} - m_{\text{leak}}\tag{23.10}\]</div>
+<p>where each manoeuvre consumes <span class="arithmatex">\(\Delta m_{\Delta v} = m_0\!\left(1 - e^{-\Delta v/(g_0 I_{sp})}\right)\)</span> kg. Flight dynamics teams maintain a propellant budget spreadsheet updated after every manoeuvre, projecting end-of-life propellant margin against the station-keeping lifetime requirement.</p>
+<h2 id="sec-gds"><span class="secnum">23.7</span> Ground Data Systems<a class="headerlink" href="#sec-gds" title="Permanent link">&para;</a></h2>
+<h3 id="2371-scos-2000"><span class="secnum">23.7.1</span> SCOS-2000<a class="headerlink" href="#2371-scos-2000" title="Permanent link">&para;</a></h3>
+<p>ESA’s Spacecraft Control and Operations System (SCOS-2000) is the standard mission control system used across ESA science missions including Rosetta, Herschel, Gaia, Mars Express, Envisat, and BepiColombo. Key features include:</p>
+<ul>
+<li>
+<p><strong>TM/TC database</strong>: Centralised Mission Database (MDB) holding all telemetry parameter definitions (calibration curves, limits), telecommand encodings, and operational sequences in a PostgreSQL-backed relational database.</p>
+</li>
+<li>
+<p><strong>Packet processing</strong>: CCSDS-compliant TM frame decommutation, virtual channel demultiplexing, source packet extraction, and parameter extraction pipeline capable of processing thousands of parameters per second.</p>
+</li>
+<li>
+<p><strong>Alarm management</strong>: Multi-level limit checking (soft/hard) with acknowledgement state tracking, inhibit capability for known off-nominal conditions, and alarm correlation for related parameter groups.</p>
+</li>
+<li>
+<p><strong>Command management</strong>: Telecommand encoding from MDB definitions, release scheduling (time-tagged, relative, or immediate), and three-stage verification with ground and on-board confirmation.</p>
+</li>
+</ul>
+<h3 id="2372-ammos"><span class="secnum">23.7.2</span> AMMOS<a class="headerlink" href="#2372-ammos" title="Permanent link">&para;</a></h3>
+<p>NASA’s Advanced Multi-Mission Operations System (AMMOS) at JPL supports operations for deep-space and planetary missions including Mars 2020, Mars Reconnaissance Orbiter, and NISAR. AMMOS provides the SEQGEN sequence engine for uplink product generation, a Data Management System (DMS) for telemetry archival and retrieval, and Level-0 telemetry processing pipelines that strip frame headers and deliver depacketised data to science teams.</p>
+<h3 id="2373-gmat"><span class="secnum">23.7.3</span> GMAT<a class="headerlink" href="#2373-gmat" title="Permanent link">&para;</a></h3>
+<p>The General Mission Analysis Tool (GMAT) is an open-source mission design and operations tool developed by NASA/GSFC. Used for orbit determination, manoeuvre planning, and coverage analysis, GMAT supports GEO/LEO/HEO missions and has been applied in operational contexts at Goddard and partner agencies. Its scripting language allows automation of repetitive flight dynamics tasks.</p>
+<h3 id="2374-cfdp"><span class="secnum">23.7.4</span> CFDP<a class="headerlink" href="#2374-cfdp" title="Permanent link">&para;</a></h3>
+<p>For missions with long communication delays or high bit error rates, reliable file delivery requires the CCSDS File Delivery Protocol (CFDP, CCSDS 727.0-B-5). CFDP operates over an unreliable link-layer channel and provides:</p>
+<ul>
+<li>
+<p><strong>Class 1 (Unacknowledged)</strong>: Best-effort delivery with no retransmission; suitable for telemetry streams where timeliness matters more than completeness.</p>
+</li>
+<li>
+<p><strong>Class 2 (Acknowledged)</strong>: Full reliable delivery with NAK (negative acknowledgement) retransmission and a metadata PDU confirming complete file receipt. Used for critical uplinked files such as flight software patches and parameter table updates.</p>
+</li>
+<li>
+<p>CFDP is used extensively on deep-space missions (MRO, Curiosity/Perseverance rovers) where round-trip light-time delays of 6–40 minutes make interactive transfer impractical.</p>
+</li>
+</ul>
+<h3 id="2375-mission-database"><span class="secnum">23.7.5</span> Mission Database<a class="headerlink" href="#2375-mission-database" title="Permanent link">&para;</a></h3>
+<p>The Mission Database (MDB) is the single authoritative source of truth for all TM/TC definitions. A well-maintained MDB contains:</p>
+<ul>
+<li>
+<p>Telemetry parameter definitions: bit position in packet, raw data format, calibration function, engineering units, soft and hard limit definitions</p>
+</li>
+<li>
+<p>Telecommand definitions: command word encoding, parameter types, valid value ranges, critical flag requiring TPI, default parameter values</p>
+</li>
+<li>
+<p>Formal verification tools compare the MDB against the Interface Control Document (ICD) and the flight software telecommand dispatcher to detect definition errors before they cause operational problems</p>
+</li>
+<li>
+<p>Version control (git or similar) tracks all MDB changes with author, date, and justification, enabling rollback if a change introduces inconsistencies</p>
+</li>
+</ul>
+<h2 id="sec-automation_ch23"><span class="secnum">23.8</span> Automation and Autonomous Operations<a class="headerlink" href="#sec-automation_ch23" title="Permanent link">&para;</a></h2>
+<h3 id="2381-automated-monitoring"><span class="secnum">23.8.1</span> Automated Monitoring<a class="headerlink" href="#2381-automated-monitoring" title="Permanent link">&para;</a></h3>
+<p>Rule-based expert systems supplement human monitoring by evaluating complex multi-parameter conditions at machine speed:</p>
+<ul>
+<li>
+<p><strong>Threshold rules</strong>: Simple limit checks generating alerts, identical to the yellow/red scheme described in <a href="#sec-sc_monitoring">Section 23.3</a>, but configurable per orbital phase (e.g., tighter limits during eclipse).</p>
+</li>
+<li>
+<p><strong>Correlation rules</strong>: Multi-parameter logical combinations—for example, “battery voltage below 3.8 V <span class="smallcaps">and</span> power mode = eclipse <span class="smallcaps">and</span> SoC below 20%” triggers a coordinated alert rather than three independent alarms, reducing alarm fatigue.</p>
+</li>
+<li>
+<p><strong>Auto-safe command sequences</strong>: Pre-authorised command macros executed automatically when defined trigger conditions are met, removing latency between anomaly detection and corrective action. For example, turning off a non-essential heater if an over-temperature alarm persists for 60 seconds removes the need for a human decision during off-hours.</p>
+</li>
+</ul>
+<h3 id="2382-operations-automation-trends"><span class="secnum">23.8.2</span> Operations Automation Trends<a class="headerlink" href="#2382-operations-automation-trends" title="Permanent link">&para;</a></h3>
+<p>Routine operations are increasingly automated across the industry:</p>
+<ul>
+<li>
+<p><strong>Scripted sequences</strong>: Time-tagged command files generated by automation scripts replace manual entry for routine station passes. Contact acquisition, data playback start/stop, and pass-end configuration changes are scripted and released automatically.</p>
+</li>
+<li>
+<p><strong>Procedure automation</strong>: Interactive procedure tools (ESA’s Mission Operations Information System MOIS, NASA’s Mission Planning and Command System MPCS) guide operators through complex procedures with automated parameter checks and mandatory hold points at each step.</p>
+</li>
+<li>
+<p><strong>Anomaly auto-correlation</strong>: When an alarm fires, the system automatically retrieves the preceding 30 minutes of related subsystem telemetry and displays it on the operators’ screen, reducing the time-to-diagnosis window from minutes to seconds.</p>
+</li>
+</ul>
+<h3 id="2383-ai-for-mission-operations"><span class="secnum">23.8.3</span> AI for Mission Operations<a class="headerlink" href="#2383-ai-for-mission-operations" title="Permanent link">&para;</a></h3>
+<p>Machine learning is being applied to mission operations at increasing scale across both agency and commercial programmes:</p>
+<p><strong>Anomaly detection</strong>: Autoencoders trained on nominal telemetry reconstruct expected parameter values; elevated reconstruction error indicates anomalous behaviour not captured by fixed limits. The approach is unsupervised and can detect novel failure modes not anticipated during mission design. ESA’s <span class="arithmatex">\(\Phi\)</span>-Lab has demonstrated this approach on Earth observation missions.</p>
+<p><strong>Trend prediction</strong>: Long Short-Term Memory (LSTM) networks model time-series dependencies in subsystem health data, predicting battery capacity fade, reaction-wheel bearing friction increase, or thruster valve degradation weeks before threshold violations occur. Early warning enables proactive maintenance scheduling before mission impact.</p>
+<p><strong>NLP for procedure look-up</strong>: Natural language processing allows operators to query the procedure library in plain English (“How do I recover the star tracker from bright object exit?”) rather than navigating hierarchical procedure databases, reducing time-to-correct during anomalies when cognitive load is high.</p>
+<p><strong>Reinforcement learning for scheduling</strong>: RL agents learn scheduling policies that maximise science return while satisfying all resource constraints, outperforming hand-crafted heuristic schedulers on complex multi-target observation campaigns with overlapping constraint sets.</p>
+<div class="admonition note box-notebox kind-note">
+<p>Lights-Out Operations Reducing around-the-clock staffing is a major cost driver for small satellite operators. Lights-out operations (unmanned operations periods) are enabled by mature automation combined with escalation procedures that page the on-call engineer when anomalies occur. Full lights-out LEO operations—no real-time controller during routine passes—are now routine for Planet Labs and Spire Global, each operating 100+ spacecraft with small operations teams enabled by cloud-based automated systems.</p>
+</div>
+<h2 id="sec-eol_ops"><span class="secnum">23.9</span> End-of-Life Operations<a class="headerlink" href="#sec-eol_ops" title="Permanent link">&para;</a></h2>
+<h3 id="2391-passivation"><span class="secnum">23.9.1</span> Passivation<a class="headerlink" href="#2391-passivation" title="Permanent link">&para;</a></h3>
+<p>Passivation removes all stored energy from the spacecraft to prevent post-mission fragmentation events that generate debris. The IADC (Inter-Agency Space Debris Coordination Committee) guidelines, endorsed by UN COPUOS, mandate passivation for all missions. Steps include:</p>
+<ul>
+<li>
+<p><strong>Propellant depletion burn</strong>: Remaining propellant is vented or burned through thrusters until propellant feed pressure reaches ambient. For bipropellant systems, oxidiser and fuel must be depleted carefully, often simultaneously through separate lines, to avoid hypergolic mixture accumulation.</p>
+</li>
+<li>
+<p><strong>Battery passivation</strong>: Batteries are fully discharged by enabling loads with the solar array disconnected, then the charge controller is disabled to prevent recharge. For some battery chemistries a brief controlled overcharge ventilates the electrolyte.</p>
+</li>
+<li>
+<p><strong>Pressurised vessel venting</strong>: High-pressure tanks (helium pressurant, cold gas propellant) are vented through pyrotechnic valves commanded open, reducing internal pressure to below 1 bar equivalent.</p>
+</li>
+<li>
+<p><strong>Power-off</strong>: Non-essential loads are switched off; the final telemetry burst is transmitted; and the spacecraft is configured for permanent dormancy.</p>
+</li>
+</ul>
+<h3 id="2392-leo-deorbit-manoeuvre-design"><span class="secnum">23.9.2</span> LEO Deorbit Manoeuvre Design<a class="headerlink" href="#2392-leo-deorbit-manoeuvre-design" title="Permanent link">&para;</a></h3>
+<p>IADC guidelines require LEO satellites to re-enter within 25 years of end of mission. For satellites above <span class="arithmatex">\(\sim\)</span>600 km altitude, a deorbit burn is required. The <span class="arithmatex">\(\Delta v\)</span> to lower perigee to <span class="arithmatex">\(h_{\text{pe}} \approx 80\)</span> km from a circular orbit at altitude <span class="arithmatex">\(h\)</span> is: <span id="eq-deorbit_dv"></span></p>
+<div class="arithmatex">\[\Delta v_{\text{deorbit}} = v_c \left(1 - \sqrt{\frac{2(R_E + h_{\text{pe}})}{(R_E + h) + (R_E + h_{\text{pe}})}} \right)\tag{23.11}\]</div>
+<p>where <span class="arithmatex">\(v_c = \sqrt{\mu/(R_E+h)}\)</span> is the circular speed. For <span class="arithmatex">\(h = 600\)</span> km and <span class="arithmatex">\(h_{\text{pe}} = 80\)</span> km, <span class="arithmatex">\(\Delta v_{\text{deorbit}} \approx 80\)</span> m/s. The reentry footprint is targeted over unpopulated ocean areas (South Pacific Ocean Spacecraft Cemetery, centred near Point Nemo) to minimise casualty risk. Aerothermal analysis calculates the demise altitude for each component and the impact dispersion ellipse at Earth surface.</p>
+<h3 id="2393-geo-disposal"><span class="secnum">23.9.3</span> GEO Disposal<a class="headerlink" href="#2393-geo-disposal" title="Permanent link">&para;</a></h3>
+<p>GEO satellites cannot be efficiently deorbited (<span class="arithmatex">\(\Delta v \approx 1500\)</span> m/s to reach reentry). Instead, they are raised to a graveyard orbit at least 300 km above GEO in accordance with IADC guidelines: <span id="eq-geo_disposal"></span></p>
+<div class="arithmatex">\[\Delta v_{\text{graveyard}} = \sqrt{\frac{\mu}{R_{\text{GEO}}}} - \sqrt{\frac{\mu}{R_{\text{GEO}} + \Delta h}} \approx 11~\text{m/s}\tag{23.12}\]</div>
+<p>where <span class="arithmatex">\(\Delta h = 300\)</span> km and <span class="arithmatex">\(R_{\text{GEO}} = 42164\)</span> km. The <span class="arithmatex">\(\approx\)</span>11 m/s required is reserved as an end-of-life propellant margin in the spacecraft design from the outset. Following orbit raise, the satellite is passivated, and the ITU orbital filing is updated to reflect the satellite’s final position and operational cessation date.</p>
+<h3 id="2394-handover-documentation"><span class="secnum">23.9.4</span> Handover Documentation<a class="headerlink" href="#2394-handover-documentation" title="Permanent link">&para;</a></h3>
+<p>At end-of-life, the operations team produces a comprehensive handover archive for future reference and lessons-learned purposes:</p>
+<ul>
+<li>
+<p><strong>As-flown anomaly database</strong>: Complete NCR archive with root causes and corrections, enabling future missions to learn from in-flight experience and avoid repeating the same failures.</p>
+</li>
+<li>
+<p><strong>Orbital element history</strong>: State vector archive from OD solutions throughout the mission, enabling future trajectory reconstruction for close-approach analysis and population debris models.</p>
+</li>
+<li>
+<p><strong>Consumables actual vs. predicted</strong>: Propellant mass balance, battery cycle count, reaction wheel accumulated momentum, and other life-limiting consumables compared against pre-launch design predictions to calibrate future mission design margins.</p>
+</li>
+<li>
+<p><strong>Lessons learned report</strong>: Summary of operational recommendations for follow-on missions, shared through agency lessons-learned repositories.</p>
+</li>
+</ul>
+<figure class="fig fig-diagram" id="fig-moc_arch">
+<img class="tikz" src="img/tikz-1de26036f3a0.svg" alt="MOC architecture: ground station network, flight control system, mission database, flight dynamics system, specialist teams, and hot-standby backup MOC." loading="lazy" width="369" height="193">
+<figcaption><strong>Figure 23.1.</strong> MOC architecture: ground station network, flight control system, mission database, flight dynamics system, specialist teams, and hot-standby backup MOC.</figcaption>
+</figure>
+<h2 id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">&para;</a></h2>
+<p>This chapter has presented the complete lifecycle of mission operations from the initial staffing and infrastructure of the Mission Operations Center through to end-of-life passivation and disposal. Key takeaways include:</p>
+<ul>
+<li>
+<p>The MOC integrates a multidisciplinary team (FOT, SSEs, FD, mission planners) supported by redundant IT infrastructure and geographically distributed backup facilities certified through an Operations Readiness Review.</p>
+</li>
+<li>
+<p>Telemetry processing follows the CCSDS packet hierarchy: transfer frames <span class="arithmatex">\(\to\)</span> virtual channels <span class="arithmatex">\(\to\)</span> source packets <span class="arithmatex">\(\to\)</span> calibrated engineering parameters with multi-level limit checking and persistent violation alerting.</p>
+</li>
+<li>
+<p>Commanding employs the CCSDS TC standard with three-stage verification and two-person integrity for critical commands, ensuring command uplink, execution, and housekeeping confirmation are all verified.</p>
+</li>
+<li>
+<p>Orbit determination uses batch least-squares or sequential Kalman filtering on ranging, Doppler, and VLBI measurements to achieve <span class="arithmatex">\(\sim\)</span>10 m (3-<span class="arithmatex">\(\sigma\)</span>) LEO position accuracy from a 24-hour tracking arc.</p>
+</li>
+<li>
+<p>LEOP is the highest-risk phase; pre-planned contingency procedures, redundant command paths, and backup ground stations are essential for managing pyrotechnic events and apogee motor firings.</p>
+</li>
+<li>
+<p>Mission planning resolves competing constraints (eclipse, power, thermal, downlink) to maximise science return within resource budgets using constraint-driven scheduling tools.</p>
+</li>
+<li>
+<p>Ground data systems (SCOS-2000, AMMOS, GMAT, CFDP) provide the software foundation for real-time monitoring, commanding, file transfer, and flight dynamics analysis.</p>
+</li>
+<li>
+<p>Automation and AI—including autoencoders, LSTMs, and RL schedulers—are progressively reducing operational costs and enabling lights-out operations for large constellations.</p>
+</li>
+<li>
+<p>End-of-life operations must include passivation and controlled disposal compliant with IADC guidelines: LEO deorbit within 25 years (<span class="arithmatex">\(\Delta v \approx 80\)</span> m/s from 600 km), GEO graveyard raise (<span class="arithmatex">\(\Delta v \approx 11\)</span> m/s).</p>
+</li>
+</ul>
+<h2 id="problems">Problems<a class="headerlink" href="#problems" title="Permanent link">&para;</a></h2>
+<ol>
+<li>
+<p>A spacecraft is in a circular orbit at 650 km altitude. Using <a href="#eq-contact_radius">Equation (23.6)</a> and <a href="#eq-contact_duration">Equation (23.7)</a>, calculate the approximate contact window duration for a ground station at <span class="arithmatex">\(45^\circ\)</span>N latitude with a minimum elevation angle of <span class="arithmatex">\(5^\circ\)</span>.</p>
+</li>
+<li>
+<p>A 500 kg satellite must perform a station-keeping burn of <span class="arithmatex">\(\Delta v = 2\)</span> m/s using a thruster with <span class="arithmatex">\(F = 10\)</span> N and <span class="arithmatex">\(I_{sp} = 220\)</span> s. Calculate the burn duration and propellant consumed using <a href="#eq-burn_duration">Equation (23.4)</a>.</p>
+</li>
+<li>
+<p>A conjunction assessment yields <span class="arithmatex">\(P_c = 5 \times 10^{-4}\)</span> with TCA 36 hours away. Describe the complete conjunction avoidance workflow and justify whether a manoeuvre is warranted.</p>
+</li>
+<li>
+<p>Compare batch least-squares orbit determination with the sequential Kalman filter in terms of computational requirements, real-time capability, and sensitivity to data gaps. Under what operational circumstances would each be preferred?</p>
+</li>
+<li>
+<p>A GEO satellite has 20 kg of remaining bipropellant (<span class="arithmatex">\(I_{sp} = 310\)</span> s) at end-of-mission with a wet mass of 1800 kg. Using the Tsiolkovsky equation, determine whether it can execute the graveyard disposal manoeuvre (<span class="arithmatex">\(\Delta v = 11\)</span> m/s) and estimate the remaining mass after the burn.</p>
+</li>
+<li>
+<p>Explain how the on-board FDIR system interacts with ground-based SCOS-2000 alarm management. Describe a scenario where on-board FDIR takes a corrective action before the ground team is even aware of the anomaly, and discuss the advantages and risks of this approach.</p>
+</li>
+</ol>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button type="button" class="md-top md-icon" data-md-component="top" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+Back to top
+</button>
+</main>
+<footer class="md-footer">
+<nav class="md-footer__inner md-grid" aria-label="Footer" >
+<a href="ch22-ground-station-design-and-networks.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: 22. Ground Station Design and Networks">
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</div>
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Previous
+</span>
+<div class="md-ellipsis">
+22. Ground Station Design and Networks
+</div>
+</div>
+</a>
+<a href="ch24-smallsats-cubesats-and-the-new-space-revolution.html" class="md-footer__link md-footer__link--next" aria-label="Next: 24. SmallSats, CubeSats, and the New Space Revolution">
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Next
+</span>
+<div class="md-ellipsis">
+24. SmallSats, CubeSats, and the New Space Revolution
+</div>
+</div>
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+</div>
+</a>
+</nav>
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+The Open Book Project &middot;
+<a href="../../about.html">About this library</a> &middot;
+<a href="../../publish.html">Publish your book</a> &middot;
+© The authors of the books
+</div>
+Made with
+<a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+Material for MkDocs
+</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "navigation.prune", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "toc.follow", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+<script src="../../assets/mathjax.js"></script>
+<script src="../../assets/viz.js"></script>
+<script src="../../assets/remote.js"></script>
+<script src="../../assets/scans.js"></script>
+<script src="../../assets/reader.js"></script>
+<script src="../../assets/app.js"></script>
+<script src="../../assets/slides.js"></script>
+<script src="../../assets/speak.js"></script>
+<script src="../../assets/quiz.js"></script>
+<script>
+    /* offline reading: the service worker at the site root (its scope is the whole site) */
+    if ("serviceWorker" in navigator && window.isSecureContext) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register(new URL("../../sw.js", location.href).href).catch(function () {});
+      });
+    }
+  </script>
+</body>
+</html>

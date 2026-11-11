@@ -1,0 +1,1476 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="description" content="The Open Book Project: books on computer science, quantum computing, cyber security, science, the social sciences, university courses and languages, read page by page like an e-book, online or offline.">
+<meta name="author" content="The Open Book Project">
+<link rel="canonical" href="https://open-book-project.github.io/engineering/satellite_technology/ch30-6g-and-non-terrestrial-networks.html">
+<link rel="prev" href="ch29-quantum-communications-and-satellite-qkd.html">
+<link rel="next" href="ch31-future-concepts-and-emerging-space-technologies.html">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap"></noscript>
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Open Book">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="application-name" content="Open Book"><script src="../../assets/library-data.js"></script><script>
+    (function () {
+      var X = window.XMLHttpRequest, open, gate = new Promise(function (r) { open = r; });
+      if (!X) return;
+      var open0 = X.prototype.open, send0 = X.prototype.send;
+      X.prototype.open = function (method, url) {
+        this.__pkIndex = /\/search\/search_index\.json(\?|#|$)/.test(String(url));
+        return open0.apply(this, arguments);
+      };
+      X.prototype.send = function () {
+        if (!this.__pkIndex) return send0.apply(this, arguments);
+        var xhr = this, args = arguments;
+        gate.then(function () { send0.apply(xhr, args); });
+      };
+      function wake() { open(); }
+      document.addEventListener("focusin", function (e) { if (e.target && e.target.closest && e.target.closest(".md-search")) wake(); });
+      document.addEventListener("click", function (e) { if (e.target && e.target.closest && e.target.closest('label[for="__search"], .md-search')) wake(); }, true);
+      document.addEventListener("keydown", function (e) {
+        var k = e.key;
+        if ((k === "/" || k === "s" || k === "f" || k === "S" || k === "F") && !(e.target && e.target.closest && e.target.closest("input, textarea, [contenteditable]"))) wake();
+      }, true);
+      if (/[?&]q=/.test(location.search)) wake();
+    })();
+  </script><script>
+    try {
+      if ((window.matchMedia && (matchMedia("(display-mode: standalone)").matches || matchMedia("(display-mode: fullscreen)").matches)) || navigator.standalone === true) {
+        document.documentElement.className += " bjp-standalone";
+      }
+    } catch (e) { /* not an installed app */ }
+    /* the books of a subject or of the whole library as covers or as a list (assets/app.js): the reader's choice */
+    try {
+      var bv = localStorage.getItem("bjp.view");
+      if (bv === "list" || (bv !== "grid" && /\/books\.html$/.test(location.pathname))) document.documentElement.className += " bjp-view-list";
+    } catch (e) { /* no storage: covers */ }
+  </script>
+<script>
+    /* a book opened from its cover on the shelf: the page stays blank, in the cover's colour, until the reader is up */
+    try {
+      var cv = sessionStorage.getItem("bjp.reader.cover");
+      if (cv && sessionStorage.getItem("bjp.reader.open") === "1") {
+        var c = JSON.parse(cv), de = document.documentElement;
+        de.className += " bjp-booting";
+        if (c && /^#[0-9a-f]{3,8}$/i.test(c.bg || "")) de.style.background = c.bg;
+        setTimeout(function () { de.classList.remove("bjp-booting"); de.style.background = ""; }, 3000);
+      }
+    } catch (e) { /* no session storage: the page simply opens as usual */ }
+  </script>
+<title>30. 6G and Non-Terrestrial Networks - The Open Book Project</title>
+<link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+<link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+<link rel="stylesheet" href="../../assets/extra.css">
+<link rel="stylesheet" href="../../assets/reader.css">
+<link rel="stylesheet" href="../../assets/viz.css">
+<link rel="stylesheet" href="../../assets/app.css">
+<link rel="stylesheet" href="../../assets/theme.css">
+<link rel="stylesheet" href="../../assets/slides.css">
+<link rel="stylesheet" href="../../assets/remote.css">
+<link rel="stylesheet" href="../../assets/scans.css">
+<link rel="stylesheet" href="../../assets/speak.css">
+<link rel="stylesheet" href="../../assets/quiz.css">
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+<input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+<input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a href="#sec-ntn_intro" class="md-skip">
+Skip to content
+</a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav class="md-header__inner md-grid" aria-label="Header">
+<a href="../../index.html" title="The Open Book Project" class="md-header__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+The Open Book Project
+</span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+30. 6G and Non-Terrestrial Networks
+</span>
+</div>
+</div>
+</div><a href="../../index.html" class="bjp-libbtn" aria-label="Library: all books" title="Library: all books">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V5h4v15M8 20V9h4v11M14 20L12.6 6l3.8-.8 3 14.2M3 20h18"/></svg><span>Library</span>
+</a>
+<a href="../../subjects/index.html" class="pk-catbtn" aria-haspopup="true" aria-expanded="false" title="Browse the books by category">
+<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><circle cx="17" cy="7" r="3.6"/><path d="M7 13.4l3.9 6.8H3.1z"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg><span>Categories</span>
+</a>
+<form class="md-header__option" data-md-component="palette">
+<input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+<label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+</label>
+<input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+<label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+<label class="md-search__icon md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</label>
+<nav class="md-search__options" aria-label="Search">
+<button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+Initializing search
+</div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--primary bjp-nav bjp-nav--book" aria-label="Navigation" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a href="../../index.html" title="The Open Book Project" class="md-nav__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+The Open Book Project
+</label>
+<ul class="md-nav__list" data-md-scrollfix>
+<li class="md-nav__item bjp-nav-all">
+<a href="../../index.html" class="md-nav__link" aria-label="All books: back to the library">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+<span class="md-ellipsis">All books</span>
+</a>
+</li>
+<li class="md-nav__item bjp-nav-book" role="presentation"><span class="bjp-nav-head">Satellite Technology</span></li>
+<li class="md-nav__item">
+<a href="index.html" class="md-nav__link">
+<span class="md-ellipsis">
+Overview and preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="list-of-abbreviations.html" class="md-nav__link">
+<span class="md-ellipsis">
+List of Abbreviations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch01-introduction-to-satellite-technology.html" class="md-nav__link">
+<span class="md-ellipsis">
+1. Introduction to Satellite Technology
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch02-orbital-mechanics.html" class="md-nav__link">
+<span class="md-ellipsis">
+2. Orbital Mechanics
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch03-the-space-environment.html" class="md-nav__link">
+<span class="md-ellipsis">
+3. The Space Environment
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch04-launch-systems-and-mission-design.html" class="md-nav__link">
+<span class="md-ellipsis">
+4. Launch Systems and Mission Design
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch05-satellite-architecture-and-systems-engineering.html" class="md-nav__link">
+<span class="md-ellipsis">
+5. Satellite Architecture and Systems Engineering
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch06-satellite-electrical-power-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+6. Satellite Electrical Power Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch07-attitude-determination-and-control-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+7. Attitude Determination and Control Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch08-satellite-propulsion-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+8. Satellite Propulsion Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch09-thermal-control-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+9. Thermal Control Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch10-on-board-data-handling.html" class="md-nav__link">
+<span class="md-ellipsis">
+10. On-Board Data Handling
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch11-telemetry-tracking-and-command-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+11. Telemetry, Tracking and Command Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch12-radio-frequency-satellite-communications.html" class="md-nav__link">
+<span class="md-ellipsis">
+12. Radio Frequency Satellite Communications
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch13-satellite-link-budget-analysis.html" class="md-nav__link">
+<span class="md-ellipsis">
+13. Satellite Link Budget Analysis
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch14-satellite-antenna-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+14. Satellite Antenna Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch15-digital-signal-processing-for-satellites.html" class="md-nav__link">
+<span class="md-ellipsis">
+15. Digital Signal Processing for Satellites
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch16-optical-satellite-communications.html" class="md-nav__link">
+<span class="md-ellipsis">
+16. Optical Satellite Communications
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch17-earth-observation-and-remote-sensing.html" class="md-nav__link">
+<span class="md-ellipsis">
+17. Earth Observation and Remote Sensing
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch18-global-navigation-satellite-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+18. Global Navigation Satellite Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch19-communication-satellites-and-services.html" class="md-nav__link">
+<span class="md-ellipsis">
+19. Communication Satellites and Services
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch20-scientific-satellites-and-space-observatories.html" class="md-nav__link">
+<span class="md-ellipsis">
+20. Scientific Satellites and Space Observatories
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch21-military-and-intelligence-satellites.html" class="md-nav__link">
+<span class="md-ellipsis">
+21. Military and Intelligence Satellites
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch22-ground-station-design-and-networks.html" class="md-nav__link">
+<span class="md-ellipsis">
+22. Ground Station Design and Networks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch23-mission-operations-and-ground-control.html" class="md-nav__link">
+<span class="md-ellipsis">
+23. Mission Operations and Ground Control
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch24-smallsats-cubesats-and-the-new-space-revolution.html" class="md-nav__link">
+<span class="md-ellipsis">
+24. SmallSats, CubeSats, and the New Space Revolution
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch25-mega-constellations-and-leo-broadband-networks.html" class="md-nav__link">
+<span class="md-ellipsis">
+25. Mega-Constellations and LEO Broadband Networks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch26-artificial-intelligence-and-machine-learning-in.html" class="md-nav__link">
+<span class="md-ellipsis">
+26. Artificial Intelligence and Machine Learning in Space
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch27-on-orbit-servicing-and-space-robotics.html" class="md-nav__link">
+<span class="md-ellipsis">
+27. On-Orbit Servicing and Space Robotics
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch28-space-debris-and-long-term-sustainability.html" class="md-nav__link">
+<span class="md-ellipsis">
+28. Space Debris and Long-Term Sustainability
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch29-quantum-communications-and-satellite-qkd.html" class="md-nav__link">
+<span class="md-ellipsis">
+29. Quantum Communications and Satellite QKD
+</span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+30. 6G and Non-Terrestrial Networks
+</span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a href="ch30-6g-and-non-terrestrial-networks.html" class="md-nav__link md-nav__link--active">
+<span class="md-ellipsis">
+30. 6G and Non-Terrestrial Networks
+</span>
+</a>
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#sec-ntn_intro" class="md-nav__link">
+<span class="md-ellipsis">
+30.1 Introduction
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-3gpp_ntn" class="md-nav__link">
+<span class="md-ellipsis">
+30.2 3GPP NTN Standards Evolution
+</span>
+</a>
+<nav class="md-nav" aria-label="30.2 3GPP NTN Standards Evolution">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-rel15_16" class="md-nav__link">
+<span class="md-ellipsis">
+30.2.1 Release 15 and 16: Study Phase
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-rel17" class="md-nav__link">
+<span class="md-ellipsis">
+30.2.2 Release 17: First Normative NTN Standard
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-rel18" class="md-nav__link">
+<span class="md-ellipsis">
+30.2.3 Release 18: Enhanced NTN
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-rel19" class="md-nav__link">
+<span class="md-ellipsis">
+30.2.4 Release 19 and Beyond
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-ntn_arch" class="md-nav__link">
+<span class="md-ellipsis">
+30.3 NTN Architecture
+</span>
+</a>
+<nav class="md-nav" aria-label="30.3 NTN Architecture">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-transparent" class="md-nav__link">
+<span class="md-ellipsis">
+30.3.1 Transparent Payload Architecture
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-regenerative" class="md-nav__link">
+<span class="md-ellipsis">
+30.3.2 Regenerative Payload Architecture
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-ta_management" class="md-nav__link">
+<span class="md-ellipsis">
+30.3.3 Timing Advance Management
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-doppler" class="md-nav__link">
+<span class="md-ellipsis">
+30.3.4 Doppler Pre-Compensation
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-d2d" class="md-nav__link">
+<span class="md-ellipsis">
+30.4 Direct-to-Device Satellite Communications
+</span>
+</a>
+<nav class="md-nav" aria-label="30.4 Direct-to-Device Satellite Communications">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-d2d_link_budget" class="md-nav__link">
+<span class="md-ellipsis">
+30.4.1 Link Budget Challenge for Direct-to-Device
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-ast" class="md-nav__link">
+<span class="md-ellipsis">
+30.4.2 AST SpaceMobile
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-starlink_d2c" class="md-nav__link">
+<span class="md-ellipsis">
+30.4.3 Starlink Direct-to-Cell
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-apple_sos" class="md-nav__link">
+<span class="md-ellipsis">
+30.4.4 Apple Emergency SOS via Satellite
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-chipsets" class="md-nav__link">
+<span class="md-ellipsis">
+30.4.5 Chipset Ecosystem for NTN
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-haps" class="md-nav__link">
+<span class="md-ellipsis">
+30.5 HAPS High-Altitude Platform Stations
+</span>
+</a>
+<nav class="md-nav" aria-label="30.5 HAPS High-Altitude Platform Stations">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-haps_platforms" class="md-nav__link">
+<span class="md-ellipsis">
+30.5.1 HAPS Platform Technology
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-haps_freq" class="md-nav__link">
+<span class="md-ellipsis">
+30.5.2 HAPS Frequency Allocations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-haps_path_loss" class="md-nav__link">
+<span class="md-ellipsis">
+30.5.3 Path Loss Advantage of HAPS vs. GEO
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-haps_use_cases" class="md-nav__link">
+<span class="md-ellipsis">
+30.5.4 HAPS Use Cases and Economics
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-6g_vision" class="md-nav__link">
+<span class="md-ellipsis">
+30.6 6G Space Integration Vision
+</span>
+</a>
+<nav class="md-nav" aria-label="30.6 6G Space Integration Vision">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-imt2030" class="md-nav__link">
+<span class="md-ellipsis">
+30.6.1 IMT-2030 Requirements and NTN Role
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-sagsin" class="md-nav__link">
+<span class="md-ellipsis">
+30.6.2 Space-Air-Ground-Sea Integrated Network (SAGSIN)
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-thz" class="md-nav__link">
+<span class="md-ellipsis">
+30.6.3 Terahertz Communication for Satellite ISLs
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-oran_ntn" class="md-nav__link">
+<span class="md-ellipsis">
+30.6.4 Open RAN for NTN
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-energy_efficiency" class="md-nav__link">
+<span class="md-ellipsis">
+30.6.5 Energy Efficiency for 6G NTN
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#chapter-summary" class="md-nav__link">
+<span class="md-ellipsis">
+Chapter Summary
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="ch31-future-concepts-and-emerging-space-technologies.html" class="md-nav__link">
+<span class="md-ellipsis">
+31. Future Concepts and Emerging Space Technologies
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="classical-orbital-elements-and-coordinate.html" class="md-nav__link">
+<span class="md-ellipsis">
+Classical Orbital Elements and Coordinate Transformations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="satellite-frequency-allocations.html" class="md-nav__link">
+<span class="md-ellipsis">
+Satellite Frequency Allocations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="launch-vehicle-specifications.html" class="md-nav__link">
+<span class="md-ellipsis">
+Launch Vehicle Specifications
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="link-budget-templates-and-worked-examples.html" class="md-nav__link">
+<span class="md-ellipsis">
+Link Budget Templates and Worked Examples
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="key-standards-software-tools-and-references.html" class="md-nav__link">
+<span class="md-ellipsis">
+Key Standards, Software Tools, and References
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="bibliography.html" class="md-nav__link">
+<span class="md-ellipsis">
+Bibliography
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#sec-ntn_intro" class="md-nav__link">
+<span class="md-ellipsis">
+30.1 Introduction
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-3gpp_ntn" class="md-nav__link">
+<span class="md-ellipsis">
+30.2 3GPP NTN Standards Evolution
+</span>
+</a>
+<nav class="md-nav" aria-label="30.2 3GPP NTN Standards Evolution">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-rel15_16" class="md-nav__link">
+<span class="md-ellipsis">
+30.2.1 Release 15 and 16: Study Phase
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-rel17" class="md-nav__link">
+<span class="md-ellipsis">
+30.2.2 Release 17: First Normative NTN Standard
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-rel18" class="md-nav__link">
+<span class="md-ellipsis">
+30.2.3 Release 18: Enhanced NTN
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-rel19" class="md-nav__link">
+<span class="md-ellipsis">
+30.2.4 Release 19 and Beyond
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-ntn_arch" class="md-nav__link">
+<span class="md-ellipsis">
+30.3 NTN Architecture
+</span>
+</a>
+<nav class="md-nav" aria-label="30.3 NTN Architecture">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-transparent" class="md-nav__link">
+<span class="md-ellipsis">
+30.3.1 Transparent Payload Architecture
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-regenerative" class="md-nav__link">
+<span class="md-ellipsis">
+30.3.2 Regenerative Payload Architecture
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-ta_management" class="md-nav__link">
+<span class="md-ellipsis">
+30.3.3 Timing Advance Management
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-doppler" class="md-nav__link">
+<span class="md-ellipsis">
+30.3.4 Doppler Pre-Compensation
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-d2d" class="md-nav__link">
+<span class="md-ellipsis">
+30.4 Direct-to-Device Satellite Communications
+</span>
+</a>
+<nav class="md-nav" aria-label="30.4 Direct-to-Device Satellite Communications">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-d2d_link_budget" class="md-nav__link">
+<span class="md-ellipsis">
+30.4.1 Link Budget Challenge for Direct-to-Device
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-ast" class="md-nav__link">
+<span class="md-ellipsis">
+30.4.2 AST SpaceMobile
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-starlink_d2c" class="md-nav__link">
+<span class="md-ellipsis">
+30.4.3 Starlink Direct-to-Cell
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-apple_sos" class="md-nav__link">
+<span class="md-ellipsis">
+30.4.4 Apple Emergency SOS via Satellite
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-chipsets" class="md-nav__link">
+<span class="md-ellipsis">
+30.4.5 Chipset Ecosystem for NTN
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-haps" class="md-nav__link">
+<span class="md-ellipsis">
+30.5 HAPS High-Altitude Platform Stations
+</span>
+</a>
+<nav class="md-nav" aria-label="30.5 HAPS High-Altitude Platform Stations">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-haps_platforms" class="md-nav__link">
+<span class="md-ellipsis">
+30.5.1 HAPS Platform Technology
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-haps_freq" class="md-nav__link">
+<span class="md-ellipsis">
+30.5.2 HAPS Frequency Allocations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-haps_path_loss" class="md-nav__link">
+<span class="md-ellipsis">
+30.5.3 Path Loss Advantage of HAPS vs. GEO
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-haps_use_cases" class="md-nav__link">
+<span class="md-ellipsis">
+30.5.4 HAPS Use Cases and Economics
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-6g_vision" class="md-nav__link">
+<span class="md-ellipsis">
+30.6 6G Space Integration Vision
+</span>
+</a>
+<nav class="md-nav" aria-label="30.6 6G Space Integration Vision">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsec-imt2030" class="md-nav__link">
+<span class="md-ellipsis">
+30.6.1 IMT-2030 Requirements and NTN Role
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-sagsin" class="md-nav__link">
+<span class="md-ellipsis">
+30.6.2 Space-Air-Ground-Sea Integrated Network (SAGSIN)
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-thz" class="md-nav__link">
+<span class="md-ellipsis">
+30.6.3 Terahertz Communication for Satellite ISLs
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-oran_ntn" class="md-nav__link">
+<span class="md-ellipsis">
+30.6.4 Open RAN for NTN
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#subsec-energy_efficiency" class="md-nav__link">
+<span class="md-ellipsis">
+30.6.5 Energy Efficiency for 6G NTN
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#chapter-summary" class="md-nav__link">
+<span class="md-ellipsis">
+Chapter Summary
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="ch-6g_ntn">Chapter 30: 6G and Non-Terrestrial Networks<a class="headerlink" href="#ch-6g_ntn" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p><em>“The next generation of wireless will not merely improve speed—it will dissolve the boundary between the sky and the network.”</em><br> <span class="srcline">— 3GPP Technical Report 38.811</span></p>
+</blockquote>
+<p>The integration of satellite and aerial platforms into the mobile network is no longer a research concept but a rapidly advancing engineering reality. Third-generation Partnership Project (3GPP) standardization of Non-Terrestrial Networks (NTN) has moved from study phase in Release 15 to normative specifications in Release 17 (frozen June 2022), with enhancements ongoing through Release 19. Simultaneously, commercial and pre-commercial deployments are turning theoretical link budgets into products (as of 2025): SpaceX’s Starlink direct-to-cell satellites sent their first text messages to ordinary phones in January 2024 and entered service with partner operators later, AST SpaceMobile’s 64 m<sup>2</sup> BlueWalker 3 test satellite demonstrated data connections to unmodified smartphones, and Apple’s Emergency SOS via satellite has been available on iPhones since late 2022 through Globalstar’s LEO constellation.</p>
+<p>Looking beyond 5G NTN, the 6G vision encoded in ITU-R IMT-2030 requirements explicitly designates non-terrestrial networks as a native component of the 6G architecture—a fundamental departure from 5G’s terrestrial-centric design with satellite connectivity retrofitted as an afterthought. This chapter traces the standardization pathway from 3GPP Release 15 study items to Release 19 enhancements, analyzes the NTN architecture (transparent vs. regenerative payload, timing advance management, Doppler compensation), examines direct-to-device commercial deployments, describes HAPS (High-Altitude Platform Station) technology, and outlines the 6G Space-Air-Ground-Sea integrated network vision including terahertz ISLs, Open RAN for NTN, and energy efficiency targets.</p>
+<h2 id="sec-ntn_intro"><span class="secnum">30.1</span> Introduction<a class="headerlink" href="#sec-ntn_intro" title="Permanent link">&para;</a></h2>
+<p>Non-terrestrial networks comprise satellite (LEO, MEO, GEO), HAPS, and UAV platforms that extend cellular connectivity beyond the reach of terrestrial base stations. The commercial motivation is compelling: the International Telecommunication Union estimated in 2024 that roughly 2.6 billion people were still offline, many of them in remote or rural areas where terrestrial infrastructure is economically difficult to justify. Maritime and aeronautical connectivity markets demand global coverage that only satellites can provide. Emergency communications after natural disasters require infrastructure independent of ground-based assets.</p>
+<p>The technical challenges that historically separated satellite and cellular systems are profound. Satellite links impose propagation delays of about 2 ms (LEO at 600 km, directly overhead) to roughly 240 ms (GEO, user to gateway via the satellite) one-way, versus <span class="arithmatex">\(&lt;0.5\)</span> ms for terrestrial 5G. Doppler shifts at LEO range from <span class="arithmatex">\(\pm\)</span>50 kHz at S-band (<span class="arithmatex">\(f = 2\)</span> GHz) to <span class="arithmatex">\(\pm\)</span>0.76 MHz at Ka-band (<span class="arithmatex">\(f = 30\)</span> GHz). Cell sizes are enormous—a LEO satellite at 600 km illuminates a footprint 600–2000 km in diameter, compared to 200 m for a 5G small cell. These differences require fundamental protocol modifications: the standard 3GPP Hybrid Automatic Repeat reQuest (HARQ) process (8 processes with 8 ms round-trip timing) cannot function with a 600 ms GEO round-trip time.</p>
+<div class="admonition info box-keybox kind-concept">
+<p><strong>NTN Altitude Regimes and Delay Budget:</strong></p>
+<ul>
+<li>
+<p>LEO (160–2000 km): 1–13 ms one-way; orbital period 1.5–2.5 hours; coverage per satellite 300–3000 km</p>
+</li>
+<li>
+<p>MEO (2000–35,786 km): 13–120 ms; period 2–24 hours; navigation satellites</p>
+</li>
+<li>
+<p>GEO (35,786 km): 240 ms one-way; stationary; 3 satellites for near-global coverage</p>
+</li>
+<li>
+<p>HAPS (17–22 km): <span class="arithmatex">\(&lt;0.1\)</span> ms; quasi-stationary; 140–200 km coverage per platform</p>
+</li>
+</ul>
+</div>
+<p>3GPP NTN standardization addresses these challenges with protocol adaptations (extended HARQ timers, UE-based timing advance pre-compensation, Doppler pre-compensation) while reusing the maximum possible NR air interface functionality to reduce implementation complexity.</p>
+<h2 id="sec-3gpp_ntn"><span class="secnum">30.2</span> 3GPP NTN Standards Evolution<a class="headerlink" href="#sec-3gpp_ntn" title="Permanent link">&para;</a></h2>
+<h3 id="subsec-rel15_16"><span class="secnum">30.2.1</span> Release 15 and 16: Study Phase<a class="headerlink" href="#subsec-rel15_16" title="Permanent link">&para;</a></h3>
+<p>3GPP NTN standardization began with study items in Release 15 (2018) and Release 16 (2019–2020):</p>
+<ul>
+<li>
+<p><strong>TR 38.811</strong> (Study on NTN, v15.4.0, May 2019): Channel model, propagation delay, Doppler analysis for LEO/MEO/GEO/HAPS. Identified key challenges: round-trip propagation delay impacts on HARQ and scheduling, frequency offset from Doppler, large cell size requiring large TA values, feeder link bandwidth, mobility management.</p>
+</li>
+<li>
+<p><strong>TR 38.821</strong> (Solutions for NTN, v16.0.0, January 2020): Evaluated solutions including UE-side TA pre-compensation using GNSS and satellite ephemeris, Doppler pre-compensation, HARQ process adaptation, and timing advance extensions.</p>
+</li>
+<li>
+<p><strong>TR 22.822</strong> (SA1 NTN use cases, v16.0.0): Service requirements including continuous broadband access in underserved areas, 3GPP service continuity between terrestrial and NTN, IoT connectivity in remote areas, public safety communications, and in-flight connectivity.</p>
+</li>
+</ul>
+<p>Four NTN scenarios were studied: LEO (200–2000 km), MEO (2000–35786 km), GEO (35786 km), and HAPS (17–22 km altitude), with both transparent (bent-pipe) and regenerative (onboard processing) payload architectures.</p>
+<h3 id="subsec-rel17"><span class="secnum">30.2.2</span> Release 17: First Normative NTN Standard<a class="headerlink" href="#subsec-rel17" title="Permanent link">&para;</a></h3>
+<p>Release 17, frozen in June 2022, produced the first normative NTN specifications. Two work items ran in parallel: NB-IoT/eMTC NTN and NR NTN.</p>
+<p><strong>NR NTN Key Specifications:</strong></p>
+<ul>
+<li>
+<p>TS 38.101-5: User Equipment (UE) radio transmission/reception for NTN (new part 5)</p>
+</li>
+<li>
+<p>TS 38.300 Annex: Architecture enhancements for NTN</p>
+</li>
+<li>
+<p>TS 38.213/38.214/38.321: Physical layer procedures and MAC for NTN</p>
+</li>
+</ul>
+<p><strong>Key Features Introduced in Release 17:</strong></p>
+<p><em>Timing Advance (TA) pre-compensation:</em> The standard NR TA mechanism (base station commands UE to advance its uplink timing) cannot account for the large and dynamically varying propagation delay in NTN. Release 17 introduces UE-side TA pre-compensation: <span id="eq-ntn_ta"></span></p>
+<div class="arithmatex">\[\text{TA} = \frac{2 d_{\text{feeder}} + 2 d_{\text{service}}}{c} = \text{TA}_{\text{common}} + \text{TA}_{\text{UE}}\tag{30.1}\]</div>
+<p>where <span class="arithmatex">\(d_{\text{feeder}}\)</span> is the gNB-to-satellite (feeder link) range, <span class="arithmatex">\(d_{\text{service}}\)</span> is the satellite-to-UE (service link) range, <span class="arithmatex">\(c\)</span> is the speed of light, and TA is expressed in units of <span class="arithmatex">\(T_s = 1/(30720 \times \Delta f_{\text{ref}})\)</span>. For GEO, the maximum NR TA value was extended to 67,800 <span class="arithmatex">\(T_s\)</span> = 245 ms to accommodate the 240 ms one-way GEO delay. The UE computes <span class="arithmatex">\(d_{\text{service}}\)</span> from its GNSS position and the satellite ephemeris broadcast in SIB (System Information Block).</p>
+<p><em>Doppler pre-compensation:</em> The UE pre-compensates its uplink carrier frequency for the satellite Doppler shift using GNSS-derived velocity and satellite ephemeris. Residual Doppler after compensation is <span class="arithmatex">\(&lt;\)</span>100 Hz, within the NR frequency error tolerance.</p>
+<p><em>HARQ adaptation:</em> Standard NR uses up to 8 HARQ processes with 8 ms round-trip timing. A GEO link with 600 ms RTT would require 75 processes—impractical. Release 17 allows HARQ process disabling (broadcast via SIB, or configured per bearer), allowing the gNB to operate with a simple ARQ mechanism or rely on upper-layer retransmission. For LEO with <span class="arithmatex">\(\sim\)</span>25 ms RTT, HARQ is feasible with 4–8 processes and extended timing.</p>
+<p><em>Scheduling offset extension:</em> The parameter <span class="arithmatex">\(k_0\)</span> (PDCCH-to-PDSCH offset) and <span class="arithmatex">\(k_2\)</span> (PDCCH-to-PUSCH offset) are extended from the terrestrial range of 0–7 slots to accommodate NTN delays.</p>
+<p><strong>NTN Frequency Bands (Release 17):</strong></p>
+<ul>
+<li>
+<p>Band n255: 1626.5–1660.5 MHz UL / 1525–1559 MHz DL (L-band, mobile satellite service)</p>
+</li>
+<li>
+<p>Band n256: 1980–2010 MHz UL / 2170–2200 MHz DL (S-band, mobile satellite service)</p>
+</li>
+<li>
+<p>Band n254: 1610–1626.5 MHz UL / 2483.5–2500 MHz DL (L/S-band, mobile satellite service)</p>
+</li>
+<li>
+<p>Ka-band bands for NR-NTN (n510, n511, n512): about 27.5–30 GHz uplink and 17.3–20.2 GHz downlink, a Release 17 addition for fixed and very small aperture terminals</p>
+</li>
+</ul>
+<h3 id="subsec-rel18"><span class="secnum">30.2.3</span> Release 18: Enhanced NTN<a class="headerlink" href="#subsec-rel18" title="Permanent link">&para;</a></h3>
+<p>Release 18 (frozen March 2024), the first release of the 5G-Advanced era, introduced significant NTN enhancements under the eNTN work item:</p>
+<p><strong>Earth-Fixed Beam (EFB) Mode:</strong> In conventional LEO NTN, satellite beams sweep across the Earth at orbital velocity. EFB mode uses active beam steering to fix a beam over a geographic area (like a GEO footprint) for a configurable dwell time, greatly simplifying UE mobility management and cell reselection. The gNB adapts cell parameters on a beam-granular basis.</p>
+<p><strong>Enhanced Inter-Satellite Handover:</strong> Release 17 inter-satellite handover required full UE re-connection. Release 18 introduces conditional handover and early measurement reporting to reduce handover interruption time from <span class="arithmatex">\(&gt;1\)</span> s to <span class="arithmatex">\(&lt;100\)</span> ms, critical for voice and real-time applications.</p>
+<p><strong>UE Power Saving for NTN:</strong> Extended discontinuous reception (eDRX) periods are adapted for NTN satellite periodicity (<span class="arithmatex">\(\sim\)</span>90 min for LEO). Wake-up signal (WUS) transmission allows UE to remain in deep sleep and wake only when data is incoming. Connected-mode DRX parameters are extended for GEO latency.</p>
+<p><strong>Multi-TRP Diversity:</strong> Multiple transmission/reception points (satellite beams) serve a UE simultaneously (MTRP), providing macro-diversity gain for link reliability in edge-of-beam conditions and improving SINR by 3–6 dB.</p>
+<h3 id="subsec-rel19"><span class="secnum">30.2.4</span> Release 19 and Beyond<a class="headerlink" href="#subsec-rel19" title="Permanent link">&para;</a></h3>
+<p>Release 19 (expected 2025–2026) includes:</p>
+<ul>
+<li>
+<p>NTN Multicast/Broadcast Service (MBS): Satellite delivery of broadcast content (TV, software updates, emergency alerts) using NR MBS framework—highly efficient for one-to-many distribution.</p>
+</li>
+<li>
+<p>MIMO for NTN: Multiple antenna techniques adapted for large-scale satellite antenna arrays, potentially 2<span class="arithmatex">\(\times\)</span>2 or 4<span class="arithmatex">\(\times\)</span>4 spatial multiplexing for GEO satellites with multiple beams.</p>
+</li>
+<li>
+<p>eMBB throughput enhancements: Higher spectral efficiency per beam to approach 1 Gbps per satellite beam for LEO.</p>
+</li>
+<li>
+<p>IoT-NTN enhancements: Power consumption optimization for NB-IoT over satellite, duty-cycle relaxation for battery-powered sensors.</p>
+</li>
+</ul>
+<p><a href="#tab-3gpp_ntn_releases">Table 30.1</a> compares key features across NTN releases.</p>
+<div class="tbl" id="tab-3gpp_ntn_releases">
+<div class="tbl-caption"><strong>Table 30.1.</strong> 3GPP NTN Standards Evolution Summary</div>
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Release</strong></th>
+<th style="text-align: left;"><strong>Freeze Date</strong></th>
+<th style="text-align: left;"><strong>Status</strong></th>
+<th style="text-align: left;"><strong>Key Features</strong></th>
+<th style="text-align: left;"><strong>Key Specs</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Rel-15/16</td>
+<td style="text-align: left;">2018–2020</td>
+<td style="text-align: left;">Study</td>
+<td style="text-align: left;">TR 38.811 channel model; TR 38.821 solutions; use cases defined; challenges identified</td>
+<td style="text-align: left;">TR 38.811, TR 38.821, TR 22.822</td>
+</tr>
+<tr>
+<td style="text-align: left;">Rel-17</td>
+<td style="text-align: left;">June 2022</td>
+<td style="text-align: left;">Normative</td>
+<td style="text-align: left;">TA pre-compensation; Doppler pre-compensation; HARQ disabling; TA extension to 245 ms; NTN frequency bands</td>
+<td style="text-align: left;">TS 38.101-5, TS 38.300, TS 38.213, TS 38.321</td>
+</tr>
+<tr>
+<td style="text-align: left;">Rel-18</td>
+<td style="text-align: left;">March 2024</td>
+<td style="text-align: left;">Normative</td>
+<td style="text-align: left;">Earth-fixed beam; enhanced handover; eDRX NTN; WUS; MTRP diversity; GEO NTN specific</td>
+<td style="text-align: left;">TS 38.213 v18, TS 38.321 v18</td>
+</tr>
+<tr>
+<td style="text-align: left;">Rel-19</td>
+<td style="text-align: left;">2025–2026</td>
+<td style="text-align: left;">In progress</td>
+<td style="text-align: left;">NTN MBS; NTN MIMO; eMBB enhancement; IoT-NTN evolution</td>
+<td style="text-align: left;">TBD</td>
+</tr>
+</tbody>
+</table>
+</div></div>
+<h2 id="sec-ntn_arch"><span class="secnum">30.3</span> NTN Architecture<a class="headerlink" href="#sec-ntn_arch" title="Permanent link">&para;</a></h2>
+<h3 id="subsec-transparent"><span class="secnum">30.3.1</span> Transparent Payload Architecture<a class="headerlink" href="#subsec-transparent" title="Permanent link">&para;</a></h3>
+<p>In the transparent (bent-pipe) payload architecture, the satellite performs only RF frequency translation and amplification: the satellite receives the uplink signal from the gNB (via the feeder link) and retransmits it toward UEs (service link), or vice versa for the uplink path. The 5G NR gNB (gNodeB) base station logic resides entirely on the ground. Advantages: satellite complexity is minimized (no digital processing in space, reducing power, mass, cost, and software development risk); ground-based gNBs can be upgraded without satellite hardware changes; spectrum reuse between feeder and service links is straightforward.</p>
+<p>The feeder link carries the Uu air interface (the NR radio interface) transparently. The gNB inserts timing corrections accounting for the double-hop delay before scheduling uplink resources. Starlink Generation 1 satellites operated as bent-pipe for cellular backhaul, and most current commercial NTN systems use transparent architecture.</p>
+<p>The delay budget for transparent GEO architecture: <span id="eq-geo_delay_ch30"></span></p>
+<div class="arithmatex">\[d_{\text{GEO}} = \frac{2 \times 35{,}786~\text{km}}{3 \times 10^5~\text{km/s}} \approx 240~\text{ms one-way}, \quad \text{RTT} \approx 600~\text{ms}\tag{30.2}\]</div>
+<h3 id="subsec-regenerative"><span class="secnum">30.3.2</span> Regenerative Payload Architecture<a class="headerlink" href="#subsec-regenerative" title="Permanent link">&para;</a></h3>
+<p>In the regenerative architecture, some or all gNB functions are implemented on the satellite. The 3GPP functional split options allow:</p>
+<ul>
+<li>
+<p><strong>Option 2 (DU on satellite):</strong> The gNB-DU (Distributed Unit, handling physical and MAC layers) runs on the satellite; the gNB-CU (Centralized Unit, handling RRC, PDCP, SDAP) remains on the ground. The F1 interface connects DU-to-CU via the feeder link.</p>
+</li>
+<li>
+<p><strong>Full gNB on satellite:</strong> Complete 5G base station on the satellite; UEs connect directly with standard NR. The feeder link carries only user data (N3 interface) and management.</p>
+</li>
+</ul>
+<p>Regenerative payloads reduce the effective RTT seen by the UE from the full GEO round-trip (600 ms) to twice the service link delay (2<span class="arithmatex">\(\times\)</span>120 ms for GEO, 2<span class="arithmatex">\(\times\)</span>2 ms for LEO), enabling HARQ to function and reducing scheduling latency. Inter-satellite links (ISLs) in regenerative systems allow routing without returning data to ground stations, further reducing latency (Telesat Lightspeed at 1325 km LEO: 4.4 ms per hop). The trade-off is substantially higher satellite complexity, power consumption, and software development cost.</p>
+<h3 id="subsec-ta_management"><span class="secnum">30.3.3</span> Timing Advance Management<a class="headerlink" href="#subsec-ta_management" title="Permanent link">&para;</a></h3>
+<p>In terrestrial NR, the gNB measures UE uplink timing and commands TA adjustments via MAC CE (Control Element). This loop is untenable with hundreds of milliseconds NTN delay. Release 17 introduces UE-side open-loop pre-compensation: <span id="eq-ntn_ta_full"></span></p>
+<div class="arithmatex">\[\text{TA} = \underbrace{\frac{2d_{\text{feeder}}}{c}}_{\text{TA}_{\text{common}}} + \underbrace{\frac{2d_{\text{service}}}{c}}_{\text{TA}_{\text{UE}}}\tag{30.3}\]</div>
+<ul>
+<li>
+<p><span class="arithmatex">\(\text{TA}_{\text{common}}\)</span>: feeder link delay, known to the gNB, broadcast in SIB as a common offset.</p>
+</li>
+<li>
+<p><span class="arithmatex">\(\text{TA}_{\text{UE}}\)</span>: service link delay from UE to satellite, computed by the UE from its GNSS-derived position and the satellite ephemeris broadcast in SIB1 (NTN-specific ephemeris IE added in Release 17).</p>
+</li>
+</ul>
+<p>The satellite’s position at any future time is predicted from the broadcast Keplerian elements or state vectors with <span class="arithmatex">\(&lt;\)</span>100 m accuracy, giving UE timing pre-compensation accuracy of <span class="arithmatex">\(&lt;\)</span>1 <span class="arithmatex">\(\mu\)</span>s (<span class="arithmatex">\(&lt;\)</span>30 m position error equivalent). The NR TA range was extended from 3846 <span class="arithmatex">\(T_s\)</span> (terrestrial) to 67,800 <span class="arithmatex">\(T_s\)</span> = 245 ms to accommodate full GEO one-way delay.</p>
+<p>For NGSO (LEO/MEO), <span class="arithmatex">\(d_{\text{service}}\)</span> changes significantly during a pass: a LEO satellite at 600 km overhead moves from <span class="arithmatex">\(d_{\min} = 600\)</span> km to <span class="arithmatex">\(d_{\max} = 2000\)</span> km (at 20<span class="arithmatex">\(^\circ\)</span> elevation) over a 10-minute pass, varying TA by <span class="arithmatex">\(\Delta\text{TA} = 2(2000-600)/(3\times10^5) = 9.3\)</span> ms. The UE continuously updates TA prediction using ephemeris extrapolation.</p>
+<h3 id="subsec-doppler"><span class="secnum">30.3.4</span> Doppler Pre-Compensation<a class="headerlink" href="#subsec-doppler" title="Permanent link">&para;</a></h3>
+<p>A LEO satellite at <span class="arithmatex">\(h = 550\)</span> km altitude has orbital velocity <span class="arithmatex">\(v_{\text{orb}} = \sqrt{\mu_E/(R_E+h)} = 7.59\)</span> km/s. The maximum radial velocity component (at horizon) is approximately <span class="arithmatex">\(v_r = v_{\text{orb}}\cos\phi\)</span> where <span class="arithmatex">\(\phi\)</span> is the elevation angle. The Doppler frequency shift on the service link is: <span id="eq-doppler_shift_ch30"></span></p>
+<div class="arithmatex">\[\Delta f_{\text{Doppler}} = \frac{f_c}{c} \cdot v_r = \frac{f_c \cdot v_{\text{orb}} \cos\phi}{c}\tag{30.4}\]</div>
+<p>At <span class="arithmatex">\(f_c = 2\)</span> GHz (S-band), <span class="arithmatex">\(v_r = 7.59\)</span> km/s (overhead pass): <span class="arithmatex">\(\Delta f_{\text{Doppler}} \approx \pm 50.6\)</span> kHz. At <span class="arithmatex">\(f_c = 30\)</span> GHz (Ka-band): <span class="arithmatex">\(\Delta f_{\text{Doppler}} \approx \pm 760\)</span> kHz. The NR subcarrier spacing of 15–120 kHz would be completely obliterated without compensation.</p>
+<p>Release 17 UE Doppler pre-compensation: the UE computes its radial velocity relative to the satellite from GNSS position+velocity and satellite ephemeris, then pre-shifts its uplink carrier frequency by <span class="arithmatex">\(-\Delta f_{\text{Doppler}}\)</span> before transmission. After UE compensation, the gNB sees residual Doppler <span class="arithmatex">\(&lt;\)</span>100 Hz from residual ephemeris error and UE position uncertainty, within the NR frequency error budget. The satellite-side Doppler on the feeder link is compensated by the gateway (gNB side).</p>
+<h2 id="sec-d2d"><span class="secnum">30.4</span> Direct-to-Device Satellite Communications<a class="headerlink" href="#sec-d2d" title="Permanent link">&para;</a></h2>
+<h3 id="subsec-d2d_link_budget"><span class="secnum">30.4.1</span> Link Budget Challenge for Direct-to-Device<a class="headerlink" href="#subsec-d2d_link_budget" title="Permanent link">&para;</a></h3>
+<p>A standard smartphone has a nearly isotropic antenna (about 0 dBi gain) and transmits at 23 dBm (200 mW) maximum output power, giving an EIRP of about 23 dBm. The link to a LEO satellite at 1000 km faces free-space path loss (FSPL): <span id="eq-d2d_fspl"></span></p>
+<div class="arithmatex">\[L_{\text{FSPL}} = 20\log_{10}\!\left(\frac{4\pi d f}{c}\right) = 20\log_{10}\!\left(\frac{4\pi \times 10^6 \times 2\times10^9}{3\times10^8}\right) \approx 158~\text{dB}\tag{30.5}\]</div>
+<p>at <span class="arithmatex">\(f = 2\)</span> GHz, <span class="arithmatex">\(d = 1000\)</span> km. A terrestrial gNB at 100 m would see FSPL <span class="arithmatex">\(= 20\log_{10}(4\pi \times 100 \times 2\times10^9/3\times10^8) = 78\)</span> dB—an 80 dB advantage for the terrestrial link. The satellite must recover much of this deficit with a very large, high-gain antenna array: a 30 dBi antenna at 2 GHz needs a diameter of about 2 m (for 60% efficiency), and higher gain and many narrow beams need still larger apertures. This drives the AST SpaceMobile BlueWalker 3 design to a 64 m<sup>2</sup> phased array.</p>
+<p>The satellite EIRP requirement is: <span id="eq-d2d_eirp"></span></p>
+<div class="arithmatex">\[\text{EIRP}_{\text{sat}} = \text{EIRP}_{\text{gNB,equiv}} + L_{\text{FSPL,NTN}} - L_{\text{FSPL,terr}} + \text{Margin}\tag{30.6}\]</div>
+<h3 id="subsec-ast"><span class="secnum">30.4.2</span> AST SpaceMobile<a class="headerlink" href="#subsec-ast" title="Permanent link">&para;</a></h3>
+<p>AST SpaceMobile’s BlueWalker 3 (BW3) prototype satellite, launched in September 2022, was used to demonstrate direct connectivity to unmodified smartphones:</p>
+<ul>
+<li>
+<p><strong>Phased array:</strong> a 64 m<sup>2</sup> deployable planar array, among the largest communications arrays flown in low Earth orbit</p>
+</li>
+<li>
+<p><strong>Frequency:</strong> low-band terrestrial mobile spectrum made available by partner mobile network operators</p>
+</li>
+<li>
+<p><strong>Demonstrations (2023):</strong> voice and video calls and data sessions with ordinary handsets; peak data rates above 10 Mbps were reported by the company</p>
+</li>
+</ul>
+<p>The first operational BlueBird satellites were launched from September 2024; the company plans a constellation of such satellites at roughly 500 km altitude, with separate feeder links to gateways, and has announced agreements with a number of mobile network operators. Performance, schedule and regulatory status of the commercial service were still evolving as of 2025.</p>
+<h3 id="subsec-starlink_d2c"><span class="secnum">30.4.3</span> Starlink Direct-to-Cell<a class="headerlink" href="#subsec-starlink_d2c" title="Permanent link">&para;</a></h3>
+<p>SpaceX’s Starlink direct-to-cell satellites carry an eNodeB-type cellular payload with a large antenna, so that ordinary LTE phones can connect when the operator lends part of its terrestrial spectrum:</p>
+<ul>
+<li>
+<p><strong>Air interface:</strong> LTE in a partner operator’s mid-band spectrum (the US service with T-Mobile uses the 1900 MHz PCS band)</p>
+</li>
+<li>
+<p><strong>Capacity:</strong> a few Mbps in total, shared across each beam footprint; the service was designed first for text messaging</p>
+</li>
+<li>
+<p><strong>First messages:</strong> the first six satellites were launched on 2 January 2024 and the first text messages were sent in January 2024; a beta service followed with T-Mobile in the United States</p>
+</li>
+<li>
+<p><strong>Partner operators:</strong> agreements announced with T-Mobile (US), Rogers (Canada), Optus (Australia), KDDI (Japan), One NZ (New Zealand) and others</p>
+</li>
+</ul>
+<p>The regulatory step is the permission, granted in the United States in 2024 under the FCC’s “supplemental coverage from space” framework, for a satellite operator and a terrestrial mobile operator to use the terrestrial operator’s licensed spectrum from space, which the conventional rules for mobile bands did not allow. Rules and services differ between countries and were still changing as of 2025.</p>
+<h3 id="subsec-apple_sos"><span class="secnum">30.4.4</span> Apple Emergency SOS via Satellite<a class="headerlink" href="#subsec-apple_sos" title="Permanent link">&para;</a></h3>
+<p>Apple’s Emergency SOS via Satellite, announced with the iPhone 14 in September 2022 and available from November 2022, uses Globalstar’s LEO constellation (second-generation satellites at about 1414 km altitude) in the mobile satellite service band n53 (2483.5–2495 MHz):</p>
+<ul>
+<li>
+<p><strong>Data rate:</strong> very low; the service sends short, compressed messages and the phone guides the user to point it at the satellite</p>
+</li>
+<li>
+<p><strong>Services:</strong> Emergency SOS to responders, location sharing through Find My, roadside assistance and, in later software versions, short text messages</p>
+</li>
+<li>
+<p><strong>Business model:</strong> Apple announced an investment of about &#36;450 million in Globalstar’s infrastructure in 2022</p>
+</li>
+</ul>
+<p>The service shows that some consumers value emergency satellite connectivity built into a phone. How large the demand will be for broader satellite messaging and data services is not yet established.</p>
+<h3 id="subsec-chipsets"><span class="secnum">30.4.5</span> Chipset Ecosystem for NTN<a class="headerlink" href="#subsec-chipsets" title="Permanent link">&para;</a></h3>
+<p>Commercial NTN requires chipsets integrating 3GPP NTN capabilities:</p>
+<ul>
+<li>
+<p><strong>Smartphone chipset vendors</strong> (for example Qualcomm and MediaTek) have announced modems and platforms with satellite messaging support, some based on proprietary satellite links and some on 3GPP Release 17 NB-IoT NTN.</p>
+</li>
+<li>
+<p><strong>NB-IoT NTN modules</strong> for low-power sensors and trackers, which use the Release 17 narrowband NTN specifications over geostationary and low-orbit satellite networks, have been announced by several module makers.</p>
+</li>
+<li>
+<p><strong>Phone makers</strong> have added satellite emergency messaging to flagship models since 2022.</p>
+</li>
+</ul>
+<p><a href="#tab-d2d_comparison">Table 30.2</a> compares direct-to-device satellite service providers.</p>
+<div class="tbl" id="tab-d2d_comparison">
+<div class="tbl-caption"><strong>Table 30.2.</strong> Direct-to-Device Satellite Service Provider Comparison</div>
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Provider</strong></th>
+<th style="text-align: left;"><strong>Satellite</strong></th>
+<th style="text-align: left;"><strong>Band</strong></th>
+<th style="text-align: left;"><strong>Peak Speed</strong></th>
+<th style="text-align: left;"><strong>MNO Partners</strong></th>
+<th style="text-align: left;"><strong>Status (as of 2025)</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">AST SpaceMobile</td>
+<td style="text-align: left;">BlueWalker 3 / BlueBird</td>
+<td style="text-align: left;">low-band terrestrial</td>
+<td style="text-align: left;">above 10 Mbps (demo)</td>
+<td style="text-align: left;">AT&amp;T, Verizon, Vodafone and others</td>
+<td style="text-align: left;">Test satellite flown; first BlueBirds launched 2024</td>
+</tr>
+<tr>
+<td style="text-align: left;">Starlink D2C</td>
+<td style="text-align: left;">Direct-to-cell satellites</td>
+<td style="text-align: left;">operator mid-band (LTE)</td>
+<td style="text-align: left;">a few Mbps shared per beam</td>
+<td style="text-align: left;">T-Mobile, Rogers, Optus, KDDI and others</td>
+<td style="text-align: left;">Text service in beta/early service</td>
+</tr>
+<tr>
+<td style="text-align: left;">Apple/Globalstar</td>
+<td style="text-align: left;">Globalstar LEO</td>
+<td style="text-align: left;">n53 (2.4 GHz)</td>
+<td style="text-align: left;">very low (short messages)</td>
+<td style="text-align: left;">Apple (direct)</td>
+<td style="text-align: left;">Available since late 2022</td>
+</tr>
+</tbody>
+</table>
+</div></div>
+<h2 id="sec-haps"><span class="secnum">30.5</span> HAPS High-Altitude Platform Stations<a class="headerlink" href="#sec-haps" title="Permanent link">&para;</a></h2>
+<h3 id="subsec-haps_platforms"><span class="secnum">30.5.1</span> HAPS Platform Technology<a class="headerlink" href="#subsec-haps_platforms" title="Permanent link">&para;</a></h3>
+<p>HAPS operate in the stratosphere at 17–22 km altitude, above commercial aviation and most weather but far below the Kármán line. The stratosphere at this altitude has low wind speeds (<span class="arithmatex">\(&lt;5\)</span> m/s in the equatorial region), enabling quasi-geostationary station-keeping. Solar-powered HAPS platforms can achieve effectively unlimited endurance by harvesting solar energy during daylight.</p>
+<p><strong>Airbus Zephyr:</strong> A solar-electric HAPS under development and test (as of 2025):</p>
+<ul>
+<li>
+<p>Zephyr S: wingspan of about 25 m and a mass of roughly 75 kg (ultra-lightweight composite structure)</p>
+</li>
+<li>
+<p>Power: thin photovoltaic cells on the wings with rechargeable batteries for the night</p>
+</li>
+<li>
+<p>Endurance: a flight of 64 days in 2022 was reported by Airbus as a record for an aircraft of its kind</p>
+</li>
+<li>
+<p>Coverage: 140 km diameter footprint per station at 21 km altitude</p>
+</li>
+<li>
+<p>Payload: Multiple spot-beam antennas; cellular frequency bands; ISR sensors</p>
+</li>
+<li>
+<p>Station-keeping: Autonomous algorithm exploiting stratospheric wind layers; <span class="arithmatex">\(&lt;\)</span>1 km position drift</p>
+</li>
+</ul>
+<p><strong>HAPSMobile Sunglider</strong> (SoftBank group): a solar-electric HAPS with a wingspan of about 78 m, designed for telecommunications payloads; stratospheric test flights were made in 2020.</p>
+<h3 id="subsec-haps_freq"><span class="secnum">30.5.2</span> HAPS Frequency Allocations<a class="headerlink" href="#subsec-haps_freq" title="Permanent link">&para;</a></h3>
+<p>HAPS frequency allocations are governed by ITU Radio Regulations and WRC decisions:</p>
+<ul>
+<li>
+<p><strong>User links:</strong> L/S/Ka-band shared with other services; HAPS used as International Mobile Telecommunications base stations are covered by ITU identifications in several bands below 3 GHz</p>
+</li>
+<li>
+<p><strong>Feeder links (HAPS-to-gateway):</strong> WRC-19 allocated 38–39.5 GHz for HAPS station links in some regions; V-band (47.2–50.2 GHz) used for HAPS-to-satellite feeder</p>
+</li>
+<li>
+<p><strong>HAPS-to-HAPS ISL:</strong> Ka-band 26.5–27.5 GHz</p>
+</li>
+<li>
+<p><strong>HAPS and mobile broadband:</strong> ITU-R Report F.2439 describes HAPS systems for fixed-service use</p>
+</li>
+</ul>
+<h3 id="subsec-haps_path_loss"><span class="secnum">30.5.3</span> Path Loss Advantage of HAPS vs. GEO<a class="headerlink" href="#subsec-haps_path_loss" title="Permanent link">&para;</a></h3>
+<p>The free-space path loss comparison between HAPS, LEO, and GEO at the same carrier frequency (<span class="arithmatex">\(f = 28\)</span> GHz, Ka-band): <span id="eq-haps_pathloss"></span></p>
+<div class="arithmatex">\[L_{\text{FSPL}} = 20\log_{10}\!\left(\frac{4\pi d f}{c}\right)~\text{[dB]}\tag{30.7}\]</div>
+<div class="arithmatex">\[\begin{align*}
+L_{\text{HAPS}} (d = 21~\text{km}) &amp;= 147.8~\text{dB} \\
+L_{\text{LEO}} (d = 600~\text{km}) &amp;= 176.9~\text{dB} \quad (+29.1~\text{dB vs.\ HAPS}) \\
+L_{\text{GEO}} (d = 35{,}786~\text{km}) &amp;= 212.5~\text{dB} \quad (+64.7~\text{dB vs.\ HAPS})
+\end{align*}\]</div>
+<p>HAPS enjoys <span class="arithmatex">\(\sim\)</span>29 dB lower path loss than LEO and <span class="arithmatex">\(\sim\)</span>65 dB lower than GEO (the distance is shorter by factors of about 29 and 1700). This allows a HAPS to use smaller user-terminal antennas and lower transmit power for the same link margin than a satellite, which makes direct connections to handheld devices more practical than from LEO or GEO, at the cost of a much smaller coverage area per platform.</p>
+<h3 id="subsec-haps_use_cases"><span class="secnum">30.5.4</span> HAPS Use Cases and Economics<a class="headerlink" href="#subsec-haps_use_cases" title="Permanent link">&para;</a></h3>
+<p><strong>Rural broadband:</strong> A single HAPS station at 21 km altitude provides 140 km diameter footprint coverage, replacing approximately 20 terrestrial towers in flat terrain. Deployment is days (airfield launch) versus months–years for tower construction. HAPS backhaul links to satellite or ground fiber gateway.</p>
+<p><strong>Emergency communications:</strong> HAPS can be deployed to a disaster zone within 24–48 hours (ferry flight from nearest airbase), providing cellular coverage where terrestrial infrastructure has been destroyed. Endurance of 64+ days exceeds typical disaster response requirements.</p>
+<p><strong>Earth observation:</strong> At 21 km altitude with optical resolution <span class="arithmatex">\(\approx h \tan(\text{IFOV})\)</span>, an IFOV of about 14 <span class="arithmatex">\(\mu\)</span>rad (for example 4 <span class="arithmatex">\(\mu\)</span>m pixels behind a 0.28 m focal length) gives <span class="arithmatex">\(\sim\)</span>0.3 m ground resolution. Persistent stare capability over a single region is impossible for LEO satellites (90 min orbital period) but natural for HAPS.</p>
+<p><strong>5G backhaul:</strong> HAPS can backhaul rural small cells at Ka-band, enabling 5G service extension without fiber deployment.</p>
+<h2 id="sec-6g_vision"><span class="secnum">30.6</span> 6G Space Integration Vision<a class="headerlink" href="#sec-6g_vision" title="Permanent link">&para;</a></h2>
+<h3 id="subsec-imt2030"><span class="secnum">30.6.1</span> IMT-2030 Requirements and NTN Role<a class="headerlink" href="#subsec-imt2030" title="Permanent link">&para;</a></h3>
+<p>ITU-R Recommendation M.2160 (the IMT-2030 framework, adopted in 2023) sets out the capabilities of 6G systems; its indicative values are of the following order (the values are targets for the radio interface in general, not requirements specific to satellites):</p>
+<ul>
+<li>
+<p>Peak data rate: 50–200 Gbit/s</p>
+</li>
+<li>
+<p>User-experienced data rate: 300–500 Mbit/s</p>
+</li>
+<li>
+<p>Air interface latency: 0.1–1 ms</p>
+</li>
+<li>
+<p>Connection density: <span class="arithmatex">\(10^6\)</span>–<span class="arithmatex">\(10^8\)</span> devices per km<sup>2</sup></p>
+</li>
+<li>
+<p>Mobility: up to 500–1000 km/h</p>
+</li>
+<li>
+<p>Improved energy efficiency relative to IMT-2020 (5G)</p>
+</li>
+<li>
+<p>Coverage: wider coverage, including remote areas, with satellite and other non-terrestrial systems expected to play a role</p>
+</li>
+</ul>
+<p>NTN is designated a native 6G component from initial standardization—unlike 5G, which treated satellites as an extension to be added after the terrestrial standard was mature. This means NTN-specific requirements drive air interface design choices including waveform, duplex mode, OFDM numerology, and control-plane architecture from the outset.</p>
+<h3 id="subsec-sagsin"><span class="secnum">30.6.2</span> Space-Air-Ground-Sea Integrated Network (SAGSIN)<a class="headerlink" href="#subsec-sagsin" title="Permanent link">&para;</a></h3>
+<p>The 6G SAGSIN architecture integrates:</p>
+<ul>
+<li>
+<p><strong>Space layer:</strong> LEO and MEO constellations (as of 2025: Starlink with several thousand satellites in orbit, Amazon Kuiper with 3,236 satellites authorized, OneWeb with about 650 first-generation satellites, Telesat Lightspeed with about 200 planned satellites, and SES O3b mPOWER in medium Earth orbit)</p>
+</li>
+<li>
+<p><strong>Air layer:</strong> HAPS at 17–22 km; high-altitude UAVs at 8–15 km; low-altitude UAVs at <span class="arithmatex">\(&lt;\)</span>1 km</p>
+</li>
+<li>
+<p><strong>Ground layer:</strong> 6G terrestrial base stations (sub-THz mmWave small cells; sub-6 GHz macro cells; 700 MHz coverage cells)</p>
+</li>
+<li>
+<p><strong>Maritime layer:</strong> Ship-borne user terminals; submarine fiber connected hub stations</p>
+</li>
+</ul>
+<p>A unified 6G control plane manages seamless mobility across all segments, with network slicing providing differentiated QoS: eMBB slice (terabit ISLs), URLLC slice (LEO with <span class="arithmatex">\(&lt;\)</span>20 ms E2E latency), mMTC slice (IoT-NTN narrowband). AI/ML-based network management (RAN Intelligent Controller at cloud scale) optimizes beam scheduling, handover, interference coordination, and resource allocation in real-time across the integrated architecture.</p>
+<h3 id="subsec-thz"><span class="secnum">30.6.3</span> Terahertz Communication for Satellite ISLs<a class="headerlink" href="#subsec-thz" title="Permanent link">&para;</a></h3>
+<p>Terahertz (THz) bands (100 GHz–3 THz) offer bandwidths of 10–100 GHz per channel, enabling terabit-per-second links for inter-satellite links (ISLs) between adjacent satellites in a mega-constellation:</p>
+<ul>
+<li>
+<p>Atmospheric transmission windows exist at 120 GHz, 140 GHz, and 220 GHz (between water vapor and O<span class="arithmatex">\(_2\)</span> absorption peaks)</p>
+</li>
+<li>
+<p>At LEO ISL distances of 100–1000 km in vacuum, molecular absorption is zero; only free-space diffraction applies</p>
+</li>
+<li>
+<p>Antenna aperture at 300 GHz: <span class="arithmatex">\(\lambda = 1\)</span> mm; a 10 cm diameter aperture gives about 44 dBi gain at 25% efficiency (vs. about 24 dBi at 30 GHz)</p>
+</li>
+<li>
+<p>THz ISL at 1000 km, 10 cm aperture, 100 mW transmit: FSPL <span class="arithmatex">\(= 20\log(4\pi\times10^6\times3\times10^{11}/3\times10^8) = 202\)</span> dB; Rx power = <span class="arithmatex">\(20 + 44 + 44 - 202 = -94\)</span> dBm; thermal noise <span class="arithmatex">\(kTB\)</span> (<span class="arithmatex">\(B = 10\)</span> GHz) = <span class="arithmatex">\(-74\)</span> dBm, SNR <span class="arithmatex">\(\approx -20\)</span> dB—requires higher power or larger apertures for terabit ISLs</p>
+</li>
+</ul>
+<p>Research toward 6G THz ISLs focuses on 100 W solid-state power amplifiers at D-band (110–170 GHz), photonic integration of THz sources, and beamforming antenna arrays with 1000+ elements at sub-THz frequencies.</p>
+<h3 id="subsec-oran_ntn"><span class="secnum">30.6.4</span> Open RAN for NTN<a class="headerlink" href="#subsec-oran_ntn" title="Permanent link">&para;</a></h3>
+<p>The O-RAN Alliance’s NTN Working Group (established 2022) is adapting the Open RAN architecture for satellite networks:</p>
+<ul>
+<li>
+<p><strong>Functional split:</strong> O-CU (O-RAN Centralized Unit) on ground; O-DU (Distributed Unit) on satellite (regenerative case); O-RU (Radio Unit) as satellite antenna</p>
+</li>
+<li>
+<p><strong>Open interfaces:</strong> E2 interface (gNB-to-RIC); F1 interface (CU-to-DU); eCPRI (DU-to-RU) adapted for NTN delays</p>
+</li>
+<li>
+<p><strong>RIC (RAN Intelligent Controller):</strong> Non-real-time RIC (Non-RT RIC) for beam resource planning and interference management; Near-RT RIC for handover optimization and interference mitigation with <span class="arithmatex">\(\leq\)</span>10 ms loop latency (feasible for LEO, not GEO)</p>
+</li>
+<li>
+<p><strong>AI/ML xApps:</strong> Reinforcement learning for beam scheduling; federated learning across satellites for interference coordination; LSTM-based handover prediction from orbital mechanics</p>
+</li>
+</ul>
+<p>Open RAN for NTN promises multi-vendor satellite network deployments where ground CU, satellite DU, and antenna elements from different manufacturers interoperate through standardized interfaces, reducing vendor lock-in and equipment cost.</p>
+<h3 id="subsec-energy_efficiency"><span class="secnum">30.6.5</span> Energy Efficiency for 6G NTN<a class="headerlink" href="#subsec-energy_efficiency" title="Permanent link">&para;</a></h3>
+<p>IMT-2030 aims at a substantial energy efficiency improvement relative to 5G IMT-2020. For NTN, the key efficiency levers are:</p>
+<ul>
+<li>
+<p><strong>Digital beamforming with DPD:</strong> Massive MIMO phased arrays with digital pre-distortion (DPD) of power amplifier nonlinearity allow higher PA output power (better efficiency) while maintaining EVM. GaN PA efficiency of 45–55% PAE (power-added efficiency) at saturation vs. 20–30% backed-off is critical for solar-power-limited satellites.</p>
+</li>
+<li>
+<p><strong>RF-over-fiber feeder links:</strong> Highly linear analog fiber links from gateway to satellite (for GEO transparent payload) operate with <span class="arithmatex">\(&lt;\)</span>1 dB NF without active electronics in the up-path, improving satellite power budget.</p>
+</li>
+<li>
+<p><strong>Regenerative + solar:</strong> LEO constellations with regenerative payload and large solar arrays (Starlink Gen3: 3600 W BOL) can sustain <span class="arithmatex">\(&gt;\)</span>10 Gbps per satellite throughput. Specific throughput: <span class="arithmatex">\(\sim\)</span>2.8 Mbps/W.</p>
+</li>
+<li>
+<p><strong>Sleep modes:</strong> O-RAN Non-RT RIC orchestration activates/deactivates satellite beams on demand (cell on/off analogous to terrestrial BS sleep), reducing per-bit energy consumption by 10–30<span class="arithmatex">\(\times\)</span> in low-traffic periods.</p>
+</li>
+</ul>
+<h2 id="chapter-summary">Chapter Summary<a class="headerlink" href="#chapter-summary" title="Permanent link">&para;</a></h2>
+<p>Non-terrestrial networks have transitioned from vision to commercial reality through 3GPP standardization (Release 17 normative NTN specifications, June 2022) and commercial deployments (Starlink direct-to-cell text messaging from 2024, AST SpaceMobile BlueWalker 3 and BlueBird satellites). The key protocol innovations enabling NTN—UE-based timing advance pre-compensation via GNSS and ephemeris, Doppler pre-compensation, and HARQ process adaptation—are now standardized and chipset-integrated. Direct-to-device connectivity from unmodified smartphones to LEO satellites, enabled by large phased arrays (<span class="arithmatex">\(&gt;64\)</span> m<sup>2</sup>) and terrestrial spectrum sharing frameworks, is transitioning from demonstration to commercial service. HAPS platforms (Zephyr-S: 64-day endurance, 140 km coverage diameter) provide a complementary mid-altitude segment with 33 dB path-loss advantage over LEO. The 6G IMT-2030 vision integrates all of these into a native Space-Air-Ground-Sea architecture, supported by THz ISLs, Open RAN intelligence, and 100<span class="arithmatex">\(\times\)</span> energy efficiency targets.</p>
+<div class="admonition info box-keybox kind-concept">
+<p><strong>Key NTN Equations Summary:</strong></p>
+<div class="arithmatex">\[\begin{align*}
+&amp;\text{Doppler shift: } \Delta f = \frac{f_c \cdot v_r}{c} \approx \pm 50~\text{kHz @ 2 GHz, LEO 550 km} \\
+&amp;\text{NTN timing advance: } \text{TA} = \frac{2d_{\text{feeder}} + 2d_{\text{service}}}{c} \\
+&amp;\text{D2D FSPL @ 2 GHz, 1000 km: } L = 20\log_{10}(4\pi d f/c) = 168~\text{dB} \\
+&amp;\text{HAPS path loss advantage vs.\ GEO: } \Delta L = 20\log_{10}(35786/21) = 64.6~\text{dB}
+\end{align*}\]</div>
+</div>
+<figure class="fig fig-diagram" id="fig-ntn_architecture">
+<img class="tikz" src="img/tikz-939097b62199.svg" alt="Integrated NTN architecture for 6G: LEO mega-constellation with Ka-band ISLs provides global coverage; HAPS at 21 km provides regional capacity augmentation; GEO provides broadcast/overlay; ground…" loading="lazy" width="528" height="291">
+<figcaption><strong>Figure 30.1.</strong> Integrated NTN architecture for 6G: LEO mega-constellation with Ka-band ISLs provides global coverage; HAPS at 21 km provides regional capacity augmentation; GEO provides broadcast/overlay; ground gNBs serve as feeder link gateways; diverse UEs (terrestrial, maritime, aeronautical, IoT) connect via service links. The 5G/6G core network runs in cloud infrastructure.</figcaption>
+</figure>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button type="button" class="md-top md-icon" data-md-component="top" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+Back to top
+</button>
+</main>
+<footer class="md-footer">
+<nav class="md-footer__inner md-grid" aria-label="Footer" >
+<a href="ch29-quantum-communications-and-satellite-qkd.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: 29. Quantum Communications and Satellite QKD">
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</div>
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Previous
+</span>
+<div class="md-ellipsis">
+29. Quantum Communications and Satellite QKD
+</div>
+</div>
+</a>
+<a href="ch31-future-concepts-and-emerging-space-technologies.html" class="md-footer__link md-footer__link--next" aria-label="Next: 31. Future Concepts and Emerging Space Technologies">
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Next
+</span>
+<div class="md-ellipsis">
+31. Future Concepts and Emerging Space Technologies
+</div>
+</div>
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+</div>
+</a>
+</nav>
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+The Open Book Project &middot;
+<a href="../../about.html">About this library</a> &middot;
+<a href="../../publish.html">Publish your book</a> &middot;
+© The authors of the books
+</div>
+Made with
+<a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+Material for MkDocs
+</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "navigation.prune", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "toc.follow", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+<script src="../../assets/mathjax.js"></script>
+<script src="../../assets/viz.js"></script>
+<script src="../../assets/remote.js"></script>
+<script src="../../assets/scans.js"></script>
+<script src="../../assets/reader.js"></script>
+<script src="../../assets/app.js"></script>
+<script src="../../assets/slides.js"></script>
+<script src="../../assets/speak.js"></script>
+<script src="../../assets/quiz.js"></script>
+<script>
+    /* offline reading: the service worker at the site root (its scope is the whole site) */
+    if ("serviceWorker" in navigator && window.isSecureContext) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register(new URL("../../sw.js", location.href).href).catch(function () {});
+      });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,1741 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="description" content="The Open Book Project: books on computer science, quantum computing, cyber security, science, the social sciences, university courses and languages, read page by page like an e-book, online or offline.">
+<meta name="author" content="The Open Book Project">
+<link rel="canonical" href="https://open-book-project.github.io/engineering/satellite_technology/ch15-digital-signal-processing-for-satellites.html">
+<link rel="prev" href="ch14-satellite-antenna-systems.html">
+<link rel="next" href="ch16-optical-satellite-communications.html">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap"></noscript>
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Open Book">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="application-name" content="Open Book"><script src="../../assets/library-data.js"></script><script>
+    (function () {
+      var X = window.XMLHttpRequest, open, gate = new Promise(function (r) { open = r; });
+      if (!X) return;
+      var open0 = X.prototype.open, send0 = X.prototype.send;
+      X.prototype.open = function (method, url) {
+        this.__pkIndex = /\/search\/search_index\.json(\?|#|$)/.test(String(url));
+        return open0.apply(this, arguments);
+      };
+      X.prototype.send = function () {
+        if (!this.__pkIndex) return send0.apply(this, arguments);
+        var xhr = this, args = arguments;
+        gate.then(function () { send0.apply(xhr, args); });
+      };
+      function wake() { open(); }
+      document.addEventListener("focusin", function (e) { if (e.target && e.target.closest && e.target.closest(".md-search")) wake(); });
+      document.addEventListener("click", function (e) { if (e.target && e.target.closest && e.target.closest('label[for="__search"], .md-search')) wake(); }, true);
+      document.addEventListener("keydown", function (e) {
+        var k = e.key;
+        if ((k === "/" || k === "s" || k === "f" || k === "S" || k === "F") && !(e.target && e.target.closest && e.target.closest("input, textarea, [contenteditable]"))) wake();
+      }, true);
+      if (/[?&]q=/.test(location.search)) wake();
+    })();
+  </script><script>
+    try {
+      if ((window.matchMedia && (matchMedia("(display-mode: standalone)").matches || matchMedia("(display-mode: fullscreen)").matches)) || navigator.standalone === true) {
+        document.documentElement.className += " bjp-standalone";
+      }
+    } catch (e) { /* not an installed app */ }
+    /* the books of a subject or of the whole library as covers or as a list (assets/app.js): the reader's choice */
+    try {
+      var bv = localStorage.getItem("bjp.view");
+      if (bv === "list" || (bv !== "grid" && /\/books\.html$/.test(location.pathname))) document.documentElement.className += " bjp-view-list";
+    } catch (e) { /* no storage: covers */ }
+  </script>
+<script>
+    /* a book opened from its cover on the shelf: the page stays blank, in the cover's colour, until the reader is up */
+    try {
+      var cv = sessionStorage.getItem("bjp.reader.cover");
+      if (cv && sessionStorage.getItem("bjp.reader.open") === "1") {
+        var c = JSON.parse(cv), de = document.documentElement;
+        de.className += " bjp-booting";
+        if (c && /^#[0-9a-f]{3,8}$/i.test(c.bg || "")) de.style.background = c.bg;
+        setTimeout(function () { de.classList.remove("bjp-booting"); de.style.background = ""; }, 3000);
+      }
+    } catch (e) { /* no session storage: the page simply opens as usual */ }
+  </script>
+<title>15. Digital Signal Processing for Satellites - The Open Book Project</title>
+<link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+<link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+<link rel="stylesheet" href="../../assets/extra.css">
+<link rel="stylesheet" href="../../assets/reader.css">
+<link rel="stylesheet" href="../../assets/viz.css">
+<link rel="stylesheet" href="../../assets/app.css">
+<link rel="stylesheet" href="../../assets/theme.css">
+<link rel="stylesheet" href="../../assets/slides.css">
+<link rel="stylesheet" href="../../assets/remote.css">
+<link rel="stylesheet" href="../../assets/scans.css">
+<link rel="stylesheet" href="../../assets/speak.css">
+<link rel="stylesheet" href="../../assets/quiz.css">
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+<input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+<input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a href="#sec-intro_dsp" class="md-skip">
+Skip to content
+</a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav class="md-header__inner md-grid" aria-label="Header">
+<a href="../../index.html" title="The Open Book Project" class="md-header__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+The Open Book Project
+</span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+15. Digital Signal Processing for Satellites
+</span>
+</div>
+</div>
+</div><a href="../../index.html" class="bjp-libbtn" aria-label="Library: all books" title="Library: all books">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V5h4v15M8 20V9h4v11M14 20L12.6 6l3.8-.8 3 14.2M3 20h18"/></svg><span>Library</span>
+</a>
+<a href="../../subjects/index.html" class="pk-catbtn" aria-haspopup="true" aria-expanded="false" title="Browse the books by category">
+<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><circle cx="17" cy="7" r="3.6"/><path d="M7 13.4l3.9 6.8H3.1z"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg><span>Categories</span>
+</a>
+<form class="md-header__option" data-md-component="palette">
+<input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+<label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+</label>
+<input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+<label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+<label class="md-search__icon md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</label>
+<nav class="md-search__options" aria-label="Search">
+<button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+Initializing search
+</div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--primary bjp-nav bjp-nav--book" aria-label="Navigation" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a href="../../index.html" title="The Open Book Project" class="md-nav__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+The Open Book Project
+</label>
+<ul class="md-nav__list" data-md-scrollfix>
+<li class="md-nav__item bjp-nav-all">
+<a href="../../index.html" class="md-nav__link" aria-label="All books: back to the library">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+<span class="md-ellipsis">All books</span>
+</a>
+</li>
+<li class="md-nav__item bjp-nav-book" role="presentation"><span class="bjp-nav-head">Satellite Technology</span></li>
+<li class="md-nav__item">
+<a href="index.html" class="md-nav__link">
+<span class="md-ellipsis">
+Overview and preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="list-of-abbreviations.html" class="md-nav__link">
+<span class="md-ellipsis">
+List of Abbreviations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch01-introduction-to-satellite-technology.html" class="md-nav__link">
+<span class="md-ellipsis">
+1. Introduction to Satellite Technology
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch02-orbital-mechanics.html" class="md-nav__link">
+<span class="md-ellipsis">
+2. Orbital Mechanics
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch03-the-space-environment.html" class="md-nav__link">
+<span class="md-ellipsis">
+3. The Space Environment
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch04-launch-systems-and-mission-design.html" class="md-nav__link">
+<span class="md-ellipsis">
+4. Launch Systems and Mission Design
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch05-satellite-architecture-and-systems-engineering.html" class="md-nav__link">
+<span class="md-ellipsis">
+5. Satellite Architecture and Systems Engineering
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch06-satellite-electrical-power-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+6. Satellite Electrical Power Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch07-attitude-determination-and-control-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+7. Attitude Determination and Control Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch08-satellite-propulsion-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+8. Satellite Propulsion Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch09-thermal-control-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+9. Thermal Control Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch10-on-board-data-handling.html" class="md-nav__link">
+<span class="md-ellipsis">
+10. On-Board Data Handling
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch11-telemetry-tracking-and-command-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+11. Telemetry, Tracking and Command Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch12-radio-frequency-satellite-communications.html" class="md-nav__link">
+<span class="md-ellipsis">
+12. Radio Frequency Satellite Communications
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch13-satellite-link-budget-analysis.html" class="md-nav__link">
+<span class="md-ellipsis">
+13. Satellite Link Budget Analysis
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch14-satellite-antenna-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+14. Satellite Antenna Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+15. Digital Signal Processing for Satellites
+</span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a href="ch15-digital-signal-processing-for-satellites.html" class="md-nav__link md-nav__link--active">
+<span class="md-ellipsis">
+15. Digital Signal Processing for Satellites
+</span>
+</a>
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#sec-intro_dsp" class="md-nav__link">
+<span class="md-ellipsis">
+15.1 Introduction to Space DSP
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-sdr" class="md-nav__link">
+<span class="md-ellipsis">
+15.2 Software-Defined Radio Architecture
+</span>
+</a>
+<nav class="md-nav" aria-label="15.2 Software-Defined Radio Architecture">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1521-sdr-block-diagram" class="md-nav__link">
+<span class="md-ellipsis">
+15.2.1 SDR Block Diagram
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1522-adc-and-dac-specifications" class="md-nav__link">
+<span class="md-ellipsis">
+15.2.2 ADC and DAC Specifications
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1523-programmable-hardware-platforms" class="md-nav__link">
+<span class="md-ellipsis">
+15.2.3 Programmable Hardware Platforms
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-digital_filtering" class="md-nav__link">
+<span class="md-ellipsis">
+15.3 Digital Filtering
+</span>
+</a>
+<nav class="md-nav" aria-label="15.3 Digital Filtering">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1531-fir-filters" class="md-nav__link">
+<span class="md-ellipsis">
+15.3.1 FIR Filters
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1532-iir-filters" class="md-nav__link">
+<span class="md-ellipsis">
+15.3.2 IIR Filters
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1533-polyphase-filter-banks-for-channelization" class="md-nav__link">
+<span class="md-ellipsis">
+15.3.3 Polyphase Filter Banks for Channelization
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-modulation" class="md-nav__link">
+<span class="md-ellipsis">
+15.4 Modulation and Demodulation
+</span>
+</a>
+<nav class="md-nav" aria-label="15.4 Modulation and Demodulation">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1541-phase-shift-keying-modulations" class="md-nav__link">
+<span class="md-ellipsis">
+15.4.1 Phase-Shift Keying Modulations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1542-matched-filter-receiver" class="md-nav__link">
+<span class="md-ellipsis">
+15.4.2 Matched Filter Receiver
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1543-timing-and-carrier-recovery" class="md-nav__link">
+<span class="md-ellipsis">
+15.4.3 Timing and Carrier Recovery
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-channel_coding" class="md-nav__link">
+<span class="md-ellipsis">
+15.5 Channel Coding
+</span>
+</a>
+<nav class="md-nav" aria-label="15.5 Channel Coding">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1551-convolutional-codes" class="md-nav__link">
+<span class="md-ellipsis">
+15.5.1 Convolutional Codes
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1552-turbo-codes" class="md-nav__link">
+<span class="md-ellipsis">
+15.5.2 Turbo Codes
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1553-ldpc-codes" class="md-nav__link">
+<span class="md-ellipsis">
+15.5.3 LDPC Codes
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1554-polar-codes" class="md-nav__link">
+<span class="md-ellipsis">
+15.5.4 Polar Codes
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1555-reed-solomon-codes" class="md-nav__link">
+<span class="md-ellipsis">
+15.5.5 Reed-Solomon Codes
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-spread_spectrum" class="md-nav__link">
+<span class="md-ellipsis">
+15.6 Spread Spectrum
+</span>
+</a>
+<nav class="md-nav" aria-label="15.6 Spread Spectrum">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1561-direct-sequence-spread-spectrum-dsss" class="md-nav__link">
+<span class="md-ellipsis">
+15.6.1 Direct Sequence Spread Spectrum (DSSS)
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1562-gps-signal-structure" class="md-nav__link">
+<span class="md-ellipsis">
+15.6.2 GPS Signal Structure
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1563-frequency-hopping-spread-spectrum-fhss" class="md-nav__link">
+<span class="md-ellipsis">
+15.6.3 Frequency-Hopping Spread Spectrum (FHSS)
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-ofdm" class="md-nav__link">
+<span class="md-ellipsis">
+15.7 OFDM Systems
+</span>
+</a>
+<nav class="md-nav" aria-label="15.7 OFDM Systems">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1571-ofdm-fundamentals" class="md-nav__link">
+<span class="md-ellipsis">
+15.7.1 OFDM Fundamentals
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1572-papr-and-crest-factor-reduction" class="md-nav__link">
+<span class="md-ellipsis">
+15.7.2 PAPR and Crest Factor Reduction
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1573-dvb-t2-and-satellite-ofdm-parameters" class="md-nav__link">
+<span class="md-ellipsis">
+15.7.3 DVB-T2 and Satellite OFDM Parameters
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-interference_mitigation" class="md-nav__link">
+<span class="md-ellipsis">
+15.8 Interference Mitigation
+</span>
+</a>
+<nav class="md-nav" aria-label="15.8 Interference Mitigation">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1581-adaptive-equalization" class="md-nav__link">
+<span class="md-ellipsis">
+15.8.1 Adaptive Equalization
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1582-decision-feedback-equalizer" class="md-nav__link">
+<span class="md-ellipsis">
+15.8.2 Decision Feedback Equalizer
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1583-successive-and-parallel-interference-cancellation" class="md-nav__link">
+<span class="md-ellipsis">
+15.8.3 Successive and Parallel Interference Cancellation
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1584-gnss-interference-detection-and-mitigation" class="md-nav__link">
+<span class="md-ellipsis">
+15.8.4 GNSS Interference Detection and Mitigation
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-obp" class="md-nav__link">
+<span class="md-ellipsis">
+15.9 On-Board Processing Satellites
+</span>
+</a>
+<nav class="md-nav" aria-label="15.9 On-Board Processing Satellites">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1591-regenerative-transponders-vs-transparent" class="md-nav__link">
+<span class="md-ellipsis">
+15.9.1 Regenerative Transponders vs. Transparent
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1592-digital-channelizer-architecture" class="md-nav__link">
+<span class="md-ellipsis">
+15.9.2 Digital Channelizer Architecture
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1593-notable-obp-missions" class="md-nav__link">
+<span class="md-ellipsis">
+15.9.3 Notable OBP Missions
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-beamforming" class="md-nav__link">
+<span class="md-ellipsis">
+15.10 Beamforming and Spatial Processing
+</span>
+</a>
+<nav class="md-nav" aria-label="15.10 Beamforming and Spatial Processing">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#15101-digital-beamforming-fundamentals" class="md-nav__link">
+<span class="md-ellipsis">
+15.10.1 Digital Beamforming Fundamentals
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#15102-mvdr-beamformer" class="md-nav__link">
+<span class="md-ellipsis">
+15.10.2 MVDR Beamformer
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#15103-doa-estimation-music-and-esprit" class="md-nav__link">
+<span class="md-ellipsis">
+15.10.3 DOA Estimation: MUSIC and ESPRIT
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#15104-mimo-space-time-block-codes" class="md-nav__link">
+<span class="md-ellipsis">
+15.10.4 MIMO Space-Time Block Codes
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-compressed_sensing" class="md-nav__link">
+<span class="md-ellipsis">
+15.11 Compressed Sensing for Earth Observation
+</span>
+</a>
+<nav class="md-nav" aria-label="15.11 Compressed Sensing for Earth Observation">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#15111-sparsity-and-the-cs-framework" class="md-nav__link">
+<span class="md-ellipsis">
+15.11.1 Sparsity and the CS Framework
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#15112-reconstruction-algorithms" class="md-nav__link">
+<span class="md-ellipsis">
+15.11.2 Reconstruction Algorithms
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#15113-on-board-implementation-and-standards" class="md-nav__link">
+<span class="md-ellipsis">
+15.11.3 On-Board Implementation and Standards
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#summary" class="md-nav__link">
+<span class="md-ellipsis">
+Summary
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="ch16-optical-satellite-communications.html" class="md-nav__link">
+<span class="md-ellipsis">
+16. Optical Satellite Communications
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch17-earth-observation-and-remote-sensing.html" class="md-nav__link">
+<span class="md-ellipsis">
+17. Earth Observation and Remote Sensing
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch18-global-navigation-satellite-systems.html" class="md-nav__link">
+<span class="md-ellipsis">
+18. Global Navigation Satellite Systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch19-communication-satellites-and-services.html" class="md-nav__link">
+<span class="md-ellipsis">
+19. Communication Satellites and Services
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch20-scientific-satellites-and-space-observatories.html" class="md-nav__link">
+<span class="md-ellipsis">
+20. Scientific Satellites and Space Observatories
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch21-military-and-intelligence-satellites.html" class="md-nav__link">
+<span class="md-ellipsis">
+21. Military and Intelligence Satellites
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch22-ground-station-design-and-networks.html" class="md-nav__link">
+<span class="md-ellipsis">
+22. Ground Station Design and Networks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch23-mission-operations-and-ground-control.html" class="md-nav__link">
+<span class="md-ellipsis">
+23. Mission Operations and Ground Control
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch24-smallsats-cubesats-and-the-new-space-revolution.html" class="md-nav__link">
+<span class="md-ellipsis">
+24. SmallSats, CubeSats, and the New Space Revolution
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch25-mega-constellations-and-leo-broadband-networks.html" class="md-nav__link">
+<span class="md-ellipsis">
+25. Mega-Constellations and LEO Broadband Networks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch26-artificial-intelligence-and-machine-learning-in.html" class="md-nav__link">
+<span class="md-ellipsis">
+26. Artificial Intelligence and Machine Learning in Space
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch27-on-orbit-servicing-and-space-robotics.html" class="md-nav__link">
+<span class="md-ellipsis">
+27. On-Orbit Servicing and Space Robotics
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch28-space-debris-and-long-term-sustainability.html" class="md-nav__link">
+<span class="md-ellipsis">
+28. Space Debris and Long-Term Sustainability
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch29-quantum-communications-and-satellite-qkd.html" class="md-nav__link">
+<span class="md-ellipsis">
+29. Quantum Communications and Satellite QKD
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch30-6g-and-non-terrestrial-networks.html" class="md-nav__link">
+<span class="md-ellipsis">
+30. 6G and Non-Terrestrial Networks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ch31-future-concepts-and-emerging-space-technologies.html" class="md-nav__link">
+<span class="md-ellipsis">
+31. Future Concepts and Emerging Space Technologies
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="classical-orbital-elements-and-coordinate.html" class="md-nav__link">
+<span class="md-ellipsis">
+Classical Orbital Elements and Coordinate Transformations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="satellite-frequency-allocations.html" class="md-nav__link">
+<span class="md-ellipsis">
+Satellite Frequency Allocations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="launch-vehicle-specifications.html" class="md-nav__link">
+<span class="md-ellipsis">
+Launch Vehicle Specifications
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="link-budget-templates-and-worked-examples.html" class="md-nav__link">
+<span class="md-ellipsis">
+Link Budget Templates and Worked Examples
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="key-standards-software-tools-and-references.html" class="md-nav__link">
+<span class="md-ellipsis">
+Key Standards, Software Tools, and References
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="bibliography.html" class="md-nav__link">
+<span class="md-ellipsis">
+Bibliography
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#sec-intro_dsp" class="md-nav__link">
+<span class="md-ellipsis">
+15.1 Introduction to Space DSP
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#sec-sdr" class="md-nav__link">
+<span class="md-ellipsis">
+15.2 Software-Defined Radio Architecture
+</span>
+</a>
+<nav class="md-nav" aria-label="15.2 Software-Defined Radio Architecture">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1521-sdr-block-diagram" class="md-nav__link">
+<span class="md-ellipsis">
+15.2.1 SDR Block Diagram
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1522-adc-and-dac-specifications" class="md-nav__link">
+<span class="md-ellipsis">
+15.2.2 ADC and DAC Specifications
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1523-programmable-hardware-platforms" class="md-nav__link">
+<span class="md-ellipsis">
+15.2.3 Programmable Hardware Platforms
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-digital_filtering" class="md-nav__link">
+<span class="md-ellipsis">
+15.3 Digital Filtering
+</span>
+</a>
+<nav class="md-nav" aria-label="15.3 Digital Filtering">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1531-fir-filters" class="md-nav__link">
+<span class="md-ellipsis">
+15.3.1 FIR Filters
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1532-iir-filters" class="md-nav__link">
+<span class="md-ellipsis">
+15.3.2 IIR Filters
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1533-polyphase-filter-banks-for-channelization" class="md-nav__link">
+<span class="md-ellipsis">
+15.3.3 Polyphase Filter Banks for Channelization
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-modulation" class="md-nav__link">
+<span class="md-ellipsis">
+15.4 Modulation and Demodulation
+</span>
+</a>
+<nav class="md-nav" aria-label="15.4 Modulation and Demodulation">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1541-phase-shift-keying-modulations" class="md-nav__link">
+<span class="md-ellipsis">
+15.4.1 Phase-Shift Keying Modulations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1542-matched-filter-receiver" class="md-nav__link">
+<span class="md-ellipsis">
+15.4.2 Matched Filter Receiver
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1543-timing-and-carrier-recovery" class="md-nav__link">
+<span class="md-ellipsis">
+15.4.3 Timing and Carrier Recovery
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-channel_coding" class="md-nav__link">
+<span class="md-ellipsis">
+15.5 Channel Coding
+</span>
+</a>
+<nav class="md-nav" aria-label="15.5 Channel Coding">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1551-convolutional-codes" class="md-nav__link">
+<span class="md-ellipsis">
+15.5.1 Convolutional Codes
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1552-turbo-codes" class="md-nav__link">
+<span class="md-ellipsis">
+15.5.2 Turbo Codes
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1553-ldpc-codes" class="md-nav__link">
+<span class="md-ellipsis">
+15.5.3 LDPC Codes
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1554-polar-codes" class="md-nav__link">
+<span class="md-ellipsis">
+15.5.4 Polar Codes
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1555-reed-solomon-codes" class="md-nav__link">
+<span class="md-ellipsis">
+15.5.5 Reed-Solomon Codes
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-spread_spectrum" class="md-nav__link">
+<span class="md-ellipsis">
+15.6 Spread Spectrum
+</span>
+</a>
+<nav class="md-nav" aria-label="15.6 Spread Spectrum">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1561-direct-sequence-spread-spectrum-dsss" class="md-nav__link">
+<span class="md-ellipsis">
+15.6.1 Direct Sequence Spread Spectrum (DSSS)
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1562-gps-signal-structure" class="md-nav__link">
+<span class="md-ellipsis">
+15.6.2 GPS Signal Structure
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1563-frequency-hopping-spread-spectrum-fhss" class="md-nav__link">
+<span class="md-ellipsis">
+15.6.3 Frequency-Hopping Spread Spectrum (FHSS)
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-ofdm" class="md-nav__link">
+<span class="md-ellipsis">
+15.7 OFDM Systems
+</span>
+</a>
+<nav class="md-nav" aria-label="15.7 OFDM Systems">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1571-ofdm-fundamentals" class="md-nav__link">
+<span class="md-ellipsis">
+15.7.1 OFDM Fundamentals
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1572-papr-and-crest-factor-reduction" class="md-nav__link">
+<span class="md-ellipsis">
+15.7.2 PAPR and Crest Factor Reduction
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1573-dvb-t2-and-satellite-ofdm-parameters" class="md-nav__link">
+<span class="md-ellipsis">
+15.7.3 DVB-T2 and Satellite OFDM Parameters
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-interference_mitigation" class="md-nav__link">
+<span class="md-ellipsis">
+15.8 Interference Mitigation
+</span>
+</a>
+<nav class="md-nav" aria-label="15.8 Interference Mitigation">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1581-adaptive-equalization" class="md-nav__link">
+<span class="md-ellipsis">
+15.8.1 Adaptive Equalization
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1582-decision-feedback-equalizer" class="md-nav__link">
+<span class="md-ellipsis">
+15.8.2 Decision Feedback Equalizer
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1583-successive-and-parallel-interference-cancellation" class="md-nav__link">
+<span class="md-ellipsis">
+15.8.3 Successive and Parallel Interference Cancellation
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1584-gnss-interference-detection-and-mitigation" class="md-nav__link">
+<span class="md-ellipsis">
+15.8.4 GNSS Interference Detection and Mitigation
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-obp" class="md-nav__link">
+<span class="md-ellipsis">
+15.9 On-Board Processing Satellites
+</span>
+</a>
+<nav class="md-nav" aria-label="15.9 On-Board Processing Satellites">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#1591-regenerative-transponders-vs-transparent" class="md-nav__link">
+<span class="md-ellipsis">
+15.9.1 Regenerative Transponders vs. Transparent
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1592-digital-channelizer-architecture" class="md-nav__link">
+<span class="md-ellipsis">
+15.9.2 Digital Channelizer Architecture
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1593-notable-obp-missions" class="md-nav__link">
+<span class="md-ellipsis">
+15.9.3 Notable OBP Missions
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-beamforming" class="md-nav__link">
+<span class="md-ellipsis">
+15.10 Beamforming and Spatial Processing
+</span>
+</a>
+<nav class="md-nav" aria-label="15.10 Beamforming and Spatial Processing">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#15101-digital-beamforming-fundamentals" class="md-nav__link">
+<span class="md-ellipsis">
+15.10.1 Digital Beamforming Fundamentals
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#15102-mvdr-beamformer" class="md-nav__link">
+<span class="md-ellipsis">
+15.10.2 MVDR Beamformer
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#15103-doa-estimation-music-and-esprit" class="md-nav__link">
+<span class="md-ellipsis">
+15.10.3 DOA Estimation: MUSIC and ESPRIT
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#15104-mimo-space-time-block-codes" class="md-nav__link">
+<span class="md-ellipsis">
+15.10.4 MIMO Space-Time Block Codes
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#sec-compressed_sensing" class="md-nav__link">
+<span class="md-ellipsis">
+15.11 Compressed Sensing for Earth Observation
+</span>
+</a>
+<nav class="md-nav" aria-label="15.11 Compressed Sensing for Earth Observation">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#15111-sparsity-and-the-cs-framework" class="md-nav__link">
+<span class="md-ellipsis">
+15.11.1 Sparsity and the CS Framework
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#15112-reconstruction-algorithms" class="md-nav__link">
+<span class="md-ellipsis">
+15.11.2 Reconstruction Algorithms
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#15113-on-board-implementation-and-standards" class="md-nav__link">
+<span class="md-ellipsis">
+15.11.3 On-Board Implementation and Standards
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#summary" class="md-nav__link">
+<span class="md-ellipsis">
+Summary
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="ch-signal_processing">Chapter 15: Digital Signal Processing for Satellites<a class="headerlink" href="#ch-signal_processing" title="Permanent link">&para;</a></h1>
+<div class="admonition info box-keybox kind-concept">
+<p>Chapter Objectives This chapter covers the principles and implementation of digital signal processing (DSP) systems for satellite communications. Topics include software-defined radio architectures, digital filtering, modulation and coding, spread spectrum techniques, OFDM, interference mitigation, on-board processing, beamforming, and compressed sensing for Earth observation.</p>
+</div>
+<h2 id="sec-intro_dsp"><span class="secnum">15.1</span> Introduction to Space DSP<a class="headerlink" href="#sec-intro_dsp" title="Permanent link">&para;</a></h2>
+<p>Digital signal processing has become the cornerstone of modern satellite communication systems. The transition from analog to digital processing has fundamentally transformed how satellites generate, transmit, receive, and exploit signals. Space-grade DSP systems must satisfy a demanding set of requirements that differ substantially from terrestrial implementations: they must operate reliably under intense radiation exposure, within tight power and mass budgets, and across temperature extremes ranging from <span class="arithmatex">\(-180^\circ\)</span>C to <span class="arithmatex">\(+150^\circ\)</span>C in the thermal cycling environment of low Earth orbit.</p>
+<p>The evolution of space DSP follows closely the advances in VLSI technology and EDA tools. Early satellites relied on fixed-function analog circuits; modern spacecraft incorporate reprogrammable FPGAs and radiation-hardened digital signal processors capable of executing trillions of operations per second. This flexibility enables satellites to be reconfigured on-orbit to serve new missions, adapt to changing interference environments, or correct design errors discovered after launch.</p>
+<p>Key performance metrics for space DSP hardware include:</p>
+<ul>
+<li>
+<p><strong>Radiation tolerance</strong>: Total ionizing dose (TID) up to 100 krad(Si) for GEO missions, single-event latch-up (SEL) immunity, and single-event upset (SEU) mitigation through triple-module redundancy (TMR) or EDAC.</p>
+</li>
+<li>
+<p><strong>Power efficiency</strong>: Operations per watt (GOPS/W) is critical; space-grade FPGAs achieve 10–100<span class="arithmatex">\(\times\)</span> lower efficiency than commercial parts but maintain functionality under radiation.</p>
+</li>
+<li>
+<p><strong>Processing throughput</strong>: Wideband channelizers may require processing bandwidths of 500 MHz to 4 GHz, demanding real-time throughput of <span class="arithmatex">\(10^{10}\)</span>–<span class="arithmatex">\(10^{12}\)</span> operations per second.</p>
+</li>
+<li>
+<p><strong>Latency</strong>: Interactive voice and video applications over satellite require end-to-end latencies below 280 ms (ITU-T G.114 recommendation), placing tight bounds on codec and processing delays.</p>
+</li>
+</ul>
+<div class="admonition note box-notebox kind-note">
+<p>Radiation Effects on DSP Hardware Cosmic rays and trapped belt protons can flip bits in SRAM-based FPGAs, causing single-event upsets (SEUs). Mitigation strategies include configuration scrubbing (reading and rewriting the FPGA bitstream every 10–100 ms), TMR for critical logic, and EDAC-protected memory. Flash-based FPGAs (Microsemi SmartFusion2) are inherently SEU-immune in the configuration memory but require careful attention to combinational logic. Radiation-hardened ASICs offer the highest TID tolerance (up to 1 Mrad) but lack in-orbit reprogrammability.</p>
+</div>
+<h2 id="sec-sdr"><span class="secnum">15.2</span> Software-Defined Radio Architecture<a class="headerlink" href="#sec-sdr" title="Permanent link">&para;</a></h2>
+<p>Software-defined radio (SDR) replaces traditional fixed-function analog hardware with a combination of wideband RF front-end hardware and flexible digital processing. In an ideal SDR, the analog-to-digital converter (ADC) is placed as close to the antenna as possible, and all signal processing—filtering, demodulation, decoding—is performed in software running on a reconfigurable digital platform.</p>
+<h3 id="1521-sdr-block-diagram"><span class="secnum">15.2.1</span> SDR Block Diagram<a class="headerlink" href="#1521-sdr-block-diagram" title="Permanent link">&para;</a></h3>
+<p>A typical space SDR receiver chain consists of:</p>
+<ol>
+<li>
+<p><strong>Antenna</strong>: Aperture-coupled patch, horn, or reflector providing <span class="arithmatex">\(G/T\)</span> performance.</p>
+</li>
+<li>
+<p><strong>Low-Noise Amplifier (LNA)</strong>: Sets system noise figure; GaAs pHEMT achieves <span class="arithmatex">\(N_F &lt; 0.5\)</span> dB at 20 GHz.</p>
+</li>
+<li>
+<p><strong>Bandpass Filter (BPF)</strong>: Preselect filter suppresses out-of-band interference and LNA noise before mixing.</p>
+</li>
+<li>
+<p><strong>Downconverter</strong>: Heterodyne or direct-conversion architecture; dual-conversion preferred for image rejection.</p>
+</li>
+<li>
+<p><strong>Variable Gain Amplifier (VGA)</strong>: Automatic gain control (AGC) maintains ADC input level across dynamic range.</p>
+</li>
+<li>
+<p><strong>ADC</strong>: Nyquist or bandpass sampling; 12–16 bits at 100 MS/s to 10 GS/s.</p>
+</li>
+<li>
+<p><strong>FPGA/DSP</strong>: Channelization, demodulation, decoding, and output formatting.</p>
+</li>
+</ol>
+<figure class="fig fig-diagram" id="fig-sdr_blockdiag">
+<img class="tikz" src="img/tikz-3e94f88588dc.svg" alt="Generic software-defined radio (SDR) receiver architecture for satellite applications. The analog RF chain downconverts the received signal to baseband or intermediate frequency before the ADC, after…" loading="lazy" width="417" height="100">
+<figcaption><strong>Figure 15.1.</strong> Generic software-defined radio (SDR) receiver architecture for satellite applications. The analog RF chain downconverts the received signal to baseband or intermediate frequency before the ADC, after which all processing is performed digitally on an FPGA or DSP processor.</figcaption>
+</figure>
+<h3 id="1522-adc-and-dac-specifications"><span class="secnum">15.2.2</span> ADC and DAC Specifications<a class="headerlink" href="#1522-adc-and-dac-specifications" title="Permanent link">&para;</a></h3>
+<p>The ADC is the critical interface between the analog RF world and the digital processing domain. Key performance parameters include:</p>
+<p><strong>Effective Number of Bits (ENOB)</strong>: The ENOB characterizes the true dynamic range of the ADC accounting for noise and distortion: <span id="eq-enob"></span></p>
+<div class="arithmatex">\[\text{ENOB} = \frac{\text{SINAD} - 1.76}{6.02}\tag{15.1}\]</div>
+<p>where SINAD is the signal-to-noise-and-distortion ratio in dB. A 16-bit ADC typically achieves ENOB of 12–14 bits due to thermal noise and nonlinearity.</p>
+<p><strong>Spurious-Free Dynamic Range (SFDR)</strong>: The ratio between the fundamental signal and the largest spurious component. Space ADCs must achieve SFDR <span class="arithmatex">\(&gt;\)</span> 70 dBc to avoid interference from harmonics and intermodulation products.</p>
+<p><strong>Nyquist Criterion</strong>: The sampling frequency must satisfy: <span id="eq-nyquist"></span></p>
+<div class="arithmatex">\[f_s \geq 2 B_{\text{signal}}\tag{15.2}\]</div>
+<p>For bandpass sampling (undersampling), signals centered at <span class="arithmatex">\(f_c\)</span> with bandwidth <span class="arithmatex">\(B\)</span> can be sampled at <span class="arithmatex">\(f_s \geq 2B\)</span> if <span class="arithmatex">\(f_c\)</span> falls in the appropriate Nyquist zone, enabling lower-cost ADCs to process high-frequency IF signals without a full downconversion stage.</p>
+<p>Representative space-qualified ADC devices include the Analog Devices AD9208 (14-bit, 3 GSPS) and the e2v EV10AQ190 (10-bit, 10 GSPS quad-channel), both available in radiation-tolerant variants certified to 100 krad(Si).</p>
+<h3 id="1523-programmable-hardware-platforms"><span class="secnum">15.2.3</span> Programmable Hardware Platforms<a class="headerlink" href="#1523-programmable-hardware-platforms" title="Permanent link">&para;</a></h3>
+<p>Modern space SDR systems employ a range of programmable processing platforms:</p>
+<ul>
+<li>
+<p><strong>Xilinx (AMD) Virtex UltraScale+</strong>: The XQRVU37P space-grade variant offers 2.35M logic cells, 12 Gbps GTH transceivers, and HBM2 memory. Operating at 600 MHz, it can process 4 GHz instantaneous bandwidth with polyphase filter banks. TID rating: 100 krad(Si); SEU cross-section: <span class="arithmatex">\(&lt; 10^{-8}\)</span> cm<span class="arithmatex">\(^2\)</span>/device.</p>
+</li>
+<li>
+<p><strong>NVIDIA Jetson AGX Xavier</strong>: Commercial-grade Jetson modules are used in low-Earth orbit missions (ISS experiments, LEO Earth observation) for machine learning inference at 32 TOPS with 30 W power envelope. Software TMR and shielding mitigate SEU.</p>
+</li>
+<li>
+<p><strong>Microchip RTG4</strong>: Flash-based FPGA, 150 krad TID, 4M gates, SEU-immune configuration memory, used in deep-space and GEO missions requiring extreme reliability. Available in CCGA624 hermetic ceramic package.</p>
+</li>
+<li>
+<p><strong>NXP QorIQ T2080</strong>: Radiation-tolerant PowerPC processor for housekeeping and protocol processing alongside FPGA-based waveform engines.</p>
+</li>
+</ul>
+<h2 id="sec-digital_filtering"><span class="secnum">15.3</span> Digital Filtering<a class="headerlink" href="#sec-digital_filtering" title="Permanent link">&para;</a></h2>
+<p>Digital filters are the fundamental building blocks of every DSP system. In satellite communications, filters perform channel selection, noise reduction, pulse shaping, and signal conditioning for subsequent processing stages.</p>
+<h3 id="1531-fir-filters"><span class="secnum">15.3.1</span> FIR Filters<a class="headerlink" href="#1531-fir-filters" title="Permanent link">&para;</a></h3>
+<p>A finite impulse response (FIR) filter of order <span class="arithmatex">\(N\)</span> is characterized by the transfer function: <span id="eq-fir_tf"></span></p>
+<div class="arithmatex">\[H(z) = \sum_{k=0}^{N} b_k\, z^{-k}\tag{15.3}\]</div>
+<p>where <span class="arithmatex">\(b_k\)</span> are the filter coefficients and <span class="arithmatex">\(z^{-k}\)</span> represents a delay of <span class="arithmatex">\(k\)</span> samples. The frequency response is obtained by evaluating on the unit circle (<span class="arithmatex">\(z = e^{j\omega}\)</span>): <span id="eq-fir_freq"></span></p>
+<div class="arithmatex">\[H\!\left(e^{j\omega}\right) = \sum_{k=0}^{N} b_k\, e^{-j\omega k}\tag{15.4}\]</div>
+<p>FIR filters offer two critical advantages for satellite systems: <strong>linear phase</strong> (all frequency components experience identical group delay, eliminating phase distortion) and <strong>inherent stability</strong> (no feedback, so all poles are at the origin).</p>
+<p>The <strong>Parks-McClellan/Remez exchange algorithm</strong> provides the optimal equiripple FIR filter design. Given specifications for passband ripple <span class="arithmatex">\(\delta_p\)</span>, stopband attenuation <span class="arithmatex">\(\delta_s\)</span>, passband edge <span class="arithmatex">\(\omega_p\)</span>, and stopband edge <span class="arithmatex">\(\omega_s\)</span>, the algorithm minimizes the maximum weighted Chebyshev approximation error: <span id="eq-parks_mcclellan"></span></p>
+<div class="arithmatex">\[\min_{\{b_k\}} \max_{\omega \in \mathcal{F}} W(\omega) \left| H_d(\omega) - H\!\left(e^{j\omega}\right) \right|\tag{15.5}\]</div>
+<p>where <span class="arithmatex">\(\mathcal{F}\)</span> is the union of passband and stopband frequency bands, <span class="arithmatex">\(H_d(\omega)\)</span> is the desired response, and <span class="arithmatex">\(W(\omega)\)</span> is a frequency-dependent weighting function.</p>
+<div class="admonition note box-notebox kind-note">
+<p>FIR Filter Length Estimation A useful rule of thumb for estimating FIR filter tap count <span class="arithmatex">\(N\)</span> is the Harris approximation: <span class="arithmatex">\(N \approx -20\log_{10}(\delta_s \delta_p) / (14.6\, \Delta f)\)</span>, where <span class="arithmatex">\(\Delta f\)</span> is the normalized transition bandwidth. For 60 dB stopband attenuation with 1% transition bandwidth, this gives <span class="arithmatex">\(N \approx 400\)</span> taps. Root-raised-cosine (RRC) pulse shaping filters for QPSK typically use 32–64 taps at 4 samples per symbol.</p>
+</div>
+<h3 id="1532-iir-filters"><span class="secnum">15.3.2</span> IIR Filters<a class="headerlink" href="#1532-iir-filters" title="Permanent link">&para;</a></h3>
+<p>Infinite impulse response (IIR) filters use feedback to achieve steep roll-off with fewer coefficients than equivalent FIR designs. The general IIR transfer function is: <span id="eq-iir_tf"></span></p>
+<div class="arithmatex">\[H(z) = \frac{\displaystyle\sum_{k=0}^{M} b_k\, z^{-k}}{1 + \displaystyle\sum_{k=1}^{N} a_k\, z^{-k}}\tag{15.6}\]</div>
+<p><strong>Butterworth filters</strong> provide maximally flat magnitude response in the passband with no ripple, at the cost of a moderate roll-off rate. The magnitude squared response of an <span class="arithmatex">\(N\)</span>-th order Butterworth filter is: <span id="eq-butterworth"></span></p>
+<div class="arithmatex">\[|H(j\Omega)|^2 = \frac{1}{1 + \left(\Omega/\Omega_c\right)^{2N}}\tag{15.7}\]</div>
+<p><strong>Chebyshev Type I</strong> filters equiripple in the passband and monotone in the stopband, achieving steeper roll-off than Butterworth for the same filter order. The magnitude response: <span id="eq-chebyshev"></span></p>
+<div class="arithmatex">\[|H(j\Omega)|^2 = \frac{1}{1 + \varepsilon^2 T_N^2(\Omega/\Omega_c)}\tag{15.8}\]</div>
+<p>where <span class="arithmatex">\(T_N(\cdot)\)</span> is the <span class="arithmatex">\(N\)</span>-th Chebyshev polynomial and <span class="arithmatex">\(\varepsilon\)</span> controls passband ripple.</p>
+<p>IIR filters are preferred where computational resources are limited (e.g., analog channel pre-select filters digitally implemented), but require careful attention to coefficient quantization sensitivity and potential limit cycle oscillations.</p>
+<h3 id="1533-polyphase-filter-banks-for-channelization"><span class="secnum">15.3.3</span> Polyphase Filter Banks for Channelization<a class="headerlink" href="#1533-polyphase-filter-banks-for-channelization" title="Permanent link">&para;</a></h3>
+<p>A polyphase filter bank (PFB) efficiently divides a wideband signal into <span class="arithmatex">\(M\)</span> narrowband channels simultaneously. It is the workhorse of satellite on-board channelizers and digital multi-beam receivers. The computational efficiency arises from commuting the downsampling operation before the subfilter computations.</p>
+<p>For an <span class="arithmatex">\(M\)</span>-channel filter bank, the <span class="arithmatex">\(k\)</span>-th polyphase component of the prototype lowpass filter <span class="arithmatex">\(H(z)\)</span> with transfer function <span class="arithmatex">\(\sum_n h[n] z^{-n}\)</span> is defined as: <span id="eq-polyphase"></span></p>
+<div class="arithmatex">\[E_k(z) = \sum_{n=0}^{\infty} h[nM + k]\, z^{-n}, \quad k = 0, 1, …, M-1\tag{15.9}\]</div>
+<p>The analysis filter bank applies an <span class="arithmatex">\(M\)</span>-point IFFT to the polyphase outputs, producing <span class="arithmatex">\(M\)</span> simultaneously filtered and <span class="arithmatex">\(M\)</span>-fold downsampled channels. Computational complexity is <span class="arithmatex">\(O(M \log_2 M)\)</span> multiply-accumulate operations per input sample, compared to <span class="arithmatex">\(O(M \cdot N_{\rm filt})\)</span> for <span class="arithmatex">\(M\)</span> independent filters where <span class="arithmatex">\(N_{\rm filt}\)</span> is the prototype filter length.</p>
+<p>Overlapped PFBs (with oversampling factor <span class="arithmatex">\(K/M &gt; 1\)</span>) provide superior stopband rejection and reduced inter-channel interference, at the cost of additional computation. The Xilinx Virtex UltraScale+ can implement a 64-channel oversampled PFB operating at 2 GHz input sample rate using approximately 30% of available DSP48E2 slices.</p>
+<h2 id="sec-modulation"><span class="secnum">15.4</span> Modulation and Demodulation<a class="headerlink" href="#sec-modulation" title="Permanent link">&para;</a></h2>
+<p>Satellite modulation schemes must balance spectral efficiency against power efficiency, since satellite amplifier power and available downlink spectrum are both constrained resources.</p>
+<h3 id="1541-phase-shift-keying-modulations"><span class="secnum">15.4.1</span> Phase-Shift Keying Modulations<a class="headerlink" href="#1541-phase-shift-keying-modulations" title="Permanent link">&para;</a></h3>
+<p><strong>BPSK</strong> (Binary Phase-Shift Keying): Modulates one bit per symbol onto two phases <span class="arithmatex">\(\{0^\circ, 180^\circ\}\)</span>. The bit error rate over an AWGN channel is: <span id="eq-ber_bpsk_ch15"></span></p>
+<div class="arithmatex">\[P_b^{\text{BPSK}} = Q\!\left(\sqrt{\frac{2E_b}{N_0}}\right)\tag{15.10}\]</div>
+<p>where <span class="arithmatex">\(Q(x) = \frac{1}{2}\operatorname{erfc}(x/\sqrt{2})\)</span> is the Q-function and <span class="arithmatex">\(E_b/N_0\)</span> is the energy per bit to noise density ratio.</p>
+<p><strong>QPSK</strong> (Quadrature Phase-Shift Keying): Two bits per symbol, four phases <span class="arithmatex">\(\{45^\circ, 135^\circ, 225^\circ, 315^\circ\}\)</span>. The BER in AWGN is identical to BPSK when plotted against <span class="arithmatex">\(E_b/N_0\)</span>, but achieves double the spectral efficiency (2 b/s/Hz ideal).</p>
+<p><strong>8PSK</strong>: Three bits per symbol on eight equally spaced phases. The Gray-coded BER: <span id="eq-ber_8psk_ch15"></span></p>
+<div class="arithmatex">\[P_b^{\text{8PSK}} \approx \frac{2}{3}\, Q\!\left(\sqrt{6\, \frac{E_b}{N_0}} \sin\frac{\pi}{8}\right)\tag{15.11}\]</div>
+<p><strong>16APSK and 32APSK</strong>: Amplitude-and-phase-shift keying constellations optimized for nonlinear satellite channels operating near HPA saturation. The 16APSK constellation consists of 4 points on an inner ring of radius <span class="arithmatex">\(r_1\)</span> and 12 points on an outer ring of radius <span class="arithmatex">\(r_2\)</span>, with the ratio <span class="arithmatex">\(r_2/r_1 = 2.57\)</span> optimized for the DVB-S2 standard. The 32APSK uses three rings. These constellations support spectral efficiencies up to 4.99 b/s/Hz in DVB-S2X.</p>
+<h3 id="1542-matched-filter-receiver"><span class="secnum">15.4.2</span> Matched Filter Receiver<a class="headerlink" href="#1542-matched-filter-receiver" title="Permanent link">&para;</a></h3>
+<p>The optimal receiver for maximizing SNR in AWGN is the matched filter. For a transmitted pulse <span class="arithmatex">\(s(t)\)</span>, the matched filter impulse response is <span class="arithmatex">\(h(t) = s(T - t)\)</span> (time-reversed and delayed replica). At the sampling instant, the output SNR is: <span id="eq-matched_filter_snr"></span></p>
+<div class="arithmatex">\[\mathrm{SNR}_{\text{MF}} = \frac{2 E_s}{N_0}\tag{15.12}\]</div>
+<p>where <span class="arithmatex">\(E_s\)</span> is the symbol energy and <span class="arithmatex">\(N_0/2\)</span> is the two-sided noise power spectral density. The matched filter is equivalently implemented as a correlator receiver that integrates the product of the received signal with a local replica of the transmitted pulse.</p>
+<h3 id="1543-timing-and-carrier-recovery"><span class="secnum">15.4.3</span> Timing and Carrier Recovery<a class="headerlink" href="#1543-timing-and-carrier-recovery" title="Permanent link">&para;</a></h3>
+<p><strong>Mueller-Müller Timing Recovery</strong>: A decision-directed timing error detector (TED) widely used in satellite modems. The timing error is estimated as: <span id="eq-mueller_muller"></span></p>
+<div class="arithmatex">\[\varepsilon[n] = \hat{a}[n-1] \cdot y[n] - \hat{a}[n] \cdot y[n-1]\tag{15.13}\]</div>
+<p>where <span class="arithmatex">\(y[n]\)</span> is the current sample at the nominal sampling instant, <span class="arithmatex">\(y[n-1]\)</span> is the previous sample, and <span class="arithmatex">\(\hat{a}[n]\)</span> are data decisions from the slicer. The TED output drives a numerically controlled oscillator (NCO) through a loop filter to adjust the sampling phase.</p>
+<p><strong>Costas Loop (Carrier Phase Recovery)</strong>: A second-order PLL variant that tracks the carrier phase of a suppressed-carrier modulation such as BPSK or QPSK. The phase error detector output for QPSK is: <span id="eq-costas_loop"></span></p>
+<div class="arithmatex">\[e_\phi = I \cdot \operatorname{sgn}(Q) - Q \cdot \operatorname{sgn}(I)\tag{15.14}\]</div>
+<p>The PLL loop bandwidth <span class="arithmatex">\(B_L\)</span> is chosen as a compromise between phase noise tracking ability (favoring wider <span class="arithmatex">\(B_L\)</span>) and noise performance (favoring narrower <span class="arithmatex">\(B_L\)</span>), typically 0.1–1% of the symbol rate <span class="arithmatex">\(R_s\)</span>.</p>
+<h2 id="sec-channel_coding"><span class="secnum">15.5</span> Channel Coding<a class="headerlink" href="#sec-channel_coding" title="Permanent link">&para;</a></h2>
+<p>Channel coding adds structured redundancy to the transmitted data, enabling the receiver to detect and correct bit errors introduced by the channel. Modern satellite systems employ powerful codes operating within 1–2 dB of the Shannon capacity limit.</p>
+<h3 id="1551-convolutional-codes"><span class="secnum">15.5.1</span> Convolutional Codes<a class="headerlink" href="#1551-convolutional-codes" title="Permanent link">&para;</a></h3>
+<p>A rate <span class="arithmatex">\(R = 1/2\)</span>, constraint length <span class="arithmatex">\(K = 7\)</span> convolutional encoder is the historical standard for satellite communications (used in GPS, CCSDS heritage missions). The encoder contains <span class="arithmatex">\(K - 1 = 6\)</span> memory elements with generator polynomials (octal) <span class="arithmatex">\(g_1 = 171_8\)</span> and <span class="arithmatex">\(g_2 = 133_8\)</span>.</p>
+<p>The free distance <span class="arithmatex">\(d_{\text{free}} = 10\)</span> determines the asymptotic bit error probability: <span id="eq-conv_bep"></span></p>
+<div class="arithmatex">\[P_b \leq \frac{1}{k} \sum_{d=d_{\text{free}}}^{\infty} w_d \cdot P_d\tag{15.15}\]</div>
+<p>where <span class="arithmatex">\(w_d\)</span> is the input weight of error events at Hamming distance <span class="arithmatex">\(d\)</span> and <span class="arithmatex">\(P_d\)</span> is the pairwise error probability. <strong>Viterbi decoding</strong> (maximum likelihood sequence estimation) achieves a coding gain of approximately 5–6 dB at <span class="arithmatex">\(P_b = 10^{-5}\)</span> versus uncoded BPSK over an AWGN channel.</p>
+<h3 id="1552-turbo-codes"><span class="secnum">15.5.2</span> Turbo Codes<a class="headerlink" href="#1552-turbo-codes" title="Permanent link">&para;</a></h3>
+<p>Turbo codes (Berrou et al., 1993) use parallel concatenated convolutional codes (PCCC) with iterative decoding. The encoder consists of two recursive systematic convolutional (RSC) encoders separated by a pseudo-random interleaver of length <span class="arithmatex">\(N\)</span>. The iterative decoder exchanges extrinsic soft information (log-likelihood ratios, LLRs) between two BCJR (MAP) decoders: <span id="eq-turbo_llr"></span></p>
+<div class="arithmatex">\[L(u_k \,|\, \mathbf{r}) = \log \frac{P(u_k = +1 \,|\, \mathbf{r})}{P(u_k = -1 \,|\, \mathbf{r})} = L_a(u_k) + L_e(u_k)\tag{15.16}\]</div>
+<p>where <span class="arithmatex">\(L_a\)</span> is the a priori LLR and <span class="arithmatex">\(L_e\)</span> is the extrinsic LLR from the other decoder. The 3GPP Release 8 LTE turbo code (rate 1/3, block lengths 40–6144 bits) achieves within 0.5 dB of Shannon for block lengths exceeding 1000 bits at <span class="arithmatex">\(P_b = 10^{-4}\)</span>.</p>
+<h3 id="1553-ldpc-codes"><span class="secnum">15.5.3</span> LDPC Codes<a class="headerlink" href="#1553-ldpc-codes" title="Permanent link">&para;</a></h3>
+<p>Low-density parity-check (LDPC) codes, invented by Gallager (1962) and rediscovered by MacKay (1996), are defined by a sparse parity-check matrix <span class="arithmatex">\(\mathbf{H}\)</span> with roughly <span class="arithmatex">\(d_c\)</span> ones per column and <span class="arithmatex">\(d_v\)</span> ones per row (the Tanner graph). The belief propagation (sum-product) algorithm iterates check-to-variable and variable-to-check messages: <span id="eq-bp_check"></span></p>
+<div class="arithmatex">\[\mu_{c \to v} = 2 \tanh^{-1}\!\left( \prod_{v' \in \mathcal{N}(c) \setminus v} \tanh\!\left(\frac{\mu_{v' \to c}}{2}\right) \right)\tag{15.17}\]</div>
+<p>The DVB-S2 standard specifies 28 LDPC codes with rates from 1/4 to 9/10 and block lengths of 16200 (short) or 64800 (normal) bits. These codes achieve BER “waterfall” regions 0.5–2.0 dB from the Shannon limit, enabling the aggressive spectral efficiencies required for high-throughput satellite (HTS) systems operating at hundreds of Gbps aggregate capacity.</p>
+<h3 id="1554-polar-codes"><span class="secnum">15.5.4</span> Polar Codes<a class="headerlink" href="#1554-polar-codes" title="Permanent link">&para;</a></h3>
+<p>Polar codes (Arıkan, 2009) are the first family of codes proven to achieve the symmetric capacity of binary-input discrete memoryless channels with an explicit construction and low-complexity encoding and decoding. The key idea is <strong>channel polarization</strong>: applying an <span class="arithmatex">\(N = 2^n\)</span>-point butterfly transform creates <span class="arithmatex">\(N\)</span> synthetic channels, some approaching noiseless and others approaching pure noise. Data bits are placed on the reliable channels; “frozen” bits (set to 0 or known values) occupy the unreliable channels.</p>
+<p>The successive cancellation (SC) decoder operates with complexity <span class="arithmatex">\(O(N \log N)\)</span>. The successive cancellation list (SCL) decoder with list size <span class="arithmatex">\(L = 8\)</span>, optionally augmented with a cyclic redundancy check (CRC-aided SCL), achieves performance exceeding turbo codes at short block lengths (200–1000 bits). Polar codes are adopted in 5G NR for control channels (PBCH, PDCCH) and are under evaluation for future satellite uplink standards.</p>
+<h3 id="1555-reed-solomon-codes"><span class="secnum">15.5.5</span> Reed-Solomon Codes<a class="headerlink" href="#1555-reed-solomon-codes" title="Permanent link">&para;</a></h3>
+<p>RS(255, 239) is a widely used outer code in concatenated coding schemes (inner convolutional or LDPC + outer RS). The code operates on 8-bit symbols over GF(<span class="arithmatex">\(2^8\)</span>), correcting up to <span class="arithmatex">\(t = 8\)</span> symbol errors per 255-symbol block. The minimum Hamming distance is <span class="arithmatex">\(d_{\min} = 2t + 1 = 17\)</span>. RS codes are particularly effective against burst errors and are specified in CCSDS 101.0-B for space data link protocols. The concatenated RS(255,239) <span class="arithmatex">\(+\)</span> rate-1/2 convolutional code was standard in the Voyager deep-space missions, achieving approximately 8 dB combined coding gain.</p>
+<div class="tbl" id="tab-coding_comparison">
+<div class="tbl-caption"><strong>Table 15.1.</strong> Comparison of channel coding schemes for satellite communications. <span class="math inline">\(E_b/N_0\)</span> required for BER <span class="math inline">\(= 10^{-6}\)</span> over AWGN with BPSK modulation. Coding gain is relative to uncoded BPSK at same BER.</div>
+<div class="tbl-scroll">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Code</strong></th>
+<th style="text-align: left;"><strong>Rate</strong></th>
+<th style="text-align: center;"><strong>Block/Frame</strong></th>
+<th style="text-align: center;"><strong><span class="math inline">\(E_b/N_0\)</span> (dB)</strong></th>
+<th style="text-align: center;"><strong>Gain (dB)</strong></th>
+<th style="text-align: center;"><strong>Spec. Eff.</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Uncoded BPSK</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">10.5</td>
+<td style="text-align: center;">0.0</td>
+<td style="text-align: center;">1.00 b/s/Hz</td>
+</tr>
+<tr>
+<td style="text-align: left;">Conv. <span class="math inline">\(K=7\)</span>, Viterbi</td>
+<td style="text-align: left;">1/2</td>
+<td style="text-align: center;">streaming</td>
+<td style="text-align: center;">5.0</td>
+<td style="text-align: center;">5.5</td>
+<td style="text-align: center;">0.50 b/s/Hz</td>
+</tr>
+<tr>
+<td style="text-align: left;">Turbo (3GPP)</td>
+<td style="text-align: left;">1/3</td>
+<td style="text-align: center;">6144 b</td>
+<td style="text-align: center;">1.5</td>
+<td style="text-align: center;">9.0</td>
+<td style="text-align: center;">0.33 b/s/Hz</td>
+</tr>
+<tr>
+<td style="text-align: left;">Turbo (3GPP)</td>
+<td style="text-align: left;">1/2</td>
+<td style="text-align: center;">6144 b</td>
+<td style="text-align: center;">2.2</td>
+<td style="text-align: center;">8.3</td>
+<td style="text-align: center;">0.50 b/s/Hz</td>
+</tr>
+<tr>
+<td style="text-align: left;">LDPC DVB-S2</td>
+<td style="text-align: left;">1/2</td>
+<td style="text-align: center;">64800 b</td>
+<td style="text-align: center;">1.8</td>
+<td style="text-align: center;">8.7</td>
+<td style="text-align: center;">0.50 b/s/Hz</td>
+</tr>
+<tr>
+<td style="text-align: left;">LDPC DVB-S2</td>
+<td style="text-align: left;">2/3</td>
+<td style="text-align: center;">64800 b</td>
+<td style="text-align: center;">2.8</td>
+<td style="text-align: center;">7.7</td>
+<td style="text-align: center;">0.67 b/s/Hz</td>
+</tr>
+<tr>
+<td style="text-align: left;">LDPC DVB-S2</td>
+<td style="text-align: left;">3/4</td>
+<td style="text-align: center;">64800 b</td>
+<td style="text-align: center;">3.5</td>
+<td style="text-align: center;">7.0</td>
+<td style="text-align: center;">0.75 b/s/Hz</td>
+</tr>
+<tr>
+<td style="text-align: left;">LDPC DVB-S2</td>
+<td style="text-align: left;">9/10</td>
+<td style="text-align: center;">64800 b</td>
+<td style="text-align: center;">5.2</td>
+<td style="text-align: center;">5.3</td>
+<td style="text-align: center;">0.90 b/s/Hz</td>
+</tr>
+<tr>
+<td style="text-align: left;">Polar SCL <span class="math inline">\(L=8\)</span></td>
+<td style="text-align: left;">1/2</td>
+<td style="text-align: center;">1024 b</td>
+<td style="text-align: center;">2.0</td>
+<td style="text-align: center;">8.5</td>
+<td style="text-align: center;">0.50 b/s/Hz</td>
+</tr>
+<tr>
+<td style="text-align: left;">RS(255,239)</td>
+<td style="text-align: left;">0.937</td>
+<td style="text-align: center;">2040 b</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">(outer)</td>
+<td style="text-align: center;">0.94 b/s/Hz</td>
+</tr>
+<tr>
+<td style="text-align: left;">Shannon limit</td>
+<td style="text-align: left;">1/2</td>
+<td style="text-align: center;"><span class="math inline">\(\infty\)</span></td>
+<td style="text-align: center;">0.0</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">0.50 b/s/Hz</td>
+</tr>
+</tbody>
+</table>
+</div></div>
+<h2 id="sec-spread_spectrum"><span class="secnum">15.6</span> Spread Spectrum<a class="headerlink" href="#sec-spread_spectrum" title="Permanent link">&para;</a></h2>
+<p>Spread spectrum techniques deliberately expand the transmitted signal bandwidth far beyond the minimum required for the information rate. This provides resistance to narrowband jamming, low probability of intercept (LPI), multiple access capability (CDMA), and accurate two-way ranging.</p>
+<h3 id="1561-direct-sequence-spread-spectrum-dsss"><span class="secnum">15.6.1</span> Direct Sequence Spread Spectrum (DSSS)<a class="headerlink" href="#1561-direct-sequence-spread-spectrum-dsss" title="Permanent link">&para;</a></h3>
+<p>In DSSS, the data signal <span class="arithmatex">\(d(t)\)</span> is multiplied by a pseudorandom noise (PN) code <span class="arithmatex">\(c(t)\)</span> running at the chip rate <span class="arithmatex">\(R_c \gg R_b\)</span> (data bit rate). The transmitted signal is: <span id="eq-dsss_signal"></span></p>
+<div class="arithmatex">\[s(t) = \sqrt{2P}\; d(t)\; c(t) \cos(2\pi f_c t)\tag{15.18}\]</div>
+<p>The <strong>processing gain</strong> (PG), which equals the jamming margin in a barrage jamming scenario, is: <span id="eq-processing_gain"></span></p>
+<div class="arithmatex">\[\mathrm{PG} = \frac{B_{\text{SS}}}{B_{\text{data}}} = \frac{R_c}{R_b}\tag{15.19}\]</div>
+<p>A GPS L1 C/A signal with <span class="arithmatex">\(R_c = 1.023\)</span> Mcps and <span class="arithmatex">\(R_b = 50\)</span> bps achieves <span class="arithmatex">\(\mathrm{PG} = 43.1\)</span> dB. The anti-jamming margin (J/S margin) for reliable reception is: <span id="eq-jam_margin"></span></p>
+<div class="arithmatex">\[\left.\frac{J}{S}\right|_{\text{max}} = \mathrm{PG} - \left(\frac{E_b}{N_0}\right)_{\text{req}}\tag{15.20}\]</div>
+<p>For GPS C/A with <span class="arithmatex">\(\mathrm{PG} = 43\)</span> dB and <span class="arithmatex">\((E_b/N_0)_{\text{req}} = 10\)</span> dB, the maximum tolerable jamming-to-signal ratio is 33 dB (a factor of 2000:1 in power).</p>
+<h3 id="1562-gps-signal-structure"><span class="secnum">15.6.2</span> GPS Signal Structure<a class="headerlink" href="#1562-gps-signal-structure" title="Permanent link">&para;</a></h3>
+<p>The GPS L1 C/A signal (1575.42 MHz) employs Gold codes of length 1023 chips at 1.023 Mcps, with code repeat period of 1 ms. Gold codes are constructed from two maximal-length sequences (m-sequences) of length <span class="arithmatex">\(2^{10} - 1\)</span> via modulo-2 addition with varying delays, yielding 1025 codes with bounded cross-correlation: <span class="arithmatex">\(|R_{xy}(\tau)| \leq 65/1023 \approx -23.9\)</span> dB for any offset.</p>
+<p>The GPS L5 signal (1176.45 MHz) uses a 10.23 Mcps chip rate with longer codes (<span class="arithmatex">\(2^{10230} - 1\)</span>), providing 10 dB more processing gain and improved multipath rejection compared to L1 C/A. Military M-code at 10.23 Mcps with classified PRN sequences provides an additional 20 dB of anti-jam margin over C/A code, enabled by a higher-gain antenna (directional controlled reception pattern antenna, CRPA) and advanced receiver tracking.</p>
+<h3 id="1563-frequency-hopping-spread-spectrum-fhss"><span class="secnum">15.6.3</span> Frequency-Hopping Spread Spectrum (FHSS)<a class="headerlink" href="#1563-frequency-hopping-spread-spectrum-fhss" title="Permanent link">&para;</a></h3>
+<p>In FHSS, the carrier frequency hops across <span class="arithmatex">\(N\)</span> channels according to a pseudorandom sequence. During each dwell time <span class="arithmatex">\(T_d\)</span>, a narrowband signal occupies one frequency channel. The hopping rate <span class="arithmatex">\(f_h = 1/T_d\)</span> determines resistance to follower jamming: a fast hopper with <span class="arithmatex">\(f_h &gt; 10^3\)</span> hops/s prevents the jammer from measuring the frequency and retransmitting before the next hop occurs.</p>
+<p>The processing gain for FHSS against partial-band jamming across fraction <span class="arithmatex">\(\rho\)</span> of the band is: <span id="eq-fhss_gain"></span></p>
+<div class="arithmatex">\[\mathrm{PG}_{\text{FHSS}} = 10\log_{10}(N)\; \text{dB}\tag{15.21}\]</div>
+<p>Military FHSS systems (HAVE QUICK UHF radio, SINCGARS VHF) hop over 25 kHz channels covering 30 MHz bandwidth, giving PG <span class="arithmatex">\(= 30\)</span> dB. CDMA systems exploit orthogonal Gold codes among users in the same bandwidth, with each user recovering its signal via the processing gain while treating other users’ signals as noise (interference-limited).</p>
+<h2 id="sec-ofdm"><span class="secnum">15.7</span> OFDM Systems<a class="headerlink" href="#sec-ofdm" title="Permanent link">&para;</a></h2>
+<p>Orthogonal frequency division multiplexing (OFDM) divides the wideband channel into <span class="arithmatex">\(N\)</span> narrowband orthogonal subcarriers, each experiencing nearly flat fading over its symbol duration. OFDM is the modulation of choice for broadband wireless (LTE, 5G, Wi-Fi) and is increasingly considered for satellite systems despite unique challenges posed by LEO Doppler shifts and HPA nonlinearity.</p>
+<h3 id="1571-ofdm-fundamentals"><span class="secnum">15.7.1</span> OFDM Fundamentals<a class="headerlink" href="#1571-ofdm-fundamentals" title="Permanent link">&para;</a></h3>
+<p>The OFDM baseband signal over one symbol duration <span class="arithmatex">\(T_s\)</span> is: <span id="eq-ofdm_signal"></span></p>
+<div class="arithmatex">\[s(t) = \sum_{k=0}^{N-1} X_k\, e^{j2\pi k\,\Delta f\, t}, \quad 0 \leq t &lt; T_s\tag{15.22}\]</div>
+<p>where <span class="arithmatex">\(\Delta f = 1/T_s\)</span> ensures subcarrier orthogonality: <span class="arithmatex">\(\int_0^{T_s} e^{j2\pi k \Delta f t} e^{-j2\pi l \Delta f t}\,dt = 0\)</span> for <span class="arithmatex">\(k \neq l\)</span>. The modulator implements this as an <span class="arithmatex">\(N\)</span>-point IDFT, and the demodulator as an <span class="arithmatex">\(N\)</span>-point DFT.</p>
+<p>The <strong>cyclic prefix</strong> (CP) of length <span class="arithmatex">\(N_{CP}\)</span> samples (duration <span class="arithmatex">\(T_{CP} = N_{CP}/f_s\)</span>) is prepended to each symbol. The CP must satisfy <span class="arithmatex">\(T_{CP} \geq \tau_{\max}\)</span> (maximum channel delay spread) to eliminate inter-symbol interference. It converts linear convolution with the channel into circular convolution, enabling simple per-subcarrier one-tap equalization. The spectral efficiency reduction from CP overhead is: <span id="eq-cp_overhead"></span></p>
+<div class="arithmatex">\[\eta_{\text{CP}} = \frac{N}{N + N_{CP}} = \frac{T_s}{T_s + T_{CP}}\tag{15.23}\]</div>
+<h3 id="1572-papr-and-crest-factor-reduction"><span class="secnum">15.7.2</span> PAPR and Crest Factor Reduction<a class="headerlink" href="#1572-papr-and-crest-factor-reduction" title="Permanent link">&para;</a></h3>
+<p>A critical disadvantage of OFDM is its high Peak-to-Average Power Ratio (PAPR). With <span class="arithmatex">\(N\)</span> subcarriers, when all add coherently, the PAPR can reach <span class="arithmatex">\(10\log_{10}(N)\)</span> dB. For satellite HPA operation, high PAPR forces the amplifier to operate far from saturation (large output back-off, OBO), directly reducing DC-to-RF power efficiency, which is a critical resource on a satellite.</p>
+<p>Crest factor reduction (CFR) techniques include:</p>
+<ul>
+<li>
+<p><strong>Clipping and filtering</strong>: Hard clip at threshold <span class="arithmatex">\(A\)</span>, then filter to restore spectral mask. Introduces a clipping noise floor that limits achievable EVM.</p>
+</li>
+<li>
+<p><strong>Active constellation extension (ACE)</strong>: Move outer constellation points outward to cancel time-domain peaks while maintaining the spectral mask.</p>
+</li>
+<li>
+<p><strong>Tone reservation</strong>: Reserve a subset of subcarriers exclusively for a PAPR reduction peak-canceling waveform (no data on reserved tones).</p>
+</li>
+<li>
+<p><strong>Selected mapping (SLM)</strong>: Multiply the frequency-domain block by <span class="arithmatex">\(U\)</span> independent phase rotation vectors, select the variant with minimum PAPR for transmission, and signal the index to the receiver as side information.</p>
+</li>
+</ul>
+<h3 id="1573-dvb-t2-and-satellite-ofdm-parameters"><span class="secnum">15.7.3</span> DVB-T2 and Satellite OFDM Parameters<a class="headerlink" href="#1573-dvb-t2-and-satellite-ofdm-parameters" title="Permanent link">&para;</a></h3>
+<p>The DVB-T2 standard (terrestrial broadcast) employs OFDM with a 32K FFT mode (<span class="arithmatex">\(N = 32768\)</span> subcarriers), subcarrier spacing <span class="arithmatex">\(\Delta f = 279\)</span> Hz in an 8 MHz channel, and a maximum CP duration of <span class="arithmatex">\(1/4 \times T_s \approx 896\)</span> µ s, providing immunity to multipath delays up to 532 km (far beyond the physical requirement but enabling large single-frequency network areas). For 8 MHz channels, the maximum CP is approximately 6.7 ms.</p>
+<p>For satellite applications (DVB-SH, S2X extensions), OFDM faces the challenge of large Doppler shifts from LEO platforms. A LEO satellite at 550 km altitude moving at 7.6 km/s relative to a ground station produces a carrier Doppler shift of: <span id="eq-leo_doppler_ch15"></span></p>
+<div class="arithmatex">\[f_D = \frac{v_r}{c} f_c \approx \frac{7600}{3\times 10^8} \times 20 \times 10^9 \approx 507 \text{ kHz}\tag{15.24}\]</div>
+<p>at Ka-band (20 GHz). This frequency offset, if not pre-compensated, can destroy subcarrier orthogonality for the narrow subcarrier spacings used in terrestrial OFDM. Solutions include Doppler pre-compensation at the satellite feeder or terminal, and DFT-spread OFDM (SC-FDMA) which is inherently more robust to frequency offsets.</p>
+<h2 id="sec-interference_mitigation"><span class="secnum">15.8</span> Interference Mitigation<a class="headerlink" href="#sec-interference_mitigation" title="Permanent link">&para;</a></h2>
+<p>Satellite systems must cope with interference from co-channel satellites, adjacent satellites, terrestrial systems sharing spectrum (MSS/FSS spectrum sharing), and intentional jamming. Digital signal processing provides powerful tools for interference detection, characterization, and cancellation.</p>
+<h3 id="1581-adaptive-equalization"><span class="secnum">15.8.1</span> Adaptive Equalization<a class="headerlink" href="#1581-adaptive-equalization" title="Permanent link">&para;</a></h3>
+<p>The <strong>LMS (Least Mean Squares)</strong> adaptive algorithm updates the equalizer tap weight vector <span class="arithmatex">\(\mathbf{w}[n]\)</span> to minimize the mean squared error between filter output and a reference signal: <span id="eq-lms_update"></span></p>
+<div class="arithmatex">\[\mathbf{w}[n+1] = \mathbf{w}[n] + \mu\, e[n]\, \mathbf{x}^*[n]\tag{15.25}\]</div>
+<p>where <span class="arithmatex">\(e[n] = d[n] - \mathbf{w}^H[n]\mathbf{x}[n]\)</span> is the error signal, <span class="arithmatex">\(d[n]\)</span> is the desired reference (known training symbol or slicer decision), <span class="arithmatex">\(\mathbf{x}[n]\)</span> is the input tap vector, and <span class="arithmatex">\(\mu\)</span> is the step size. Convergence requires <span class="arithmatex">\(0 &lt; \mu &lt; 1/(N\sigma_x^2)\)</span>.</p>
+<p>The <strong>RLS (Recursive Least Squares)</strong> algorithm achieves faster convergence (typically <span class="arithmatex">\(2N\)</span> iterations vs. <span class="arithmatex">\(&gt;10N\)</span> for LMS) at <span class="arithmatex">\(O(N^2)\)</span> computational cost: <span id="eq-rls_gain"></span><span id="eq-rls_update"></span></p>
+<div class="arithmatex">\[\begin{align*}
+\mathbf{k}[n] &amp;= \frac{\lambda^{-1} \mathbf{P}[n-1] \mathbf{x}[n]}{1 + \lambda^{-1} \mathbf{x}^H[n] \mathbf{P}[n-1] \mathbf{x}[n]}  \\
+\mathbf{w}[n] &amp;= \mathbf{w}[n-1] + \mathbf{k}[n]\, e^*[n]
+\end{align*}\]</div>
+<p>where <span class="arithmatex">\(\lambda \in (0,1]\)</span> is a forgetting factor that controls the tracking-variance tradeoff and <span class="arithmatex">\(\mathbf{P}[n]\)</span> is the regularized inverse correlation matrix estimate.</p>
+<h3 id="1582-decision-feedback-equalizer"><span class="secnum">15.8.2</span> Decision Feedback Equalizer<a class="headerlink" href="#1582-decision-feedback-equalizer" title="Permanent link">&para;</a></h3>
+<p>The decision feedback equalizer (DFE) consists of a forward filter (FFF) that processes the received signal and a feedback filter (FBF) that subtracts intersymbol interference from previously decoded symbols. The DFE avoids noise enhancement in the forward filter at the cost of error propagation: a decision error in the feedback path corrupts several subsequent symbol decisions. DFEs are effective for frequency-selective satellite channels produced by adjacent beam interference or multipath in non-geostationary orbits.</p>
+<h3 id="1583-successive-and-parallel-interference-cancellation"><span class="secnum">15.8.3</span> Successive and Parallel Interference Cancellation<a class="headerlink" href="#1583-successive-and-parallel-interference-cancellation" title="Permanent link">&para;</a></h3>
+<p>In multi-user satellite systems (CDMA or NOMA uplink), interference cancellation improves achievable throughput:</p>
+<p><strong>SIC (Successive Interference Cancellation)</strong>: Decode users in order of decreasing received SNR. After successfully decoding user <span class="arithmatex">\(k\)</span>, re-encode and subtract its contribution from the received signal before decoding user <span class="arithmatex">\(k+1\)</span>. SIC achieves any point on the AWGN MAC capacity region boundary and is optimal for two-user channels.</p>
+<p><strong>PIC (Parallel Interference Cancellation)</strong>: All users are decoded simultaneously using tentative hard or soft decisions. Each successive iteration refines estimates by subtracting the multi-user interference reconstructed from other users’ tentative decisions. PIC converges in fewer satellite round-trip delays than SIC but requires multiple iterations, each introducing processing delay.</p>
+<h3 id="1584-gnss-interference-detection-and-mitigation"><span class="secnum">15.8.4</span> GNSS Interference Detection and Mitigation<a class="headerlink" href="#1584-gnss-interference-detection-and-mitigation" title="Permanent link">&para;</a></h3>
+<p>GNSS receivers are particularly vulnerable to narrowband jamming (both intentional and unintentional from LTE/5G signals in adjacent or harmonically related bands). Detection and mitigation methods include:</p>
+<ul>
+<li>
+<p><strong>AGC monitoring</strong>: A sudden decrease in AGC gain indicates a strong wideband interference signal saturating the ADC input.</p>
+</li>
+<li>
+<p><strong>Spectral excision</strong>: FFT-based detection of spectral peaks above the noise floor, followed by replacing the affected bins with zero or noise-floor values.</p>
+</li>
+<li>
+<p><strong>Adaptive notch filter</strong>: An IIR notch filter with time-varying center frequency tracks and suppresses narrowband continuous wave (CW) interferers. The notch frequency is estimated via the LMS algorithm applied to a prediction error filter.</p>
+</li>
+<li>
+<p><strong>STAP</strong>: Space-Time Adaptive Processing with a controlled reception pattern antenna (CRPA) array forms spatial nulls toward jammers while maintaining gain toward GNSS satellites, achieving <span class="arithmatex">\(&gt; 30\)</span> dB of jamming suppression.</p>
+</li>
+</ul>
+<h2 id="sec-obp"><span class="secnum">15.9</span> On-Board Processing Satellites<a class="headerlink" href="#sec-obp" title="Permanent link">&para;</a></h2>
+<p>On-board processing (OBP) transponders demodulate, decode, switch, recode, and remodulate signals in space, as opposed to <strong>transparent</strong> (bent-pipe) transponders that simply amplify and frequency-translate the uplink signal to the downlink without signal regeneration.</p>
+<h3 id="1591-regenerative-transponders-vs-transparent"><span class="secnum">15.9.1</span> Regenerative Transponders vs. Transparent<a class="headerlink" href="#1591-regenerative-transponders-vs-transparent" title="Permanent link">&para;</a></h3>
+<p>The key advantages of regenerative (OBP) transponders are:</p>
+<ul>
+<li>
+<p><strong>Interference isolation</strong>: Uplink interference is not forwarded to the downlink; only decoded data bits are retransmitted, eliminating interference sources that would otherwise enter the downlink.</p>
+</li>
+<li>
+<p><strong>Noise threshold reset</strong>: Uplink <span class="arithmatex">\(C/N\)</span> and downlink <span class="arithmatex">\(C/N\)</span> are treated independently; the overall link margin is not degraded by cascading both noise contributions.</p>
+</li>
+<li>
+<p><strong>On-board switching</strong>: Digital crosspoint switch matrices route traffic between beams and transponders without requiring ground-based switching hubs.</p>
+</li>
+<li>
+<p><strong>Bandwidth flexibility</strong>: Digital channelizers can be reconfigured to reallocate spectral bandwidth among beams in response to changing traffic demand.</p>
+</li>
+<li>
+<p><strong>On-board ACM</strong>: Adaptive coding and modulation decisions can be made based on uplink channel quality measurements, independent of the downlink ACM selection.</p>
+</li>
+</ul>
+<h3 id="1592-digital-channelizer-architecture"><span class="secnum">15.9.2</span> Digital Channelizer Architecture<a class="headerlink" href="#1592-digital-channelizer-architecture" title="Permanent link">&para;</a></h3>
+<p>A digital channelizer divides the wideband transponder receive band into <span class="arithmatex">\(M\)</span> narrowband sub-channels using a polyphase filter bank followed by an <span class="arithmatex">\(M\)</span>-point FFT. Representative parameters for HTS missions: <span class="arithmatex">\(M = 50\)</span>–<span class="arithmatex">\(500\)</span> channels of 36–250 MHz each, from a 500 MHz–4 GHz input band. Output sub-channels feed a digital crosspoint switch that connects any input sub-channel to any beam output. The switch matrix for <span class="arithmatex">\(B\)</span> beams and <span class="arithmatex">\(M\)</span> channels is an <span class="arithmatex">\(M \times B\)</span> non-blocking router implemented in FPGA.</p>
+<h3 id="1593-notable-obp-missions"><span class="secnum">15.9.3</span> Notable OBP Missions<a class="headerlink" href="#1593-notable-obp-missions" title="Permanent link">&para;</a></h3>
+<ul>
+<li>
+<p><strong>Eutelsat KA-SAT (2010)</strong>: First high-throughput GEO satellite with a fully digital on-board processor. 82 spot beams, 500 MHz channelizer implemented in a 1.4-billion transistor custom ASIC, 70 Gbps aggregate capacity.</p>
+</li>
+<li>
+<p><strong>ViaSat-3 (2023)</strong>: Approximately 1 Tbps capacity GEO satellite with extensive OBP for flexible beam connectivity, on-demand frequency reuse, and interference mitigation.</p>
+</li>
+<li>
+<p><strong>SkyTerra-1 (2010)</strong>: L-band MSS satellite with OBP for CDMA uplink demodulation/recode, enabling direct service to handheld terminals without requiring regenerative ground gateways.</p>
+</li>
+</ul>
+<h2 id="sec-beamforming"><span class="secnum">15.10</span> Beamforming and Spatial Processing<a class="headerlink" href="#sec-beamforming" title="Permanent link">&para;</a></h2>
+<p>Phased array antennas combined with digital beamforming (DBF) enable a satellite to simultaneously form multiple narrow, high-gain beams pointed at different ground locations, with independent control of beam shape, pointing, sidelobe level, and null placement.</p>
+<h3 id="15101-digital-beamforming-fundamentals"><span class="secnum">15.10.1</span> Digital Beamforming Fundamentals<a class="headerlink" href="#15101-digital-beamforming-fundamentals" title="Permanent link">&para;</a></h3>
+<p>For an <span class="arithmatex">\(N\)</span>-element array with element positions <span class="arithmatex">\(\mathbf{r}_n\)</span>, the array response (steering) vector to a signal arriving from direction <span class="arithmatex">\(\hat{\mathbf{s}}\)</span> at wavelength <span class="arithmatex">\(\lambda\)</span> is: <span id="eq-array_response"></span></p>
+<div class="arithmatex">\[\mathbf{a}(\hat{\mathbf{s}}) = \left[ e^{j\frac{2\pi}{\lambda}\mathbf{r}_1^T \hat{\mathbf{s}}},\;
+e^{j\frac{2\pi}{\lambda}\mathbf{r}_2^T \hat{\mathbf{s}}}, …,
+e^{j\frac{2\pi}{\lambda}\mathbf{r}_N^T \hat{\mathbf{s}}} \right]^T\tag{15.28}\]</div>
+<p>The beamformer output is <span class="arithmatex">\(y = \mathbf{w}^H \mathbf{x}\)</span>, where <span class="arithmatex">\(\mathbf{x}\)</span> is the received signal vector. The conventional (delay-and-sum) beamformer uses <span class="arithmatex">\(\mathbf{w} = \mathbf{a}(\hat{\mathbf{s}}_0)/N\)</span>, which maximizes the array gain toward the desired direction <span class="arithmatex">\(\hat{\mathbf{s}}_0\)</span> but cannot place nulls on interferers.</p>
+<h3 id="15102-mvdr-beamformer"><span class="secnum">15.10.2</span> MVDR Beamformer<a class="headerlink" href="#15102-mvdr-beamformer" title="Permanent link">&para;</a></h3>
+<p>The Minimum Variance Distortionless Response (MVDR) or Capon beamformer minimizes the total output power subject to a unity gain constraint in the desired direction: <span id="eq-mvdr_ch15"></span></p>
+<div class="arithmatex">\[\mathbf{w}_{\text{MVDR}} = \frac{\mathbf{R}^{-1} \mathbf{a}}{\mathbf{a}^H \mathbf{R}^{-1} \mathbf{a}}\tag{15.29}\]</div>
+<p>where <span class="arithmatex">\(\mathbf{R} = E[\mathbf{x}\mathbf{x}^H] + \sigma_n^2 \mathbf{I}\)</span> is the regularized spatial covariance matrix. The MVDR beamformer automatically places nulls at interference sources while maintaining unity gain in the desired direction, achieving 30–40 dB of jammer suppression with an 8-element array. In practice, <span class="arithmatex">\(\mathbf{R}\)</span> is estimated from training data snapshots: <span class="arithmatex">\(\hat{\mathbf{R}} = \frac{1}{K}\sum_{k=1}^K \mathbf{x}[k]\mathbf{x}^H[k]\)</span>.</p>
+<h3 id="15103-doa-estimation-music-and-esprit"><span class="secnum">15.10.3</span> DOA Estimation: MUSIC and ESPRIT<a class="headerlink" href="#15103-doa-estimation-music-and-esprit" title="Permanent link">&para;</a></h3>
+<p><strong>MUSIC (Multiple Signal Classification)</strong>: Exploits the eigendecomposition of <span class="arithmatex">\(\mathbf{R}\)</span>. The noise subspace <span class="arithmatex">\(\mathbf{E}_n\)</span> is spanned by the <span class="arithmatex">\(N - d\)</span> eigenvectors corresponding to the smallest (noise) eigenvalues, and is orthogonal to the signal subspace. The MUSIC spatial pseudospectrum is: <span id="eq-music"></span></p>
+<div class="arithmatex">\[P_{\text{MUSIC}}(\theta) = \frac{1}{\mathbf{a}^H(\theta)\, \mathbf{E}_n \mathbf{E}_n^H\, \mathbf{a}(\theta)}\tag{15.30}\]</div>
+<p>DOA estimates are the <span class="arithmatex">\(d\)</span> sharpest peaks of <span class="arithmatex">\(P_{\text{MUSIC}}(\theta)\)</span>, with resolution capability exceeding the Rayleigh beamwidth when SNR is sufficient.</p>
+<p><strong>ESPRIT</strong> (Estimation of Signal Parameters via Rotational Invariance Techniques) avoids the peak search by exploiting the rotational invariance property of two identically translated sub-arrays, providing closed-form DOA estimates at lower computational cost.</p>
+<h3 id="15104-mimo-space-time-block-codes"><span class="secnum">15.10.4</span> MIMO Space-Time Block Codes<a class="headerlink" href="#15104-mimo-space-time-block-codes" title="Permanent link">&para;</a></h3>
+<p>The Alamouti 2<span class="arithmatex">\(\times\)</span>1 space-time block code achieves full transmit diversity order 2 with coding rate 1 symbol per channel use, using two transmit antennas. Over two consecutive symbol periods, the <span class="arithmatex">\(2 \times 2\)</span> space-time transmission matrix is: <span id="eq-alamouti"></span></p>
+<div class="arithmatex">\[\mathbf{S} = \begin{bmatrix} s_1 &amp; s_2 \\ -s_2^* &amp; s_1^* \end{bmatrix}\tag{15.31}\]</div>
+<p>where column <span class="arithmatex">\(t\)</span> represents the transmitted vector at time slot <span class="arithmatex">\(t\)</span>. The receiver decouples <span class="arithmatex">\(s_1\)</span> and <span class="arithmatex">\(s_2\)</span> using simple linear combining without requiring channel state information at the transmitter. The diversity gain substantially improves BER at the same SNR compared to single-antenna transmission, particularly important for non-line-of-sight LEO-to-ground links experiencing fast fading due to platform vibration and antenna pointing jitter.</p>
+<h2 id="sec-compressed_sensing"><span class="secnum">15.11</span> Compressed Sensing for Earth Observation<a class="headerlink" href="#sec-compressed_sensing" title="Permanent link">&para;</a></h2>
+<p>Earth observation satellites generate enormous data volumes: a hyperspectral imager with 200 spectral bands at 30 m spatial resolution covering a 100 km swath at 7 km/s produces over 100 Gbps of raw pixel data. Compressed sensing (CS) enables sub-Nyquist sampling and sparse signal reconstruction, dramatically reducing on-board data storage and downlink bandwidth requirements.</p>
+<h3 id="15111-sparsity-and-the-cs-framework"><span class="secnum">15.11.1</span> Sparsity and the CS Framework<a class="headerlink" href="#15111-sparsity-and-the-cs-framework" title="Permanent link">&para;</a></h3>
+<p>A signal <span class="arithmatex">\(\mathbf{x} \in \mathbb{R}^N\)</span> is said to be <span class="arithmatex">\(K\)</span>-sparse in a basis <span class="arithmatex">\(\boldsymbol{\Psi}\)</span> if it can be represented as: <span id="eq-sparsity"></span></p>
+<div class="arithmatex">\[\mathbf{x} = \boldsymbol{\Psi}\, \boldsymbol{\alpha}, \quad \|\boldsymbol{\alpha}\|_0 = K \ll N\tag{15.32}\]</div>
+<p>where <span class="arithmatex">\(\|\cdot\|_0\)</span> counts non-zero entries (the <span class="arithmatex">\(\ell_0\)</span> “norm”). Hyperspectral images are highly compressible in the wavelet or DCT domain, with 90% of signal energy concentrated in fewer than 10% of the transform coefficients.</p>
+<p>The CS measurement process takes <span class="arithmatex">\(M \ll N\)</span> incoherent linear measurements: <span id="eq-cs_measurements"></span></p>
+<div class="arithmatex">\[\mathbf{y} = \boldsymbol{\Phi}\, \mathbf{x} = \boldsymbol{\Phi}\, \boldsymbol{\Psi}\, \boldsymbol{\alpha} = \mathbf{A}\, \boldsymbol{\alpha}\tag{15.33}\]</div>
+<p>where <span class="arithmatex">\(\boldsymbol{\Phi} \in \mathbb{R}^{M \times N}\)</span> is the measurement matrix (random Gaussian or Bernoulli entries ensure incoherence with high probability). Recovery of <span class="arithmatex">\(\boldsymbol{\alpha}\)</span> from <span class="arithmatex">\(\mathbf{y}\)</span> when <span class="arithmatex">\(M &lt; N\)</span> requires that the sensing matrix <span class="arithmatex">\(\mathbf{A} = \boldsymbol{\Phi}\boldsymbol{\Psi}\)</span> satisfies the Restricted Isometry Property (RIP) of order <span class="arithmatex">\(2K\)</span>: <span id="eq-rip"></span></p>
+<div class="arithmatex">\[(1 - \delta_{2K}) \|\boldsymbol{\alpha}\|_2^2 \leq \|\mathbf{A}\boldsymbol{\alpha}\|_2^2 \leq (1 + \delta_{2K}) \|\boldsymbol{\alpha}\|_2^2\tag{15.34}\]</div>
+<p>for all <span class="arithmatex">\(2K\)</span>-sparse <span class="arithmatex">\(\boldsymbol{\alpha}\)</span>. The sufficient condition for stable recovery is <span class="arithmatex">\(\delta_{2K} &lt; \sqrt{2} - 1 \approx 0.414\)</span>.</p>
+<h3 id="15112-reconstruction-algorithms"><span class="secnum">15.11.2</span> Reconstruction Algorithms<a class="headerlink" href="#15112-reconstruction-algorithms" title="Permanent link">&para;</a></h3>
+<p><strong>OMP (Orthogonal Matching Pursuit)</strong>: Greedy algorithm that iteratively selects the column of <span class="arithmatex">\(\mathbf{A}\)</span> most correlated with the current residual, then orthogonally projects the residual onto the selected support set. Complexity <span class="arithmatex">\(O(KMN)\)</span> per reconstruction, requiring <span class="arithmatex">\(K\)</span> iterations. Suitable for FPGA implementation with small <span class="arithmatex">\(K\)</span>.</p>
+<p><strong>LASSO (Least Absolute Shrinkage and Selection Operator)</strong>: Convex <span class="arithmatex">\(\ell_1\)</span> relaxation of the combinatorial <span class="arithmatex">\(\ell_0\)</span> minimization problem: <span id="eq-lasso"></span></p>
+<div class="arithmatex">\[\hat{\boldsymbol{\alpha}} = \arg\min_{\boldsymbol{\alpha}} \|\mathbf{y} - \mathbf{A}\boldsymbol{\alpha}\|_2^2 + \lambda \|\boldsymbol{\alpha}\|_1\tag{15.35}\]</div>
+<p>Solved efficiently via ADMM, ISTA/FISTA (fast iterative shrinkage-thresholding), or interior-point methods. The regularization parameter <span class="arithmatex">\(\lambda\)</span> balances fidelity and sparsity.</p>
+<h3 id="15113-on-board-implementation-and-standards"><span class="secnum">15.11.3</span> On-Board Implementation and Standards<a class="headerlink" href="#15113-on-board-implementation-and-standards" title="Permanent link">&para;</a></h3>
+<p>For a hyperspectral imager achieving 10:1 compression ratio (<span class="arithmatex">\(M/N = 0.1\)</span>), the on-board CS processor computes the <span class="arithmatex">\(M \times N\)</span> matrix-vector product in real time before the downlink buffer. The total on-board multiply-accumulate rate is <span class="arithmatex">\(M \times N \times f_{\rm pixel}\)</span>, feasible on an FPGA consuming <span class="arithmatex">\(&lt; 5\)</span> W for 100 Mpixel/s throughput.</p>
+<p>The CCSDS 122.0-B-2 image data compression standard specifies a lossless and near-lossless wavelet-based compression algorithm (DWT + bit-plane coding) suitable for hardware implementation on FPGAs. Compression ratios of 4:1 (lossless progressive) to 20:1 (near-lossless) are achievable with <span class="arithmatex">\(&lt; 1\)</span> W for 100 Mpixel/s. The CCSDS 123.0-B standard extends this to multispectral and hyperspectral data, exploiting inter-band spectral correlations.</p>
+<div class="admonition info box-keybox kind-concept">
+<p>Key Performance Summary: Space DSP A well-designed satellite DSP system should achieve:</p>
+<ul>
+<li>
+<p>SDR flexibility: <span class="arithmatex">\(&gt; 500\)</span> MHz instantaneous bandwidth with 12-bit ENOB ADC</p>
+</li>
+<li>
+<p>Channel coding: LDPC DVB-S2 within 0.5–2.0 dB of Shannon limit</p>
+</li>
+<li>
+<p>Spread spectrum: Processing gain <span class="arithmatex">\(&gt; 43\)</span> dB for GPS L1 C/A (anti-jam margin <span class="arithmatex">\(&gt; 33\)</span> dB)</p>
+</li>
+<li>
+<p>Beamforming: MVDR adaptive nulling achieving <span class="arithmatex">\(&gt; 30\)</span> dB interference suppression</p>
+</li>
+<li>
+<p>On-board processing: 50–500 channel polyphase channelizer with flexible routing</p>
+</li>
+<li>
+<p>Compressed sensing: 10:1 hyperspectral compression within 3 dB SNR of original</p>
+</li>
+</ul>
+</div>
+<h2 id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">&para;</a></h2>
+<p>This chapter has surveyed the complete landscape of digital signal processing for satellite systems. Software-defined radio architectures leverage space-qualified FPGAs and radiation-tolerant ADCs to achieve the flexibility required for multi-mission satellites operating across diverse frequency bands and waveform standards. Advanced channel coding—LDPC, turbo, and polar codes—has enabled satellite links to approach the Shannon capacity limit, driving increases in spectral efficiency that are essential for economically viable high-throughput satellite systems. Spread spectrum techniques provide anti-jamming protection and precision ranging for navigation and military applications. OFDM enables high-spectral-efficiency broadband services, with Doppler pre-compensation addressing the unique challenges of LEO platforms. On-board processing regenerative transponders isolate link budgets, improve interference management, and enable intelligent traffic routing. Adaptive beamforming using MVDR and related algorithms provides spatial interference rejection of 30–40 dB. Finally, compressed sensing offers a mathematically principled framework for reducing data volumes from Earth observation payloads, enabling higher-bandwidth science with constrained downlink capacity.</p>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button type="button" class="md-top md-icon" data-md-component="top" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+Back to top
+</button>
+</main>
+<footer class="md-footer">
+<nav class="md-footer__inner md-grid" aria-label="Footer" >
+<a href="ch14-satellite-antenna-systems.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: 14. Satellite Antenna Systems">
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</div>
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Previous
+</span>
+<div class="md-ellipsis">
+14. Satellite Antenna Systems
+</div>
+</div>
+</a>
+<a href="ch16-optical-satellite-communications.html" class="md-footer__link md-footer__link--next" aria-label="Next: 16. Optical Satellite Communications">
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Next
+</span>
+<div class="md-ellipsis">
+16. Optical Satellite Communications
+</div>
+</div>
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+</div>
+</a>
+</nav>
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+The Open Book Project &middot;
+<a href="../../about.html">About this library</a> &middot;
+<a href="../../publish.html">Publish your book</a> &middot;
+© The authors of the books
+</div>
+Made with
+<a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+Material for MkDocs
+</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "navigation.prune", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "toc.follow", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+<script src="../../assets/mathjax.js"></script>
+<script src="../../assets/viz.js"></script>
+<script src="../../assets/remote.js"></script>
+<script src="../../assets/scans.js"></script>
+<script src="../../assets/reader.js"></script>
+<script src="../../assets/app.js"></script>
+<script src="../../assets/slides.js"></script>
+<script src="../../assets/speak.js"></script>
+<script src="../../assets/quiz.js"></script>
+<script>
+    /* offline reading: the service worker at the site root (its scope is the whole site) */
+    if ("serviceWorker" in navigator && window.isSecureContext) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register(new URL("../../sw.js", location.href).href).catch(function () {});
+      });
+    }
+  </script>
+</body>
+</html>
