@@ -1,0 +1,1278 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="description" content="The Open Book Project: books on computer science, quantum computing, cyber security, science, the social sciences, university courses and languages, read page by page like an e-book, online or offline.">
+<meta name="author" content="The Open Book Project">
+<link rel="canonical" href="https://open-book-project.github.io/mathematics/discrete_mathematics/graphs.html">
+<link rel="prev" href="number-theory-and-cryptography.html">
+<link rel="next" href="trees.html">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap"></noscript>
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Open Book">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="application-name" content="Open Book"><script src="../../assets/library-data.js"></script><script>
+    (function () {
+      var X = window.XMLHttpRequest, open, gate = new Promise(function (r) { open = r; });
+      if (!X) return;
+      var open0 = X.prototype.open, send0 = X.prototype.send;
+      X.prototype.open = function (method, url) {
+        this.__pkIndex = /\/search\/search_index\.json(\?|#|$)/.test(String(url));
+        return open0.apply(this, arguments);
+      };
+      X.prototype.send = function () {
+        if (!this.__pkIndex) return send0.apply(this, arguments);
+        var xhr = this, args = arguments;
+        gate.then(function () { send0.apply(xhr, args); });
+      };
+      function wake() { open(); }
+      document.addEventListener("focusin", function (e) { if (e.target && e.target.closest && e.target.closest(".md-search")) wake(); });
+      document.addEventListener("click", function (e) { if (e.target && e.target.closest && e.target.closest('label[for="__search"], .md-search')) wake(); }, true);
+      document.addEventListener("keydown", function (e) {
+        var k = e.key;
+        if ((k === "/" || k === "s" || k === "f" || k === "S" || k === "F") && !(e.target && e.target.closest && e.target.closest("input, textarea, [contenteditable]"))) wake();
+      }, true);
+      if (/[?&]q=/.test(location.search)) wake();
+    })();
+  </script><script>
+    try {
+      if ((window.matchMedia && (matchMedia("(display-mode: standalone)").matches || matchMedia("(display-mode: fullscreen)").matches)) || navigator.standalone === true) {
+        document.documentElement.className += " bjp-standalone";
+      }
+    } catch (e) { /* not an installed app */ }
+    /* the books of a subject or of the whole library as covers or as a list (assets/app.js): the reader's choice */
+    try {
+      var bv = localStorage.getItem("bjp.view");
+      if (bv === "list" || (bv !== "grid" && /\/books\.html$/.test(location.pathname))) document.documentElement.className += " bjp-view-list";
+    } catch (e) { /* no storage: covers */ }
+  </script>
+<script>
+    /* a book opened from its cover on the shelf: the page stays blank, in the cover's colour, until the reader is up */
+    try {
+      var cv = sessionStorage.getItem("bjp.reader.cover");
+      if (cv && sessionStorage.getItem("bjp.reader.open") === "1") {
+        var c = JSON.parse(cv), de = document.documentElement;
+        de.className += " bjp-booting";
+        if (c && /^#[0-9a-f]{3,8}$/i.test(c.bg || "")) de.style.background = c.bg;
+        setTimeout(function () { de.classList.remove("bjp-booting"); de.style.background = ""; }, 3000);
+      }
+    } catch (e) { /* no session storage: the page simply opens as usual */ }
+  </script>
+<title>11. Graphs - The Open Book Project</title>
+<link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+<link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+<link rel="stylesheet" href="../../assets/extra.css">
+<link rel="stylesheet" href="../../assets/reader.css">
+<link rel="stylesheet" href="../../assets/viz.css">
+<link rel="stylesheet" href="../../assets/app.css">
+<link rel="stylesheet" href="../../assets/theme.css">
+<link rel="stylesheet" href="../../assets/slides.css">
+<link rel="stylesheet" href="../../assets/remote.css">
+<link rel="stylesheet" href="../../assets/scans.css">
+<link rel="stylesheet" href="../../assets/speak.css">
+<link rel="stylesheet" href="../../assets/quiz.css">
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+<input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+<input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a href="#111-graphs-and-where-they-come-from" class="md-skip">
+Skip to content
+</a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav class="md-header__inner md-grid" aria-label="Header">
+<a href="../../index.html" title="The Open Book Project" class="md-header__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+The Open Book Project
+</span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+11. Graphs
+</span>
+</div>
+</div>
+</div><a href="../../index.html" class="bjp-libbtn" aria-label="Library: all books" title="Library: all books">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V5h4v15M8 20V9h4v11M14 20L12.6 6l3.8-.8 3 14.2M3 20h18"/></svg><span>Library</span>
+</a>
+<a href="../../subjects/index.html" class="pk-catbtn" aria-haspopup="true" aria-expanded="false" title="Browse the books by category">
+<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><circle cx="17" cy="7" r="3.6"/><path d="M7 13.4l3.9 6.8H3.1z"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg><span>Categories</span>
+</a>
+<form class="md-header__option" data-md-component="palette">
+<input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+<label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+</label>
+<input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+<label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+<label class="md-search__icon md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</label>
+<nav class="md-search__options" aria-label="Search">
+<button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+Initializing search
+</div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--primary bjp-nav bjp-nav--book" aria-label="Navigation" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a href="../../index.html" title="The Open Book Project" class="md-nav__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+The Open Book Project
+</label>
+<ul class="md-nav__list" data-md-scrollfix>
+<li class="md-nav__item bjp-nav-all">
+<a href="../../index.html" class="md-nav__link" aria-label="All books: back to the library">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+<span class="md-ellipsis">All books</span>
+</a>
+</li>
+<li class="md-nav__item bjp-nav-book" role="presentation"><span class="bjp-nav-head">Discrete Mathematics</span></li>
+<li class="md-nav__item">
+<a href="index.html" class="md-nav__link">
+<span class="md-ellipsis">
+Overview and preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="preface.html" class="md-nav__link">
+<span class="md-ellipsis">
+Preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="propositional-logic.html" class="md-nav__link">
+<span class="md-ellipsis">
+1. Propositional Logic
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="predicate-logic-and-quantifiers.html" class="md-nav__link">
+<span class="md-ellipsis">
+2. Predicate Logic and Quantifiers
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="methods-of-proof.html" class="md-nav__link">
+<span class="md-ellipsis">
+3. Methods of Proof
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="sets-and-functions.html" class="md-nav__link">
+<span class="md-ellipsis">
+4. Sets and Functions
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="relations.html" class="md-nav__link">
+<span class="md-ellipsis">
+5. Relations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="induction-and-recursion.html" class="md-nav__link">
+<span class="md-ellipsis">
+6. Induction and Recursion
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="counting.html" class="md-nav__link">
+<span class="md-ellipsis">
+7. Counting
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="discrete-probability.html" class="md-nav__link">
+<span class="md-ellipsis">
+8. Discrete Probability
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="recurrence-relations-and-generating-functions.html" class="md-nav__link">
+<span class="md-ellipsis">
+9. Recurrence Relations and Generating Functions
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="number-theory-and-cryptography.html" class="md-nav__link">
+<span class="md-ellipsis">
+10. Number Theory and Cryptography
+</span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+11. Graphs
+</span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a href="graphs.html" class="md-nav__link md-nav__link--active">
+<span class="md-ellipsis">
+11. Graphs
+</span>
+</a>
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#111-graphs-and-where-they-come-from" class="md-nav__link">
+<span class="md-ellipsis">
+11.1 Graphs and where they come from
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#112-degrees-and-special-graphs" class="md-nav__link">
+<span class="md-ellipsis">
+11.2 Degrees and special graphs
+</span>
+</a>
+<nav class="md-nav" aria-label="11.2 Degrees and special graphs">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#special-families" class="md-nav__link">
+<span class="md-ellipsis">
+Special families
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#113-representing-graphs-and-isomorphism" class="md-nav__link">
+<span class="md-ellipsis">
+11.3 Representing graphs, and isomorphism
+</span>
+</a>
+<nav class="md-nav" aria-label="11.3 Representing graphs, and isomorphism">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#isomorphism" class="md-nav__link">
+<span class="md-ellipsis">
+Isomorphism
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#114-paths-and-connectivity" class="md-nav__link">
+<span class="md-ellipsis">
+11.4 Paths and connectivity
+</span>
+</a>
+<nav class="md-nav" aria-label="11.4 Paths and connectivity">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#counting-walks" class="md-nav__link">
+<span class="md-ellipsis">
+Counting walks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#shortest-paths" class="md-nav__link">
+<span class="md-ellipsis">
+Shortest paths
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#115-euler-circuits-and-paths" class="md-nav__link">
+<span class="md-ellipsis">
+11.5 Euler circuits and paths
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#116-hamilton-circuits-and-paths" class="md-nav__link">
+<span class="md-ellipsis">
+11.6 Hamilton circuits and paths
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#117-planar-graphs" class="md-nav__link">
+<span class="md-ellipsis">
+11.7 Planar graphs
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#118-graph-colouring" class="md-nav__link">
+<span class="md-ellipsis">
+11.8 Graph colouring
+</span>
+</a>
+<nav class="md-nav" aria-label="11.8 Graph colouring">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#the-four-colour-theorem" class="md-nav__link">
+<span class="md-ellipsis">
+The four colour theorem
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#colouring-in-practice-scheduling" class="md-nav__link">
+<span class="md-ellipsis">
+Colouring in practice: scheduling
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#119-summary" class="md-nav__link">
+<span class="md-ellipsis">
+11.9 Summary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1110-exercises" class="md-nav__link">
+<span class="md-ellipsis">
+11.10 Exercises
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1111-quiz" class="md-nav__link">
+<span class="md-ellipsis">
+11.11 Quiz
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="trees.html" class="md-nav__link">
+<span class="md-ellipsis">
+12. Trees
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="boolean-algebra-and-logic-circuits.html" class="md-nav__link">
+<span class="md-ellipsis">
+13. Boolean Algebra and Logic Circuits
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="automata-and-languages.html" class="md-nav__link">
+<span class="md-ellipsis">
+14. Automata and Languages
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="glossary.html" class="md-nav__link">
+<span class="md-ellipsis">
+Glossary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="further-reading.html" class="md-nav__link">
+<span class="md-ellipsis">
+Further Reading
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#111-graphs-and-where-they-come-from" class="md-nav__link">
+<span class="md-ellipsis">
+11.1 Graphs and where they come from
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#112-degrees-and-special-graphs" class="md-nav__link">
+<span class="md-ellipsis">
+11.2 Degrees and special graphs
+</span>
+</a>
+<nav class="md-nav" aria-label="11.2 Degrees and special graphs">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#special-families" class="md-nav__link">
+<span class="md-ellipsis">
+Special families
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#113-representing-graphs-and-isomorphism" class="md-nav__link">
+<span class="md-ellipsis">
+11.3 Representing graphs, and isomorphism
+</span>
+</a>
+<nav class="md-nav" aria-label="11.3 Representing graphs, and isomorphism">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#isomorphism" class="md-nav__link">
+<span class="md-ellipsis">
+Isomorphism
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#114-paths-and-connectivity" class="md-nav__link">
+<span class="md-ellipsis">
+11.4 Paths and connectivity
+</span>
+</a>
+<nav class="md-nav" aria-label="11.4 Paths and connectivity">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#counting-walks" class="md-nav__link">
+<span class="md-ellipsis">
+Counting walks
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#shortest-paths" class="md-nav__link">
+<span class="md-ellipsis">
+Shortest paths
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#115-euler-circuits-and-paths" class="md-nav__link">
+<span class="md-ellipsis">
+11.5 Euler circuits and paths
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#116-hamilton-circuits-and-paths" class="md-nav__link">
+<span class="md-ellipsis">
+11.6 Hamilton circuits and paths
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#117-planar-graphs" class="md-nav__link">
+<span class="md-ellipsis">
+11.7 Planar graphs
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#118-graph-colouring" class="md-nav__link">
+<span class="md-ellipsis">
+11.8 Graph colouring
+</span>
+</a>
+<nav class="md-nav" aria-label="11.8 Graph colouring">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#the-four-colour-theorem" class="md-nav__link">
+<span class="md-ellipsis">
+The four colour theorem
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#colouring-in-practice-scheduling" class="md-nav__link">
+<span class="md-ellipsis">
+Colouring in practice: scheduling
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#119-summary" class="md-nav__link">
+<span class="md-ellipsis">
+11.9 Summary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1110-exercises" class="md-nav__link">
+<span class="md-ellipsis">
+11.10 Exercises
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1111-quiz" class="md-nav__link">
+<span class="md-ellipsis">
+11.11 Quiz
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="chapter-11-graphs">Chapter 11: Graphs<a class="headerlink" href="#chapter-11-graphs" title="Permanent link">&para;</a></h1>
+<p><em>Vertices and edges: paths, circuits, planarity and colouring</em></p>
+<div class="admonition note">
+<p class="admonition-title">Learning outcomes</p>
+<p>After this chapter you should be able to:</p>
+<ul>
+<li>define graphs, multigraphs and directed graphs, and model problems with them;</li>
+<li>use degrees and the handshaking theorem, and recognise complete, cycle, wheel, cube and bipartite graphs;</li>
+<li>represent graphs by adjacency lists and matrices, and decide whether two graphs are isomorphic;</li>
+<li>reason about paths, connectivity and components, count walks with powers of the adjacency matrix, and find shortest paths;</li>
+<li>decide whether a graph has an Euler circuit or path, and discuss Hamilton circuits;</li>
+<li>use Euler's formula to reason about planar graphs and prove that <span class="arithmatex">\(K_5\)</span> and <span class="arithmatex">\(K_{3,3}\)</span> are not planar;</li>
+<li>colour graphs, find chromatic numbers of simple families, and apply colouring to scheduling.</li>
+</ul>
+</div>
+<h2 id="111-graphs-and-where-they-come-from">11.1 Graphs and where they come from<a class="headerlink" href="#111-graphs-and-where-they-come-from" title="Permanent link">&para;</a></h2>
+<p>In the eighteenth century the city of Königsberg had seven bridges joining two river banks and two islands. The citizens asked whether one could walk through the city crossing every bridge exactly once. In 1736 Leonhard Euler showed that it is impossible, and in doing so noticed that the shapes of the land and the lengths of the bridges did not matter at all. All that mattered was which land masses were joined by bridges, and how many times. He had invented graph theory.</p>
+<div class="admonition note">
+<p class="admonition-title">Definition: graph</p>
+<p>A <strong>graph</strong> <span class="arithmatex">\(G = (V, E)\)</span> consists of a non-empty set <span class="arithmatex">\(V\)</span> of <strong>vertices</strong> (or nodes) and a set <span class="arithmatex">\(E\)</span> of <strong>edges</strong>; each edge joins two vertices, its <strong>endpoints</strong>. In a <strong>simple graph</strong> each edge joins two different vertices and no two edges join the same pair. A <strong>multigraph</strong> may have several edges joining the same pair (<strong>multiple edges</strong>), and a <strong>pseudograph</strong> may also have edges from a vertex to itself (<strong>loops</strong>). In a <strong>directed graph</strong> each edge, called an <strong>arc</strong>, goes <em>from</em> one vertex <em>to</em> another.</p>
+</div>
+<p>Unless we say otherwise, "graph" means a finite simple undirected graph, and an edge joining <span class="arithmatex">\(u\)</span> and <span class="arithmatex">\(v\)</span> is written <span class="arithmatex">\(\{u, v\}\)</span> or <span class="arithmatex">\(uv\)</span>.</p>
+<p>Figure 11.1 shows Euler's graph of Königsberg: one vertex for each land mass, one edge for each bridge. It is a multigraph.</p>
+<figure class="fig fig-diagram">
+<img src="img/konigsberg.svg" alt="The Königsberg bridges as a multigraph. Four vertices: A (the central island), B (the north bank), C (the south bank) and D (the eastern island). A is joined to B by two edges, to C by two edges and to D by one edge; B and C are each joined to D by one edge. Seven edges in all, and every vertex has odd degree: A has 5, B, C and D have 3." loading="lazy" width="520" height="380">
+<figcaption><strong>Figure 11.1 The Königsberg bridges as a graph.</strong> The Königsberg bridges as a multigraph. Four vertices: A (the central island), B (the north bank), C (the south bank) and D (the eastern island). A is joined to B by two edges, to C by two edges and to D by one edge; B and C are each joined to D by one edge. Seven edges in all, and every vertex has odd degree: A has 5, B, C and D have 3.</figcaption>
+</figure>
+<p>Graphs model any situation with objects and connections between them:</p>
+<table>
+<thead>
+<tr>
+<th>Graph</th>
+<th>Vertices</th>
+<th>Edges</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>road map</td>
+<td>junctions</td>
+<td>roads (weighted by length)</td>
+</tr>
+<tr>
+<td>computer network</td>
+<td>computers, routers</td>
+<td>links</td>
+</tr>
+<tr>
+<td>the web</td>
+<td>pages</td>
+<td>links (directed)</td>
+</tr>
+<tr>
+<td>social network</td>
+<td>people</td>
+<td>friendships</td>
+</tr>
+<tr>
+<td>course plan</td>
+<td>courses</td>
+<td>prerequisites (directed)</td>
+</tr>
+<tr>
+<td>molecule</td>
+<td>atoms</td>
+<td>chemical bonds</td>
+</tr>
+<tr>
+<td>exam timetable</td>
+<td>exams</td>
+<td>pairs of exams with a common student</td>
+</tr>
+</tbody>
+</table>
+<p><em>Table 11.1. Some graph models.</em></p>
+<h2 id="112-degrees-and-special-graphs">11.2 Degrees and special graphs<a class="headerlink" href="#112-degrees-and-special-graphs" title="Permanent link">&para;</a></h2>
+<p>Two vertices joined by an edge are <strong>adjacent</strong> (or neighbours), and the edge is <strong>incident</strong> with each of them. The <strong>degree</strong> <span class="arithmatex">\(\deg(v)\)</span> of a vertex is the number of edges incident with it, with a loop counting twice. A vertex of degree 0 is <strong>isolated</strong>.</p>
+<div class="admonition note">
+<p class="admonition-title">Theorem 11.1 (the handshaking theorem)</p>
+<p>In any graph <span class="arithmatex">\(G = (V, E)\)</span> (multiple edges and loops allowed),</p>
+<div class="arithmatex">\[
+\sum_{v \in V} \deg(v) = 2\lvert E \rvert.
+\]</div>
+</div>
+<p><strong>Proof.</strong> Each edge has two ends and contributes 1 to the degree of each (or 2 to one vertex, if it is a loop). So the sum of the degrees counts every edge exactly twice. <span class="arithmatex">\(\blacksquare\)</span></p>
+<p>The name comes from the picture of a party at which some pairs of guests shake hands: the total number of hands shaken is twice the number of handshakes.</p>
+<div class="admonition note">
+<p class="admonition-title">Corollary 11.2</p>
+<p>Every graph has an even number of vertices of odd degree.</p>
+</div>
+<p><strong>Proof.</strong> The sum of all degrees is even. The vertices of even degree contribute an even amount, so the vertices of odd degree must also contribute an even amount, which requires an even number of them. <span class="arithmatex">\(\blacksquare\)</span></p>
+<div class="admonition example">
+<p class="admonition-title">Example 11.1: Using the handshaking theorem</p>
+<p><strong>Problem.</strong> (a) How many edges has a graph with 10 vertices each of degree 6? (b) Can a group of 9 people each be friends with exactly 3 others in the group?</p>
+<p><strong>Solution.</strong> (a) <span class="arithmatex">\(2\lvert E \rvert = 60\)</span>, so 30 edges. (b) No: that would be a graph with 9 vertices of odd degree 3, an odd number, contradicting Corollary 11.2.</p>
+</div>
+<p>In a directed graph, the <strong>in-degree</strong> <span class="arithmatex">\(\deg^-(v)\)</span> is the number of arcs into <span class="arithmatex">\(v\)</span> and the <strong>out-degree</strong> <span class="arithmatex">\(\deg^+(v)\)</span> the number out of it. Each arc has one tail and one head, so <span class="arithmatex">\(\sum_v \deg^-(v) = \sum_v \deg^+(v) = \lvert E \rvert\)</span>.</p>
+<h3 id="special-families">Special families<a class="headerlink" href="#special-families" title="Permanent link">&para;</a></h3>
+<p>Some graphs appear so often that they have names (Figure 11.2).</p>
+<ul>
+<li>The <strong>complete graph</strong> <span class="arithmatex">\(K_n\)</span> has <span class="arithmatex">\(n\)</span> vertices and an edge between every pair: <span class="arithmatex">\(\binom{n}{2} = n(n-1)/2\)</span> edges.</li>
+<li>The <strong>cycle</strong> <span class="arithmatex">\(C_n\)</span> (<span class="arithmatex">\(n \ge 3\)</span>) has vertices <span class="arithmatex">\(v_1, \dots, v_n\)</span> and edges <span class="arithmatex">\(v_1v_2, v_2v_3, \dots, v_{n-1}v_n, v_nv_1\)</span>.</li>
+<li>The <strong>wheel</strong> <span class="arithmatex">\(W_n\)</span> is <span class="arithmatex">\(C_n\)</span> with one extra vertex, the hub, joined to all <span class="arithmatex">\(n\)</span> vertices of the cycle.</li>
+<li>The <strong><span class="arithmatex">\(n\)</span>-cube</strong> <span class="arithmatex">\(Q_n\)</span> has the <span class="arithmatex">\(2^n\)</span> bit strings of length <span class="arithmatex">\(n\)</span> as vertices, with two strings adjacent when they differ in exactly one bit. It models the wiring of some parallel computers.</li>
+<li>A graph is <strong>bipartite</strong> if its vertices can be split into two sets <span class="arithmatex">\(V_1\)</span> and <span class="arithmatex">\(V_2\)</span> so that every edge joins a vertex of <span class="arithmatex">\(V_1\)</span> to a vertex of <span class="arithmatex">\(V_2\)</span>. The <strong>complete bipartite graph</strong> <span class="arithmatex">\(K_{m,n}\)</span> has <span class="arithmatex">\(\lvert V_1 \rvert = m\)</span>, <span class="arithmatex">\(\lvert V_2 \rvert = n\)</span>, and all <span class="arithmatex">\(mn\)</span> possible edges between them.</li>
+</ul>
+<figure class="fig fig-diagram">
+<img src="img/special-graphs.svg" alt="Six special graphs: the complete graphs K4 and K5, the cycle C6, the wheel W5 (a five-cycle with a central hub), the 3-cube Q3 (the vertices of a cube labelled with bit strings 000 to 111), and the complete bipartite graph K3,3 (three vertices on top each joined to three vertices below)." loading="lazy" width="900" height="520">
+<figcaption><strong>Figure 11.2 Some special graphs.</strong> Six special graphs: the complete graphs K4 and K5, the cycle C6, the wheel W5 (a five-cycle with a central hub), the 3-cube Q3 (the vertices of a cube labelled with bit strings 000 to 111), and the complete bipartite graph K3,3 (three vertices on top each joined to three vertices below).</figcaption>
+</figure>
+<div class="admonition example">
+<p class="admonition-title">Example 11.2: Which graphs are bipartite?</p>
+<p><strong>Problem.</strong> Is <span class="arithmatex">\(C_6\)</span> bipartite? Is <span class="arithmatex">\(C_5\)</span>? Is <span class="arithmatex">\(Q_3\)</span>?</p>
+<p><strong>Solution.</strong> <span class="arithmatex">\(C_6\)</span>: put <span class="arithmatex">\(v_1, v_3, v_5\)</span> in <span class="arithmatex">\(V_1\)</span> and <span class="arithmatex">\(v_2, v_4, v_6\)</span> in <span class="arithmatex">\(V_2\)</span>; every edge joins consecutive vertices, one odd and one even. Bipartite. <span class="arithmatex">\(C_5\)</span>: if <span class="arithmatex">\(v_1 \in V_1\)</span>, then <span class="arithmatex">\(v_2 \in V_2\)</span>, <span class="arithmatex">\(v_3 \in V_1\)</span>, <span class="arithmatex">\(v_4 \in V_2\)</span>, <span class="arithmatex">\(v_5 \in V_1\)</span>; but <span class="arithmatex">\(v_5\)</span> is adjacent to <span class="arithmatex">\(v_1\)</span>, both in <span class="arithmatex">\(V_1\)</span>. Not bipartite. <span class="arithmatex">\(Q_3\)</span>: split by the number of 1s, even or odd; changing one bit changes the parity. Bipartite.</p>
+</div>
+<p>The argument for <span class="arithmatex">\(C_5\)</span> generalises: a graph is bipartite if and only if it has no cycle of odd length (Section 11.8).</p>
+<h2 id="113-representing-graphs-and-isomorphism">11.3 Representing graphs, and isomorphism<a class="headerlink" href="#113-representing-graphs-and-isomorphism" title="Permanent link">&para;</a></h2>
+<p>A computer stores a graph in one of two main ways.</p>
+<ul>
+<li>An <strong>adjacency list</strong> gives, for each vertex, the list of its neighbours. It uses space proportional to <span class="arithmatex">\(\lvert V \rvert + \lvert E \rvert\)</span> and suits <strong>sparse</strong> graphs (few edges), such as road maps and the web.</li>
+<li>The <strong>adjacency matrix</strong> of a graph with vertices <span class="arithmatex">\(v_1, \dots, v_n\)</span> is the <span class="arithmatex">\(n \times n\)</span> matrix <span class="arithmatex">\(A\)</span> with <span class="arithmatex">\(a_{ij} = 1\)</span> if <span class="arithmatex">\(v_i\)</span> and <span class="arithmatex">\(v_j\)</span> are adjacent and <span class="arithmatex">\(0\)</span> otherwise (for a multigraph, <span class="arithmatex">\(a_{ij}\)</span> is the number of edges). It uses <span class="arithmatex">\(n^2\)</span> entries and suits <strong>dense</strong> graphs, and it answers "are <span class="arithmatex">\(u\)</span> and <span class="arithmatex">\(v\)</span> adjacent?" in one step. For an undirected graph the matrix is symmetric.</li>
+</ul>
+<p>For the graph with vertices <span class="arithmatex">\(a, b, c, d\)</span> and edges <span class="arithmatex">\(ab, ac, bc, bd, cd\)</span>:</p>
+<table>
+<thead>
+<tr>
+<th>Vertex</th>
+<th>Neighbours</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="arithmatex">\(a\)</span></td>
+<td><span class="arithmatex">\(b, c\)</span></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(b\)</span></td>
+<td><span class="arithmatex">\(a, c, d\)</span></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(c\)</span></td>
+<td><span class="arithmatex">\(a, b, d\)</span></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(d\)</span></td>
+<td><span class="arithmatex">\(b, c\)</span></td>
+</tr>
+</tbody>
+</table>
+<p><em>Table 11.2. An adjacency list.</em></p>
+<div class="arithmatex">\[
+A = \begin{pmatrix} 0 &amp; 1 &amp; 1 &amp; 0 \\ 1 &amp; 0 &amp; 1 &amp; 1 \\ 1 &amp; 1 &amp; 0 &amp; 1 \\ 0 &amp; 1 &amp; 1 &amp; 0 \end{pmatrix}.
+\]</div>
+<h3 id="isomorphism">Isomorphism<a class="headerlink" href="#isomorphism" title="Permanent link">&para;</a></h3>
+<p>The same graph can be drawn in very different ways. What matters is the structure, not the picture.</p>
+<div class="admonition note">
+<p class="admonition-title">Definition: isomorphism</p>
+<p>Simple graphs <span class="arithmatex">\(G_1 = (V_1, E_1)\)</span> and <span class="arithmatex">\(G_2 = (V_2, E_2)\)</span> are <strong>isomorphic</strong> if there is a bijection <span class="arithmatex">\(f : V_1 \to V_2\)</span> such that <span class="arithmatex">\(u\)</span> and <span class="arithmatex">\(v\)</span> are adjacent in <span class="arithmatex">\(G_1\)</span> if and only if <span class="arithmatex">\(f(u)\)</span> and <span class="arithmatex">\(f(v)\)</span> are adjacent in <span class="arithmatex">\(G_2\)</span>. Such an <span class="arithmatex">\(f\)</span> is an <strong>isomorphism</strong>.</p>
+</div>
+<p>To show two graphs are isomorphic, give an isomorphism and check every edge. To show they are not, find a property that is preserved by every isomorphism (an <strong>invariant</strong>) on which they differ: the number of vertices, the number of edges, the list of degrees, the presence of a cycle of a given length, being bipartite, being connected.</p>
+<div class="admonition example">
+<p class="admonition-title">Example 11.3: Isomorphic or not?</p>
+<p><strong>Problem.</strong> (a) <span class="arithmatex">\(G_1\)</span> has vertices <span class="arithmatex">\(1, 2, 3, 4\)</span> and edges <span class="arithmatex">\(12, 23, 34, 41\)</span>. <span class="arithmatex">\(G_2\)</span> has vertices <span class="arithmatex">\(a, b, c, d\)</span> and edges <span class="arithmatex">\(ac, cb, bd, da\)</span>. Are they isomorphic? (b) Are <span class="arithmatex">\(C_6\)</span> and the graph made of two separate triangles isomorphic?</p>
+<p><strong>Solution.</strong> (a) Both are 4-cycles. Following the cycles, <span class="arithmatex">\(1 \mapsto a\)</span>, <span class="arithmatex">\(2 \mapsto c\)</span>, <span class="arithmatex">\(3 \mapsto b\)</span>, <span class="arithmatex">\(4 \mapsto d\)</span> sends the edges <span class="arithmatex">\(12, 23, 34, 41\)</span> to <span class="arithmatex">\(ac, cb, bd, da\)</span>: an isomorphism. (b) Both have 6 vertices, 6 edges and every degree equal to 2, so the simple invariants agree. But two triangles contain a cycle of length 3 and <span class="arithmatex">\(C_6\)</span> does not; also <span class="arithmatex">\(C_6\)</span> is connected and the triangles are not. Not isomorphic.</p>
+</div>
+<p>No efficient algorithm is known that decides isomorphism for all graphs, although the best known methods are much faster than trying all <span class="arithmatex">\(n!\)</span> bijections, and in practice most pairs are quickly told apart by invariants.</p>
+<h2 id="114-paths-and-connectivity">11.4 Paths and connectivity<a class="headerlink" href="#114-paths-and-connectivity" title="Permanent link">&para;</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Definitions: walk, path, circuit</p>
+<p>A <strong>walk</strong> of length <span class="arithmatex">\(k\)</span> from <span class="arithmatex">\(u\)</span> to <span class="arithmatex">\(v\)</span> is a sequence of vertices <span class="arithmatex">\(u = x_0, x_1, \dots, x_k = v\)</span> in which consecutive vertices are adjacent. It is a <strong>path</strong> if no vertex is repeated, and a <strong>circuit</strong> (or closed walk) if <span class="arithmatex">\(u = v\)</span>. A <strong>cycle</strong> is a circuit of length at least 3 with no repeated vertex other than the first and last.</p>
+</div>
+<p>(Terminology differs between books: some say "simple path" for what we call a path. Read definitions carefully.)</p>
+<div class="admonition note">
+<p class="admonition-title">Definition: connected</p>
+<p>A graph is <strong>connected</strong> if there is a path between every pair of vertices. The maximal connected pieces of a graph are its <strong>connected components</strong>.</p>
+</div>
+<p>If there is a walk from <span class="arithmatex">\(u\)</span> to <span class="arithmatex">\(v\)</span> there is a path: whenever a vertex repeats, cut out the loop between its two occurrences. So "joined by a walk" and "joined by a path" mean the same, and "is joined by a path to" is an equivalence relation whose classes are the components (Section 5.4).</p>
+<p>A vertex whose removal (with its edges) increases the number of components is a <strong>cut vertex</strong>, and an edge whose removal does so is a <strong>bridge</strong>. In a network, cut vertices and bridges are single points of failure.</p>
+<h3 id="counting-walks">Counting walks<a class="headerlink" href="#counting-walks" title="Permanent link">&para;</a></h3>
+<div class="admonition note">
+<p class="admonition-title">Theorem 11.3</p>
+<p>Let <span class="arithmatex">\(A\)</span> be the adjacency matrix of a graph with vertices <span class="arithmatex">\(v_1, \dots, v_n\)</span>. For <span class="arithmatex">\(k \ge 1\)</span>, the <span class="arithmatex">\((i, j)\)</span> entry of <span class="arithmatex">\(A^k\)</span> is the number of walks of length <span class="arithmatex">\(k\)</span> from <span class="arithmatex">\(v_i\)</span> to <span class="arithmatex">\(v_j\)</span>.</p>
+</div>
+<p><strong>Proof.</strong> By induction on <span class="arithmatex">\(k\)</span>. For <span class="arithmatex">\(k = 1\)</span> it is the definition. Suppose it holds for <span class="arithmatex">\(k\)</span>. A walk of length <span class="arithmatex">\(k + 1\)</span> from <span class="arithmatex">\(v_i\)</span> to <span class="arithmatex">\(v_j\)</span> is a walk of length <span class="arithmatex">\(k\)</span> from <span class="arithmatex">\(v_i\)</span> to some <span class="arithmatex">\(v_m\)</span> followed by an edge from <span class="arithmatex">\(v_m\)</span> to <span class="arithmatex">\(v_j\)</span>. So the number of such walks is <span class="arithmatex">\(\sum_m (A^k)_{im}\, a_{mj}\)</span>, which is the <span class="arithmatex">\((i, j)\)</span> entry of <span class="arithmatex">\(A^k A = A^{k+1}\)</span>. <span class="arithmatex">\(\blacksquare\)</span></p>
+<p>For the graph of Table 11.2,</p>
+<div class="arithmatex">\[
+A^2 = \begin{pmatrix} 2 &amp; 1 &amp; 1 &amp; 2 \\ 1 &amp; 3 &amp; 2 &amp; 1 \\ 1 &amp; 2 &amp; 3 &amp; 1 \\ 2 &amp; 1 &amp; 1 &amp; 2 \end{pmatrix},
+\]</div>
+<p>so there are 2 walks of length 2 from <span class="arithmatex">\(a\)</span> to <span class="arithmatex">\(d\)</span> (<span class="arithmatex">\(a, b, d\)</span> and <span class="arithmatex">\(a, c, d\)</span>), and the diagonal entries are the degrees (a walk of length 2 from a vertex back to itself goes out along an edge and straight back).</p>
+<h3 id="shortest-paths">Shortest paths<a class="headerlink" href="#shortest-paths" title="Permanent link">&para;</a></h3>
+<p>In an unweighted graph, the <strong>distance</strong> between two vertices is the length of a shortest path. <strong>Breadth-first search</strong> finds all distances from a vertex <span class="arithmatex">\(s\)</span>: visit <span class="arithmatex">\(s\)</span>; then all its neighbours (distance 1); then all their unvisited neighbours (distance 2); and so on, level by level. It also decides connectivity: the graph is connected exactly when the search from any vertex reaches every vertex.</p>
+<p>In a <strong>weighted graph</strong> each edge has a length (a distance, a cost, a time), and the length of a path is the sum of its edge lengths. <strong>Dijkstra's algorithm</strong> finds shortest paths from a source <span class="arithmatex">\(s\)</span> when all weights are non-negative. It keeps a tentative distance for each vertex, starting at <span class="arithmatex">\(0\)</span> for <span class="arithmatex">\(s\)</span> and <span class="arithmatex">\(\infty\)</span> for the others, and repeatedly:</p>
+<ol>
+<li>chooses the unfinished vertex <span class="arithmatex">\(u\)</span> with the smallest tentative distance, and declares it finished;</li>
+<li>for each neighbour <span class="arithmatex">\(v\)</span> of <span class="arithmatex">\(u\)</span>, if going through <span class="arithmatex">\(u\)</span> is shorter, that is, if <span class="arithmatex">\(\mathrm{dist}(u) + w(u, v) &lt; \mathrm{dist}(v)\)</span>, it lowers <span class="arithmatex">\(\mathrm{dist}(v)\)</span> to that value.</li>
+</ol>
+<figure class="fig fig-diagram">
+<img src="img/dijkstra-graph.svg" alt="A weighted graph with six vertices s, a, b, c, d, t. Edge weights: s to a 3, s to b 7, a to b 2, a to c 6, b to c 3, b to d 8, c to d 2, c to t 9, d to t 4. The shortest path from s to t, s-a-b-c-d-t of length 14, is highlighted." loading="lazy" width="700" height="340">
+<figcaption><strong>Figure 11.3 A weighted graph and its shortest path from s to t.</strong> A weighted graph with six vertices s, a, b, c, d, t. Edge weights: s to a 3, s to b 7, a to b 2, a to c 6, b to c 3, b to d 8, c to d 2, c to t 9, d to t 4. The shortest path from s to t, s-a-b-c-d-t of length 14, is highlighted.</figcaption>
+</figure>
+<div class="admonition example">
+<p class="admonition-title">Example 11.4: Dijkstra's algorithm</p>
+<p><strong>Problem.</strong> Find the shortest distances from <span class="arithmatex">\(s\)</span> in the graph of Figure 11.3.</p>
+<p><strong>Solution.</strong> Each row shows the tentative distances after the vertex in the first column is finished.</p>
+<table>
+<thead>
+<tr>
+<th>Finished</th>
+<th><span class="arithmatex">\(s\)</span></th>
+<th><span class="arithmatex">\(a\)</span></th>
+<th><span class="arithmatex">\(b\)</span></th>
+<th><span class="arithmatex">\(c\)</span></th>
+<th><span class="arithmatex">\(d\)</span></th>
+<th><span class="arithmatex">\(t\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="arithmatex">\(s\)</span></td>
+<td><strong>0</strong></td>
+<td>3</td>
+<td>7</td>
+<td><span class="arithmatex">\(\infty\)</span></td>
+<td><span class="arithmatex">\(\infty\)</span></td>
+<td><span class="arithmatex">\(\infty\)</span></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(a\)</span></td>
+<td></td>
+<td><strong>3</strong></td>
+<td>5</td>
+<td>9</td>
+<td><span class="arithmatex">\(\infty\)</span></td>
+<td><span class="arithmatex">\(\infty\)</span></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(b\)</span></td>
+<td></td>
+<td></td>
+<td><strong>5</strong></td>
+<td>8</td>
+<td>13</td>
+<td><span class="arithmatex">\(\infty\)</span></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(c\)</span></td>
+<td></td>
+<td></td>
+<td></td>
+<td><strong>8</strong></td>
+<td>10</td>
+<td>17</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(d\)</span></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td><strong>10</strong></td>
+<td>14</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(t\)</span></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td><strong>14</strong></td>
+</tr>
+</tbody>
+</table>
+<p>The distance to <span class="arithmatex">\(t\)</span> is 14. Recording, for each vertex, the neighbour through which its distance was last lowered recovers the path <span class="arithmatex">\(s, a, b, c, d, t\)</span>.</p>
+</div>
+<p>Why does it work? When <span class="arithmatex">\(u\)</span> is chosen, every other unfinished vertex has tentative distance at least <span class="arithmatex">\(\mathrm{dist}(u)\)</span>, and since weights are non-negative, no path that passes through an unfinished vertex can reach <span class="arithmatex">\(u\)</span> more cheaply; so <span class="arithmatex">\(\mathrm{dist}(u)\)</span> is final. (With negative weights this argument fails, and so does the algorithm.) A short implementation uses a priority queue:</p>
+<div class="language-python highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">heapq</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">dijkstra</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">source</span><span class="p">):</span>
+    <span class="n">dist</span> <span class="o">=</span> <span class="p">{</span><span class="n">v</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="s2">"inf"</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">graph</span><span class="p">}</span>
+    <span class="n">dist</span><span class="p">[</span><span class="n">source</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">queue</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="n">source</span><span class="p">)]</span>
+    <span class="k">while</span> <span class="n">queue</span><span class="p">:</span>
+        <span class="n">d</span><span class="p">,</span> <span class="n">u</span> <span class="o">=</span> <span class="n">heapq</span><span class="o">.</span><span class="n">heappop</span><span class="p">(</span><span class="n">queue</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">d</span> <span class="o">&gt;</span> <span class="n">dist</span><span class="p">[</span><span class="n">u</span><span class="p">]:</span>
+            <span class="k">continue</span>                      <span class="c1"># an out-of-date entry</span>
+        <span class="k">for</span> <span class="n">v</span><span class="p">,</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">graph</span><span class="p">[</span><span class="n">u</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">d</span> <span class="o">+</span> <span class="n">w</span> <span class="o">&lt;</span> <span class="n">dist</span><span class="p">[</span><span class="n">v</span><span class="p">]:</span>
+                <span class="n">dist</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span> <span class="o">+</span> <span class="n">w</span>
+                <span class="n">heapq</span><span class="o">.</span><span class="n">heappush</span><span class="p">(</span><span class="n">queue</span><span class="p">,</span> <span class="p">(</span><span class="n">dist</span><span class="p">[</span><span class="n">v</span><span class="p">],</span> <span class="n">v</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">dist</span>
+
+<span class="n">edges</span> <span class="o">=</span> <span class="p">[(</span><span class="s2">"s"</span><span class="p">,</span><span class="s2">"a"</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="s2">"s"</span><span class="p">,</span><span class="s2">"b"</span><span class="p">,</span><span class="mi">7</span><span class="p">),</span> <span class="p">(</span><span class="s2">"a"</span><span class="p">,</span><span class="s2">"b"</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="s2">"a"</span><span class="p">,</span><span class="s2">"c"</span><span class="p">,</span><span class="mi">6</span><span class="p">),</span> <span class="p">(</span><span class="s2">"b"</span><span class="p">,</span><span class="s2">"c"</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span>
+         <span class="p">(</span><span class="s2">"b"</span><span class="p">,</span><span class="s2">"d"</span><span class="p">,</span><span class="mi">8</span><span class="p">),</span> <span class="p">(</span><span class="s2">"c"</span><span class="p">,</span><span class="s2">"d"</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="s2">"c"</span><span class="p">,</span><span class="s2">"t"</span><span class="p">,</span><span class="mi">9</span><span class="p">),</span> <span class="p">(</span><span class="s2">"d"</span><span class="p">,</span><span class="s2">"t"</span><span class="p">,</span><span class="mi">4</span><span class="p">)]</span>
+<span class="n">graph</span> <span class="o">=</span> <span class="p">{</span><span class="n">v</span><span class="p">:</span> <span class="p">[]</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">edges</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">e</span><span class="p">[:</span><span class="mi">2</span><span class="p">]}</span>
+<span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">edges</span><span class="p">:</span>
+    <span class="n">graph</span><span class="p">[</span><span class="n">u</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">v</span><span class="p">,</span> <span class="n">w</span><span class="p">))</span>
+    <span class="n">graph</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">u</span><span class="p">,</span> <span class="n">w</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">dijkstra</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="s2">"s"</span><span class="p">))</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>{'s': 0, 'a': 3, 'b': 5, 'c': 8, 'd': 10, 't': 14}
+</code></pre></div>
+<h2 id="115-euler-circuits-and-paths">11.5 Euler circuits and paths<a class="headerlink" href="#115-euler-circuits-and-paths" title="Permanent link">&para;</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Definition: Euler circuit and path</p>
+<p>An <strong>Euler circuit</strong> in a graph is a circuit that uses every edge exactly once. An <strong>Euler path</strong> uses every edge exactly once but may start and end at different vertices.</p>
+</div>
+<p>The Königsberg question asks for an Euler path in the multigraph of Figure 11.1. Euler's answer depends only on degrees.</p>
+<div class="admonition note">
+<p class="admonition-title">Theorem 11.4 (Euler)</p>
+<p>A connected multigraph with at least two vertices has an Euler circuit if and only if every vertex has even degree. It has an Euler path but no Euler circuit if and only if exactly two vertices have odd degree; the path then starts at one of them and ends at the other.</p>
+</div>
+<p><strong>Proof.</strong> <em>Necessity.</em> Follow an Euler circuit. Every time it passes through a vertex it enters along one edge and leaves along another, using two of that vertex's edges; the starting vertex is left at the start and entered at the end, which also pairs two edges. Since every edge is used exactly once, every degree is even. For an Euler path, the same argument applies to every vertex except the two ends, which have odd degree.</p>
+<p><em>Sufficiency (circuit).</em> Suppose every degree is even. Start at any vertex <span class="arithmatex">\(v\)</span> and walk along unused edges, never reusing an edge, as long as possible. Every time the walk enters a vertex <span class="arithmatex">\(w \ne v\)</span>, it has used an odd number of <span class="arithmatex">\(w\)</span>'s edges, and since <span class="arithmatex">\(\deg(w)\)</span> is even there is an unused edge to leave by. So the walk can only get stuck at <span class="arithmatex">\(v\)</span>: it is a circuit <span class="arithmatex">\(C\)</span>. If <span class="arithmatex">\(C\)</span> uses every edge, we are done. Otherwise, because the graph is connected, some vertex <span class="arithmatex">\(u\)</span> on <span class="arithmatex">\(C\)</span> has an unused edge. In the graph of unused edges every degree is still even (we removed a circuit, which takes two edges at each visit), so the same procedure starting at <span class="arithmatex">\(u\)</span> produces a circuit <span class="arithmatex">\(C'\)</span> of unused edges. Splice <span class="arithmatex">\(C'\)</span> into <span class="arithmatex">\(C\)</span> at <span class="arithmatex">\(u\)</span>, giving a longer circuit. Repeat until every edge is used; since the graph is finite, this ends.</p>
+<p><em>Sufficiency (path).</em> If exactly <span class="arithmatex">\(u\)</span> and <span class="arithmatex">\(w\)</span> have odd degree, add a new edge <span class="arithmatex">\(uw\)</span>. Now every degree is even, so there is an Euler circuit; remove the new edge from it to obtain an Euler path from <span class="arithmatex">\(u\)</span> to <span class="arithmatex">\(w\)</span>. <span class="arithmatex">\(\blacksquare\)</span></p>
+<p>In Königsberg all four vertices have odd degree (5, 3, 3, 3), so there is neither an Euler circuit nor an Euler path: the walk is impossible.</p>
+<p>The proof is an algorithm (Hierholzer's algorithm) that finds an Euler circuit in time proportional to the number of edges.</p>
+<div class="admonition example">
+<p class="admonition-title">Example 11.5: Drawing without lifting the pen</p>
+<p><strong>Problem.</strong> The "open envelope" figure has vertices <span class="arithmatex">\(1, 2, 3, 4\)</span> at the corners of a square (1 bottom left, 2 bottom right, 3 top right, 4 top left) and a roof vertex <span class="arithmatex">\(5\)</span> above, with edges <span class="arithmatex">\(12, 23, 34, 41\)</span> (the square), <span class="arithmatex">\(13, 24\)</span> (the diagonals) and <span class="arithmatex">\(35, 45\)</span> (the roof). Can it be drawn in one stroke without retracing an edge?</p>
+<p><strong>Solution.</strong> Degrees: <span class="arithmatex">\(\deg 1 = 3\)</span>, <span class="arithmatex">\(\deg 2 = 3\)</span>, <span class="arithmatex">\(\deg 3 = 4\)</span>, <span class="arithmatex">\(\deg 4 = 4\)</span>, <span class="arithmatex">\(\deg 5 = 2\)</span>. Exactly two vertices (1 and 2) have odd degree, so there is an Euler path from 1 to 2 but no Euler circuit. One such path is <span class="arithmatex">\(1, 2, 4, 1, 3, 4, 5, 3, 2\)</span>, which uses all 8 edges once each.</p>
+</div>
+<p>For directed graphs the condition becomes: a connected directed multigraph has an Euler circuit if and only if every vertex has in-degree equal to out-degree. Euler circuits arise in planning routes for postal delivery, street cleaning and snow ploughs, and in assembling DNA sequences from fragments.</p>
+<h2 id="116-hamilton-circuits-and-paths">11.6 Hamilton circuits and paths<a class="headerlink" href="#116-hamilton-circuits-and-paths" title="Permanent link">&para;</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Definition: Hamilton circuit and path</p>
+<p>A <strong>Hamilton path</strong> visits every <strong>vertex</strong> exactly once. A <strong>Hamilton circuit</strong> is a cycle that visits every vertex exactly once and returns to its start.</p>
+</div>
+<p>The definitions look like those of Euler, with vertices instead of edges, but the problems are completely different. No simple condition is known that decides whether a graph has a Hamilton circuit, and the problem is <strong>NP-complete</strong>: no efficient algorithm is known, and finding one would give efficient algorithms for thousands of other hard problems. What we have are sufficient conditions and ad hoc arguments.</p>
+<div class="admonition note">
+<p class="admonition-title">Theorem 11.5 (Dirac; Ore)</p>
+<p>Let <span class="arithmatex">\(G\)</span> be a simple graph with <span class="arithmatex">\(n \ge 3\)</span> vertices.</p>
+<ul>
+<li><strong>Dirac (1952):</strong> if every vertex has degree at least <span class="arithmatex">\(n/2\)</span>, then <span class="arithmatex">\(G\)</span> has a Hamilton circuit.</li>
+<li><strong>Ore (1960):</strong> if <span class="arithmatex">\(\deg(u) + \deg(v) \ge n\)</span> for every pair of non-adjacent vertices <span class="arithmatex">\(u, v\)</span>, then <span class="arithmatex">\(G\)</span> has a Hamilton circuit.</li>
+</ul>
+</div>
+<p>These conditions are sufficient, not necessary: <span class="arithmatex">\(C_n\)</span> has a Hamilton circuit although every degree is only 2.</p>
+<p>Showing that a graph has <em>no</em> Hamilton circuit takes an argument. Useful observations: a vertex of degree 2 forces both its edges into any Hamilton circuit; once a vertex has two circuit edges, its other edges can be discarded; and a Hamilton circuit cannot contain a smaller cycle.</p>
+<div class="admonition example">
+<p class="admonition-title">Example 11.6: No Hamilton circuit</p>
+<p><strong>Problem.</strong> Show that <span class="arithmatex">\(K_{2,3}\)</span> has no Hamilton circuit, and that a graph with a cut vertex has none.</p>
+<p><strong>Solution.</strong> A Hamilton circuit in a bipartite graph alternates between the two sides, so it has equally many vertices on each side; <span class="arithmatex">\(K_{2,3}\)</span> has 2 and 3. A Hamilton circuit through a cut vertex <span class="arithmatex">\(v\)</span> visits <span class="arithmatex">\(v\)</span> only once, but must pass from one component of <span class="arithmatex">\(G - v\)</span> to another and back, which requires passing through <span class="arithmatex">\(v\)</span> twice.</p>
+</div>
+<p>The famous applied version is the <strong>travelling salesperson problem</strong>: in a complete graph with weighted edges (distances between cities), find a Hamilton circuit of least total weight. With <span class="arithmatex">\(n\)</span> cities there are <span class="arithmatex">\((n-1)!/2\)</span> different circuits, about <span class="arithmatex">\(6 \times 10^{16}\)</span> for 20 cities, so trying them all is hopeless; practical methods find excellent, though not always provably best, tours for thousands of cities.</p>
+<h2 id="117-planar-graphs">11.7 Planar graphs<a class="headerlink" href="#117-planar-graphs" title="Permanent link">&para;</a></h2>
+<p>Can three houses each be connected to three utilities (water, gas, electricity) by lines that do not cross? This asks whether <span class="arithmatex">\(K_{3,3}\)</span> can be drawn in the plane without crossings.</p>
+<div class="admonition note">
+<p class="admonition-title">Definition: planar graph</p>
+<p>A graph is <strong>planar</strong> if it can be drawn in the plane with no two edges crossing. Such a drawing is a <strong>planar representation</strong>, and it divides the plane into regions called <strong>faces</strong>, one of which, the outer face, is unbounded.</p>
+</div>
+<p><span class="arithmatex">\(K_4\)</span> is planar, although its most common drawing (a square with both diagonals) has a crossing: move one diagonal outside the square. Planarity is a property of the graph, not of a particular drawing.</p>
+<div class="admonition note">
+<p class="admonition-title">Theorem 11.6 (Euler's formula)</p>
+<p>If a connected planar simple graph with <span class="arithmatex">\(v\)</span> vertices and <span class="arithmatex">\(e\)</span> edges is drawn in the plane with <span class="arithmatex">\(f\)</span> faces, then</p>
+<div class="arithmatex">\[
+v - e + f = 2.
+\]</div>
+</div>
+<p><strong>Proof.</strong> By induction on <span class="arithmatex">\(e\)</span>. If the graph has no cycle, it is a tree (Chapter 12), with <span class="arithmatex">\(e = v - 1\)</span> and one face, and <span class="arithmatex">\(v - (v - 1) + 1 = 2\)</span>. Otherwise choose an edge on a cycle. The cycle separates the plane, so the two sides of that edge are different faces; removing the edge merges them into one face and leaves the graph connected. The new graph has <span class="arithmatex">\(v\)</span> vertices, <span class="arithmatex">\(e - 1\)</span> edges and <span class="arithmatex">\(f - 1\)</span> faces, and by the inductive hypothesis <span class="arithmatex">\(v - (e - 1) + (f - 1) = 2\)</span>, which is <span class="arithmatex">\(v - e + f = 2\)</span>. <span class="arithmatex">\(\blacksquare\)</span></p>
+<p>The cube, drawn flat, has <span class="arithmatex">\(v = 8\)</span>, <span class="arithmatex">\(e = 12\)</span>, <span class="arithmatex">\(f = 6\)</span>: <span class="arithmatex">\(8 - 12 + 6 = 2\)</span>. The formula is the same as Euler's formula for convex polyhedra, and it says that the number of faces does not depend on how a planar graph is drawn.</p>
+<div class="admonition note">
+<p class="admonition-title">Corollary 11.7</p>
+<p>Let <span class="arithmatex">\(G\)</span> be a connected planar simple graph with <span class="arithmatex">\(v \ge 3\)</span> vertices and <span class="arithmatex">\(e\)</span> edges. Then</p>
+<ol>
+<li><span class="arithmatex">\(e \le 3v - 6\)</span>;</li>
+<li>if <span class="arithmatex">\(G\)</span> has no cycle of length 3, then <span class="arithmatex">\(e \le 2v - 4\)</span>;</li>
+<li><span class="arithmatex">\(G\)</span> has a vertex of degree at most 5.</li>
+</ol>
+</div>
+<p><strong>Proof.</strong> (1) Each face is bounded by at least 3 edges (in a simple graph with at least 3 vertices), and each edge borders at most 2 faces. Counting edge-face incidences, <span class="arithmatex">\(3f \le 2e\)</span>, so <span class="arithmatex">\(f \le 2e/3\)</span>. Then <span class="arithmatex">\(2 = v - e + f \le v - e + 2e/3\)</span>, giving <span class="arithmatex">\(e \le 3v - 6\)</span>. (2) Without triangles each face has at least 4 edges, so <span class="arithmatex">\(4f \le 2e\)</span>, and the same calculation gives <span class="arithmatex">\(e \le 2v - 4\)</span>. (3) If every vertex had degree at least 6, then <span class="arithmatex">\(2e \ge 6v\)</span>, so <span class="arithmatex">\(e \ge 3v &gt; 3v - 6\)</span>, contradicting (1). <span class="arithmatex">\(\blacksquare\)</span></p>
+<div class="admonition example">
+<p class="admonition-title">Example 11.7: Two non-planar graphs</p>
+<p><strong>Problem.</strong> Show that <span class="arithmatex">\(K_5\)</span> and <span class="arithmatex">\(K_{3,3}\)</span> are not planar.</p>
+<p><strong>Solution.</strong> <span class="arithmatex">\(K_5\)</span> has <span class="arithmatex">\(v = 5\)</span> and <span class="arithmatex">\(e = 10\)</span>, but <span class="arithmatex">\(3v - 6 = 9 &lt; 10\)</span>, contradicting Corollary 11.7(1). <span class="arithmatex">\(K_{3,3}\)</span> is bipartite, so it has no cycle of odd length and in particular no triangle; it has <span class="arithmatex">\(v = 6\)</span> and <span class="arithmatex">\(e = 9\)</span>, but <span class="arithmatex">\(2v - 4 = 8 &lt; 9\)</span>, contradicting (2). So the three houses cannot be joined to the three utilities without crossings.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">The inequality only works one way</p>
+<p><span class="arithmatex">\(e \le 3v - 6\)</span> is a necessary condition for planarity, not a sufficient one. <span class="arithmatex">\(K_{3,3}\)</span> satisfies <span class="arithmatex">\(9 \le 12\)</span> and is still not planar; we needed the sharper bound for triangle-free graphs.</p>
+</div>
+<p>In a sense, <span class="arithmatex">\(K_5\)</span> and <span class="arithmatex">\(K_{3,3}\)</span> are the only obstacles. A <strong>subdivision</strong> of a graph is obtained by inserting new vertices of degree 2 into its edges.</p>
+<div class="admonition note">
+<p class="admonition-title">Theorem 11.8 (Kuratowski, 1930)</p>
+<p>A graph is planar if and only if it does not contain a subdivision of <span class="arithmatex">\(K_5\)</span> or of <span class="arithmatex">\(K_{3,3}\)</span> as a subgraph.</p>
+</div>
+<p>The proof is beyond this book. Planarity matters in the design of circuit boards and chips, where wires on one layer must not cross.</p>
+<h2 id="118-graph-colouring">11.8 Graph colouring<a class="headerlink" href="#118-graph-colouring" title="Permanent link">&para;</a></h2>
+<p>A map is to be coloured so that countries sharing a border get different colours. Replacing each country by a vertex and each shared border by an edge turns this into a question about graphs.</p>
+<div class="admonition note">
+<p class="admonition-title">Definition: colouring and chromatic number</p>
+<p>A <strong>colouring</strong> of a simple graph assigns a colour to each vertex so that adjacent vertices get different colours. The <strong>chromatic number</strong> <span class="arithmatex">\(\chi(G)\)</span> is the least number of colours in a colouring of <span class="arithmatex">\(G\)</span>.</p>
+</div>
+<p>To show <span class="arithmatex">\(\chi(G) = k\)</span>, give a colouring with <span class="arithmatex">\(k\)</span> colours <strong>and</strong> show that <span class="arithmatex">\(k - 1\)</span> colours are not enough, usually by finding a subgraph that needs <span class="arithmatex">\(k\)</span> colours, such as <span class="arithmatex">\(K_k\)</span>.</p>
+<div class="admonition example">
+<p class="admonition-title">Example 11.8: Chromatic numbers of special graphs</p>
+<p><strong>Problem.</strong> Find <span class="arithmatex">\(\chi(K_n)\)</span>, <span class="arithmatex">\(\chi(C_n)\)</span>, <span class="arithmatex">\(\chi(K_{m,n})\)</span> and <span class="arithmatex">\(\chi(W_5)\)</span>.</p>
+<p><strong>Solution.</strong> <span class="arithmatex">\(\chi(K_n) = n\)</span>: every two vertices are adjacent, so all colours must differ. <span class="arithmatex">\(\chi(C_n) = 2\)</span> if <span class="arithmatex">\(n\)</span> is even (alternate two colours) and <span class="arithmatex">\(3\)</span> if <span class="arithmatex">\(n\)</span> is odd (alternating fails when the cycle closes, as for <span class="arithmatex">\(C_5\)</span> in Example 11.2, and a third colour on one vertex fixes it). <span class="arithmatex">\(\chi(K_{m,n}) = 2\)</span>: colour each side with its own colour. <span class="arithmatex">\(\chi(W_5) = 4\)</span>: the rim <span class="arithmatex">\(C_5\)</span> needs 3 colours, and the hub is adjacent to every rim vertex, so it needs a fourth.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Theorem 11.9</p>
+<p>A graph with at least one edge has chromatic number 2 if and only if it is bipartite, if and only if it has no cycle of odd length.</p>
+</div>
+<p><strong>Proof.</strong> A 2-colouring is exactly a split into two sides with every edge going across, so <span class="arithmatex">\(\chi(G) \le 2\)</span> means bipartite. A cycle of odd length needs 3 colours (as in Example 11.8), so a bipartite graph has none. Conversely, suppose <span class="arithmatex">\(G\)</span> has no odd cycle; it is enough to 2-colour each component. Pick a vertex <span class="arithmatex">\(r\)</span> in the component and colour each vertex by the parity of its distance from <span class="arithmatex">\(r\)</span>. If two adjacent vertices <span class="arithmatex">\(x\)</span> and <span class="arithmatex">\(y\)</span> had the same parity, then shortest paths from <span class="arithmatex">\(r\)</span> to <span class="arithmatex">\(x\)</span> and to <span class="arithmatex">\(y\)</span>, together with the edge <span class="arithmatex">\(xy\)</span>, would form a closed walk of odd length, and a closed walk of odd length always contains a cycle of odd length, a contradiction. <span class="arithmatex">\(\blacksquare\)</span></p>
+<h3 id="the-four-colour-theorem">The four colour theorem<a class="headerlink" href="#the-four-colour-theorem" title="Permanent link">&para;</a></h3>
+<p>For planar graphs, the number of colours needed is small. The easy part is a proof that 6 colours always suffice.</p>
+<div class="admonition note">
+<p class="admonition-title">Theorem 11.10 (six colours suffice)</p>
+<p>Every planar simple graph has chromatic number at most 6.</p>
+</div>
+<p><strong>Proof.</strong> By induction on the number of vertices. A graph with at most 6 vertices can be coloured with 6 colours. Given a planar graph <span class="arithmatex">\(G\)</span> with more vertices, Corollary 11.7(3) (applied to a component with at least 3 vertices, or trivially otherwise) gives a vertex <span class="arithmatex">\(v\)</span> of degree at most 5. Remove <span class="arithmatex">\(v\)</span>; the smaller graph is planar, so by the inductive hypothesis it can be coloured with 6 colours. The neighbours of <span class="arithmatex">\(v\)</span> use at most 5 of them, so a sixth is free for <span class="arithmatex">\(v\)</span>. <span class="arithmatex">\(\blacksquare\)</span></p>
+<p>With more work the same idea gives 5 colours. That 4 colours always suffice was conjectured in 1852 and proved only in 1976, by Kenneth Appel and Wolfgang Haken, with a proof that relied on a computer to check a large number of cases. It was the first major theorem proved in this way.</p>
+<div class="admonition note">
+<p class="admonition-title">Theorem 11.11 (the four colour theorem)</p>
+<p>Every planar graph has chromatic number at most 4.</p>
+</div>
+<h3 id="colouring-in-practice-scheduling">Colouring in practice: scheduling<a class="headerlink" href="#colouring-in-practice-scheduling" title="Permanent link">&para;</a></h3>
+<p>Deciding whether a general graph can be coloured with 3 colours is NP-complete, so in practice colourings are found by heuristics. The simplest is the <strong>greedy algorithm</strong>: take the vertices in some order and give each the first colour not used by its already-coloured neighbours. It uses at most <span class="arithmatex">\(\Delta + 1\)</span> colours, where <span class="arithmatex">\(\Delta\)</span> is the largest degree, but it may use more than <span class="arithmatex">\(\chi(G)\)</span>, depending on the order.</p>
+<div class="admonition example">
+<p class="admonition-title">Example 11.9: An exam timetable</p>
+<p><strong>Problem.</strong> Six exams, Algebra (A), Biology (B), Chemistry (C), Drama (D), Economics (E) and French (F), must be scheduled so that no student has two exams in the same slot. The pairs with a common student are AB, AC, AD, BC, BE, CD, CE, DF, EF. What is the least number of slots?</p>
+<p><strong>Solution.</strong> Make a graph with a vertex for each exam and an edge for each conflicting pair (Figure 11.4); a slot is a colour. A, B, C form a triangle, so at least 3 slots are needed. Greedy colouring in alphabetical order: A gets slot 1; B (adjacent to A) slot 2; C (adjacent to A, B) slot 3; D (adjacent to A, C) slot 2; E (adjacent to B, C) slot 1; F (adjacent to D, E) slot 3. So <strong>3 slots</strong> suffice and are necessary: slot 1 for A and E, slot 2 for B and D, slot 3 for C and F.</p>
+</div>
+<figure class="fig fig-diagram">
+<img src="img/exam-colouring.svg" alt="The exam conflict graph with vertices A to F and edges AB, AC, AD, BC, BE, CD, CE, DF, EF, coloured with three colours: A and E in the first colour, B and D in the second, C and F in the third. No edge joins two vertices of the same colour." loading="lazy" width="560" height="340">
+<figcaption><strong>Figure 11.4 A three-colouring of the exam conflict graph.</strong> The exam conflict graph with vertices A to F and edges AB, AC, AD, BC, BE, CD, CE, DF, EF, coloured with three colours: A and E in the first colour, B and D in the second, C and F in the third. No edge joins two vertices of the same colour.</figcaption>
+</figure>
+<p>Compilers solve a similar problem when they assign the variables of a program to the processor's few registers: variables that are in use at the same time conflict, and the registers are the colours.</p>
+<h2 id="119-summary">11.9 Summary<a class="headerlink" href="#119-summary" title="Permanent link">&para;</a></h2>
+<div class="admonition abstract">
+<p class="admonition-title">Summary</p>
+<ul>
+<li>A <strong>graph</strong> has vertices and edges; multigraphs allow parallel edges, pseudographs loops, directed graphs arcs.</li>
+<li><strong>Handshaking:</strong> <span class="arithmatex">\(\sum \deg(v) = 2\lvert E \rvert\)</span>, so the number of odd-degree vertices is even.</li>
+<li>Special graphs: <span class="arithmatex">\(K_n\)</span>, <span class="arithmatex">\(C_n\)</span>, <span class="arithmatex">\(W_n\)</span>, <span class="arithmatex">\(Q_n\)</span>, <span class="arithmatex">\(K_{m,n}\)</span>. A graph is <strong>bipartite</strong> iff it has no odd cycle.</li>
+<li>Graphs are stored as <strong>adjacency lists</strong> (sparse) or <strong>matrices</strong> (dense). <strong>Isomorphic</strong> graphs have the same structure; invariants tell non-isomorphic graphs apart. <span class="arithmatex">\((A^k)_{ij}\)</span> counts walks of length <span class="arithmatex">\(k\)</span>.</li>
+<li><strong>BFS</strong> finds distances in unweighted graphs; <strong>Dijkstra's algorithm</strong> finds shortest paths with non-negative weights.</li>
+<li>A connected multigraph has an <strong>Euler circuit</strong> iff every degree is even, and an Euler path iff exactly 0 or 2 degrees are odd. <strong>Hamilton circuits</strong> have no such test; Dirac's and Ore's conditions are sufficient.</li>
+<li><strong>Euler's formula</strong> <span class="arithmatex">\(v - e + f = 2\)</span> gives <span class="arithmatex">\(e \le 3v - 6\)</span> (and <span class="arithmatex">\(e \le 2v - 4\)</span> without triangles), so <span class="arithmatex">\(K_5\)</span> and <span class="arithmatex">\(K_{3,3}\)</span> are not planar.</li>
+<li><span class="arithmatex">\(\chi(G)\)</span> is the least number of colours; planar graphs need at most 4. Colouring models scheduling and register allocation.</li>
+</ul>
+</div>
+<h2 id="1110-exercises">11.10 Exercises<a class="headerlink" href="#1110-exercises" title="Permanent link">&para;</a></h2>
+<div class="admonition example">
+<p class="admonition-title">Exercise 1</p>
+<p>Is there a simple graph with degrees 3, 3, 3, 3, 2? With degrees 4, 4, 3, 2, 1? With degrees 3, 3, 3, 1?</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>3, 3, 3, 3, 2: the sum is 14, even; such a graph exists (<span class="arithmatex">\(K_4\)</span> with one edge subdivided by a new vertex). 4, 4, 3, 2, 1: the sum is 14, but two vertices of degree 4 in a 5-vertex simple graph are adjacent to all others, so every vertex has degree at least 2, contradicting the 1. Impossible. 3, 3, 3, 1: the sum is 10; the three vertices of degree 3 must each be adjacent to all three other vertices, so the fourth would have degree 3, not 1. Impossible.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 2</p>
+<p>How many edges do <span class="arithmatex">\(K_8\)</span>, <span class="arithmatex">\(C_8\)</span>, <span class="arithmatex">\(W_8\)</span>, <span class="arithmatex">\(Q_4\)</span> and <span class="arithmatex">\(K_{3,5}\)</span> have?</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p><span class="arithmatex">\(K_8\)</span>: <span class="arithmatex">\(\binom{8}{2} = 28\)</span>. <span class="arithmatex">\(C_8\)</span>: 8. <span class="arithmatex">\(W_8\)</span>: <span class="arithmatex">\(8 + 8 = 16\)</span>. <span class="arithmatex">\(Q_4\)</span>: 16 vertices of degree 4, so <span class="arithmatex">\(16 \cdot 4/2 = 32\)</span>. <span class="arithmatex">\(K_{3,5}\)</span>: 15.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 3</p>
+<p>Show that in any graph with at least two vertices, two vertices have the same degree.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>In a simple graph with <span class="arithmatex">\(n\)</span> vertices the possible degrees are <span class="arithmatex">\(0, 1, \dots, n-1\)</span>. Degrees <span class="arithmatex">\(0\)</span> and <span class="arithmatex">\(n - 1\)</span> cannot both occur (a vertex adjacent to all others leaves no isolated vertex). So at most <span class="arithmatex">\(n - 1\)</span> values are available for <span class="arithmatex">\(n\)</span> vertices, and by the pigeonhole principle two vertices share a degree.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 4</p>
+<p>For which <span class="arithmatex">\(n\)</span> does <span class="arithmatex">\(K_n\)</span> have an Euler circuit? For which <span class="arithmatex">\(m, n\)</span> does <span class="arithmatex">\(K_{m,n}\)</span>?</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>In <span class="arithmatex">\(K_n\)</span> every degree is <span class="arithmatex">\(n - 1\)</span>, which is even when <span class="arithmatex">\(n\)</span> is odd: Euler circuits exist exactly for odd <span class="arithmatex">\(n \ge 3\)</span>. In <span class="arithmatex">\(K_{m,n}\)</span> the degrees are <span class="arithmatex">\(n\)</span> (on the side of size <span class="arithmatex">\(m\)</span>) and <span class="arithmatex">\(m\)</span>, so both <span class="arithmatex">\(m\)</span> and <span class="arithmatex">\(n\)</span> must be even.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 5</p>
+<p>Does <span class="arithmatex">\(Q_3\)</span> have a Hamilton circuit? Give one or explain why not.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>Yes: <span class="arithmatex">\(000, 001, 011, 010, 110, 111, 101, 100, 000\)</span>. Each step changes one bit. (This sequence is a Gray code; every <span class="arithmatex">\(Q_n\)</span> with <span class="arithmatex">\(n \ge 2\)</span> has a Hamilton circuit.)</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 6</p>
+<p>A connected planar simple graph has 20 vertices, each of degree 3. Into how many faces does a planar drawing divide the plane?</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p><span class="arithmatex">\(e = 20 \cdot 3/2 = 30\)</span>, and <span class="arithmatex">\(f = 2 - v + e = 2 - 20 + 30 = 12\)</span>. (This is the graph of the dodecahedron, with 12 pentagonal faces.)</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 7</p>
+<p>Show that the Petersen graph, or any graph you like with <span class="arithmatex">\(v = 10\)</span> and <span class="arithmatex">\(e = 15\)</span> and no cycles of length 3 or 4, is not planar. (Hint: adapt Corollary 11.7 to faces with at least 5 edges.)</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>If every face has at least 5 edges, <span class="arithmatex">\(5f \le 2e\)</span>, so <span class="arithmatex">\(f \le 6\)</span>. Euler's formula would require <span class="arithmatex">\(f = 2 - v + e = 2 - 10 + 15 = 7\)</span>. Contradiction, so no planar drawing exists. (The Petersen graph has girth 5, so the hypothesis holds.)</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 8</p>
+<p>Find the chromatic number of the graph obtained from <span class="arithmatex">\(C_6\)</span> by adding the three "long diagonals" joining opposite vertices.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>Label the cycle <span class="arithmatex">\(v_1, \dots, v_6\)</span> and add <span class="arithmatex">\(v_1v_4\)</span>, <span class="arithmatex">\(v_2v_5\)</span>, <span class="arithmatex">\(v_3v_6\)</span>. Colour odd-numbered vertices red and even-numbered blue: cycle edges join odd to even, and each diagonal joins <span class="arithmatex">\(v_i\)</span> to <span class="arithmatex">\(v_{i+3}\)</span>, of opposite parity. So <span class="arithmatex">\(\chi = 2\)</span> (the graph is <span class="arithmatex">\(K_{3,3}\)</span>).</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 9</p>
+<p>Use Dijkstra's algorithm on Figure 11.3 to find the distance from <span class="arithmatex">\(t\)</span> to <span class="arithmatex">\(s\)</span>, and check that it agrees with Example 11.4.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>From <span class="arithmatex">\(t\)</span>: finish <span class="arithmatex">\(t\)</span> (0), then <span class="arithmatex">\(d\)</span> (4), then <span class="arithmatex">\(c\)</span> (6), then <span class="arithmatex">\(b\)</span> (<span class="arithmatex">\(6 + 3 = 9\)</span>), then <span class="arithmatex">\(a\)</span> (<span class="arithmatex">\(9 + 2 = 11\)</span>, better than <span class="arithmatex">\(6 + 6 = 12\)</span>), then <span class="arithmatex">\(s\)</span> (<span class="arithmatex">\(11 + 3 = 14\)</span>). Distance 14, as expected for an undirected graph.</p>
+</details>
+<h2 id="1111-quiz">11.11 Quiz<a class="headerlink" href="#1111-quiz" title="Permanent link">&para;</a></h2>
+<div class="pk-quiz" data-quiz="4c5d6277b81b">
+<p class="pk-quiz-title">Check your understanding of graphs</p>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;text&quot;,&quot;answer&quot;:[&quot;6&quot;]}">
+<p class="admonition-title">Exercise 1</p>
+<p class="pk-q-prompt">A graph has degrees 1, 2, 2, 3, 4. How many edges does it have?</p>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>6</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;text&quot;,&quot;answer&quot;:[&quot;15&quot;]}">
+<p class="admonition-title">Exercise 2</p>
+<p class="pk-q-prompt">How many edges does the complete graph K6 have?</p>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>15</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;every vertex has even degree&quot;,&quot;every vertex has odd degree&quot;,&quot;it has a Hamilton circuit&quot;,&quot;it is planar&quot;],&quot;answer&quot;:&quot;every vertex has even degree&quot;}">
+<p class="admonition-title">Exercise 3</p>
+<p class="pk-q-prompt">A connected multigraph has an Euler circuit exactly when</p>
+<ol class="pk-q-opts" type="A"><li>every vertex has even degree</li><li>every vertex has odd degree</li><li>it has a Hamilton circuit</li><li>it is planar</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>every vertex has even degree</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;yes&quot;,&quot;no&quot;],&quot;answer&quot;:&quot;no&quot;}">
+<p class="admonition-title">Exercise 4</p>
+<p class="pk-q-prompt">Can the Königsberg bridges be crossed in a walk using each bridge exactly once?</p>
+<ol class="pk-q-opts" type="A"><li>yes</li><li>no</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>no</strong></p>
+<p class="pk-q-why">All four vertices have odd degree.</p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;text&quot;,&quot;answer&quot;:[&quot;5&quot;]}">
+<p class="admonition-title">Exercise 5</p>
+<p class="pk-q-prompt">A connected planar graph has 6 vertices and 9 edges. How many faces does a planar drawing have?</p>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>5</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;K4&quot;,&quot;K5&quot;,&quot;C10&quot;,&quot;Q3&quot;],&quot;answer&quot;:&quot;K5&quot;}">
+<p class="admonition-title">Exercise 6</p>
+<p class="pk-q-prompt">Which graph is not planar?</p>
+<ol class="pk-q-opts" type="A"><li>K4</li><li>K5</li><li>C10</li><li>Q3</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>K5</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;text&quot;,&quot;answer&quot;:[&quot;3&quot;]}">
+<p class="admonition-title">Exercise 7</p>
+<p class="pk-q-prompt">What is the chromatic number of the cycle C7?</p>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>3</strong></p>
+</details>
+</div>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button type="button" class="md-top md-icon" data-md-component="top" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+Back to top
+</button>
+</main>
+<footer class="md-footer">
+<nav class="md-footer__inner md-grid" aria-label="Footer" >
+<a href="number-theory-and-cryptography.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: 10. Number Theory and Cryptography">
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</div>
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Previous
+</span>
+<div class="md-ellipsis">
+10. Number Theory and Cryptography
+</div>
+</div>
+</a>
+<a href="trees.html" class="md-footer__link md-footer__link--next" aria-label="Next: 12. Trees">
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Next
+</span>
+<div class="md-ellipsis">
+12. Trees
+</div>
+</div>
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+</div>
+</a>
+</nav>
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+The Open Book Project &middot;
+<a href="../../about.html">About this library</a> &middot;
+<a href="../../publish.html">Publish your book</a> &middot;
+© The authors of the books
+</div>
+Made with
+<a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+Material for MkDocs
+</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "navigation.prune", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "toc.follow", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+<script src="../../assets/mathjax.js"></script>
+<script src="../../assets/viz.js"></script>
+<script src="../../assets/remote.js"></script>
+<script src="../../assets/scans.js"></script>
+<script src="../../assets/reader.js"></script>
+<script src="../../assets/app.js"></script>
+<script src="../../assets/slides.js"></script>
+<script src="../../assets/speak.js"></script>
+<script src="../../assets/quiz.js"></script>
+<script>
+    /* offline reading: the service worker at the site root (its scope is the whole site) */
+    if ("serviceWorker" in navigator && window.isSecureContext) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register(new URL("../../sw.js", location.href).href).catch(function () {});
+      });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,1151 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="description" content="The Open Book Project: books on computer science, quantum computing, cyber security, science, the social sciences, university courses and languages, read page by page like an e-book, online or offline.">
+<meta name="author" content="The Open Book Project">
+<link rel="canonical" href="https://open-book-project.github.io/engineering/signals_systems/fourier-series.html">
+<link rel="prev" href="lti-systems-and-convolution.html">
+<link rel="next" href="the-continuous-time-fourier-transform.html">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap"></noscript>
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Open Book">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="application-name" content="Open Book"><script src="../../assets/library-data.js"></script><script>
+    (function () {
+      var X = window.XMLHttpRequest, open, gate = new Promise(function (r) { open = r; });
+      if (!X) return;
+      var open0 = X.prototype.open, send0 = X.prototype.send;
+      X.prototype.open = function (method, url) {
+        this.__pkIndex = /\/search\/search_index\.json(\?|#|$)/.test(String(url));
+        return open0.apply(this, arguments);
+      };
+      X.prototype.send = function () {
+        if (!this.__pkIndex) return send0.apply(this, arguments);
+        var xhr = this, args = arguments;
+        gate.then(function () { send0.apply(xhr, args); });
+      };
+      function wake() { open(); }
+      document.addEventListener("focusin", function (e) { if (e.target && e.target.closest && e.target.closest(".md-search")) wake(); });
+      document.addEventListener("click", function (e) { if (e.target && e.target.closest && e.target.closest('label[for="__search"], .md-search')) wake(); }, true);
+      document.addEventListener("keydown", function (e) {
+        var k = e.key;
+        if ((k === "/" || k === "s" || k === "f" || k === "S" || k === "F") && !(e.target && e.target.closest && e.target.closest("input, textarea, [contenteditable]"))) wake();
+      }, true);
+      if (/[?&]q=/.test(location.search)) wake();
+    })();
+  </script><script>
+    try {
+      if ((window.matchMedia && (matchMedia("(display-mode: standalone)").matches || matchMedia("(display-mode: fullscreen)").matches)) || navigator.standalone === true) {
+        document.documentElement.className += " bjp-standalone";
+      }
+    } catch (e) { /* not an installed app */ }
+    /* the books of a subject or of the whole library as covers or as a list (assets/app.js): the reader's choice */
+    try {
+      var bv = localStorage.getItem("bjp.view");
+      if (bv === "list" || (bv !== "grid" && /\/books\.html$/.test(location.pathname))) document.documentElement.className += " bjp-view-list";
+    } catch (e) { /* no storage: covers */ }
+  </script>
+<script>
+    /* a book opened from its cover on the shelf: the page stays blank, in the cover's colour, until the reader is up */
+    try {
+      var cv = sessionStorage.getItem("bjp.reader.cover");
+      if (cv && sessionStorage.getItem("bjp.reader.open") === "1") {
+        var c = JSON.parse(cv), de = document.documentElement;
+        de.className += " bjp-booting";
+        if (c && /^#[0-9a-f]{3,8}$/i.test(c.bg || "")) de.style.background = c.bg;
+        setTimeout(function () { de.classList.remove("bjp-booting"); de.style.background = ""; }, 3000);
+      }
+    } catch (e) { /* no session storage: the page simply opens as usual */ }
+  </script>
+<title>5. Fourier Series - The Open Book Project</title>
+<link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+<link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+<link rel="stylesheet" href="../../assets/extra.css">
+<link rel="stylesheet" href="../../assets/reader.css">
+<link rel="stylesheet" href="../../assets/viz.css">
+<link rel="stylesheet" href="../../assets/app.css">
+<link rel="stylesheet" href="../../assets/theme.css">
+<link rel="stylesheet" href="../../assets/slides.css">
+<link rel="stylesheet" href="../../assets/remote.css">
+<link rel="stylesheet" href="../../assets/scans.css">
+<link rel="stylesheet" href="../../assets/speak.css">
+<link rel="stylesheet" href="../../assets/quiz.css">
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+<input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+<input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a href="#51-why-build-signals-from-sinusoids" class="md-skip">
+Skip to content
+</a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav class="md-header__inner md-grid" aria-label="Header">
+<a href="../../index.html" title="The Open Book Project" class="md-header__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+The Open Book Project
+</span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+5. Fourier Series
+</span>
+</div>
+</div>
+</div><a href="../../index.html" class="bjp-libbtn" aria-label="Library: all books" title="Library: all books">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V5h4v15M8 20V9h4v11M14 20L12.6 6l3.8-.8 3 14.2M3 20h18"/></svg><span>Library</span>
+</a>
+<a href="../../subjects/index.html" class="pk-catbtn" aria-haspopup="true" aria-expanded="false" title="Browse the books by category">
+<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><circle cx="17" cy="7" r="3.6"/><path d="M7 13.4l3.9 6.8H3.1z"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg><span>Categories</span>
+</a>
+<form class="md-header__option" data-md-component="palette">
+<input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+<label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+</label>
+<input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+<label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+<label class="md-search__icon md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</label>
+<nav class="md-search__options" aria-label="Search">
+<button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+Initializing search
+</div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--primary bjp-nav bjp-nav--book" aria-label="Navigation" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a href="../../index.html" title="The Open Book Project" class="md-nav__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+The Open Book Project
+</label>
+<ul class="md-nav__list" data-md-scrollfix>
+<li class="md-nav__item bjp-nav-all">
+<a href="../../index.html" class="md-nav__link" aria-label="All books: back to the library">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+<span class="md-ellipsis">All books</span>
+</a>
+</li>
+<li class="md-nav__item bjp-nav-book" role="presentation"><span class="bjp-nav-head">Signals and Systems</span></li>
+<li class="md-nav__item">
+<a href="index.html" class="md-nav__link">
+<span class="md-ellipsis">
+Overview and preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="preface.html" class="md-nav__link">
+<span class="md-ellipsis">
+Preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="signals-and-their-classification.html" class="md-nav__link">
+<span class="md-ellipsis">
+1. Signals and Their Classification
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="elementary-signals-and-operations.html" class="md-nav__link">
+<span class="md-ellipsis">
+2. Elementary Signals and Operations on Signals
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="systems-and-their-properties.html" class="md-nav__link">
+<span class="md-ellipsis">
+3. Systems and Their Properties
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="lti-systems-and-convolution.html" class="md-nav__link">
+<span class="md-ellipsis">
+4. LTI Systems and Convolution
+</span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+5. Fourier Series
+</span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a href="fourier-series.html" class="md-nav__link md-nav__link--active">
+<span class="md-ellipsis">
+5. Fourier Series
+</span>
+</a>
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#51-why-build-signals-from-sinusoids" class="md-nav__link">
+<span class="md-ellipsis">
+5.1 Why build signals from sinusoids?
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#exponential-fs" class="md-nav__link">
+<span class="md-ellipsis">
+5.2 The exponential Fourier series
+</span>
+</a>
+<nav class="md-nav" aria-label="5.2 The exponential Fourier series">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#where-the-analysis-equation-comes-from" class="md-nav__link">
+<span class="md-ellipsis">
+Where the analysis equation comes from
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#a-first-example-sinusoids-by-inspection" class="md-nav__link">
+<span class="md-ellipsis">
+A first example: sinusoids by inspection
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#trig-fs" class="md-nav__link">
+<span class="md-ellipsis">
+5.3 Real signals and the trigonometric form
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#fs-examples" class="md-nav__link">
+<span class="md-ellipsis">
+5.4 Standard examples
+</span>
+</a>
+<nav class="md-nav" aria-label="5.4 Standard examples">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#the-square-wave" class="md-nav__link">
+<span class="md-ellipsis">
+The square wave
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#the-rectangular-pulse-train" class="md-nav__link">
+<span class="md-ellipsis">
+The rectangular pulse train
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#convergence" class="md-nav__link">
+<span class="md-ellipsis">
+5.5 Convergence and the Gibbs phenomenon
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#fs-properties" class="md-nav__link">
+<span class="md-ellipsis">
+5.6 Properties of the Fourier series
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#fs-lti" class="md-nav__link">
+<span class="md-ellipsis">
+5.7 LTI systems with periodic inputs
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#dtfs" class="md-nav__link">
+<span class="md-ellipsis">
+5.8 The discrete-time Fourier series
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#59-fourier-coefficients-numerically" class="md-nav__link">
+<span class="md-ellipsis">
+5.9 Fourier coefficients numerically
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#510-summary" class="md-nav__link">
+<span class="md-ellipsis">
+5.10 Summary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#511-exercises" class="md-nav__link">
+<span class="md-ellipsis">
+5.11 Exercises
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#512-quiz" class="md-nav__link">
+<span class="md-ellipsis">
+5.12 Quiz
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="the-continuous-time-fourier-transform.html" class="md-nav__link">
+<span class="md-ellipsis">
+6. The Continuous-Time Fourier Transform
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="the-discrete-time-fourier-transform.html" class="md-nav__link">
+<span class="md-ellipsis">
+7. The Discrete-Time Fourier Transform
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="the-dft-and-the-fft.html" class="md-nav__link">
+<span class="md-ellipsis">
+8. The DFT and the FFT
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="sampling-and-aliasing.html" class="md-nav__link">
+<span class="md-ellipsis">
+9. Sampling and Aliasing
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="the-laplace-transform.html" class="md-nav__link">
+<span class="md-ellipsis">
+10. The Laplace Transform
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="the-z-transform.html" class="md-nav__link">
+<span class="md-ellipsis">
+11. The z-Transform
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="frequency-response-and-filters.html" class="md-nav__link">
+<span class="md-ellipsis">
+12. Frequency Response and Filters
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="state-space-models.html" class="md-nav__link">
+<span class="md-ellipsis">
+13. State-Space Models
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="applications-audio-communication-and-control.html" class="md-nav__link">
+<span class="md-ellipsis">
+14. Applications: Audio, Communication and Control
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="tables-of-transforms.html" class="md-nav__link">
+<span class="md-ellipsis">
+Tables of Transforms
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="glossary.html" class="md-nav__link">
+<span class="md-ellipsis">
+Glossary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="further-reading.html" class="md-nav__link">
+<span class="md-ellipsis">
+Further Reading
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#51-why-build-signals-from-sinusoids" class="md-nav__link">
+<span class="md-ellipsis">
+5.1 Why build signals from sinusoids?
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#exponential-fs" class="md-nav__link">
+<span class="md-ellipsis">
+5.2 The exponential Fourier series
+</span>
+</a>
+<nav class="md-nav" aria-label="5.2 The exponential Fourier series">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#where-the-analysis-equation-comes-from" class="md-nav__link">
+<span class="md-ellipsis">
+Where the analysis equation comes from
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#a-first-example-sinusoids-by-inspection" class="md-nav__link">
+<span class="md-ellipsis">
+A first example: sinusoids by inspection
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#trig-fs" class="md-nav__link">
+<span class="md-ellipsis">
+5.3 Real signals and the trigonometric form
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#fs-examples" class="md-nav__link">
+<span class="md-ellipsis">
+5.4 Standard examples
+</span>
+</a>
+<nav class="md-nav" aria-label="5.4 Standard examples">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#the-square-wave" class="md-nav__link">
+<span class="md-ellipsis">
+The square wave
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#the-rectangular-pulse-train" class="md-nav__link">
+<span class="md-ellipsis">
+The rectangular pulse train
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#convergence" class="md-nav__link">
+<span class="md-ellipsis">
+5.5 Convergence and the Gibbs phenomenon
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#fs-properties" class="md-nav__link">
+<span class="md-ellipsis">
+5.6 Properties of the Fourier series
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#fs-lti" class="md-nav__link">
+<span class="md-ellipsis">
+5.7 LTI systems with periodic inputs
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#dtfs" class="md-nav__link">
+<span class="md-ellipsis">
+5.8 The discrete-time Fourier series
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#59-fourier-coefficients-numerically" class="md-nav__link">
+<span class="md-ellipsis">
+5.9 Fourier coefficients numerically
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#510-summary" class="md-nav__link">
+<span class="md-ellipsis">
+5.10 Summary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#511-exercises" class="md-nav__link">
+<span class="md-ellipsis">
+5.11 Exercises
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#512-quiz" class="md-nav__link">
+<span class="md-ellipsis">
+5.12 Quiz
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="chapter-5-fourier-series">Chapter 5: Fourier Series<a class="headerlink" href="#chapter-5-fourier-series" title="Permanent link">&para;</a></h1>
+<p><em>Periodic signals as sums of harmonics, and what an LTI system does to each harmonic</em></p>
+<div class="admonition note">
+<p class="admonition-title">Learning outcomes</p>
+<p>After this chapter you should be able to:</p>
+<ul>
+<li>write the synthesis and analysis equations of the exponential Fourier series and derive the analysis equation from orthogonality;</li>
+<li>convert between the exponential and trigonometric forms, and use the symmetry of real signals;</li>
+<li>compute the Fourier coefficients of square waves, pulse trains and other standard periodic signals;</li>
+<li>state the Dirichlet conditions, explain the Gibbs phenomenon, and apply Parseval's relation;</li>
+<li>find the steady-state output of an LTI system for a periodic input;</li>
+<li>compute the discrete-time Fourier series of a periodic sequence.</li>
+</ul>
+</div>
+<h2 id="51-why-build-signals-from-sinusoids">5.1 Why build signals from sinusoids?<a class="headerlink" href="#51-why-build-signals-from-sinusoids" title="Permanent link">&para;</a></h2>
+<p>Chapter 4 ended with a striking fact: a complex exponential <span class="arithmatex">\(e^{j\omega t}\)</span> passes through any LTI system unchanged in shape, only multiplied by a complex number <span class="arithmatex">\(H(j\omega)\)</span>. If an input can be written as a sum of complex exponentials, the output is the same sum with each term multiplied by its own <span class="arithmatex">\(H\)</span>. The hard operation of convolution is replaced by multiplications, one per frequency.</p>
+<p>The question is which signals can be written this way. In 1807 Joseph Fourier claimed, in a study of heat flow, that any periodic function could be written as a sum of sinusoids whose frequencies are whole multiples of the fundamental. The claim was disputed for decades, and the precise conditions were worked out later by Dirichlet and others, but in the form used by engineers it is true for every periodic signal we are likely to meet. This chapter develops it.</p>
+<p>A signal with period <span class="arithmatex">\(T_0\)</span> and fundamental frequency <span class="arithmatex">\(\omega_0 = 2\pi/T_0\)</span> can only be built from exponentials that also repeat every <span class="arithmatex">\(T_0\)</span>. Those are the <strong>harmonically related</strong> exponentials</p>
+<div class="arithmatex">\[
+\phi_k(t) = e^{jk\omega_0 t}, \qquad k = 0, \pm1, \pm2, \ldots
+\]</div>
+<p>The term <span class="arithmatex">\(k = 0\)</span> is a constant (the <strong>DC</strong> component). The terms <span class="arithmatex">\(k = \pm1\)</span> have the fundamental frequency and together form the <strong>fundamental</strong> or <strong>first harmonic</strong>. The terms <span class="arithmatex">\(k = \pm N\)</span> form the <strong><span class="arithmatex">\(N\)</span>th harmonic</strong>. Musical instruments give a vivid example: a violin and a flute playing the same note have the same fundamental, but different strengths of the higher harmonics, which is why they sound different.</p>
+<h2 id="exponential-fs">5.2 The exponential Fourier series<a class="headerlink" href="#exponential-fs" title="Permanent link">&para;</a></h2>
+<p>A periodic signal <span class="arithmatex">\(x(t)\)</span> with period <span class="arithmatex">\(T_0\)</span> is represented by its <strong>Fourier series</strong></p>
+<div class="arithmatex">\[
+x(t) = \sum_{k=-\infty}^{\infty} a_k\,e^{jk\omega_0 t} \qquad\text{(synthesis equation)},
+\]</div>
+<p>with <strong>Fourier coefficients</strong></p>
+<div class="arithmatex">\[
+a_k = \frac{1}{T_0}\int_{T_0} x(t)\,e^{-jk\omega_0 t}\,dt \qquad\text{(analysis equation)}.
+\]</div>
+<p>The integral is over any interval of length <span class="arithmatex">\(T_0\)</span>, for example from <span class="arithmatex">\(0\)</span> to <span class="arithmatex">\(T_0\)</span> or from <span class="arithmatex">\(-T_0/2\)</span> to <span class="arithmatex">\(T_0/2\)</span>; choose whichever makes the integration easiest. The coefficients <span class="arithmatex">\(a_k\)</span> are in general complex. The coefficient <span class="arithmatex">\(a_0 = \frac{1}{T_0}\int_{T_0}x(t)\,dt\)</span> is the <strong>average value</strong> of the signal over one period.</p>
+<h3 id="where-the-analysis-equation-comes-from">Where the analysis equation comes from<a class="headerlink" href="#where-the-analysis-equation-comes-from" title="Permanent link">&para;</a></h3>
+<p>The key is that the harmonics are <strong>orthogonal</strong> over a period:</p>
+<div class="arithmatex">\[
+\frac{1}{T_0}\int_{T_0} e^{jk\omega_0 t}\,e^{-jm\omega_0 t}\,dt = \frac{1}{T_0}\int_{T_0}e^{j(k - m)\omega_0 t}\,dt =
+\begin{cases} 1, &amp; k = m \\ 0, &amp; k \neq m. \end{cases}
+\]</div>
+<p>When <span class="arithmatex">\(k = m\)</span> the integrand is 1. When <span class="arithmatex">\(k \ne m\)</span> the integrand is a complex exponential that makes exactly <span class="arithmatex">\(k - m\)</span> whole turns around the unit circle in one period, so its real and imaginary parts both integrate to zero.</p>
+<p>Now multiply the synthesis equation by <span class="arithmatex">\(e^{-jm\omega_0 t}\)</span> and integrate over a period. Every term with <span class="arithmatex">\(k \ne m\)</span> integrates to zero, and the term <span class="arithmatex">\(k = m\)</span> gives <span class="arithmatex">\(T_0\,a_m\)</span>. Dividing by <span class="arithmatex">\(T_0\)</span> gives the analysis equation. The idea is the same as finding the components of a vector by taking dot products with orthogonal unit vectors: the harmonics are the "axes" of the space of periodic signals, and <span class="arithmatex">\(a_k\)</span> is the component of <span class="arithmatex">\(x\)</span> along the <span class="arithmatex">\(k\)</span>th axis.</p>
+<div class="admonition abstract">
+<p class="admonition-title">Key idea</p>
+<p>The analysis equation measures how much of each harmonic a periodic signal contains. The synthesis equation adds the harmonics back together. The set <span class="arithmatex">\(\{a_k\}\)</span> is the <strong>spectrum</strong> of the signal: a list of strengths and phases at the frequencies <span class="arithmatex">\(k\omega_0\)</span>.</p>
+</div>
+<h3 id="a-first-example-sinusoids-by-inspection">A first example: sinusoids by inspection<a class="headerlink" href="#a-first-example-sinusoids-by-inspection" title="Permanent link">&para;</a></h3>
+<p>For signals that are already sums of sinusoids, there is no need to integrate: use Euler's formula and read off the coefficients.</p>
+<div class="admonition example">
+<p class="admonition-title">Example 5.1 Coefficients by inspection</p>
+<p>Find the Fourier coefficients of <span class="arithmatex">\(x(t) = 1 + 2\cos(2t) + \sin(4t + \pi/4)\)</span>.</p>
+<p>The fundamental is <span class="arithmatex">\(\omega_0 = 2\)</span> (period <span class="arithmatex">\(\pi\)</span>). Expand:</p>
+<div class="arithmatex">\[
+x(t) = 1 + e^{j2t} + e^{-j2t} + \frac{1}{2j}\left(e^{j\pi/4}e^{j4t} - e^{-j\pi/4}e^{-j4t}\right).
+\]</div>
+<p>So <span class="arithmatex">\(a_0 = 1\)</span>, <span class="arithmatex">\(a_{\pm1} = 1\)</span>, <span class="arithmatex">\(a_2 = \frac{1}{2j}e^{j\pi/4} = \frac12 e^{-j\pi/4}\)</span>, <span class="arithmatex">\(a_{-2} = -\frac{1}{2j}e^{-j\pi/4} = \frac12 e^{j\pi/4}\)</span>, and all other <span class="arithmatex">\(a_k = 0\)</span>. Notice <span class="arithmatex">\(a_{-2} = a_2^*\)</span>, as the next section explains.</p>
+</div>
+<h2 id="trig-fs">5.3 Real signals and the trigonometric form<a class="headerlink" href="#trig-fs" title="Permanent link">&para;</a></h2>
+<p>For a <strong>real</strong> signal, taking the conjugate of the analysis equation gives</p>
+<div class="arithmatex">\[
+a_{-k} = a_k^* .
+\]</div>
+<p>This is <strong>conjugate symmetry</strong>: <span class="arithmatex">\(|a_{-k}| = |a_k|\)</span> (the magnitude spectrum is even) and <span class="arithmatex">\(\angle a_{-k} = -\angle a_k\)</span> (the phase spectrum is odd). The pair of terms at <span class="arithmatex">\(\pm k\)</span> then combines into one real sinusoid. Writing <span class="arithmatex">\(a_k = |a_k|e^{j\theta_k}\)</span>,</p>
+<div class="arithmatex">\[
+a_k e^{jk\omega_0 t} + a_{-k}e^{-jk\omega_0 t} = 2\,\mathrm{Re}\{a_k e^{jk\omega_0 t}\} = 2|a_k|\cos(k\omega_0 t + \theta_k).
+\]</div>
+<p>So every real periodic signal has the <strong>compact trigonometric form</strong></p>
+<div class="arithmatex">\[
+x(t) = a_0 + \sum_{k=1}^{\infty} 2|a_k|\cos(k\omega_0 t + \theta_k).
+\]</div>
+<p>Writing <span class="arithmatex">\(a_k = \frac12(A_k - jB_k)\)</span> gives the <strong>trigonometric form</strong> found in many books:</p>
+<div class="arithmatex">\[
+x(t) = a_0 + \sum_{k=1}^{\infty}\left[A_k\cos(k\omega_0 t) + B_k\sin(k\omega_0 t)\right],
+\qquad A_k = \frac{2}{T_0}\int_{T_0}x(t)\cos(k\omega_0 t)\,dt, \quad B_k = \frac{2}{T_0}\int_{T_0}x(t)\sin(k\omega_0 t)\,dt.
+\]</div>
+<p>The three forms carry the same information. The exponential form is the most convenient for the algebra of systems; the trigonometric forms are convenient for real signals with symmetry. If <span class="arithmatex">\(x\)</span> is real and <strong>even</strong>, the sine terms vanish (<span class="arithmatex">\(B_k = 0\)</span>) and the <span class="arithmatex">\(a_k\)</span> are real. If <span class="arithmatex">\(x\)</span> is real and <strong>odd</strong>, the cosine terms and <span class="arithmatex">\(a_0\)</span> vanish (<span class="arithmatex">\(A_k = 0\)</span>) and the <span class="arithmatex">\(a_k\)</span> are purely imaginary. The rules of Section 1.5 about integrals of even and odd functions are what make this work.</p>
+<h2 id="fs-examples">5.4 Standard examples<a class="headerlink" href="#fs-examples" title="Permanent link">&para;</a></h2>
+<h3 id="the-square-wave">The square wave<a class="headerlink" href="#the-square-wave" title="Permanent link">&para;</a></h3>
+<div class="admonition example">
+<p class="admonition-title">Example 5.2 A symmetric square wave</p>
+<p>Let <span class="arithmatex">\(x(t) = 1\)</span> for <span class="arithmatex">\(0 &lt; t &lt; T_0/2\)</span> and <span class="arithmatex">\(x(t) = -1\)</span> for <span class="arithmatex">\(-T_0/2 &lt; t &lt; 0\)</span>, repeated with period <span class="arithmatex">\(T_0\)</span>. Find its Fourier series.</p>
+<p>The signal is real and odd, so <span class="arithmatex">\(a_0 = 0\)</span> and the coefficients are imaginary. For <span class="arithmatex">\(k \ne 0\)</span>:</p>
+<div class="arithmatex">\[
+a_k = \frac{1}{T_0}\left[\int_0^{T_0/2}e^{-jk\omega_0 t}dt - \int_{-T_0/2}^{0}e^{-jk\omega_0 t}dt\right]
+= \frac{1}{T_0}\cdot\frac{(1 - e^{-jk\pi}) - (e^{jk\pi} - 1)}{jk\omega_0}.
+\]</div>
+<p>Since <span class="arithmatex">\(e^{\pm jk\pi} = (-1)^k\)</span> and <span class="arithmatex">\(\omega_0T_0 = 2\pi\)</span>,</p>
+<div class="arithmatex">\[
+a_k = \frac{2\left(1 - (-1)^k\right)}{j2\pi k} = \begin{cases} \dfrac{2}{j\pi k}, &amp; k \text{ odd}, \\[2mm] 0, &amp; k \text{ even}. \end{cases}
+\]</div>
+<p>In trigonometric form, <span class="arithmatex">\(B_k = 2j\,a_k = \frac{4}{\pi k}\)</span> for odd <span class="arithmatex">\(k\)</span>, so</p>
+<div class="arithmatex">\[
+x(t) = \frac{4}{\pi}\left(\sin\omega_0 t + \frac13\sin 3\omega_0 t + \frac15\sin 5\omega_0 t + \cdots\right).
+\]</div>
+<p>Only odd harmonics appear, and their amplitudes fall off as <span class="arithmatex">\(1/k\)</span>.</p>
+</div>
+<p>The absence of even harmonics is no accident. This square wave has <strong>half-wave symmetry</strong>: <span class="arithmatex">\(x(t + T_0/2) = -x(t)\)</span>, the second half of each period is the negative of the first. Every signal with half-wave symmetry has only odd harmonics.</p>
+<h3 id="the-rectangular-pulse-train">The rectangular pulse train<a class="headerlink" href="#the-rectangular-pulse-train" title="Permanent link">&para;</a></h3>
+<div class="admonition example">
+<p class="admonition-title">Example 5.3 A pulse train and the sinc envelope</p>
+<p>Let <span class="arithmatex">\(x(t) = 1\)</span> for <span class="arithmatex">\(|t| &lt; T_1\)</span> and <span class="arithmatex">\(0\)</span> for <span class="arithmatex">\(T_1 &lt; |t| &lt; T_0/2\)</span>, repeated with period <span class="arithmatex">\(T_0\)</span>. Find its Fourier coefficients.</p>
+<div class="arithmatex">\[
+a_0 = \frac{2T_1}{T_0}, \qquad
+a_k = \frac{1}{T_0}\int_{-T_1}^{T_1}e^{-jk\omega_0 t}dt = \frac{1}{T_0}\cdot\frac{e^{jk\omega_0T_1} - e^{-jk\omega_0T_1}}{jk\omega_0} = \frac{2\sin(k\omega_0T_1)}{k\omega_0T_0} = \frac{\sin(k\omega_0T_1)}{\pi k}.
+\]</div>
+<p>The signal is real and even, so the coefficients are real. In terms of the normalised sinc, <span class="arithmatex">\(a_k = \dfrac{2T_1}{T_0}\,\mathrm{sinc}\!\left(\dfrac{2kT_1}{T_0}\right)\)</span>. For a 50% duty cycle (<span class="arithmatex">\(T_1 = T_0/4\)</span>) this gives <span class="arithmatex">\(a_0 = \frac12\)</span>, <span class="arithmatex">\(a_k = \frac{\sin(k\pi/2)}{\pi k}\)</span>: <span class="arithmatex">\(a_1 = 1/\pi\)</span>, <span class="arithmatex">\(a_2 = 0\)</span>, <span class="arithmatex">\(a_3 = -1/(3\pi)\)</span>, and so on.</p>
+</div>
+<figure class="fig fig-diagram">
+<img src="img/pulse-train-spectrum.svg" alt="Fourier coefficients a_k of a rectangular pulse train, drawn as stems, with the sinc envelope dashed. Left: duty cycle one half, where every even harmonic is zero. Right: duty cycle one quarter; the envelope is twice as wide and the coefficients are smaller, falling to zero at every fourth harmonic." loading="lazy" width="780" height="270">
+<figcaption><strong>Figure 5.1 Spectrum of a pulse train.</strong> Fourier coefficients a_k of a rectangular pulse train, drawn as stems, with the sinc envelope dashed. Left: duty cycle one half, where every even harmonic is zero. Right: duty cycle one quarter; the envelope is twice as wide and the coefficients are smaller, falling to zero at every fourth harmonic.</figcaption>
+</figure>
+<p>Figure 5.1 shows a pattern that will recur in Chapter 6. The coefficients are samples of a fixed envelope, <span class="arithmatex">\(\frac{2T_1}{T_0}\mathrm{sinc}(2T_1 f)\)</span> evaluated at <span class="arithmatex">\(f = k/T_0\)</span>. Making the pulses <strong>narrower</strong> (smaller <span class="arithmatex">\(T_1\)</span>) makes the envelope <strong>wider</strong>: short events need many frequencies. Making the period <strong>longer</strong> (larger <span class="arithmatex">\(T_0\)</span>) packs the samples closer together. In the limit <span class="arithmatex">\(T_0 \to \infty\)</span> only a single pulse remains, the samples merge into a continuous curve, and the Fourier series becomes the Fourier transform.</p>
+<h2 id="convergence">5.5 Convergence and the Gibbs phenomenon<a class="headerlink" href="#convergence" title="Permanent link">&para;</a></h2>
+<p>Does the infinite sum really add up to <span class="arithmatex">\(x(t)\)</span>? Two facts settle it for engineering purposes.</p>
+<p><strong>Energy convergence.</strong> If <span class="arithmatex">\(x\)</span> has finite energy over one period, <span class="arithmatex">\(\int_{T_0}|x(t)|^2dt &lt; \infty\)</span>, then the partial sums <span class="arithmatex">\(x_N(t) = \sum_{k=-N}^{N}a_k e^{jk\omega_0 t}\)</span> converge to <span class="arithmatex">\(x\)</span> in the sense that the energy of the error over a period tends to zero as <span class="arithmatex">\(N \to \infty\)</span>. Moreover <span class="arithmatex">\(x_N\)</span> is the best approximation to <span class="arithmatex">\(x\)</span>, in this energy sense, that can be made from the harmonics up to <span class="arithmatex">\(N\)</span>.</p>
+<p><strong>Pointwise convergence (Dirichlet conditions).</strong> If over one period <span class="arithmatex">\(x\)</span> is absolutely integrable, has a finite number of maxima and minima, and has a finite number of finite discontinuities, then the series converges to <span class="arithmatex">\(x(t)\)</span> at every point where <span class="arithmatex">\(x\)</span> is continuous, and to the midpoint of the jump, <span class="arithmatex">\(\frac12[x(t^-) + x(t^+)]\)</span>, at every discontinuity. Every periodic signal you can generate in a laboratory satisfies these conditions.</p>
+<p>Near a discontinuity something curious happens. Figure 5.2 shows partial sums of the square wave. As <span class="arithmatex">\(N\)</span> grows, the ripples crowd closer to the jump, but the first overshoot does not get smaller: it stays at about 9% of the size of the jump. For the square wave, which jumps by 2, the partial sums peak at about 1.179 instead of 1, however many terms are taken. This is the <strong>Gibbs phenomenon</strong>. It does not contradict convergence: at any fixed point away from the jump the ripple eventually dies out, and the region of overshoot becomes ever narrower, so the error energy tends to zero. But the maximum error does not tend to zero.</p>
+<figure class="fig fig-diagram">
+<img src="img/square-wave-partial-sums.svg" alt="Partial sums of the ±1 square wave with harmonics up to N = 1, 3 and 19. The higher the N, the closer the sum hugs the square wave, but the overshoot next to each jump stays at about 9% of the jump." loading="lazy" width="760" height="300">
+<figcaption><strong>Figure 5.2 The Gibbs phenomenon.</strong> Partial sums of the ±1 square wave with harmonics up to N = 1, 3 and 19. The higher the N, the closer the sum hugs the square wave, but the overshoot next to each jump stays at about 9% of the jump.</figcaption>
+</figure>
+<div class="admonition note">
+<p class="admonition-title">Gibbs in practice</p>
+<p>The same overshoot appears whenever a signal with sharp edges is passed through a filter that cuts off abruptly in frequency: ringing next to sharp edges in compressed images and audio, for instance. Chapter 12 shows how <strong>windows</strong> trade a slightly gentler cut-off for much smaller ripple.</p>
+</div>
+<h2 id="fs-properties">5.6 Properties of the Fourier series<a class="headerlink" href="#fs-properties" title="Permanent link">&para;</a></h2>
+<p>Let <span class="arithmatex">\(x(t) \leftrightarrow a_k\)</span> and <span class="arithmatex">\(y(t) \leftrightarrow b_k\)</span>, both with period <span class="arithmatex">\(T_0\)</span>. The properties in Table 5.1 follow from the analysis equation with simple substitutions. They save a great deal of integration.</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Signal</th>
+<th>Coefficients</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Linearity</td>
+<td><span class="arithmatex">\(Ax(t) + By(t)\)</span></td>
+<td><span class="arithmatex">\(Aa_k + Bb_k\)</span></td>
+</tr>
+<tr>
+<td>Time shift</td>
+<td><span class="arithmatex">\(x(t - t_0)\)</span></td>
+<td><span class="arithmatex">\(a_k\,e^{-jk\omega_0 t_0}\)</span></td>
+</tr>
+<tr>
+<td>Frequency shift</td>
+<td><span class="arithmatex">\(e^{jM\omega_0 t}x(t)\)</span></td>
+<td><span class="arithmatex">\(a_{k - M}\)</span></td>
+</tr>
+<tr>
+<td>Time reversal</td>
+<td><span class="arithmatex">\(x(-t)\)</span></td>
+<td><span class="arithmatex">\(a_{-k}\)</span></td>
+</tr>
+<tr>
+<td>Time scaling</td>
+<td><span class="arithmatex">\(x(\alpha t)\)</span>, period <span class="arithmatex">\(T_0/\alpha\)</span></td>
+<td><span class="arithmatex">\(a_k\)</span> (at the new fundamental <span class="arithmatex">\(\alpha\omega_0\)</span>)</td>
+</tr>
+<tr>
+<td>Conjugation</td>
+<td><span class="arithmatex">\(x^*(t)\)</span></td>
+<td><span class="arithmatex">\(a_{-k}^*\)</span></td>
+</tr>
+<tr>
+<td>Differentiation</td>
+<td><span class="arithmatex">\(\dfrac{dx}{dt}\)</span></td>
+<td><span class="arithmatex">\(jk\omega_0\,a_k\)</span></td>
+</tr>
+<tr>
+<td>Periodic convolution</td>
+<td><span class="arithmatex">\(\int_{T_0}x(\tau)y(t - \tau)\,d\tau\)</span></td>
+<td><span class="arithmatex">\(T_0\,a_k b_k\)</span></td>
+</tr>
+<tr>
+<td>Multiplication</td>
+<td><span class="arithmatex">\(x(t)\,y(t)\)</span></td>
+<td><span class="arithmatex">\(\sum_{m} a_m b_{k-m}\)</span></td>
+</tr>
+<tr>
+<td>Real signal</td>
+<td><span class="arithmatex">\(x\)</span> real</td>
+<td><span class="arithmatex">\(a_{-k} = a_k^*\)</span></td>
+</tr>
+<tr>
+<td>Parseval</td>
+<td><span class="arithmatex">\(\dfrac{1}{T_0}\displaystyle\int_{T_0}\lvert x(t)\rvert^2dt\)</span></td>
+<td><span class="arithmatex">\(\displaystyle\sum_k \lvert a_k\rvert^2\)</span></td>
+</tr>
+</tbody>
+</table>
+<p><em>Table 5.1. Properties of the continuous-time Fourier series.</em></p>
+<p>The <strong>time-shift</strong> property says that delaying a signal leaves the magnitudes <span class="arithmatex">\(|a_k|\)</span> unchanged and adds a phase <span class="arithmatex">\(-k\omega_0t_0\)</span> that grows linearly with frequency. The <strong>differentiation</strong> property says that differentiating multiplies each harmonic by <span class="arithmatex">\(jk\omega_0\)</span>, which emphasises high harmonics; integration (of a signal with <span class="arithmatex">\(a_0 = 0\)</span>) divides by <span class="arithmatex">\(jk\omega_0\)</span> and smooths. So the coefficients of a signal with jumps fall as <span class="arithmatex">\(1/k\)</span>, those of a continuous signal with kinks (like a triangle wave) fall as <span class="arithmatex">\(1/k^2\)</span>, and smoother signals fall faster still.</p>
+<p><strong>Parseval's relation</strong> says that the average power of a periodic signal is the sum of the powers of its harmonics. Each pair <span class="arithmatex">\(\pm k\)</span> contributes <span class="arithmatex">\(2|a_k|^2\)</span>, which is the power <span class="arithmatex">\(\frac12(2|a_k|)^2\)</span> of the sinusoid <span class="arithmatex">\(2|a_k|\cos(k\omega_0 t + \theta_k)\)</span>, as Example 1.6 requires.</p>
+<div class="admonition example">
+<p class="admonition-title">Example 5.4 Using Parseval</p>
+<p>For the square wave of Example 5.2, the power is 1 (since <span class="arithmatex">\(|x| = 1\)</span> always). Parseval gives</p>
+<div class="arithmatex">\[
+1 = \sum_{k \text{ odd}}\left|\frac{2}{j\pi k}\right|^2 = 2\sum_{k = 1, 3, 5, \ldots}\frac{4}{\pi^2k^2},
+\]</div>
+<p>so <span class="arithmatex">\(\sum_{k \text{ odd}}\frac{1}{k^2} = \frac{\pi^2}{8}\)</span>. A signals result gives a classical sum for free. The fundamental alone carries <span class="arithmatex">\(2\cdot\frac{4}{\pi^2} = 0.811\)</span> of the power, or 81%.</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title">Example 5.5 A triangle wave from a square wave</p>
+<p>Let <span class="arithmatex">\(v(t) = 1 - 4|t|/T_0\)</span> for <span class="arithmatex">\(|t| \le T_0/2\)</span>, repeated with period <span class="arithmatex">\(T_0\)</span>: an even triangle wave that peaks at 1 at <span class="arithmatex">\(t = 0\)</span> and falls to <span class="arithmatex">\(-1\)</span> at <span class="arithmatex">\(t = \pm T_0/2\)</span>. Find its coefficients without integrating <span class="arithmatex">\(v\)</span> directly.</p>
+<p>Its average is 0, so <span class="arithmatex">\(d_0 = 0\)</span>. Its derivative is <span class="arithmatex">\(-4/T_0\)</span> for <span class="arithmatex">\(0 &lt; t &lt; T_0/2\)</span> and <span class="arithmatex">\(+4/T_0\)</span> for <span class="arithmatex">\(-T_0/2 &lt; t &lt; 0\)</span>, which is <span class="arithmatex">\(-\frac{4}{T_0}\)</span> times the square wave of Example 5.2. So <span class="arithmatex">\(dv/dt\)</span> has coefficients <span class="arithmatex">\(c_k = -\frac{4}{T_0}\cdot\frac{2}{j\pi k}\)</span> for odd <span class="arithmatex">\(k\)</span> and 0 for even <span class="arithmatex">\(k\)</span>. By the differentiation property, <span class="arithmatex">\(c_k = jk\omega_0 d_k\)</span>, hence for odd <span class="arithmatex">\(k\)</span></p>
+<div class="arithmatex">\[
+d_k = \frac{c_k}{jk\omega_0} = -\frac{4}{T_0}\cdot\frac{2}{j\pi k}\cdot\frac{T_0}{j2\pi k} = \frac{4}{\pi^2k^2}.
+\]</div>
+<p>The coefficients are real (the signal is even), present only for odd <span class="arithmatex">\(k\)</span> (half-wave symmetry), and fall as <span class="arithmatex">\(1/k^2\)</span>, faster than the square wave's <span class="arithmatex">\(1/k\)</span>. Check at <span class="arithmatex">\(t = 0\)</span>: <span class="arithmatex">\(v(0) = \sum_k d_k = 2\cdot\frac{4}{\pi^2}\sum_{k\text{ odd}}\frac{1}{k^2} = \frac{8}{\pi^2}\cdot\frac{\pi^2}{8} = 1\)</span>, using Example 5.4.</p>
+</div>
+<h2 id="fs-lti">5.7 LTI systems with periodic inputs<a class="headerlink" href="#fs-lti" title="Permanent link">&para;</a></h2>
+<p>Here is the payoff. Let a periodic signal <span class="arithmatex">\(x(t) = \sum_k a_k e^{jk\omega_0 t}\)</span> drive a stable LTI system with frequency response</p>
+<div class="arithmatex">\[
+H(j\omega) = \int_{-\infty}^{\infty} h(t)\,e^{-j\omega t}\,dt .
+\]</div>
+<p>Each harmonic is an eigenfunction, so it emerges multiplied by <span class="arithmatex">\(H(jk\omega_0)\)</span>:</p>
+<div class="arithmatex">\[
+y(t) = \sum_{k=-\infty}^{\infty} a_k\,H(jk\omega_0)\,e^{jk\omega_0 t}.
+\]</div>
+<p>The output is periodic with the same period, and its coefficients are <span class="arithmatex">\(b_k = a_k H(jk\omega_0)\)</span>. The system reshapes the spectrum: harmonics where <span class="arithmatex">\(|H|\)</span> is large are emphasised, those where <span class="arithmatex">\(|H|\)</span> is small are suppressed. This is filtering. (Strictly, this is the <strong>steady-state</strong> response, after any transient caused by switching the input on has died away; for a periodic input defined for all time there is no transient.)</p>
+<div class="admonition example">
+<p class="admonition-title">Example 5.6 A square wave through an RC low-pass filter</p>
+<p>An RC circuit with <span class="arithmatex">\(RC = 1/(2\pi\cdot 100)\)</span> s has <span class="arithmatex">\(H(j\omega) = \dfrac{1}{1 + j\omega RC}\)</span> and a cut-off frequency of 100 Hz. The input is the ±1 square wave of Example 5.2 with fundamental 100 Hz, so <span class="arithmatex">\(\omega_0RC = 1\)</span>. Find the amplitudes of the first three non-zero harmonics at the output.</p>
+<p>At harmonic <span class="arithmatex">\(k\)</span>, <span class="arithmatex">\(H(jk\omega_0) = \dfrac{1}{1 + jk}\)</span>, with magnitude <span class="arithmatex">\(1/\sqrt{1 + k^2}\)</span>. The input sinusoid at harmonic <span class="arithmatex">\(k\)</span> (odd) has amplitude <span class="arithmatex">\(2|a_k| = \frac{4}{\pi k}\)</span>.</p>
+<table>
+<thead>
+<tr>
+<th><span class="arithmatex">\(k\)</span></th>
+<th>Input amplitude <span class="arithmatex">\(\frac{4}{\pi k}\)</span></th>
+<th><span class="arithmatex">\(\lvert H\rvert = \frac{1}{\sqrt{1+k^2}}\)</span></th>
+<th>Output amplitude</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>1.273</td>
+<td>0.707</td>
+<td>0.900</td>
+</tr>
+<tr>
+<td>3</td>
+<td>0.424</td>
+<td>0.316</td>
+<td>0.134</td>
+</tr>
+<tr>
+<td>5</td>
+<td>0.255</td>
+<td>0.196</td>
+<td>0.050</td>
+</tr>
+</tbody>
+</table>
+<p><em>Table 5.2. Harmonic amplitudes before and after the filter.</em></p>
+<p>The third harmonic falls from 33% to 15% of the fundamental, and the fifth from 20% to 6%. The output looks much more like a sinusoid: the corners of the square wave are rounded off, as anyone who has looked at a square wave through a slow amplifier on an oscilloscope has seen.</p>
+</div>
+<h2 id="dtfs">5.8 The discrete-time Fourier series<a class="headerlink" href="#dtfs" title="Permanent link">&para;</a></h2>
+<p>A periodic sequence <span class="arithmatex">\(x[n]\)</span> with fundamental period <span class="arithmatex">\(N\)</span> can also be written as a sum of harmonically related exponentials <span class="arithmatex">\(e^{jk(2\pi/N)n}\)</span>. There is one big difference from continuous time: because <span class="arithmatex">\(e^{j(k + N)(2\pi/N)n} = e^{jk(2\pi/N)n}\)</span>, <strong>there are only <span class="arithmatex">\(N\)</span> distinct harmonics</strong>. The series is a finite sum:</p>
+<div class="arithmatex">\[
+x[n] = \sum_{k=\langle N\rangle} a_k\,e^{jk(2\pi/N)n}, \qquad a_k = \frac{1}{N}\sum_{n=\langle N\rangle} x[n]\,e^{-jk(2\pi/N)n},
+\]</div>
+<p>where <span class="arithmatex">\(\langle N\rangle\)</span> means any <span class="arithmatex">\(N\)</span> consecutive integers, such as <span class="arithmatex">\(0, 1, \ldots, N-1\)</span>. The coefficients are themselves periodic: <span class="arithmatex">\(a_{k+N} = a_k\)</span>. There are no convergence questions, because nothing is infinite; the <span class="arithmatex">\(N\)</span> equations of the synthesis formula are simply solved exactly by the analysis formula. The orthogonality that makes it work is <span class="arithmatex">\(\sum_{n=0}^{N-1}e^{j(k-m)(2\pi/N)n} = N\)</span> if <span class="arithmatex">\(k - m\)</span> is a multiple of <span class="arithmatex">\(N\)</span> and <span class="arithmatex">\(0\)</span> otherwise, which is the finite geometric series with ratio <span class="arithmatex">\(e^{j(k-m)2\pi/N}\)</span>.</p>
+<div class="admonition example">
+<p class="admonition-title">Example 5.7 DTFS of a short periodic sequence</p>
+<p>Let <span class="arithmatex">\(x[n]\)</span> have period 4 with <span class="arithmatex">\(x[0] = 1\)</span>, <span class="arithmatex">\(x[1] = 1\)</span>, <span class="arithmatex">\(x[2] = 0\)</span>, <span class="arithmatex">\(x[3] = 0\)</span>. With <span class="arithmatex">\(e^{-j2\pi/4} = -j\)</span>:</p>
+<div class="arithmatex">\[
+a_k = \frac14\left(1 + (-j)^k\right).
+\]</div>
+<p>So <span class="arithmatex">\(a_0 = \frac12\)</span>, <span class="arithmatex">\(a_1 = \frac{1 - j}{4}\)</span>, <span class="arithmatex">\(a_2 = 0\)</span>, <span class="arithmatex">\(a_3 = \frac{1 + j}{4}\)</span>. Since <span class="arithmatex">\(x\)</span> is real, <span class="arithmatex">\(a_3 = a_{-1} = a_1^*\)</span>, as conjugate symmetry requires. Check by synthesis at <span class="arithmatex">\(n = 0\)</span>: <span class="arithmatex">\(\frac12 + \frac{1 - j}{4} + 0 + \frac{1 + j}{4} = 1\)</span>. Correct.</p>
+</div>
+<p>Up to the factor <span class="arithmatex">\(\frac1N\)</span>, the DTFS coefficients over one period are exactly what is computed by the <strong>discrete Fourier transform</strong> of Chapter 8, the most widely used algorithm in signal processing.</p>
+<h2 id="59-fourier-coefficients-numerically">5.9 Fourier coefficients numerically<a class="headerlink" href="#59-fourier-coefficients-numerically" title="Permanent link">&para;</a></h2>
+<p>Computing <span class="arithmatex">\(a_k\)</span> by numerical integration is a good check on algebra. The program below approximates the analysis integral for the pulse train of Example 5.3 with <span class="arithmatex">\(T_0 = 1\)</span> and <span class="arithmatex">\(T_1 = 0.25\)</span>, checks Parseval's relation, and measures the Gibbs overshoot of the square wave.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="n">T0</span><span class="p">,</span> <span class="n">T1</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.25</span>                 <span class="c1"># period and half-width of the pulse</span>
+<span class="n">w0</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="n">T0</span>
+<span class="n">M</span> <span class="o">=</span> <span class="mi">100_000</span>                        <span class="c1"># samples per period for the numerical integral</span>
+<span class="n">t</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">M</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">/</span> <span class="n">M</span> <span class="o">*</span> <span class="n">T0</span> <span class="o">-</span> <span class="n">T0</span> <span class="o">/</span> <span class="mi">2</span>      <span class="c1"># midpoints over one period</span>
+<span class="n">x</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">T1</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">coeff</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""a_k = (1/T0) * integral over one period of x(t) e^{-j k w0 t} dt (midpoint rule)."""</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">x</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">k</span> <span class="o">*</span> <span class="n">w0</span> <span class="o">*</span> <span class="n">t</span><span class="p">))</span>
+
+<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">6</span><span class="p">):</span>
+    <span class="n">exact</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">T1</span> <span class="o">/</span> <span class="n">T0</span> <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">k</span> <span class="o">*</span> <span class="n">w0</span> <span class="o">*</span> <span class="n">T1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">k</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"a_</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">: numerical </span><span class="si">{</span><span class="n">coeff</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">real</span><span class="si">:</span><span class="s2">+.5f</span><span class="si">}</span><span class="s2">   formula </span><span class="si">{</span><span class="n">exact</span><span class="si">:</span><span class="s2">+.5f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+<span class="c1"># Parseval: power from time samples versus sum of |a_k|^2</span>
+<span class="n">K</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="mi">2000</span><span class="p">,</span> <span class="mi">2001</span><span class="p">)</span>
+<span class="n">ak</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">K</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">T1</span> <span class="o">/</span> <span class="n">T0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">K</span> <span class="o">*</span> <span class="n">w0</span> <span class="o">*</span> <span class="n">T1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">K</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">K</span><span class="p">)))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"power in time      :"</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">x</span> <span class="o">**</span> <span class="mi">2</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"sum |a_k|^2 (|k|&lt;=2000):"</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">ak</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)),</span> <span class="mi">5</span><span class="p">))</span>
+
+<span class="c1"># Gibbs: peak of the partial sum of the +/-1 square wave, (4/pi) sum sin(k w0 t)/k, k odd</span>
+<span class="n">tt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mi">20001</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">N</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">49</span><span class="p">,</span> <span class="mi">199</span><span class="p">):</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">4</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">k</span> <span class="o">*</span> <span class="n">w0</span> <span class="o">*</span> <span class="n">tt</span><span class="p">)</span> <span class="o">/</span> <span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">N</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"N = </span><span class="si">{</span><span class="n">N</span><span class="si">:</span><span class="s2">3d</span><span class="si">}</span><span class="s2">: peak of partial sum = </span><span class="si">{</span><span class="n">s</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>a_0: numerical +0.50000   formula +0.50000
+a_1: numerical +0.31831   formula +0.31831
+a_2: numerical +0.00000   formula +0.00000
+a_3: numerical -0.10610   formula -0.10610
+a_4: numerical -0.00000   formula -0.00000
+a_5: numerical +0.06366   formula +0.06366
+power in time      : 0.5
+sum |a_k|^2 (|k|&lt;=2000): 0.49995
+N =   9: peak of partial sum = 1.1823
+N =  49: peak of partial sum = 1.1791
+N = 199: peak of partial sum = 1.1790
+</code></pre></div>
+<p>The coefficients match the formula to five decimal places, and Parseval's sum approaches the power 0.5 as more harmonics are included (the coefficients fall only as <span class="arithmatex">\(1/k\)</span>, so convergence is slow). The Gibbs peak settles near 1.179 and does not fall as <span class="arithmatex">\(N\)</span> grows.</p>
+<h2 id="510-summary">5.10 Summary<a class="headerlink" href="#510-summary" title="Permanent link">&para;</a></h2>
+<div class="admonition abstract">
+<p class="admonition-title">Summary</p>
+<ul>
+<li>A periodic signal is a sum of harmonics: <span class="arithmatex">\(x(t) = \sum_k a_k e^{jk\omega_0 t}\)</span> with <span class="arithmatex">\(a_k = \frac{1}{T_0}\int_{T_0}x(t)e^{-jk\omega_0 t}dt\)</span>. Orthogonality of the harmonics gives the analysis equation.</li>
+<li>For real signals <span class="arithmatex">\(a_{-k} = a_k^*\)</span>, and the series can be written with cosines and sines. Even signals give real <span class="arithmatex">\(a_k\)</span>; odd signals give imaginary <span class="arithmatex">\(a_k\)</span>; half-wave symmetry gives only odd harmonics.</li>
+<li>The square wave has <span class="arithmatex">\(a_k = 2/(j\pi k)\)</span> for odd <span class="arithmatex">\(k\)</span>; the pulse train has a sinc-shaped spectrum whose width is inversely proportional to the pulse width.</li>
+<li>Under the Dirichlet conditions the series converges to <span class="arithmatex">\(x\)</span> where <span class="arithmatex">\(x\)</span> is continuous and to the midpoint at jumps. Near a jump the partial sums overshoot by about 9% of the jump (Gibbs).</li>
+<li>Delay adds linear phase; differentiation multiplies by <span class="arithmatex">\(jk\omega_0\)</span>; Parseval equates power with <span class="arithmatex">\(\sum|a_k|^2\)</span>.</li>
+<li>An LTI system multiplies the <span class="arithmatex">\(k\)</span>th harmonic by <span class="arithmatex">\(H(jk\omega_0)\)</span>.</li>
+<li>A periodic sequence of period <span class="arithmatex">\(N\)</span> has exactly <span class="arithmatex">\(N\)</span> distinct DTFS coefficients, found by a finite sum.</li>
+</ul>
+</div>
+<h2 id="511-exercises">5.11 Exercises<a class="headerlink" href="#511-exercises" title="Permanent link">&para;</a></h2>
+<div class="admonition example">
+<p class="admonition-title">Exercise 5.1</p>
+<p>Find the Fourier coefficients of <span class="arithmatex">\(x(t) = 3\cos(5t) - 4\sin(10t)\)</span>.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p><span class="arithmatex">\(\omega_0 = 5\)</span>. <span class="arithmatex">\(a_{\pm1} = \frac32\)</span>; <span class="arithmatex">\(-4\sin 10t = -\frac{4}{2j}(e^{j10t} - e^{-j10t})\)</span> gives <span class="arithmatex">\(a_2 = -\frac{2}{j} = 2j\)</span> and <span class="arithmatex">\(a_{-2} = -2j\)</span>. All others are zero.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 5.2</p>
+<p>What is <span class="arithmatex">\(a_0\)</span> for the pulse train of Example 5.3 with <span class="arithmatex">\(T_0 = 5\)</span> ms and <span class="arithmatex">\(T_1 = 0.5\)</span> ms?</p>
+</div>
+<details class="note typed">
+<summary>Answer</summary>
+<p><strong>0.2.</strong> <span class="arithmatex">\(a_0 = 2T_1/T_0 = 1/5\)</span>: the fraction of each period during which the signal is on.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 5.3</p>
+<p>The square wave of Example 5.2 is delayed by <span class="arithmatex">\(T_0/4\)</span>. Find the new coefficients and show that they are real.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>By the time-shift property, <span class="arithmatex">\(b_k = a_k e^{-jk\omega_0 T_0/4} = \frac{2}{j\pi k}e^{-jk\pi/2}\)</span> for odd <span class="arithmatex">\(k\)</span> (and 0 for even <span class="arithmatex">\(k\)</span>). For <span class="arithmatex">\(k = 1\)</span>, <span class="arithmatex">\(e^{-j\pi/2} = -j\)</span> gives <span class="arithmatex">\(b_1 = -\frac{2}{\pi}\)</span>; for <span class="arithmatex">\(k = 3\)</span>, <span class="arithmatex">\(e^{-j3\pi/2} = j\)</span> gives <span class="arithmatex">\(b_3 = \frac{2}{3\pi}\)</span>. In general <span class="arithmatex">\(b_k = (-1)^{(k+1)/2}\frac{2}{\pi k}\)</span>, which is real. This is expected: the delayed wave is <span class="arithmatex">\(-1\)</span> on <span class="arithmatex">\((-T_0/4, T_0/4)\)</span> and <span class="arithmatex">\(+1\)</span> on the rest of the period, an even signal.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 5.4</p>
+<p>A periodic signal has <span class="arithmatex">\(a_0 = 2\)</span>, <span class="arithmatex">\(a_{\pm1} = 1\)</span>, <span class="arithmatex">\(a_{\pm3} = j\)</span> and <span class="arithmatex">\(a_{\mp3}\)</span> such that the signal is real. Is <span class="arithmatex">\(a_3 = j\)</span> and <span class="arithmatex">\(a_{-3} = j\)</span> consistent with a real signal?</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>No. A real signal needs <span class="arithmatex">\(a_{-3} = a_3^* = -j\)</span>. With <span class="arithmatex">\(a_3 = j\)</span> and <span class="arithmatex">\(a_{-3} = -j\)</span>, the pair gives <span class="arithmatex">\(2\,\mathrm{Re}\{je^{j3\omega_0t}\} = -2\sin 3\omega_0t\)</span>.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 5.5</p>
+<p>Use Parseval to find the power of <span class="arithmatex">\(x(t) = 1 + \cos(t) + \frac12\sin(2t)\)</span>.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p><span class="arithmatex">\(|a_0|^2 = 1\)</span>; <span class="arithmatex">\(a_{\pm1} = \frac12\)</span> contribute <span class="arithmatex">\(2\cdot\frac14 = \frac12\)</span>; <span class="arithmatex">\(a_{\pm2}\)</span> have magnitude <span class="arithmatex">\(\frac14\)</span> and contribute <span class="arithmatex">\(2\cdot\frac{1}{16} = \frac18\)</span>. Power <span class="arithmatex">\(= 1.625\)</span>.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 5.6</p>
+<p>Without integrating, say which harmonics are present in a periodic signal that is real, even and has half-wave symmetry.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>Only odd harmonics (half-wave symmetry), and only cosines with real coefficients (even). For example the even square wave and the triangle wave.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 5.7</p>
+<p>A system has <span class="arithmatex">\(H(j\omega) = \dfrac{1}{1 + j\omega}\)</span>. Find the steady-state output for <span class="arithmatex">\(x(t) = 2 + \cos t\)</span>.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>DC: <span class="arithmatex">\(H(0) = 1\)</span>, so 2 passes unchanged. At <span class="arithmatex">\(\omega = 1\)</span>: <span class="arithmatex">\(H = \frac{1}{\sqrt2}e^{-j\pi/4}\)</span>. Output <span class="arithmatex">\(y(t) = 2 + \frac{1}{\sqrt2}\cos(t - \pi/4)\)</span>.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 5.8</p>
+<p>Find the DTFS coefficients of <span class="arithmatex">\(x[n] = \cos(\pi n/3)\)</span>.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p><span class="arithmatex">\(N = 6\)</span>. <span class="arithmatex">\(\cos(\pi n/3) = \frac12 e^{j(2\pi/6)n} + \frac12 e^{-j(2\pi/6)n}\)</span>, so <span class="arithmatex">\(a_1 = a_{-1} = a_5 = \frac12\)</span> and the other coefficients in a period are zero.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 5.9</p>
+<p>Compute the DTFS of the period-3 sequence <span class="arithmatex">\(x[0] = 3\)</span>, <span class="arithmatex">\(x[1] = 0\)</span>, <span class="arithmatex">\(x[2] = 0\)</span>.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p><span class="arithmatex">\(a_k = \frac13\cdot 3 = 1\)</span> for every <span class="arithmatex">\(k\)</span>. A single impulse per period contains all harmonics equally.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 5.10</p>
+<p>Explain why the Fourier coefficients of a triangle wave fall off faster than those of a square wave.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>The triangle is the integral of a square wave (minus its mean). Integration divides the <span class="arithmatex">\(k\)</span>th coefficient by <span class="arithmatex">\(jk\omega_0\)</span>, turning <span class="arithmatex">\(1/k\)</span> decay into <span class="arithmatex">\(1/k^2\)</span>. In general, the smoother the signal, the faster its coefficients decay.</p>
+</details>
+<h2 id="512-quiz">5.12 Quiz<a class="headerlink" href="#512-quiz" title="Permanent link">&para;</a></h2>
+<div class="pk-quiz" data-quiz="a1c78a3a0e5a">
+<p class="pk-quiz-title">Check your understanding of Chapter 5</p>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;aₖ&quot;,&quot;−aₖ&quot;,&quot;the conjugate of aₖ&quot;,&quot;zero&quot;],&quot;answer&quot;:&quot;the conjugate of aₖ&quot;}">
+<p class="admonition-title">Exercise 1</p>
+<p class="pk-q-prompt">For a real periodic signal, a₋ₖ equals</p>
+<ol class="pk-q-opts" type="A"><li>aₖ</li><li>−aₖ</li><li>the conjugate of aₖ</li><li>zero</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>the conjugate of aₖ</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;real&quot;,&quot;purely imaginary&quot;,&quot;all zero for odd k&quot;,&quot;equal to 1&quot;],&quot;answer&quot;:&quot;purely imaginary&quot;}">
+<p class="admonition-title">Exercise 2</p>
+<p class="pk-q-prompt">A real, odd periodic signal has Fourier coefficients that are</p>
+<ol class="pk-q-opts" type="A"><li>real</li><li>purely imaginary</li><li>all zero for odd k</li><li>equal to 1</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>purely imaginary</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;text&quot;,&quot;answer&quot;:[&quot;0.2&quot;,&quot;1/5&quot;]}">
+<p class="admonition-title">Exercise 3</p>
+<p class="pk-q-prompt">What is the average value a₀ of a pulse train that is 1 for 20% of each period and 0 otherwise?</p>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>0.2 / 1/5</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;shrinks to zero&quot;,&quot;stays near 9% of the jump&quot;,&quot;grows without limit&quot;,&quot;moves away from the jump&quot;],&quot;answer&quot;:&quot;stays near 9% of the jump&quot;}">
+<p class="admonition-title">Exercise 4</p>
+<p class="pk-q-prompt">As more terms are added, the Gibbs overshoot next to a jump</p>
+<ol class="pk-q-opts" type="A"><li>shrinks to zero</li><li>stays near 9% of the jump</li><li>grows without limit</li><li>moves away from the jump</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>stays near 9% of the jump</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;e^(−jkω₀t₀)&quot;,&quot;e^(jkω₀t₀)&quot;,&quot;t₀&quot;,&quot;jkω₀&quot;],&quot;answer&quot;:&quot;e^(−jkω₀t₀)&quot;}">
+<p class="admonition-title">Exercise 5</p>
+<p class="pk-q-prompt">Delaying a periodic signal by t₀ multiplies aₖ by</p>
+<ol class="pk-q-opts" type="A"><li>e^(−jkω₀t₀)</li><li>e^(jkω₀t₀)</li><li>t₀</li><li>jkω₀</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>e^(−jkω₀t₀)</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;text&quot;,&quot;answer&quot;:[&quot;8&quot;,&quot;eight&quot;]}">
+<p class="admonition-title">Exercise 6</p>
+<p class="pk-q-prompt">How many distinct DTFS coefficients does a sequence with fundamental period 8 have?</p>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>8 / eight</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;blanks&quot;,&quot;answer&quot;:[[&quot;Parseval&#x27;s&quot;,&quot;Parseval&quot;]]}">
+<p class="admonition-title">Exercise 7</p>
+<p class="pk-q-prompt">The relation equating the average power to the sum of |aₖ|² is called <span class="pk-blank" data-i="0">___</span> relation.</p>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>Parseval's / Parseval</strong></p>
+</details>
+</div>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button type="button" class="md-top md-icon" data-md-component="top" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+Back to top
+</button>
+</main>
+<footer class="md-footer">
+<nav class="md-footer__inner md-grid" aria-label="Footer" >
+<a href="lti-systems-and-convolution.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: 4. LTI Systems and Convolution">
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</div>
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Previous
+</span>
+<div class="md-ellipsis">
+4. LTI Systems and Convolution
+</div>
+</div>
+</a>
+<a href="the-continuous-time-fourier-transform.html" class="md-footer__link md-footer__link--next" aria-label="Next: 6. The Continuous-Time Fourier Transform">
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Next
+</span>
+<div class="md-ellipsis">
+6. The Continuous-Time Fourier Transform
+</div>
+</div>
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+</div>
+</a>
+</nav>
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+The Open Book Project &middot;
+<a href="../../about.html">About this library</a> &middot;
+<a href="../../publish.html">Publish your book</a> &middot;
+© The authors of the books
+</div>
+Made with
+<a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+Material for MkDocs
+</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "navigation.prune", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "toc.follow", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+<script src="../../assets/mathjax.js"></script>
+<script src="../../assets/viz.js"></script>
+<script src="../../assets/remote.js"></script>
+<script src="../../assets/scans.js"></script>
+<script src="../../assets/reader.js"></script>
+<script src="../../assets/app.js"></script>
+<script src="../../assets/slides.js"></script>
+<script src="../../assets/speak.js"></script>
+<script src="../../assets/quiz.js"></script>
+<script>
+    /* offline reading: the service worker at the site root (its scope is the whole site) */
+    if ("serviceWorker" in navigator && window.isSecureContext) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register(new URL("../../sw.js", location.href).href).catch(function () {});
+      });
+    }
+  </script>
+</body>
+</html>

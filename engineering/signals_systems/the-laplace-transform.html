@@ -1,0 +1,1176 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="description" content="The Open Book Project: books on computer science, quantum computing, cyber security, science, the social sciences, university courses and languages, read page by page like an e-book, online or offline.">
+<meta name="author" content="The Open Book Project">
+<link rel="canonical" href="https://open-book-project.github.io/engineering/signals_systems/the-laplace-transform.html">
+<link rel="prev" href="sampling-and-aliasing.html">
+<link rel="next" href="the-z-transform.html">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap"></noscript>
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Open Book">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="application-name" content="Open Book"><script src="../../assets/library-data.js"></script><script>
+    (function () {
+      var X = window.XMLHttpRequest, open, gate = new Promise(function (r) { open = r; });
+      if (!X) return;
+      var open0 = X.prototype.open, send0 = X.prototype.send;
+      X.prototype.open = function (method, url) {
+        this.__pkIndex = /\/search\/search_index\.json(\?|#|$)/.test(String(url));
+        return open0.apply(this, arguments);
+      };
+      X.prototype.send = function () {
+        if (!this.__pkIndex) return send0.apply(this, arguments);
+        var xhr = this, args = arguments;
+        gate.then(function () { send0.apply(xhr, args); });
+      };
+      function wake() { open(); }
+      document.addEventListener("focusin", function (e) { if (e.target && e.target.closest && e.target.closest(".md-search")) wake(); });
+      document.addEventListener("click", function (e) { if (e.target && e.target.closest && e.target.closest('label[for="__search"], .md-search')) wake(); }, true);
+      document.addEventListener("keydown", function (e) {
+        var k = e.key;
+        if ((k === "/" || k === "s" || k === "f" || k === "S" || k === "F") && !(e.target && e.target.closest && e.target.closest("input, textarea, [contenteditable]"))) wake();
+      }, true);
+      if (/[?&]q=/.test(location.search)) wake();
+    })();
+  </script><script>
+    try {
+      if ((window.matchMedia && (matchMedia("(display-mode: standalone)").matches || matchMedia("(display-mode: fullscreen)").matches)) || navigator.standalone === true) {
+        document.documentElement.className += " bjp-standalone";
+      }
+    } catch (e) { /* not an installed app */ }
+    /* the books of a subject or of the whole library as covers or as a list (assets/app.js): the reader's choice */
+    try {
+      var bv = localStorage.getItem("bjp.view");
+      if (bv === "list" || (bv !== "grid" && /\/books\.html$/.test(location.pathname))) document.documentElement.className += " bjp-view-list";
+    } catch (e) { /* no storage: covers */ }
+  </script>
+<script>
+    /* a book opened from its cover on the shelf: the page stays blank, in the cover's colour, until the reader is up */
+    try {
+      var cv = sessionStorage.getItem("bjp.reader.cover");
+      if (cv && sessionStorage.getItem("bjp.reader.open") === "1") {
+        var c = JSON.parse(cv), de = document.documentElement;
+        de.className += " bjp-booting";
+        if (c && /^#[0-9a-f]{3,8}$/i.test(c.bg || "")) de.style.background = c.bg;
+        setTimeout(function () { de.classList.remove("bjp-booting"); de.style.background = ""; }, 3000);
+      }
+    } catch (e) { /* no session storage: the page simply opens as usual */ }
+  </script>
+<title>10. The Laplace Transform - The Open Book Project</title>
+<link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+<link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+<link rel="stylesheet" href="../../assets/extra.css">
+<link rel="stylesheet" href="../../assets/reader.css">
+<link rel="stylesheet" href="../../assets/viz.css">
+<link rel="stylesheet" href="../../assets/app.css">
+<link rel="stylesheet" href="../../assets/theme.css">
+<link rel="stylesheet" href="../../assets/slides.css">
+<link rel="stylesheet" href="../../assets/remote.css">
+<link rel="stylesheet" href="../../assets/scans.css">
+<link rel="stylesheet" href="../../assets/speak.css">
+<link rel="stylesheet" href="../../assets/quiz.css">
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+<input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+<input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a href="#laplace-definition" class="md-skip">
+Skip to content
+</a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav class="md-header__inner md-grid" aria-label="Header">
+<a href="../../index.html" title="The Open Book Project" class="md-header__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+The Open Book Project
+</span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+10. The Laplace Transform
+</span>
+</div>
+</div>
+</div><a href="../../index.html" class="bjp-libbtn" aria-label="Library: all books" title="Library: all books">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V5h4v15M8 20V9h4v11M14 20L12.6 6l3.8-.8 3 14.2M3 20h18"/></svg><span>Library</span>
+</a>
+<a href="../../subjects/index.html" class="pk-catbtn" aria-haspopup="true" aria-expanded="false" title="Browse the books by category">
+<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><circle cx="17" cy="7" r="3.6"/><path d="M7 13.4l3.9 6.8H3.1z"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg><span>Categories</span>
+</a>
+<form class="md-header__option" data-md-component="palette">
+<input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+<label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+</label>
+<input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+<label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+<label class="md-search__icon md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</label>
+<nav class="md-search__options" aria-label="Search">
+<button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+Initializing search
+</div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--primary bjp-nav bjp-nav--book" aria-label="Navigation" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a href="../../index.html" title="The Open Book Project" class="md-nav__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+The Open Book Project
+</label>
+<ul class="md-nav__list" data-md-scrollfix>
+<li class="md-nav__item bjp-nav-all">
+<a href="../../index.html" class="md-nav__link" aria-label="All books: back to the library">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+<span class="md-ellipsis">All books</span>
+</a>
+</li>
+<li class="md-nav__item bjp-nav-book" role="presentation"><span class="bjp-nav-head">Signals and Systems</span></li>
+<li class="md-nav__item">
+<a href="index.html" class="md-nav__link">
+<span class="md-ellipsis">
+Overview and preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="preface.html" class="md-nav__link">
+<span class="md-ellipsis">
+Preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="signals-and-their-classification.html" class="md-nav__link">
+<span class="md-ellipsis">
+1. Signals and Their Classification
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="elementary-signals-and-operations.html" class="md-nav__link">
+<span class="md-ellipsis">
+2. Elementary Signals and Operations on Signals
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="systems-and-their-properties.html" class="md-nav__link">
+<span class="md-ellipsis">
+3. Systems and Their Properties
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="lti-systems-and-convolution.html" class="md-nav__link">
+<span class="md-ellipsis">
+4. LTI Systems and Convolution
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="fourier-series.html" class="md-nav__link">
+<span class="md-ellipsis">
+5. Fourier Series
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="the-continuous-time-fourier-transform.html" class="md-nav__link">
+<span class="md-ellipsis">
+6. The Continuous-Time Fourier Transform
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="the-discrete-time-fourier-transform.html" class="md-nav__link">
+<span class="md-ellipsis">
+7. The Discrete-Time Fourier Transform
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="the-dft-and-the-fft.html" class="md-nav__link">
+<span class="md-ellipsis">
+8. The DFT and the FFT
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="sampling-and-aliasing.html" class="md-nav__link">
+<span class="md-ellipsis">
+9. Sampling and Aliasing
+</span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+10. The Laplace Transform
+</span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a href="the-laplace-transform.html" class="md-nav__link md-nav__link--active">
+<span class="md-ellipsis">
+10. The Laplace Transform
+</span>
+</a>
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#laplace-definition" class="md-nav__link">
+<span class="md-ellipsis">
+10.1 Beyond the Fourier transform
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#roc" class="md-nav__link">
+<span class="md-ellipsis">
+10.2 The region of convergence
+</span>
+</a>
+<nav class="md-nav" aria-label="10.2 The region of convergence">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#poles-and-zeros" class="md-nav__link">
+<span class="md-ellipsis">
+Poles and zeros
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#laplace-tables" class="md-nav__link">
+<span class="md-ellipsis">
+10.3 Transform pairs and properties
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#partial-fractions" class="md-nav__link">
+<span class="md-ellipsis">
+10.4 Inverting by partial fractions
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#transfer-function" class="md-nav__link">
+<span class="md-ellipsis">
+10.5 Transfer functions
+</span>
+</a>
+<nav class="md-nav" aria-label="10.5 Transfer functions">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#causality-and-stability-from-the-roc" class="md-nav__link">
+<span class="md-ellipsis">
+Causality and stability from the ROC
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#systems-described-by-differential-equations" class="md-nav__link">
+<span class="md-ellipsis">
+Systems described by differential equations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#interconnections" class="md-nav__link">
+<span class="md-ellipsis">
+Interconnections
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#unilateral" class="md-nav__link">
+<span class="md-ellipsis">
+10.6 The unilateral transform and initial conditions
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#second-order" class="md-nav__link">
+<span class="md-ellipsis">
+10.7 Second-order systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#108-partial-fractions-and-simulation-in-numpy" class="md-nav__link">
+<span class="md-ellipsis">
+10.8 Partial fractions and simulation in NumPy
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#109-summary" class="md-nav__link">
+<span class="md-ellipsis">
+10.9 Summary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1010-exercises" class="md-nav__link">
+<span class="md-ellipsis">
+10.10 Exercises
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1011-quiz" class="md-nav__link">
+<span class="md-ellipsis">
+10.11 Quiz
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="the-z-transform.html" class="md-nav__link">
+<span class="md-ellipsis">
+11. The z-Transform
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="frequency-response-and-filters.html" class="md-nav__link">
+<span class="md-ellipsis">
+12. Frequency Response and Filters
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="state-space-models.html" class="md-nav__link">
+<span class="md-ellipsis">
+13. State-Space Models
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="applications-audio-communication-and-control.html" class="md-nav__link">
+<span class="md-ellipsis">
+14. Applications: Audio, Communication and Control
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="tables-of-transforms.html" class="md-nav__link">
+<span class="md-ellipsis">
+Tables of Transforms
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="glossary.html" class="md-nav__link">
+<span class="md-ellipsis">
+Glossary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="further-reading.html" class="md-nav__link">
+<span class="md-ellipsis">
+Further Reading
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#laplace-definition" class="md-nav__link">
+<span class="md-ellipsis">
+10.1 Beyond the Fourier transform
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#roc" class="md-nav__link">
+<span class="md-ellipsis">
+10.2 The region of convergence
+</span>
+</a>
+<nav class="md-nav" aria-label="10.2 The region of convergence">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#poles-and-zeros" class="md-nav__link">
+<span class="md-ellipsis">
+Poles and zeros
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#laplace-tables" class="md-nav__link">
+<span class="md-ellipsis">
+10.3 Transform pairs and properties
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#partial-fractions" class="md-nav__link">
+<span class="md-ellipsis">
+10.4 Inverting by partial fractions
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#transfer-function" class="md-nav__link">
+<span class="md-ellipsis">
+10.5 Transfer functions
+</span>
+</a>
+<nav class="md-nav" aria-label="10.5 Transfer functions">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#causality-and-stability-from-the-roc" class="md-nav__link">
+<span class="md-ellipsis">
+Causality and stability from the ROC
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#systems-described-by-differential-equations" class="md-nav__link">
+<span class="md-ellipsis">
+Systems described by differential equations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#interconnections" class="md-nav__link">
+<span class="md-ellipsis">
+Interconnections
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#unilateral" class="md-nav__link">
+<span class="md-ellipsis">
+10.6 The unilateral transform and initial conditions
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#second-order" class="md-nav__link">
+<span class="md-ellipsis">
+10.7 Second-order systems
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#108-partial-fractions-and-simulation-in-numpy" class="md-nav__link">
+<span class="md-ellipsis">
+10.8 Partial fractions and simulation in NumPy
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#109-summary" class="md-nav__link">
+<span class="md-ellipsis">
+10.9 Summary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1010-exercises" class="md-nav__link">
+<span class="md-ellipsis">
+10.10 Exercises
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1011-quiz" class="md-nav__link">
+<span class="md-ellipsis">
+10.11 Quiz
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="chapter-10-the-laplace-transform">Chapter 10: The Laplace Transform<a class="headerlink" href="#chapter-10-the-laplace-transform" title="Permanent link">&para;</a></h1>
+<p><em>Exponentials of every kind, regions of convergence, transfer functions, and differential equations with initial conditions</em></p>
+<div class="admonition note">
+<p class="admonition-title">Learning outcomes</p>
+<p>After this chapter you should be able to:</p>
+<ul>
+<li>define the bilateral Laplace transform, relate it to the Fourier transform, and find the region of convergence (ROC) of a transform;</li>
+<li>draw pole-zero plots and state the properties of the ROC;</li>
+<li>invert rational transforms by partial fractions, including repeated and complex poles, using the ROC to choose each term;</li>
+<li>use the properties of the transform, including the initial and final value theorems;</li>
+<li>find the transfer function of a system, and decide causality and stability from its poles and ROC;</li>
+<li>solve linear differential equations with initial conditions using the unilateral transform;</li>
+<li>describe second-order systems by natural frequency and damping ratio, and predict overshoot.</li>
+</ul>
+</div>
+<h2 id="laplace-definition">10.1 Beyond the Fourier transform<a class="headerlink" href="#laplace-definition" title="Permanent link">&para;</a></h2>
+<p>The Fourier transform analyses signals into pure oscillations <span class="arithmatex">\(e^{j\omega t}\)</span>. It fails for signals that grow, such as <span class="arithmatex">\(e^{t}u(t)\)</span>, and for unstable systems, whose impulse responses grow, because the Fourier integral does not converge. Yet growing signals matter: an engineer must be able to analyse an unstable system in order to stabilise it. The cure is to allow the exponentials of Section 4.8 in full generality, <span class="arithmatex">\(e^{st}\)</span> with complex <span class="arithmatex">\(s = \sigma + j\omega\)</span>.</p>
+<p>The <strong>(bilateral) Laplace transform</strong> of <span class="arithmatex">\(x(t)\)</span> is</p>
+<div class="arithmatex">\[
+X(s) = \int_{-\infty}^{\infty} x(t)\,e^{-st}\,dt, \qquad s = \sigma + j\omega .
+\]</div>
+<p>Writing <span class="arithmatex">\(e^{-st} = e^{-\sigma t}e^{-j\omega t}\)</span> shows what it does:</p>
+<div class="arithmatex">\[
+X(\sigma + j\omega) = \int_{-\infty}^{\infty}\left[x(t)e^{-\sigma t}\right]e^{-j\omega t}\,dt = \mathcal{F}\{x(t)e^{-\sigma t}\}.
+\]</div>
+<p><strong>The Laplace transform is the Fourier transform of <span class="arithmatex">\(x(t)\)</span> multiplied by a real exponential <span class="arithmatex">\(e^{-\sigma t}\)</span>.</strong> A suitable <span class="arithmatex">\(\sigma\)</span> tames a growing signal (for <span class="arithmatex">\(e^{t}u(t)\)</span>, any <span class="arithmatex">\(\sigma &gt; 1\)</span> makes <span class="arithmatex">\(e^{(1-\sigma)t}u(t)\)</span> decay), so the transform exists for many signals that have no Fourier transform. On the imaginary axis <span class="arithmatex">\(\sigma = 0\)</span>, the Laplace transform becomes the Fourier transform: <span class="arithmatex">\(X(s)|_{s = j\omega} = X(j\omega)\)</span>, which explains the notation of Chapter 6.</p>
+<p>The variable <span class="arithmatex">\(s\)</span> lives in the complex <strong>s-plane</strong>, with <span class="arithmatex">\(\sigma\)</span> on the horizontal axis and <span class="arithmatex">\(\omega\)</span> on the vertical axis. The inverse transform is a contour integral in this plane,</p>
+<div class="arithmatex">\[
+x(t) = \frac{1}{2\pi j}\int_{\sigma - j\infty}^{\sigma + j\infty}X(s)\,e^{st}\,ds ,
+\]</div>
+<p>taken along a vertical line inside the region of convergence. In practice we almost never evaluate it: for the rational transforms that arise from circuits and mechanical systems, partial fractions and a table suffice.</p>
+<h2 id="roc">10.2 The region of convergence<a class="headerlink" href="#roc" title="Permanent link">&para;</a></h2>
+<div class="admonition example">
+<p class="admonition-title">Example 10.1 A right-sided exponential</p>
+<p>For <span class="arithmatex">\(x(t) = e^{-at}u(t)\)</span> (with <span class="arithmatex">\(a\)</span> real or complex):</p>
+<div class="arithmatex">\[
+X(s) = \int_0^{\infty}e^{-(s + a)t}\,dt = \left[\frac{-e^{-(s+a)t}}{s + a}\right]_0^{\infty} = \frac{1}{s + a},
+\]</div>
+<p>provided the upper limit vanishes, which needs <span class="arithmatex">\(\mathrm{Re}\{s + a\} &gt; 0\)</span>, that is <span class="arithmatex">\(\mathrm{Re}\{s\} &gt; -\mathrm{Re}\{a\}\)</span>. So <span class="arithmatex">\(e^{-at}u(t) \leftrightarrow \frac{1}{s+a}\)</span> with ROC <span class="arithmatex">\(\mathrm{Re}\{s\} &gt; -a\)</span> (for real <span class="arithmatex">\(a\)</span>). The ROC is the half-plane to the right of the point <span class="arithmatex">\(s = -a\)</span>.</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title">Example 10.2 A left-sided exponential</p>
+<p>For <span class="arithmatex">\(x(t) = -e^{-at}u(-t)\)</span>:</p>
+<div class="arithmatex">\[
+X(s) = -\int_{-\infty}^{0}e^{-(s + a)t}\,dt = -\left[\frac{-e^{-(s+a)t}}{s + a}\right]_{-\infty}^{0} = \frac{1}{s + a},
+\]</div>
+<p>provided the lower limit vanishes, which needs <span class="arithmatex">\(\mathrm{Re}\{s\} &lt; -a\)</span>. The ROC is the half-plane to the left of <span class="arithmatex">\(s = -a\)</span>.</p>
+</div>
+<p>The two examples give <strong>the same algebraic expression</strong> for two different signals. The expression alone does not determine the signal: the <strong>ROC is part of the transform</strong>. Figure 10.1 shows the two regions.</p>
+<figure class="fig fig-diagram">
+<img src="img/laplace-roc.svg" alt="The s-plane with a pole (cross) at s = −a. Left: the ROC of e^(−at)u(t) is the half-plane to the right of the pole. Right: the ROC of −e^(−at)u(−t) is the half-plane to the left of the pole. The two transforms have the same formula, 1/(s + a)." loading="lazy" width="780" height="300">
+<figcaption><strong>Figure 10.1 Regions of convergence.</strong> The s-plane with a pole (cross) at s = −a. Left: the ROC of e^(−at)u(t) is the half-plane to the right of the pole. Right: the ROC of −e^(−at)u(−t) is the half-plane to the left of the pole. The two transforms have the same formula, 1/(s + a).</figcaption>
+</figure>
+<p>The ROC has a simple structure, which follows from the observation that convergence depends only on <span class="arithmatex">\(\sigma = \mathrm{Re}\{s\}\)</span>:</p>
+<ol>
+<li>The ROC consists of <strong>vertical strips</strong> in the s-plane (a strip, a half-plane, or the whole plane).</li>
+<li>For a rational transform, the ROC contains <strong>no poles</strong>, and it is bounded by poles or extends to infinity.</li>
+<li>If <span class="arithmatex">\(x\)</span> is of <strong>finite duration</strong> (and absolutely integrable), the ROC is the <strong>entire s-plane</strong>.</li>
+<li>If <span class="arithmatex">\(x\)</span> is <strong>right-sided</strong>, the ROC is a <strong>right half-plane</strong>: to the right of the rightmost pole.</li>
+<li>If <span class="arithmatex">\(x\)</span> is <strong>left-sided</strong>, the ROC is a <strong>left half-plane</strong>: to the left of the leftmost pole.</li>
+<li>If <span class="arithmatex">\(x\)</span> is <strong>two-sided</strong>, the ROC is a <strong>strip</strong> between two poles, or empty.</li>
+<li>The Fourier transform of <span class="arithmatex">\(x\)</span> exists (as a function) if and only if the ROC includes the <span class="arithmatex">\(j\omega\)</span> axis.</li>
+</ol>
+<div class="admonition example">
+<p class="admonition-title">Example 10.3 A two-sided signal</p>
+<p>Find the transform of <span class="arithmatex">\(x(t) = e^{-2t}u(t) + e^{3t}u(-t)\)</span>.</p>
+<p>The first term gives <span class="arithmatex">\(\frac{1}{s + 2}\)</span> with <span class="arithmatex">\(\mathrm{Re}\{s\} &gt; -2\)</span>. The second is <span class="arithmatex">\(-(-e^{3t}u(-t))\)</span>, so by Example 10.2 with <span class="arithmatex">\(a = -3\)</span> it gives <span class="arithmatex">\(-\frac{1}{s - 3}\)</span> with <span class="arithmatex">\(\mathrm{Re}\{s\} &lt; 3\)</span>. Both must converge, so the ROC is the strip <span class="arithmatex">\(-2 &lt; \mathrm{Re}\{s\} &lt; 3\)</span>, and</p>
+<div class="arithmatex">\[
+X(s) = \frac{1}{s + 2} - \frac{1}{s - 3} = \frac{-5}{(s + 2)(s - 3)}.
+\]</div>
+<p>The strip contains the <span class="arithmatex">\(j\omega\)</span> axis, so this signal (which decays in both directions) has a Fourier transform, <span class="arithmatex">\(X(j\omega)\)</span>.</p>
+</div>
+<h3 id="poles-and-zeros">Poles and zeros<a class="headerlink" href="#poles-and-zeros" title="Permanent link">&para;</a></h3>
+<p>Most transforms in practice are <strong>rational</strong>: <span class="arithmatex">\(X(s) = N(s)/D(s)\)</span>, a ratio of polynomials. The roots of <span class="arithmatex">\(N\)</span> are the <strong>zeros</strong> (where <span class="arithmatex">\(X = 0\)</span>), and the roots of <span class="arithmatex">\(D\)</span> are the <strong>poles</strong> (where <span class="arithmatex">\(X\)</span> is infinite). A <strong>pole-zero plot</strong> marks poles with crosses and zeros with circles. Apart from a constant gain factor, the poles, the zeros and the ROC determine the transform completely.</p>
+<h2 id="laplace-tables">10.3 Transform pairs and properties<a class="headerlink" href="#laplace-tables" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th><span class="arithmatex">\(x(t)\)</span></th>
+<th><span class="arithmatex">\(X(s)\)</span></th>
+<th>ROC</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="arithmatex">\(\delta(t)\)</span></td>
+<td><span class="arithmatex">\(1\)</span></td>
+<td>all <span class="arithmatex">\(s\)</span></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(u(t)\)</span></td>
+<td><span class="arithmatex">\(\dfrac{1}{s}\)</span></td>
+<td><span class="arithmatex">\(\mathrm{Re}\{s\} &gt; 0\)</span></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(-u(-t)\)</span></td>
+<td><span class="arithmatex">\(\dfrac{1}{s}\)</span></td>
+<td><span class="arithmatex">\(\mathrm{Re}\{s\} &lt; 0\)</span></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(t^{n}u(t)/n!\)</span></td>
+<td><span class="arithmatex">\(\dfrac{1}{s^{n+1}}\)</span></td>
+<td><span class="arithmatex">\(\mathrm{Re}\{s\} &gt; 0\)</span></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(e^{-at}u(t)\)</span></td>
+<td><span class="arithmatex">\(\dfrac{1}{s + a}\)</span></td>
+<td><span class="arithmatex">\(\mathrm{Re}\{s\} &gt; -a\)</span></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(-e^{-at}u(-t)\)</span></td>
+<td><span class="arithmatex">\(\dfrac{1}{s + a}\)</span></td>
+<td><span class="arithmatex">\(\mathrm{Re}\{s\} &lt; -a\)</span></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(t^{n}e^{-at}u(t)/n!\)</span></td>
+<td><span class="arithmatex">\(\dfrac{1}{(s + a)^{n+1}}\)</span></td>
+<td><span class="arithmatex">\(\mathrm{Re}\{s\} &gt; -a\)</span></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(\cos(\omega_0 t)\,u(t)\)</span></td>
+<td><span class="arithmatex">\(\dfrac{s}{s^2 + \omega_0^2}\)</span></td>
+<td><span class="arithmatex">\(\mathrm{Re}\{s\} &gt; 0\)</span></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(\sin(\omega_0 t)\,u(t)\)</span></td>
+<td><span class="arithmatex">\(\dfrac{\omega_0}{s^2 + \omega_0^2}\)</span></td>
+<td><span class="arithmatex">\(\mathrm{Re}\{s\} &gt; 0\)</span></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(e^{-at}\cos(\omega_0 t)\,u(t)\)</span></td>
+<td><span class="arithmatex">\(\dfrac{s + a}{(s + a)^2 + \omega_0^2}\)</span></td>
+<td><span class="arithmatex">\(\mathrm{Re}\{s\} &gt; -a\)</span></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(e^{-at}\sin(\omega_0 t)\,u(t)\)</span></td>
+<td><span class="arithmatex">\(\dfrac{\omega_0}{(s + a)^2 + \omega_0^2}\)</span></td>
+<td><span class="arithmatex">\(\mathrm{Re}\{s\} &gt; -a\)</span></td>
+</tr>
+</tbody>
+</table>
+<p><em>Table 10.1. Laplace transform pairs.</em></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Signal</th>
+<th>Transform</th>
+<th>ROC</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Linearity</td>
+<td><span class="arithmatex">\(ax_1 + bx_2\)</span></td>
+<td><span class="arithmatex">\(aX_1(s) + bX_2(s)\)</span></td>
+<td>at least <span class="arithmatex">\(R_1 \cap R_2\)</span></td>
+</tr>
+<tr>
+<td>Time shift</td>
+<td><span class="arithmatex">\(x(t - t_0)\)</span></td>
+<td><span class="arithmatex">\(e^{-st_0}X(s)\)</span></td>
+<td><span class="arithmatex">\(R\)</span></td>
+</tr>
+<tr>
+<td>Shift in <span class="arithmatex">\(s\)</span></td>
+<td><span class="arithmatex">\(e^{s_0t}x(t)\)</span></td>
+<td><span class="arithmatex">\(X(s - s_0)\)</span></td>
+<td><span class="arithmatex">\(R\)</span> shifted by <span class="arithmatex">\(\mathrm{Re}\{s_0\}\)</span></td>
+</tr>
+<tr>
+<td>Time scaling</td>
+<td><span class="arithmatex">\(x(at)\)</span></td>
+<td><span class="arithmatex">\(\frac{1}{\lvert a\rvert}X(s/a)\)</span></td>
+<td><span class="arithmatex">\(aR\)</span></td>
+</tr>
+<tr>
+<td>Convolution</td>
+<td><span class="arithmatex">\(x_1 * x_2\)</span></td>
+<td><span class="arithmatex">\(X_1(s)X_2(s)\)</span></td>
+<td>at least <span class="arithmatex">\(R_1 \cap R_2\)</span></td>
+</tr>
+<tr>
+<td>Differentiation</td>
+<td><span class="arithmatex">\(\dfrac{dx}{dt}\)</span></td>
+<td><span class="arithmatex">\(sX(s)\)</span></td>
+<td>at least <span class="arithmatex">\(R\)</span></td>
+</tr>
+<tr>
+<td>Multiplication by <span class="arithmatex">\(t\)</span></td>
+<td><span class="arithmatex">\(t\,x(t)\)</span></td>
+<td><span class="arithmatex">\(-\dfrac{dX(s)}{ds}\)</span></td>
+<td><span class="arithmatex">\(R\)</span></td>
+</tr>
+<tr>
+<td>Integration</td>
+<td><span class="arithmatex">\(\int_{-\infty}^{t}x(\tau)\,d\tau\)</span></td>
+<td><span class="arithmatex">\(\dfrac{X(s)}{s}\)</span></td>
+<td>at least <span class="arithmatex">\(R \cap \{\mathrm{Re}\{s\} &gt; 0\}\)</span></td>
+</tr>
+</tbody>
+</table>
+<p><em>Table 10.2. Properties of the bilateral Laplace transform.</em></p>
+<p>Two theorems give quick checks for a signal that is zero for <span class="arithmatex">\(t &lt; 0\)</span> and contains no impulse at the origin:</p>
+<ul>
+<li><strong>Initial value theorem:</strong> <span class="arithmatex">\(x(0^+) = \lim_{s\to\infty} sX(s)\)</span>.</li>
+<li><strong>Final value theorem:</strong> <span class="arithmatex">\(\lim_{t\to\infty}x(t) = \lim_{s\to0} sX(s)\)</span>, valid <strong>only if</strong> the limit exists, which requires all poles of <span class="arithmatex">\(sX(s)\)</span> to lie in the open left half-plane.</li>
+</ul>
+<p>For example, <span class="arithmatex">\(X(s) = \frac{s + 4}{s(s + 2)}\)</span> gives <span class="arithmatex">\(x(0^+) = \lim\frac{s + 4}{s + 2} = 1\)</span> and <span class="arithmatex">\(x(\infty) = \frac{4}{2} = 2\)</span>. Applying the final value theorem to <span class="arithmatex">\(\frac{1}{s - 1}\)</span> would give 0, but <span class="arithmatex">\(e^{t}u(t)\)</span> grows: the pole at <span class="arithmatex">\(s = 1\)</span> is in the right half-plane, so the theorem does not apply.</p>
+<h2 id="partial-fractions">10.4 Inverting by partial fractions<a class="headerlink" href="#partial-fractions" title="Permanent link">&para;</a></h2>
+<p>To invert a rational <span class="arithmatex">\(X(s)\)</span>:</p>
+<ol>
+<li>If the degree of the numerator is not less than that of the denominator, divide first; the quotient gives impulses and their derivatives.</li>
+<li>Factor the denominator and expand <span class="arithmatex">\(X(s)\)</span> into a sum of simple terms <span class="arithmatex">\(\frac{A}{s - p}\)</span> (and <span class="arithmatex">\(\frac{A}{(s - p)^m}\)</span> for repeated poles).</li>
+<li>Invert each term from the table, choosing the right-sided or left-sided version according to whether the ROC lies to the right or left of that pole.</li>
+</ol>
+<p>For a simple pole <span class="arithmatex">\(p_i\)</span> the coefficient is the <strong>residue</strong> <span class="arithmatex">\(A_i = (s - p_i)X(s)\big|_{s = p_i}\)</span> (the "cover-up" rule).</p>
+<div class="admonition example">
+<p class="admonition-title">Example 10.4 Distinct real poles</p>
+<p>Invert <span class="arithmatex">\(X(s) = \dfrac{s + 3}{(s + 1)(s + 2)}\)</span> with ROC <span class="arithmatex">\(\mathrm{Re}\{s\} &gt; -1\)</span>.</p>
+<p><span class="arithmatex">\(A_1 = \dfrac{s + 3}{s + 2}\Big|_{s=-1} = 2\)</span>, <span class="arithmatex">\(A_2 = \dfrac{s + 3}{s + 1}\Big|_{s=-2} = -1\)</span>. So <span class="arithmatex">\(X(s) = \dfrac{2}{s + 1} - \dfrac{1}{s + 2}\)</span>.</p>
+<p>The ROC lies to the right of both poles, so both terms are right-sided: <span class="arithmatex">\(x(t) = (2e^{-t} - e^{-2t})u(t)\)</span>.</p>
+<p>If instead the ROC were <span class="arithmatex">\(-2 &lt; \mathrm{Re}\{s\} &lt; -1\)</span>, the pole at <span class="arithmatex">\(-1\)</span> would be to the right of the ROC (left-sided term) and the pole at <span class="arithmatex">\(-2\)</span> to its left (right-sided term): <span class="arithmatex">\(x(t) = -2e^{-t}u(-t) - e^{-2t}u(t)\)</span>.</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title">Example 10.5 A repeated pole</p>
+<p>Invert <span class="arithmatex">\(X(s) = \dfrac{1}{s(s + 1)^2}\)</span>, <span class="arithmatex">\(\mathrm{Re}\{s\} &gt; 0\)</span>.</p>
+<p>Write <span class="arithmatex">\(X = \dfrac{A}{s} + \dfrac{B}{s + 1} + \dfrac{C}{(s + 1)^2}\)</span>. Cover-up gives <span class="arithmatex">\(A = \dfrac{1}{(s+1)^2}\Big|_{0} = 1\)</span> and <span class="arithmatex">\(C = \dfrac{1}{s}\Big|_{-1} = -1\)</span>. For <span class="arithmatex">\(B\)</span>, differentiate <span class="arithmatex">\((s+1)^2X = 1/s\)</span> and evaluate at <span class="arithmatex">\(-1\)</span>: <span class="arithmatex">\(B = -\dfrac{1}{s^2}\Big|_{-1} = -1\)</span>. Hence <span class="arithmatex">\(x(t) = (1 - e^{-t} - te^{-t})u(t)\)</span>. Check with the initial value theorem: <span class="arithmatex">\(sX(s) \to 0\)</span>, and indeed <span class="arithmatex">\(x(0^+) = 1 - 1 - 0 = 0\)</span>.</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title">Example 10.6 Complex poles</p>
+<p>Invert <span class="arithmatex">\(X(s) = \dfrac{s + 1}{s^2 + 2s + 5}\)</span>, <span class="arithmatex">\(\mathrm{Re}\{s\} &gt; -1\)</span>.</p>
+<p>Complete the square: <span class="arithmatex">\(s^2 + 2s + 5 = (s + 1)^2 + 4\)</span>. Then <span class="arithmatex">\(X(s) = \dfrac{s + 1}{(s + 1)^2 + 2^2}\)</span>, which is in Table 10.1: <span class="arithmatex">\(x(t) = e^{-t}\cos(2t)\,u(t)\)</span>. The poles are at <span class="arithmatex">\(-1 \pm 2j\)</span>; their real part sets the decay rate and their imaginary part the frequency of oscillation. A numerator such as <span class="arithmatex">\(s + 3 = (s + 1) + 2\)</span> would add <span class="arithmatex">\(e^{-t}\sin(2t)u(t)\)</span>.</p>
+</div>
+<h2 id="transfer-function">10.5 Transfer functions<a class="headerlink" href="#transfer-function" title="Permanent link">&para;</a></h2>
+<p>For an LTI system, convolution becomes multiplication: <span class="arithmatex">\(Y(s) = H(s)X(s)\)</span>, where the <strong>transfer function</strong> (or <strong>system function</strong>) <span class="arithmatex">\(H(s)\)</span> is the Laplace transform of the impulse response. It is the eigenvalue of Section 4.8 for <span class="arithmatex">\(e^{st}\)</span>, and on the <span class="arithmatex">\(j\omega\)</span> axis it is the frequency response.</p>
+<h3 id="causality-and-stability-from-the-roc">Causality and stability from the ROC<a class="headerlink" href="#causality-and-stability-from-the-roc" title="Permanent link">&para;</a></h3>
+<ul>
+<li>A system is <strong>causal</strong> if <span class="arithmatex">\(h(t) = 0\)</span> for <span class="arithmatex">\(t &lt; 0\)</span>. Then <span class="arithmatex">\(h\)</span> is right-sided, and the ROC of <span class="arithmatex">\(H(s)\)</span> is a right half-plane. For a rational <span class="arithmatex">\(H(s)\)</span>, causality means the ROC lies to the right of the rightmost pole.</li>
+<li>A system is <strong>BIBO stable</strong> if <span class="arithmatex">\(\int|h(t)|dt &lt; \infty\)</span>, which holds if and only if the ROC includes the <span class="arithmatex">\(j\omega\)</span> axis.</li>
+<li>Hence a <strong>causal system with rational <span class="arithmatex">\(H(s)\)</span> is stable if and only if all its poles lie in the open left half-plane</strong> (<span class="arithmatex">\(\mathrm{Re}\{p\} &lt; 0\)</span>).</li>
+</ul>
+<p>This last statement is the single most used fact in control engineering. Each pole <span class="arithmatex">\(p\)</span> contributes a term <span class="arithmatex">\(e^{pt}u(t)\)</span> to the impulse response, which decays if <span class="arithmatex">\(\mathrm{Re}\{p\} &lt; 0\)</span> and grows if <span class="arithmatex">\(\mathrm{Re}\{p\} &gt; 0\)</span>; a pair of poles on the <span class="arithmatex">\(j\omega\)</span> axis gives an oscillation that never dies out, which is not BIBO stable either (a sinusoidal input at that frequency produces an output that grows like <span class="arithmatex">\(t\)</span>).</p>
+<h3 id="systems-described-by-differential-equations">Systems described by differential equations<a class="headerlink" href="#systems-described-by-differential-equations" title="Permanent link">&para;</a></h3>
+<p>Applying the differentiation property to <span class="arithmatex">\(\sum_k a_k\frac{d^ky}{dt^k} = \sum_k b_k\frac{d^kx}{dt^k}\)</span> gives</p>
+<div class="arithmatex">\[
+H(s) = \frac{\sum_{k=0}^{M}b_ks^k}{\sum_{k=0}^{N}a_ks^k}.
+\]</div>
+<p>The equation fixes the poles and zeros but not the ROC; the condition of initial rest (causality) chooses the right half-plane.</p>
+<h3 id="interconnections">Interconnections<a class="headerlink" href="#interconnections" title="Permanent link">&para;</a></h3>
+<p>Transfer functions combine by algebra: a <strong>series</strong> connection multiplies them, a <strong>parallel</strong> connection adds them, and a <strong>feedback</strong> connection with forward path <span class="arithmatex">\(G(s)\)</span> and feedback path <span class="arithmatex">\(F(s)\)</span> (subtracted at the input, as in Figure 3.1) gives</p>
+<div class="arithmatex">\[
+\frac{Y(s)}{X(s)} = \frac{G(s)}{1 + G(s)F(s)} .
+\]</div>
+<p><em>Proof:</em> <span class="arithmatex">\(Y = G(X - FY)\)</span>, so <span class="arithmatex">\(Y(1 + GF) = GX\)</span>.</p>
+<div class="admonition example">
+<p class="admonition-title">Example 10.7 Feedback moves poles</p>
+<p>A motor with transfer function <span class="arithmatex">\(G(s) = \dfrac{1}{s(s + 2)}\)</span> has a pole at the origin, so on its own it is not stable (a constant input makes its position ramp away). Place it in a unity-feedback loop (<span class="arithmatex">\(F = 1\)</span>) with an amplifier of gain <span class="arithmatex">\(K\)</span> in the forward path. The closed-loop transfer function is</p>
+<div class="arithmatex">\[
+H(s) = \frac{K/(s(s+2))}{1 + K/(s(s+2))} = \frac{K}{s^2 + 2s + K}.
+\]</div>
+<p>For every <span class="arithmatex">\(K &gt; 0\)</span> both poles are in the left half-plane, so the closed loop is stable. For <span class="arithmatex">\(K = 5\)</span> the poles are at <span class="arithmatex">\(-1 \pm 2j\)</span>. Feedback has moved the poles; choosing where to put them is the business of control design (Chapter 14).</p>
+</div>
+<h2 id="unilateral">10.6 The unilateral transform and initial conditions<a class="headerlink" href="#unilateral" title="Permanent link">&para;</a></h2>
+<p>Circuits and machines are usually switched on at <span class="arithmatex">\(t = 0\)</span> with some energy already stored: a charged capacitor, a moving mass. For such problems we use the <strong>unilateral Laplace transform</strong></p>
+<div class="arithmatex">\[
+\mathcal{X}(s) = \int_{0^-}^{\infty}x(t)\,e^{-st}\,dt ,
+\]</div>
+<p>which ignores <span class="arithmatex">\(t &lt; 0\)</span> (the lower limit <span class="arithmatex">\(0^-\)</span> includes any impulse at the origin). For signals that are zero for <span class="arithmatex">\(t &lt; 0\)</span> it equals the bilateral transform, and its ROC is always a right half-plane, so it is seldom stated. Its great advantage is the differentiation property, which now carries the initial conditions:</p>
+<div class="arithmatex">\[
+\frac{dx}{dt} \;\longleftrightarrow\; s\mathcal{X}(s) - x(0^-), \qquad
+\frac{d^2x}{dt^2} \;\longleftrightarrow\; s^2\mathcal{X}(s) - s\,x(0^-) - x'(0^-).
+\]</div>
+<div class="admonition example">
+<p class="admonition-title">Example 10.8 A first-order equation with an initial condition</p>
+<p>Solve <span class="arithmatex">\(\dfrac{dy}{dt} + 2y = 4u(t)\)</span> with <span class="arithmatex">\(y(0^-) = 1\)</span>.</p>
+<p>Transform: <span class="arithmatex">\(s\mathcal{Y} - 1 + 2\mathcal{Y} = \dfrac{4}{s}\)</span>. Solve: <span class="arithmatex">\(\mathcal{Y}(s) = \dfrac{1}{s + 2} + \dfrac{4}{s(s+2)} = \dfrac{s + 4}{s(s + 2)} = \dfrac{2}{s} - \dfrac{1}{s + 2}\)</span>.</p>
+<p>So <span class="arithmatex">\(y(t) = 2 - e^{-2t}\)</span> for <span class="arithmatex">\(t \ge 0\)</span>. It starts at 1, as required, and settles at 2, as the final value theorem predicts. The first term of <span class="arithmatex">\(\mathcal{Y}\)</span> before combining, <span class="arithmatex">\(\frac{1}{s+2}\)</span>, is the zero-input response <span class="arithmatex">\(e^{-2t}\)</span>; the second, <span class="arithmatex">\(\frac{4}{s(s+2)}\)</span>, is the zero-state response <span class="arithmatex">\(2(1 - e^{-2t})\)</span> (Section 3.8).</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title">Example 10.9 A second-order step response</p>
+<p>Find the step response of <span class="arithmatex">\(y'' + 3y' + 2y = x(t)\)</span> from rest.</p>
+<p><span class="arithmatex">\((s^2 + 3s + 2)\mathcal{Y} = \frac{1}{s}\)</span>, so <span class="arithmatex">\(\mathcal{Y} = \dfrac{1}{s(s + 1)(s + 2)} = \dfrac{1/2}{s} - \dfrac{1}{s + 1} + \dfrac{1/2}{s + 2}\)</span>, giving <span class="arithmatex">\(y(t) = \frac12 - e^{-t} + \frac12e^{-2t}\)</span> for <span class="arithmatex">\(t \ge 0\)</span>.</p>
+</div>
+<h2 id="second-order">10.7 Second-order systems<a class="headerlink" href="#second-order" title="Permanent link">&para;</a></h2>
+<p>Many physical systems (a mass on a spring with damping, an RLC circuit, a motor under feedback) are well described by the standard second-order transfer function</p>
+<div class="arithmatex">\[
+H(s) = \frac{\omega_n^2}{s^2 + 2\zeta\omega_n s + \omega_n^2},
+\]</div>
+<p>where <span class="arithmatex">\(\omega_n &gt; 0\)</span> is the <strong>natural frequency</strong> and <span class="arithmatex">\(\zeta \ge 0\)</span> the <strong>damping ratio</strong>. The DC gain is <span class="arithmatex">\(H(0) = 1\)</span>. The poles are</p>
+<div class="arithmatex">\[
+s = -\zeta\omega_n \pm \omega_n\sqrt{\zeta^2 - 1}.
+\]</div>
+<ul>
+<li><strong>Underdamped</strong>, <span class="arithmatex">\(0 &lt; \zeta &lt; 1\)</span>: complex poles <span class="arithmatex">\(-\zeta\omega_n \pm j\omega_d\)</span> with <span class="arithmatex">\(\omega_d = \omega_n\sqrt{1 - \zeta^2}\)</span>. They lie on a circle of radius <span class="arithmatex">\(\omega_n\)</span>. The step response overshoots and rings at <span class="arithmatex">\(\omega_d\)</span>.</li>
+<li><strong>Critically damped</strong>, <span class="arithmatex">\(\zeta = 1\)</span>: a double real pole at <span class="arithmatex">\(-\omega_n\)</span>; the fastest response without overshoot.</li>
+<li><strong>Overdamped</strong>, <span class="arithmatex">\(\zeta &gt; 1\)</span>: two real poles; a sluggish response without overshoot, dominated by the pole nearer the origin.</li>
+<li><strong>Undamped</strong>, <span class="arithmatex">\(\zeta = 0\)</span>: poles on the <span class="arithmatex">\(j\omega\)</span> axis; a sustained oscillation.</li>
+</ul>
+<figure class="fig fig-diagram">
+<img src="img/second-order.svg" alt="Left: the poles of the standard second-order system with ω_n = 1 for ζ = 0.2 and 0.5 (on the unit circle), ζ = 1 (a double pole at −1) and ζ = 2 (two real poles). Right: the corresponding unit-step responses. Smaller ζ gives more overshoot and ringing; ζ = 2 is slow." loading="lazy" width="800" height="330">
+<figcaption><strong>Figure 10.2 Second-order systems.</strong> Left: the poles of the standard second-order system with ω_n = 1 for ζ = 0.2 and 0.5 (on the unit circle), ζ = 1 (a double pole at −1) and ζ = 2 (two real poles). Right: the corresponding unit-step responses. Smaller ζ gives more overshoot and ringing; ζ = 2 is slow.</figcaption>
+</figure>
+<p>For the underdamped case, the step response is <span class="arithmatex">\(s(t) = 1 - e^{-\zeta\omega_nt}\left(\cos\omega_dt + \frac{\zeta}{\sqrt{1-\zeta^2}}\sin\omega_dt\right)\)</span>, and two numbers summarise it:</p>
+<div class="arithmatex">\[
+\text{peak time } t_p = \frac{\pi}{\omega_d}, \qquad \text{percentage overshoot} = 100\,e^{-\pi\zeta/\sqrt{1 - \zeta^2}}\ \%.
+\]</div>
+<p>The overshoot depends only on <span class="arithmatex">\(\zeta\)</span>: about 53% for <span class="arithmatex">\(\zeta = 0.2\)</span>, 16% for <span class="arithmatex">\(\zeta = 0.5\)</span>, 4.3% for <span class="arithmatex">\(\zeta = 0.707\)</span>. The closed loop of Example 10.7 with <span class="arithmatex">\(K = 5\)</span> has <span class="arithmatex">\(\omega_n = \sqrt5\)</span> and <span class="arithmatex">\(\zeta = 1/\sqrt5 = 0.447\)</span>, so it should overshoot by about 21%, peaking at <span class="arithmatex">\(t_p = \pi/2\)</span> s. The program in the next section confirms both numbers by simulation.</p>
+<h2 id="108-partial-fractions-and-simulation-in-numpy">10.8 Partial fractions and simulation in NumPy<a class="headerlink" href="#108-partial-fractions-and-simulation-in-numpy" title="Permanent link">&para;</a></h2>
+<p>NumPy finds polynomial roots, which is all that is needed for partial fractions with distinct poles: the residue at a simple pole <span class="arithmatex">\(p\)</span> of <span class="arithmatex">\(N(s)/D(s)\)</span> is <span class="arithmatex">\(N(p)/D'(p)\)</span>. The program below reproduces Examples 10.4 and 10.9, and then simulates the closed loop of Example 10.7 with a fourth-order Runge-Kutta method to check the overshoot formula.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">residues</span><span class="p">(</span><span class="n">num</span><span class="p">,</span> <span class="n">den</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Partial-fraction residues of num(s)/den(s) for distinct poles (deg num &lt; deg den)."""</span>
+    <span class="n">poles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">roots</span><span class="p">(</span><span class="n">den</span><span class="p">)</span>
+    <span class="n">dden</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">polyder</span><span class="p">(</span><span class="n">den</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">[(</span><span class="n">p</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">polyval</span><span class="p">(</span><span class="n">num</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">polyval</span><span class="p">(</span><span class="n">dden</span><span class="p">,</span> <span class="n">p</span><span class="p">))</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">poles</span><span class="p">]</span>
+
+<span class="c1"># X(s) = (s + 3) / ((s + 1)(s + 2))</span>
+<span class="k">for</span> <span class="n">p</span><span class="p">,</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">residues</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">polymul</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"pole </span><span class="si">{</span><span class="n">p</span><span class="o">.</span><span class="n">real</span><span class="si">:</span><span class="s2">+.0f</span><span class="si">}</span><span class="s2">: residue </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">real</span><span class="si">:</span><span class="s2">+.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+<span class="c1"># Y(s) = 1 / (s (s + 1)(s + 2)), the step response of y'' + 3y' + 2y = x</span>
+<span class="n">den</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">polymul</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">polymul</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]))</span>
+<span class="nb">print</span><span class="p">([</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">p</span><span class="o">.</span><span class="n">real</span><span class="si">:</span><span class="s2">+.0f</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">real</span><span class="si">:</span><span class="s2">+.3f</span><span class="si">}</span><span class="s2">"</span> <span class="k">for</span> <span class="n">p</span><span class="p">,</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">residues</span><span class="p">([</span><span class="mi">1</span><span class="p">],</span> <span class="n">den</span><span class="p">)])</span>
+
+<span class="c1"># Closed loop K / (s^2 + 2s + K) with K = 5: poles, damping, and step-response overshoot</span>
+<span class="n">K</span> <span class="o">=</span> <span class="mf">5.0</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"closed-loop poles:"</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">roots</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">K</span><span class="p">]))</span>
+<span class="n">wn</span><span class="p">,</span> <span class="n">zeta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">K</span><span class="p">),</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">K</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"wn = </span><span class="si">{</span><span class="n">wn</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> rad/s, zeta = </span><span class="si">{</span><span class="n">zeta</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, predicted overshoot = </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">zeta</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">zeta</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+<span class="c1"># simulate y'' + 2y' + K y = K u(t) with a fourth-order Runge-Kutta method</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">f</span><span class="p">(</span><span class="n">state</span><span class="p">):</span>
+    <span class="n">y</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">state</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">v</span><span class="p">,</span> <span class="n">K</span> <span class="o">*</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">v</span> <span class="o">-</span> <span class="n">K</span> <span class="o">*</span> <span class="n">y</span><span class="p">])</span>
+<span class="n">h</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">ys</span> <span class="o">=</span> <span class="mf">1e-3</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]),</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">8000</span><span class="p">):</span>
+    <span class="n">k1</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">state</span><span class="p">);</span> <span class="n">k2</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">state</span> <span class="o">+</span> <span class="n">h</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">k1</span><span class="p">);</span> <span class="n">k3</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">state</span> <span class="o">+</span> <span class="n">h</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">k2</span><span class="p">);</span> <span class="n">k4</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">state</span> <span class="o">+</span> <span class="n">h</span> <span class="o">*</span> <span class="n">k3</span><span class="p">)</span>
+    <span class="n">state</span> <span class="o">=</span> <span class="n">state</span> <span class="o">+</span> <span class="n">h</span> <span class="o">/</span> <span class="mi">6</span> <span class="o">*</span> <span class="p">(</span><span class="n">k1</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">k2</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">k3</span> <span class="o">+</span> <span class="n">k4</span><span class="p">)</span>
+    <span class="n">ys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">ys</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ys</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"simulated peak = </span><span class="si">{</span><span class="n">ys</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> at t = </span><span class="si">{</span><span class="p">(</span><span class="n">ys</span><span class="o">.</span><span class="n">argmax</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">h</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> s, final value = </span><span class="si">{</span><span class="n">ys</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"predicted peak time pi / (wn sqrt(1 - zeta^2)) = </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="n">wn</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">zeta</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> s"</span><span class="p">)</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>pole -2: residue -1.000
+pole -1: residue +2.000
+['-2: +0.500', '-1: -1.000', '+0: +0.500']
+closed-loop poles: [-1.+2.j -1.-2.j]
+wn = 2.236 rad/s, zeta = 0.447, predicted overshoot = 0.208
+simulated peak = 1.208 at t = 1.571 s, final value = 1.000
+predicted peak time pi / (wn sqrt(1 - zeta^2)) = 1.571 s
+</code></pre></div>
+<p>The residues match the hand calculations, and the simulated peak of 1.208 at 1.571 s agrees with the overshoot of 20.8% and the peak time <span class="arithmatex">\(\pi/2\)</span> predicted from <span class="arithmatex">\(\zeta\)</span> and <span class="arithmatex">\(\omega_n\)</span>. (SciPy's <code>scipy.signal.residue</code> and <code>scipy.signal.step</code> do these jobs in one call, including repeated poles.)</p>
+<h2 id="109-summary">10.9 Summary<a class="headerlink" href="#109-summary" title="Permanent link">&para;</a></h2>
+<div class="admonition abstract">
+<p class="admonition-title">Summary</p>
+<ul>
+<li><span class="arithmatex">\(X(s) = \int x(t)e^{-st}dt\)</span> is the Fourier transform of <span class="arithmatex">\(x(t)e^{-\sigma t}\)</span>; on the <span class="arithmatex">\(j\omega\)</span> axis it is the Fourier transform.</li>
+<li>The <strong>ROC</strong> is part of the transform: <span class="arithmatex">\(e^{-at}u(t)\)</span> and <span class="arithmatex">\(-e^{-at}u(-t)\)</span> share the formula <span class="arithmatex">\(\frac{1}{s+a}\)</span>. ROCs are vertical strips bounded by poles: right half-planes for right-sided signals, left half-planes for left-sided, strips for two-sided.</li>
+<li>Invert rational transforms by partial fractions; the ROC decides whether each pole gives a right-sided or left-sided term.</li>
+<li>Convolution becomes multiplication, differentiation becomes multiplication by <span class="arithmatex">\(s\)</span>, a delay becomes <span class="arithmatex">\(e^{-st_0}\)</span>. Initial and final value theorems check answers (the latter only for stable <span class="arithmatex">\(sX(s)\)</span>).</li>
+<li><span class="arithmatex">\(H(s)\)</span> is causal if its ROC is right of the rightmost pole, and stable if the ROC contains the <span class="arithmatex">\(j\omega\)</span> axis. <strong>Causal and stable</strong> means all poles in the open left half-plane. Feedback gives <span class="arithmatex">\(G/(1 + GF)\)</span> and moves poles.</li>
+<li>The unilateral transform brings initial conditions into <span class="arithmatex">\(sX(s) - x(0^-)\)</span>, solving differential equations by algebra.</li>
+<li>Second-order systems are characterised by <span class="arithmatex">\(\omega_n\)</span> and <span class="arithmatex">\(\zeta\)</span>; overshoot is <span class="arithmatex">\(e^{-\pi\zeta/\sqrt{1-\zeta^2}}\)</span>.</li>
+</ul>
+</div>
+<h2 id="1010-exercises">10.10 Exercises<a class="headerlink" href="#1010-exercises" title="Permanent link">&para;</a></h2>
+<div class="admonition example">
+<p class="admonition-title">Exercise 10.1</p>
+<p>Find the Laplace transform and ROC of <span class="arithmatex">\(x(t) = e^{-3t}u(t) - e^{-t}u(t)\)</span>.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p><span class="arithmatex">\(\dfrac{1}{s + 3} - \dfrac{1}{s + 1} = \dfrac{-2}{(s + 1)(s + 3)}\)</span>, ROC <span class="arithmatex">\(\mathrm{Re}\{s\} &gt; -1\)</span> (to the right of both poles).</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 10.2</p>
+<p>Find the inverse transform of <span class="arithmatex">\(X(s) = \dfrac{2s + 5}{s^2 + 5s + 6}\)</span> with ROC <span class="arithmatex">\(\mathrm{Re}\{s\} &gt; -2\)</span>.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>Poles at <span class="arithmatex">\(-2\)</span> and <span class="arithmatex">\(-3\)</span>. Residues: at <span class="arithmatex">\(-2\)</span>, <span class="arithmatex">\(\frac{1}{1} = 1\)</span>; at <span class="arithmatex">\(-3\)</span>, <span class="arithmatex">\(\frac{-1}{-1} = 1\)</span>. So <span class="arithmatex">\(x(t) = (e^{-2t} + e^{-3t})u(t)\)</span>.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 10.3</p>
+<p>The transform <span class="arithmatex">\(X(s) = \dfrac{1}{(s + 1)(s - 2)}\)</span> has three possible ROCs. List them and say which gives a signal with a Fourier transform.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p><span class="arithmatex">\(\mathrm{Re}\{s\} &gt; 2\)</span> (right-sided), <span class="arithmatex">\(\mathrm{Re}\{s\} &lt; -1\)</span> (left-sided), and <span class="arithmatex">\(-1 &lt; \mathrm{Re}\{s\} &lt; 2\)</span> (two-sided). Only the strip contains the <span class="arithmatex">\(j\omega\)</span> axis, so only the two-sided signal has a Fourier transform.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 10.4</p>
+<p>Use the initial and final value theorems on <span class="arithmatex">\(X(s) = \dfrac{10(s + 1)}{s(s + 5)}\)</span>.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p><span class="arithmatex">\(x(0^+) = \lim_{s\to\infty}\frac{10(s+1)}{s+5} = 10\)</span>. <span class="arithmatex">\(x(\infty) = \lim_{s\to0}\frac{10(s+1)}{s+5} = 2\)</span> (valid: the only pole of <span class="arithmatex">\(sX\)</span> is at <span class="arithmatex">\(-5\)</span>).</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 10.5</p>
+<p>A causal system has <span class="arithmatex">\(H(s) = \dfrac{s - 1}{(s + 2)(s^2 + 4)}\)</span>. Is it stable?</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>No. The poles at <span class="arithmatex">\(\pm 2j\)</span> lie on the <span class="arithmatex">\(j\omega\)</span> axis, so the ROC <span class="arithmatex">\(\mathrm{Re}\{s\} &gt; 0\)</span> does not include the axis. (The zero in the right half-plane does not affect stability.)</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 10.6</p>
+<p>Find the transfer function of <span class="arithmatex">\(y'' + 4y' + 3y = 2x' + x\)</span> and its poles and zeros.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p><span class="arithmatex">\(H(s) = \dfrac{2s + 1}{s^2 + 4s + 3} = \dfrac{2s + 1}{(s + 1)(s + 3)}\)</span>: zero at <span class="arithmatex">\(-\frac12\)</span>, poles at <span class="arithmatex">\(-1\)</span> and <span class="arithmatex">\(-3\)</span>.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 10.7</p>
+<p>Solve <span class="arithmatex">\(y' + y = 0\)</span> with <span class="arithmatex">\(y(0^-) = 3\)</span> using the unilateral transform.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p><span class="arithmatex">\(s\mathcal{Y} - 3 + \mathcal{Y} = 0\)</span>, so <span class="arithmatex">\(\mathcal{Y} = \frac{3}{s+1}\)</span> and <span class="arithmatex">\(y(t) = 3e^{-t}\)</span> for <span class="arithmatex">\(t \ge 0\)</span>.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 10.8</p>
+<p>A unity-feedback loop has forward path <span class="arithmatex">\(G(s) = \dfrac{K}{s + 1}\)</span>. Find the closed-loop pole and the value of <span class="arithmatex">\(K\)</span> that places it at <span class="arithmatex">\(s = -10\)</span>.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p><span class="arithmatex">\(H = \frac{K}{s + 1 + K}\)</span>, pole at <span class="arithmatex">\(-(1 + K)\)</span>. <span class="arithmatex">\(K = 9\)</span> places it at <span class="arithmatex">\(-10\)</span>: feedback has made the system ten times faster.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 10.9</p>
+<p>A system <span class="arithmatex">\(H(s) = \dfrac{25}{s^2 + 6s + 25}\)</span> is driven by a unit step. Find <span class="arithmatex">\(\omega_n\)</span>, <span class="arithmatex">\(\zeta\)</span>, the percentage overshoot and the peak time.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p><span class="arithmatex">\(\omega_n = 5\)</span>, <span class="arithmatex">\(2\zeta\omega_n = 6\)</span> so <span class="arithmatex">\(\zeta = 0.6\)</span>. <span class="arithmatex">\(\omega_d = 5\sqrt{0.64} = 4\)</span>. Overshoot <span class="arithmatex">\(= 100e^{-0.6\pi/0.8} = 100e^{-2.356} \approx 9.5\%\)</span>. Peak time <span class="arithmatex">\(= \pi/4 \approx 0.785\)</span> s.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 10.10</p>
+<p>Find the transform of <span class="arithmatex">\(x(t) = \delta(t - 2) + u(t - 1)\)</span>.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p><span class="arithmatex">\(e^{-2s} + \dfrac{e^{-s}}{s}\)</span>, ROC <span class="arithmatex">\(\mathrm{Re}\{s\} &gt; 0\)</span>.</p>
+</details>
+<h2 id="1011-quiz">10.11 Quiz<a class="headerlink" href="#1011-quiz" title="Permanent link">&para;</a></h2>
+<div class="pk-quiz" data-quiz="d22da3d876e5">
+<p class="pk-quiz-title">Check your understanding of Chapter 10</p>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;the region of convergence&quot;,&quot;the zeros&quot;,&quot;the gain&quot;,&quot;nothing: they are the same signal&quot;],&quot;answer&quot;:&quot;the region of convergence&quot;}">
+<p class="admonition-title">Exercise 1</p>
+<p class="pk-q-prompt">e^(−2t)u(t) and −e^(−2t)u(−t) have the same Laplace transform formula. What distinguishes them?</p>
+<ol class="pk-q-opts" type="A"><li>the region of convergence</li><li>the zeros</li><li>the gain</li><li>nothing: they are the same signal</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>the region of convergence</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;all poles have negative real parts&quot;,&quot;all zeros have negative real parts&quot;,&quot;it has no zeros&quot;,&quot;its DC gain is finite&quot;],&quot;answer&quot;:&quot;all poles have negative real parts&quot;}">
+<p class="admonition-title">Exercise 2</p>
+<p class="pk-q-prompt">A causal LTI system with a rational transfer function is stable if and only if</p>
+<ol class="pk-q-opts" type="A"><li>all poles have negative real parts</li><li>all zeros have negative real parts</li><li>it has no zeros</li><li>its DC gain is finite</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>all poles have negative real parts</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;text&quot;,&quot;answer&quot;:[&quot;2&quot;]}">
+<p class="admonition-title">Exercise 3</p>
+<p class="pk-q-prompt">Use the final value theorem: what is the final value of x(t) if X(s) = 6/(s(s + 3))?</p>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>2</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;a right half-plane&quot;,&quot;a left half-plane&quot;,&quot;a strip&quot;,&quot;the jω axis only&quot;],&quot;answer&quot;:&quot;a right half-plane&quot;}">
+<p class="admonition-title">Exercise 4</p>
+<p class="pk-q-prompt">The ROC of a right-sided signal is</p>
+<ol class="pk-q-opts" type="A"><li>a right half-plane</li><li>a left half-plane</li><li>a strip</li><li>the jω axis only</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>a right half-plane</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;G/(1 + GF)&quot;,&quot;G/(1 − GF)&quot;,&quot;GF&quot;,&quot;G + F&quot;],&quot;answer&quot;:&quot;G/(1 + GF)&quot;}">
+<p class="admonition-title">Exercise 5</p>
+<p class="pk-q-prompt">The closed-loop transfer function of a negative-feedback loop with forward path G and feedback path F is</p>
+<ol class="pk-q-opts" type="A"><li>G/(1 + GF)</li><li>G/(1 − GF)</li><li>GF</li><li>G + F</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>G/(1 + GF)</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;text&quot;,&quot;answer&quot;:[&quot;0.5&quot;,&quot;1/2&quot;]}">
+<p class="admonition-title">Exercise 6</p>
+<p class="pk-q-prompt">What is the damping ratio ζ of H(s) = 16/(s² + 4s + 16)?</p>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>0.5 / 1/2</strong></p>
+<p class="pk-q-why">ωn = 4 and 2ζωn = 4, so ζ = 0.5.</p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;blanks&quot;,&quot;answer&quot;:[[&quot;0-&quot;,&quot;0−&quot;,&quot;0 minus&quot;]]}">
+<p class="admonition-title">Exercise 7</p>
+<p class="pk-q-prompt">In the unilateral transform, dx/dt corresponds to sX(s) minus x(<span class="pk-blank" data-i="0">___</span>).</p>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>0- / 0− / 0 minus</strong></p>
+</details>
+</div>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button type="button" class="md-top md-icon" data-md-component="top" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+Back to top
+</button>
+</main>
+<footer class="md-footer">
+<nav class="md-footer__inner md-grid" aria-label="Footer" >
+<a href="sampling-and-aliasing.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: 9. Sampling and Aliasing">
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</div>
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Previous
+</span>
+<div class="md-ellipsis">
+9. Sampling and Aliasing
+</div>
+</div>
+</a>
+<a href="the-z-transform.html" class="md-footer__link md-footer__link--next" aria-label="Next: 11. The z-Transform">
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Next
+</span>
+<div class="md-ellipsis">
+11. The z-Transform
+</div>
+</div>
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+</div>
+</a>
+</nav>
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+The Open Book Project &middot;
+<a href="../../about.html">About this library</a> &middot;
+<a href="../../publish.html">Publish your book</a> &middot;
+© The authors of the books
+</div>
+Made with
+<a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+Material for MkDocs
+</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "navigation.prune", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "toc.follow", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+<script src="../../assets/mathjax.js"></script>
+<script src="../../assets/viz.js"></script>
+<script src="../../assets/remote.js"></script>
+<script src="../../assets/scans.js"></script>
+<script src="../../assets/reader.js"></script>
+<script src="../../assets/app.js"></script>
+<script src="../../assets/slides.js"></script>
+<script src="../../assets/speak.js"></script>
+<script src="../../assets/quiz.js"></script>
+<script>
+    /* offline reading: the service worker at the site root (its scope is the whole site) */
+    if ("serviceWorker" in navigator && window.isSecureContext) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register(new URL("../../sw.js", location.href).href).catch(function () {});
+      });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,1072 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="description" content="The Open Book Project: books on computer science, quantum computing, cyber security, science, the social sciences, university courses and languages, read page by page like an e-book, online or offline.">
+<meta name="author" content="The Open Book Project">
+<link rel="canonical" href="https://open-book-project.github.io/mathematics/discrete_mathematics/relations.html">
+<link rel="prev" href="sets-and-functions.html">
+<link rel="next" href="induction-and-recursion.html">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap"></noscript>
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Open Book">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="application-name" content="Open Book"><script src="../../assets/library-data.js"></script><script>
+    (function () {
+      var X = window.XMLHttpRequest, open, gate = new Promise(function (r) { open = r; });
+      if (!X) return;
+      var open0 = X.prototype.open, send0 = X.prototype.send;
+      X.prototype.open = function (method, url) {
+        this.__pkIndex = /\/search\/search_index\.json(\?|#|$)/.test(String(url));
+        return open0.apply(this, arguments);
+      };
+      X.prototype.send = function () {
+        if (!this.__pkIndex) return send0.apply(this, arguments);
+        var xhr = this, args = arguments;
+        gate.then(function () { send0.apply(xhr, args); });
+      };
+      function wake() { open(); }
+      document.addEventListener("focusin", function (e) { if (e.target && e.target.closest && e.target.closest(".md-search")) wake(); });
+      document.addEventListener("click", function (e) { if (e.target && e.target.closest && e.target.closest('label[for="__search"], .md-search')) wake(); }, true);
+      document.addEventListener("keydown", function (e) {
+        var k = e.key;
+        if ((k === "/" || k === "s" || k === "f" || k === "S" || k === "F") && !(e.target && e.target.closest && e.target.closest("input, textarea, [contenteditable]"))) wake();
+      }, true);
+      if (/[?&]q=/.test(location.search)) wake();
+    })();
+  </script><script>
+    try {
+      if ((window.matchMedia && (matchMedia("(display-mode: standalone)").matches || matchMedia("(display-mode: fullscreen)").matches)) || navigator.standalone === true) {
+        document.documentElement.className += " bjp-standalone";
+      }
+    } catch (e) { /* not an installed app */ }
+    /* the books of a subject or of the whole library as covers or as a list (assets/app.js): the reader's choice */
+    try {
+      var bv = localStorage.getItem("bjp.view");
+      if (bv === "list" || (bv !== "grid" && /\/books\.html$/.test(location.pathname))) document.documentElement.className += " bjp-view-list";
+    } catch (e) { /* no storage: covers */ }
+  </script>
+<script>
+    /* a book opened from its cover on the shelf: the page stays blank, in the cover's colour, until the reader is up */
+    try {
+      var cv = sessionStorage.getItem("bjp.reader.cover");
+      if (cv && sessionStorage.getItem("bjp.reader.open") === "1") {
+        var c = JSON.parse(cv), de = document.documentElement;
+        de.className += " bjp-booting";
+        if (c && /^#[0-9a-f]{3,8}$/i.test(c.bg || "")) de.style.background = c.bg;
+        setTimeout(function () { de.classList.remove("bjp-booting"); de.style.background = ""; }, 3000);
+      }
+    } catch (e) { /* no session storage: the page simply opens as usual */ }
+  </script>
+<title>5. Relations - The Open Book Project</title>
+<link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+<link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+<link rel="stylesheet" href="../../assets/extra.css">
+<link rel="stylesheet" href="../../assets/reader.css">
+<link rel="stylesheet" href="../../assets/viz.css">
+<link rel="stylesheet" href="../../assets/app.css">
+<link rel="stylesheet" href="../../assets/theme.css">
+<link rel="stylesheet" href="../../assets/slides.css">
+<link rel="stylesheet" href="../../assets/remote.css">
+<link rel="stylesheet" href="../../assets/scans.css">
+<link rel="stylesheet" href="../../assets/speak.css">
+<link rel="stylesheet" href="../../assets/quiz.css">
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+<input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+<input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a href="#51-relations-and-how-to-represent-them" class="md-skip">
+Skip to content
+</a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav class="md-header__inner md-grid" aria-label="Header">
+<a href="../../index.html" title="The Open Book Project" class="md-header__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+The Open Book Project
+</span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+5. Relations
+</span>
+</div>
+</div>
+</div><a href="../../index.html" class="bjp-libbtn" aria-label="Library: all books" title="Library: all books">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V5h4v15M8 20V9h4v11M14 20L12.6 6l3.8-.8 3 14.2M3 20h18"/></svg><span>Library</span>
+</a>
+<a href="../../subjects/index.html" class="pk-catbtn" aria-haspopup="true" aria-expanded="false" title="Browse the books by category">
+<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><circle cx="17" cy="7" r="3.6"/><path d="M7 13.4l3.9 6.8H3.1z"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg><span>Categories</span>
+</a>
+<form class="md-header__option" data-md-component="palette">
+<input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+<label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+</label>
+<input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+<label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+<label class="md-search__icon md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</label>
+<nav class="md-search__options" aria-label="Search">
+<button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+Initializing search
+</div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--primary bjp-nav bjp-nav--book" aria-label="Navigation" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a href="../../index.html" title="The Open Book Project" class="md-nav__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+The Open Book Project
+</label>
+<ul class="md-nav__list" data-md-scrollfix>
+<li class="md-nav__item bjp-nav-all">
+<a href="../../index.html" class="md-nav__link" aria-label="All books: back to the library">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+<span class="md-ellipsis">All books</span>
+</a>
+</li>
+<li class="md-nav__item bjp-nav-book" role="presentation"><span class="bjp-nav-head">Discrete Mathematics</span></li>
+<li class="md-nav__item">
+<a href="index.html" class="md-nav__link">
+<span class="md-ellipsis">
+Overview and preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="preface.html" class="md-nav__link">
+<span class="md-ellipsis">
+Preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="propositional-logic.html" class="md-nav__link">
+<span class="md-ellipsis">
+1. Propositional Logic
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="predicate-logic-and-quantifiers.html" class="md-nav__link">
+<span class="md-ellipsis">
+2. Predicate Logic and Quantifiers
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="methods-of-proof.html" class="md-nav__link">
+<span class="md-ellipsis">
+3. Methods of Proof
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="sets-and-functions.html" class="md-nav__link">
+<span class="md-ellipsis">
+4. Sets and Functions
+</span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+5. Relations
+</span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a href="relations.html" class="md-nav__link md-nav__link--active">
+<span class="md-ellipsis">
+5. Relations
+</span>
+</a>
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#51-relations-and-how-to-represent-them" class="md-nav__link">
+<span class="md-ellipsis">
+5.1 Relations and how to represent them
+</span>
+</a>
+<nav class="md-nav" aria-label="5.1 Relations and how to represent them">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#matrices-and-directed-graphs" class="md-nav__link">
+<span class="md-ellipsis">
+Matrices and directed graphs
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#52-properties-of-relations" class="md-nav__link">
+<span class="md-ellipsis">
+5.2 Properties of relations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#53-combining-relations-and-closures" class="md-nav__link">
+<span class="md-ellipsis">
+5.3 Combining relations and closures
+</span>
+</a>
+<nav class="md-nav" aria-label="5.3 Combining relations and closures">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#closures" class="md-nav__link">
+<span class="md-ellipsis">
+Closures
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#54-equivalence-relations" class="md-nav__link">
+<span class="md-ellipsis">
+5.4 Equivalence relations
+</span>
+</a>
+<nav class="md-nav" aria-label="5.4 Equivalence relations">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#equivalence-classes" class="md-nav__link">
+<span class="md-ellipsis">
+Equivalence classes
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#55-partial-orders" class="md-nav__link">
+<span class="md-ellipsis">
+5.5 Partial orders
+</span>
+</a>
+<nav class="md-nav" aria-label="5.5 Partial orders">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#hasse-diagrams" class="md-nav__link">
+<span class="md-ellipsis">
+Hasse diagrams
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#special-elements" class="md-nav__link">
+<span class="md-ellipsis">
+Special elements
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#56-topological-sorting" class="md-nav__link">
+<span class="md-ellipsis">
+5.6 Topological sorting
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#57-relations-in-databases" class="md-nav__link">
+<span class="md-ellipsis">
+5.7 Relations in databases
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#58-summary" class="md-nav__link">
+<span class="md-ellipsis">
+5.8 Summary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#59-exercises" class="md-nav__link">
+<span class="md-ellipsis">
+5.9 Exercises
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#510-quiz" class="md-nav__link">
+<span class="md-ellipsis">
+5.10 Quiz
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="induction-and-recursion.html" class="md-nav__link">
+<span class="md-ellipsis">
+6. Induction and Recursion
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="counting.html" class="md-nav__link">
+<span class="md-ellipsis">
+7. Counting
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="discrete-probability.html" class="md-nav__link">
+<span class="md-ellipsis">
+8. Discrete Probability
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="recurrence-relations-and-generating-functions.html" class="md-nav__link">
+<span class="md-ellipsis">
+9. Recurrence Relations and Generating Functions
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="number-theory-and-cryptography.html" class="md-nav__link">
+<span class="md-ellipsis">
+10. Number Theory and Cryptography
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="graphs.html" class="md-nav__link">
+<span class="md-ellipsis">
+11. Graphs
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="trees.html" class="md-nav__link">
+<span class="md-ellipsis">
+12. Trees
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="boolean-algebra-and-logic-circuits.html" class="md-nav__link">
+<span class="md-ellipsis">
+13. Boolean Algebra and Logic Circuits
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="automata-and-languages.html" class="md-nav__link">
+<span class="md-ellipsis">
+14. Automata and Languages
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="glossary.html" class="md-nav__link">
+<span class="md-ellipsis">
+Glossary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="further-reading.html" class="md-nav__link">
+<span class="md-ellipsis">
+Further Reading
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#51-relations-and-how-to-represent-them" class="md-nav__link">
+<span class="md-ellipsis">
+5.1 Relations and how to represent them
+</span>
+</a>
+<nav class="md-nav" aria-label="5.1 Relations and how to represent them">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#matrices-and-directed-graphs" class="md-nav__link">
+<span class="md-ellipsis">
+Matrices and directed graphs
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#52-properties-of-relations" class="md-nav__link">
+<span class="md-ellipsis">
+5.2 Properties of relations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#53-combining-relations-and-closures" class="md-nav__link">
+<span class="md-ellipsis">
+5.3 Combining relations and closures
+</span>
+</a>
+<nav class="md-nav" aria-label="5.3 Combining relations and closures">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#closures" class="md-nav__link">
+<span class="md-ellipsis">
+Closures
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#54-equivalence-relations" class="md-nav__link">
+<span class="md-ellipsis">
+5.4 Equivalence relations
+</span>
+</a>
+<nav class="md-nav" aria-label="5.4 Equivalence relations">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#equivalence-classes" class="md-nav__link">
+<span class="md-ellipsis">
+Equivalence classes
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#55-partial-orders" class="md-nav__link">
+<span class="md-ellipsis">
+5.5 Partial orders
+</span>
+</a>
+<nav class="md-nav" aria-label="5.5 Partial orders">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#hasse-diagrams" class="md-nav__link">
+<span class="md-ellipsis">
+Hasse diagrams
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#special-elements" class="md-nav__link">
+<span class="md-ellipsis">
+Special elements
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#56-topological-sorting" class="md-nav__link">
+<span class="md-ellipsis">
+5.6 Topological sorting
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#57-relations-in-databases" class="md-nav__link">
+<span class="md-ellipsis">
+5.7 Relations in databases
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#58-summary" class="md-nav__link">
+<span class="md-ellipsis">
+5.8 Summary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#59-exercises" class="md-nav__link">
+<span class="md-ellipsis">
+5.9 Exercises
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#510-quiz" class="md-nav__link">
+<span class="md-ellipsis">
+5.10 Quiz
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="chapter-5-relations">Chapter 5: Relations<a class="headerlink" href="#chapter-5-relations" title="Permanent link">&para;</a></h1>
+<p><em>Equivalence relations, partial orders and their pictures</em></p>
+<div class="admonition note">
+<p class="admonition-title">Learning outcomes</p>
+<p>After this chapter you should be able to:</p>
+<ul>
+<li>define a relation as a set of ordered pairs and represent it by a list, a matrix and a directed graph;</li>
+<li>decide whether a relation is reflexive, symmetric, antisymmetric or transitive, and prove it;</li>
+<li>compose relations and compute the reflexive, symmetric and transitive closures of a relation;</li>
+<li>recognise equivalence relations, find their equivalence classes, and explain the correspondence between equivalence relations and partitions;</li>
+<li>recognise partial orders, draw their Hasse diagrams, find maximal, minimal, greatest and least elements, and produce a topological sort.</li>
+</ul>
+</div>
+<h2 id="51-relations-and-how-to-represent-them">5.1 Relations and how to represent them<a class="headerlink" href="#51-relations-and-how-to-represent-them" title="Permanent link">&para;</a></h2>
+<p>Mathematics and computing are full of statements that relate two objects: "<span class="arithmatex">\(a\)</span> is less than <span class="arithmatex">\(b\)</span>", "<span class="arithmatex">\(a\)</span> divides <span class="arithmatex">\(b\)</span>", "student <span class="arithmatex">\(s\)</span> is enrolled in course <span class="arithmatex">\(c\)</span>", "web page <span class="arithmatex">\(p\)</span> links to page <span class="arithmatex">\(q\)</span>". A relation captures the idea in the simplest possible way: as the set of pairs that are related.</p>
+<div class="admonition note">
+<p class="admonition-title">Definition: relation</p>
+<p>A <strong>binary relation</strong> <span class="arithmatex">\(R\)</span> from a set <span class="arithmatex">\(A\)</span> to a set <span class="arithmatex">\(B\)</span> is a subset of <span class="arithmatex">\(A \times B\)</span>. We write <span class="arithmatex">\(a \mathrel{R} b\)</span> when <span class="arithmatex">\((a, b) \in R\)</span>. A <strong>relation on</strong> a set <span class="arithmatex">\(A\)</span> is a relation from <span class="arithmatex">\(A\)</span> to <span class="arithmatex">\(A\)</span>, that is, a subset of <span class="arithmatex">\(A \times A\)</span>.</p>
+</div>
+<p>A function <span class="arithmatex">\(f : A \to B\)</span> is a special relation: its graph, in which each <span class="arithmatex">\(a \in A\)</span> is related to exactly one <span class="arithmatex">\(b\)</span>. A general relation can relate an element to many elements, or to none.</p>
+<div class="admonition example">
+<p class="admonition-title">Example 5.1: Relations on a small set</p>
+<p><strong>Problem.</strong> List the pairs of the relation "divides" on <span class="arithmatex">\(A = \{1, 2, 3, 4\}\)</span>.</p>
+<p><strong>Solution.</strong> <span class="arithmatex">\(a \mathrel{R} b\)</span> when <span class="arithmatex">\(a \mid b\)</span>:</p>
+<div class="arithmatex">\[
+R = \{(1,1), (1,2), (1,3), (1,4), (2,2), (2,4), (3,3), (4,4)\}.
+\]</div>
+</div>
+<p>How many relations are there on a set with <span class="arithmatex">\(n\)</span> elements? A relation is any subset of <span class="arithmatex">\(A \times A\)</span>, which has <span class="arithmatex">\(n^2\)</span> elements, so there are <span class="arithmatex">\(2^{n^2}\)</span> relations. Even on 3 elements that is <span class="arithmatex">\(2^9 = 512\)</span>.</p>
+<h3 id="matrices-and-directed-graphs">Matrices and directed graphs<a class="headerlink" href="#matrices-and-directed-graphs" title="Permanent link">&para;</a></h3>
+<p>A relation on a finite set <span class="arithmatex">\(A = \{a_1, \dots, a_n\}\)</span> can be shown in two other ways.</p>
+<ul>
+<li>The <strong>matrix</strong> <span class="arithmatex">\(M_R\)</span> is the <span class="arithmatex">\(n \times n\)</span> table of zeros and ones with a 1 in row <span class="arithmatex">\(i\)</span>, column <span class="arithmatex">\(j\)</span> exactly when <span class="arithmatex">\(a_i \mathrel{R} a_j\)</span>.</li>
+<li>The <strong>directed graph</strong> (or digraph) has a dot (vertex) for each element and an arrow from <span class="arithmatex">\(a\)</span> to <span class="arithmatex">\(b\)</span> for each pair <span class="arithmatex">\((a, b) \in R\)</span>. A pair <span class="arithmatex">\((a, a)\)</span> is drawn as a <strong>loop</strong>.</li>
+</ul>
+<p>Figure 5.1 shows the relation <span class="arithmatex">\(S = \{(1,1), (1,2), (2,1), (2,2), (3,4), (4,1)\}\)</span> on <span class="arithmatex">\(\{1, 2, 3, 4\}\)</span> as a digraph; its matrix is</p>
+<div class="arithmatex">\[
+M_S = \begin{pmatrix} 1 &amp; 1 &amp; 0 &amp; 0 \\ 1 &amp; 1 &amp; 0 &amp; 0 \\ 0 &amp; 0 &amp; 0 &amp; 1 \\ 1 &amp; 0 &amp; 0 &amp; 0 \end{pmatrix}.
+\]</div>
+<figure class="fig fig-diagram">
+<img src="img/relation-digraph.svg" alt="A directed graph on the vertices 1, 2, 3, 4. Vertices 1 and 2 have loops and arrows to each other; there is an arrow from 3 to 4 and from 4 to 1." loading="lazy" width="420" height="300">
+<figcaption><strong>Figure 5.1 The digraph of the relation S.</strong> A directed graph on the vertices 1, 2, 3, 4. Vertices 1 and 2 have loops and arrows to each other; there is an arrow from 3 to 4 and from 4 to 1.</figcaption>
+</figure>
+<h2 id="52-properties-of-relations">5.2 Properties of relations<a class="headerlink" href="#52-properties-of-relations" title="Permanent link">&para;</a></h2>
+<p>Four properties of a relation <span class="arithmatex">\(R\)</span> on a set <span class="arithmatex">\(A\)</span> matter more than any others.</p>
+<div class="admonition note">
+<p class="admonition-title">Definitions: reflexive, symmetric, antisymmetric, transitive</p>
+<ul>
+<li><span class="arithmatex">\(R\)</span> is <strong>reflexive</strong> if <span class="arithmatex">\(a \mathrel{R} a\)</span> for every <span class="arithmatex">\(a \in A\)</span>.</li>
+<li><span class="arithmatex">\(R\)</span> is <strong>symmetric</strong> if <span class="arithmatex">\(a \mathrel{R} b\)</span> implies <span class="arithmatex">\(b \mathrel{R} a\)</span>, for all <span class="arithmatex">\(a, b \in A\)</span>.</li>
+<li><span class="arithmatex">\(R\)</span> is <strong>antisymmetric</strong> if <span class="arithmatex">\(a \mathrel{R} b\)</span> and <span class="arithmatex">\(b \mathrel{R} a\)</span> together imply <span class="arithmatex">\(a = b\)</span>, for all <span class="arithmatex">\(a, b \in A\)</span>.</li>
+<li><span class="arithmatex">\(R\)</span> is <strong>transitive</strong> if <span class="arithmatex">\(a \mathrel{R} b\)</span> and <span class="arithmatex">\(b \mathrel{R} c\)</span> together imply <span class="arithmatex">\(a \mathrel{R} c\)</span>, for all <span class="arithmatex">\(a, b, c \in A\)</span>.</li>
+</ul>
+</div>
+<p>Each property has a picture. Reflexive: every vertex of the digraph has a loop, and the matrix has 1s all along the main diagonal. Symmetric: every arrow between two different vertices has a partner going back, and the matrix equals its transpose. Antisymmetric: no two different vertices have arrows both ways. Transitive: whenever there is a path of two arrows from <span class="arithmatex">\(a\)</span> to <span class="arithmatex">\(c\)</span>, there is also a direct arrow from <span class="arithmatex">\(a\)</span> to <span class="arithmatex">\(c\)</span>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Antisymmetric is not 'not symmetric'</p>
+<p>A relation can be both symmetric and antisymmetric (equality is) and can be neither (the relation <span class="arithmatex">\(S\)</span> of Figure 5.1, which has <span class="arithmatex">\(1 \to 2\)</span> and <span class="arithmatex">\(2 \to 1\)</span>, and has <span class="arithmatex">\(3 \to 4\)</span> without <span class="arithmatex">\(4 \to 3\)</span>). Antisymmetry forbids two-way arrows between <em>different</em> elements; it says nothing about loops.</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title">Example 5.2: Checking the properties</p>
+<p><strong>Problem.</strong> Which of the four properties do these relations have? (a) <span class="arithmatex">\(\le\)</span> on <span class="arithmatex">\(\mathbb{Z}\)</span>. (b) "divides" on <span class="arithmatex">\(\mathbb{Z}^{+}\)</span>. (c) <span class="arithmatex">\(a \mathrel{R} b\)</span> iff <span class="arithmatex">\(\lvert a - b \rvert \le 1\)</span>, on <span class="arithmatex">\(\mathbb{Z}\)</span>. (d) The relation <span class="arithmatex">\(S\)</span> of Figure 5.1.</p>
+<p><strong>Solution.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Relation</th>
+<th style="text-align: center;">Reflexive</th>
+<th style="text-align: center;">Symmetric</th>
+<th style="text-align: center;">Antisymmetric</th>
+<th style="text-align: center;">Transitive</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="arithmatex">\(\le\)</span> on <span class="arithmatex">\(\mathbb{Z}\)</span></td>
+<td style="text-align: center;">yes</td>
+<td style="text-align: center;">no</td>
+<td style="text-align: center;">yes</td>
+<td style="text-align: center;">yes</td>
+</tr>
+<tr>
+<td>divides on <span class="arithmatex">\(\mathbb{Z}^{+}\)</span></td>
+<td style="text-align: center;">yes</td>
+<td style="text-align: center;">no</td>
+<td style="text-align: center;">yes</td>
+<td style="text-align: center;">yes</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(\lvert a - b \rvert \le 1\)</span></td>
+<td style="text-align: center;">yes</td>
+<td style="text-align: center;">yes</td>
+<td style="text-align: center;">no</td>
+<td style="text-align: center;">no</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(S\)</span></td>
+<td style="text-align: center;">no</td>
+<td style="text-align: center;">no</td>
+<td style="text-align: center;">no</td>
+<td style="text-align: center;">no</td>
+</tr>
+</tbody>
+</table>
+<p>For "divides": <span class="arithmatex">\(a \mid a\)</span>; if <span class="arithmatex">\(a \mid b\)</span> and <span class="arithmatex">\(b \mid a\)</span> for positive integers then <span class="arithmatex">\(a \le b\)</span> and <span class="arithmatex">\(b \le a\)</span>, so <span class="arithmatex">\(a = b\)</span>; transitivity is Example 3.2. It is not symmetric: <span class="arithmatex">\(1 \mid 2\)</span> but <span class="arithmatex">\(2 \nmid 1\)</span>. For (c): <span class="arithmatex">\(0 \mathrel{R} 1\)</span> and <span class="arithmatex">\(1 \mathrel{R} 2\)</span> but not <span class="arithmatex">\(0 \mathrel{R} 2\)</span>, so it is not transitive. For <span class="arithmatex">\(S\)</span>: <span class="arithmatex">\(3\)</span> has no loop; <span class="arithmatex">\((3, 4) \in S\)</span> but <span class="arithmatex">\((4, 3) \notin S\)</span>; <span class="arithmatex">\((1,2)\)</span> and <span class="arithmatex">\((2,1)\)</span> are both in <span class="arithmatex">\(S\)</span>; and <span class="arithmatex">\((3,4), (4,1) \in S\)</span> but <span class="arithmatex">\((3,1) \notin S\)</span>.</p>
+</div>
+<h2 id="53-combining-relations-and-closures">5.3 Combining relations and closures<a class="headerlink" href="#53-combining-relations-and-closures" title="Permanent link">&para;</a></h2>
+<p>Relations are sets, so they can be combined with <span class="arithmatex">\(\cup\)</span>, <span class="arithmatex">\(\cap\)</span> and <span class="arithmatex">\(-\)</span>. They can also be composed, like functions.</p>
+<div class="admonition note">
+<p class="admonition-title">Definition: composition of relations</p>
+<p>If <span class="arithmatex">\(R\)</span> is a relation from <span class="arithmatex">\(A\)</span> to <span class="arithmatex">\(B\)</span> and <span class="arithmatex">\(S\)</span> is a relation from <span class="arithmatex">\(B\)</span> to <span class="arithmatex">\(C\)</span>, the <strong>composite</strong> <span class="arithmatex">\(S \circ R\)</span> is the relation from <span class="arithmatex">\(A\)</span> to <span class="arithmatex">\(C\)</span> with <span class="arithmatex">\(a \mathrel{(S \circ R)} c\)</span> when there is some <span class="arithmatex">\(b \in B\)</span> with <span class="arithmatex">\(a \mathrel{R} b\)</span> and <span class="arithmatex">\(b \mathrel{S} c\)</span>. The powers of a relation on <span class="arithmatex">\(A\)</span> are <span class="arithmatex">\(R^1 = R\)</span> and <span class="arithmatex">\(R^{n+1} = R^n \circ R\)</span>.</p>
+</div>
+<p>In the digraph, <span class="arithmatex">\(a \mathrel{R^n} b\)</span> exactly when there is a path of <span class="arithmatex">\(n\)</span> arrows from <span class="arithmatex">\(a\)</span> to <span class="arithmatex">\(b\)</span>. With matrices, composition is a "Boolean product": the entry of <span class="arithmatex">\(M_{S \circ R}\)</span> in row <span class="arithmatex">\(i\)</span>, column <span class="arithmatex">\(j\)</span> is 1 when some <span class="arithmatex">\(k\)</span> has a 1 in row <span class="arithmatex">\(i\)</span>, column <span class="arithmatex">\(k\)</span> of <span class="arithmatex">\(M_R\)</span> and in row <span class="arithmatex">\(k\)</span>, column <span class="arithmatex">\(j\)</span> of <span class="arithmatex">\(M_S\)</span>. This is ordinary matrix multiplication with <span class="arithmatex">\(\wedge\)</span> for multiplication and <span class="arithmatex">\(\vee\)</span> for addition.</p>
+<p>A useful fact: <span class="arithmatex">\(R\)</span> is transitive if and only if <span class="arithmatex">\(R^2 \subseteq R\)</span>. (A pair in <span class="arithmatex">\(R^2\)</span> comes from <span class="arithmatex">\(a \mathrel{R} b\)</span> and <span class="arithmatex">\(b \mathrel{R} c\)</span>, and transitivity says exactly that <span class="arithmatex">\((a, c)\)</span> is then in <span class="arithmatex">\(R\)</span>.)</p>
+<h3 id="closures">Closures<a class="headerlink" href="#closures" title="Permanent link">&para;</a></h3>
+<p>If a relation lacks a property, we can add the fewest pairs needed to give it that property. The result is the <strong>closure</strong> of the relation with respect to the property.</p>
+<ul>
+<li>The <strong>reflexive closure</strong> of <span class="arithmatex">\(R\)</span> is <span class="arithmatex">\(R \cup \{(a, a) : a \in A\}\)</span>: add all the loops.</li>
+<li>The <strong>symmetric closure</strong> of <span class="arithmatex">\(R\)</span> is <span class="arithmatex">\(R \cup R^{-1}\)</span>, where <span class="arithmatex">\(R^{-1} = \{(b, a) : (a, b) \in R\}\)</span>: add the reverse of every arrow.</li>
+<li>The <strong>transitive closure</strong> of <span class="arithmatex">\(R\)</span> is <span class="arithmatex">\(R^{*} = R \cup R^2 \cup R^3 \cup \dots\)</span>: add an arrow from <span class="arithmatex">\(a\)</span> to <span class="arithmatex">\(b\)</span> whenever there is a path from <span class="arithmatex">\(a\)</span> to <span class="arithmatex">\(b\)</span>. On a set of <span class="arithmatex">\(n\)</span> elements, paths longer than <span class="arithmatex">\(n\)</span> add nothing new, so <span class="arithmatex">\(R^{*} = R \cup R^2 \cup \dots \cup R^n\)</span>.</li>
+</ul>
+<div class="admonition example">
+<p class="admonition-title">Example 5.3: A transitive closure</p>
+<p><strong>Problem.</strong> Find the transitive closure of the relation <span class="arithmatex">\(S\)</span> of Figure 5.1.</p>
+<p><strong>Solution.</strong> List, for each vertex, every vertex reachable by a path of one or more arrows. From 1: <span class="arithmatex">\(1, 2\)</span>. From 2: <span class="arithmatex">\(1, 2\)</span>. From 3: <span class="arithmatex">\(4\)</span>, then <span class="arithmatex">\(1\)</span> (via 4), then <span class="arithmatex">\(2\)</span> (via 4 and 1). From 4: <span class="arithmatex">\(1\)</span>, then <span class="arithmatex">\(2\)</span>. So</p>
+<div class="arithmatex">\[
+S^{*} = \{(1,1), (1,2), (2,1), (2,2), (3,1), (3,2), (3,4), (4,1), (4,2)\}.
+\]</div>
+<p>The new pairs are <span class="arithmatex">\((3,1)\)</span>, <span class="arithmatex">\((3,2)\)</span> and <span class="arithmatex">\((4,2)\)</span>.</p>
+</div>
+<p>The transitive closure answers reachability questions: in a road network, can I get from <span class="arithmatex">\(a\)</span> to <span class="arithmatex">\(b\)</span> at all? Warshall's algorithm computes it for a relation on <span class="arithmatex">\(n\)</span> elements in about <span class="arithmatex">\(n^3\)</span> steps. It considers the vertices <span class="arithmatex">\(k = 1, 2, \dots, n\)</span> in turn and adds the pair <span class="arithmatex">\((i, j)\)</span> whenever <span class="arithmatex">\((i, k)\)</span> and <span class="arithmatex">\((k, j)\)</span> are present:</p>
+<div class="language-python highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">warshall</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+    <span class="n">w</span> <span class="o">=</span> <span class="p">[</span><span class="n">row</span><span class="p">[:]</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">m</span><span class="p">]</span>          <span class="c1"># copy the matrix</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+                <span class="n">w</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">w</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="ow">or</span> <span class="p">(</span><span class="n">w</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">k</span><span class="p">]</span> <span class="ow">and</span> <span class="n">w</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="n">j</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">w</span>
+
+<span class="n">S</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+     <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+     <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+     <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]</span>
+<span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">warshall</span><span class="p">(</span><span class="n">S</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>[1, 1, 0, 0]
+[1, 1, 0, 0]
+[1, 1, 0, 1]
+[1, 1, 0, 0]
+</code></pre></div>
+<p>The output is the matrix of <span class="arithmatex">\(S^{*}\)</span>, in agreement with Example 5.3.</p>
+<h2 id="54-equivalence-relations">5.4 Equivalence relations<a class="headerlink" href="#54-equivalence-relations" title="Permanent link">&para;</a></h2>
+<p>Many relations express that two things are "the same in some respect": two students born in the same month, two integers with the same remainder on division by 5, two strings of the same length. Such relations share three properties.</p>
+<div class="admonition note">
+<p class="admonition-title">Definition: equivalence relation</p>
+<p>A relation on a set <span class="arithmatex">\(A\)</span> is an <strong>equivalence relation</strong> if it is reflexive, symmetric and transitive. Elements <span class="arithmatex">\(a\)</span> and <span class="arithmatex">\(b\)</span> with <span class="arithmatex">\(a \mathrel{R} b\)</span> are <strong>equivalent</strong>, often written <span class="arithmatex">\(a \sim b\)</span>.</p>
+</div>
+<p>The most important example in this book is congruence.</p>
+<div class="admonition note">
+<p class="admonition-title">Definition: congruence modulo <span class="arithmatex">\(m\)</span></p>
+<p>Let <span class="arithmatex">\(m\)</span> be a positive integer. Integers <span class="arithmatex">\(a\)</span> and <span class="arithmatex">\(b\)</span> are <strong>congruent modulo <span class="arithmatex">\(m\)</span></strong>, written <span class="arithmatex">\(a \equiv b \pmod{m}\)</span>, if <span class="arithmatex">\(m \mid (a - b)\)</span>.</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title">Example 5.4: Congruence is an equivalence relation</p>
+<p><strong>Theorem.</strong> Congruence modulo <span class="arithmatex">\(m\)</span> is an equivalence relation on <span class="arithmatex">\(\mathbb{Z}\)</span>.</p>
+<p><strong>Proof.</strong> <em>Reflexive:</em> <span class="arithmatex">\(a - a = 0 = m \cdot 0\)</span>, so <span class="arithmatex">\(m \mid (a - a)\)</span>. <em>Symmetric:</em> if <span class="arithmatex">\(a - b = mk\)</span>, then <span class="arithmatex">\(b - a = m(-k)\)</span>. <em>Transitive:</em> if <span class="arithmatex">\(a - b = mk\)</span> and <span class="arithmatex">\(b - c = m\ell\)</span>, then <span class="arithmatex">\(a - c = (a - b) + (b - c) = m(k + \ell)\)</span>. <span class="arithmatex">\(\blacksquare\)</span></p>
+</div>
+<h3 id="equivalence-classes">Equivalence classes<a class="headerlink" href="#equivalence-classes" title="Permanent link">&para;</a></h3>
+<div class="admonition note">
+<p class="admonition-title">Definition: equivalence class</p>
+<p>Let <span class="arithmatex">\(R\)</span> be an equivalence relation on <span class="arithmatex">\(A\)</span>. The <strong>equivalence class</strong> of <span class="arithmatex">\(a \in A\)</span> is <span class="arithmatex">\([a] = \{x \in A : x \mathrel{R} a\}\)</span>, the set of all elements equivalent to <span class="arithmatex">\(a\)</span>. Any element of a class is a <strong>representative</strong> of it.</p>
+</div>
+<p>For congruence modulo 3 there are three classes:</p>
+<div class="arithmatex">\[
+[0] = \{\dots, -6, -3, 0, 3, 6, \dots\}, \quad
+[1] = \{\dots, -5, -2, 1, 4, 7, \dots\}, \quad
+[2] = \{\dots, -4, -1, 2, 5, 8, \dots\}.
+\]</div>
+<p>Every integer is in exactly one of them, and <span class="arithmatex">\([0] = [3] = [-6]\)</span>: a class can be named by any of its members. These classes, called the <strong>congruence classes</strong> or residue classes modulo 3, are the objects of the arithmetic of Chapter 10.</p>
+<p>The pattern holds for every equivalence relation: the classes cover the set and do not overlap.</p>
+<div class="admonition note">
+<p class="admonition-title">Definition: partition</p>
+<p>A <strong>partition</strong> of a set <span class="arithmatex">\(A\)</span> is a collection of non-empty subsets of <span class="arithmatex">\(A\)</span>, called <strong>blocks</strong>, such that every element of <span class="arithmatex">\(A\)</span> is in exactly one block.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Theorem 5.1 (equivalence classes form a partition)</p>
+<p>Let <span class="arithmatex">\(R\)</span> be an equivalence relation on <span class="arithmatex">\(A\)</span>. For all <span class="arithmatex">\(a, b \in A\)</span> the following are equivalent: (i) <span class="arithmatex">\(a \mathrel{R} b\)</span>; (ii) <span class="arithmatex">\([a] = [b]\)</span>; (iii) <span class="arithmatex">\([a] \cap [b] \ne \varnothing\)</span>. Consequently the equivalence classes of <span class="arithmatex">\(R\)</span> form a partition of <span class="arithmatex">\(A\)</span>. Conversely, every partition of <span class="arithmatex">\(A\)</span> is the set of classes of the equivalence relation "is in the same block as".</p>
+</div>
+<p><strong>Proof.</strong> (i) <span class="arithmatex">\(\Rightarrow\)</span> (ii): Suppose <span class="arithmatex">\(a \mathrel{R} b\)</span>. If <span class="arithmatex">\(x \in [a]\)</span>, then <span class="arithmatex">\(x \mathrel{R} a\)</span>, and with <span class="arithmatex">\(a \mathrel{R} b\)</span> transitivity gives <span class="arithmatex">\(x \mathrel{R} b\)</span>, so <span class="arithmatex">\(x \in [b]\)</span>. Thus <span class="arithmatex">\([a] \subseteq [b]\)</span>. By symmetry <span class="arithmatex">\(b \mathrel{R} a\)</span>, and the same argument gives <span class="arithmatex">\([b] \subseteq [a]\)</span>.</p>
+<p>(ii) <span class="arithmatex">\(\Rightarrow\)</span> (iii): <span class="arithmatex">\(a \in [a]\)</span> by reflexivity, so <span class="arithmatex">\(a \in [a] = [b]\)</span>, and the intersection is not empty.</p>
+<p>(iii) <span class="arithmatex">\(\Rightarrow\)</span> (i): Let <span class="arithmatex">\(x \in [a] \cap [b]\)</span>. Then <span class="arithmatex">\(x \mathrel{R} a\)</span> and <span class="arithmatex">\(x \mathrel{R} b\)</span>. By symmetry <span class="arithmatex">\(a \mathrel{R} x\)</span>, and by transitivity <span class="arithmatex">\(a \mathrel{R} b\)</span>.</p>
+<p>So two classes are either equal or disjoint. Every element <span class="arithmatex">\(a\)</span> lies in its own class <span class="arithmatex">\([a]\)</span>, and every class is non-empty. Hence the distinct classes form a partition. For the converse, "in the same block" is reflexive (each element is in a block), symmetric (obviously) and transitive (if <span class="arithmatex">\(a, b\)</span> share a block and <span class="arithmatex">\(b, c\)</span> share a block, it is the same block, since <span class="arithmatex">\(b\)</span> is in only one), and its classes are the blocks. <span class="arithmatex">\(\blacksquare\)</span></p>
+<div class="admonition tip">
+<p class="admonition-title">Key idea</p>
+<p>An equivalence relation and a partition are two descriptions of the same thing. Choosing an equivalence relation means deciding which differences to ignore; the classes are what remain. This is how mathematicians build new objects: the rational number <span class="arithmatex">\(\tfrac12\)</span> is the class of all fractions <span class="arithmatex">\(\tfrac12, \tfrac24, \tfrac36, \dots\)</span> under the equivalence <span class="arithmatex">\(\tfrac{a}{b} \sim \tfrac{c}{d} \iff ad = bc\)</span>.</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title">Example 5.5: Strings of the same length</p>
+<p><strong>Problem.</strong> On the set of all bit strings, let <span class="arithmatex">\(s \sim t\)</span> if <span class="arithmatex">\(s\)</span> and <span class="arithmatex">\(t\)</span> have the same length. Show that this is an equivalence relation and describe its classes.</p>
+<p><strong>Solution.</strong> Equality of lengths is reflexive, symmetric and transitive because equality of numbers is. The class of a string of length <span class="arithmatex">\(n\)</span> is the set of all <span class="arithmatex">\(2^n\)</span> bit strings of length <span class="arithmatex">\(n\)</span>. There is one class for each <span class="arithmatex">\(n \in \mathbb{N}\)</span>, including the class <span class="arithmatex">\(\{\lambda\}\)</span> of the empty string <span class="arithmatex">\(\lambda\)</span>.</p>
+</div>
+<h2 id="55-partial-orders">5.5 Partial orders<a class="headerlink" href="#55-partial-orders" title="Permanent link">&para;</a></h2>
+<p>The second great family of relations arranges things in order: numbers by size, sets by inclusion, tasks by "must come before".</p>
+<div class="admonition note">
+<p class="admonition-title">Definition: partial order</p>
+<p>A relation <span class="arithmatex">\(\preceq\)</span> on a set <span class="arithmatex">\(A\)</span> is a <strong>partial order</strong> if it is reflexive, antisymmetric and transitive. The pair <span class="arithmatex">\((A, \preceq)\)</span> is a <strong>partially ordered set</strong>, or <strong>poset</strong>. Elements <span class="arithmatex">\(a\)</span> and <span class="arithmatex">\(b\)</span> are <strong>comparable</strong> if <span class="arithmatex">\(a \preceq b\)</span> or <span class="arithmatex">\(b \preceq a\)</span>. If every two elements are comparable, <span class="arithmatex">\(\preceq\)</span> is a <strong>total order</strong> (or linear order).</p>
+</div>
+<p>Examples: <span class="arithmatex">\(\le\)</span> on <span class="arithmatex">\(\mathbb{R}\)</span> is a total order. "Divides" on <span class="arithmatex">\(\mathbb{Z}^{+}\)</span> is a partial order that is not total: neither of 2 and 3 divides the other. Inclusion <span class="arithmatex">\(\subseteq\)</span> on <span class="arithmatex">\(\mathcal{P}(S)\)</span> is a partial order: <span class="arithmatex">\(\{1\}\)</span> and <span class="arithmatex">\(\{2\}\)</span> are incomparable. The <strong>lexicographic</strong> (dictionary) order on words is a total order.</p>
+<h3 id="hasse-diagrams">Hasse diagrams<a class="headerlink" href="#hasse-diagrams" title="Permanent link">&para;</a></h3>
+<p>The digraph of a partial order has many arrows that carry no information: every loop (reflexivity says they are all there) and every arrow implied by transitivity. A <strong>Hasse diagram</strong> leaves them out. It draws <span class="arithmatex">\(b\)</span> higher than <span class="arithmatex">\(a\)</span> when <span class="arithmatex">\(a \prec b\)</span>, and draws a line from <span class="arithmatex">\(a\)</span> up to <span class="arithmatex">\(b\)</span> only when <span class="arithmatex">\(b\)</span> <strong>covers</strong> <span class="arithmatex">\(a\)</span>: <span class="arithmatex">\(a \prec b\)</span> and there is no <span class="arithmatex">\(c\)</span> with <span class="arithmatex">\(a \prec c \prec b\)</span>. Then <span class="arithmatex">\(a \preceq b\)</span> exactly when there is an upward path from <span class="arithmatex">\(a\)</span> to <span class="arithmatex">\(b\)</span>.</p>
+<figure class="fig fig-diagram">
+<img src="img/hasse-diagrams.svg" alt="Two Hasse diagrams. Left: the divisors of 12 under divisibility, with 1 at the bottom, 2 and 3 above it, 4 and 6 above those, and 12 at the top; lines join 1 to 2 and 3, 2 to 4 and 6, 3 to 6, and 4 and 6 to 12. Right: the subsets of {a, b, c} under inclusion, a cube with the empty set at the bottom and {a, b, c} at the top." loading="lazy" width="700" height="330">
+<figcaption><strong>Figure 5.2 Two Hasse diagrams.</strong> Two Hasse diagrams. Left: the divisors of 12 under divisibility, with 1 at the bottom, 2 and 3 above it, 4 and 6 above those, and 12 at the top; lines join 1 to 2 and 3, 2 to 4 and 6, 3 to 6, and 4 and 6 to 12. Right: the subsets of {a, b, c} under inclusion, a cube with the empty set at the bottom and {a, b, c} at the top.</figcaption>
+</figure>
+<div class="admonition example">
+<p class="admonition-title">Example 5.6: Drawing a Hasse diagram</p>
+<p><strong>Problem.</strong> Draw the Hasse diagram of the divisors of 12 under divisibility.</p>
+<p><strong>Solution.</strong> The set is <span class="arithmatex">\(\{1, 2, 3, 4, 6, 12\}\)</span>. The covering pairs are <span class="arithmatex">\(1 \prec 2\)</span>, <span class="arithmatex">\(1 \prec 3\)</span>, <span class="arithmatex">\(2 \prec 4\)</span>, <span class="arithmatex">\(2 \prec 6\)</span>, <span class="arithmatex">\(3 \prec 6\)</span>, <span class="arithmatex">\(4 \prec 12\)</span>, <span class="arithmatex">\(6 \prec 12\)</span>. (For example, <span class="arithmatex">\(2 \prec 12\)</span> is not a covering pair, because <span class="arithmatex">\(2 \prec 4 \prec 12\)</span>.) The diagram is the left half of Figure 5.2.</p>
+</div>
+<h3 id="special-elements">Special elements<a class="headerlink" href="#special-elements" title="Permanent link">&para;</a></h3>
+<p>Let <span class="arithmatex">\((A, \preceq)\)</span> be a poset.</p>
+<ul>
+<li><span class="arithmatex">\(a\)</span> is <strong>maximal</strong> if no element is strictly above it (<span class="arithmatex">\(a \prec b\)</span> for no <span class="arithmatex">\(b\)</span>), and <strong>minimal</strong> if no element is strictly below it.</li>
+<li><span class="arithmatex">\(a\)</span> is the <strong>greatest</strong> element if <span class="arithmatex">\(b \preceq a\)</span> for every <span class="arithmatex">\(b\)</span>, and the <strong>least</strong> element if <span class="arithmatex">\(a \preceq b\)</span> for every <span class="arithmatex">\(b\)</span>.</li>
+</ul>
+<p>A poset can have several maximal elements, but at most one greatest element (if <span class="arithmatex">\(a\)</span> and <span class="arithmatex">\(a'\)</span> are both greatest, then <span class="arithmatex">\(a \preceq a'\)</span> and <span class="arithmatex">\(a' \preceq a\)</span>, so <span class="arithmatex">\(a = a'\)</span> by antisymmetry). A greatest element is maximal, but a maximal element need not be greatest.</p>
+<div class="admonition example">
+<p class="admonition-title">Example 5.7: Maximal is not greatest</p>
+<p><strong>Problem.</strong> Find the maximal, minimal, greatest and least elements of <span class="arithmatex">\(\{2, 3, 4, 6, 9\}\)</span> under divisibility.</p>
+<p><strong>Solution.</strong> Covering pairs: <span class="arithmatex">\(2 \prec 4\)</span>, <span class="arithmatex">\(2 \prec 6\)</span>, <span class="arithmatex">\(3 \prec 6\)</span>, <span class="arithmatex">\(3 \prec 9\)</span>. Maximal: <span class="arithmatex">\(4, 6, 9\)</span> (none divides another element of the set). Minimal: <span class="arithmatex">\(2, 3\)</span>. There is no greatest element (no element is divisible by all of 4, 6 and 9) and no least element (no element divides both 2 and 3).</p>
+</div>
+<p>For a subset <span class="arithmatex">\(S\)</span> of a poset, an <strong>upper bound</strong> is an element <span class="arithmatex">\(u\)</span> with <span class="arithmatex">\(s \preceq u\)</span> for all <span class="arithmatex">\(s \in S\)</span>, and the <strong>least upper bound</strong> (or supremum) is an upper bound below every other upper bound. Lower bounds and the greatest lower bound are defined the same way. A poset in which every pair of elements has a least upper bound and a greatest lower bound is a <strong>lattice</strong>. Under divisibility, the least upper bound of <span class="arithmatex">\(a\)</span> and <span class="arithmatex">\(b\)</span> is their least common multiple and the greatest lower bound is their greatest common divisor; under inclusion they are <span class="arithmatex">\(\cup\)</span> and <span class="arithmatex">\(\cap\)</span>. Chapter 13 meets lattices again as Boolean algebras.</p>
+<h2 id="56-topological-sorting">5.6 Topological sorting<a class="headerlink" href="#56-topological-sorting" title="Permanent link">&para;</a></h2>
+<p>A project consists of tasks, some of which must be finished before others can start. "Must be done before" is a partial order on the tasks. To schedule the tasks one at a time, we need a total order that respects the partial order: if <span class="arithmatex">\(a \prec b\)</span>, then <span class="arithmatex">\(a\)</span> comes first. Such a total order is a <strong>topological sort</strong> (or linear extension).</p>
+<div class="admonition note">
+<p class="admonition-title">Theorem 5.2</p>
+<p>Every finite non-empty poset has a minimal element. Consequently every finite poset has a topological sort.</p>
+</div>
+<p><strong>Proof.</strong> Start at any element <span class="arithmatex">\(a_1\)</span>. If it is not minimal, there is <span class="arithmatex">\(a_2 \prec a_1\)</span>; if <span class="arithmatex">\(a_2\)</span> is not minimal, there is <span class="arithmatex">\(a_3 \prec a_2\)</span>; and so on. By transitivity and antisymmetry the elements <span class="arithmatex">\(a_1, a_2, \dots\)</span> are all different, so in a finite set the process stops, at a minimal element. For the topological sort: repeatedly remove a minimal element from what remains and append it to the list. Each element is listed only after every element below it, since those were minimal earlier and were removed first. <span class="arithmatex">\(\blacksquare\)</span></p>
+<div class="admonition example">
+<p class="admonition-title">Example 5.8: Ordering courses</p>
+<p><strong>Problem.</strong> Seven modules have these prerequisites: Programming (P) before Data Structures (D); Discrete Mathematics (M) before D and before Algorithms (A); D before A and before Databases (B); A before Compilers (C); B before C; and Statistics (S) has no prerequisite. Find an order in which to take them.</p>
+<p><strong>Solution.</strong> Repeatedly choose a module with no untaken prerequisite. Initially P, M and S qualify; take P. Then M (D still needs M); take M. Now D qualifies; take D. Then A and B qualify; take A, then B. Then C. S can go anywhere. One topological sort is P, M, D, A, B, C, S. Others exist, for example S, M, P, D, B, A, C.</p>
+</div>
+<p>Build systems and package managers do exactly this when they decide in which order to compile files or install packages.</p>
+<h2 id="57-relations-in-databases">5.7 Relations in databases<a class="headerlink" href="#57-relations-in-databases" title="Permanent link">&para;</a></h2>
+<p>A relation need not be binary. An <strong><span class="arithmatex">\(n\)</span>-ary relation</strong> on sets <span class="arithmatex">\(A_1, \dots, A_n\)</span> is a subset of <span class="arithmatex">\(A_1 \times \dots \times A_n\)</span>. A table in a relational database is an <span class="arithmatex">\(n\)</span>-ary relation: each row is an <span class="arithmatex">\(n\)</span>-tuple and each column is one of the sets. A table of students with columns (roll number, name, programme, year) is a 4-ary relation. A <strong>primary key</strong> is a column whose value determines the whole row, that is, a column on which the relation is a function. Database queries are operations on these relations: <em>selection</em> keeps the tuples that satisfy a predicate, <em>projection</em> keeps some of the columns, and <em>join</em> combines two relations on a shared column, a generalisation of the composition of Section 5.3.</p>
+<h2 id="58-summary">5.8 Summary<a class="headerlink" href="#58-summary" title="Permanent link">&para;</a></h2>
+<div class="admonition abstract">
+<p class="admonition-title">Summary</p>
+<ul>
+<li>A <strong>relation</strong> from <span class="arithmatex">\(A\)</span> to <span class="arithmatex">\(B\)</span> is a subset of <span class="arithmatex">\(A \times B\)</span>; there are <span class="arithmatex">\(2^{n^2}\)</span> relations on an <span class="arithmatex">\(n\)</span>-element set. Represent a relation by its matrix or its digraph.</li>
+<li>The key properties are <strong>reflexive</strong> (all loops), <strong>symmetric</strong> (arrows in pairs), <strong>antisymmetric</strong> (no two-way arrows between different elements) and <strong>transitive</strong> (paths of two arrows have shortcuts).</li>
+<li>The <strong>transitive closure</strong> adds an arrow for every path; Warshall's algorithm computes it.</li>
+<li>An <strong>equivalence relation</strong> (reflexive, symmetric, transitive) splits a set into <strong>equivalence classes</strong>, which form a <strong>partition</strong>; every partition comes from one. Congruence modulo <span class="arithmatex">\(m\)</span> is the main example.</li>
+<li>A <strong>partial order</strong> (reflexive, antisymmetric, transitive) is drawn as a <strong>Hasse diagram</strong>. Distinguish maximal from greatest and minimal from least.</li>
+<li>Every finite poset has a <strong>topological sort</strong>, found by repeatedly removing a minimal element.</li>
+</ul>
+</div>
+<h2 id="59-exercises">5.9 Exercises<a class="headerlink" href="#59-exercises" title="Permanent link">&para;</a></h2>
+<div class="admonition example">
+<p class="admonition-title">Exercise 1</p>
+<p>For the relation <span class="arithmatex">\(R = \{(1,2), (2,3), (1,3), (3,3)\}\)</span> on <span class="arithmatex">\(\{1, 2, 3\}\)</span>, decide which of the four properties hold.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>Not reflexive (<span class="arithmatex">\((1,1) \notin R\)</span>). Not symmetric (<span class="arithmatex">\((1,2)\)</span> without <span class="arithmatex">\((2,1)\)</span>). Antisymmetric (no pair of different elements related both ways). Transitive: the only two-step paths are <span class="arithmatex">\(1 \to 2 \to 3\)</span> (and <span class="arithmatex">\((1,3) \in R\)</span>), <span class="arithmatex">\(1 \to 3 \to 3\)</span>, <span class="arithmatex">\(2 \to 3 \to 3\)</span> and <span class="arithmatex">\(3 \to 3 \to 3\)</span>, all with the shortcut present.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 2</p>
+<p>On <span class="arithmatex">\(\mathbb{Z}\)</span>, define <span class="arithmatex">\(a \mathrel{R} b\)</span> iff <span class="arithmatex">\(a + b\)</span> is even. Prove that <span class="arithmatex">\(R\)</span> is an equivalence relation and find its classes.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>Reflexive: <span class="arithmatex">\(a + a = 2a\)</span>. Symmetric: <span class="arithmatex">\(a + b = b + a\)</span>. Transitive: if <span class="arithmatex">\(a + b\)</span> and <span class="arithmatex">\(b + c\)</span> are even, so is <span class="arithmatex">\((a + b) + (b + c) - 2b = a + c\)</span>. Two integers are related exactly when they have the same parity, so the classes are the even integers and the odd integers.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 3</p>
+<p>How many relations on a set of 4 elements are reflexive? How many are symmetric?</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>Reflexive: the 4 diagonal pairs are forced, and each of the other <span class="arithmatex">\(16 - 4 = 12\)</span> pairs is free: <span class="arithmatex">\(2^{12} = 4096\)</span>. Symmetric: the 4 diagonal pairs are free, and the 12 off-diagonal pairs come in 6 mirror pairs that must be chosen together: <span class="arithmatex">\(2^{4 + 6} = 2^{10} = 1024\)</span>.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 4</p>
+<p>List all partitions of <span class="arithmatex">\(\{a, b, c\}\)</span>. How many equivalence relations are there on a 3-element set?</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p><span class="arithmatex">\(\{\{a\},\{b\},\{c\}\}\)</span>; <span class="arithmatex">\(\{\{a,b\},\{c\}\}\)</span>; <span class="arithmatex">\(\{\{a,c\},\{b\}\}\)</span>; <span class="arithmatex">\(\{\{b,c\},\{a\}\}\)</span>; <span class="arithmatex">\(\{\{a,b,c\}\}\)</span>. Five partitions, so five equivalence relations, by Theorem 5.1.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 5</p>
+<p>Draw (or describe) the Hasse diagram of <span class="arithmatex">\(\{1, 2, 3, 5, 6, 10, 15, 30\}\)</span> under divisibility. What shape is it?</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>Bottom: 1. Level 1: 2, 3, 5. Level 2: 6, 10, 15 (6 covers 2 and 3; 10 covers 2 and 5; 15 covers 3 and 5). Top: 30, covering 6, 10, 15. It is a cube, the same shape as the subsets of a 3-element set: each divisor of <span class="arithmatex">\(30 = 2 \cdot 3 \cdot 5\)</span> corresponds to the set of primes it contains.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 6</p>
+<p>Show that if <span class="arithmatex">\(R\)</span> is symmetric and transitive, and every element is related to <em>something</em>, then <span class="arithmatex">\(R\)</span> is reflexive. Why is "every element is related to something" needed?</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>Let <span class="arithmatex">\(a \in A\)</span>; by assumption <span class="arithmatex">\(a \mathrel{R} b\)</span> for some <span class="arithmatex">\(b\)</span>. By symmetry <span class="arithmatex">\(b \mathrel{R} a\)</span>; by transitivity, from <span class="arithmatex">\(a \mathrel{R} b\)</span> and <span class="arithmatex">\(b \mathrel{R} a\)</span>, we get <span class="arithmatex">\(a \mathrel{R} a\)</span>. Without the assumption the argument fails: the empty relation on a non-empty set is symmetric and transitive but not reflexive.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 7</p>
+<p>Find the transitive closure of <span class="arithmatex">\(\{(1,2), (2,3), (3,4)\}\)</span> on <span class="arithmatex">\(\{1, 2, 3, 4\}\)</span>.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>Add every pair <span class="arithmatex">\((i, j)\)</span> with a path from <span class="arithmatex">\(i\)</span> to <span class="arithmatex">\(j\)</span>: <span class="arithmatex">\(\{(1,2), (1,3), (1,4), (2,3), (2,4), (3,4)\}\)</span>. This is the strict order <span class="arithmatex">\(&lt;\)</span> on <span class="arithmatex">\(\{1, 2, 3, 4\}\)</span>.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 8</p>
+<p>In the poset <span class="arithmatex">\((\mathcal{P}(\{a, b, c\}), \subseteq)\)</span>, find the least upper bound and greatest lower bound of <span class="arithmatex">\(\{a\}\)</span> and <span class="arithmatex">\(\{b\}\)</span>. Is the poset a lattice?</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>Least upper bound <span class="arithmatex">\(\{a, b\} = \{a\} \cup \{b\}\)</span>; greatest lower bound <span class="arithmatex">\(\varnothing = \{a\} \cap \{b\}\)</span>. Every pair of subsets has <span class="arithmatex">\(\cup\)</span> and <span class="arithmatex">\(\cap\)</span>, so it is a lattice.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 9</p>
+<p>Find two different topological sorts of the divisors of 12 under divisibility.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p><span class="arithmatex">\(1, 2, 3, 4, 6, 12\)</span> and <span class="arithmatex">\(1, 3, 2, 6, 4, 12\)</span>. Any order works in which 1 is first, 12 is last, 2 precedes 4 and 6, and 3 precedes 6.</p>
+</details>
+<h2 id="510-quiz">5.10 Quiz<a class="headerlink" href="#510-quiz" title="Permanent link">&para;</a></h2>
+<div class="pk-quiz" data-quiz="46c3276d03a3">
+<p class="pk-quiz-title">Check your understanding of relations</p>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;a partial order&quot;,&quot;an equivalence relation&quot;,&quot;a total order&quot;,&quot;a function&quot;],&quot;answer&quot;:&quot;an equivalence relation&quot;}">
+<p class="admonition-title">Exercise 1</p>
+<p class="pk-q-prompt">A relation that is reflexive, symmetric and transitive is</p>
+<ol class="pk-q-opts" type="A"><li>a partial order</li><li>an equivalence relation</li><li>a total order</li><li>a function</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>an equivalence relation</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;a partial order&quot;,&quot;an equivalence relation&quot;,&quot;a partition&quot;,&quot;a lattice&quot;],&quot;answer&quot;:&quot;a partial order&quot;}">
+<p class="admonition-title">Exercise 2</p>
+<p class="pk-q-prompt">A relation that is reflexive, antisymmetric and transitive is</p>
+<ol class="pk-q-opts" type="A"><li>a partial order</li><li>an equivalence relation</li><li>a partition</li><li>a lattice</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>a partial order</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;text&quot;,&quot;answer&quot;:[&quot;512&quot;]}">
+<p class="admonition-title">Exercise 3</p>
+<p class="pk-q-prompt">How many relations are there on a set with 3 elements?</p>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>512</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;text&quot;,&quot;answer&quot;:[&quot;7&quot;]}">
+<p class="admonition-title">Exercise 4</p>
+<p class="pk-q-prompt">How many equivalence classes does congruence modulo 7 have on the integers?</p>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>7</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;yes&quot;,&quot;no&quot;],&quot;answer&quot;:&quot;no&quot;}">
+<p class="admonition-title">Exercise 5</p>
+<p class="pk-q-prompt">In the divisors of 12 under divisibility, does 12 cover 2?</p>
+<ol class="pk-q-opts" type="A"><li>yes</li><li>no</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>no</strong></p>
+<p class="pk-q-why">2 divides 4 and 4 divides 12, so 4 lies between them.</p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;an equivalence relation&quot;,&quot;a partial order&quot;,&quot;antisymmetric&quot;,&quot;not reflexive&quot;],&quot;answer&quot;:&quot;an equivalence relation&quot;}">
+<p class="admonition-title">Exercise 6</p>
+<p class="pk-q-prompt">The relation "a + b is even" on the integers is</p>
+<ol class="pk-q-opts" type="A"><li>an equivalence relation</li><li>a partial order</li><li>antisymmetric</li><li>not reflexive</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>an equivalence relation</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;match&quot;,&quot;pairs&quot;:[[&quot;equality&quot;,&quot;symmetric and antisymmetric&quot;],[&quot;less than on the integers&quot;,&quot;not reflexive&quot;],[&quot;divides on the positive integers&quot;,&quot;a partial order that is not total&quot;]]}">
+<p class="admonition-title">Exercise 7</p>
+<p class="pk-q-prompt">Match each relation with a property it has.</p>
+<table class="pk-q-match"><thead><tr><th>A</th><th>B</th></tr></thead><tbody><tr><td>equality</td><td>not reflexive</td></tr><tr><td>less than on the integers</td><td>a partial order that is not total</td></tr><tr><td>divides on the positive integers</td><td>symmetric and antisymmetric</td></tr></tbody></table>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>equality</strong> — symmetric and antisymmetric; <strong>less than on the integers</strong> — not reflexive; <strong>divides on the positive integers</strong> — a partial order that is not total</p>
+</details>
+</div>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button type="button" class="md-top md-icon" data-md-component="top" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+Back to top
+</button>
+</main>
+<footer class="md-footer">
+<nav class="md-footer__inner md-grid" aria-label="Footer" >
+<a href="sets-and-functions.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: 4. Sets and Functions">
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</div>
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Previous
+</span>
+<div class="md-ellipsis">
+4. Sets and Functions
+</div>
+</div>
+</a>
+<a href="induction-and-recursion.html" class="md-footer__link md-footer__link--next" aria-label="Next: 6. Induction and Recursion">
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Next
+</span>
+<div class="md-ellipsis">
+6. Induction and Recursion
+</div>
+</div>
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+</div>
+</a>
+</nav>
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+The Open Book Project &middot;
+<a href="../../about.html">About this library</a> &middot;
+<a href="../../publish.html">Publish your book</a> &middot;
+© The authors of the books
+</div>
+Made with
+<a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+Material for MkDocs
+</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "navigation.prune", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "toc.follow", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+<script src="../../assets/mathjax.js"></script>
+<script src="../../assets/viz.js"></script>
+<script src="../../assets/remote.js"></script>
+<script src="../../assets/scans.js"></script>
+<script src="../../assets/reader.js"></script>
+<script src="../../assets/app.js"></script>
+<script src="../../assets/slides.js"></script>
+<script src="../../assets/speak.js"></script>
+<script src="../../assets/quiz.js"></script>
+<script>
+    /* offline reading: the service worker at the site root (its scope is the whole site) */
+    if ("serviceWorker" in navigator && window.isSecureContext) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register(new URL("../../sw.js", location.href).href).catch(function () {});
+      });
+    }
+  </script>
+</body>
+</html>

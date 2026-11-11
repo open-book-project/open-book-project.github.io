@@ -1,0 +1,1125 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="description" content="The Open Book Project: books on computer science, quantum computing, cyber security, science, the social sciences, university courses and languages, read page by page like an e-book, online or offline.">
+<meta name="author" content="The Open Book Project">
+<link rel="canonical" href="https://open-book-project.github.io/engineering/signals_systems/elementary-signals-and-operations.html">
+<link rel="prev" href="signals-and-their-classification.html">
+<link rel="next" href="systems-and-their-properties.html">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap"></noscript>
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Open Book">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="application-name" content="Open Book"><script src="../../assets/library-data.js"></script><script>
+    (function () {
+      var X = window.XMLHttpRequest, open, gate = new Promise(function (r) { open = r; });
+      if (!X) return;
+      var open0 = X.prototype.open, send0 = X.prototype.send;
+      X.prototype.open = function (method, url) {
+        this.__pkIndex = /\/search\/search_index\.json(\?|#|$)/.test(String(url));
+        return open0.apply(this, arguments);
+      };
+      X.prototype.send = function () {
+        if (!this.__pkIndex) return send0.apply(this, arguments);
+        var xhr = this, args = arguments;
+        gate.then(function () { send0.apply(xhr, args); });
+      };
+      function wake() { open(); }
+      document.addEventListener("focusin", function (e) { if (e.target && e.target.closest && e.target.closest(".md-search")) wake(); });
+      document.addEventListener("click", function (e) { if (e.target && e.target.closest && e.target.closest('label[for="__search"], .md-search')) wake(); }, true);
+      document.addEventListener("keydown", function (e) {
+        var k = e.key;
+        if ((k === "/" || k === "s" || k === "f" || k === "S" || k === "F") && !(e.target && e.target.closest && e.target.closest("input, textarea, [contenteditable]"))) wake();
+      }, true);
+      if (/[?&]q=/.test(location.search)) wake();
+    })();
+  </script><script>
+    try {
+      if ((window.matchMedia && (matchMedia("(display-mode: standalone)").matches || matchMedia("(display-mode: fullscreen)").matches)) || navigator.standalone === true) {
+        document.documentElement.className += " bjp-standalone";
+      }
+    } catch (e) { /* not an installed app */ }
+    /* the books of a subject or of the whole library as covers or as a list (assets/app.js): the reader's choice */
+    try {
+      var bv = localStorage.getItem("bjp.view");
+      if (bv === "list" || (bv !== "grid" && /\/books\.html$/.test(location.pathname))) document.documentElement.className += " bjp-view-list";
+    } catch (e) { /* no storage: covers */ }
+  </script>
+<script>
+    /* a book opened from its cover on the shelf: the page stays blank, in the cover's colour, until the reader is up */
+    try {
+      var cv = sessionStorage.getItem("bjp.reader.cover");
+      if (cv && sessionStorage.getItem("bjp.reader.open") === "1") {
+        var c = JSON.parse(cv), de = document.documentElement;
+        de.className += " bjp-booting";
+        if (c && /^#[0-9a-f]{3,8}$/i.test(c.bg || "")) de.style.background = c.bg;
+        setTimeout(function () { de.classList.remove("bjp-booting"); de.style.background = ""; }, 3000);
+      }
+    } catch (e) { /* no session storage: the page simply opens as usual */ }
+  </script>
+<title>2. Elementary Signals and Operations on Signals - The Open Book Project</title>
+<link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+<link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+<link rel="stylesheet" href="../../assets/extra.css">
+<link rel="stylesheet" href="../../assets/reader.css">
+<link rel="stylesheet" href="../../assets/viz.css">
+<link rel="stylesheet" href="../../assets/app.css">
+<link rel="stylesheet" href="../../assets/theme.css">
+<link rel="stylesheet" href="../../assets/slides.css">
+<link rel="stylesheet" href="../../assets/remote.css">
+<link rel="stylesheet" href="../../assets/scans.css">
+<link rel="stylesheet" href="../../assets/speak.css">
+<link rel="stylesheet" href="../../assets/quiz.css">
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+<input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+<input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a href="#21-the-discrete-time-unit-impulse-and-unit-step" class="md-skip">
+Skip to content
+</a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav class="md-header__inner md-grid" aria-label="Header">
+<a href="../../index.html" title="The Open Book Project" class="md-header__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+The Open Book Project
+</span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+2. Elementary Signals and Operations on Signals
+</span>
+</div>
+</div>
+</div><a href="../../index.html" class="bjp-libbtn" aria-label="Library: all books" title="Library: all books">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V5h4v15M8 20V9h4v11M14 20L12.6 6l3.8-.8 3 14.2M3 20h18"/></svg><span>Library</span>
+</a>
+<a href="../../subjects/index.html" class="pk-catbtn" aria-haspopup="true" aria-expanded="false" title="Browse the books by category">
+<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><circle cx="17" cy="7" r="3.6"/><path d="M7 13.4l3.9 6.8H3.1z"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg><span>Categories</span>
+</a>
+<form class="md-header__option" data-md-component="palette">
+<input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+<label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+</label>
+<input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+<label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+<label class="md-search__icon md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</label>
+<nav class="md-search__options" aria-label="Search">
+<button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+Initializing search
+</div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--primary bjp-nav bjp-nav--book" aria-label="Navigation" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a href="../../index.html" title="The Open Book Project" class="md-nav__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+The Open Book Project
+</label>
+<ul class="md-nav__list" data-md-scrollfix>
+<li class="md-nav__item bjp-nav-all">
+<a href="../../index.html" class="md-nav__link" aria-label="All books: back to the library">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+<span class="md-ellipsis">All books</span>
+</a>
+</li>
+<li class="md-nav__item bjp-nav-book" role="presentation"><span class="bjp-nav-head">Signals and Systems</span></li>
+<li class="md-nav__item">
+<a href="index.html" class="md-nav__link">
+<span class="md-ellipsis">
+Overview and preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="preface.html" class="md-nav__link">
+<span class="md-ellipsis">
+Preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="signals-and-their-classification.html" class="md-nav__link">
+<span class="md-ellipsis">
+1. Signals and Their Classification
+</span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+2. Elementary Signals and Operations on Signals
+</span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a href="elementary-signals-and-operations.html" class="md-nav__link md-nav__link--active">
+<span class="md-ellipsis">
+2. Elementary Signals and Operations on Signals
+</span>
+</a>
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#21-the-discrete-time-unit-impulse-and-unit-step" class="md-nav__link">
+<span class="md-ellipsis">
+2.1 The discrete-time unit impulse and unit step
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#impulse" class="md-nav__link">
+<span class="md-ellipsis">
+2.2 The continuous-time unit step and unit impulse
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#23-ramps-pulses-the-sign-function-and-sinc" class="md-nav__link">
+<span class="md-ellipsis">
+2.3 Ramps, pulses, the sign function and sinc
+</span>
+</a>
+<nav class="md-nav" aria-label="2.3 Ramps, pulses, the sign function and sinc">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#writing-a-piecewise-signal-with-steps-and-ramps" class="md-nav__link">
+<span class="md-ellipsis">
+Writing a piecewise signal with steps and ramps
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#exponentials" class="md-nav__link">
+<span class="md-ellipsis">
+2.4 Exponentials and sinusoids
+</span>
+</a>
+<nav class="md-nav" aria-label="2.4 Exponentials and sinusoids">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#real-exponentials" class="md-nav__link">
+<span class="md-ellipsis">
+Real exponentials
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#complex-exponentials" class="md-nav__link">
+<span class="md-ellipsis">
+Complex exponentials
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#discrete-time-exponentials" class="md-nav__link">
+<span class="md-ellipsis">
+Discrete-time exponentials
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#25-operations-on-the-amplitude" class="md-nav__link">
+<span class="md-ellipsis">
+2.5 Operations on the amplitude
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#time-ops" class="md-nav__link">
+<span class="md-ellipsis">
+2.6 Operations on time: shift, reversal and scaling
+</span>
+</a>
+<nav class="md-nav" aria-label="2.6 Operations on time: shift, reversal and scaling">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#combined-operations" class="md-nav__link">
+<span class="md-ellipsis">
+Combined operations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#time-operations-in-discrete-time" class="md-nav__link">
+<span class="md-ellipsis">
+Time operations in discrete time
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#27-checking-operations-with-numpy" class="md-nav__link">
+<span class="md-ellipsis">
+2.7 Checking operations with NumPy
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#28-summary" class="md-nav__link">
+<span class="md-ellipsis">
+2.8 Summary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#29-exercises" class="md-nav__link">
+<span class="md-ellipsis">
+2.9 Exercises
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#210-quiz" class="md-nav__link">
+<span class="md-ellipsis">
+2.10 Quiz
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="systems-and-their-properties.html" class="md-nav__link">
+<span class="md-ellipsis">
+3. Systems and Their Properties
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="lti-systems-and-convolution.html" class="md-nav__link">
+<span class="md-ellipsis">
+4. LTI Systems and Convolution
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="fourier-series.html" class="md-nav__link">
+<span class="md-ellipsis">
+5. Fourier Series
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="the-continuous-time-fourier-transform.html" class="md-nav__link">
+<span class="md-ellipsis">
+6. The Continuous-Time Fourier Transform
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="the-discrete-time-fourier-transform.html" class="md-nav__link">
+<span class="md-ellipsis">
+7. The Discrete-Time Fourier Transform
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="the-dft-and-the-fft.html" class="md-nav__link">
+<span class="md-ellipsis">
+8. The DFT and the FFT
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="sampling-and-aliasing.html" class="md-nav__link">
+<span class="md-ellipsis">
+9. Sampling and Aliasing
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="the-laplace-transform.html" class="md-nav__link">
+<span class="md-ellipsis">
+10. The Laplace Transform
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="the-z-transform.html" class="md-nav__link">
+<span class="md-ellipsis">
+11. The z-Transform
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="frequency-response-and-filters.html" class="md-nav__link">
+<span class="md-ellipsis">
+12. Frequency Response and Filters
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="state-space-models.html" class="md-nav__link">
+<span class="md-ellipsis">
+13. State-Space Models
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="applications-audio-communication-and-control.html" class="md-nav__link">
+<span class="md-ellipsis">
+14. Applications: Audio, Communication and Control
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="tables-of-transforms.html" class="md-nav__link">
+<span class="md-ellipsis">
+Tables of Transforms
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="glossary.html" class="md-nav__link">
+<span class="md-ellipsis">
+Glossary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="further-reading.html" class="md-nav__link">
+<span class="md-ellipsis">
+Further Reading
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#21-the-discrete-time-unit-impulse-and-unit-step" class="md-nav__link">
+<span class="md-ellipsis">
+2.1 The discrete-time unit impulse and unit step
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#impulse" class="md-nav__link">
+<span class="md-ellipsis">
+2.2 The continuous-time unit step and unit impulse
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#23-ramps-pulses-the-sign-function-and-sinc" class="md-nav__link">
+<span class="md-ellipsis">
+2.3 Ramps, pulses, the sign function and sinc
+</span>
+</a>
+<nav class="md-nav" aria-label="2.3 Ramps, pulses, the sign function and sinc">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#writing-a-piecewise-signal-with-steps-and-ramps" class="md-nav__link">
+<span class="md-ellipsis">
+Writing a piecewise signal with steps and ramps
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#exponentials" class="md-nav__link">
+<span class="md-ellipsis">
+2.4 Exponentials and sinusoids
+</span>
+</a>
+<nav class="md-nav" aria-label="2.4 Exponentials and sinusoids">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#real-exponentials" class="md-nav__link">
+<span class="md-ellipsis">
+Real exponentials
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#complex-exponentials" class="md-nav__link">
+<span class="md-ellipsis">
+Complex exponentials
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#discrete-time-exponentials" class="md-nav__link">
+<span class="md-ellipsis">
+Discrete-time exponentials
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#25-operations-on-the-amplitude" class="md-nav__link">
+<span class="md-ellipsis">
+2.5 Operations on the amplitude
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#time-ops" class="md-nav__link">
+<span class="md-ellipsis">
+2.6 Operations on time: shift, reversal and scaling
+</span>
+</a>
+<nav class="md-nav" aria-label="2.6 Operations on time: shift, reversal and scaling">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#combined-operations" class="md-nav__link">
+<span class="md-ellipsis">
+Combined operations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#time-operations-in-discrete-time" class="md-nav__link">
+<span class="md-ellipsis">
+Time operations in discrete time
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#27-checking-operations-with-numpy" class="md-nav__link">
+<span class="md-ellipsis">
+2.7 Checking operations with NumPy
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#28-summary" class="md-nav__link">
+<span class="md-ellipsis">
+2.8 Summary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#29-exercises" class="md-nav__link">
+<span class="md-ellipsis">
+2.9 Exercises
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#210-quiz" class="md-nav__link">
+<span class="md-ellipsis">
+2.10 Quiz
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="chapter-2-elementary-signals-and-operations-on-signals">Chapter 2: Elementary Signals and Operations on Signals<a class="headerlink" href="#chapter-2-elementary-signals-and-operations-on-signals" title="Permanent link">&para;</a></h1>
+<p><em>The building blocks (steps, impulses, exponentials) and how to shift, flip, scale and combine them</em></p>
+<div class="admonition note">
+<p class="admonition-title">Learning outcomes</p>
+<p>After this chapter you should be able to:</p>
+<ul>
+<li>define the unit step, unit impulse, ramp, rectangular pulse and sinc in continuous and discrete time, and state how they are related;</li>
+<li>use the sifting property of the impulse to evaluate integrals and sums;</li>
+<li>describe real and complex exponentials and say how <span class="arithmatex">\(\sigma\)</span> and <span class="arithmatex">\(\omega\)</span> (or the base <span class="arithmatex">\(a\)</span>) shape them;</li>
+<li>write a piecewise signal as a sum of shifted steps and ramps;</li>
+<li>carry out time shifting, reversal and scaling, singly and combined, without error, and explain what decimation and expansion do to a sequence.</li>
+</ul>
+</div>
+<h2 id="21-the-discrete-time-unit-impulse-and-unit-step">2.1 The discrete-time unit impulse and unit step<a class="headerlink" href="#21-the-discrete-time-unit-impulse-and-unit-step" title="Permanent link">&para;</a></h2>
+<p>The simplest sequences are the <strong>unit impulse</strong> (or unit sample) and the <strong>unit step</strong>:</p>
+<div class="arithmatex">\[
+\delta[n] = \begin{cases} 1, &amp; n = 0 \\ 0, &amp; n \neq 0 \end{cases}
+\qquad\qquad
+u[n] = \begin{cases} 1, &amp; n \ge 0 \\ 0, &amp; n &lt; 0 \end{cases}
+\]</div>
+<p>The impulse is a single sample of height one at the origin. The step switches on at <span class="arithmatex">\(n = 0\)</span> and stays on. Each can be built from the other. The step is the running sum of the impulse, and the impulse is the first difference of the step:</p>
+<div class="arithmatex">\[
+u[n] = \sum_{k=-\infty}^{n} \delta[k] = \sum_{m=0}^{\infty}\delta[n - m], \qquad \delta[n] = u[n] - u[n-1].
+\]</div>
+<p>Multiplying any sequence by a shifted impulse picks out one sample:</p>
+<div class="arithmatex">\[
+x[n]\,\delta[n - n_0] = x[n_0]\,\delta[n - n_0].
+\]</div>
+<p>The product is zero everywhere except at <span class="arithmatex">\(n = n_0\)</span>, where it equals <span class="arithmatex">\(x[n_0]\)</span>. Adding up such products for every <span class="arithmatex">\(n_0\)</span> rebuilds the whole sequence:</p>
+<div class="arithmatex">\[
+x[n] = \sum_{k=-\infty}^{\infty} x[k]\,\delta[n - k].
+\]</div>
+<p>This equation looks like a trivial restatement, but it is the single most important identity of Chapter 4. It says that <strong>any sequence is a weighted sum of shifted impulses</strong>, the weights being the samples themselves. If we know what a system does to one impulse, and the system is linear and time-invariant, we will know what it does to every sequence.</p>
+<div class="admonition example">
+<p class="admonition-title">Example 2.1 A sequence as a sum of impulses</p>
+<p>The finite sequence with <span class="arithmatex">\(x[-1] = 2\)</span>, <span class="arithmatex">\(x[0] = 1\)</span>, <span class="arithmatex">\(x[1] = -1\)</span>, <span class="arithmatex">\(x[3] = 4\)</span> and zero elsewhere is</p>
+<div class="arithmatex">\[
+x[n] = 2\delta[n+1] + \delta[n] - \delta[n-1] + 4\delta[n-3].
+\]</div>
+<p>The pulse <span class="arithmatex">\(p[n] = u[n] - u[n-4]\)</span> is 1 for <span class="arithmatex">\(n = 0, 1, 2, 3\)</span> and 0 elsewhere: a step switched on at 0 minus a step switched on at 4.</p>
+</div>
+<h2 id="impulse">2.2 The continuous-time unit step and unit impulse<a class="headerlink" href="#impulse" title="Permanent link">&para;</a></h2>
+<p>The <strong>unit step</strong> is</p>
+<div class="arithmatex">\[
+u(t) = \begin{cases} 1, &amp; t &gt; 0 \\ 0, &amp; t &lt; 0. \end{cases}
+\]</div>
+<p>Its value exactly at <span class="arithmatex">\(t = 0\)</span> does not matter for anything in this book (some authors set it to <span class="arithmatex">\(1/2\)</span>), because a single point has no effect on an integral.</p>
+<p>The continuous-time <strong>unit impulse</strong> <span class="arithmatex">\(\delta(t)\)</span>, also called the Dirac delta, is harder, because no ordinary function does what we want. We want a signal that is zero everywhere except at <span class="arithmatex">\(t = 0\)</span> and whose integral is one. Think of a rectangular pulse of width <span class="arithmatex">\(\varepsilon\)</span> and height <span class="arithmatex">\(1/\varepsilon\)</span>, centred on the origin. Its area is always 1. As <span class="arithmatex">\(\varepsilon\)</span> shrinks, the pulse becomes narrower and taller (Figure 2.2). The impulse is the idealisation of this pulse in the limit <span class="arithmatex">\(\varepsilon \to 0\)</span>: it is infinitely narrow, infinitely tall, and has unit area. We draw it as an arrow of height one, with the area written beside it.</p>
+<figure class="fig fig-diagram">
+<img src="img/elementary-signals.svg" alt="The unit step, the unit ramp, the unit rectangular pulse of width one centred on the origin, and the unit impulse, drawn as an arrow labelled with its area (1)." loading="lazy" width="800" height="230">
+<figcaption><strong>Figure 2.1 Elementary signals.</strong> The unit step, the unit ramp, the unit rectangular pulse of width one centred on the origin, and the unit impulse, drawn as an arrow labelled with its area (1).</figcaption>
+</figure>
+<figure class="fig fig-diagram">
+<img src="img/impulse-limit.svg" alt="Rectangular pulses of width ε and height 1/ε for ε = 1, ½ and ¼. Every pulse has unit area; as ε shrinks the pulse approaches the unit impulse." loading="lazy" width="560" height="260">
+<figcaption><strong>Figure 2.2 The impulse as a limit.</strong> Rectangular pulses of width ε and height 1/ε for ε = 1, ½ and ¼. Every pulse has unit area; as ε shrinks the pulse approaches the unit impulse.</figcaption>
+</figure>
+<p>What matters about <span class="arithmatex">\(\delta(t)\)</span> is not its "value" (which is not defined at zero) but what it does inside an integral. The defining property is the <strong>sifting property</strong>: for any signal <span class="arithmatex">\(x(t)\)</span> continuous at <span class="arithmatex">\(t_0\)</span>,</p>
+<div class="arithmatex">\[
+\int_{-\infty}^{\infty} x(t)\,\delta(t - t_0)\,dt = x(t_0).
+\]</div>
+<p>To see why, replace the impulse with the narrow pulse. The integral is then the average of <span class="arithmatex">\(x(t)\)</span> over a tiny interval around <span class="arithmatex">\(t_0\)</span>, and as the interval shrinks the average tends to <span class="arithmatex">\(x(t_0)\)</span>. The impulse "sifts out" the value of <span class="arithmatex">\(x\)</span> at the location of the impulse. The properties below all follow from the sifting property or from the pulse picture.</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Statement</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Unit area</td>
+<td><span class="arithmatex">\(\int_{-\infty}^{\infty}\delta(t)\,dt = 1\)</span></td>
+</tr>
+<tr>
+<td>Sampling</td>
+<td><span class="arithmatex">\(x(t)\,\delta(t - t_0) = x(t_0)\,\delta(t - t_0)\)</span></td>
+</tr>
+<tr>
+<td>Sifting</td>
+<td><span class="arithmatex">\(\int_{-\infty}^{\infty}x(t)\,\delta(t - t_0)\,dt = x(t_0)\)</span></td>
+</tr>
+<tr>
+<td>Even</td>
+<td><span class="arithmatex">\(\delta(-t) = \delta(t)\)</span></td>
+</tr>
+<tr>
+<td>Scaling</td>
+<td><span class="arithmatex">\(\delta(at) = \dfrac{1}{\lvert a\rvert}\,\delta(t)\)</span>, <span class="arithmatex">\(a \neq 0\)</span></td>
+</tr>
+<tr>
+<td>Running integral</td>
+<td><span class="arithmatex">\(\int_{-\infty}^{t}\delta(\tau)\,d\tau = u(t)\)</span></td>
+</tr>
+<tr>
+<td>Derivative of the step</td>
+<td><span class="arithmatex">\(\dfrac{du(t)}{dt} = \delta(t)\)</span></td>
+</tr>
+</tbody>
+</table>
+<p><em>Table 2.1. Properties of the continuous-time impulse.</em></p>
+<p>The scaling property surprises many students. Compressing time by a factor <span class="arithmatex">\(a\)</span> makes the narrow pulse narrower by <span class="arithmatex">\(a\)</span> while keeping its height, so its area drops to <span class="arithmatex">\(1/|a|\)</span>. An impulse is measured by its area, so <span class="arithmatex">\(\delta(2t) = \tfrac{1}{2}\delta(t)\)</span>.</p>
+<p>The last two rows say that the impulse is the derivative of the step: the step jumps by one at the origin, and its slope there is "infinite" in exactly the amount needed to have unit area. More generally, wherever a signal jumps by an amount <span class="arithmatex">\(J\)</span>, its derivative contains an impulse <span class="arithmatex">\(J\delta(t - t_0)\)</span>. Engineers use this freely: it is how a sudden switch-on enters the equations of a circuit.</p>
+<div class="admonition example">
+<p class="admonition-title">Example 2.2 Using the sifting property</p>
+<p>Evaluate (a) <span class="arithmatex">\(\int_{-\infty}^{\infty} (t^2 + 3)\,\delta(t - 2)\,dt\)</span>; (b) <span class="arithmatex">\(\int_{-1}^{1} e^{-t}\delta(t - 3)\,dt\)</span>; (c) <span class="arithmatex">\(\int_{-\infty}^{\infty}\cos(\pi t)\,\delta(2t - 1)\,dt\)</span>.</p>
+<p>(a) The impulse sits at <span class="arithmatex">\(t = 2\)</span>, so the integral is <span class="arithmatex">\(2^2 + 3 = 7\)</span>.</p>
+<p>(b) The impulse sits at <span class="arithmatex">\(t = 3\)</span>, outside the interval of integration, so the integral is <span class="arithmatex">\(0\)</span>.</p>
+<p>(c) Write <span class="arithmatex">\(\delta(2t - 1) = \delta(2(t - \tfrac12)) = \tfrac12\delta(t - \tfrac12)\)</span>. The integral is <span class="arithmatex">\(\tfrac12\cos(\pi/2) = 0\)</span>.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Products of impulses</p>
+<p><span class="arithmatex">\(\delta(t)\cdot\delta(t)\)</span> and <span class="arithmatex">\(\delta(t)^2\)</span> are not defined. Impulses may be added, scaled, shifted and integrated against ordinary signals, but never multiplied by each other.</p>
+</div>
+<h2 id="23-ramps-pulses-the-sign-function-and-sinc">2.3 Ramps, pulses, the sign function and sinc<a class="headerlink" href="#23-ramps-pulses-the-sign-function-and-sinc" title="Permanent link">&para;</a></h2>
+<p>A few more signals appear constantly.</p>
+<p>The <strong>unit ramp</strong> is <span class="arithmatex">\(r(t) = t\,u(t)\)</span>: zero for negative time and rising with unit slope afterwards. It is the integral of the step, <span class="arithmatex">\(r(t) = \int_{-\infty}^{t}u(\tau)\,d\tau\)</span>, and the step is its derivative. In discrete time, <span class="arithmatex">\(r[n] = n\,u[n]\)</span>.</p>
+<p>The <strong>unit rectangular pulse</strong> is <span class="arithmatex">\(\mathrm{rect}(t) = 1\)</span> for <span class="arithmatex">\(|t| &lt; \tfrac12\)</span> and <span class="arithmatex">\(0\)</span> for <span class="arithmatex">\(|t| &gt; \tfrac12\)</span>. In terms of steps, <span class="arithmatex">\(\mathrm{rect}(t) = u(t + \tfrac12) - u(t - \tfrac12)\)</span>. A pulse of height <span class="arithmatex">\(A\)</span> and width <span class="arithmatex">\(\tau\)</span> centred at <span class="arithmatex">\(t_0\)</span> is <span class="arithmatex">\(A\,\mathrm{rect}\!\left(\frac{t - t_0}{\tau}\right)\)</span>.</p>
+<p>The <strong>sign function</strong> is <span class="arithmatex">\(\mathrm{sgn}(t) = 1\)</span> for <span class="arithmatex">\(t &gt; 0\)</span> and <span class="arithmatex">\(-1\)</span> for <span class="arithmatex">\(t &lt; 0\)</span>, so <span class="arithmatex">\(\mathrm{sgn}(t) = 2u(t) - 1\)</span>.</p>
+<p>The <strong>sinc function</strong> is</p>
+<div class="arithmatex">\[
+\mathrm{sinc}(x) = \frac{\sin(\pi x)}{\pi x}, \qquad \mathrm{sinc}(0) = 1 .
+\]</div>
+<p>It is 1 at the origin and zero at every other integer, and it decays like <span class="arithmatex">\(1/x\)</span>. This "normalised" sinc is the one used by NumPy (<code>np.sinc</code>). Some books define <span class="arithmatex">\(\mathrm{sinc}(x) = \sin(x)/x\)</span> instead; always check which is meant. The sinc is the Fourier transform of the rectangular pulse, as Chapter 6 shows, and it is the interpolating function of the sampling theorem in Chapter 9.</p>
+<h3 id="writing-a-piecewise-signal-with-steps-and-ramps">Writing a piecewise signal with steps and ramps<a class="headerlink" href="#writing-a-piecewise-signal-with-steps-and-ramps" title="Permanent link">&para;</a></h3>
+<p>A signal made of straight pieces can be written as a sum of shifted steps and ramps, which is convenient both for transforms and for differentiating. The rule is to read the signal from left to right and, at each break point, add whatever change in value (a step) and change in slope (a ramp) occurs there.</p>
+<div class="admonition example">
+<p class="admonition-title">Example 2.3 A trapezoid from ramps and steps</p>
+<p>Let <span class="arithmatex">\(x(t)\)</span> rise linearly from 0 at <span class="arithmatex">\(t = -1\)</span> to 1 at <span class="arithmatex">\(t = 0\)</span>, stay at 1 until <span class="arithmatex">\(t = 2\)</span>, and then drop suddenly to 0 (the blue signal of Figure 2.4).</p>
+<ul>
+<li>At <span class="arithmatex">\(t = -1\)</span> the slope changes from 0 to 1: add <span class="arithmatex">\(r(t + 1)\)</span>.</li>
+<li>At <span class="arithmatex">\(t = 0\)</span> the slope changes from 1 to 0: add <span class="arithmatex">\(-r(t)\)</span>.</li>
+<li>At <span class="arithmatex">\(t = 2\)</span> the value drops by 1: add <span class="arithmatex">\(-u(t - 2)\)</span>.</li>
+</ul>
+<p>So <span class="arithmatex">\(x(t) = r(t+1) - r(t) - u(t-2)\)</span>. Check at <span class="arithmatex">\(t = 1\)</span>: <span class="arithmatex">\(2 - 1 - 0 = 1\)</span>. Check at <span class="arithmatex">\(t = 3\)</span>: <span class="arithmatex">\(4 - 3 - 1 = 0\)</span>. Differentiating gives <span class="arithmatex">\(x'(t) = u(t+1) - u(t) - \delta(t-2)\)</span>: a unit-height pulse on <span class="arithmatex">\((-1, 0)\)</span> and a downward impulse of area 1 where the signal jumps.</p>
+</div>
+<h2 id="exponentials">2.4 Exponentials and sinusoids<a class="headerlink" href="#exponentials" title="Permanent link">&para;</a></h2>
+<h3 id="real-exponentials">Real exponentials<a class="headerlink" href="#real-exponentials" title="Permanent link">&para;</a></h3>
+<p>The real exponential <span class="arithmatex">\(x(t) = Ce^{at}\)</span>, with real <span class="arithmatex">\(C\)</span> and <span class="arithmatex">\(a\)</span>, decays if <span class="arithmatex">\(a &lt; 0\)</span>, grows if <span class="arithmatex">\(a &gt; 0\)</span> and is constant if <span class="arithmatex">\(a = 0\)</span>. The time it takes to fall by a factor <span class="arithmatex">\(e\)</span> is the <strong>time constant</strong> <span class="arithmatex">\(\tau = 1/|a|\)</span>. After five time constants a decaying exponential is below 1% of its starting value (<span class="arithmatex">\(e^{-5} \approx 0.0067\)</span>). Exponentials describe the charging of capacitors, the cooling of objects, radioactive decay and compound interest.</p>
+<h3 id="complex-exponentials">Complex exponentials<a class="headerlink" href="#complex-exponentials" title="Permanent link">&para;</a></h3>
+<p>Now let the exponent be complex: <span class="arithmatex">\(s = \sigma + j\omega\)</span>. Then</p>
+<div class="arithmatex">\[
+e^{st} = e^{\sigma t}e^{j\omega t} = e^{\sigma t}\cos\omega t + j\,e^{\sigma t}\sin\omega t .
+\]</div>
+<p>The real part <span class="arithmatex">\(\sigma\)</span> sets an exponential <strong>envelope</strong>, and the imaginary part <span class="arithmatex">\(\omega\)</span> sets the frequency of oscillation inside it. With <span class="arithmatex">\(\sigma &lt; 0\)</span> we get a <strong>damped</strong> sinusoid, the response of a struck bell or a plucked string; with <span class="arithmatex">\(\sigma &gt; 0\)</span> a <strong>growing</strong> one, the sign of an unstable system; with <span class="arithmatex">\(\sigma = 0\)</span> a pure sinusoid. The whole family <span class="arithmatex">\(e^{st}\)</span> is so important that the variable <span class="arithmatex">\(s\)</span> gets its own plane, the s-plane, in Chapter 10: the left half of the plane holds decaying signals, the right half growing ones, and the vertical axis pure oscillations.</p>
+<p>A general complex exponential <span class="arithmatex">\(Ce^{st}\)</span> has a complex amplitude <span class="arithmatex">\(C = |C|e^{j\theta}\)</span>, so</p>
+<div class="arithmatex">\[
+Ce^{st} = |C|e^{\sigma t}e^{j(\omega t + \theta)}, \qquad \mathrm{Re}\{Ce^{st}\} = |C|e^{\sigma t}\cos(\omega t + \theta).
+\]</div>
+<p>The magnitude of <span class="arithmatex">\(C\)</span> sets the size and its angle sets the phase. This is how the "phasor" of circuit theory works.</p>
+<p><img alt="Top: a damped sinusoid (σ = −0.4) and a growing sinusoid (σ = 0.25), each inside its dashed exponential envelope. Bottom: the sequences aⁿu[n] for a = 0.8 (decaying), a = −0.8 (decaying with alternating sign) and a = 1.2 (growing)." src="img/exponentials.svg" title="Figure 2.3 Exponential signals" width="800" height="420"></p>
+<h3 id="discrete-time-exponentials">Discrete-time exponentials<a class="headerlink" href="#discrete-time-exponentials" title="Permanent link">&para;</a></h3>
+<p>In discrete time the exponential is written <span class="arithmatex">\(x[n] = Ca^n\)</span>, or with a complex base <span class="arithmatex">\(z\)</span>, <span class="arithmatex">\(x[n] = Cz^n\)</span>. For real <span class="arithmatex">\(a\)</span>:</p>
+<ul>
+<li><span class="arithmatex">\(0 &lt; a &lt; 1\)</span>: decays toward zero; <span class="arithmatex">\(a &gt; 1\)</span>: grows;</li>
+<li><span class="arithmatex">\(-1 &lt; a &lt; 0\)</span>: decays while alternating in sign; <span class="arithmatex">\(a &lt; -1\)</span>: grows while alternating;</li>
+<li><span class="arithmatex">\(a = 1\)</span>: constant; <span class="arithmatex">\(a = -1\)</span>: alternates <span class="arithmatex">\(\pm1\)</span>.</li>
+</ul>
+<p>For a complex base <span class="arithmatex">\(z = re^{j\Omega_0}\)</span>,</p>
+<div class="arithmatex">\[
+z^n = r^n e^{j\Omega_0 n} = r^n\cos(\Omega_0 n) + j\,r^n\sin(\Omega_0 n).
+\]</div>
+<p>The magnitude <span class="arithmatex">\(r\)</span> plays the role of <span class="arithmatex">\(e^{\sigma}\)</span>: <span class="arithmatex">\(r &lt; 1\)</span> gives a decaying envelope, <span class="arithmatex">\(r &gt; 1\)</span> a growing one, and <span class="arithmatex">\(r = 1\)</span> (a point on the unit circle) a pure discrete-time sinusoid. The variable <span class="arithmatex">\(z\)</span> gets its own plane in Chapter 11, where the unit circle plays the part of the vertical axis of the s-plane. The two descriptions are linked by sampling: if <span class="arithmatex">\(x(t) = e^{st}\)</span> is sampled every <span class="arithmatex">\(T_s\)</span> seconds, <span class="arithmatex">\(x[n] = e^{snT_s} = (e^{sT_s})^n\)</span>, so <span class="arithmatex">\(z = e^{sT_s}\)</span>.</p>
+<h2 id="25-operations-on-the-amplitude">2.5 Operations on the amplitude<a class="headerlink" href="#25-operations-on-the-amplitude" title="Permanent link">&para;</a></h2>
+<p>Operations on the <strong>dependent variable</strong> (the value of the signal) are straightforward:</p>
+<ul>
+<li><strong>Amplitude scaling:</strong> <span class="arithmatex">\(y(t) = c\,x(t)\)</span>. An amplifier with gain <span class="arithmatex">\(c\)</span>.</li>
+<li><strong>Addition:</strong> <span class="arithmatex">\(y(t) = x_1(t) + x_2(t)\)</span>, value by value. A mixer adding two audio tracks.</li>
+<li><strong>Multiplication:</strong> <span class="arithmatex">\(y(t) = x_1(t)\,x_2(t)\)</span>, value by value. A modulator multiplying a message by a carrier, or a window cutting out part of a signal.</li>
+<li><strong>Differentiation</strong> <span class="arithmatex">\(y(t) = dx/dt\)</span> and <strong>integration</strong> <span class="arithmatex">\(y(t) = \int_{-\infty}^{t}x(\tau)\,d\tau\)</span>. An inductor's voltage is proportional to the derivative of its current; a capacitor's voltage to the integral of its current.</li>
+</ul>
+<p>In discrete time, differentiation becomes the <strong>first difference</strong> <span class="arithmatex">\(y[n] = x[n] - x[n-1]\)</span>, and integration becomes the <strong>running sum</strong> (accumulation) <span class="arithmatex">\(y[n] = \sum_{k=-\infty}^{n}x[k]\)</span>. We already met both: the difference of <span class="arithmatex">\(u[n]\)</span> is <span class="arithmatex">\(\delta[n]\)</span> and the running sum of <span class="arithmatex">\(\delta[n]\)</span> is <span class="arithmatex">\(u[n]\)</span>.</p>
+<h2 id="time-ops">2.6 Operations on time: shift, reversal and scaling<a class="headerlink" href="#time-ops" title="Permanent link">&para;</a></h2>
+<p>Operations on the <strong>independent variable</strong> move or reshape a signal along the time axis. They cause more mistakes than anything else in a first course, so we go slowly.</p>
+<p><strong>Time shift.</strong> <span class="arithmatex">\(y(t) = x(t - t_0)\)</span>. If <span class="arithmatex">\(t_0 &gt; 0\)</span> the signal is <strong>delayed</strong>: it moves <em>right</em> by <span class="arithmatex">\(t_0\)</span>. Whatever <span class="arithmatex">\(x\)</span> did at time 0, <span class="arithmatex">\(y\)</span> does at time <span class="arithmatex">\(t_0\)</span>, because <span class="arithmatex">\(y(t_0) = x(0)\)</span>. If <span class="arithmatex">\(t_0 &lt; 0\)</span> the signal is <strong>advanced</strong> (moved left). An echo is a delayed copy of a sound.</p>
+<p><strong>Time reversal.</strong> <span class="arithmatex">\(y(t) = x(-t)\)</span>. The signal is reflected about <span class="arithmatex">\(t = 0\)</span>: what <span class="arithmatex">\(x\)</span> did at time 3, <span class="arithmatex">\(y\)</span> does at time <span class="arithmatex">\(-3\)</span>. A tape played backwards.</p>
+<p><strong>Time scaling.</strong> <span class="arithmatex">\(y(t) = x(at)\)</span> with <span class="arithmatex">\(a &gt; 0\)</span>. If <span class="arithmatex">\(a &gt; 1\)</span> the signal is <strong>compressed</strong> by the factor <span class="arithmatex">\(a\)</span> (played faster); if <span class="arithmatex">\(0 &lt; a &lt; 1\)</span> it is <strong>expanded</strong> (played slower). What <span class="arithmatex">\(x\)</span> did at time <span class="arithmatex">\(t_1\)</span>, <span class="arithmatex">\(y\)</span> does at time <span class="arithmatex">\(t_1/a\)</span>. A recording played at double speed is <span class="arithmatex">\(x(2t)\)</span>; it lasts half as long and every frequency in it doubles.</p>
+<p>In each case the reliable method is the same: <strong>ask where the new signal takes a given value</strong>. Since <span class="arithmatex">\(y(t) = x(\text{something})\)</span>, <span class="arithmatex">\(y\)</span> takes the value <span class="arithmatex">\(x(t_1)\)</span> when the "something" equals <span class="arithmatex">\(t_1\)</span>. Solve for <span class="arithmatex">\(t\)</span>.</p>
+<h3 id="combined-operations">Combined operations<a class="headerlink" href="#combined-operations" title="Permanent link">&para;</a></h3>
+<p>The signal <span class="arithmatex">\(y(t) = x(at - b)\)</span> combines a scaling, possibly a reversal (if <span class="arithmatex">\(a &lt; 0\)</span>) and a shift. There are two safe orders:</p>
+<ol>
+<li><strong>Shift first, then scale.</strong> Form <span class="arithmatex">\(v(t) = x(t - b)\)</span>, then <span class="arithmatex">\(y(t) = v(at)\)</span>. Check: <span class="arithmatex">\(v(at) = x(at - b)\)</span>. Correct.</li>
+<li><strong>Scale first, then shift by <span class="arithmatex">\(b/a\)</span>.</strong> Form <span class="arithmatex">\(w(t) = x(at)\)</span>, then <span class="arithmatex">\(y(t) = w(t - b/a)\)</span>. Check: <span class="arithmatex">\(w(t - b/a) = x(a(t - b/a)) = x(at - b)\)</span>. Correct.</li>
+</ol>
+<p>The tempting mistake is to scale first and then shift by <span class="arithmatex">\(b\)</span>: that gives <span class="arithmatex">\(x(a(t - b)) = x(at - ab)\)</span>, which is wrong unless <span class="arithmatex">\(a = 1\)</span>. The safest method of all is the point-by-point one: take each break point <span class="arithmatex">\(t_1\)</span> of <span class="arithmatex">\(x\)</span> and solve <span class="arithmatex">\(at - b = t_1\)</span> for the new location <span class="arithmatex">\(t = (t_1 + b)/a\)</span>.</p>
+<figure class="fig fig-diagram">
+<img src="img/time-operations.svg" alt="Top: the signal x(t), a ramp from t = −1 to 0 followed by a level of 1 until t = 2; the delayed signal x(t − 1); the reversed signal x(−t). Bottom: the compressed signal x(2t), occupying −½ to 1; and x(−2t + 3), occupying ½ to 2." loading="lazy" width="800" height="420">
+<figcaption><strong>Figure 2.4 Time operations.</strong> Top: the signal x(t), a ramp from t = −1 to 0 followed by a level of 1 until t = 2; the delayed signal x(t − 1); the reversed signal x(−t). Bottom: the compressed signal x(2t), occupying −½ to 1; and x(−2t + 3), occupying ½ to 2.</figcaption>
+</figure>
+<div class="admonition example">
+<p class="admonition-title">Example 2.4 Sketching x(−2t + 3)</p>
+<p>Take <span class="arithmatex">\(x(t)\)</span> from Example 2.3: a ramp from <span class="arithmatex">\((-1, 0)\)</span> up to <span class="arithmatex">\((0, 1)\)</span>, a level of 1 until <span class="arithmatex">\(t = 2\)</span>, then zero. Sketch <span class="arithmatex">\(y(t) = x(-2t + 3)\)</span>.</p>
+<p><strong>Point by point.</strong> Solve <span class="arithmatex">\(-2t + 3 = t_1\)</span>, that is <span class="arithmatex">\(t = (3 - t_1)/2\)</span>, for each break point <span class="arithmatex">\(t_1\)</span>:</p>
+<table>
+<thead>
+<tr>
+<th>Point of <span class="arithmatex">\(x\)</span></th>
+<th><span class="arithmatex">\(t_1\)</span></th>
+<th>New time <span class="arithmatex">\(t = (3 - t_1)/2\)</span></th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>start of ramp</td>
+<td><span class="arithmatex">\(-1\)</span></td>
+<td><span class="arithmatex">\(2\)</span></td>
+<td>0</td>
+</tr>
+<tr>
+<td>top of ramp</td>
+<td><span class="arithmatex">\(0\)</span></td>
+<td><span class="arithmatex">\(1.5\)</span></td>
+<td>1</td>
+</tr>
+<tr>
+<td>end of level</td>
+<td><span class="arithmatex">\(2\)</span></td>
+<td><span class="arithmatex">\(0.5\)</span></td>
+<td>1 (then 0)</td>
+</tr>
+</tbody>
+</table>
+<p><em>Table 2.2. Break points of <span class="arithmatex">\(x(t)\)</span> and where they land in <span class="arithmatex">\(x(-2t + 3)\)</span>.</em></p>
+<p>So <span class="arithmatex">\(y(t)\)</span> jumps from 0 to 1 at <span class="arithmatex">\(t = 0.5\)</span>, stays at 1 until <span class="arithmatex">\(t = 1.5\)</span>, then falls linearly to 0 at <span class="arithmatex">\(t = 2\)</span>. The order has reversed (because of the minus sign) and the duration has halved from 3 to 1.5 (because of the factor 2).</p>
+<p><strong>By steps.</strong> Shift first: <span class="arithmatex">\(v(t) = x(t + 3)\)</span> occupies <span class="arithmatex">\([-4, -1]\)</span>. Then <span class="arithmatex">\(v(-2t)\)</span> reverses and compresses by 2: the interval <span class="arithmatex">\([-4, -1]\)</span> maps to <span class="arithmatex">\([0.5, 2]\)</span>. The same answer.</p>
+</div>
+<h3 id="time-operations-in-discrete-time">Time operations in discrete time<a class="headerlink" href="#time-operations-in-discrete-time" title="Permanent link">&para;</a></h3>
+<p>Shifts and reversals work exactly as in continuous time, with the restriction that a shift <span class="arithmatex">\(n_0\)</span> must be an integer. Time scaling is different, because <span class="arithmatex">\(x[an]\)</span> is defined only when <span class="arithmatex">\(an\)</span> is an integer.</p>
+<ul>
+<li><strong>Decimation (downsampling)</strong> by an integer <span class="arithmatex">\(M\)</span>: <span class="arithmatex">\(y[n] = x[Mn]\)</span>. It keeps every <span class="arithmatex">\(M\)</span>th sample and <strong>discards the rest</strong>. Information is lost: two different sequences can have the same decimated version.</li>
+<li><strong>Expansion (upsampling)</strong> by an integer <span class="arithmatex">\(L\)</span>: <span class="arithmatex">\(y[n] = x[n/L]\)</span> when <span class="arithmatex">\(n\)</span> is a multiple of <span class="arithmatex">\(L\)</span>, and <span class="arithmatex">\(0\)</span> otherwise. It inserts <span class="arithmatex">\(L - 1\)</span> zeros between samples. No information is lost, but the result is not a smooth slower version: the zeros have to be filled in by interpolation, a topic for Chapter 9.</li>
+</ul>
+<p><img alt="A sequence x[n] (left); its decimated version x[2n], which keeps only the even-indexed samples and is half as long (centre); and its expanded version, with a zero inserted between every pair of samples (right)." src="img/decimation-expansion.svg" title="Figure 2.5 Decimation and expansion" width="800" height="230"></p>
+<div class="admonition warning">
+<p class="admonition-title">Decimating and then expanding is not the identity</p>
+<p>Expanding <span class="arithmatex">\(x[2n]\)</span> by 2 gives back the even samples of <span class="arithmatex">\(x\)</span> with zeros where the odd samples were. The odd samples are gone for good. Expanding first and then decimating, on the other hand, does return the original sequence.</p>
+</div>
+<h2 id="27-checking-operations-with-numpy">2.7 Checking operations with NumPy<a class="headerlink" href="#27-checking-operations-with-numpy" title="Permanent link">&para;</a></h2>
+<p>Writing a signal as a Python function of time makes it easy to check a sketch. The program below evaluates <span class="arithmatex">\(x(-2t + 3)\)</span> at a few points, confirms the step-and-ramp formula of Example 2.3, and decimates and expands a sequence.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">x</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""The signal of Example 2.4: ramp on [-1, 0), 1 on [0, 2), 0 elsewhere."""</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">t</span> <span class="o">&gt;=</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">t</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">),</span> <span class="n">t</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+           <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">t</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">t</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">),</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">))</span>
+
+<span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">,</span> <span class="mf">1.75</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"t          :"</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"x(-2t + 3) :"</span><span class="p">,</span> <span class="n">x</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span> <span class="o">*</span> <span class="n">t</span> <span class="o">+</span> <span class="mi">3</span><span class="p">))</span>
+
+<span class="c1"># The same signal written with steps and ramps</span>
+<span class="n">u</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+<span class="n">r</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">*</span> <span class="n">u</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+<span class="n">x_steps</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="n">r</span><span class="p">(</span><span class="n">t</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">r</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">-</span> <span class="n">u</span><span class="p">(</span><span class="n">t</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">tt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">7001</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"step form agrees:"</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">x</span><span class="p">(</span><span class="n">tt</span><span class="p">),</span> <span class="n">x_steps</span><span class="p">(</span><span class="n">tt</span><span class="p">)))</span>
+
+<span class="c1"># Discrete time: decimation by 2 and expansion by 2</span>
+<span class="n">n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="n">xn</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">])</span>
+<span class="n">dec</span> <span class="o">=</span> <span class="n">xn</span><span class="p">[::</span><span class="mi">2</span><span class="p">]</span>                      <span class="c1"># keeps x[-4], x[-2], x[0], x[2], x[4]</span>
+<span class="n">exp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">xn</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">exp</span><span class="p">[::</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">xn</span>                      <span class="c1"># inserts a zero between samples</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"x[2n]  :"</span><span class="p">,</span> <span class="n">dec</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"expand :"</span><span class="p">,</span> <span class="n">exp</span><span class="p">)</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>t          : [0.25 0.5  1.   1.5  1.75 2.  ]
+x(-2t + 3) : [0.  0.  1.  1.  0.5 0. ]
+step form agrees: True
+x[2n]  : [0.5 1.5 2.5 1.5 0.5]
+expand : [0.5 0.  1.  0.  1.5 0.  2.  0.  2.5 0.  2.  0.  1.5 0.  1.  0.  0.5]
+</code></pre></div>
+<p>The value at <span class="arithmatex">\(t = 0.5\)</span> is 0 rather than 1 because the program defines <span class="arithmatex">\(x(2) = 0\)</span> (the level ends just before <span class="arithmatex">\(t = 2\)</span>); this is the single point where the jump happens, and it does not affect the sketch. At <span class="arithmatex">\(t = 1.75\)</span>, halfway down the ramp, the value is 0.5 as expected.</p>
+<div class="admonition tip">
+<p class="admonition-title">A habit worth forming</p>
+<p>After every time operation, check one easy point. For <span class="arithmatex">\(x(-2t + 3)\)</span>, ask: where does <span class="arithmatex">\(y\)</span> equal <span class="arithmatex">\(x(0)\)</span>? When <span class="arithmatex">\(-2t + 3 = 0\)</span>, so at <span class="arithmatex">\(t = 1.5\)</span>. If your sketch does not have the top of the ramp at <span class="arithmatex">\(t = 1.5\)</span>, something went wrong.</p>
+</div>
+<h2 id="28-summary">2.8 Summary<a class="headerlink" href="#28-summary" title="Permanent link">&para;</a></h2>
+<div class="admonition abstract">
+<p class="admonition-title">Summary</p>
+<ul>
+<li><span class="arithmatex">\(\delta[n]\)</span> and <span class="arithmatex">\(u[n]\)</span> are related by <span class="arithmatex">\(u[n] = \sum_{k\le n}\delta[k]\)</span> and <span class="arithmatex">\(\delta[n] = u[n] - u[n-1]\)</span>. Every sequence is a sum of shifted, scaled impulses: <span class="arithmatex">\(x[n] = \sum_k x[k]\delta[n-k]\)</span>.</li>
+<li>The CT impulse <span class="arithmatex">\(\delta(t)\)</span> is the limit of unit-area pulses. It is defined by the <strong>sifting property</strong> <span class="arithmatex">\(\int x(t)\delta(t - t_0)dt = x(t_0)\)</span>. It is the derivative of the step, and <span class="arithmatex">\(\delta(at) = \delta(t)/|a|\)</span>.</li>
+<li>Ramps, rectangular pulses, the sign function and <span class="arithmatex">\(\mathrm{sinc}(x) = \sin(\pi x)/(\pi x)\)</span> complete the toolkit. Piecewise-linear signals are sums of shifted steps and ramps.</li>
+<li><span class="arithmatex">\(e^{st}\)</span> with <span class="arithmatex">\(s = \sigma + j\omega\)</span> is an oscillation at <span class="arithmatex">\(\omega\)</span> inside an envelope <span class="arithmatex">\(e^{\sigma t}\)</span>. In discrete time <span class="arithmatex">\(z^n\)</span> with <span class="arithmatex">\(z = re^{j\Omega_0}\)</span> plays the same part, <span class="arithmatex">\(r\)</span> setting the envelope; sampling links them by <span class="arithmatex">\(z = e^{sT_s}\)</span>.</li>
+<li><span class="arithmatex">\(x(t - t_0)\)</span> delays by <span class="arithmatex">\(t_0\)</span>; <span class="arithmatex">\(x(-t)\)</span> reflects; <span class="arithmatex">\(x(at)\)</span> compresses for <span class="arithmatex">\(a &gt; 1\)</span>. For <span class="arithmatex">\(x(at - b)\)</span> shift first and then scale, or scale and then shift by <span class="arithmatex">\(b/a\)</span>; when in doubt, map the break points.</li>
+<li>Decimation <span class="arithmatex">\(x[Mn]\)</span> discards samples; expansion inserts zeros.</li>
+</ul>
+</div>
+<h2 id="29-exercises">2.9 Exercises<a class="headerlink" href="#29-exercises" title="Permanent link">&para;</a></h2>
+<div class="admonition example">
+<p class="admonition-title">Exercise 2.1</p>
+<p>Evaluate <span class="arithmatex">\(\int_{-\infty}^{\infty} e^{-2t}\,\delta(t + 1)\,dt\)</span>.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p><span class="arithmatex">\(e^{2}\)</span>, about 7.389. The impulse is at <span class="arithmatex">\(t = -1\)</span>, so the integral is <span class="arithmatex">\(e^{-2(-1)} = e^2\)</span>.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 2.2</p>
+<p>Simplify <span class="arithmatex">\((t^3 + 1)\,\delta(t - 1)\)</span> and <span class="arithmatex">\(\sin(t)\,\delta(t)\)</span>.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p><span class="arithmatex">\((t^3 + 1)\delta(t - 1) = 2\delta(t - 1)\)</span>, by the sampling property. <span class="arithmatex">\(\sin(t)\delta(t) = \sin(0)\delta(t) = 0\)</span>.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 2.3</p>
+<p>Evaluate <span class="arithmatex">\(\int_{-\infty}^{\infty} t^2\,\delta(3t - 6)\,dt\)</span>.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p><span class="arithmatex">\(\delta(3t - 6) = \delta(3(t - 2)) = \tfrac13\delta(t - 2)\)</span>, so the integral is <span class="arithmatex">\(\tfrac13 \cdot 4 = 4/3\)</span>.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 2.4</p>
+<p>Write the triangular pulse that rises from 0 at <span class="arithmatex">\(t = 0\)</span> to 1 at <span class="arithmatex">\(t = 1\)</span> and falls back to 0 at <span class="arithmatex">\(t = 2\)</span> as a sum of ramps.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p><span class="arithmatex">\(x(t) = r(t) - 2r(t - 1) + r(t - 2)\)</span>. The slope changes by <span class="arithmatex">\(+1\)</span> at 0, by <span class="arithmatex">\(-2\)</span> at 1 (from <span class="arithmatex">\(+1\)</span> to <span class="arithmatex">\(-1\)</span>) and by <span class="arithmatex">\(+1\)</span> at 2 (from <span class="arithmatex">\(-1\)</span> to 0).</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 2.5</p>
+<p>For the triangular pulse of Exercise 2.4, where does <span class="arithmatex">\(x(3 - t)\)</span> reach its peak, and what interval does it occupy?</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>The peak of <span class="arithmatex">\(x\)</span> is at <span class="arithmatex">\(t_1 = 1\)</span>; solve <span class="arithmatex">\(3 - t = 1\)</span>, so <span class="arithmatex">\(t = 2\)</span>. The interval <span class="arithmatex">\([0, 2]\)</span> maps to <span class="arithmatex">\(t = 3 - t_1\)</span>, giving <span class="arithmatex">\([1, 3]\)</span>. (The triangle is symmetric, so reversal does not change its shape.)</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 2.6</p>
+<p>A student writes <span class="arithmatex">\(x(2t - 4)\)</span> as "compress by 2, then delay by 4". Which correct description should replace it?</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>Compress by 2, then delay by <span class="arithmatex">\(4/2 = 2\)</span>; or delay by 4 first, then compress by 2. Either gives <span class="arithmatex">\(x(2(t - 2)) = x(2t - 4)\)</span>.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 2.7</p>
+<p>Describe <span class="arithmatex">\(x(t) = e^{-t}\cos(10\pi t)\)</span>: what is its envelope, and how many oscillations occur per second?</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>It is <span class="arithmatex">\(\mathrm{Re}\{e^{st}\}\)</span> with <span class="arithmatex">\(s = -1 + j10\pi\)</span>. The envelope is <span class="arithmatex">\(e^{-t}\)</span>, with a time constant of 1 second, and the frequency is <span class="arithmatex">\(10\pi\)</span> rad/s, which is 5 oscillations per second.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 2.8</p>
+<p>For which values of <span class="arithmatex">\(a\)</span> does <span class="arithmatex">\(a^n u[n]\)</span> have finite energy?</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>For <span class="arithmatex">\(|a| &lt; 1\)</span>. The energy is <span class="arithmatex">\(\sum_{n\ge0}|a|^{2n} = 1/(1 - |a|^2)\)</span>, which is finite only when <span class="arithmatex">\(|a| &lt; 1\)</span>.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 2.9</p>
+<p>Let <span class="arithmatex">\(x[n] = \{1, 2, 3, 4, 5, 6\}\)</span> for <span class="arithmatex">\(n = 0, \ldots, 5\)</span>. Write out <span class="arithmatex">\(x[2n]\)</span> and <span class="arithmatex">\(x[n - 2]\)</span>.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p><span class="arithmatex">\(x[2n]\)</span> takes <span class="arithmatex">\(x[0], x[2], x[4]\)</span>: the values <span class="arithmatex">\(1, 3, 5\)</span> at <span class="arithmatex">\(n = 0, 1, 2\)</span>. <span class="arithmatex">\(x[n - 2]\)</span> is the same list moved right by two: <span class="arithmatex">\(1, \ldots, 6\)</span> at <span class="arithmatex">\(n = 2, \ldots, 7\)</span>.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 2.10</p>
+<p>Show that <span class="arithmatex">\(\sum_{n=-\infty}^{\infty} x[n]\,\delta[n - 3] = x[3]\)</span>, and use it to evaluate <span class="arithmatex">\(\sum_n (n^2 + 1)\,\delta[n + 2]\)</span>.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>Every term is zero except <span class="arithmatex">\(n = 3\)</span>, where <span class="arithmatex">\(\delta[0] = 1\)</span>, leaving <span class="arithmatex">\(x[3]\)</span>. For the second sum the only non-zero term is at <span class="arithmatex">\(n = -2\)</span>, giving <span class="arithmatex">\((-2)^2 + 1 = 5\)</span>.</p>
+</details>
+<h2 id="210-quiz">2.10 Quiz<a class="headerlink" href="#210-quiz" title="Permanent link">&para;</a></h2>
+<div class="pk-quiz" data-quiz="f17a8988ec04">
+<p class="pk-quiz-title">Check your understanding of Chapter 2</p>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;text&quot;,&quot;answer&quot;:[&quot;5&quot;]}">
+<p class="admonition-title">Exercise 1</p>
+<p class="pk-q-prompt">Evaluate the integral of (t² + 1) δ(t − 2) over all t.</p>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>5</strong></p>
+<p class="pk-q-why">Sifting picks out the value at t = 2: 4 + 1 = 5.</p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;4δ(t)&quot;,&quot;δ(t)/4&quot;,&quot;δ(t)&quot;,&quot;δ(t − 4)&quot;],&quot;answer&quot;:&quot;δ(t)/4&quot;}">
+<p class="admonition-title">Exercise 2</p>
+<p class="pk-q-prompt">δ(4t) equals</p>
+<ol class="pk-q-opts" type="A"><li>4δ(t)</li><li>δ(t)/4</li><li>δ(t)</li><li>δ(t − 4)</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>δ(t)/4</strong></p>
+<p class="pk-q-why">Compressing by 4 divides the area by 4.</p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;delayed by 3&quot;,&quot;advanced by 3&quot;,&quot;compressed by 3&quot;,&quot;reversed&quot;],&quot;answer&quot;:&quot;advanced by 3&quot;}">
+<p class="admonition-title">Exercise 3</p>
+<p class="pk-q-prompt">Relative to x(t), the signal x(t + 3) is</p>
+<ol class="pk-q-opts" type="A"><li>delayed by 3</li><li>advanced by 3</li><li>compressed by 3</li><li>reversed</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>advanced by 3</strong></p>
+<p class="pk-q-why">y(−3) = x(0): what x did at 0 now happens at −3, earlier.</p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;σ&quot;,&quot;ω&quot;,&quot;the phase&quot;,&quot;the amplitude&quot;],&quot;answer&quot;:&quot;σ&quot;}">
+<p class="admonition-title">Exercise 4</p>
+<p class="pk-q-prompt">In e^(σt)cos(ωt), which quantity decides whether the signal grows or decays?</p>
+<ol class="pk-q-opts" type="A"><li>σ</li><li>ω</li><li>the phase</li><li>the amplitude</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>σ</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;blanks&quot;,&quot;answer&quot;:[[&quot;difference&quot;]]}">
+<p class="admonition-title">Exercise 5</p>
+<p class="pk-q-prompt">In discrete time, the unit impulse is the first <span class="pk-blank" data-i="0">___</span> of the unit step.</p>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>difference</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;6&quot;,&quot;3&quot;,&quot;12&quot;,&quot;2&quot;],&quot;answer&quot;:&quot;3&quot;}">
+<p class="admonition-title">Exercise 6</p>
+<p class="pk-q-prompt">x(2t − 6) is obtained from x(t) by compressing by 2 and then delaying by</p>
+<ol class="pk-q-opts" type="A"><li>6</li><li>3</li><li>12</li><li>2</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>3</strong></p>
+<p class="pk-q-why">x(2t − 6) = x(2(t − 3)).</p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;match&quot;,&quot;pairs&quot;:[[&quot;x[2n]&quot;,&quot;discards every other sample&quot;],[&quot;x[n − 2]&quot;,&quot;delays by two samples&quot;],[&quot;x[−n]&quot;,&quot;reflects about n = 0&quot;]]}">
+<p class="admonition-title">Exercise 7</p>
+<p class="pk-q-prompt">Match each operation on a sequence with its effect.</p>
+<table class="pk-q-match"><thead><tr><th>A</th><th>B</th></tr></thead><tbody><tr><td>x[2n]</td><td>delays by two samples</td></tr><tr><td>x[n − 2]</td><td>reflects about n = 0</td></tr><tr><td>x[−n]</td><td>discards every other sample</td></tr></tbody></table>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>x[2n]</strong> — discards every other sample; <strong>x[n − 2]</strong> — delays by two samples; <strong>x[−n]</strong> — reflects about n = 0</p>
+</details>
+</div>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button type="button" class="md-top md-icon" data-md-component="top" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+Back to top
+</button>
+</main>
+<footer class="md-footer">
+<nav class="md-footer__inner md-grid" aria-label="Footer" >
+<a href="signals-and-their-classification.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: 1. Signals and Their Classification">
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</div>
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Previous
+</span>
+<div class="md-ellipsis">
+1. Signals and Their Classification
+</div>
+</div>
+</a>
+<a href="systems-and-their-properties.html" class="md-footer__link md-footer__link--next" aria-label="Next: 3. Systems and Their Properties">
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Next
+</span>
+<div class="md-ellipsis">
+3. Systems and Their Properties
+</div>
+</div>
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+</div>
+</a>
+</nav>
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+The Open Book Project &middot;
+<a href="../../about.html">About this library</a> &middot;
+<a href="../../publish.html">Publish your book</a> &middot;
+© The authors of the books
+</div>
+Made with
+<a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+Material for MkDocs
+</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "navigation.prune", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "toc.follow", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+<script src="../../assets/mathjax.js"></script>
+<script src="../../assets/viz.js"></script>
+<script src="../../assets/remote.js"></script>
+<script src="../../assets/scans.js"></script>
+<script src="../../assets/reader.js"></script>
+<script src="../../assets/app.js"></script>
+<script src="../../assets/slides.js"></script>
+<script src="../../assets/speak.js"></script>
+<script src="../../assets/quiz.js"></script>
+<script>
+    /* offline reading: the service worker at the site root (its scope is the whole site) */
+    if ("serviceWorker" in navigator && window.isSecureContext) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register(new URL("../../sw.js", location.href).href).catch(function () {});
+      });
+    }
+  </script>
+</body>
+</html>

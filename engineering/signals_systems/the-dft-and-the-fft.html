@@ -1,0 +1,1098 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="description" content="The Open Book Project: books on computer science, quantum computing, cyber security, science, the social sciences, university courses and languages, read page by page like an e-book, online or offline.">
+<meta name="author" content="The Open Book Project">
+<link rel="canonical" href="https://open-book-project.github.io/engineering/signals_systems/the-dft-and-the-fft.html">
+<link rel="prev" href="the-discrete-time-fourier-transform.html">
+<link rel="next" href="sampling-and-aliasing.html">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap"></noscript>
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Open Book">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="application-name" content="Open Book"><script src="../../assets/library-data.js"></script><script>
+    (function () {
+      var X = window.XMLHttpRequest, open, gate = new Promise(function (r) { open = r; });
+      if (!X) return;
+      var open0 = X.prototype.open, send0 = X.prototype.send;
+      X.prototype.open = function (method, url) {
+        this.__pkIndex = /\/search\/search_index\.json(\?|#|$)/.test(String(url));
+        return open0.apply(this, arguments);
+      };
+      X.prototype.send = function () {
+        if (!this.__pkIndex) return send0.apply(this, arguments);
+        var xhr = this, args = arguments;
+        gate.then(function () { send0.apply(xhr, args); });
+      };
+      function wake() { open(); }
+      document.addEventListener("focusin", function (e) { if (e.target && e.target.closest && e.target.closest(".md-search")) wake(); });
+      document.addEventListener("click", function (e) { if (e.target && e.target.closest && e.target.closest('label[for="__search"], .md-search')) wake(); }, true);
+      document.addEventListener("keydown", function (e) {
+        var k = e.key;
+        if ((k === "/" || k === "s" || k === "f" || k === "S" || k === "F") && !(e.target && e.target.closest && e.target.closest("input, textarea, [contenteditable]"))) wake();
+      }, true);
+      if (/[?&]q=/.test(location.search)) wake();
+    })();
+  </script><script>
+    try {
+      if ((window.matchMedia && (matchMedia("(display-mode: standalone)").matches || matchMedia("(display-mode: fullscreen)").matches)) || navigator.standalone === true) {
+        document.documentElement.className += " bjp-standalone";
+      }
+    } catch (e) { /* not an installed app */ }
+    /* the books of a subject or of the whole library as covers or as a list (assets/app.js): the reader's choice */
+    try {
+      var bv = localStorage.getItem("bjp.view");
+      if (bv === "list" || (bv !== "grid" && /\/books\.html$/.test(location.pathname))) document.documentElement.className += " bjp-view-list";
+    } catch (e) { /* no storage: covers */ }
+  </script>
+<script>
+    /* a book opened from its cover on the shelf: the page stays blank, in the cover's colour, until the reader is up */
+    try {
+      var cv = sessionStorage.getItem("bjp.reader.cover");
+      if (cv && sessionStorage.getItem("bjp.reader.open") === "1") {
+        var c = JSON.parse(cv), de = document.documentElement;
+        de.className += " bjp-booting";
+        if (c && /^#[0-9a-f]{3,8}$/i.test(c.bg || "")) de.style.background = c.bg;
+        setTimeout(function () { de.classList.remove("bjp-booting"); de.style.background = ""; }, 3000);
+      }
+    } catch (e) { /* no session storage: the page simply opens as usual */ }
+  </script>
+<title>8. The DFT and the FFT - The Open Book Project</title>
+<link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+<link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+<link rel="stylesheet" href="../../assets/extra.css">
+<link rel="stylesheet" href="../../assets/reader.css">
+<link rel="stylesheet" href="../../assets/viz.css">
+<link rel="stylesheet" href="../../assets/app.css">
+<link rel="stylesheet" href="../../assets/theme.css">
+<link rel="stylesheet" href="../../assets/slides.css">
+<link rel="stylesheet" href="../../assets/remote.css">
+<link rel="stylesheet" href="../../assets/scans.css">
+<link rel="stylesheet" href="../../assets/speak.css">
+<link rel="stylesheet" href="../../assets/quiz.css">
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+<input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+<input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a href="#81-why-we-need-the-dft" class="md-skip">
+Skip to content
+</a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav class="md-header__inner md-grid" aria-label="Header">
+<a href="../../index.html" title="The Open Book Project" class="md-header__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+The Open Book Project
+</span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+8. The DFT and the FFT
+</span>
+</div>
+</div>
+</div><a href="../../index.html" class="bjp-libbtn" aria-label="Library: all books" title="Library: all books">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V5h4v15M8 20V9h4v11M14 20L12.6 6l3.8-.8 3 14.2M3 20h18"/></svg><span>Library</span>
+</a>
+<a href="../../subjects/index.html" class="pk-catbtn" aria-haspopup="true" aria-expanded="false" title="Browse the books by category">
+<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><circle cx="17" cy="7" r="3.6"/><path d="M7 13.4l3.9 6.8H3.1z"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg><span>Categories</span>
+</a>
+<form class="md-header__option" data-md-component="palette">
+<input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+<label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+</label>
+<input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+<label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+<label class="md-search__icon md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</label>
+<nav class="md-search__options" aria-label="Search">
+<button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+Initializing search
+</div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--primary bjp-nav bjp-nav--book" aria-label="Navigation" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a href="../../index.html" title="The Open Book Project" class="md-nav__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+The Open Book Project
+</label>
+<ul class="md-nav__list" data-md-scrollfix>
+<li class="md-nav__item bjp-nav-all">
+<a href="../../index.html" class="md-nav__link" aria-label="All books: back to the library">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+<span class="md-ellipsis">All books</span>
+</a>
+</li>
+<li class="md-nav__item bjp-nav-book" role="presentation"><span class="bjp-nav-head">Signals and Systems</span></li>
+<li class="md-nav__item">
+<a href="index.html" class="md-nav__link">
+<span class="md-ellipsis">
+Overview and preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="preface.html" class="md-nav__link">
+<span class="md-ellipsis">
+Preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="signals-and-their-classification.html" class="md-nav__link">
+<span class="md-ellipsis">
+1. Signals and Their Classification
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="elementary-signals-and-operations.html" class="md-nav__link">
+<span class="md-ellipsis">
+2. Elementary Signals and Operations on Signals
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="systems-and-their-properties.html" class="md-nav__link">
+<span class="md-ellipsis">
+3. Systems and Their Properties
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="lti-systems-and-convolution.html" class="md-nav__link">
+<span class="md-ellipsis">
+4. LTI Systems and Convolution
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="fourier-series.html" class="md-nav__link">
+<span class="md-ellipsis">
+5. Fourier Series
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="the-continuous-time-fourier-transform.html" class="md-nav__link">
+<span class="md-ellipsis">
+6. The Continuous-Time Fourier Transform
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="the-discrete-time-fourier-transform.html" class="md-nav__link">
+<span class="md-ellipsis">
+7. The Discrete-Time Fourier Transform
+</span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+8. The DFT and the FFT
+</span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a href="the-dft-and-the-fft.html" class="md-nav__link md-nav__link--active">
+<span class="md-ellipsis">
+8. The DFT and the FFT
+</span>
+</a>
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#81-why-we-need-the-dft" class="md-nav__link">
+<span class="md-ellipsis">
+8.1 Why we need the DFT
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#dft-definition" class="md-nav__link">
+<span class="md-ellipsis">
+8.2 Definition
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#dft-meaning" class="md-nav__link">
+<span class="md-ellipsis">
+8.3 What the DFT values mean
+</span>
+</a>
+<nav class="md-nav" aria-label="8.3 What the DFT values mean">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#samples-of-the-dtft" class="md-nav__link">
+<span class="md-ellipsis">
+Samples of the DTFT
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#frequencies-in-hertz" class="md-nav__link">
+<span class="md-ellipsis">
+Frequencies in hertz
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#zero-padding" class="md-nav__link">
+<span class="md-ellipsis">
+Zero-padding
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#dft-properties" class="md-nav__link">
+<span class="md-ellipsis">
+8.4 Properties of the DFT
+</span>
+</a>
+<nav class="md-nav" aria-label="8.4 Properties of the DFT">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#circular-versus-linear-convolution" class="md-nav__link">
+<span class="md-ellipsis">
+Circular versus linear convolution
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#leakage" class="md-nav__link">
+<span class="md-ellipsis">
+8.5 Leakage and windows
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#fft" class="md-nav__link">
+<span class="md-ellipsis">
+8.6 The fast Fourier transform
+</span>
+</a>
+<nav class="md-nav" aria-label="8.6 The fast Fourier transform">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#decimation-in-time" class="md-nav__link">
+<span class="md-ellipsis">
+Decimation in time
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#counting-operations" class="md-nav__link">
+<span class="md-ellipsis">
+Counting operations
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#numpy-fft" class="md-nav__link">
+<span class="md-ellipsis">
+8.7 The DFT in NumPy
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#88-summary" class="md-nav__link">
+<span class="md-ellipsis">
+8.8 Summary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#89-exercises" class="md-nav__link">
+<span class="md-ellipsis">
+8.9 Exercises
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#810-quiz" class="md-nav__link">
+<span class="md-ellipsis">
+8.10 Quiz
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="sampling-and-aliasing.html" class="md-nav__link">
+<span class="md-ellipsis">
+9. Sampling and Aliasing
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="the-laplace-transform.html" class="md-nav__link">
+<span class="md-ellipsis">
+10. The Laplace Transform
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="the-z-transform.html" class="md-nav__link">
+<span class="md-ellipsis">
+11. The z-Transform
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="frequency-response-and-filters.html" class="md-nav__link">
+<span class="md-ellipsis">
+12. Frequency Response and Filters
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="state-space-models.html" class="md-nav__link">
+<span class="md-ellipsis">
+13. State-Space Models
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="applications-audio-communication-and-control.html" class="md-nav__link">
+<span class="md-ellipsis">
+14. Applications: Audio, Communication and Control
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="tables-of-transforms.html" class="md-nav__link">
+<span class="md-ellipsis">
+Tables of Transforms
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="glossary.html" class="md-nav__link">
+<span class="md-ellipsis">
+Glossary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="further-reading.html" class="md-nav__link">
+<span class="md-ellipsis">
+Further Reading
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#81-why-we-need-the-dft" class="md-nav__link">
+<span class="md-ellipsis">
+8.1 Why we need the DFT
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#dft-definition" class="md-nav__link">
+<span class="md-ellipsis">
+8.2 Definition
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#dft-meaning" class="md-nav__link">
+<span class="md-ellipsis">
+8.3 What the DFT values mean
+</span>
+</a>
+<nav class="md-nav" aria-label="8.3 What the DFT values mean">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#samples-of-the-dtft" class="md-nav__link">
+<span class="md-ellipsis">
+Samples of the DTFT
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#frequencies-in-hertz" class="md-nav__link">
+<span class="md-ellipsis">
+Frequencies in hertz
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#zero-padding" class="md-nav__link">
+<span class="md-ellipsis">
+Zero-padding
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#dft-properties" class="md-nav__link">
+<span class="md-ellipsis">
+8.4 Properties of the DFT
+</span>
+</a>
+<nav class="md-nav" aria-label="8.4 Properties of the DFT">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#circular-versus-linear-convolution" class="md-nav__link">
+<span class="md-ellipsis">
+Circular versus linear convolution
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#leakage" class="md-nav__link">
+<span class="md-ellipsis">
+8.5 Leakage and windows
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#fft" class="md-nav__link">
+<span class="md-ellipsis">
+8.6 The fast Fourier transform
+</span>
+</a>
+<nav class="md-nav" aria-label="8.6 The fast Fourier transform">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#decimation-in-time" class="md-nav__link">
+<span class="md-ellipsis">
+Decimation in time
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#counting-operations" class="md-nav__link">
+<span class="md-ellipsis">
+Counting operations
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#numpy-fft" class="md-nav__link">
+<span class="md-ellipsis">
+8.7 The DFT in NumPy
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#88-summary" class="md-nav__link">
+<span class="md-ellipsis">
+8.8 Summary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#89-exercises" class="md-nav__link">
+<span class="md-ellipsis">
+8.9 Exercises
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#810-quiz" class="md-nav__link">
+<span class="md-ellipsis">
+8.10 Quiz
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="chapter-8-the-dft-and-the-fft">Chapter 8: The DFT and the FFT<a class="headerlink" href="#chapter-8-the-dft-and-the-fft" title="Permanent link">&para;</a></h1>
+<p><em>The Fourier transform a computer can calculate, and the algorithm that makes it fast</em></p>
+<div class="admonition note">
+<p class="admonition-title">Learning outcomes</p>
+<p>After this chapter you should be able to:</p>
+<ul>
+<li>define the <span class="arithmatex">\(N\)</span>-point DFT and its inverse, and compute small DFTs by hand;</li>
+<li>relate the DFT to samples of the DTFT and to the coefficients of the DTFS;</li>
+<li>use circular shift and circular convolution, and use zero-padding to obtain linear convolution;</li>
+<li>convert DFT bin numbers to frequencies in hertz, and explain resolution, zero-padding, leakage and windowing;</li>
+<li>derive the radix-2 decimation-in-time FFT and count its operations;</li>
+<li>analyse real signals with <code>np.fft</code>.</li>
+</ul>
+</div>
+<h2 id="81-why-we-need-the-dft">8.1 Why we need the DFT<a class="headerlink" href="#81-why-we-need-the-dft" title="Permanent link">&para;</a></h2>
+<p>The DTFT of Chapter 7 is a function of a continuous frequency, and it is defined by an infinite sum. A computer can do neither: it holds a finite list of numbers and can produce only a finite list of numbers. The <strong>discrete Fourier transform</strong> (DFT) is the version of Fourier analysis that is finite in both domains. It takes <span class="arithmatex">\(N\)</span> samples and returns <span class="arithmatex">\(N\)</span> frequency values, exactly, with no approximation in the transform itself. Combined with a fast algorithm, the <strong>fast Fourier transform</strong> (FFT), it is the workhorse of digital signal processing: spectrum analysers, audio and image compression, radar, wireless communication and the solution of differential equations all use it.</p>
+<h2 id="dft-definition">8.2 Definition<a class="headerlink" href="#dft-definition" title="Permanent link">&para;</a></h2>
+<p>For a sequence <span class="arithmatex">\(x[n]\)</span>, <span class="arithmatex">\(n = 0, 1, \ldots, N-1\)</span>, the <strong><span class="arithmatex">\(N\)</span>-point DFT</strong> is</p>
+<div class="arithmatex">\[
+X[k] = \sum_{n=0}^{N-1} x[n]\,e^{-j2\pi kn/N}, \qquad k = 0, 1, \ldots, N-1,
+\]</div>
+<p>and the <strong>inverse DFT</strong> is</p>
+<div class="arithmatex">\[
+x[n] = \frac{1}{N}\sum_{k=0}^{N-1} X[k]\,e^{j2\pi kn/N}, \qquad n = 0, 1, \ldots, N-1.
+\]</div>
+<p>It is customary to write <span class="arithmatex">\(W_N = e^{-j2\pi/N}\)</span>, a complex <span class="arithmatex">\(N\)</span>th root of unity, so that <span class="arithmatex">\(X[k] = \sum_n x[n]W_N^{kn}\)</span>. The index <span class="arithmatex">\(k\)</span> is the <strong>bin</strong> number. The inverse formula works because the vectors <span class="arithmatex">\(e^{j2\pi kn/N}\)</span>, <span class="arithmatex">\(k = 0, \ldots, N-1\)</span>, are orthogonal, with the same finite geometric sum that made the DTFS work in Section 5.8. Indeed, comparing definitions, <strong>the DFT is <span class="arithmatex">\(N\)</span> times the DTFS</strong> of the periodic sequence obtained by repeating <span class="arithmatex">\(x[n]\)</span> with period <span class="arithmatex">\(N\)</span>: <span class="arithmatex">\(X[k] = N a_k\)</span>.</p>
+<div class="admonition example">
+<p class="admonition-title">Example 8.1 A four-point DFT by hand</p>
+<p>Compute the DFT of <span class="arithmatex">\(x = [1, 2, 0, -1]\)</span>. For <span class="arithmatex">\(N = 4\)</span>, <span class="arithmatex">\(W_4 = e^{-j\pi/2} = -j\)</span>, so <span class="arithmatex">\(W_4^{kn}\)</span> takes only the values <span class="arithmatex">\(1, -j, -1, j\)</span>.</p>
+<div class="arithmatex">\[
+\begin{aligned}
+X[0] &amp;= 1 + 2 + 0 - 1 = 2,\\
+X[1] &amp;= 1 + 2(-j) + 0(-1) + (-1)(j) = 1 - 3j,\\
+X[2] &amp;= 1 + 2(-1) + 0(1) + (-1)(-1) = 0,\\
+X[3] &amp;= 1 + 2(j) + 0(-1) + (-1)(-j) = 1 + 3j.
+\end{aligned}
+\]</div>
+<p>Notice <span class="arithmatex">\(X[3] = X[1]^*\)</span>: for a real sequence, <span class="arithmatex">\(X[N - k] = X^*[k]\)</span>. <span class="arithmatex">\(X[0]\)</span> is the sum of the samples (the DC term), and <span class="arithmatex">\(X[2]\)</span>, at <span class="arithmatex">\(k = N/2\)</span>, is the alternating sum <span class="arithmatex">\(x[0] - x[1] + x[2] - x[3]\)</span>.</p>
+</div>
+<p>In matrix form the DFT is <span class="arithmatex">\(\mathbf{X} = \mathbf{W}\mathbf{x}\)</span>, where <span class="arithmatex">\(\mathbf{W}\)</span> is the <span class="arithmatex">\(N\times N\)</span> matrix with entries <span class="arithmatex">\(W_N^{kn}\)</span>. The inverse matrix is <span class="arithmatex">\(\frac{1}{N}\mathbf{W}^*\)</span> (the conjugate, scaled). Computing the DFT straight from the definition needs <span class="arithmatex">\(N^2\)</span> complex multiplications.</p>
+<h2 id="dft-meaning">8.3 What the DFT values mean<a class="headerlink" href="#dft-meaning" title="Permanent link">&para;</a></h2>
+<h3 id="samples-of-the-dtft">Samples of the DTFT<a class="headerlink" href="#samples-of-the-dtft" title="Permanent link">&para;</a></h3>
+<p>If <span class="arithmatex">\(x[n]\)</span> is zero outside <span class="arithmatex">\(0 \le n \le N-1\)</span>, its DTFT is <span class="arithmatex">\(X(e^{j\Omega}) = \sum_{n=0}^{N-1}x[n]e^{-j\Omega n}\)</span>. Setting <span class="arithmatex">\(\Omega = 2\pi k/N\)</span> gives the DFT. So</p>
+<div class="arithmatex">\[
+X[k] = X(e^{j\Omega})\Big|_{\Omega = 2\pi k/N} :
+\]</div>
+<p><strong>the DFT samples the DTFT at <span class="arithmatex">\(N\)</span> equally spaced frequencies</strong> around the unit circle, from <span class="arithmatex">\(\Omega = 0\)</span> up to (but not including) <span class="arithmatex">\(2\pi\)</span>. Bins <span class="arithmatex">\(k\)</span> near 0 and near <span class="arithmatex">\(N\)</span> are low frequencies; bins near <span class="arithmatex">\(N/2\)</span> are high. Bins <span class="arithmatex">\(k &gt; N/2\)</span> represent negative frequencies <span class="arithmatex">\(\Omega = 2\pi k/N - 2\pi\)</span>, which is why <code>np.fft.fftfreq</code> lists them as negative.</p>
+<figure class="fig fig-diagram">
+<img src="img/dft-samples.svg" alt="The dashed curve is the magnitude of the DTFT of a pulse of four ones. Left: an 8-point DFT gives eight samples of it. Right: padding with zeros to 32 points gives 32 samples of the same curve, filling in its shape." loading="lazy" width="780" height="260">
+<figcaption><strong>Figure 8.1 The DFT samples the DTFT.</strong> The dashed curve is the magnitude of the DTFT of a pulse of four ones. Left: an 8-point DFT gives eight samples of it. Right: padding with zeros to 32 points gives 32 samples of the same curve, filling in its shape.</figcaption>
+</figure>
+<h3 id="frequencies-in-hertz">Frequencies in hertz<a class="headerlink" href="#frequencies-in-hertz" title="Permanent link">&para;</a></h3>
+<p>When <span class="arithmatex">\(x[n]\)</span> was obtained by sampling at <span class="arithmatex">\(f_s\)</span> samples per second, bin <span class="arithmatex">\(k\)</span> corresponds to the frequency</p>
+<div class="arithmatex">\[
+f_k = \frac{k}{N}f_s \quad\text{for } 0 \le k \le N/2, \qquad f_k = \frac{k - N}{N}f_s \quad\text{for } N/2 &lt; k &lt; N .
+\]</div>
+<p>The <strong>bin spacing</strong> is <span class="arithmatex">\(\Delta f = f_s/N = 1/(NT_s)\)</span>, the reciprocal of the duration of the record. One second of data gives 1 Hz bins, whatever the sampling rate. The highest frequency represented is <span class="arithmatex">\(f_s/2\)</span>, at bin <span class="arithmatex">\(N/2\)</span>.</p>
+<div class="admonition example">
+<p class="admonition-title">Example 8.2 Locating a tone</p>
+<p>A signal is sampled at 8 kHz and a 256-point DFT is taken. A peak appears in bin 40. What is its frequency?</p>
+<p><span class="arithmatex">\(\Delta f = 8000/256 = 31.25\)</span> Hz, so bin 40 is at <span class="arithmatex">\(40 \times 31.25 = 1250\)</span> Hz. Because the signal is real, a matching peak appears in bin <span class="arithmatex">\(256 - 40 = 216\)</span>, which represents <span class="arithmatex">\(-1250\)</span> Hz.</p>
+</div>
+<h3 id="zero-padding">Zero-padding<a class="headerlink" href="#zero-padding" title="Permanent link">&para;</a></h3>
+<p>Appending zeros to a sequence before taking the DFT (Figure 8.1, right) gives more samples of <strong>the same DTFT</strong>, so the plot looks smoother and peaks can be located more precisely. It does <strong>not</strong> improve the ability to separate two close frequencies, called the <strong>resolution</strong>. Resolution is set by the length of the actual data: the DTFT of <span class="arithmatex">\(L\)</span> samples cannot show details narrower than about <span class="arithmatex">\(2\pi/L\)</span>, however finely it is sampled.</p>
+<h2 id="dft-properties">8.4 Properties of the DFT<a class="headerlink" href="#dft-properties" title="Permanent link">&para;</a></h2>
+<p>The DFT inherits the properties of the DTFS, with one essential twist: because both <span class="arithmatex">\(x[n]\)</span> and <span class="arithmatex">\(X[k]\)</span> are implicitly periodic with period <span class="arithmatex">\(N\)</span>, <strong>shifts are circular</strong>. A circular shift by <span class="arithmatex">\(m\)</span> moves each sample <span class="arithmatex">\(m\)</span> places to the right, and samples that fall off the end reappear at the beginning. We write <span class="arithmatex">\(x[(n - m)_N]\)</span>, where <span class="arithmatex">\((\cdot)_N\)</span> means "modulo <span class="arithmatex">\(N\)</span>".</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Sequence (length <span class="arithmatex">\(N\)</span>)</th>
+<th>DFT</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Linearity</td>
+<td><span class="arithmatex">\(ax[n] + by[n]\)</span></td>
+<td><span class="arithmatex">\(aX[k] + bY[k]\)</span></td>
+</tr>
+<tr>
+<td>Circular time shift</td>
+<td><span class="arithmatex">\(x[(n - m)_N]\)</span></td>
+<td><span class="arithmatex">\(W_N^{km}X[k]\)</span></td>
+</tr>
+<tr>
+<td>Circular frequency shift</td>
+<td><span class="arithmatex">\(W_N^{-ln}x[n]\)</span></td>
+<td><span class="arithmatex">\(X[(k - l)_N]\)</span></td>
+</tr>
+<tr>
+<td>Circular convolution</td>
+<td><span class="arithmatex">\(\sum_{m=0}^{N-1}x[m]\,y[(n - m)_N]\)</span></td>
+<td><span class="arithmatex">\(X[k]\,Y[k]\)</span></td>
+</tr>
+<tr>
+<td>Multiplication</td>
+<td><span class="arithmatex">\(x[n]\,y[n]\)</span></td>
+<td><span class="arithmatex">\(\frac{1}{N}\sum_{l=0}^{N-1}X[l]\,Y[(k - l)_N]\)</span></td>
+</tr>
+<tr>
+<td>Real sequence</td>
+<td><span class="arithmatex">\(x\)</span> real</td>
+<td><span class="arithmatex">\(X[(N - k)_N] = X^*[k]\)</span></td>
+</tr>
+<tr>
+<td>Parseval</td>
+<td><span class="arithmatex">\(\sum_{n=0}^{N-1}\lvert x[n]\rvert^2\)</span></td>
+<td><span class="arithmatex">\(\frac{1}{N}\sum_{k=0}^{N-1}\lvert X[k]\rvert^2\)</span></td>
+</tr>
+</tbody>
+</table>
+<p><em>Table 8.1. Properties of the N-point DFT.</em></p>
+<h3 id="circular-versus-linear-convolution">Circular versus linear convolution<a class="headerlink" href="#circular-versus-linear-convolution" title="Permanent link">&para;</a></h3>
+<p>Multiplying two DFTs corresponds to <strong>circular</strong> convolution, not the linear convolution of Chapter 4. In circular convolution, the tail of the linear result that would extend beyond <span class="arithmatex">\(N - 1\)</span> wraps around and adds to the beginning. For example, the linear convolution of <span class="arithmatex">\([1, 2, 3]\)</span> with <span class="arithmatex">\([1, 1, 1]\)</span> is <span class="arithmatex">\([1, 3, 6, 5, 3]\)</span>; the 3-point circular convolution adds the last two values onto the first two, giving <span class="arithmatex">\([1 + 5, 3 + 3, 6] = [6, 6, 6]\)</span>.</p>
+<p>To get linear convolution from DFTs, <strong>pad both sequences with zeros to a length of at least <span class="arithmatex">\(L + M - 1\)</span></strong>, where <span class="arithmatex">\(L\)</span> and <span class="arithmatex">\(M\)</span> are their lengths. Then the linear result fits in the frame and nothing wraps around. This is the basis of <strong>fast convolution</strong>: for long sequences, computing two FFTs, a product and an inverse FFT is much faster than evaluating the convolution sum directly. Very long signals, such as audio streams, are cut into blocks and convolved block by block (the overlap-add and overlap-save methods).</p>
+<h2 id="leakage">8.5 Leakage and windows<a class="headerlink" href="#leakage" title="Permanent link">&para;</a></h2>
+<p>Suppose a signal contains a single sinusoid. If an exact whole number of its cycles fits into the <span class="arithmatex">\(N\)</span>-sample record, its frequency falls exactly on a bin, and the DFT shows a single clean line (and its mirror). If not, the energy <strong>leaks</strong> into all the other bins. The reason is that the DFT implicitly repeats the record periodically; when the record does not hold whole cycles, the repetition has a jump at the joins, and a jump needs many frequencies. Equivalently, taking <span class="arithmatex">\(N\)</span> samples multiplies the signal by a rectangular window, which convolves its spectrum with the Dirichlet kernel of Example 7.3, whose side lobes decay slowly.</p>
+<p>The remedy is to multiply the record by a <strong>window</strong> that tapers smoothly to zero at both ends before taking the DFT. The <strong>Hann window</strong> <span class="arithmatex">\(w[n] = 0.5 - 0.5\cos\!\left(\frac{2\pi n}{N - 1}\right)\)</span> (in the symmetric form used by <code>np.hanning</code>) is a common choice. Its side lobes are far lower than those of the rectangle, so distant leakage drops dramatically. The price is a wider main lobe, which spreads each tone over two or three bins and slightly worsens resolution. Chapter 12 uses the same windows to design filters.</p>
+<figure class="fig fig-diagram">
+<img src="img/leakage.svg" alt="The spectrum, in decibels, of a 50.5 Hz tone analysed with 1 Hz bins. With a rectangular window (blue) the tone leaks into every bin, still about −35 dB twenty bins away. With a Hann window (orange) the main peak is two bins wide but the leakage falls below −80 dB within twenty bins." loading="lazy" width="760" height="300">
+<figcaption><strong>Figure 8.2 Leakage and windowing.</strong> The spectrum, in decibels, of a 50.5 Hz tone analysed with 1 Hz bins. With a rectangular window (blue) the tone leaks into every bin, still about −35 dB twenty bins away. With a Hann window (orange) the main peak is two bins wide but the leakage falls below −80 dB within twenty bins.</figcaption>
+</figure>
+<div class="admonition warning">
+<p class="admonition-title">Reading amplitudes from a DFT</p>
+<p>For a real sinusoid of amplitude <span class="arithmatex">\(A\)</span> that falls exactly on bin <span class="arithmatex">\(k\)</span> (not 0 or <span class="arithmatex">\(N/2\)</span>), <span class="arithmatex">\(|X[k]| = AN/2\)</span>. So the amplitude is <span class="arithmatex">\(2|X[k]|/N\)</span>. With a window <span class="arithmatex">\(w\)</span>, divide by <span class="arithmatex">\(\sum w[n]\)</span> instead of <span class="arithmatex">\(N\)</span>. If the tone falls between bins, the peak reads low (by up to about 36% with no window, as the program in Section 8.7 shows), which is another reason to window.</p>
+</div>
+<h2 id="fft">8.6 The fast Fourier transform<a class="headerlink" href="#fft" title="Permanent link">&para;</a></h2>
+<p>The direct DFT costs <span class="arithmatex">\(N^2\)</span> complex multiplications. For <span class="arithmatex">\(N = 1024\)</span> that is over a million; for the <span class="arithmatex">\(N = 2^{20}\)</span> points of a long recording, about <span class="arithmatex">\(10^{12}\)</span>. The FFT computes exactly the same numbers with about <span class="arithmatex">\(\frac{N}{2}\log_2 N\)</span> multiplications, which for <span class="arithmatex">\(N = 1024\)</span> is 5,120, two hundred times fewer, and for <span class="arithmatex">\(N = 2^{20}\)</span> is about ten million, a hundred thousand times fewer. The algorithm was published by Cooley and Tukey in 1965 and is one of the most important algorithms of the twentieth century; the essential idea had been used, by hand, much earlier.</p>
+<h3 id="decimation-in-time">Decimation in time<a class="headerlink" href="#decimation-in-time" title="Permanent link">&para;</a></h3>
+<p>Let <span class="arithmatex">\(N\)</span> be a power of 2. Split the sum into even-indexed and odd-indexed samples, <span class="arithmatex">\(n = 2r\)</span> and <span class="arithmatex">\(n = 2r + 1\)</span>:</p>
+<div class="arithmatex">\[
+X[k] = \sum_{r=0}^{N/2-1}x[2r]\,W_N^{2rk} + W_N^{k}\sum_{r=0}^{N/2-1}x[2r+1]\,W_N^{2rk}.
+\]</div>
+<p>Since <span class="arithmatex">\(W_N^2 = e^{-j4\pi/N} = W_{N/2}\)</span>, each sum is an <span class="arithmatex">\(N/2\)</span>-point DFT:</p>
+<div class="arithmatex">\[
+X[k] = E[k] + W_N^{k}\,O[k],
+\]</div>
+<p>where <span class="arithmatex">\(E\)</span> is the DFT of the even samples and <span class="arithmatex">\(O\)</span> the DFT of the odd samples. Both <span class="arithmatex">\(E\)</span> and <span class="arithmatex">\(O\)</span> have period <span class="arithmatex">\(N/2\)</span>, and <span class="arithmatex">\(W_N^{k + N/2} = -W_N^{k}\)</span>, so for <span class="arithmatex">\(k = 0, 1, \ldots, N/2 - 1\)</span>:</p>
+<div class="arithmatex">\[
+X[k] = E[k] + W_N^{k}O[k], \qquad X[k + N/2] = E[k] - W_N^{k}O[k].
+\]</div>
+<p>This pair of equations is the <strong>butterfly</strong>: one multiplication by the <strong>twiddle factor</strong> <span class="arithmatex">\(W_N^k\)</span>, one addition and one subtraction produce two outputs.</p>
+<p><img alt="An 8-point DFT computed by decimation in time. The even samples x[0], x[2], x[4], x[6] feed one 4-point DFT, giving E[k]; the odd samples feed another, giving O[k]. Each O[k] is multiplied by the twiddle factor W⁽ᵏ⁾ = e^(−j2πk/8), and butterflies form X[k] = E[k] + WᵏO[k] and X[k+4] = E[k] − WᵏO[k]." src="img/fft-split.svg" title="Figure 8.3 One stage of the FFT" width="760" height="330"></p>
+<h3 id="counting-operations">Counting operations<a class="headerlink" href="#counting-operations" title="Permanent link">&para;</a></h3>
+<p>One <span class="arithmatex">\(N\)</span>-point DFT has been replaced by two <span class="arithmatex">\(N/2\)</span>-point DFTs plus <span class="arithmatex">\(N/2\)</span> butterflies. Each half can be split in the same way, and so on until the DFTs have one point (and a one-point DFT is the sample itself). There are <span class="arithmatex">\(\log_2 N\)</span> stages, each with <span class="arithmatex">\(N/2\)</span> butterflies, for a total of <span class="arithmatex">\(\frac{N}{2}\log_2 N\)</span> complex multiplications.</p>
+<table>
+<thead>
+<tr>
+<th><span class="arithmatex">\(N\)</span></th>
+<th>Direct DFT, <span class="arithmatex">\(N^2\)</span></th>
+<th>FFT, <span class="arithmatex">\(\frac{N}{2}\log_2 N\)</span></th>
+<th>Ratio</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>8</td>
+<td>64</td>
+<td>12</td>
+<td>5</td>
+</tr>
+<tr>
+<td>256</td>
+<td>65,536</td>
+<td>1,024</td>
+<td>64</td>
+</tr>
+<tr>
+<td>1,024</td>
+<td>1,048,576</td>
+<td>5,120</td>
+<td>205</td>
+</tr>
+<tr>
+<td>65,536</td>
+<td>about <span class="arithmatex">\(4.3\times10^9\)</span></td>
+<td>524,288</td>
+<td>8,192</td>
+</tr>
+</tbody>
+</table>
+<p><em>Table 8.2. Complex multiplications for the direct DFT and the radix-2 FFT.</em></p>
+<p>The splitting reorders the input: after all the stages, the samples enter in <strong>bit-reversed</strong> order (for <span class="arithmatex">\(N = 8\)</span>: 0, 4, 2, 6, 1, 5, 3, 7). Other FFT algorithms split the output instead (decimation in frequency), use other radices, or handle lengths that are not powers of two. Library routines such as <code>np.fft.fft</code> choose among them automatically and work for any <span class="arithmatex">\(N\)</span>, though lengths with only small prime factors are fastest.</p>
+<p>The inverse DFT is computed with the same algorithm, by conjugating the twiddle factors and dividing by <span class="arithmatex">\(N\)</span> (or by using <span class="arithmatex">\(x = \frac{1}{N}\left(\mathrm{DFT}\{X^*\}\right)^*\)</span>).</p>
+<h2 id="numpy-fft">8.7 The DFT in NumPy<a class="headerlink" href="#numpy-fft" title="Permanent link">&para;</a></h2>
+<p>The first program checks Example 8.1, implements the radix-2 FFT exactly as derived, and demonstrates circular and linear convolution.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="c1"># The 4-point DFT by its matrix, compared with np.fft.fft</span>
+<span class="n">N</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="n">n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+<span class="n">W</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="n">j</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span> <span class="o">/</span> <span class="n">N</span><span class="p">)</span>     <span class="c1"># W[k, n] = e^{-j 2 pi k n / N}</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"matrix DFT :"</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">W</span> <span class="o">@</span> <span class="n">x</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"np.fft.fft :"</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="mi">4</span><span class="p">))</span>
+
+<span class="c1"># A radix-2 decimation-in-time FFT in a few lines</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">fft_radix2</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">complex</span><span class="p">)</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">N</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">x</span>
+    <span class="n">E</span> <span class="o">=</span> <span class="n">fft_radix2</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">::</span><span class="mi">2</span><span class="p">])</span>                      <span class="c1"># DFT of even-indexed samples</span>
+    <span class="n">O</span> <span class="o">=</span> <span class="n">fft_radix2</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">])</span>                      <span class="c1"># DFT of odd-indexed samples</span>
+    <span class="n">tw</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="n">j</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">N</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="n">N</span><span class="p">)</span> <span class="o">*</span> <span class="n">O</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">E</span> <span class="o">+</span> <span class="n">tw</span><span class="p">,</span> <span class="n">E</span> <span class="o">-</span> <span class="n">tw</span><span class="p">])</span>      <span class="c1"># the butterflies</span>
+
+<span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">v</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">standard_normal</span><span class="p">(</span><span class="mi">1024</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"radix-2 FFT matches np.fft.fft:"</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">fft_radix2</span><span class="p">(</span><span class="n">v</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">v</span><span class="p">)))</span>
+
+<span class="c1"># Circular versus linear convolution</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="n">circ</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">ifft</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">b</span><span class="p">))</span><span class="o">.</span><span class="n">real</span>
+<span class="n">L</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+<span class="n">lin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">ifft</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">L</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">L</span><span class="p">))</span><span class="o">.</span><span class="n">real</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"3-point circular :"</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">circ</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"5-point (padded) :"</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">lin</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="s2">"  np.convolve:"</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">convolve</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">))</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>matrix DFT : [2.+0.j 1.-3.j 0.+0.j 1.+3.j]
+np.fft.fft : [2.+0.j 1.-3.j 0.+0.j 1.+3.j]
+radix-2 FFT matches np.fft.fft: True
+3-point circular : [6. 6. 6.]
+5-point (padded) : [1. 3. 6. 5. 3.]   np.convolve: [1 3 6 5 3]
+</code></pre></div>
+<p>The second argument of <code>np.fft.fft(a, L)</code> pads <code>a</code> with zeros to length <code>L</code>. The second program analyses a sampled signal containing tones at 50 Hz and 120 Hz, then shows leakage and the effect of a Hann window on a tone at 50.5 Hz, which falls halfway between bins. For real signals, <code>np.fft.rfft</code> returns only the bins <span class="arithmatex">\(k = 0, \ldots, N/2\)</span>, since the others are conjugates, and <code>np.fft.rfftfreq</code> gives their frequencies in hertz.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="n">fs</span> <span class="o">=</span> <span class="mi">1000</span>                      <span class="c1"># sampling rate, Hz</span>
+<span class="n">N</span> <span class="o">=</span> <span class="mi">1000</span>                       <span class="c1"># one second of data, so bins are 1 Hz apart</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">N</span><span class="p">)</span> <span class="o">/</span> <span class="n">fs</span>
+<span class="n">x</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="mi">50</span> <span class="o">*</span> <span class="n">t</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="mi">120</span> <span class="o">*</span> <span class="n">t</span><span class="p">)</span>
+
+<span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">rfft</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>             <span class="c1"># bins k = 0 .. N/2 for a real signal</span>
+<span class="n">f</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">rfftfreq</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="mi">1</span> <span class="o">/</span> <span class="n">fs</span><span class="p">)</span>
+<span class="n">amp</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">X</span><span class="p">)</span> <span class="o">/</span> <span class="n">N</span>        <span class="c1"># single-sided amplitude</span>
+<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">amp</span><span class="p">)[</span><span class="o">-</span><span class="mi">2</span><span class="p">:][::</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"peak at </span><span class="si">{</span><span class="n">f</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="si">:</span><span class="s2">6.1f</span><span class="si">}</span><span class="s2"> Hz, amplitude </span><span class="si">{</span><span class="n">amp</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+<span class="c1"># A tone that falls between bins leaks into its neighbours; a Hann window reduces far leakage</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="mf">50.5</span> <span class="o">*</span> <span class="n">t</span><span class="p">)</span>
+<span class="n">Y_rect</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">rfft</span><span class="p">(</span><span class="n">y</span><span class="p">))</span> <span class="o">/</span> <span class="n">N</span>
+<span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hanning</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+<span class="n">Y_hann</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">rfft</span><span class="p">(</span><span class="n">y</span> <span class="o">*</span> <span class="n">w</span><span class="p">))</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">Y</span> <span class="ow">in</span> <span class="p">((</span><span class="s2">"rectangular"</span><span class="p">,</span> <span class="n">Y_rect</span><span class="p">),</span> <span class="p">(</span><span class="s2">"Hann"</span><span class="p">,</span> <span class="n">Y_hann</span><span class="p">)):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">name</span><span class="si">:</span><span class="s2">11s</span><span class="si">}</span><span class="s2">: peak </span><span class="si">{</span><span class="n">Y</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, level at 60 Hz </span><span class="si">{</span><span class="n">Y</span><span class="p">[</span><span class="mi">60</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">, at 100 Hz </span><span class="si">{</span><span class="n">Y</span><span class="p">[</span><span class="mi">100</span><span class="p">]</span><span class="si">:</span><span class="s2">.5f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>peak at   50.0 Hz, amplitude 1.000
+peak at  120.0 Hz, amplitude 0.500
+rectangular: peak 0.640, level at 60 Hz 0.0307, at 100 Hz 0.00442
+Hann       : peak 0.849, level at 60 Hz 0.0004, at 100 Hz 0.00000
+</code></pre></div>
+<p>With whole numbers of cycles in the record, the amplitudes come out exactly. With the 50.5 Hz tone and no window, the peak reads 0.640 instead of 1 (the worst case for a tone exactly between bins), and 50 bins away the leakage is still 0.4% of the amplitude. The Hann window reads 0.849 at the peak, and its leakage at the same distance is too small to show in five decimals.</p>
+<h2 id="88-summary">8.8 Summary<a class="headerlink" href="#88-summary" title="Permanent link">&para;</a></h2>
+<div class="admonition abstract">
+<p class="admonition-title">Summary</p>
+<ul>
+<li>The <span class="arithmatex">\(N\)</span>-point DFT <span class="arithmatex">\(X[k] = \sum_{n=0}^{N-1}x[n]e^{-j2\pi kn/N}\)</span> and its inverse are exact, finite and invertible. The DFT is <span class="arithmatex">\(N\)</span> times the DTFS of the periodically repeated sequence.</li>
+<li>For a sequence of length at most <span class="arithmatex">\(N\)</span>, <span class="arithmatex">\(X[k]\)</span> samples the DTFT at <span class="arithmatex">\(\Omega = 2\pi k/N\)</span>. Bin <span class="arithmatex">\(k\)</span> is at <span class="arithmatex">\(kf_s/N\)</span> Hz (negative for <span class="arithmatex">\(k &gt; N/2\)</span>); bins are <span class="arithmatex">\(f_s/N\)</span> apart.</li>
+<li>Zero-padding samples the DTFT more finely but does not improve resolution, which depends on the record length.</li>
+<li>Shifts and convolution are circular. Pad to at least <span class="arithmatex">\(L + M - 1\)</span> points to obtain linear convolution.</li>
+<li>A tone that does not fit a whole number of cycles leaks across bins; tapering windows such as Hann reduce leakage at the cost of a wider peak.</li>
+<li>The radix-2 FFT splits a DFT into even and odd halves recursively, using butterflies <span class="arithmatex">\(E[k] \pm W_N^kO[k]\)</span>, for <span class="arithmatex">\(\frac{N}{2}\log_2 N\)</span> multiplications instead of <span class="arithmatex">\(N^2\)</span>.</li>
+</ul>
+</div>
+<h2 id="89-exercises">8.9 Exercises<a class="headerlink" href="#89-exercises" title="Permanent link">&para;</a></h2>
+<div class="admonition example">
+<p class="admonition-title">Exercise 8.1</p>
+<p>Compute the 4-point DFT of <span class="arithmatex">\(x = [1, 1, 1, 1]\)</span> and of <span class="arithmatex">\(x = [1, 0, 0, 0]\)</span>.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p><span class="arithmatex">\([1, 1, 1, 1] \to [4, 0, 0, 0]\)</span>: a constant has only DC. <span class="arithmatex">\([1, 0, 0, 0] \to [1, 1, 1, 1]\)</span>: an impulse has all frequencies equally.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 8.2</p>
+<p>Compute the 4-point DFT of <span class="arithmatex">\(x = [0, 1, 0, -1]\)</span>, and identify the sinusoid it represents.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p><span class="arithmatex">\(X[0] = 0\)</span>; <span class="arithmatex">\(X[1] = (-j) - (j) = -2j\)</span>; <span class="arithmatex">\(X[2] = -1 - (-1) = 0\)</span>; <span class="arithmatex">\(X[3] = j - (-j) = 2j\)</span>. The sequence is <span class="arithmatex">\(\sin(\pi n/2)\)</span>, a sinusoid at bin 1: <span class="arithmatex">\(X[1] = N/(2j) = -2j\)</span> as expected.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 8.3</p>
+<p>A 2048-point FFT is computed on data sampled at 44.1 kHz. What is the bin spacing, and which bin is nearest to 1 kHz?</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p><span class="arithmatex">\(\Delta f = 44100/2048 \approx 21.53\)</span> Hz. <span class="arithmatex">\(1000/21.53 \approx 46.4\)</span>, so bin 46 (at about 990.5 Hz).</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 8.4</p>
+<p>How long must a record be to give a bin spacing of 0.5 Hz?</p>
+</div>
+<details class="note typed">
+<summary>Answer</summary>
+<p><strong>2 seconds.</strong> The bin spacing is the reciprocal of the record duration, whatever the sampling rate.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 8.5</p>
+<p>Find the 4-point circular convolution of <span class="arithmatex">\([1, 2, 3, 4]\)</span> with <span class="arithmatex">\([1, 1, 0, 0]\)</span>, and the linear convolution.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>Linear: <span class="arithmatex">\([1, 3, 5, 7, 4]\)</span>. Circular (wrap the fifth value onto the first): <span class="arithmatex">\([1 + 4, 3, 5, 7] = [5, 3, 5, 7]\)</span>.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 8.6</p>
+<p>Sequences of lengths 300 and 50 are to be convolved with FFTs. What is the smallest power-of-two FFT length that avoids wrap-around?</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>The linear result has <span class="arithmatex">\(300 + 50 - 1 = 349\)</span> samples, so the FFT length must be at least 349; the smallest power of two is 512.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 8.7</p>
+<p>For a real sequence of length 16, <span class="arithmatex">\(X[3] = 2 - 5j\)</span>. What is <span class="arithmatex">\(X[13]\)</span>?</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p><span class="arithmatex">\(X[13] = X[16 - 3] = X^*[3] = 2 + 5j\)</span>.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 8.8</p>
+<p>How many complex multiplications does a radix-2 FFT need for <span class="arithmatex">\(N = 4096\)</span>, and how many does the direct DFT need?</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>FFT: <span class="arithmatex">\(\frac{4096}{2}\times12 = 24{,}576\)</span>. Direct: <span class="arithmatex">\(4096^2 = 16{,}777{,}216\)</span>, about 683 times more.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 8.9</p>
+<p>Two tones at 1000 Hz and 1003 Hz are to be distinguished in a DFT. Roughly how long must the record be?</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>The resolution is about the reciprocal of the record length, so at least about <span class="arithmatex">\(1/3\)</span> second; in practice a little longer, especially with a window, whose main lobe is wider. Zero-padding a shorter record does not help.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 8.10</p>
+<p>Verify Parseval's relation for the DFT of Example 8.1.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>Time: <span class="arithmatex">\(1 + 4 + 0 + 1 = 6\)</span>. Frequency: <span class="arithmatex">\(\frac14(4 + 10 + 0 + 10) = 6\)</span>.</p>
+</details>
+<h2 id="810-quiz">8.10 Quiz<a class="headerlink" href="#810-quiz" title="Permanent link">&para;</a></h2>
+<div class="pk-quiz" data-quiz="5b3b41358bc0">
+<p class="pk-quiz-title">Check your understanding of Chapter 8</p>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;text&quot;,&quot;answer&quot;:[&quot;2&quot;,&quot;2 Hz&quot;]}">
+<p class="admonition-title">Exercise 1</p>
+<p class="pk-q-prompt">Data sampled at 1000 Hz is analysed with a 500-point DFT. What is the bin spacing in hertz?</p>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>2 / 2 Hz</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;linear convolution&quot;,&quot;circular convolution&quot;,&quot;multiplication&quot;,&quot;correlation&quot;],&quot;answer&quot;:&quot;circular convolution&quot;}">
+<p class="admonition-title">Exercise 2</p>
+<p class="pk-q-prompt">Multiplying two N-point DFTs corresponds in time to</p>
+<ol class="pk-q-opts" type="A"><li>linear convolution</li><li>circular convolution</li><li>multiplication</li><li>correlation</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>circular convolution</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;improves frequency resolution&quot;,&quot;samples the same DTFT more finely&quot;,&quot;removes leakage&quot;,&quot;changes the DTFT&quot;],&quot;answer&quot;:&quot;samples the same DTFT more finely&quot;}">
+<p class="admonition-title">Exercise 3</p>
+<p class="pk-q-prompt">Zero-padding a record before the DFT</p>
+<ol class="pk-q-opts" type="A"><li>improves frequency resolution</li><li>samples the same DTFT more finely</li><li>removes leakage</li><li>changes the DTFT</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>samples the same DTFT more finely</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;text&quot;,&quot;answer&quot;:[&quot;8&quot;]}">
+<p class="admonition-title">Exercise 4</p>
+<p class="pk-q-prompt">What is X[0] for x = [3, −1, 2, 4]?</p>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>8</strong></p>
+<p class="pk-q-why">X[0] is the sum of the samples.</p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;N²&quot;,&quot;(N/2) log₂ N&quot;,&quot;N&quot;,&quot;2^N&quot;],&quot;answer&quot;:&quot;(N/2) log₂ N&quot;}">
+<p class="admonition-title">Exercise 5</p>
+<p class="pk-q-prompt">Approximately how many complex multiplications does a radix-2 FFT of length N need?</p>
+<ol class="pk-q-opts" type="A"><li>N²</li><li>(N/2) log₂ N</li><li>N</li><li>2^N</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>(N/2) log₂ N</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;to reduce leakage&quot;,&quot;to increase the sampling rate&quot;,&quot;to make the DFT exact&quot;,&quot;to remove the DC component&quot;],&quot;answer&quot;:&quot;to reduce leakage&quot;}">
+<p class="admonition-title">Exercise 6</p>
+<p class="pk-q-prompt">Why are windows such as Hann applied before a DFT?</p>
+<ol class="pk-q-opts" type="A"><li>to reduce leakage</li><li>to increase the sampling rate</li><li>to make the DFT exact</li><li>to remove the DC component</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>to reduce leakage</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;blanks&quot;,&quot;answer&quot;:[[&quot;butterfly&quot;]]}">
+<p class="admonition-title">Exercise 7</p>
+<p class="pk-q-prompt">In the FFT, the operation X[k] = E[k] ± W^k O[k] is called a <span class="pk-blank" data-i="0">___</span>.</p>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>butterfly</strong></p>
+</details>
+</div>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button type="button" class="md-top md-icon" data-md-component="top" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+Back to top
+</button>
+</main>
+<footer class="md-footer">
+<nav class="md-footer__inner md-grid" aria-label="Footer" >
+<a href="the-discrete-time-fourier-transform.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: 7. The Discrete-Time Fourier Transform">
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</div>
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Previous
+</span>
+<div class="md-ellipsis">
+7. The Discrete-Time Fourier Transform
+</div>
+</div>
+</a>
+<a href="sampling-and-aliasing.html" class="md-footer__link md-footer__link--next" aria-label="Next: 9. Sampling and Aliasing">
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Next
+</span>
+<div class="md-ellipsis">
+9. Sampling and Aliasing
+</div>
+</div>
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+</div>
+</a>
+</nav>
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+The Open Book Project &middot;
+<a href="../../about.html">About this library</a> &middot;
+<a href="../../publish.html">Publish your book</a> &middot;
+© The authors of the books
+</div>
+Made with
+<a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+Material for MkDocs
+</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "navigation.prune", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "toc.follow", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+<script src="../../assets/mathjax.js"></script>
+<script src="../../assets/viz.js"></script>
+<script src="../../assets/remote.js"></script>
+<script src="../../assets/scans.js"></script>
+<script src="../../assets/reader.js"></script>
+<script src="../../assets/app.js"></script>
+<script src="../../assets/slides.js"></script>
+<script src="../../assets/speak.js"></script>
+<script src="../../assets/quiz.js"></script>
+<script>
+    /* offline reading: the service worker at the site root (its scope is the whole site) */
+    if ("serviceWorker" in navigator && window.isSecureContext) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register(new URL("../../sw.js", location.href).href).catch(function () {});
+      });
+    }
+  </script>
+</body>
+</html>

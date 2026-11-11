@@ -1,0 +1,1032 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="description" content="The Open Book Project: books on computer science, quantum computing, cyber security, science, the social sciences, university courses and languages, read page by page like an e-book, online or offline.">
+<meta name="author" content="The Open Book Project">
+<link rel="canonical" href="https://open-book-project.github.io/computing/data_science_python/the-data-science-workflow.html">
+<link rel="prev" href="preface.html">
+<link rel="next" href="python-essentials-for-data-work.html">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap"></noscript>
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Open Book">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="application-name" content="Open Book"><script src="../../assets/library-data.js"></script><script>
+    (function () {
+      var X = window.XMLHttpRequest, open, gate = new Promise(function (r) { open = r; });
+      if (!X) return;
+      var open0 = X.prototype.open, send0 = X.prototype.send;
+      X.prototype.open = function (method, url) {
+        this.__pkIndex = /\/search\/search_index\.json(\?|#|$)/.test(String(url));
+        return open0.apply(this, arguments);
+      };
+      X.prototype.send = function () {
+        if (!this.__pkIndex) return send0.apply(this, arguments);
+        var xhr = this, args = arguments;
+        gate.then(function () { send0.apply(xhr, args); });
+      };
+      function wake() { open(); }
+      document.addEventListener("focusin", function (e) { if (e.target && e.target.closest && e.target.closest(".md-search")) wake(); });
+      document.addEventListener("click", function (e) { if (e.target && e.target.closest && e.target.closest('label[for="__search"], .md-search')) wake(); }, true);
+      document.addEventListener("keydown", function (e) {
+        var k = e.key;
+        if ((k === "/" || k === "s" || k === "f" || k === "S" || k === "F") && !(e.target && e.target.closest && e.target.closest("input, textarea, [contenteditable]"))) wake();
+      }, true);
+      if (/[?&]q=/.test(location.search)) wake();
+    })();
+  </script><script>
+    try {
+      if ((window.matchMedia && (matchMedia("(display-mode: standalone)").matches || matchMedia("(display-mode: fullscreen)").matches)) || navigator.standalone === true) {
+        document.documentElement.className += " bjp-standalone";
+      }
+    } catch (e) { /* not an installed app */ }
+    /* the books of a subject or of the whole library as covers or as a list (assets/app.js): the reader's choice */
+    try {
+      var bv = localStorage.getItem("bjp.view");
+      if (bv === "list" || (bv !== "grid" && /\/books\.html$/.test(location.pathname))) document.documentElement.className += " bjp-view-list";
+    } catch (e) { /* no storage: covers */ }
+  </script>
+<script>
+    /* a book opened from its cover on the shelf: the page stays blank, in the cover's colour, until the reader is up */
+    try {
+      var cv = sessionStorage.getItem("bjp.reader.cover");
+      if (cv && sessionStorage.getItem("bjp.reader.open") === "1") {
+        var c = JSON.parse(cv), de = document.documentElement;
+        de.className += " bjp-booting";
+        if (c && /^#[0-9a-f]{3,8}$/i.test(c.bg || "")) de.style.background = c.bg;
+        setTimeout(function () { de.classList.remove("bjp-booting"); de.style.background = ""; }, 3000);
+      }
+    } catch (e) { /* no session storage: the page simply opens as usual */ }
+  </script>
+<title>1. The Data Science Workflow - The Open Book Project</title>
+<link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+<link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+<link rel="stylesheet" href="../../assets/extra.css">
+<link rel="stylesheet" href="../../assets/reader.css">
+<link rel="stylesheet" href="../../assets/viz.css">
+<link rel="stylesheet" href="../../assets/app.css">
+<link rel="stylesheet" href="../../assets/theme.css">
+<link rel="stylesheet" href="../../assets/slides.css">
+<link rel="stylesheet" href="../../assets/remote.css">
+<link rel="stylesheet" href="../../assets/scans.css">
+<link rel="stylesheet" href="../../assets/speak.css">
+<link rel="stylesheet" href="../../assets/quiz.css">
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+<input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+<input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a href="#11-what-data-science-is" class="md-skip">
+Skip to content
+</a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav class="md-header__inner md-grid" aria-label="Header">
+<a href="../../index.html" title="The Open Book Project" class="md-header__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+The Open Book Project
+</span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+1. The Data Science Workflow
+</span>
+</div>
+</div>
+</div><a href="../../index.html" class="bjp-libbtn" aria-label="Library: all books" title="Library: all books">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V5h4v15M8 20V9h4v11M14 20L12.6 6l3.8-.8 3 14.2M3 20h18"/></svg><span>Library</span>
+</a>
+<a href="../../subjects/index.html" class="pk-catbtn" aria-haspopup="true" aria-expanded="false" title="Browse the books by category">
+<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><circle cx="17" cy="7" r="3.6"/><path d="M7 13.4l3.9 6.8H3.1z"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg><span>Categories</span>
+</a>
+<form class="md-header__option" data-md-component="palette">
+<input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+<label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+</label>
+<input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+<label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+<label class="md-search__icon md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</label>
+<nav class="md-search__options" aria-label="Search">
+<button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+Initializing search
+</div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--primary bjp-nav bjp-nav--book" aria-label="Navigation" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a href="../../index.html" title="The Open Book Project" class="md-nav__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+The Open Book Project
+</label>
+<ul class="md-nav__list" data-md-scrollfix>
+<li class="md-nav__item bjp-nav-all">
+<a href="../../index.html" class="md-nav__link" aria-label="All books: back to the library">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+<span class="md-ellipsis">All books</span>
+</a>
+</li>
+<li class="md-nav__item bjp-nav-book" role="presentation"><span class="bjp-nav-head">Data Science with Python</span></li>
+<li class="md-nav__item">
+<a href="index.html" class="md-nav__link">
+<span class="md-ellipsis">
+Overview and preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="preface.html" class="md-nav__link">
+<span class="md-ellipsis">
+Preface
+</span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+1. The Data Science Workflow
+</span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a href="the-data-science-workflow.html" class="md-nav__link md-nav__link--active">
+<span class="md-ellipsis">
+1. The Data Science Workflow
+</span>
+</a>
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#11-what-data-science-is" class="md-nav__link">
+<span class="md-ellipsis">
+1.1 What data science is
+</span>
+</a>
+<nav class="md-nav" aria-label="1.1 What data science is">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#what-data-science-is-not" class="md-nav__link">
+<span class="md-ellipsis">
+What data science is not
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#12-questions-come-first" class="md-nav__link">
+<span class="md-ellipsis">
+1.2 Questions come first
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#13-the-workflow" class="md-nav__link">
+<span class="md-ellipsis">
+1.3 The workflow
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#14-kinds-of-data" class="md-nav__link">
+<span class="md-ellipsis">
+1.4 Kinds of data
+</span>
+</a>
+<nav class="md-nav" aria-label="1.4 Kinds of data">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#tidy-data" class="md-nav__link">
+<span class="md-ellipsis">
+Tidy data
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#15-the-tools" class="md-nav__link">
+<span class="md-ellipsis">
+1.5 The tools
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#16-a-first-analysis-in-plain-python" class="md-nav__link">
+<span class="md-ellipsis">
+1.6 A first analysis in plain Python
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#17-the-same-analysis-in-pandas" class="md-nav__link">
+<span class="md-ellipsis">
+1.7 The same analysis in pandas
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#18-roles-in-a-project" class="md-nav__link">
+<span class="md-ellipsis">
+1.8 Roles in a project
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#19-summary" class="md-nav__link">
+<span class="md-ellipsis">
+1.9 Summary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#110-exercises" class="md-nav__link">
+<span class="md-ellipsis">
+1.10 Exercises
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#111-quiz" class="md-nav__link">
+<span class="md-ellipsis">
+1.11 Quiz
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="python-essentials-for-data-work.html" class="md-nav__link">
+<span class="md-ellipsis">
+2. Python Essentials for Data Work
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="numerical-computing-with-numpy.html" class="md-nav__link">
+<span class="md-ellipsis">
+3. Numerical Computing with NumPy
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="pandas-fundamentals.html" class="md-nav__link">
+<span class="md-ellipsis">
+4. pandas Fundamentals: Series, DataFrames and Selection
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="cleaning-reshaping-grouping-and-joining.html" class="md-nav__link">
+<span class="md-ellipsis">
+5. Cleaning, Reshaping, Grouping and Joining
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="visualisation-and-exploratory-data-analysis.html" class="md-nav__link">
+<span class="md-ellipsis">
+6. Visualisation and Exploratory Data Analysis
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="probability-and-statistics.html" class="md-nav__link">
+<span class="md-ellipsis">
+7. Probability and Statistics for Data Science
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="regression.html" class="md-nav__link">
+<span class="md-ellipsis">
+8. Regression
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="classification.html" class="md-nav__link">
+<span class="md-ellipsis">
+9. Classification
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="model-evaluation-and-cross-validation.html" class="md-nav__link">
+<span class="md-ellipsis">
+10. Model Evaluation and Cross-Validation
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="clustering-and-dimensionality-reduction.html" class="md-nav__link">
+<span class="md-ellipsis">
+11. Clustering and Dimensionality Reduction
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="text-and-time-series-basics.html" class="md-nav__link">
+<span class="md-ellipsis">
+12. Text and Time Series Basics
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ethics-privacy-and-reproducibility.html" class="md-nav__link">
+<span class="md-ellipsis">
+13. Ethics, Privacy and Reproducibility
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="an-end-to-end-project.html" class="md-nav__link">
+<span class="md-ellipsis">
+14. An End-to-End Project
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="glossary.html" class="md-nav__link">
+<span class="md-ellipsis">
+Glossary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="further-reading.html" class="md-nav__link">
+<span class="md-ellipsis">
+Further Reading
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#11-what-data-science-is" class="md-nav__link">
+<span class="md-ellipsis">
+1.1 What data science is
+</span>
+</a>
+<nav class="md-nav" aria-label="1.1 What data science is">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#what-data-science-is-not" class="md-nav__link">
+<span class="md-ellipsis">
+What data science is not
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#12-questions-come-first" class="md-nav__link">
+<span class="md-ellipsis">
+1.2 Questions come first
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#13-the-workflow" class="md-nav__link">
+<span class="md-ellipsis">
+1.3 The workflow
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#14-kinds-of-data" class="md-nav__link">
+<span class="md-ellipsis">
+1.4 Kinds of data
+</span>
+</a>
+<nav class="md-nav" aria-label="1.4 Kinds of data">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#tidy-data" class="md-nav__link">
+<span class="md-ellipsis">
+Tidy data
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#15-the-tools" class="md-nav__link">
+<span class="md-ellipsis">
+1.5 The tools
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#16-a-first-analysis-in-plain-python" class="md-nav__link">
+<span class="md-ellipsis">
+1.6 A first analysis in plain Python
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#17-the-same-analysis-in-pandas" class="md-nav__link">
+<span class="md-ellipsis">
+1.7 The same analysis in pandas
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#18-roles-in-a-project" class="md-nav__link">
+<span class="md-ellipsis">
+1.8 Roles in a project
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#19-summary" class="md-nav__link">
+<span class="md-ellipsis">
+1.9 Summary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#110-exercises" class="md-nav__link">
+<span class="md-ellipsis">
+1.10 Exercises
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#111-quiz" class="md-nav__link">
+<span class="md-ellipsis">
+1.11 Quiz
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="chapter-1-the-data-science-workflow">Chapter 1: The Data Science Workflow<a class="headerlink" href="#chapter-1-the-data-science-workflow" title="Permanent link">&para;</a></h1>
+<p><em>What data science is, how a project runs, and a first analysis</em></p>
+<div class="admonition note">
+<p class="admonition-title">Learning outcomes</p>
+<p>After this chapter you should be able to:</p>
+<ul>
+<li>explain in plain words what data science is and what it is not;</li>
+<li>turn a vague wish ("use the data") into a question that data can answer;</li>
+<li>name the seven stages of a data science project and say what happens in each;</li>
+<li>classify a variable as numerical (continuous or discrete) or categorical (nominal or ordinal);</li>
+<li>recognise a tidy table, with one row per observation and one column per variable;</li>
+<li>carry out a small analysis in plain Python and repeat it in pandas.</li>
+</ul>
+</div>
+<p>Data science is the practice of learning useful things from data. It borrows from statistics (how to reason from a sample to a population, and how sure to be), from computing (how to store, transform and process data at scale) and from the subject the data comes from (what the numbers mean, and which questions matter). This chapter gives the map of the whole book: the stages a project passes through, the kinds of data you will meet, the tools you will use, and a first small analysis that touches every stage.</p>
+<h2 id="11-what-data-science-is">1.1 What data science is<a class="headerlink" href="#11-what-data-science-is" title="Permanent link">&para;</a></h2>
+<p>A shop keeps a record of every sale. A hospital records the temperature of every patient each morning. A weather station logs rainfall every hour. A website records which pages each visitor opens. None of these records was collected to answer a particular question, but each holds answers to many: which products sell together, whether a ward has more fevers than usual, whether the monsoon came late, which page makes visitors leave.</p>
+<p><strong>Data science</strong> is the work of getting those answers out reliably. A typical piece of work starts with a question, finds or collects data that bears on it, cleans the data until it can be trusted, explores it to understand what it contains, perhaps builds a model that predicts or explains, checks how good the model is, and finally communicates the result so that someone can act on it.</p>
+<p>Three kinds of result come out of this work:</p>
+<ul>
+<li><strong>Description</strong>: what happened? (Average sales per day last month; the number of patients by ward.)</li>
+<li><strong>Inference</strong>: what can we conclude beyond the data we have? (Is the new layout of the shop really better, or did we see a lucky week?)</li>
+<li><strong>Prediction</strong>: what will happen for a new case? (Will this customer return? How much rain will fall tomorrow?)</li>
+</ul>
+<p>Description is the most common and the most underrated: a clear, correct table often answers the question outright. Inference needs probability, because it reasons from a sample to something larger. Prediction needs models that are judged on data they have not seen.</p>
+<div class="admonition tip">
+<p class="admonition-title">Key idea</p>
+<p>Data science is not a single technique. It is a workflow that turns a question and some data into an answer that can be trusted, and most of the work is in the steps around the model, not in the model itself.</p>
+</div>
+<h3 id="what-data-science-is-not">What data science is not<a class="headerlink" href="#what-data-science-is-not" title="Permanent link">&para;</a></h3>
+<p>It is not the same as machine learning. Machine learning is a set of methods for building models from data, and it is one stage of the workflow (Chapters 8 to 11 of this book). A project that never fits a model, and ends with a well-made chart and a confidence interval, is still data science.</p>
+<p>It is not the same as statistics either, though it overlaps with it heavily. Statistics supplies the reasoning about uncertainty that every honest analysis needs (Chapter 7). Data science adds the programming that makes it possible to handle messy, large or unusual data, and it puts more weight on prediction than classical statistics usually does.</p>
+<p>And it is not magic. A model can only find patterns that are present in the data it is given. If the data is biased, incomplete or measured wrongly, the conclusions will be too, however advanced the method.</p>
+<h2 id="12-questions-come-first">1.2 Questions come first<a class="headerlink" href="#12-questions-come-first" title="Permanent link">&para;</a></h2>
+<p>The most common way for a project to fail is to start without a clear question. "Here is our sales data, find something interesting" usually leads to a pile of charts that nobody uses. A good question has three properties.</p>
+<ol>
+<li><strong>It is specific.</strong> "Do customers like the new menu?" becomes "Did the average number of items per order change in the four weeks after the new menu, compared with the four weeks before?"</li>
+<li><strong>It is answerable with data you have or can get.</strong> If the data does not record what customers ordered, the question cannot be answered, however clever the analysis.</li>
+<li><strong>Its answer would change something.</strong> If no decision depends on the answer, the work is a curiosity, not a project.</li>
+</ol>
+<p>It also helps to say in advance <strong>how the answer will be judged</strong>. For a description, it might be "a table of weekly totals that the manager agrees matches the till receipts". For a prediction, it is a measure of error on new data, such as "the forecast should be within 10% of actual sales on most days".</p>
+<div class="admonition example">
+<p class="admonition-title">Example 1.1: Sharpening a question</p>
+<p>A school wants to "use its attendance data". Three sharper versions:</p>
+<ul>
+<li><em>Description</em>: In which months of last year was average daily attendance lowest, and by how much?</li>
+<li><em>Inference</em>: Is attendance on Mondays lower than on other weekdays by more than chance would explain?</li>
+<li><em>Prediction</em>: Given a student's attendance in the first two months, can we flag students likely to fall below 75% attendance by the end of the year, so that teachers can contact families early?</li>
+</ul>
+<p>Each version names the data needed (daily attendance by student and date), the comparison or target, and what would be done with the answer.</p>
+</div>
+<h2 id="13-the-workflow">1.3 The workflow<a class="headerlink" href="#13-the-workflow" title="Permanent link">&para;</a></h2>
+<p>Every project in this book passes through the same seven stages, shown in Figure 1.1. Real projects loop: exploring the data reveals problems that send you back to cleaning, and a poor model sends you back to the data.</p>
+<figure class="fig fig-diagram">
+<img src="img/workflow.svg" alt="The data science workflow: ask a question, get the data, clean and prepare it, explore and visualise it, model it, evaluate the model, and communicate the result. The last stage usually raises new questions, and a disappointing evaluation sends the work back to the data." loading="lazy" width="770" height="300">
+<figcaption><strong>Figure 1.1 The data science workflow.</strong> The data science workflow: ask a question, get the data, clean and prepare it, explore and visualise it, model it, evaluate the model, and communicate the result. The last stage usually raises new questions, and a disappointing evaluation sends the work back to the data.</figcaption>
+</figure>
+<p><strong>1. Ask a question.</strong> Decide what you want to know and how the answer will be judged (Section 1.2).</p>
+<p><strong>2. Get the data.</strong> Data comes from files (CSV, spreadsheets, JSON), from databases queried with SQL, from web services, from sensors, from surveys, or from experiments you design. Record where it came from and when: you will need to say so later, and you may need to fetch it again.</p>
+<p><strong>3. Clean and prepare.</strong> Real data has missing values, duplicate rows, impossible values (a negative age), inconsistent spellings ("Delhi", "delhi", "New Delhi"), numbers stored as text, and dates in several formats. Cleaning is where much of the time goes, and it is where mistakes are easiest to make and hardest to see. Chapter 5 is about it.</p>
+<p><strong>4. Explore and visualise.</strong> Before modelling, look: summary statistics, counts of categories, histograms, scatter plots, relationships between variables. Exploration often answers the question by itself, and it always tells you whether the data is fit for the purpose. Chapter 6.</p>
+<p><strong>5. Model.</strong> A model is a simplified description of how the data arises, written so that a computer can use it: a straight line relating price to size, a rule that sorts emails into spam and not spam, a grouping of customers into similar types. Chapters 8, 9 and 11.</p>
+<p><strong>6. Evaluate.</strong> How good is the model, measured on data it did not see while it was being built? Is it better than a trivial baseline, such as always predicting the average? Chapter 10.</p>
+<p><strong>7. Communicate and act.</strong> Write the result so that the person who asked can understand it and use it: a short report, a chart, a table, a model running inside an application. Say how confident you are and what the limits are. Chapter 13 adds the ethical side: privacy, fairness and making the work reproducible.</p>
+<div class="admonition warning">
+<p class="admonition-title">Caution: the stages are not equal in size</p>
+<p>Beginners expect most of the time to go on modelling. In practice getting, cleaning and exploring the data usually take far longer than fitting a model, and they matter more: a simple model on clean, well-understood data beats an elaborate model on data nobody has checked.</p>
+</div>
+<h2 id="14-kinds-of-data">1.4 Kinds of data<a class="headerlink" href="#14-kinds-of-data" title="Permanent link">&para;</a></h2>
+<p>Most data in this book is <strong>tabular</strong>: a table in which each row is one <strong>observation</strong> (a sale, a patient, a day) and each column is one <strong>variable</strong> (a measured or recorded property, such as price, temperature or city). Variables come in a few kinds, and the kind decides which summaries and plots make sense.</p>
+<table>
+<thead>
+<tr>
+<th>Kind</th>
+<th>Sub-kind</th>
+<th>Examples</th>
+<th>Sensible summaries</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Numerical</td>
+<td>Continuous</td>
+<td>height, temperature, price, time taken</td>
+<td>mean, median, standard deviation, histogram</td>
+</tr>
+<tr>
+<td>Numerical</td>
+<td>Discrete (counts)</td>
+<td>number of children, items in an order</td>
+<td>mean, median, counts of each value</td>
+</tr>
+<tr>
+<td>Categorical</td>
+<td>Nominal (no order)</td>
+<td>city, blood group, product type</td>
+<td>counts and proportions, bar chart</td>
+</tr>
+<tr>
+<td>Categorical</td>
+<td>Ordinal (ordered)</td>
+<td>rating 1 to 5, education level, size S/M/L</td>
+<td>counts, median, proportions</td>
+</tr>
+<tr>
+<td>Other</td>
+<td>Date and time</td>
+<td>date of sale, timestamp of a click</td>
+<td>ranges, counts per period, trends</td>
+</tr>
+<tr>
+<td>Other</td>
+<td>Text</td>
+<td>reviews, emails, comments</td>
+<td>word counts, frequent words (Chapter 12)</td>
+</tr>
+</tbody>
+</table>
+<p><em>Table 1.1. The kinds of variable and the summaries that suit them.</em></p>
+<p>A number is not always a numerical variable. A PIN code or a roll number is written in digits, but adding two PIN codes is meaningless: they are labels, so they are categorical. Ask whether arithmetic on the values means anything. Conversely, an ordinal variable such as a rating from 1 to 5 is often averaged in practice; that is reasonable when the gaps between ratings are roughly equal in meaning, but it is a choice you should notice you are making.</p>
+<h3 id="tidy-data">Tidy data<a class="headerlink" href="#tidy-data" title="Permanent link">&para;</a></h3>
+<p>A table is <strong>tidy</strong> when:</p>
+<ol>
+<li>each variable is a column,</li>
+<li>each observation is a row, and</li>
+<li>each kind of observational unit has its own table.</li>
+</ol>
+<p>Here is an untidy table of rainfall, with one column per month:</p>
+<table>
+<thead>
+<tr>
+<th>Station</th>
+<th style="text-align: right;">Jan</th>
+<th style="text-align: right;">Feb</th>
+<th style="text-align: right;">Mar</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>North</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">15</td>
+</tr>
+<tr>
+<td>South</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">25</td>
+<td style="text-align: right;">41</td>
+</tr>
+</tbody>
+</table>
+<p><em>Table 1.2. Rainfall in millimetres, in a wide (untidy) layout.</em></p>
+<p>The month is a variable, but it is hiding in the column headings. The tidy version has one row per station and month:</p>
+<table>
+<thead>
+<tr>
+<th>Station</th>
+<th>Month</th>
+<th style="text-align: right;">Rainfall_mm</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>North</td>
+<td>Jan</td>
+<td style="text-align: right;">12</td>
+</tr>
+<tr>
+<td>North</td>
+<td>Feb</td>
+<td style="text-align: right;">8</td>
+</tr>
+<tr>
+<td>North</td>
+<td>Mar</td>
+<td style="text-align: right;">15</td>
+</tr>
+<tr>
+<td>South</td>
+<td>Jan</td>
+<td style="text-align: right;">30</td>
+</tr>
+<tr>
+<td>South</td>
+<td>Feb</td>
+<td style="text-align: right;">25</td>
+</tr>
+<tr>
+<td>South</td>
+<td>Mar</td>
+<td style="text-align: right;">41</td>
+</tr>
+</tbody>
+</table>
+<p><em>Table 1.3. The same data in a long (tidy) layout.</em></p>
+<p>The wide table is easier for a person to read; the long one is easier to filter, group, plot and model, because every variable can be named. Chapter 5 shows how to convert between them with pandas (<code>melt</code> and <code>pivot</code>).</p>
+<div class="admonition info">
+<p class="admonition-title">Note: structured and unstructured data</p>
+<p>Tables are <em>structured</em> data. Text, images, sound and video are called <em>unstructured</em>, because they do not arrive as rows and columns. Much of the work with unstructured data consists of turning it into a table of features: for example, turning each review into counts of words (Chapter 12).</p>
+</div>
+<h2 id="15-the-tools">1.5 The tools<a class="headerlink" href="#15-the-tools" title="Permanent link">&para;</a></h2>
+<p>This book uses Python, a general-purpose programming language that has become the most widely used language for data work, together with four libraries:</p>
+<table>
+<thead>
+<tr>
+<th>Library</th>
+<th>Imported as</th>
+<th>What it gives you</th>
+<th>Chapters</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>NumPy</td>
+<td><code>import numpy as np</code></td>
+<td>fast arrays of numbers and mathematics on whole arrays</td>
+<td>3 onwards</td>
+</tr>
+<tr>
+<td>pandas</td>
+<td><code>import pandas as pd</code></td>
+<td>tables (DataFrames) with labelled rows and columns; reading, cleaning, grouping, joining</td>
+<td>4 onwards</td>
+</tr>
+<tr>
+<td>matplotlib</td>
+<td><code>import matplotlib.pyplot as plt</code></td>
+<td>plots of every kind</td>
+<td>6 onwards</td>
+</tr>
+<tr>
+<td>scikit-learn</td>
+<td><code>from sklearn ... import ...</code></td>
+<td>models, preprocessing and evaluation for machine learning</td>
+<td>8 onwards</td>
+</tr>
+</tbody>
+</table>
+<p><em>Table 1.4. The four libraries used in the book and their usual import names.</em></p>
+<p>scikit-learn installs SciPy, a library of scientific routines, as one of its own requirements, and Chapter 7 uses its statistics module (<code>scipy.stats</code>) for probability distributions and tests.</p>
+<p>You can run the code in three ways: as a script (<code>python analysis.py</code> in a terminal), interactively in the Python shell, or in a <strong>notebook</strong> (Jupyter or a similar tool), which mixes code, output and text in one document and is the usual environment for exploration. Notebooks are convenient, but they let you run cells out of order, which can leave the results on the screen inconsistent with the code. Chapter 13 returns to this.</p>
+<p>If the libraries are missing, install them with <code>pip</code>, Python's package installer, from a terminal:</p>
+<div class="language-bash highlight"><pre><span></span><code>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>numpy<span class="w"> </span>pandas<span class="w"> </span>matplotlib<span class="w"> </span>scikit-learn
+</code></pre></div>
+<h2 id="16-a-first-analysis-in-plain-python">1.6 A first analysis in plain Python<a class="headerlink" href="#16-a-first-analysis-in-plain-python" title="Permanent link">&para;</a></h2>
+<p>To see the whole workflow in miniature, here is a small analysis done first with nothing but built-in Python. The question: <em>a small tea stall recorded the number of cups sold on each of ten days; on which kind of day does it sell more, weekdays or weekends, and by how much?</em></p>
+<p>The data is small enough to type in. Each record is a day, with its weekday name and the cups sold.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">sales</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">"Mon"</span><span class="p">,</span> <span class="mi">112</span><span class="p">),</span> <span class="p">(</span><span class="s2">"Tue"</span><span class="p">,</span> <span class="mi">98</span><span class="p">),</span> <span class="p">(</span><span class="s2">"Wed"</span><span class="p">,</span> <span class="mi">105</span><span class="p">),</span> <span class="p">(</span><span class="s2">"Thu"</span><span class="p">,</span> <span class="mi">120</span><span class="p">),</span> <span class="p">(</span><span class="s2">"Fri"</span><span class="p">,</span> <span class="mi">131</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Sat"</span><span class="p">,</span> <span class="mi">164</span><span class="p">),</span> <span class="p">(</span><span class="s2">"Sun"</span><span class="p">,</span> <span class="mi">158</span><span class="p">),</span> <span class="p">(</span><span class="s2">"Mon"</span><span class="p">,</span> <span class="mi">109</span><span class="p">),</span> <span class="p">(</span><span class="s2">"Tue"</span><span class="p">,</span> <span class="mi">101</span><span class="p">),</span> <span class="p">(</span><span class="s2">"Wed"</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+<span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sales</span><span class="p">),</span> <span class="s2">"days recorded"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">sales</span><span class="p">[:</span><span class="mi">3</span><span class="p">])</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>10 days recorded
+[('Mon', 112), ('Tue', 98), ('Wed', 105)]
+</code></pre></div>
+<p>The last record has <code>None</code> in place of a number: the count for that Wednesday was not written down. This is <strong>missing data</strong>, and it is the first cleaning decision. We could guess a value, but for a simple comparison of averages the honest choice is to leave that day out and say so.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">clean</span> <span class="o">=</span> <span class="p">[(</span><span class="n">day</span><span class="p">,</span> <span class="n">cups</span><span class="p">)</span> <span class="k">for</span> <span class="n">day</span><span class="p">,</span> <span class="n">cups</span> <span class="ow">in</span> <span class="n">sales</span> <span class="k">if</span> <span class="n">cups</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">clean</span><span class="p">),</span> <span class="s2">"days with a count"</span><span class="p">)</span>
+
+<span class="n">weekend_days</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"Sat"</span><span class="p">,</span> <span class="s2">"Sun"</span><span class="p">}</span>
+<span class="n">weekend</span> <span class="o">=</span> <span class="p">[</span><span class="n">cups</span> <span class="k">for</span> <span class="n">day</span><span class="p">,</span> <span class="n">cups</span> <span class="ow">in</span> <span class="n">clean</span> <span class="k">if</span> <span class="n">day</span> <span class="ow">in</span> <span class="n">weekend_days</span><span class="p">]</span>
+<span class="n">weekday</span> <span class="o">=</span> <span class="p">[</span><span class="n">cups</span> <span class="k">for</span> <span class="n">day</span><span class="p">,</span> <span class="n">cups</span> <span class="ow">in</span> <span class="n">clean</span> <span class="k">if</span> <span class="n">day</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">weekend_days</span><span class="p">]</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">values</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"weekday:"</span><span class="p">,</span> <span class="n">weekday</span><span class="p">,</span> <span class="s2">"mean"</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">mean</span><span class="p">(</span><span class="n">weekday</span><span class="p">),</span> <span class="mi">1</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"weekend:"</span><span class="p">,</span> <span class="n">weekend</span><span class="p">,</span> <span class="s2">"mean"</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">mean</span><span class="p">(</span><span class="n">weekend</span><span class="p">),</span> <span class="mi">1</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"difference:"</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">mean</span><span class="p">(</span><span class="n">weekend</span><span class="p">)</span> <span class="o">-</span> <span class="n">mean</span><span class="p">(</span><span class="n">weekday</span><span class="p">),</span> <span class="mi">1</span><span class="p">),</span> <span class="s2">"cups per day"</span><span class="p">)</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>9 days with a count
+weekday: [112, 98, 105, 120, 131, 109, 101] mean 110.9
+weekend: [164, 158] mean 161.0
+difference: 50.1 cups per day
+</code></pre></div>
+<p>The answer to the question, in words: on the nine days with a count, the stall sold about 161 cups on an average weekend day against about 111 on an average weekday, roughly 50 more. That is the <strong>description</strong>. Whether the difference would hold up over a whole year is a question of <strong>inference</strong>, and with only two weekend days we should be very cautious; Chapter 7 shows how to put a number on that caution.</p>
+<p>Even this tiny example touched most of the workflow: a question, data, a cleaning decision (drop the missing day), a summary, and a sentence that communicates the result together with its limitation.</p>
+<div class="admonition example">
+<p class="admonition-title">Example 1.2: The median as a check</p>
+<p>The mean is pulled by extreme values. The <strong>median</strong>, the middle value after sorting, is not. Computing both is a cheap check on whether a few unusual days drive the result.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">median</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+    <span class="n">mid</span> <span class="o">=</span> <span class="n">n</span> <span class="o">//</span> <span class="mi">2</span>
+    <span class="k">return</span> <span class="n">s</span><span class="p">[</span><span class="n">mid</span><span class="p">]</span> <span class="k">if</span> <span class="n">n</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">mid</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">s</span><span class="p">[</span><span class="n">mid</span><span class="p">])</span> <span class="o">/</span> <span class="mi">2</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"weekday median:"</span><span class="p">,</span> <span class="n">median</span><span class="p">(</span><span class="n">weekday</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"weekend median:"</span><span class="p">,</span> <span class="n">median</span><span class="p">(</span><span class="n">weekend</span><span class="p">))</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>weekday median: 109
+weekend median: 161.0
+</code></pre></div>
+<p>The medians tell the same story as the means, so no single day is distorting the comparison.</p>
+</div>
+<h2 id="17-the-same-analysis-in-pandas">1.7 The same analysis in pandas<a class="headerlink" href="#17-the-same-analysis-in-pandas" title="Permanent link">&para;</a></h2>
+<p>Plain Python works, but every step had to be written by hand. pandas, the subject of Chapters 4 and 5, gives a table type, the <strong>DataFrame</strong>, with these operations built in. The same analysis takes a few lines:</p>
+<div class="language-python highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">sales</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">"day"</span><span class="p">,</span> <span class="s2">"cups"</span><span class="p">])</span>
+<span class="n">df</span><span class="p">[</span><span class="s2">"weekend"</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">"day"</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">([</span><span class="s2">"Sat"</span><span class="p">,</span> <span class="s2">"Sun"</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>   day   cups  weekend
+0  Mon  112.0    False
+1  Tue   98.0    False
+2  Wed  105.0    False
+3  Thu  120.0    False
+4  Fri  131.0    False
+5  Sat  164.0     True
+6  Sun  158.0     True
+7  Mon  109.0    False
+8  Tue  101.0    False
+9  Wed    NaN    False
+</code></pre></div>
+<p>pandas shows the missing count as <code>NaN</code> ("not a number"), its usual marker for a missing number. The grouped means skip missing values automatically:</p>
+<div class="language-python highlight"><pre><span></span><code><span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">"weekend"</span><span class="p">)[</span><span class="s2">"cups"</span><span class="p">]</span><span class="o">.</span><span class="n">agg</span><span class="p">([</span><span class="s2">"count"</span><span class="p">,</span> <span class="s2">"mean"</span><span class="p">,</span> <span class="s2">"median"</span><span class="p">]))</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>         count        mean  median
+weekend                           
+False        7  110.857143   109.0
+True         2  161.000000   161.0
+</code></pre></div>
+<p>The table says the same as before: 7 weekdays with a count averaging about 111 cups, and 2 weekend days averaging 161. The <code>count</code> column is a useful habit: it shows at once that the weekend figure rests on only two days.</p>
+<div class="admonition warning">
+<p class="admonition-title">Caution: silent handling of missing values</p>
+<p>pandas skipped the missing Wednesday without a word. That is convenient, but it means you must check for missing values yourself (with <code>df.isna().sum()</code>, Chapter 5) rather than rely on an error to warn you. Plain Python, by contrast, would have failed with an error when adding <code>None</code> to a number, which at least forces a decision.</p>
+</div>
+<h2 id="18-roles-in-a-project">1.8 Roles in a project<a class="headerlink" href="#18-roles-in-a-project" title="Permanent link">&para;</a></h2>
+<p>On a large project the stages are often shared among several people: a data engineer who builds the pipelines that collect and store the data, an analyst who describes and reports, a data scientist or statistician who models and tests, and a domain expert (a doctor, a shopkeeper, an engineer) who knows what the data means and which questions matter. On a small project one person does everything. Either way, the most valuable habit is the same: talk to the people who know the data before trusting it. A column called <code>temp</code> might be temperature or temporary; a value of 0 might mean zero or "not recorded".</p>
+<h2 id="19-summary">1.9 Summary<a class="headerlink" href="#19-summary" title="Permanent link">&para;</a></h2>
+<div class="admonition abstract">
+<p class="admonition-title">Summary</p>
+<ul>
+<li>Data science learns useful things from data. Its results are descriptions, inferences and predictions.</li>
+<li>A project starts with a specific, answerable question whose answer would change something, together with a way of judging the answer.</li>
+<li>The workflow has seven stages: ask, get, clean, explore, model, evaluate, communicate. It loops back when exploration or evaluation reveals problems.</li>
+<li>Variables are numerical (continuous or discrete) or categorical (nominal or ordinal), with dates and text as further kinds. Digits do not make a variable numerical.</li>
+<li>Tidy data has one variable per column and one observation per row.</li>
+<li>The book's tools are Python with NumPy, pandas, matplotlib and scikit-learn.</li>
+<li>Even a ten-row analysis involves cleaning decisions, which must be reported with the result.</li>
+</ul>
+</div>
+<h2 id="110-exercises">1.10 Exercises<a class="headerlink" href="#110-exercises" title="Permanent link">&para;</a></h2>
+<div class="admonition example">
+<p class="admonition-title">Exercise 1</p>
+<p>Classify each variable as continuous, discrete, nominal or ordinal: (a) the weight of a parcel; (b) the number of goals in a match; (c) a customer's state of residence; (d) a T-shirt size (S, M, L, XL); (e) a mobile phone number.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>(a) continuous; (b) discrete; (c) nominal; (d) ordinal; (e) nominal: it is written in digits, but it is a label, and arithmetic on phone numbers means nothing.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 2</p>
+<p>Rewrite the vague request "use our library's borrowing records to improve the library" as one descriptive, one inferential and one predictive question.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>Many answers are possible. For example: <em>descriptive</em>: which ten subjects were borrowed most last year, and what share of all loans did they account for? <em>Inferential</em>: did loans per week rise after opening hours were extended, by more than normal week-to-week variation would explain? <em>Predictive</em>: from a member's borrowing in their first three months, can we predict whether they will still be borrowing after a year? Each names the data, the comparison or target, and implies a decision.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 3</p>
+<p>A table of exam marks has the columns <code>Student</code>, <code>Maths</code>, <code>Physics</code>, <code>Chemistry</code>, with one row per student. Is it tidy for the question "which subject has the highest average mark"? Describe the tidy layout.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>It is not tidy for that question, because the subject is a variable hiding in the column names. The tidy layout has three columns, <code>Student</code>, <code>Subject</code> and <code>Mark</code>, with one row per student and subject (three rows per student). Then "average mark by subject" is a single grouping operation.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 4</p>
+<p>In the tea-stall example, suppose the missing Wednesday is filled in with 0 instead of being dropped. What happens to the weekday mean, and why is 0 a bad choice?</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>The weekday mean becomes the sum of the eight weekday counts, 776, divided by 8, which is 97.0, down from about 110.9. Zero is a bad choice because the stall did not sell zero cups; the count simply was not recorded. Treating "missing" as "zero" invents data and biases the result downwards.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 5</p>
+<p>Write a Python function <code>count_above(values, threshold)</code> that returns how many values are strictly greater than the threshold, skipping <code>None</code>. Test it on the cups from the tea-stall data with threshold 110.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<div class="language-python highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">count_above</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">threshold</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">values</span> <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">v</span> <span class="o">&gt;</span> <span class="n">threshold</span><span class="p">)</span>
+
+<span class="n">cups</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">sales</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">count_above</span><span class="p">(</span><span class="n">cups</span><span class="p">,</span> <span class="mi">110</span><span class="p">))</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>5
+</code></pre></div>
+<p>The days above 110 cups are Thursday, Friday, Saturday, Sunday and the first Monday.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 6</p>
+<p>Give two reasons why a project might loop back from evaluation to the data stage rather than to the model stage.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>For example: the evaluation shows that the model fails badly for one group of cases, which turns out to be under-represented in the data, so more or better data is needed; or the errors reveal a cleaning problem, such as a unit mix-up (some weights in grams, some in kilograms), that must be fixed before any model can do well.</p>
+</details>
+<h2 id="111-quiz">1.11 Quiz<a class="headerlink" href="#111-quiz" title="Permanent link">&para;</a></h2>
+<p class="viz-note"><em>(a quiz block could not be built: question 4 (choice): the answer is not one of the options)</em></p>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button type="button" class="md-top md-icon" data-md-component="top" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+Back to top
+</button>
+</main>
+<footer class="md-footer">
+<nav class="md-footer__inner md-grid" aria-label="Footer" >
+<a href="preface.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: Preface">
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</div>
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Previous
+</span>
+<div class="md-ellipsis">
+Preface
+</div>
+</div>
+</a>
+<a href="python-essentials-for-data-work.html" class="md-footer__link md-footer__link--next" aria-label="Next: 2. Python Essentials for Data Work">
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Next
+</span>
+<div class="md-ellipsis">
+2. Python Essentials for Data Work
+</div>
+</div>
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+</div>
+</a>
+</nav>
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+The Open Book Project &middot;
+<a href="../../about.html">About this library</a> &middot;
+<a href="../../publish.html">Publish your book</a> &middot;
+© The authors of the books
+</div>
+Made with
+<a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+Material for MkDocs
+</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "navigation.prune", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "toc.follow", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+<script src="../../assets/mathjax.js"></script>
+<script src="../../assets/viz.js"></script>
+<script src="../../assets/remote.js"></script>
+<script src="../../assets/scans.js"></script>
+<script src="../../assets/reader.js"></script>
+<script src="../../assets/app.js"></script>
+<script src="../../assets/slides.js"></script>
+<script src="../../assets/speak.js"></script>
+<script src="../../assets/quiz.js"></script>
+<script>
+    /* offline reading: the service worker at the site root (its scope is the whole site) */
+    if ("serviceWorker" in navigator && window.isSecureContext) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register(new URL("../../sw.js", location.href).href).catch(function () {});
+      });
+    }
+  </script>
+</body>
+</html>

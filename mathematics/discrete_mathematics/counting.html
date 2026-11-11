@@ -1,0 +1,1084 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="description" content="The Open Book Project: books on computer science, quantum computing, cyber security, science, the social sciences, university courses and languages, read page by page like an e-book, online or offline.">
+<meta name="author" content="The Open Book Project">
+<link rel="canonical" href="https://open-book-project.github.io/mathematics/discrete_mathematics/counting.html">
+<link rel="prev" href="induction-and-recursion.html">
+<link rel="next" href="discrete-probability.html">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap"></noscript>
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Open Book">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="application-name" content="Open Book"><script src="../../assets/library-data.js"></script><script>
+    (function () {
+      var X = window.XMLHttpRequest, open, gate = new Promise(function (r) { open = r; });
+      if (!X) return;
+      var open0 = X.prototype.open, send0 = X.prototype.send;
+      X.prototype.open = function (method, url) {
+        this.__pkIndex = /\/search\/search_index\.json(\?|#|$)/.test(String(url));
+        return open0.apply(this, arguments);
+      };
+      X.prototype.send = function () {
+        if (!this.__pkIndex) return send0.apply(this, arguments);
+        var xhr = this, args = arguments;
+        gate.then(function () { send0.apply(xhr, args); });
+      };
+      function wake() { open(); }
+      document.addEventListener("focusin", function (e) { if (e.target && e.target.closest && e.target.closest(".md-search")) wake(); });
+      document.addEventListener("click", function (e) { if (e.target && e.target.closest && e.target.closest('label[for="__search"], .md-search')) wake(); }, true);
+      document.addEventListener("keydown", function (e) {
+        var k = e.key;
+        if ((k === "/" || k === "s" || k === "f" || k === "S" || k === "F") && !(e.target && e.target.closest && e.target.closest("input, textarea, [contenteditable]"))) wake();
+      }, true);
+      if (/[?&]q=/.test(location.search)) wake();
+    })();
+  </script><script>
+    try {
+      if ((window.matchMedia && (matchMedia("(display-mode: standalone)").matches || matchMedia("(display-mode: fullscreen)").matches)) || navigator.standalone === true) {
+        document.documentElement.className += " bjp-standalone";
+      }
+    } catch (e) { /* not an installed app */ }
+    /* the books of a subject or of the whole library as covers or as a list (assets/app.js): the reader's choice */
+    try {
+      var bv = localStorage.getItem("bjp.view");
+      if (bv === "list" || (bv !== "grid" && /\/books\.html$/.test(location.pathname))) document.documentElement.className += " bjp-view-list";
+    } catch (e) { /* no storage: covers */ }
+  </script>
+<script>
+    /* a book opened from its cover on the shelf: the page stays blank, in the cover's colour, until the reader is up */
+    try {
+      var cv = sessionStorage.getItem("bjp.reader.cover");
+      if (cv && sessionStorage.getItem("bjp.reader.open") === "1") {
+        var c = JSON.parse(cv), de = document.documentElement;
+        de.className += " bjp-booting";
+        if (c && /^#[0-9a-f]{3,8}$/i.test(c.bg || "")) de.style.background = c.bg;
+        setTimeout(function () { de.classList.remove("bjp-booting"); de.style.background = ""; }, 3000);
+      }
+    } catch (e) { /* no session storage: the page simply opens as usual */ }
+  </script>
+<title>7. Counting - The Open Book Project</title>
+<link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+<link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+<link rel="stylesheet" href="../../assets/extra.css">
+<link rel="stylesheet" href="../../assets/reader.css">
+<link rel="stylesheet" href="../../assets/viz.css">
+<link rel="stylesheet" href="../../assets/app.css">
+<link rel="stylesheet" href="../../assets/theme.css">
+<link rel="stylesheet" href="../../assets/slides.css">
+<link rel="stylesheet" href="../../assets/remote.css">
+<link rel="stylesheet" href="../../assets/scans.css">
+<link rel="stylesheet" href="../../assets/speak.css">
+<link rel="stylesheet" href="../../assets/quiz.css">
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+<input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+<input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a href="#71-the-sum-and-product-rules" class="md-skip">
+Skip to content
+</a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav class="md-header__inner md-grid" aria-label="Header">
+<a href="../../index.html" title="The Open Book Project" class="md-header__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+The Open Book Project
+</span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+7. Counting
+</span>
+</div>
+</div>
+</div><a href="../../index.html" class="bjp-libbtn" aria-label="Library: all books" title="Library: all books">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V5h4v15M8 20V9h4v11M14 20L12.6 6l3.8-.8 3 14.2M3 20h18"/></svg><span>Library</span>
+</a>
+<a href="../../subjects/index.html" class="pk-catbtn" aria-haspopup="true" aria-expanded="false" title="Browse the books by category">
+<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><circle cx="17" cy="7" r="3.6"/><path d="M7 13.4l3.9 6.8H3.1z"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg><span>Categories</span>
+</a>
+<form class="md-header__option" data-md-component="palette">
+<input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+<label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+</label>
+<input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+<label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+<label class="md-search__icon md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</label>
+<nav class="md-search__options" aria-label="Search">
+<button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+Initializing search
+</div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--primary bjp-nav bjp-nav--book" aria-label="Navigation" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a href="../../index.html" title="The Open Book Project" class="md-nav__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+The Open Book Project
+</label>
+<ul class="md-nav__list" data-md-scrollfix>
+<li class="md-nav__item bjp-nav-all">
+<a href="../../index.html" class="md-nav__link" aria-label="All books: back to the library">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+<span class="md-ellipsis">All books</span>
+</a>
+</li>
+<li class="md-nav__item bjp-nav-book" role="presentation"><span class="bjp-nav-head">Discrete Mathematics</span></li>
+<li class="md-nav__item">
+<a href="index.html" class="md-nav__link">
+<span class="md-ellipsis">
+Overview and preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="preface.html" class="md-nav__link">
+<span class="md-ellipsis">
+Preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="propositional-logic.html" class="md-nav__link">
+<span class="md-ellipsis">
+1. Propositional Logic
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="predicate-logic-and-quantifiers.html" class="md-nav__link">
+<span class="md-ellipsis">
+2. Predicate Logic and Quantifiers
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="methods-of-proof.html" class="md-nav__link">
+<span class="md-ellipsis">
+3. Methods of Proof
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="sets-and-functions.html" class="md-nav__link">
+<span class="md-ellipsis">
+4. Sets and Functions
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="relations.html" class="md-nav__link">
+<span class="md-ellipsis">
+5. Relations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="induction-and-recursion.html" class="md-nav__link">
+<span class="md-ellipsis">
+6. Induction and Recursion
+</span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+7. Counting
+</span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a href="counting.html" class="md-nav__link md-nav__link--active">
+<span class="md-ellipsis">
+7. Counting
+</span>
+</a>
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#71-the-sum-and-product-rules" class="md-nav__link">
+<span class="md-ellipsis">
+7.1 The sum and product rules
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#72-subtraction-and-division" class="md-nav__link">
+<span class="md-ellipsis">
+7.2 Subtraction and division
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#73-permutations" class="md-nav__link">
+<span class="md-ellipsis">
+7.3 Permutations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#74-combinations" class="md-nav__link">
+<span class="md-ellipsis">
+7.4 Combinations
+</span>
+</a>
+<nav class="md-nav" aria-label="7.4 Combinations">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#identities-and-combinatorial-proof" class="md-nav__link">
+<span class="md-ellipsis">
+Identities and combinatorial proof
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#75-the-binomial-theorem" class="md-nav__link">
+<span class="md-ellipsis">
+7.5 The binomial theorem
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#76-counting-with-repetition" class="md-nav__link">
+<span class="md-ellipsis">
+7.6 Counting with repetition
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#77-the-pigeonhole-principle" class="md-nav__link">
+<span class="md-ellipsis">
+7.7 The pigeonhole principle
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#78-inclusion-exclusion" class="md-nav__link">
+<span class="md-ellipsis">
+7.8 Inclusion-exclusion
+</span>
+</a>
+<nav class="md-nav" aria-label="7.8 Inclusion-exclusion">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#onto-functions" class="md-nav__link">
+<span class="md-ellipsis">
+Onto functions
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#derangements" class="md-nav__link">
+<span class="md-ellipsis">
+Derangements
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#79-summary" class="md-nav__link">
+<span class="md-ellipsis">
+7.9 Summary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#710-exercises" class="md-nav__link">
+<span class="md-ellipsis">
+7.10 Exercises
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#711-quiz" class="md-nav__link">
+<span class="md-ellipsis">
+7.11 Quiz
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="discrete-probability.html" class="md-nav__link">
+<span class="md-ellipsis">
+8. Discrete Probability
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="recurrence-relations-and-generating-functions.html" class="md-nav__link">
+<span class="md-ellipsis">
+9. Recurrence Relations and Generating Functions
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="number-theory-and-cryptography.html" class="md-nav__link">
+<span class="md-ellipsis">
+10. Number Theory and Cryptography
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="graphs.html" class="md-nav__link">
+<span class="md-ellipsis">
+11. Graphs
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="trees.html" class="md-nav__link">
+<span class="md-ellipsis">
+12. Trees
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="boolean-algebra-and-logic-circuits.html" class="md-nav__link">
+<span class="md-ellipsis">
+13. Boolean Algebra and Logic Circuits
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="automata-and-languages.html" class="md-nav__link">
+<span class="md-ellipsis">
+14. Automata and Languages
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="glossary.html" class="md-nav__link">
+<span class="md-ellipsis">
+Glossary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="further-reading.html" class="md-nav__link">
+<span class="md-ellipsis">
+Further Reading
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#71-the-sum-and-product-rules" class="md-nav__link">
+<span class="md-ellipsis">
+7.1 The sum and product rules
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#72-subtraction-and-division" class="md-nav__link">
+<span class="md-ellipsis">
+7.2 Subtraction and division
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#73-permutations" class="md-nav__link">
+<span class="md-ellipsis">
+7.3 Permutations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#74-combinations" class="md-nav__link">
+<span class="md-ellipsis">
+7.4 Combinations
+</span>
+</a>
+<nav class="md-nav" aria-label="7.4 Combinations">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#identities-and-combinatorial-proof" class="md-nav__link">
+<span class="md-ellipsis">
+Identities and combinatorial proof
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#75-the-binomial-theorem" class="md-nav__link">
+<span class="md-ellipsis">
+7.5 The binomial theorem
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#76-counting-with-repetition" class="md-nav__link">
+<span class="md-ellipsis">
+7.6 Counting with repetition
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#77-the-pigeonhole-principle" class="md-nav__link">
+<span class="md-ellipsis">
+7.7 The pigeonhole principle
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#78-inclusion-exclusion" class="md-nav__link">
+<span class="md-ellipsis">
+7.8 Inclusion-exclusion
+</span>
+</a>
+<nav class="md-nav" aria-label="7.8 Inclusion-exclusion">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#onto-functions" class="md-nav__link">
+<span class="md-ellipsis">
+Onto functions
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#derangements" class="md-nav__link">
+<span class="md-ellipsis">
+Derangements
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#79-summary" class="md-nav__link">
+<span class="md-ellipsis">
+7.9 Summary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#710-exercises" class="md-nav__link">
+<span class="md-ellipsis">
+7.10 Exercises
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#711-quiz" class="md-nav__link">
+<span class="md-ellipsis">
+7.11 Quiz
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="chapter-7-counting">Chapter 7: Counting<a class="headerlink" href="#chapter-7-counting" title="Permanent link">&para;</a></h1>
+<p><em>The sum and product rules, permutations, combinations, pigeonholes and inclusion-exclusion</em></p>
+<div class="admonition note">
+<p class="admonition-title">Learning outcomes</p>
+<p>After this chapter you should be able to:</p>
+<ul>
+<li>count with the sum, product, subtraction and division rules, and decide which rule a problem needs;</li>
+<li>count permutations and combinations, with and without repetition, and arrangements of objects that are not all different;</li>
+<li>prove identities about binomial coefficients algebraically and by combinatorial (counting) arguments, and use the binomial theorem;</li>
+<li>apply the pigeonhole principle and its generalised form;</li>
+<li>count with the principle of inclusion-exclusion, including derangements and onto functions.</li>
+</ul>
+</div>
+<h2 id="71-the-sum-and-product-rules">7.1 The sum and product rules<a class="headerlink" href="#71-the-sum-and-product-rules" title="Permanent link">&para;</a></h2>
+<p>How many passwords can a system accept? How many steps can an algorithm take? How likely is a hand of cards? All of these start by counting the elements of a finite set, usually one far too large to list. Counting rests on two rules.</p>
+<div class="admonition note">
+<p class="admonition-title">The product rule</p>
+<p>If a task can be done as a sequence of two steps, with <span class="arithmatex">\(n_1\)</span> ways to do the first step and, for each of these, <span class="arithmatex">\(n_2\)</span> ways to do the second, then the task can be done in <span class="arithmatex">\(n_1 n_2\)</span> ways. More generally, a sequence of <span class="arithmatex">\(k\)</span> steps with <span class="arithmatex">\(n_1, n_2, \dots, n_k\)</span> ways respectively can be done in <span class="arithmatex">\(n_1 n_2 \cdots n_k\)</span> ways.</p>
+</div>
+<p>In the language of sets: <span class="arithmatex">\(\lvert A_1 \times A_2 \times \dots \times A_k \rvert = \lvert A_1 \rvert \cdot \lvert A_2 \rvert \cdots \lvert A_k \rvert\)</span>.</p>
+<div class="admonition note">
+<p class="admonition-title">The sum rule</p>
+<p>If a task can be done either in one of <span class="arithmatex">\(n_1\)</span> ways or in one of <span class="arithmatex">\(n_2\)</span> ways, where none of the first ways is also one of the second, then it can be done in <span class="arithmatex">\(n_1 + n_2\)</span> ways.</p>
+</div>
+<p>In the language of sets: if <span class="arithmatex">\(A_1, \dots, A_k\)</span> are pairwise disjoint, then <span class="arithmatex">\(\lvert A_1 \cup \dots \cup A_k \rvert = \lvert A_1 \rvert + \dots + \lvert A_k \rvert\)</span>.</p>
+<div class="admonition tip">
+<p class="admonition-title">Key idea: 'and then' multiplies, 'or' adds</p>
+<p>If you build each object by a sequence of choices (first this, <em>and then</em> that), multiply. If you split the objects into separate kinds (this kind <em>or</em> that kind), add.</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title">Example 7.1: Product rule</p>
+<p><strong>Problem.</strong> (a) How many bit strings of length 8 are there? (b) A vehicle registration code consists of two letters followed by four digits. How many codes are there? (c) How many functions are there from a set with <span class="arithmatex">\(m\)</span> elements to a set with <span class="arithmatex">\(n\)</span> elements?</p>
+<p><strong>Solution.</strong> (a) Each of 8 positions has 2 choices: <span class="arithmatex">\(2^8 = 256\)</span>. (b) <span class="arithmatex">\(26 \cdot 26 \cdot 10^4 = 6{,}760{,}000\)</span>. (c) Each of the <span class="arithmatex">\(m\)</span> elements of the domain chooses its image from <span class="arithmatex">\(n\)</span> possibilities: <span class="arithmatex">\(n^m\)</span>.</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title">Example 7.2: One-to-one functions</p>
+<p><strong>Problem.</strong> How many one-to-one functions are there from a set with <span class="arithmatex">\(m\)</span> elements to a set with <span class="arithmatex">\(n\)</span> elements?</p>
+<p><strong>Solution.</strong> List the domain as <span class="arithmatex">\(a_1, \dots, a_m\)</span>. The image of <span class="arithmatex">\(a_1\)</span> can be any of <span class="arithmatex">\(n\)</span> elements; the image of <span class="arithmatex">\(a_2\)</span> must differ from it, so <span class="arithmatex">\(n - 1\)</span> choices; and so on, until <span class="arithmatex">\(a_m\)</span> has <span class="arithmatex">\(n - m + 1\)</span> choices. The product rule gives <span class="arithmatex">\(n(n-1)\cdots(n-m+1)\)</span>, which is <span class="arithmatex">\(0\)</span> when <span class="arithmatex">\(m &gt; n\)</span> (one factor is zero), as it should be.</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title">Example 7.3: Sum and product together</p>
+<p><strong>Problem.</strong> A password has 6 to 8 characters, each an uppercase letter or a digit, and must contain at least one digit. How many passwords are there?</p>
+<p><strong>Solution.</strong> Let <span class="arithmatex">\(P_k\)</span> be the number of passwords of length <span class="arithmatex">\(k\)</span>. By the sum rule the total is <span class="arithmatex">\(P_6 + P_7 + P_8\)</span>. Counting "at least one digit" directly is awkward, so count all strings of length <span class="arithmatex">\(k\)</span> over the 36 symbols and subtract those with no digit: <span class="arithmatex">\(P_k = 36^k - 26^k\)</span>. So</p>
+<div class="arithmatex">\[
+P_6 + P_7 + P_8 = (36^6 - 26^6) + (36^7 - 26^7) + (36^8 - 26^8) = 2{,}684{,}483{,}063{,}360.
+\]</div>
+<p>The trick of counting the complement ("total minus the bad ones") is one of the most useful in counting.</p>
+</div>
+<h2 id="72-subtraction-and-division">7.2 Subtraction and division<a class="headerlink" href="#72-subtraction-and-division" title="Permanent link">&para;</a></h2>
+<p>When the two kinds of object overlap, the sum rule counts the overlap twice.</p>
+<div class="admonition note">
+<p class="admonition-title">The subtraction rule (inclusion-exclusion for two sets)</p>
+<p>If a task can be done in <span class="arithmatex">\(n_1\)</span> ways or in <span class="arithmatex">\(n_2\)</span> ways, and <span class="arithmatex">\(n_{12}\)</span> of the ways are common to both, the number of ways is <span class="arithmatex">\(n_1 + n_2 - n_{12}\)</span>. That is, <span class="arithmatex">\(\lvert A \cup B \rvert = \lvert A \rvert + \lvert B \rvert - \lvert A \cap B \rvert\)</span>.</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title">Example 7.4: Strings that start or end a certain way</p>
+<p><strong>Problem.</strong> How many bit strings of length 8 start with 1 or end with 00?</p>
+<p><strong>Solution.</strong> Starting with 1: <span class="arithmatex">\(2^7 = 128\)</span>. Ending with 00: <span class="arithmatex">\(2^6 = 64\)</span>. Both: <span class="arithmatex">\(2^5 = 32\)</span>. Total <span class="arithmatex">\(128 + 64 - 32 = 160\)</span>.</p>
+</div>
+<p>When each object has been counted the same number of times, divide.</p>
+<div class="admonition note">
+<p class="admonition-title">The division rule</p>
+<p>If a procedure produces every object exactly <span class="arithmatex">\(d\)</span> times, the number of objects is the number of outcomes of the procedure divided by <span class="arithmatex">\(d\)</span>.</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title">Example 7.5: Seating round a table</p>
+<p><strong>Problem.</strong> In how many ways can 6 people sit round a circular table, if two seatings are the same when each person has the same left and right neighbours?</p>
+<p><strong>Solution.</strong> Seat them in a row in <span class="arithmatex">\(6! = 720\)</span> ways and bend the row into a circle. Each circular seating arises from 6 rows (one for each choice of who sits in the "first" seat, by rotating). So there are <span class="arithmatex">\(720/6 = 120\)</span> circular seatings. In general <span class="arithmatex">\(n\)</span> people can sit round a table in <span class="arithmatex">\((n-1)!\)</span> ways.</p>
+</div>
+<h2 id="73-permutations">7.3 Permutations<a class="headerlink" href="#73-permutations" title="Permanent link">&para;</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Definition: permutation</p>
+<p>A <strong>permutation</strong> of a set of distinct objects is an ordered arrangement of them. An <strong><span class="arithmatex">\(r\)</span>-permutation</strong> is an ordered arrangement of <span class="arithmatex">\(r\)</span> of them. The number of <span class="arithmatex">\(r\)</span>-permutations of <span class="arithmatex">\(n\)</span> objects is written <span class="arithmatex">\(P(n, r)\)</span>.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Theorem 7.1</p>
+<p>For <span class="arithmatex">\(0 \le r \le n\)</span>,</p>
+<div class="arithmatex">\[
+P(n, r) = n(n-1)(n-2)\cdots(n-r+1) = \frac{n!}{(n-r)!}.
+\]</div>
+<p>In particular there are <span class="arithmatex">\(P(n, n) = n!\)</span> permutations of <span class="arithmatex">\(n\)</span> objects.</p>
+</div>
+<p><strong>Proof.</strong> The first position can be filled in <span class="arithmatex">\(n\)</span> ways, the second in <span class="arithmatex">\(n - 1\)</span> ways (any object but the first), and so on; the <span class="arithmatex">\(r\)</span>-th in <span class="arithmatex">\(n - r + 1\)</span> ways. Apply the product rule. <span class="arithmatex">\(\blacksquare\)</span></p>
+<div class="admonition example">
+<p class="admonition-title">Example 7.6: Permutations</p>
+<p><strong>Problem.</strong> (a) In how many ways can gold, silver and bronze medals be awarded among 10 runners? (b) How many permutations of the letters ABCDEFGH contain the string ABC as a block?</p>
+<p><strong>Solution.</strong> (a) Order matters, no repeats: <span class="arithmatex">\(P(10, 3) = 10 \cdot 9 \cdot 8 = 720\)</span>. (b) Glue ABC into one block. Then we are permuting 6 objects: the block, D, E, F, G, H. So <span class="arithmatex">\(6! = 720\)</span>.</p>
+</div>
+<p>The factorial grows extremely fast: <span class="arithmatex">\(10! = 3{,}628{,}800\)</span>, and <span class="arithmatex">\(20!\)</span> is about <span class="arithmatex">\(2.4 \times 10^{18}\)</span>. This is why trying every ordering of <span class="arithmatex">\(n\)</span> items (for instance, every route through <span class="arithmatex">\(n\)</span> cities) is hopeless except for small <span class="arithmatex">\(n\)</span>.</p>
+<h2 id="74-combinations">7.4 Combinations<a class="headerlink" href="#74-combinations" title="Permanent link">&para;</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Definition: combination</p>
+<p>An <strong><span class="arithmatex">\(r\)</span>-combination</strong> of a set is an unordered selection of <span class="arithmatex">\(r\)</span> of its elements, that is, a subset with <span class="arithmatex">\(r\)</span> elements. The number of <span class="arithmatex">\(r\)</span>-combinations of an <span class="arithmatex">\(n\)</span>-element set is written <span class="arithmatex">\(C(n, r)\)</span> or <span class="arithmatex">\(\binom{n}{r}\)</span>, read "<span class="arithmatex">\(n\)</span> choose <span class="arithmatex">\(r\)</span>", and called a <strong>binomial coefficient</strong>.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Theorem 7.2</p>
+<p>For <span class="arithmatex">\(0 \le r \le n\)</span>,</p>
+<div class="arithmatex">\[
+\binom{n}{r} = \frac{n!}{r!\,(n-r)!}.
+\]</div>
+</div>
+<p><strong>Proof.</strong> We count the <span class="arithmatex">\(r\)</span>-permutations in two ways. Each <span class="arithmatex">\(r\)</span>-permutation is obtained by first choosing which <span class="arithmatex">\(r\)</span> elements to use, in <span class="arithmatex">\(\binom{n}{r}\)</span> ways, and then arranging them, in <span class="arithmatex">\(r!\)</span> ways. So <span class="arithmatex">\(P(n, r) = \binom{n}{r} \cdot r!\)</span>, and <span class="arithmatex">\(\binom{n}{r} = P(n, r)/r! = n!/(r!(n-r)!)\)</span>. (This is the division rule: each subset is produced <span class="arithmatex">\(r!\)</span> times by the permutations.) <span class="arithmatex">\(\blacksquare\)</span></p>
+<div class="admonition warning">
+<p class="admonition-title">Order or not?</p>
+<p>The most common error in counting is to use permutations when order does not matter, or combinations when it does. Ask: if I rearrange the chosen objects, do I get a different outcome? A committee of 3 is a combination; a president, secretary and treasurer is a permutation.</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title">Example 7.7: Combinations</p>
+<p><strong>Problem.</strong> (a) How many 5-card hands can be dealt from a standard 52-card deck? (b) How many bit strings of length 10 contain exactly 3 ones? (c) A committee of 5 is chosen from 7 women and 4 men. How many committees have exactly 3 women? How many have at least one man?</p>
+<p><strong>Solution.</strong></p>
+<p>(a) <span class="arithmatex">\(\binom{52}{5} = \dfrac{52 \cdot 51 \cdot 50 \cdot 49 \cdot 48}{5!} = 2{,}598{,}960\)</span>.</p>
+<p>(b) Choose the 3 positions of the ones: <span class="arithmatex">\(\binom{10}{3} = 120\)</span>.</p>
+<p>(c) Exactly 3 women: choose the women, and then the men: <span class="arithmatex">\(\binom{7}{3}\binom{4}{2} = 35 \cdot 6 = 210\)</span>. At least one man: all committees minus those with no man, <span class="arithmatex">\(\binom{11}{5} - \binom{7}{5} = 462 - 21 = 441\)</span>.</p>
+</div>
+<h3 id="identities-and-combinatorial-proof">Identities and combinatorial proof<a class="headerlink" href="#identities-and-combinatorial-proof" title="Permanent link">&para;</a></h3>
+<p>Since choosing <span class="arithmatex">\(r\)</span> elements to take is the same as choosing <span class="arithmatex">\(n - r\)</span> elements to leave,</p>
+<div class="arithmatex">\[
+\binom{n}{r} = \binom{n}{n-r}.
+\]</div>
+<p>That one-line argument is a <strong>combinatorial proof</strong>: it shows two expressions are equal by showing they count the same set. The algebraic proof (both are <span class="arithmatex">\(n!/(r!(n-r)!)\)</span>) is just as easy here, but for many identities the counting argument is far simpler.</p>
+<div class="admonition note">
+<p class="admonition-title">Theorem 7.3 (Pascal's identity)</p>
+<p>For <span class="arithmatex">\(1 \le k \le n\)</span>,</p>
+<div class="arithmatex">\[
+\binom{n+1}{k} = \binom{n}{k-1} + \binom{n}{k}.
+\]</div>
+</div>
+<p><strong>Combinatorial proof.</strong> Let <span class="arithmatex">\(S\)</span> be a set of <span class="arithmatex">\(n + 1\)</span> elements and fix one of them, <span class="arithmatex">\(a\)</span>. The left side counts the <span class="arithmatex">\(k\)</span>-element subsets of <span class="arithmatex">\(S\)</span>. Each such subset either contains <span class="arithmatex">\(a\)</span>, in which case it consists of <span class="arithmatex">\(a\)</span> and <span class="arithmatex">\(k - 1\)</span> of the other <span class="arithmatex">\(n\)</span> elements (<span class="arithmatex">\(\binom{n}{k-1}\)</span> ways), or does not contain <span class="arithmatex">\(a\)</span>, in which case it consists of <span class="arithmatex">\(k\)</span> of the other <span class="arithmatex">\(n\)</span> elements (<span class="arithmatex">\(\binom{n}{k}\)</span> ways). By the sum rule the total is the right side. <span class="arithmatex">\(\blacksquare\)</span></p>
+<p>Pascal's identity builds <strong>Pascal's triangle</strong> (Figure 7.1): row <span class="arithmatex">\(n\)</span> lists <span class="arithmatex">\(\binom{n}{0}, \binom{n}{1}, \dots, \binom{n}{n}\)</span>, and each entry is the sum of the two above it.</p>
+<figure class="fig fig-diagram">
+<img src="img/pascal-triangle.svg" alt="Pascal&#x27;s triangle, rows 0 to 6. Row 0 is 1; row 1 is 1 1; row 2 is 1 2 1; row 3 is 1 3 3 1; row 4 is 1 4 6 4 1; row 5 is 1 5 10 10 5 1; row 6 is 1 6 15 20 15 6 1. The entries 4 and 6 in row 4 and the 10 below them in row 5 are highlighted to show that 4 + 6 = 10." loading="lazy" width="700" height="330">
+<figcaption><strong>Figure 7.1 Pascal&#x27;s triangle.</strong> Pascal&#x27;s triangle, rows 0 to 6. Row 0 is 1; row 1 is 1 1; row 2 is 1 2 1; row 3 is 1 3 3 1; row 4 is 1 4 6 4 1; row 5 is 1 5 10 10 5 1; row 6 is 1 6 15 20 15 6 1. The entries 4 and 6 in row 4 and the 10 below them in row 5 are highlighted to show that 4 + 6 = 10.</figcaption>
+</figure>
+<h2 id="75-the-binomial-theorem">7.5 The binomial theorem<a class="headerlink" href="#75-the-binomial-theorem" title="Permanent link">&para;</a></h2>
+<p>The binomial coefficients get their name from the expansion of a power of a binomial <span class="arithmatex">\(x + y\)</span>.</p>
+<div class="admonition note">
+<p class="admonition-title">Theorem 7.4 (the binomial theorem)</p>
+<p>For every natural number <span class="arithmatex">\(n\)</span>,</p>
+<div class="arithmatex">\[
+(x + y)^n = \sum_{k=0}^{n} \binom{n}{k} x^{n-k} y^k = x^n + \binom{n}{1}x^{n-1}y + \binom{n}{2}x^{n-2}y^2 + \dots + y^n.
+\]</div>
+</div>
+<p><strong>Combinatorial proof.</strong> Expanding <span class="arithmatex">\((x + y)(x + y)\cdots(x + y)\)</span> (<span class="arithmatex">\(n\)</span> factors) gives one term for each way of choosing <span class="arithmatex">\(x\)</span> or <span class="arithmatex">\(y\)</span> from every factor. A term equals <span class="arithmatex">\(x^{n-k}y^k\)</span> exactly when <span class="arithmatex">\(y\)</span> is chosen from <span class="arithmatex">\(k\)</span> of the factors, and there are <span class="arithmatex">\(\binom{n}{k}\)</span> ways to choose which <span class="arithmatex">\(k\)</span>. So the coefficient of <span class="arithmatex">\(x^{n-k}y^k\)</span> is <span class="arithmatex">\(\binom{n}{k}\)</span>. <span class="arithmatex">\(\blacksquare\)</span></p>
+<div class="admonition example">
+<p class="admonition-title">Example 7.8: Using the binomial theorem</p>
+<p><strong>Problem.</strong> (a) Expand <span class="arithmatex">\((x + y)^4\)</span>. (b) Find the coefficient of <span class="arithmatex">\(x^{5}y^{3}\)</span> in <span class="arithmatex">\((2x - y)^8\)</span>. (c) Show that <span class="arithmatex">\(\sum_{k=0}^{n} \binom{n}{k} = 2^n\)</span> and <span class="arithmatex">\(\sum_{k=0}^{n} (-1)^k \binom{n}{k} = 0\)</span> for <span class="arithmatex">\(n \ge 1\)</span>.</p>
+<p><strong>Solution.</strong></p>
+<p>(a) <span class="arithmatex">\((x + y)^4 = x^4 + 4x^3y + 6x^2y^2 + 4xy^3 + y^4\)</span>, with the coefficients from row 4 of Pascal's triangle.</p>
+<p>(b) The term with <span class="arithmatex">\(y^3\)</span> is <span class="arithmatex">\(\binom{8}{3}(2x)^5(-y)^3 = 56 \cdot 32 \cdot (-1)\, x^5 y^3\)</span>, so the coefficient is <span class="arithmatex">\(-1792\)</span>.</p>
+<p>(c) Put <span class="arithmatex">\(x = y = 1\)</span>: <span class="arithmatex">\(2^n = \sum_k \binom{n}{k}\)</span>. (Combinatorially: both sides count all subsets of an <span class="arithmatex">\(n\)</span>-element set.) Put <span class="arithmatex">\(x = 1\)</span>, <span class="arithmatex">\(y = -1\)</span>: <span class="arithmatex">\(0 = (1 - 1)^n = \sum_k (-1)^k \binom{n}{k}\)</span>. So an <span class="arithmatex">\(n\)</span>-element set with <span class="arithmatex">\(n \ge 1\)</span> has as many subsets of even size as of odd size.</p>
+</div>
+<h2 id="76-counting-with-repetition">7.6 Counting with repetition<a class="headerlink" href="#76-counting-with-repetition" title="Permanent link">&para;</a></h2>
+<p>So far each object could be chosen at most once. Allowing repetition gives two more counts.</p>
+<p><strong>Permutations with repetition.</strong> The number of sequences of length <span class="arithmatex">\(r\)</span> from <span class="arithmatex">\(n\)</span> kinds of object, where each kind can be used any number of times, is <span class="arithmatex">\(n^r\)</span>, by the product rule.</p>
+<p><strong>Combinations with repetition.</strong> How many ways are there to choose <span class="arithmatex">\(r\)</span> objects from <span class="arithmatex">\(n\)</span> kinds, when order does not matter and repetition is allowed? For example, how many ways are there to buy 6 pieces of fruit from a stall selling mangoes, bananas and apples?</p>
+<div class="admonition note">
+<p class="admonition-title">Theorem 7.5 (stars and bars)</p>
+<p>The number of ways to choose <span class="arithmatex">\(r\)</span> objects from <span class="arithmatex">\(n\)</span> kinds, with repetition allowed and order ignored, is</p>
+<div class="arithmatex">\[
+\binom{n + r - 1}{r} = \binom{n + r - 1}{n - 1}.
+\]</div>
+<p>Equivalently, it is the number of solutions of <span class="arithmatex">\(x_1 + x_2 + \dots + x_n = r\)</span> in natural numbers.</p>
+</div>
+<p><strong>Proof.</strong> Represent a selection by a row of <span class="arithmatex">\(r\)</span> stars and <span class="arithmatex">\(n - 1\)</span> bars: the stars before the first bar are the objects of kind 1, those between the first and second bar are of kind 2, and so on. For the fruit, <span class="arithmatex">\(\star\star\vert\star\vert\star\star\star\)</span> means 2 mangoes, 1 banana and 3 apples, and <span class="arithmatex">\(\vert\star\star\star\star\star\star\vert\)</span> means 6 bananas. Every selection gives exactly one such row and every row gives exactly one selection. A row has <span class="arithmatex">\(n + r - 1\)</span> positions, of which we choose the <span class="arithmatex">\(n - 1\)</span> for the bars. <span class="arithmatex">\(\blacksquare\)</span></p>
+<p>For the fruit, <span class="arithmatex">\(n = 3\)</span> and <span class="arithmatex">\(r = 6\)</span>: <span class="arithmatex">\(\binom{8}{2} = 28\)</span> ways.</p>
+<div class="admonition example">
+<p class="admonition-title">Example 7.9: Solutions of an equation</p>
+<p><strong>Problem.</strong> How many solutions does <span class="arithmatex">\(x_1 + x_2 + x_3 = 11\)</span> have (a) in natural numbers, (b) in natural numbers with <span class="arithmatex">\(x_1 \ge 1\)</span>, <span class="arithmatex">\(x_2 \ge 2\)</span>, <span class="arithmatex">\(x_3 \ge 3\)</span>?</p>
+<p><strong>Solution.</strong> (a) <span class="arithmatex">\(\binom{11 + 2}{2} = \binom{13}{2} = 78\)</span>. (b) Substitute <span class="arithmatex">\(y_1 = x_1 - 1\)</span>, <span class="arithmatex">\(y_2 = x_2 - 2\)</span>, <span class="arithmatex">\(y_3 = x_3 - 3\)</span>, which are natural numbers with <span class="arithmatex">\(y_1 + y_2 + y_3 = 5\)</span>: <span class="arithmatex">\(\binom{7}{2} = 21\)</span>.</p>
+</div>
+<p><strong>Permutations of objects that are not all different.</strong> How many different strings can be made by rearranging the letters of MISSISSIPPI? If all 11 letters were different there would be <span class="arithmatex">\(11!\)</span> arrangements. But the 4 S's can be permuted among themselves without changing the string, and so can the 4 I's and the 2 P's.</p>
+<div class="admonition note">
+<p class="admonition-title">Theorem 7.6</p>
+<p>The number of different permutations of <span class="arithmatex">\(n\)</span> objects, of which <span class="arithmatex">\(n_1\)</span> are of type 1, <span class="arithmatex">\(n_2\)</span> of type 2, ..., <span class="arithmatex">\(n_k\)</span> of type <span class="arithmatex">\(k\)</span> (with <span class="arithmatex">\(n_1 + \dots + n_k = n\)</span>, objects of the same type indistinguishable), is</p>
+<div class="arithmatex">\[
+\frac{n!}{n_1!\, n_2! \cdots n_k!}.
+\]</div>
+</div>
+<p><strong>Proof.</strong> Choose the <span class="arithmatex">\(n_1\)</span> positions for type 1 in <span class="arithmatex">\(\binom{n}{n_1}\)</span> ways, then <span class="arithmatex">\(n_2\)</span> of the remaining positions for type 2 in <span class="arithmatex">\(\binom{n - n_1}{n_2}\)</span> ways, and so on. The product telescopes to the formula. <span class="arithmatex">\(\blacksquare\)</span></p>
+<p>MISSISSIPPI has 1 M, 4 I's, 4 S's and 2 P's, so it has <span class="arithmatex">\(\dfrac{11!}{1!\,4!\,4!\,2!} = 34{,}650\)</span> arrangements.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Order matters</th>
+<th>Order does not matter</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>No repetition</strong></td>
+<td><span class="arithmatex">\(P(n, r) = \dfrac{n!}{(n-r)!}\)</span></td>
+<td><span class="arithmatex">\(\dbinom{n}{r} = \dfrac{n!}{r!(n-r)!}\)</span></td>
+</tr>
+<tr>
+<td><strong>Repetition allowed</strong></td>
+<td><span class="arithmatex">\(n^r\)</span></td>
+<td><span class="arithmatex">\(\dbinom{n+r-1}{r}\)</span></td>
+</tr>
+</tbody>
+</table>
+<p><em>Table 7.1. Choosing <span class="arithmatex">\(r\)</span> objects from <span class="arithmatex">\(n\)</span> kinds.</em></p>
+<h2 id="77-the-pigeonhole-principle">7.7 The pigeonhole principle<a class="headerlink" href="#77-the-pigeonhole-principle" title="Permanent link">&para;</a></h2>
+<p>If 10 pigeons fly into 9 pigeonholes, some hole holds at least two pigeons. This obvious remark is surprisingly powerful.</p>
+<div class="admonition note">
+<p class="admonition-title">The pigeonhole principle</p>
+<p>If <span class="arithmatex">\(k + 1\)</span> or more objects are placed into <span class="arithmatex">\(k\)</span> boxes, at least one box contains two or more objects.</p>
+</div>
+<p><strong>Proof.</strong> If every box contained at most one object, there would be at most <span class="arithmatex">\(k\)</span> objects. <span class="arithmatex">\(\blacksquare\)</span></p>
+<div class="admonition example">
+<p class="admonition-title">Example 7.10: Simple pigeonholes</p>
+<p><strong>Problem.</strong> (a) Show that among any 367 people, two share a birthday. (b) Show that in any set of 6 integers, two have a difference divisible by 5.</p>
+<p><strong>Solution.</strong> (a) There are at most 366 possible birthdays. (b) The boxes are the 5 possible remainders on division by 5. With 6 integers, two have the same remainder, and their difference is divisible by 5.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">The generalised pigeonhole principle</p>
+<p>If <span class="arithmatex">\(N\)</span> objects are placed into <span class="arithmatex">\(k\)</span> boxes, at least one box contains at least <span class="arithmatex">\(\lceil N/k \rceil\)</span> objects.</p>
+</div>
+<p><strong>Proof.</strong> If every box contained fewer than <span class="arithmatex">\(\lceil N/k \rceil\)</span> objects, that is, at most <span class="arithmatex">\(\lceil N/k \rceil - 1\)</span>, then the total would be at most <span class="arithmatex">\(k(\lceil N/k \rceil - 1) &lt; k\bigl((N/k + 1) - 1\bigr) = N\)</span>, using <span class="arithmatex">\(\lceil N/k \rceil &lt; N/k + 1\)</span>. That contradicts there being <span class="arithmatex">\(N\)</span> objects. <span class="arithmatex">\(\blacksquare\)</span></p>
+<div class="admonition example">
+<p class="admonition-title">Example 7.11: Generalised pigeonholes</p>
+<p><strong>Problem.</strong> (a) Among 100 people, at least how many were born in the same month? (b) How many cards must be drawn from a deck to be sure of getting three of the same suit?</p>
+<p><strong>Solution.</strong> (a) <span class="arithmatex">\(\lceil 100/12 \rceil = 9\)</span>. (b) With <span class="arithmatex">\(N\)</span> cards in 4 suits, some suit has <span class="arithmatex">\(\lceil N/4 \rceil\)</span> cards; we need <span class="arithmatex">\(\lceil N/4 \rceil \ge 3\)</span>, which first holds at <span class="arithmatex">\(N = 9\)</span>. With 8 cards it is possible to have exactly two of each suit, so 9 is the answer.</p>
+</div>
+<p>The principle often appears where it is not expected. The skill is in choosing the boxes.</p>
+<div class="admonition example">
+<p class="admonition-title">Example 7.12: A subtle pigeonhole</p>
+<p><strong>Theorem.</strong> Among any <span class="arithmatex">\(n + 1\)</span> integers chosen from <span class="arithmatex">\(\{1, 2, \dots, 2n\}\)</span>, one divides another.</p>
+<p><strong>Proof.</strong> Write each chosen integer as <span class="arithmatex">\(2^{e} m\)</span> with <span class="arithmatex">\(m\)</span> odd. The odd part <span class="arithmatex">\(m\)</span> is one of the <span class="arithmatex">\(n\)</span> odd numbers <span class="arithmatex">\(1, 3, \dots, 2n - 1\)</span>. With <span class="arithmatex">\(n + 1\)</span> integers and <span class="arithmatex">\(n\)</span> possible odd parts, two of the integers have the same odd part: <span class="arithmatex">\(2^{e} m\)</span> and <span class="arithmatex">\(2^{f} m\)</span> with, say, <span class="arithmatex">\(e &lt; f\)</span>. Then the first divides the second. <span class="arithmatex">\(\blacksquare\)</span></p>
+</div>
+<div class="admonition example">
+<p class="admonition-title">Example 7.13: Hashing</p>
+<p>A hash table stores records in <span class="arithmatex">\(k\)</span> slots, choosing the slot by a function of the record's key. If more than <span class="arithmatex">\(k\)</span> records are stored, by the pigeonhole principle two records must share a slot (a <strong>collision</strong>), however clever the function. Hash tables are therefore designed to handle collisions, not to avoid them.</p>
+</div>
+<h2 id="78-inclusion-exclusion">7.8 Inclusion-exclusion<a class="headerlink" href="#78-inclusion-exclusion" title="Permanent link">&para;</a></h2>
+<p>The subtraction rule handles two overlapping sets. For three sets, look at the Venn diagram in Figure 7.2. Adding <span class="arithmatex">\(\lvert A \rvert + \lvert B \rvert + \lvert C \rvert\)</span> counts elements in exactly two of the sets twice and those in all three, three times. Subtracting the pairwise intersections corrects the first error but now counts the triple region zero times, so it must be added back:</p>
+<div class="arithmatex">\[
+\lvert A \cup B \cup C \rvert = \lvert A \rvert + \lvert B \rvert + \lvert C \rvert - \lvert A \cap B \rvert - \lvert A \cap C \rvert - \lvert B \cap C \rvert + \lvert A \cap B \cap C \rvert.
+\]</div>
+<figure class="fig fig-diagram">
+<img src="img/venn-three-sets.svg" alt="A Venn diagram of three overlapping circles A, B and C. Each of the seven regions is labelled with the number of times it is counted by |A| + |B| + |C|: regions in one set are counted 1 time, regions in exactly two sets 2 times, and the central region 3 times." loading="lazy" width="520" height="420">
+<figcaption><strong>Figure 7.2 Inclusion-exclusion for three sets.</strong> A Venn diagram of three overlapping circles A, B and C. Each of the seven regions is labelled with the number of times it is counted by |A| + |B| + |C|: regions in one set are counted 1 time, regions in exactly two sets 2 times, and the central region 3 times.</figcaption>
+</figure>
+<div class="admonition note">
+<p class="admonition-title">Theorem 7.7 (the principle of inclusion-exclusion)</p>
+<p>For finite sets <span class="arithmatex">\(A_1, \dots, A_n\)</span>,</p>
+<div class="arithmatex">\[
+\Bigl\lvert \bigcup_{i=1}^{n} A_i \Bigr\rvert = \sum_{i} \lvert A_i \rvert - \sum_{i&lt;j} \lvert A_i \cap A_j \rvert + \sum_{i&lt;j&lt;k} \lvert A_i \cap A_j \cap A_k \rvert - \dots + (-1)^{n+1} \lvert A_1 \cap \dots \cap A_n \rvert.
+\]</div>
+</div>
+<p><strong>Proof.</strong> Take an element <span class="arithmatex">\(x\)</span> that lies in exactly <span class="arithmatex">\(r \ge 1\)</span> of the sets. On the right it is counted <span class="arithmatex">\(\binom{r}{1}\)</span> times in the first sum, <span class="arithmatex">\(\binom{r}{2}\)</span> times in the second, and so on, so in total</p>
+<div class="arithmatex">\[
+\binom{r}{1} - \binom{r}{2} + \binom{r}{3} - \dots + (-1)^{r+1}\binom{r}{r} = 1 - \sum_{k=0}^{r} (-1)^k \binom{r}{k} = 1 - 0 = 1,
+\]</div>
+<p>by Example 7.8(c). So every element of the union is counted exactly once, and elements outside the union are not counted at all. <span class="arithmatex">\(\blacksquare\)</span></p>
+<div class="admonition example">
+<p class="admonition-title">Example 7.14: Divisibility</p>
+<p><strong>Problem.</strong> How many integers from 1 to 1000 are divisible by 3, 5 or 7?</p>
+<p><strong>Solution.</strong> Let <span class="arithmatex">\(A_3, A_5, A_7\)</span> be the multiples of 3, 5, 7 in the range. The number of multiples of <span class="arithmatex">\(d\)</span> from 1 to 1000 is <span class="arithmatex">\(\lfloor 1000/d \rfloor\)</span>, and a number is divisible by both 3 and 5 exactly when it is divisible by 15.</p>
+<div class="arithmatex">\[
+\begin{aligned}
+\lvert A_3 \cup A_5 \cup A_7 \rvert &amp;= 333 + 200 + 142 - 66 - 47 - 28 + 9 = 543.
+\end{aligned}
+\]</div>
+<p>(The numbers are <span class="arithmatex">\(\lfloor 1000/3 \rfloor\)</span>, <span class="arithmatex">\(\lfloor 1000/5 \rfloor\)</span>, <span class="arithmatex">\(\lfloor 1000/7 \rfloor\)</span>, <span class="arithmatex">\(\lfloor 1000/15 \rfloor\)</span>, <span class="arithmatex">\(\lfloor 1000/21 \rfloor\)</span>, <span class="arithmatex">\(\lfloor 1000/35 \rfloor\)</span>, <span class="arithmatex">\(\lfloor 1000/105 \rfloor\)</span>.) So <span class="arithmatex">\(1000 - 543 = 457\)</span> of them are divisible by none of 3, 5, 7.</p>
+</div>
+<h3 id="onto-functions">Onto functions<a class="headerlink" href="#onto-functions" title="Permanent link">&para;</a></h3>
+<div class="admonition example">
+<p class="admonition-title">Example 7.15: Counting onto functions</p>
+<p><strong>Problem.</strong> How many onto functions are there from a set with 6 elements to a set with 3 elements <span class="arithmatex">\(\{b_1, b_2, b_3\}\)</span>?</p>
+<p><strong>Solution.</strong> There are <span class="arithmatex">\(3^6\)</span> functions in all. Let <span class="arithmatex">\(A_i\)</span> be the functions that miss <span class="arithmatex">\(b_i\)</span>. A function in <span class="arithmatex">\(A_i\)</span> maps into the other two elements: <span class="arithmatex">\(\lvert A_i \rvert = 2^6\)</span>. A function in <span class="arithmatex">\(A_i \cap A_j\)</span> maps everything to the remaining element: <span class="arithmatex">\(1^6\)</span>. No function misses all three. So the number of functions that miss something is <span class="arithmatex">\(3 \cdot 2^6 - 3 \cdot 1^6 = 189\)</span>, and the number of onto functions is <span class="arithmatex">\(729 - 189 = 540\)</span>.</p>
+<p>In general the number of onto functions from an <span class="arithmatex">\(m\)</span>-set to an <span class="arithmatex">\(n\)</span>-set is <span class="arithmatex">\(\sum_{k=0}^{n} (-1)^k \binom{n}{k}(n-k)^m\)</span>.</p>
+</div>
+<h3 id="derangements">Derangements<a class="headerlink" href="#derangements" title="Permanent link">&para;</a></h3>
+<p>A <strong>derangement</strong> is a permutation that leaves no object in its original place. If <span class="arithmatex">\(n\)</span> people leave their coats at a cloakroom and the coats are handed back at random, a derangement is an outcome in which nobody gets their own coat.</p>
+<div class="admonition note">
+<p class="admonition-title">Theorem 7.8</p>
+<p>The number of derangements of <span class="arithmatex">\(n\)</span> objects is</p>
+<div class="arithmatex">\[
+D_n = n!\left(1 - \frac{1}{1!} + \frac{1}{2!} - \frac{1}{3!} + \dots + (-1)^n \frac{1}{n!}\right).
+\]</div>
+</div>
+<p><strong>Proof.</strong> Let <span class="arithmatex">\(A_i\)</span> be the set of permutations that fix object <span class="arithmatex">\(i\)</span>. A permutation fixing <span class="arithmatex">\(k\)</span> chosen objects permutes the other <span class="arithmatex">\(n - k\)</span> freely, so the intersection of any <span class="arithmatex">\(k\)</span> of the <span class="arithmatex">\(A_i\)</span> has <span class="arithmatex">\((n-k)!\)</span> elements, and there are <span class="arithmatex">\(\binom{n}{k}\)</span> such intersections. By inclusion-exclusion, the number of permutations fixing at least one object is <span class="arithmatex">\(\sum_{k=1}^{n} (-1)^{k+1}\binom{n}{k}(n-k)!\)</span>. Since <span class="arithmatex">\(\binom{n}{k}(n-k)! = n!/k!\)</span>,</p>
+<div class="arithmatex">\[
+D_n = n! - \sum_{k=1}^{n} (-1)^{k+1}\frac{n!}{k!} = n!\sum_{k=0}^{n} \frac{(-1)^k}{k!}. \qquad \blacksquare
+\]</div>
+<p>The first values are <span class="arithmatex">\(D_1 = 0\)</span>, <span class="arithmatex">\(D_2 = 1\)</span>, <span class="arithmatex">\(D_3 = 2\)</span>, <span class="arithmatex">\(D_4 = 9\)</span>, <span class="arithmatex">\(D_5 = 44\)</span>, <span class="arithmatex">\(D_6 = 265\)</span>. The bracket in the formula is the beginning of the series for <span class="arithmatex">\(e^{-1}\)</span>, so for large <span class="arithmatex">\(n\)</span> the fraction of permutations that are derangements is very close to <span class="arithmatex">\(1/e \approx 0.368\)</span>, whatever <span class="arithmatex">\(n\)</span> is.</p>
+<h2 id="79-summary">7.9 Summary<a class="headerlink" href="#79-summary" title="Permanent link">&para;</a></h2>
+<div class="admonition abstract">
+<p class="admonition-title">Summary</p>
+<ul>
+<li><strong>Product rule:</strong> a sequence of choices multiplies. <strong>Sum rule:</strong> disjoint alternatives add. Count the complement when "at least one" makes direct counting awkward.</li>
+<li><strong>Subtraction rule:</strong> <span class="arithmatex">\(\lvert A \cup B \rvert = \lvert A \rvert + \lvert B \rvert - \lvert A \cap B \rvert\)</span>. <strong>Division rule:</strong> if every object is produced <span class="arithmatex">\(d\)</span> times, divide by <span class="arithmatex">\(d\)</span>.</li>
+<li><span class="arithmatex">\(P(n, r) = n!/(n-r)!\)</span> ordered selections; <span class="arithmatex">\(\binom{n}{r} = n!/(r!(n-r)!)\)</span> unordered selections. With repetition: <span class="arithmatex">\(n^r\)</span> and <span class="arithmatex">\(\binom{n+r-1}{r}\)</span>.</li>
+<li>Arrangements of <span class="arithmatex">\(n\)</span> objects with <span class="arithmatex">\(n_i\)</span> of type <span class="arithmatex">\(i\)</span>: <span class="arithmatex">\(n!/(n_1! \cdots n_k!)\)</span>.</li>
+<li><strong>Pascal's identity</strong> and the <strong>binomial theorem</strong> <span class="arithmatex">\((x+y)^n = \sum \binom{n}{k}x^{n-k}y^k\)</span>. A <strong>combinatorial proof</strong> counts one set in two ways.</li>
+<li><strong>Pigeonhole:</strong> <span class="arithmatex">\(N\)</span> objects in <span class="arithmatex">\(k\)</span> boxes put at least <span class="arithmatex">\(\lceil N/k \rceil\)</span> in some box.</li>
+<li><strong>Inclusion-exclusion</strong> alternately adds and subtracts the sizes of intersections; it counts onto functions and derangements, and <span class="arithmatex">\(D_n/n! \to 1/e\)</span>.</li>
+</ul>
+</div>
+<h2 id="710-exercises">7.10 Exercises<a class="headerlink" href="#710-exercises" title="Permanent link">&para;</a></h2>
+<div class="admonition example">
+<p class="admonition-title">Exercise 1</p>
+<p>How many strings of 4 decimal digits (a) have no repeated digit, (b) end with an even digit, (c) contain at least one 7?</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>(a) <span class="arithmatex">\(10 \cdot 9 \cdot 8 \cdot 7 = 5040\)</span>. (b) <span class="arithmatex">\(10^3 \cdot 5 = 5000\)</span>. (c) <span class="arithmatex">\(10^4 - 9^4 = 10000 - 6561 = 3439\)</span>.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 2</p>
+<p>How many bit strings of length 10 have at least 3 ones?</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>All strings minus those with 0, 1 or 2 ones: <span class="arithmatex">\(2^{10} - \binom{10}{0} - \binom{10}{1} - \binom{10}{2} = 1024 - 1 - 10 - 45 = 968\)</span>.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 3</p>
+<p>In how many ways can 8 people be seated in a row if two particular people must sit next to each other? If they must not?</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>Together: treat the pair as a block, <span class="arithmatex">\(7!\)</span> arrangements of 7 units, times 2 orders within the block: <span class="arithmatex">\(2 \cdot 5040 = 10080\)</span>. Apart: <span class="arithmatex">\(8! - 10080 = 40320 - 10080 = 30240\)</span>.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 4</p>
+<p>Give a combinatorial proof that <span class="arithmatex">\(\sum_{k=0}^{n} \binom{n}{k}^2 = \binom{2n}{n}\)</span>. (Hint: <span class="arithmatex">\(\binom{n}{k} = \binom{n}{n-k}\)</span>; choose a committee of <span class="arithmatex">\(n\)</span> from <span class="arithmatex">\(n\)</span> women and <span class="arithmatex">\(n\)</span> men.)</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>The right side counts committees of <span class="arithmatex">\(n\)</span> from <span class="arithmatex">\(n\)</span> women and <span class="arithmatex">\(n\)</span> men. Classify by the number <span class="arithmatex">\(k\)</span> of women: choose <span class="arithmatex">\(k\)</span> women in <span class="arithmatex">\(\binom{n}{k}\)</span> ways and <span class="arithmatex">\(n - k\)</span> men in <span class="arithmatex">\(\binom{n}{n-k} = \binom{n}{k}\)</span> ways. Summing over <span class="arithmatex">\(k\)</span> gives the left side. <span class="arithmatex">\(\blacksquare\)</span></p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 5</p>
+<p>Find the coefficient of <span class="arithmatex">\(x^7\)</span> in <span class="arithmatex">\((1 + x)^{11}\)</span>, and of <span class="arithmatex">\(x^2y^3z\)</span> in <span class="arithmatex">\((x + y + z)^6\)</span>.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p><span class="arithmatex">\(\binom{11}{7} = 330\)</span>. For three terms, choose which 2 factors give <span class="arithmatex">\(x\)</span>, which 3 give <span class="arithmatex">\(y\)</span> and which 1 gives <span class="arithmatex">\(z\)</span>: <span class="arithmatex">\(\dfrac{6!}{2!\,3!\,1!} = 60\)</span>.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 6</p>
+<p>How many ways are there to put 10 identical balls into 4 distinct boxes? If each box must get at least one ball?</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p><span class="arithmatex">\(\binom{10 + 3}{3} = \binom{13}{3} = 286\)</span>. With at least one each, first put one in each box, then distribute the other 6: <span class="arithmatex">\(\binom{6 + 3}{3} = 84\)</span>.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 7</p>
+<p>How many different strings can be made from the letters of BANANA?</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>6 letters: 1 B, 3 A's, 2 N's: <span class="arithmatex">\(\dfrac{6!}{1!\,3!\,2!} = 60\)</span>.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 8</p>
+<p>Show that if 5 points are chosen in a square of side 2, two of them are at distance at most <span class="arithmatex">\(\sqrt{2}\)</span>.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>Divide the square into four unit squares. By the pigeonhole principle two of the 5 points lie in the same unit square (points on a shared edge may be assigned to either), and two points in a unit square are at most its diagonal <span class="arithmatex">\(\sqrt{2}\)</span> apart. <span class="arithmatex">\(\blacksquare\)</span></p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 9</p>
+<p>How many integers from 1 to 100 are not divisible by 2, 3 or 5?</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>Divisible by at least one: <span class="arithmatex">\(50 + 33 + 20 - 16 - 10 - 6 + 3 = 74\)</span>. So <span class="arithmatex">\(100 - 74 = 26\)</span> are divisible by none.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 10</p>
+<p>Five letters are put at random into five addressed envelopes. How many ways leave every letter in a wrong envelope? What fraction of all ways is that?</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p><span class="arithmatex">\(D_5 = 44\)</span> of <span class="arithmatex">\(5! = 120\)</span>, a fraction <span class="arithmatex">\(44/120 \approx 0.367\)</span>, already very close to <span class="arithmatex">\(1/e\)</span>.</p>
+</details>
+<h2 id="711-quiz">7.11 Quiz<a class="headerlink" href="#711-quiz" title="Permanent link">&para;</a></h2>
+<div class="pk-quiz" data-quiz="0a337a01d2f4">
+<p class="pk-quiz-title">Check your understanding of counting</p>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;text&quot;,&quot;answer&quot;:[&quot;64&quot;]}">
+<p class="admonition-title">Exercise 1</p>
+<p class="pk-q-prompt">How many bit strings of length 6 are there?</p>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>64</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;text&quot;,&quot;answer&quot;:[&quot;336&quot;]}">
+<p class="admonition-title">Exercise 2</p>
+<p class="pk-q-prompt">In how many ways can first, second and third prizes go to 3 of 8 contestants?</p>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>336</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;text&quot;,&quot;answer&quot;:[&quot;35&quot;]}">
+<p class="admonition-title">Exercise 3</p>
+<p class="pk-q-prompt">How many 3-element subsets does a 7-element set have?</p>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>35</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;permutations&quot;,&quot;combinations&quot;,&quot;the product rule n to the power r&quot;,&quot;derangements&quot;],&quot;answer&quot;:&quot;combinations&quot;}">
+<p class="admonition-title">Exercise 4</p>
+<p class="pk-q-prompt">Choosing 5 cards for a poker hand is counted with</p>
+<ol class="pk-q-opts" type="A"><li>permutations</li><li>combinations</li><li>the product rule n to the power r</li><li>derangements</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>combinations</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;text&quot;,&quot;answer&quot;:[&quot;13&quot;]}">
+<p class="admonition-title">Exercise 5</p>
+<p class="pk-q-prompt">At least how many people must be in a room to be sure that two were born in the same month?</p>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>13</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;text&quot;,&quot;answer&quot;:[&quot;15&quot;]}">
+<p class="admonition-title">Exercise 6</p>
+<p class="pk-q-prompt">How many ways are there to choose 4 pieces of fruit from 3 kinds, with repetition allowed and order ignored?</p>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>15</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;text&quot;,&quot;answer&quot;:[&quot;9&quot;]}">
+<p class="admonition-title">Exercise 7</p>
+<p class="pk-q-prompt">How many derangements of 4 objects are there?</p>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>9</strong></p>
+</details>
+</div>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button type="button" class="md-top md-icon" data-md-component="top" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+Back to top
+</button>
+</main>
+<footer class="md-footer">
+<nav class="md-footer__inner md-grid" aria-label="Footer" >
+<a href="induction-and-recursion.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: 6. Induction and Recursion">
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</div>
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Previous
+</span>
+<div class="md-ellipsis">
+6. Induction and Recursion
+</div>
+</div>
+</a>
+<a href="discrete-probability.html" class="md-footer__link md-footer__link--next" aria-label="Next: 8. Discrete Probability">
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Next
+</span>
+<div class="md-ellipsis">
+8. Discrete Probability
+</div>
+</div>
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+</div>
+</a>
+</nav>
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+The Open Book Project &middot;
+<a href="../../about.html">About this library</a> &middot;
+<a href="../../publish.html">Publish your book</a> &middot;
+© The authors of the books
+</div>
+Made with
+<a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+Material for MkDocs
+</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "navigation.prune", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "toc.follow", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+<script src="../../assets/mathjax.js"></script>
+<script src="../../assets/viz.js"></script>
+<script src="../../assets/remote.js"></script>
+<script src="../../assets/scans.js"></script>
+<script src="../../assets/reader.js"></script>
+<script src="../../assets/app.js"></script>
+<script src="../../assets/slides.js"></script>
+<script src="../../assets/speak.js"></script>
+<script src="../../assets/quiz.js"></script>
+<script>
+    /* offline reading: the service worker at the site root (its scope is the whole site) */
+    if ("serviceWorker" in navigator && window.isSecureContext) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register(new URL("../../sw.js", location.href).href).catch(function () {});
+      });
+    }
+  </script>
+</body>
+</html>

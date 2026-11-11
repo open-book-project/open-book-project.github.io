@@ -1,0 +1,1144 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="description" content="The Open Book Project: books on computer science, quantum computing, cyber security, science, the social sciences, university courses and languages, read page by page like an e-book, online or offline.">
+<meta name="author" content="The Open Book Project">
+<link rel="canonical" href="https://open-book-project.github.io/computing/data_science_python/text-and-time-series-basics.html">
+<link rel="prev" href="clustering-and-dimensionality-reduction.html">
+<link rel="next" href="ethics-privacy-and-reproducibility.html">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap"></noscript>
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Open Book">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="application-name" content="Open Book"><script src="../../assets/library-data.js"></script><script>
+    (function () {
+      var X = window.XMLHttpRequest, open, gate = new Promise(function (r) { open = r; });
+      if (!X) return;
+      var open0 = X.prototype.open, send0 = X.prototype.send;
+      X.prototype.open = function (method, url) {
+        this.__pkIndex = /\/search\/search_index\.json(\?|#|$)/.test(String(url));
+        return open0.apply(this, arguments);
+      };
+      X.prototype.send = function () {
+        if (!this.__pkIndex) return send0.apply(this, arguments);
+        var xhr = this, args = arguments;
+        gate.then(function () { send0.apply(xhr, args); });
+      };
+      function wake() { open(); }
+      document.addEventListener("focusin", function (e) { if (e.target && e.target.closest && e.target.closest(".md-search")) wake(); });
+      document.addEventListener("click", function (e) { if (e.target && e.target.closest && e.target.closest('label[for="__search"], .md-search')) wake(); }, true);
+      document.addEventListener("keydown", function (e) {
+        var k = e.key;
+        if ((k === "/" || k === "s" || k === "f" || k === "S" || k === "F") && !(e.target && e.target.closest && e.target.closest("input, textarea, [contenteditable]"))) wake();
+      }, true);
+      if (/[?&]q=/.test(location.search)) wake();
+    })();
+  </script><script>
+    try {
+      if ((window.matchMedia && (matchMedia("(display-mode: standalone)").matches || matchMedia("(display-mode: fullscreen)").matches)) || navigator.standalone === true) {
+        document.documentElement.className += " bjp-standalone";
+      }
+    } catch (e) { /* not an installed app */ }
+    /* the books of a subject or of the whole library as covers or as a list (assets/app.js): the reader's choice */
+    try {
+      var bv = localStorage.getItem("bjp.view");
+      if (bv === "list" || (bv !== "grid" && /\/books\.html$/.test(location.pathname))) document.documentElement.className += " bjp-view-list";
+    } catch (e) { /* no storage: covers */ }
+  </script>
+<script>
+    /* a book opened from its cover on the shelf: the page stays blank, in the cover's colour, until the reader is up */
+    try {
+      var cv = sessionStorage.getItem("bjp.reader.cover");
+      if (cv && sessionStorage.getItem("bjp.reader.open") === "1") {
+        var c = JSON.parse(cv), de = document.documentElement;
+        de.className += " bjp-booting";
+        if (c && /^#[0-9a-f]{3,8}$/i.test(c.bg || "")) de.style.background = c.bg;
+        setTimeout(function () { de.classList.remove("bjp-booting"); de.style.background = ""; }, 3000);
+      }
+    } catch (e) { /* no session storage: the page simply opens as usual */ }
+  </script>
+<title>12. Text and Time Series Basics - The Open Book Project</title>
+<link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+<link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+<link rel="stylesheet" href="../../assets/extra.css">
+<link rel="stylesheet" href="../../assets/reader.css">
+<link rel="stylesheet" href="../../assets/viz.css">
+<link rel="stylesheet" href="../../assets/app.css">
+<link rel="stylesheet" href="../../assets/theme.css">
+<link rel="stylesheet" href="../../assets/slides.css">
+<link rel="stylesheet" href="../../assets/remote.css">
+<link rel="stylesheet" href="../../assets/scans.css">
+<link rel="stylesheet" href="../../assets/speak.css">
+<link rel="stylesheet" href="../../assets/quiz.css">
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+<input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+<input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a href="#121-text-as-data" class="md-skip">
+Skip to content
+</a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav class="md-header__inner md-grid" aria-label="Header">
+<a href="../../index.html" title="The Open Book Project" class="md-header__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+The Open Book Project
+</span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+12. Text and Time Series Basics
+</span>
+</div>
+</div>
+</div><a href="../../index.html" class="bjp-libbtn" aria-label="Library: all books" title="Library: all books">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V5h4v15M8 20V9h4v11M14 20L12.6 6l3.8-.8 3 14.2M3 20h18"/></svg><span>Library</span>
+</a>
+<a href="../../subjects/index.html" class="pk-catbtn" aria-haspopup="true" aria-expanded="false" title="Browse the books by category">
+<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><circle cx="17" cy="7" r="3.6"/><path d="M7 13.4l3.9 6.8H3.1z"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg><span>Categories</span>
+</a>
+<form class="md-header__option" data-md-component="palette">
+<input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+<label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+</label>
+<input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+<label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+<label class="md-search__icon md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</label>
+<nav class="md-search__options" aria-label="Search">
+<button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+Initializing search
+</div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--primary bjp-nav bjp-nav--book" aria-label="Navigation" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a href="../../index.html" title="The Open Book Project" class="md-nav__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+The Open Book Project
+</label>
+<ul class="md-nav__list" data-md-scrollfix>
+<li class="md-nav__item bjp-nav-all">
+<a href="../../index.html" class="md-nav__link" aria-label="All books: back to the library">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+<span class="md-ellipsis">All books</span>
+</a>
+</li>
+<li class="md-nav__item bjp-nav-book" role="presentation"><span class="bjp-nav-head">Data Science with Python</span></li>
+<li class="md-nav__item">
+<a href="index.html" class="md-nav__link">
+<span class="md-ellipsis">
+Overview and preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="preface.html" class="md-nav__link">
+<span class="md-ellipsis">
+Preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="the-data-science-workflow.html" class="md-nav__link">
+<span class="md-ellipsis">
+1. The Data Science Workflow
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="python-essentials-for-data-work.html" class="md-nav__link">
+<span class="md-ellipsis">
+2. Python Essentials for Data Work
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="numerical-computing-with-numpy.html" class="md-nav__link">
+<span class="md-ellipsis">
+3. Numerical Computing with NumPy
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="pandas-fundamentals.html" class="md-nav__link">
+<span class="md-ellipsis">
+4. pandas Fundamentals: Series, DataFrames and Selection
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="cleaning-reshaping-grouping-and-joining.html" class="md-nav__link">
+<span class="md-ellipsis">
+5. Cleaning, Reshaping, Grouping and Joining
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="visualisation-and-exploratory-data-analysis.html" class="md-nav__link">
+<span class="md-ellipsis">
+6. Visualisation and Exploratory Data Analysis
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="probability-and-statistics.html" class="md-nav__link">
+<span class="md-ellipsis">
+7. Probability and Statistics for Data Science
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="regression.html" class="md-nav__link">
+<span class="md-ellipsis">
+8. Regression
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="classification.html" class="md-nav__link">
+<span class="md-ellipsis">
+9. Classification
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="model-evaluation-and-cross-validation.html" class="md-nav__link">
+<span class="md-ellipsis">
+10. Model Evaluation and Cross-Validation
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="clustering-and-dimensionality-reduction.html" class="md-nav__link">
+<span class="md-ellipsis">
+11. Clustering and Dimensionality Reduction
+</span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+12. Text and Time Series Basics
+</span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a href="text-and-time-series-basics.html" class="md-nav__link md-nav__link--active">
+<span class="md-ellipsis">
+12. Text and Time Series Basics
+</span>
+</a>
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#121-text-as-data" class="md-nav__link">
+<span class="md-ellipsis">
+12.1 Text as data
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#122-bag-of-words" class="md-nav__link">
+<span class="md-ellipsis">
+12.2 Bag of words
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#123-tf-idf" class="md-nav__link">
+<span class="md-ellipsis">
+12.3 TF-IDF
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#124-a-small-text-classifier" class="md-nav__link">
+<span class="md-ellipsis">
+12.4 A small text classifier
+</span>
+</a>
+<nav class="md-nav" aria-label="12.4 A small text classifier">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#finding-similar-documents" class="md-nav__link">
+<span class="md-ellipsis">
+Finding similar documents
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#125-time-series-in-pandas" class="md-nav__link">
+<span class="md-ellipsis">
+12.5 Time series in pandas
+</span>
+</a>
+<nav class="md-nav" aria-label="12.5 Time series in pandas">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#resampling" class="md-nav__link">
+<span class="md-ellipsis">
+Resampling
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#rolling-windows-lags-and-differences" class="md-nav__link">
+<span class="md-ellipsis">
+Rolling windows, lags and differences
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#126-trend-and-seasonality" class="md-nav__link">
+<span class="md-ellipsis">
+12.6 Trend and seasonality
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#127-forecasting-basics" class="md-nav__link">
+<span class="md-ellipsis">
+12.7 Forecasting basics
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#128-summary" class="md-nav__link">
+<span class="md-ellipsis">
+12.8 Summary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#129-exercises" class="md-nav__link">
+<span class="md-ellipsis">
+12.9 Exercises
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1210-quiz" class="md-nav__link">
+<span class="md-ellipsis">
+12.10 Quiz
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="ethics-privacy-and-reproducibility.html" class="md-nav__link">
+<span class="md-ellipsis">
+13. Ethics, Privacy and Reproducibility
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="an-end-to-end-project.html" class="md-nav__link">
+<span class="md-ellipsis">
+14. An End-to-End Project
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="glossary.html" class="md-nav__link">
+<span class="md-ellipsis">
+Glossary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="further-reading.html" class="md-nav__link">
+<span class="md-ellipsis">
+Further Reading
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#121-text-as-data" class="md-nav__link">
+<span class="md-ellipsis">
+12.1 Text as data
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#122-bag-of-words" class="md-nav__link">
+<span class="md-ellipsis">
+12.2 Bag of words
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#123-tf-idf" class="md-nav__link">
+<span class="md-ellipsis">
+12.3 TF-IDF
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#124-a-small-text-classifier" class="md-nav__link">
+<span class="md-ellipsis">
+12.4 A small text classifier
+</span>
+</a>
+<nav class="md-nav" aria-label="12.4 A small text classifier">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#finding-similar-documents" class="md-nav__link">
+<span class="md-ellipsis">
+Finding similar documents
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#125-time-series-in-pandas" class="md-nav__link">
+<span class="md-ellipsis">
+12.5 Time series in pandas
+</span>
+</a>
+<nav class="md-nav" aria-label="12.5 Time series in pandas">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#resampling" class="md-nav__link">
+<span class="md-ellipsis">
+Resampling
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#rolling-windows-lags-and-differences" class="md-nav__link">
+<span class="md-ellipsis">
+Rolling windows, lags and differences
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#126-trend-and-seasonality" class="md-nav__link">
+<span class="md-ellipsis">
+12.6 Trend and seasonality
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#127-forecasting-basics" class="md-nav__link">
+<span class="md-ellipsis">
+12.7 Forecasting basics
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#128-summary" class="md-nav__link">
+<span class="md-ellipsis">
+12.8 Summary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#129-exercises" class="md-nav__link">
+<span class="md-ellipsis">
+12.9 Exercises
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1210-quiz" class="md-nav__link">
+<span class="md-ellipsis">
+12.10 Quiz
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="chapter-12-text-and-time-series-basics">Chapter 12: Text and Time Series Basics<a class="headerlink" href="#chapter-12-text-and-time-series-basics" title="Permanent link">&para;</a></h1>
+<p><em>Turning words into features, and working with data ordered in time</em></p>
+<div class="admonition note">
+<p class="admonition-title">Learning outcomes</p>
+<p>After this chapter you should be able to:</p>
+<ul>
+<li>clean and tokenise text, and count words with Python and pandas;</li>
+<li>represent documents as a bag of words with <code>CountVectorizer</code>, and explain stop words and n-grams;</li>
+<li>explain and compute TF-IDF weights, and use <code>TfidfVectorizer</code>;</li>
+<li>build and evaluate a simple text classifier, and find similar documents with cosine similarity;</li>
+<li>work with dates in pandas: a datetime index, resampling, rolling windows, lags and differences;</li>
+<li>separate a series into trend and seasonal patterns in a simple way;</li>
+<li>forecast with naive baselines and lag features, and evaluate forecasts without looking into the future.</li>
+</ul>
+</div>
+<p>Two kinds of data need special handling before the methods of the previous chapters apply. <strong>Text</strong> does not arrive as numbers at all; it has to be turned into features. <strong>Time series</strong>, measurements taken in order over time, are numbers, but their order matters: today's value depends on yesterday's, patterns repeat with the seasons, and any evaluation must respect the fact that the future is unknown. This chapter introduces both, at the level needed to do sound basic work. Each is a large field of its own.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">Counter</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+</code></pre></div>
+<h2 id="121-text-as-data">12.1 Text as data<a class="headerlink" href="#121-text-as-data" title="Permanent link">&para;</a></h2>
+<p>A piece of text is called a <strong>document</strong> (a review, an email, a tweet, a page), and a set of documents is a <strong>corpus</strong>. The first steps turn each document into a list of <strong>tokens</strong>, usually words:</p>
+<ol>
+<li><strong>Normalise</strong>: convert to lower case, so that "Good" and "good" count as the same word.</li>
+<li><strong>Tokenise</strong>: split into words, dropping punctuation. A regular expression such as <code>[a-z]+</code> ("one or more letters") does this simply for English.</li>
+<li>Optionally <strong>remove stop words</strong>, very common words such as "the", "is" and "and" that carry little meaning on their own.</li>
+</ol>
+<div class="language-python highlight"><pre><span></span><code><span class="n">review</span> <span class="o">=</span> <span class="s2">"The tea was GOOD, the samosas were cold... but the service was good!"</span>
+<span class="n">tokens</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s2">"[a-z]+"</span><span class="p">,</span> <span class="n">review</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">Counter</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span><span class="o">.</span><span class="n">most_common</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+
+<span class="n">stop</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"the"</span><span class="p">,</span> <span class="s2">"was"</span><span class="p">,</span> <span class="s2">"were"</span><span class="p">,</span> <span class="s2">"but"</span><span class="p">,</span> <span class="s2">"a"</span><span class="p">,</span> <span class="s2">"and"</span><span class="p">,</span> <span class="s2">"is"</span><span class="p">}</span>
+<span class="nb">print</span><span class="p">([</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">tokens</span> <span class="k">if</span> <span class="n">t</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">stop</span><span class="p">])</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>['the', 'tea', 'was', 'good', 'the', 'samosas', 'were', 'cold', 'but', 'the', 'service', 'was', 'good']
+[('the', 3), ('was', 2), ('good', 2)]
+['tea', 'good', 'samosas', 'cold', 'service', 'good']
+</code></pre></div>
+<p><code>re.findall</code> returns every match of the pattern. The token "samosas" survived intact; a pattern of letters only would split "don't" into "don" and "t", which is one reason real projects use more careful tokenisers. Removing stop words leaves the words that carry the content, though note that it also removes words like "not", which can reverse a meaning ("not good"), so stop-word lists should be chosen with care.</p>
+<p>pandas applies the same operations to a whole column with the <code>.str</code> methods:</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">comments</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">([</span>
+    <span class="s2">"Fast delivery, great packaging"</span><span class="p">,</span>
+    <span class="s2">"Delivery was late and the box was damaged"</span><span class="p">,</span>
+    <span class="s2">"Great taste, will order again"</span><span class="p">,</span>
+    <span class="s2">"Late again. Disappointed."</span><span class="p">,</span>
+<span class="p">])</span>
+<span class="n">words</span> <span class="o">=</span> <span class="n">comments</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s2">"[a-z]+"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">words</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">len</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>                     <span class="c1"># words per comment</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">words</span><span class="o">.</span><span class="n">explode</span><span class="p">()</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>       <span class="c1"># most common words in the corpus</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>[4, 8, 5, 3]
+delivery    2
+great       2
+was         2
+late        2
+again       2
+Name: count, dtype: int64
+</code></pre></div>
+<p><code>explode</code> turns a column of lists into one row per element, so that <code>value_counts</code> can count words across all the documents.</p>
+<h2 id="122-bag-of-words">12.2 Bag of words<a class="headerlink" href="#122-bag-of-words" title="Permanent link">&para;</a></h2>
+<p>A model needs a fixed set of numerical features for every document. The simplest representation is the <strong>bag of words</strong>: build a <strong>vocabulary</strong> of all the words in the corpus, and represent each document by how many times it contains each vocabulary word. Word order is thrown away (hence "bag"). The result is a <strong>document-term matrix</strong>, with one row per document and one column per word.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.feature_extraction.text</span><span class="w"> </span><span class="kn">import</span> <span class="n">CountVectorizer</span>
+
+<span class="n">docs</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"the tea is hot"</span><span class="p">,</span> <span class="s2">"the coffee is cold"</span><span class="p">,</span> <span class="s2">"hot tea and hot coffee"</span><span class="p">]</span>
+<span class="n">cv</span> <span class="o">=</span> <span class="n">CountVectorizer</span><span class="p">()</span>
+<span class="n">dtm</span> <span class="o">=</span> <span class="n">cv</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">docs</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">cv</span><span class="o">.</span><span class="n">get_feature_names_out</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">dtm</span><span class="o">.</span><span class="n">toarray</span><span class="p">())</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>['and' 'coffee' 'cold' 'hot' 'is' 'tea' 'the']
+[[0 0 0 1 1 1 1]
+ [0 1 1 0 1 0 1]
+ [1 1 0 2 0 1 0]]
+</code></pre></div>
+<p>The vocabulary is sorted alphabetically, and each row counts the words of one document: the third document contains "hot" twice. <code>fit_transform</code> learns the vocabulary and builds the matrix; a vectorizer fitted on training documents is applied to new documents with <code>transform</code>, which ignores words not in the vocabulary.</p>
+<p>Real vocabularies have tens of thousands of words, and each document uses only a few, so most entries are zero. scikit-learn stores the matrix in a <strong>sparse</strong> format that records only the non-zero entries; <code>toarray()</code> converts it to an ordinary array, which is fine for small examples only.</p>
+<p>Two options of <code>CountVectorizer</code> are used constantly. <code>stop_words="english"</code> removes a built-in list of English stop words. <code>ngram_range=(1, 2)</code> adds <strong>bigrams</strong>, pairs of adjacent words, so that phrases such as "not good" or "very late" become features of their own and some word order is recovered.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">cv2</span> <span class="o">=</span> <span class="n">CountVectorizer</span><span class="p">(</span><span class="n">ngram_range</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="n">cv2</span><span class="o">.</span><span class="n">fit</span><span class="p">([</span><span class="s2">"not good at all"</span><span class="p">,</span> <span class="s2">"very good"</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">get_feature_names_out</span><span class="p">())</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>['all' 'at' 'at all' 'good' 'good at' 'not' 'not good' 'very' 'very good']
+</code></pre></div>
+<h2 id="123-tf-idf">12.3 TF-IDF<a class="headerlink" href="#123-tf-idf" title="Permanent link">&para;</a></h2>
+<p>Raw counts give too much weight to words that appear everywhere. A word that occurs in every document cannot help tell documents apart. <strong>TF-IDF</strong> (term frequency–inverse document frequency) reweights each count by how rare the word is across the corpus. With <span class="arithmatex">\(n\)</span> documents, of which <span class="arithmatex">\(\text{df}(t)\)</span> contain the term <span class="arithmatex">\(t\)</span>, scikit-learn's default inverse document frequency is</p>
+<div class="arithmatex">\[
+\text{idf}(t) = \ln\frac{1 + n}{1 + \text{df}(t)} + 1,
+\]</div>
+<p>and the weight of term <span class="arithmatex">\(t\)</span> in document <span class="arithmatex">\(d\)</span> is its count in <span class="arithmatex">\(d\)</span> times <span class="arithmatex">\(\text{idf}(t)\)</span>. Each document's vector is then scaled to length 1. A word in every document gets the smallest idf, 1; a word in a single document gets the largest.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.feature_extraction.text</span><span class="w"> </span><span class="kn">import</span> <span class="n">TfidfVectorizer</span>
+
+<span class="n">tv</span> <span class="o">=</span> <span class="n">TfidfVectorizer</span><span class="p">()</span>
+<span class="n">tfidf</span> <span class="o">=</span> <span class="n">tv</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">docs</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">tv</span><span class="o">.</span><span class="n">idf_</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">tv</span><span class="o">.</span><span class="n">get_feature_names_out</span><span class="p">())</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">tfidf</span><span class="o">.</span><span class="n">toarray</span><span class="p">(),</span> <span class="n">columns</span><span class="o">=</span><span class="n">tv</span><span class="o">.</span><span class="n">get_feature_names_out</span><span class="p">())</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>and       1.693
+coffee    1.288
+cold      1.693
+hot       1.288
+is        1.288
+tea       1.288
+the       1.288
+dtype: float64
+    and  coffee  cold   hot    is   tea   the
+0  0.00    0.00   0.0  0.50  0.50  0.50  0.50
+1  0.00    0.46   0.6  0.00  0.46  0.00  0.46
+2  0.47    0.36   0.0  0.72  0.00  0.36  0.00
+</code></pre></div>
+<p>"and" and "cold", each in one document, have the highest idf; "coffee", "hot", "is", "tea" and "the" appear in two of the three documents and get a lower one. Within each row, the rarer words carry more weight. For example, <span class="arithmatex">\(\text{idf}(\text{cold}) = \ln(4/2) + 1 = 1.693\)</span>.</p>
+<h2 id="124-a-small-text-classifier">12.4 A small text classifier<a class="headerlink" href="#124-a-small-text-classifier" title="Permanent link">&para;</a></h2>
+<p>Here is a tiny corpus of short product reviews, each labelled positive (1) or negative (0). Real sentiment datasets have thousands of reviews; this one is small so that it can be printed, which also means the results are fragile.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">reviews</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">"Arrived quickly and tastes wonderful"</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="s2">"Lovely aroma, I will buy again"</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Excellent quality for the price"</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="s2">"Great flavour and fresh packaging"</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Very good tea, strong and fresh"</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="s2">"My family loved it, great value"</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Wonderful taste, fast delivery"</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="s2">"Fresh, fragrant and well packed"</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Good quality, arrived on time"</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="s2">"Perfect for my morning cup, excellent"</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Delicious and fresh, highly recommended"</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="s2">"Fast shipping and lovely taste"</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Stale and tasteless, very disappointed"</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="s2">"Arrived late and the packet was torn"</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Terrible flavour, would not buy again"</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="s2">"Poor quality, not worth the price"</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"The box was damaged and the tea was stale"</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="s2">"Bitter taste, waste of money"</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Delivery took two weeks, very poor"</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="s2">"Not fresh at all, smells old"</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Awful, the worst tea I have bought"</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="s2">"Packaging broken and late delivery"</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Weak and tasteless, disappointed"</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="s2">"Never again, poor value and stale"</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+<span class="p">]</span>
+<span class="n">rev</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">reviews</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">"text"</span><span class="p">,</span> <span class="s2">"label"</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">rev</span><span class="p">[</span><span class="s2">"label"</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>{1: 12, 0: 12}
+</code></pre></div>
+<p>A pipeline joins the vectorizer and a classifier, so that the vocabulary is learned from the training folds only (the leakage rule of Section 10.4 applies to text too). <strong>Multinomial naive Bayes</strong> is a fast, classic choice for word counts; logistic regression on TF-IDF features is another strong baseline.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_pipeline</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.naive_bayes</span><span class="w"> </span><span class="kn">import</span> <span class="n">MultinomialNB</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">LogisticRegression</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">cross_val_score</span><span class="p">,</span> <span class="n">StratifiedKFold</span>
+
+<span class="n">cv_folds</span> <span class="o">=</span> <span class="n">StratifiedKFold</span><span class="p">(</span><span class="n">n_splits</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">clf</span> <span class="ow">in</span> <span class="p">[(</span><span class="s2">"naive Bayes + counts"</span><span class="p">,</span> <span class="n">make_pipeline</span><span class="p">(</span><span class="n">CountVectorizer</span><span class="p">(),</span> <span class="n">MultinomialNB</span><span class="p">())),</span>
+                  <span class="p">(</span><span class="s2">"logistic + TF-IDF"</span><span class="p">,</span> <span class="n">make_pipeline</span><span class="p">(</span><span class="n">TfidfVectorizer</span><span class="p">(),</span> <span class="n">LogisticRegression</span><span class="p">()))]:</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">cross_val_score</span><span class="p">(</span><span class="n">clf</span><span class="p">,</span> <span class="n">rev</span><span class="p">[</span><span class="s2">"text"</span><span class="p">],</span> <span class="n">rev</span><span class="p">[</span><span class="s2">"label"</span><span class="p">],</span> <span class="n">cv</span><span class="o">=</span><span class="n">cv_folds</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: accuracy </span><span class="si">{</span><span class="n">s</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> (folds: </span><span class="si">{</span><span class="n">s</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s2">)"</span><span class="p">)</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>naive Bayes + counts: accuracy 0.71 (folds: [0.5  0.67 0.83 0.83])
+logistic + TF-IDF: accuracy 0.71 (folds: [0.5  0.67 0.83 0.83])
+</code></pre></div>
+<p>Fitted on all 24 reviews, the logistic model's coefficients show which words push a review towards positive or negative:</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">model</span> <span class="o">=</span> <span class="n">make_pipeline</span><span class="p">(</span><span class="n">TfidfVectorizer</span><span class="p">(),</span> <span class="n">LogisticRegression</span><span class="p">())</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">rev</span><span class="p">[</span><span class="s2">"text"</span><span class="p">],</span> <span class="n">rev</span><span class="p">[</span><span class="s2">"label"</span><span class="p">])</span>
+<span class="n">vocab</span> <span class="o">=</span> <span class="n">model</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_feature_names_out</span><span class="p">()</span>
+<span class="n">coef</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">model</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">coef_</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">index</span><span class="o">=</span><span class="n">vocab</span><span class="p">)</span><span class="o">.</span><span class="n">sort_values</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"most negative:"</span><span class="p">,</span> <span class="n">coef</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"most positive:"</span><span class="p">,</span> <span class="n">coef</span><span class="o">.</span><span class="n">tail</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">([</span><span class="s2">"fresh and wonderful"</span><span class="p">,</span> <span class="s2">"stale and late"</span><span class="p">,</span> <span class="s2">"not good"</span><span class="p">]))</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>most negative: ['not', 'poor', 'stale', 'the', 'disappointed', 'tasteless']
+most positive: ['great', 'good', 'lovely', 'fast', 'wonderful', 'fresh']
+[1 0 0]
+</code></pre></div>
+<p>The word lists make sense, and the first two predictions are right. The third is wrong: "not good" is classified as positive (1). The model has learned that "not" signals a negative review, but it simply adds up the weights of the words present, and the weight of "good" wins; it cannot see that "not" reverses the word after it. Bigrams, which make "not good" a feature of its own, and above all far more data are the usual remedies.</p>
+<div class="admonition warning">
+<p class="admonition-title">Caution: tiny text datasets</p>
+<p>With a few dozen documents, cross-validated accuracy swings widely from fold to fold, and the model learns accidents of wording (a word that happened to occur only in negative reviews). Use small corpora to learn the tools, and judge real text models only on large, representative data.</p>
+</div>
+<h3 id="finding-similar-documents">Finding similar documents<a class="headerlink" href="#finding-similar-documents" title="Permanent link">&para;</a></h3>
+<p>TF-IDF vectors also measure how similar two documents are. The <strong>cosine similarity</strong> of two vectors is the cosine of the angle between them: 1 for vectors pointing the same way, 0 for vectors with no words in common. Because TF-IDF rows already have length 1, it is simply their dot product.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics.pairwise</span><span class="w"> </span><span class="kn">import</span> <span class="n">cosine_similarity</span>
+
+<span class="n">query</span> <span class="o">=</span> <span class="n">model</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">transform</span><span class="p">([</span><span class="s2">"the tea was stale"</span><span class="p">])</span>
+<span class="n">sims</span> <span class="o">=</span> <span class="n">cosine_similarity</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">model</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">rev</span><span class="p">[</span><span class="s2">"text"</span><span class="p">]))</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+<span class="n">top</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">sims</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">][:</span><span class="mi">3</span><span class="p">]</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">top</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">sims</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">rev</span><span class="p">[</span><span class="s1">'text'</span><span class="p">][</span><span class="n">i</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>0.82  The box was damaged and the tea was stale
+0.36  Arrived late and the packet was torn
+0.31  Awful, the worst tea I have bought
+</code></pre></div>
+<p>This is the core of simple search engines and "similar items" features.</p>
+<h2 id="125-time-series-in-pandas">12.5 Time series in pandas<a class="headerlink" href="#125-time-series-in-pandas" title="Permanent link">&para;</a></h2>
+<p>A <strong>time series</strong> is a sequence of measurements in time order: daily sales, hourly temperatures, monthly passenger numbers. pandas handles dates well when they are stored as a <strong>datetime index</strong>. We simulate four years of daily demand for a product, with a slow upward trend, a yearly cycle (higher in summer), a weekly cycle (higher at weekends), and noise.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+<span class="n">days</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">date_range</span><span class="p">(</span><span class="s2">"2021-01-01"</span><span class="p">,</span> <span class="s2">"2024-12-31"</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="s2">"D"</span><span class="p">)</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">days</span><span class="p">))</span>
+<span class="n">yearly</span> <span class="o">=</span> <span class="mi">30</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="p">(</span><span class="n">days</span><span class="o">.</span><span class="n">dayofyear</span> <span class="o">-</span> <span class="mi">80</span><span class="p">)</span> <span class="o">/</span> <span class="mf">365.25</span><span class="p">)</span>      <span class="c1"># peak around late June</span>
+<span class="n">weekly</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">days</span><span class="o">.</span><span class="n">dayofweek</span> <span class="o">&gt;=</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">demand</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="mi">200</span> <span class="o">+</span> <span class="mf">0.03</span> <span class="o">*</span> <span class="n">t</span> <span class="o">+</span> <span class="n">yearly</span> <span class="o">+</span> <span class="n">weekly</span> <span class="o">+</span> <span class="n">rng</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">days</span><span class="p">)),</span>
+                   <span class="n">index</span><span class="o">=</span><span class="n">days</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"demand"</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">demand</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">demand</span><span class="p">),</span> <span class="s2">"days from"</span><span class="p">,</span> <span class="n">demand</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">min</span><span class="p">()</span><span class="o">.</span><span class="n">date</span><span class="p">(),</span> <span class="s2">"to"</span><span class="p">,</span> <span class="n">demand</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">.</span><span class="n">date</span><span class="p">())</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>2021-01-01    181.0
+2021-01-02    204.0
+2021-01-03    160.0
+2021-01-04    170.0
+2021-01-05    181.0
+Freq: D, Name: demand, dtype: float64
+1461 days from 2021-01-01 to 2024-12-31
+</code></pre></div>
+<p>With a datetime index, dates can be selected by partial strings, and their parts are available directly:</p>
+<div class="language-python highlight"><pre><span></span><code><span class="nb">print</span><span class="p">(</span><span class="n">demand</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s2">"2023-03"</span><span class="p">]</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>                 <span class="c1"># all of March 2023</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">demand</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s2">"2022-12-30"</span><span class="p">:</span><span class="s2">"2023-01-02"</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">demand</span><span class="o">.</span><span class="n">index</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">day_name</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>2023-03-01    216.0
+2023-03-02    227.0
+2023-03-03    203.0
+Freq: D, Name: demand, dtype: float64
+2022-12-30    200.0
+2022-12-31    220.0
+2023-01-01    202.0
+2023-01-02    194.0
+Freq: D, Name: demand, dtype: float64
+['Friday', 'Saturday', 'Sunday']
+</code></pre></div>
+<h3 id="resampling">Resampling<a class="headerlink" href="#resampling" title="Permanent link">&para;</a></h3>
+<p><strong>Resampling</strong> changes the frequency of a series: daily to weekly or monthly (aggregating) or the reverse. It is <code>groupby</code> for time.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">monthly</span> <span class="o">=</span> <span class="n">demand</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="s2">"MS"</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>      <span class="c1"># "MS" = month start; one row per month</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">monthly</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">4</span><span class="p">))</span>
+<span class="n">weekly_mean</span> <span class="o">=</span> <span class="n">demand</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="s2">"W"</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">weekly_mean</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>2021-01-01    5604.0
+2021-02-01    5306.0
+2021-03-01    6272.0
+2021-04-01    6497.0
+Freq: MS, Name: demand, dtype: float64
+2021-01-03    181.7
+2021-01-10    183.4
+2021-01-17    178.3
+Freq: W-SUN, Name: demand, dtype: float64
+</code></pre></div>
+<h3 id="rolling-windows-lags-and-differences">Rolling windows, lags and differences<a class="headerlink" href="#rolling-windows-lags-and-differences" title="Permanent link">&para;</a></h3>
+<p>A <strong>rolling</strong> statistic is computed over a moving window: the mean of the last 7 or 30 days smooths out short-term noise (Section 6.7). A <strong>lag</strong> shifts the series so that each date sees an earlier value; it is how "yesterday's demand" becomes a feature. A <strong>difference</strong> subtracts the previous value, turning levels into changes.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">frame</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s2">"demand"</span><span class="p">:</span> <span class="n">demand</span><span class="p">})</span>
+<span class="n">frame</span><span class="p">[</span><span class="s2">"rolling_30"</span><span class="p">]</span> <span class="o">=</span> <span class="n">demand</span><span class="o">.</span><span class="n">rolling</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">frame</span><span class="p">[</span><span class="s2">"lag_1"</span><span class="p">]</span> <span class="o">=</span> <span class="n">demand</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">frame</span><span class="p">[</span><span class="s2">"lag_7"</span><span class="p">]</span> <span class="o">=</span> <span class="n">demand</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
+<span class="n">frame</span><span class="p">[</span><span class="s2">"diff_1"</span><span class="p">]</span> <span class="o">=</span> <span class="n">demand</span><span class="o">.</span><span class="n">diff</span><span class="p">()</span>
+<span class="n">frame</span><span class="p">[</span><span class="s2">"pct_change"</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">demand</span><span class="o">.</span><span class="n">pct_change</span><span class="p">()</span> <span class="o">*</span> <span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">frame</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">28</span><span class="p">:</span><span class="mi">33</span><span class="p">])</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>            demand  rolling_30  lag_1  lag_7  diff_1  pct_change
+2021-01-29   190.0         NaN  169.0  167.0    21.0        12.4
+2021-01-30   197.0       180.2  190.0  192.0     7.0         3.7
+2021-01-31   197.0       180.8  197.0  194.0     0.0         0.0
+2021-02-01   181.0       180.0  197.0  160.0   -16.0        -8.1
+2021-02-02   188.0       180.9  181.0  159.0     7.0         3.9
+</code></pre></div>
+<p>The first rows of the rolling and lagged columns are missing, because there is no earlier data to use; they are usually dropped before modelling.</p>
+<h2 id="126-trend-and-seasonality">12.6 Trend and seasonality<a class="headerlink" href="#126-trend-and-seasonality" title="Permanent link">&para;</a></h2>
+<p>Most real series combine a <strong>trend</strong> (a long-term rise or fall), <strong>seasonality</strong> (patterns that repeat with a fixed period: daily, weekly, yearly) and <strong>noise</strong>. A simple way to separate them uses tools we already have: a centred rolling mean over a full seasonal period removes the season and leaves the trend; the average of what remains, by position in the cycle, estimates the seasonal pattern.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">monthly_mean</span> <span class="o">=</span> <span class="n">demand</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="s2">"MS"</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="n">trend</span> <span class="o">=</span> <span class="n">monthly_mean</span><span class="o">.</span><span class="n">rolling</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="n">detrended</span> <span class="o">=</span> <span class="n">monthly_mean</span> <span class="o">-</span> <span class="n">trend</span>
+<span class="n">seasonal</span> <span class="o">=</span> <span class="n">detrended</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">detrended</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">month</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="mf">3.4</span><span class="p">))</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">monthly_mean</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">monthly_mean</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"monthly mean demand"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">trend</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">trend</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">2.5</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"12-month centred trend"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"units per day"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Series and trend"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s2">"x"</span><span class="p">,</span> <span class="n">labelrotation</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">seasonal</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">seasonal</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"tab:orange"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"gray"</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">13</span><span class="p">))</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"month"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"difference from trend"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Average seasonal pattern"</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">"seasonality.svg"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">seasonal</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>1    -26.6
+2    -15.6
+3     -1.1
+4     12.2
+5     24.5
+6     29.8
+7     28.8
+8     14.9
+9      2.9
+10   -11.8
+11   -24.0
+12   -29.4
+Name: demand, dtype: float64
+</code></pre></div>
+<figure class="fig fig-diagram">
+<img src="img/seasonality.svg" alt="Left: monthly mean demand over four years, oscillating with a yearly cycle around a slowly rising 12-month trend line. Right: a bar chart of the average difference from the trend for each calendar month, negative in winter (lowest around December and January) and positive in summer (highest around June and July)." loading="lazy" width="1046" height="316">
+<figcaption><strong>Figure 12.1 Separating trend and seasonality.</strong> Left: monthly mean demand over four years, oscillating with a yearly cycle around a slowly rising 12-month trend line. Right: a bar chart of the average difference from the trend for each calendar month, negative in winter (lowest around December and January) and positive in summer (highest around June and July).</figcaption>
+</figure>
+<p>The seasonal pattern recovered from the data matches the cycle that was built in: about 30 units per day above the trend in early summer and about 30 below in midwinter. (The statsmodels library offers more refined decompositions; the idea is the same.)</p>
+<h2 id="127-forecasting-basics">12.7 Forecasting basics<a class="headerlink" href="#127-forecasting-basics" title="Permanent link">&para;</a></h2>
+<p>A <strong>forecast</strong> predicts future values of a series. Two rules from Chapter 10 become even more important.</p>
+<ol>
+<li><strong>Evaluate on the future.</strong> Train on the past and test on a later period. A random split would let the model learn from days after the ones it predicts.</li>
+<li><strong>Compare with naive baselines.</strong> The <strong>naive</strong> forecast predicts that tomorrow equals today. The <strong>seasonal naive</strong> forecast predicts that a day equals the same day one season ago (one week, or one year, earlier). They are surprisingly hard to beat.</li>
+</ol>
+<p>We forecast daily demand one day ahead for 2024, training on 2021 to 2023. A linear regression gets <strong>lag features</strong> (demand 1 and 7 days before), the day of the week, and the day of the year (as sine and cosine, so that 31 December and 1 January are close together).</p>
+<div class="language-python highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">LinearRegression</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">mean_absolute_error</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s2">"demand"</span><span class="p">:</span> <span class="n">demand</span><span class="p">})</span>
+<span class="n">df</span><span class="p">[</span><span class="s2">"lag_1"</span><span class="p">]</span> <span class="o">=</span> <span class="n">demand</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">df</span><span class="p">[</span><span class="s2">"lag_7"</span><span class="p">]</span> <span class="o">=</span> <span class="n">demand</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
+<span class="n">df</span><span class="p">[</span><span class="s2">"weekend"</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">dayofweek</span> <span class="o">&gt;=</span> <span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+<span class="n">df</span><span class="p">[</span><span class="s2">"doy_sin"</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">dayofyear</span> <span class="o">/</span> <span class="mf">365.25</span><span class="p">)</span>
+<span class="n">df</span><span class="p">[</span><span class="s2">"doy_cos"</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">dayofyear</span> <span class="o">/</span> <span class="mf">365.25</span><span class="p">)</span>
+<span class="n">df</span><span class="p">[</span><span class="s2">"t"</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">))</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+
+<span class="n">train</span><span class="p">,</span> <span class="n">test</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:</span><span class="s2">"2023-12-31"</span><span class="p">],</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s2">"2024-01-01"</span><span class="p">:]</span>
+<span class="n">feats</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"lag_1"</span><span class="p">,</span> <span class="s2">"lag_7"</span><span class="p">,</span> <span class="s2">"weekend"</span><span class="p">,</span> <span class="s2">"doy_sin"</span><span class="p">,</span> <span class="s2">"doy_cos"</span><span class="p">,</span> <span class="s2">"t"</span><span class="p">]</span>
+<span class="n">reg</span> <span class="o">=</span> <span class="n">LinearRegression</span><span class="p">()</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">train</span><span class="p">[</span><span class="n">feats</span><span class="p">],</span> <span class="n">train</span><span class="p">[</span><span class="s2">"demand"</span><span class="p">])</span>
+<span class="n">pred</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">reg</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">test</span><span class="p">[</span><span class="n">feats</span><span class="p">]),</span> <span class="n">index</span><span class="o">=</span><span class="n">test</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"naive (yesterday):        MAE </span><span class="si">{</span><span class="n">mean_absolute_error</span><span class="p">(</span><span class="n">test</span><span class="p">[</span><span class="s1">'demand'</span><span class="p">],</span><span class="w"> </span><span class="n">test</span><span class="p">[</span><span class="s1">'lag_1'</span><span class="p">])</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"seasonal naive (7 days):  MAE </span><span class="si">{</span><span class="n">mean_absolute_error</span><span class="p">(</span><span class="n">test</span><span class="p">[</span><span class="s1">'demand'</span><span class="p">],</span><span class="w"> </span><span class="n">test</span><span class="p">[</span><span class="s1">'lag_7'</span><span class="p">])</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"regression on lags etc.:  MAE </span><span class="si">{</span><span class="n">mean_absolute_error</span><span class="p">(</span><span class="n">test</span><span class="p">[</span><span class="s1">'demand'</span><span class="p">],</span><span class="w"> </span><span class="n">pred</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>naive (yesterday):        MAE 13.31
+seasonal naive (7 days):  MAE 11.30
+regression on lags etc.:  MAE 8.13
+</code></pre></div>
+<div class="language-python highlight"><pre><span></span><code><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mf">3.4</span><span class="p">))</span>
+<span class="n">window</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="s2">"2024-06-01"</span><span class="p">,</span> <span class="s2">"2024-07-31"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">test</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">window</span><span class="p">,</span> <span class="s2">"demand"</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s2">"gray"</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"actual"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">pred</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">window</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s2">"tab:blue"</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"regression forecast"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">test</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">window</span><span class="p">,</span> <span class="s2">"lag_7"</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s2">"tab:orange"</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">":"</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"seasonal naive"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"units"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"One-day-ahead forecasts, June and July 2024"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mi">240</span><span class="p">,</span> <span class="mi">320</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">ncol</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s2">"upper left"</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">autofmt_xdate</span><span class="p">()</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">"forecast.svg"</span><span class="p">)</span>
+</code></pre></div>
+<figure class="fig fig-diagram">
+<img src="img/forecast.svg" alt="Two months of actual daily demand in gray, with the regression&#x27;s one-day-ahead forecast in blue following the weekly ups and downs closely, and the seasonal naive forecast as a dotted orange line that reproduces last week&#x27;s pattern including its noise." loading="lazy" width="742" height="321">
+<figcaption><strong>Figure 12.2 Forecasts compared with actual demand.</strong> Two months of actual daily demand in gray, with the regression&#x27;s one-day-ahead forecast in blue following the weekly ups and downs closely, and the seasonal naive forecast as a dotted orange line that reproduces last week&#x27;s pattern including its noise.</figcaption>
+</figure>
+<p>The regression beats both baselines, because it combines the recent level with the weekly and yearly patterns, while each naive method uses only one of them and copies that day's noise. For choosing settings, <code>TimeSeriesSplit</code> gives cross-validation folds in which every validation period comes after its training period:</p>
+<div class="language-python highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">TimeSeriesSplit</span>
+
+<span class="n">tscv</span> <span class="o">=</span> <span class="n">TimeSeriesSplit</span><span class="p">(</span><span class="n">n_splits</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">tr</span><span class="p">,</span> <span class="n">va</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">tscv</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">train</span><span class="p">)):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"fold </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">: train </span><span class="si">{</span><span class="n">train</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">tr</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">date</span><span class="p">()</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">train</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">tr</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">date</span><span class="p">()</span><span class="si">}</span><span class="s2">, "</span>
+          <span class="sa">f</span><span class="s2">"validate </span><span class="si">{</span><span class="n">train</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">va</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">date</span><span class="p">()</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">train</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">va</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">date</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>fold 0: train 2021-01-08 to 2021-08-15, validate 2021-08-16 to 2022-03-20
+fold 1: train 2021-01-08 to 2022-03-20, validate 2022-03-21 to 2022-10-23
+fold 2: train 2021-01-08 to 2022-10-23, validate 2022-10-24 to 2023-05-28
+fold 3: train 2021-01-08 to 2023-05-28, validate 2023-05-29 to 2023-12-31
+</code></pre></div>
+<div class="admonition warning">
+<p class="admonition-title">Caution: forecasting assumes the future resembles the past</p>
+<p>A model learned from four years of demand knows nothing about a new competitor, a price change or a pandemic. Forecasts should be accompanied by their typical error (the test MAE here), compared regularly with what actually happens, and retrained as new data arrives.</p>
+</div>
+<h2 id="128-summary">12.8 Summary<a class="headerlink" href="#128-summary" title="Permanent link">&para;</a></h2>
+<div class="admonition abstract">
+<p class="admonition-title">Summary</p>
+<ul>
+<li>Text becomes data through normalising, tokenising and (carefully) removing stop words; <code>Counter</code> and pandas' <code>.str</code> methods count words.</li>
+<li>A bag of words represents each document by word counts in a document-term matrix (<code>CountVectorizer</code>), stored sparsely; n-grams recover some word order.</li>
+<li>TF-IDF downweights words common across the corpus: <span class="arithmatex">\(\text{idf}(t) = \ln\frac{1+n}{1+\text{df}(t)} + 1\)</span> in scikit-learn's default.</li>
+<li>Put the vectorizer in a pipeline with the classifier (naive Bayes, logistic regression); cosine similarity of TF-IDF vectors finds similar documents. Small corpora give fragile results.</li>
+<li>A datetime index enables date selection, <code>resample</code> (change frequency), <code>rolling</code> (moving windows), <code>shift</code> (lags) and <code>diff</code>.</li>
+<li>Series combine trend, seasonality and noise; a centred rolling mean over one period estimates the trend, and averages by position in the cycle estimate the season.</li>
+<li>Forecasts are evaluated on later periods (<code>TimeSeriesSplit</code>) and compared with naive and seasonal naive baselines; lag features let ordinary regression forecast.</li>
+</ul>
+</div>
+<h2 id="129-exercises">12.9 Exercises<a class="headerlink" href="#129-exercises" title="Permanent link">&para;</a></h2>
+<div class="admonition example">
+<p class="admonition-title">Exercise 1</p>
+<p>Tokenise <code>"Rain, rain, go away! Come again another day."</code> into lower-case words and give the three most common words.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<div class="language-python highlight"><pre><span></span><code><span class="n">toks</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s2">"[a-z]+"</span><span class="p">,</span> <span class="s2">"Rain, rain, go away! Come again another day."</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">toks</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">Counter</span><span class="p">(</span><span class="n">toks</span><span class="p">)</span><span class="o">.</span><span class="n">most_common</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>['rain', 'rain', 'go', 'away', 'come', 'again', 'another', 'day']
+[('rain', 2), ('go', 1), ('away', 1)]
+</code></pre></div>
+<p>"rain" occurs twice; every other word once, so the next two are simply the first words met with a count of 1.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 2</p>
+<p>In a corpus of 9 documents, a word appears in 2 of them. Compute its idf with scikit-learn's default formula. What is the idf of a word that appears in all 9?</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p><span class="arithmatex">\(\text{idf} = \ln\frac{1+9}{1+2} + 1 = \ln(3.333) + 1 = 2.204\)</span>. For a word in all 9 documents, <span class="arithmatex">\(\ln\frac{10}{10} + 1 = 1\)</span>.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="nb">print</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">10</span> <span class="o">/</span> <span class="mi">3</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="nb">round</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">10</span> <span class="o">/</span> <span class="mi">10</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>2.204 1.0
+</code></pre></div>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 3</p>
+<p>Why might removing stop words hurt a sentiment classifier?</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>Standard stop-word lists include words such as "not", "no" and "never", which reverse the meaning of what follows. Removing them turns "not good" into "good". For sentiment, keep negations (or use bigrams so that "not good" is a feature of its own).</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 4</p>
+<p>Using <code>demand</code>, compute the mean demand by day of the week, and say which day is highest.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<div class="language-python highlight"><pre><span></span><code><span class="n">by_day</span> <span class="o">=</span> <span class="n">demand</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">demand</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">day_name</span><span class="p">())</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">by_day</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>Saturday     238.1
+Sunday       236.7
+Tuesday      222.8
+Friday       222.0
+Wednesday    221.8
+Monday       221.4
+Thursday     221.1
+Name: demand, dtype: float64
+</code></pre></div>
+<p>Saturday and Sunday are about 15 units above the weekdays, as built into the data.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 5</p>
+<p>Explain why evaluating a forecasting model with an ordinary shuffled <code>train_test_split</code> gives an over-optimistic result.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>A shuffled split puts days from the whole period in the training set, including days after the ones being predicted. Lag features and neighbouring days then let the model "see" the immediate future of a test day, something impossible when actually forecasting, so the measured error is lower than real forecasting error. Forecasts must be evaluated on periods entirely after the training data.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 6</p>
+<p>Compute the seasonal naive MAE for the 2024 test period using a lag of 364 days (same weekday, one year earlier). Is it better or worse than the 7-day seasonal naive, and why?</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<div class="language-python highlight"><pre><span></span><code><span class="n">lag364</span> <span class="o">=</span> <span class="n">demand</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="mi">364</span><span class="p">)</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s2">"2024-01-01"</span><span class="p">:]</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">mean_absolute_error</span><span class="p">(</span><span class="n">demand</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s2">"2024-01-01"</span><span class="p">:],</span> <span class="n">lag364</span><span class="p">),</span> <span class="mi">2</span><span class="p">))</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>14.96
+</code></pre></div>
+<p>It is worse. The 364-day lag captures the yearly and weekly cycles, but misses a year of trend growth and copies the noise of a single day a year ago; the 7-day lag is much closer in time, so it misses almost none of the trend. Both copy one day's noise, which is why the regression, which averages information, beats them.</p>
+</details>
+<h2 id="1210-quiz">12.10 Quiz<a class="headerlink" href="#1210-quiz" title="Permanent link">&para;</a></h2>
+<div class="pk-quiz" data-quiz="b3c6ea34111a">
+<p class="pk-quiz-title">Check your understanding of Chapter 12</p>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;how often words occur&quot;,&quot;which words occur&quot;,&quot;the order of the words&quot;,&quot;the number of documents&quot;],&quot;answer&quot;:&quot;the order of the words&quot;}">
+<p class="admonition-title">Exercise 1</p>
+<p class="pk-q-prompt">What does a bag-of-words representation ignore?</p>
+<ol class="pk-q-opts" type="A"><li>how often words occur</li><li>which words occur</li><li>the order of the words</li><li>the number of documents</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>the order of the words</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;the highest weight&quot;,&quot;the lowest idf&quot;,&quot;a negative weight&quot;,&quot;removed automatically&quot;],&quot;answer&quot;:&quot;the lowest idf&quot;}">
+<p class="admonition-title">Exercise 2</p>
+<p class="pk-q-prompt">In TF-IDF, a word that appears in every document gets</p>
+<ol class="pk-q-opts" type="A"><li>the highest weight</li><li>the lowest idf</li><li>a negative weight</li><li>removed automatically</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>the lowest idf</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;rolling&quot;,&quot;shift&quot;,&quot;resample&quot;,&quot;diff&quot;],&quot;answer&quot;:&quot;resample&quot;}">
+<p class="admonition-title">Exercise 3</p>
+<p class="pk-q-prompt">Which pandas method changes daily data into monthly totals?</p>
+<ol class="pk-q-opts" type="A"><li>rolling</li><li>shift</li><li>resample</li><li>diff</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>resample</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;the overall mean&quot;,&quot;today&#x27;s value&quot;,&quot;zero&quot;,&quot;the value one year ago&quot;],&quot;answer&quot;:&quot;today&#x27;s value&quot;}">
+<p class="admonition-title">Exercise 4</p>
+<p class="pk-q-prompt">The naive forecast predicts that tomorrow's value equals</p>
+<ol class="pk-q-opts" type="A"><li>the overall mean</li><li>today's value</li><li>zero</li><li>the value one year ago</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>today's value</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;KFold with shuffling&quot;,&quot;StratifiedKFold&quot;,&quot;TimeSeriesSplit&quot;,&quot;GroupKFold&quot;],&quot;answer&quot;:&quot;TimeSeriesSplit&quot;}">
+<p class="admonition-title">Exercise 5</p>
+<p class="pk-q-prompt">Which splitter is appropriate for evaluating a forecasting model?</p>
+<ol class="pk-q-opts" type="A"><li>KFold with shuffling</li><li>StratifiedKFold</li><li>TimeSeriesSplit</li><li>GroupKFold</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>TimeSeriesSplit</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;text&quot;,&quot;answer&quot;:[&quot;shift&quot;,&quot;shift()&quot;]}">
+<p class="admonition-title">Exercise 6</p>
+<p class="pk-q-prompt">Which pandas method creates a lagged copy of a series?</p>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>shift / shift()</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;-1&quot;,&quot;0&quot;,&quot;0.5&quot;,&quot;1&quot;],&quot;answer&quot;:&quot;0&quot;}">
+<p class="admonition-title">Exercise 7</p>
+<p class="pk-q-prompt">Cosine similarity between two TF-IDF vectors with no words in common is</p>
+<ol class="pk-q-opts" type="A"><li>-1</li><li>0</li><li>0.5</li><li>1</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>0</strong></p>
+</details>
+</div>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button type="button" class="md-top md-icon" data-md-component="top" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+Back to top
+</button>
+</main>
+<footer class="md-footer">
+<nav class="md-footer__inner md-grid" aria-label="Footer" >
+<a href="clustering-and-dimensionality-reduction.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: 11. Clustering and Dimensionality Reduction">
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</div>
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Previous
+</span>
+<div class="md-ellipsis">
+11. Clustering and Dimensionality Reduction
+</div>
+</div>
+</a>
+<a href="ethics-privacy-and-reproducibility.html" class="md-footer__link md-footer__link--next" aria-label="Next: 13. Ethics, Privacy and Reproducibility">
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Next
+</span>
+<div class="md-ellipsis">
+13. Ethics, Privacy and Reproducibility
+</div>
+</div>
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+</div>
+</a>
+</nav>
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+The Open Book Project &middot;
+<a href="../../about.html">About this library</a> &middot;
+<a href="../../publish.html">Publish your book</a> &middot;
+© The authors of the books
+</div>
+Made with
+<a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+Material for MkDocs
+</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "navigation.prune", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "toc.follow", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+<script src="../../assets/mathjax.js"></script>
+<script src="../../assets/viz.js"></script>
+<script src="../../assets/remote.js"></script>
+<script src="../../assets/scans.js"></script>
+<script src="../../assets/reader.js"></script>
+<script src="../../assets/app.js"></script>
+<script src="../../assets/slides.js"></script>
+<script src="../../assets/speak.js"></script>
+<script src="../../assets/quiz.js"></script>
+<script>
+    /* offline reading: the service worker at the site root (its scope is the whole site) */
+    if ("serviceWorker" in navigator && window.isSecureContext) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register(new URL("../../sw.js", location.href).href).catch(function () {});
+      });
+    }
+  </script>
+</body>
+</html>

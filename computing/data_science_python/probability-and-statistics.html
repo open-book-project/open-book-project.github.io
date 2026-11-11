@@ -1,0 +1,1255 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="description" content="The Open Book Project: books on computer science, quantum computing, cyber security, science, the social sciences, university courses and languages, read page by page like an e-book, online or offline.">
+<meta name="author" content="The Open Book Project">
+<link rel="canonical" href="https://open-book-project.github.io/computing/data_science_python/probability-and-statistics.html">
+<link rel="prev" href="visualisation-and-exploratory-data-analysis.html">
+<link rel="next" href="regression.html">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap"></noscript>
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Open Book">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="application-name" content="Open Book"><script src="../../assets/library-data.js"></script><script>
+    (function () {
+      var X = window.XMLHttpRequest, open, gate = new Promise(function (r) { open = r; });
+      if (!X) return;
+      var open0 = X.prototype.open, send0 = X.prototype.send;
+      X.prototype.open = function (method, url) {
+        this.__pkIndex = /\/search\/search_index\.json(\?|#|$)/.test(String(url));
+        return open0.apply(this, arguments);
+      };
+      X.prototype.send = function () {
+        if (!this.__pkIndex) return send0.apply(this, arguments);
+        var xhr = this, args = arguments;
+        gate.then(function () { send0.apply(xhr, args); });
+      };
+      function wake() { open(); }
+      document.addEventListener("focusin", function (e) { if (e.target && e.target.closest && e.target.closest(".md-search")) wake(); });
+      document.addEventListener("click", function (e) { if (e.target && e.target.closest && e.target.closest('label[for="__search"], .md-search')) wake(); }, true);
+      document.addEventListener("keydown", function (e) {
+        var k = e.key;
+        if ((k === "/" || k === "s" || k === "f" || k === "S" || k === "F") && !(e.target && e.target.closest && e.target.closest("input, textarea, [contenteditable]"))) wake();
+      }, true);
+      if (/[?&]q=/.test(location.search)) wake();
+    })();
+  </script><script>
+    try {
+      if ((window.matchMedia && (matchMedia("(display-mode: standalone)").matches || matchMedia("(display-mode: fullscreen)").matches)) || navigator.standalone === true) {
+        document.documentElement.className += " bjp-standalone";
+      }
+    } catch (e) { /* not an installed app */ }
+    /* the books of a subject or of the whole library as covers or as a list (assets/app.js): the reader's choice */
+    try {
+      var bv = localStorage.getItem("bjp.view");
+      if (bv === "list" || (bv !== "grid" && /\/books\.html$/.test(location.pathname))) document.documentElement.className += " bjp-view-list";
+    } catch (e) { /* no storage: covers */ }
+  </script>
+<script>
+    /* a book opened from its cover on the shelf: the page stays blank, in the cover's colour, until the reader is up */
+    try {
+      var cv = sessionStorage.getItem("bjp.reader.cover");
+      if (cv && sessionStorage.getItem("bjp.reader.open") === "1") {
+        var c = JSON.parse(cv), de = document.documentElement;
+        de.className += " bjp-booting";
+        if (c && /^#[0-9a-f]{3,8}$/i.test(c.bg || "")) de.style.background = c.bg;
+        setTimeout(function () { de.classList.remove("bjp-booting"); de.style.background = ""; }, 3000);
+      }
+    } catch (e) { /* no session storage: the page simply opens as usual */ }
+  </script>
+<title>7. Probability and Statistics for Data Science - The Open Book Project</title>
+<link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+<link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+<link rel="stylesheet" href="../../assets/extra.css">
+<link rel="stylesheet" href="../../assets/reader.css">
+<link rel="stylesheet" href="../../assets/viz.css">
+<link rel="stylesheet" href="../../assets/app.css">
+<link rel="stylesheet" href="../../assets/theme.css">
+<link rel="stylesheet" href="../../assets/slides.css">
+<link rel="stylesheet" href="../../assets/remote.css">
+<link rel="stylesheet" href="../../assets/scans.css">
+<link rel="stylesheet" href="../../assets/speak.css">
+<link rel="stylesheet" href="../../assets/quiz.css">
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+<input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+<input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a href="#71-probability" class="md-skip">
+Skip to content
+</a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav class="md-header__inner md-grid" aria-label="Header">
+<a href="../../index.html" title="The Open Book Project" class="md-header__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+The Open Book Project
+</span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+7. Probability and Statistics for Data Science
+</span>
+</div>
+</div>
+</div><a href="../../index.html" class="bjp-libbtn" aria-label="Library: all books" title="Library: all books">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V5h4v15M8 20V9h4v11M14 20L12.6 6l3.8-.8 3 14.2M3 20h18"/></svg><span>Library</span>
+</a>
+<a href="../../subjects/index.html" class="pk-catbtn" aria-haspopup="true" aria-expanded="false" title="Browse the books by category">
+<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><circle cx="17" cy="7" r="3.6"/><path d="M7 13.4l3.9 6.8H3.1z"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg><span>Categories</span>
+</a>
+<form class="md-header__option" data-md-component="palette">
+<input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+<label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+</label>
+<input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+<label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+<label class="md-search__icon md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</label>
+<nav class="md-search__options" aria-label="Search">
+<button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+Initializing search
+</div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--primary bjp-nav bjp-nav--book" aria-label="Navigation" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a href="../../index.html" title="The Open Book Project" class="md-nav__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+The Open Book Project
+</label>
+<ul class="md-nav__list" data-md-scrollfix>
+<li class="md-nav__item bjp-nav-all">
+<a href="../../index.html" class="md-nav__link" aria-label="All books: back to the library">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+<span class="md-ellipsis">All books</span>
+</a>
+</li>
+<li class="md-nav__item bjp-nav-book" role="presentation"><span class="bjp-nav-head">Data Science with Python</span></li>
+<li class="md-nav__item">
+<a href="index.html" class="md-nav__link">
+<span class="md-ellipsis">
+Overview and preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="preface.html" class="md-nav__link">
+<span class="md-ellipsis">
+Preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="the-data-science-workflow.html" class="md-nav__link">
+<span class="md-ellipsis">
+1. The Data Science Workflow
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="python-essentials-for-data-work.html" class="md-nav__link">
+<span class="md-ellipsis">
+2. Python Essentials for Data Work
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="numerical-computing-with-numpy.html" class="md-nav__link">
+<span class="md-ellipsis">
+3. Numerical Computing with NumPy
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="pandas-fundamentals.html" class="md-nav__link">
+<span class="md-ellipsis">
+4. pandas Fundamentals: Series, DataFrames and Selection
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="cleaning-reshaping-grouping-and-joining.html" class="md-nav__link">
+<span class="md-ellipsis">
+5. Cleaning, Reshaping, Grouping and Joining
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="visualisation-and-exploratory-data-analysis.html" class="md-nav__link">
+<span class="md-ellipsis">
+6. Visualisation and Exploratory Data Analysis
+</span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+7. Probability and Statistics for Data Science
+</span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a href="probability-and-statistics.html" class="md-nav__link md-nav__link--active">
+<span class="md-ellipsis">
+7. Probability and Statistics for Data Science
+</span>
+</a>
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#71-probability" class="md-nav__link">
+<span class="md-ellipsis">
+7.1 Probability
+</span>
+</a>
+<nav class="md-nav" aria-label="7.1 Probability">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#conditional-probability" class="md-nav__link">
+<span class="md-ellipsis">
+Conditional probability
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#72-random-variables-and-their-distributions" class="md-nav__link">
+<span class="md-ellipsis">
+7.2 Random variables and their distributions
+</span>
+</a>
+<nav class="md-nav" aria-label="7.2 Random variables and their distributions">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#four-distributions-you-will-meet-constantly" class="md-nav__link">
+<span class="md-ellipsis">
+Four distributions you will meet constantly
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#73-the-normal-distribution-and-z-scores" class="md-nav__link">
+<span class="md-ellipsis">
+7.3 The normal distribution and z-scores
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#74-sampling-distributions-and-the-central-limit-theorem" class="md-nav__link">
+<span class="md-ellipsis">
+7.4 Sampling distributions and the central limit theorem
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#75-confidence-intervals" class="md-nav__link">
+<span class="md-ellipsis">
+7.5 Confidence intervals
+</span>
+</a>
+<nav class="md-nav" aria-label="7.5 Confidence intervals">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#what-95-confidence-means" class="md-nav__link">
+<span class="md-ellipsis">
+What "95% confidence" means
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#the-bootstrap" class="md-nav__link">
+<span class="md-ellipsis">
+The bootstrap
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#76-hypothesis-tests" class="md-nav__link">
+<span class="md-ellipsis">
+7.6 Hypothesis tests
+</span>
+</a>
+<nav class="md-nav" aria-label="7.6 Hypothesis tests">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#a-two-sample-t-test" class="md-nav__link">
+<span class="md-ellipsis">
+A two-sample t-test
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#a-permutation-test" class="md-nav__link">
+<span class="md-ellipsis">
+A permutation test
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#errors-and-power" class="md-nav__link">
+<span class="md-ellipsis">
+Errors and power
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#testing-a-relationship-between-two-categorical-variables" class="md-nav__link">
+<span class="md-ellipsis">
+Testing a relationship between two categorical variables
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#77-summary" class="md-nav__link">
+<span class="md-ellipsis">
+7.7 Summary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#78-exercises" class="md-nav__link">
+<span class="md-ellipsis">
+7.8 Exercises
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#79-quiz" class="md-nav__link">
+<span class="md-ellipsis">
+7.9 Quiz
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="regression.html" class="md-nav__link">
+<span class="md-ellipsis">
+8. Regression
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="classification.html" class="md-nav__link">
+<span class="md-ellipsis">
+9. Classification
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="model-evaluation-and-cross-validation.html" class="md-nav__link">
+<span class="md-ellipsis">
+10. Model Evaluation and Cross-Validation
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="clustering-and-dimensionality-reduction.html" class="md-nav__link">
+<span class="md-ellipsis">
+11. Clustering and Dimensionality Reduction
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="text-and-time-series-basics.html" class="md-nav__link">
+<span class="md-ellipsis">
+12. Text and Time Series Basics
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ethics-privacy-and-reproducibility.html" class="md-nav__link">
+<span class="md-ellipsis">
+13. Ethics, Privacy and Reproducibility
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="an-end-to-end-project.html" class="md-nav__link">
+<span class="md-ellipsis">
+14. An End-to-End Project
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="glossary.html" class="md-nav__link">
+<span class="md-ellipsis">
+Glossary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="further-reading.html" class="md-nav__link">
+<span class="md-ellipsis">
+Further Reading
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#71-probability" class="md-nav__link">
+<span class="md-ellipsis">
+7.1 Probability
+</span>
+</a>
+<nav class="md-nav" aria-label="7.1 Probability">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#conditional-probability" class="md-nav__link">
+<span class="md-ellipsis">
+Conditional probability
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#72-random-variables-and-their-distributions" class="md-nav__link">
+<span class="md-ellipsis">
+7.2 Random variables and their distributions
+</span>
+</a>
+<nav class="md-nav" aria-label="7.2 Random variables and their distributions">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#four-distributions-you-will-meet-constantly" class="md-nav__link">
+<span class="md-ellipsis">
+Four distributions you will meet constantly
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#73-the-normal-distribution-and-z-scores" class="md-nav__link">
+<span class="md-ellipsis">
+7.3 The normal distribution and z-scores
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#74-sampling-distributions-and-the-central-limit-theorem" class="md-nav__link">
+<span class="md-ellipsis">
+7.4 Sampling distributions and the central limit theorem
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#75-confidence-intervals" class="md-nav__link">
+<span class="md-ellipsis">
+7.5 Confidence intervals
+</span>
+</a>
+<nav class="md-nav" aria-label="7.5 Confidence intervals">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#what-95-confidence-means" class="md-nav__link">
+<span class="md-ellipsis">
+What "95% confidence" means
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#the-bootstrap" class="md-nav__link">
+<span class="md-ellipsis">
+The bootstrap
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#76-hypothesis-tests" class="md-nav__link">
+<span class="md-ellipsis">
+7.6 Hypothesis tests
+</span>
+</a>
+<nav class="md-nav" aria-label="7.6 Hypothesis tests">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#a-two-sample-t-test" class="md-nav__link">
+<span class="md-ellipsis">
+A two-sample t-test
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#a-permutation-test" class="md-nav__link">
+<span class="md-ellipsis">
+A permutation test
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#errors-and-power" class="md-nav__link">
+<span class="md-ellipsis">
+Errors and power
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#testing-a-relationship-between-two-categorical-variables" class="md-nav__link">
+<span class="md-ellipsis">
+Testing a relationship between two categorical variables
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#77-summary" class="md-nav__link">
+<span class="md-ellipsis">
+7.7 Summary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#78-exercises" class="md-nav__link">
+<span class="md-ellipsis">
+7.8 Exercises
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#79-quiz" class="md-nav__link">
+<span class="md-ellipsis">
+7.9 Quiz
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="chapter-7-probability-and-statistics-for-data-science">Chapter 7: Probability and Statistics for Data Science<a class="headerlink" href="#chapter-7-probability-and-statistics-for-data-science" title="Permanent link">&para;</a></h1>
+<p><em>Distributions, sampling, confidence intervals and hypothesis tests</em></p>
+<div class="admonition note">
+<p class="admonition-title">Learning outcomes</p>
+<p>After this chapter you should be able to:</p>
+<ul>
+<li>compute simple probabilities with the complement, addition and multiplication rules, and check them by simulation;</li>
+<li>describe the binomial, Poisson, uniform and normal distributions and use <code>scipy.stats</code> to compute their probabilities;</li>
+<li>compute and interpret expectation, variance and z-scores;</li>
+<li>explain sampling variation, the standard error and the central limit theorem;</li>
+<li>construct and correctly interpret a confidence interval for a mean, by formula and by bootstrap;</li>
+<li>carry out a two-sample t-test and a permutation test, and interpret a p-value correctly;</li>
+<li>distinguish type I and type II errors, and statistical from practical significance.</li>
+</ul>
+</div>
+<p>Every dataset is a sample of something larger: this year's customers stand for future customers, 200 students for students in general, ten days of tea sales for the stall's usual trade. The numbers we compute from a sample would come out differently with a different sample. <strong>Statistics</strong> is the discipline of reasoning about that variation: how much a sample result could differ from the truth, and whether a pattern in the sample is real or the kind of thing chance alone produces. This chapter introduces the probability needed for that reasoning and then the two main tools of inference, confidence intervals and hypothesis tests. Simulation is used throughout, because seeing a sampling distribution emerge from repeated random samples is the most direct way to understand it.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">stats</span>
+</code></pre></div>
+<h2 id="71-probability">7.1 Probability<a class="headerlink" href="#71-probability" title="Permanent link">&para;</a></h2>
+<p>A <strong>probability</strong> is a number between 0 and 1 that measures how likely an event is: 0 for impossible, 1 for certain. One useful interpretation is long-run frequency: the probability that a fair die shows a six is <span class="arithmatex">\(1/6\)</span> because, in a very long run of throws, about one sixth show a six.</p>
+<p>When all outcomes are equally likely, the probability of an event is the number of outcomes in the event divided by the total number of outcomes. Three rules let you combine probabilities:</p>
+<ul>
+<li><strong>Complement</strong>: <span class="arithmatex">\(P(\text{not } A) = 1 - P(A)\)</span>.</li>
+<li><strong>Addition</strong>: <span class="arithmatex">\(P(A \text{ or } B) = P(A) + P(B) - P(A \text{ and } B)\)</span>. If <span class="arithmatex">\(A\)</span> and <span class="arithmatex">\(B\)</span> cannot happen together, the last term is zero.</li>
+<li><strong>Multiplication for independent events</strong>: if <span class="arithmatex">\(A\)</span> and <span class="arithmatex">\(B\)</span> are <strong>independent</strong> (knowing one tells you nothing about the other), <span class="arithmatex">\(P(A \text{ and } B) = P(A) \times P(B)\)</span>.</li>
+</ul>
+<div class="admonition example">
+<p class="admonition-title">Example 7.1: At least one six</p>
+<p>What is the probability of at least one six in four throws of a fair die? "At least one" is easiest through the complement: the chance of <em>no</em> six in one throw is <span class="arithmatex">\(5/6\)</span>, and the throws are independent, so the chance of no six in four throws is <span class="arithmatex">\((5/6)^4\)</span>. Therefore</p>
+<div class="arithmatex">\[
+P(\text{at least one six}) = 1 - \left(\tfrac{5}{6}\right)^4 = 1 - 0.482 = 0.518.
+\]</div>
+<p>A simulation checks the algebra:</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">throws</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">100_000</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="mi">5</span> <span class="o">/</span> <span class="mi">6</span><span class="p">)</span> <span class="o">**</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="p">(</span><span class="n">throws</span> <span class="o">==</span> <span class="mi">6</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>0.5177 0.51685
+</code></pre></div>
+</div>
+<h3 id="conditional-probability">Conditional probability<a class="headerlink" href="#conditional-probability" title="Permanent link">&para;</a></h3>
+<p>The probability of <span class="arithmatex">\(A\)</span> <strong>given</strong> that <span class="arithmatex">\(B\)</span> has happened is written <span class="arithmatex">\(P(A \mid B)\)</span> and equals</p>
+<div class="arithmatex">\[
+P(A \mid B) = \frac{P(A \text{ and } B)}{P(B)}.
+\]</div>
+<p>It restricts attention to the cases where <span class="arithmatex">\(B\)</span> happened. Conditional probabilities are not symmetric: <span class="arithmatex">\(P(A \mid B)\)</span> and <span class="arithmatex">\(P(B \mid A)\)</span> can be very different, and confusing them is a classic error.</p>
+<div class="admonition example">
+<p class="admonition-title">Example 7.2: A test for a rare condition</p>
+<p>A condition affects 1% of a population. A screening test detects it in 95% of people who have it, and wrongly flags 5% of people who do not. If a person tests positive, what is the probability that they have the condition?</p>
+<p>Think of 10,000 people. 100 have the condition, and 95 of them test positive. 9,900 do not, and 5% of them, 495, also test positive. So of the <span class="arithmatex">\(95 + 495 = 590\)</span> positives, only 95 have the condition:</p>
+<div class="arithmatex">\[
+P(\text{condition} \mid \text{positive}) = \frac{95}{590} \approx 0.16.
+\]</div>
+<p>The test is "95% accurate", yet a positive result means only about a 16% chance of having the condition, because the condition is rare and the false positives from the large healthy group outnumber the true positives. This reasoning, formalised as <strong>Bayes' theorem</strong>, reappears in classification (Chapter 9), where precision plays the role of this 16%.</p>
+</div>
+<h2 id="72-random-variables-and-their-distributions">7.2 Random variables and their distributions<a class="headerlink" href="#72-random-variables-and-their-distributions" title="Permanent link">&para;</a></h2>
+<p>A <strong>random variable</strong> is a number determined by a random process: the number of heads in ten tosses, the number of customers arriving in an hour, the height of a randomly chosen adult. Its <strong>distribution</strong> says which values it can take and how likely each is.</p>
+<p>A <strong>discrete</strong> random variable takes separate values (usually counts), and its distribution gives a probability to each value: the <strong>probability mass function</strong> (pmf). A <strong>continuous</strong> random variable can take any value in a range; single values have probability zero, and probabilities come from areas under a <strong>probability density function</strong> (pdf). For both, the <strong>cumulative distribution function</strong> (cdf) gives <span class="arithmatex">\(P(X \le x)\)</span>.</p>
+<p>Two numbers summarise a distribution. The <strong>expectation</strong> (or mean) <span class="arithmatex">\(E[X]\)</span>, written <span class="arithmatex">\(\mu\)</span>, is the long-run average value; for a discrete variable <span class="arithmatex">\(E[X] = \sum_x x\,P(X = x)\)</span>. The <strong>variance</strong> <span class="arithmatex">\(\operatorname{Var}(X) = E[(X - \mu)^2]\)</span>, written <span class="arithmatex">\(\sigma^2\)</span>, is the average squared distance from the mean, and its square root <span class="arithmatex">\(\sigma\)</span> is the <strong>standard deviation</strong>.</p>
+<h3 id="four-distributions-you-will-meet-constantly">Four distributions you will meet constantly<a class="headerlink" href="#four-distributions-you-will-meet-constantly" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Distribution</th>
+<th>Describes</th>
+<th>Parameters</th>
+<th>Mean</th>
+<th>Variance</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Binomial</td>
+<td>number of successes in <span class="arithmatex">\(n\)</span> independent trials, each with success probability <span class="arithmatex">\(p\)</span></td>
+<td><span class="arithmatex">\(n\)</span>, <span class="arithmatex">\(p\)</span></td>
+<td><span class="arithmatex">\(np\)</span></td>
+<td><span class="arithmatex">\(np(1-p)\)</span></td>
+</tr>
+<tr>
+<td>Poisson</td>
+<td>number of events in a fixed interval, when events occur independently at a constant average rate</td>
+<td><span class="arithmatex">\(\lambda\)</span></td>
+<td><span class="arithmatex">\(\lambda\)</span></td>
+<td><span class="arithmatex">\(\lambda\)</span></td>
+</tr>
+<tr>
+<td>Uniform</td>
+<td>a value equally likely to be anywhere in <span class="arithmatex">\([a, b]\)</span></td>
+<td><span class="arithmatex">\(a\)</span>, <span class="arithmatex">\(b\)</span></td>
+<td><span class="arithmatex">\((a+b)/2\)</span></td>
+<td><span class="arithmatex">\((b-a)^2/12\)</span></td>
+</tr>
+<tr>
+<td>Normal</td>
+<td>many measurements; sums and averages of many small effects</td>
+<td><span class="arithmatex">\(\mu\)</span>, <span class="arithmatex">\(\sigma\)</span></td>
+<td><span class="arithmatex">\(\mu\)</span></td>
+<td><span class="arithmatex">\(\sigma^2\)</span></td>
+</tr>
+</tbody>
+</table>
+<p><em>Table 7.1. Four common distributions.</em></p>
+<p><code>scipy.stats</code> provides each distribution as an object with methods <code>pmf</code> (or <code>pdf</code>), <code>cdf</code>, <code>ppf</code> (the inverse of the cdf: the value below which a given fraction lies), <code>mean</code>, <code>std</code> and <code>rvs</code> (random samples).</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">coin</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">binom</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"P(exactly 5 heads)  ="</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">coin</span><span class="o">.</span><span class="n">pmf</span><span class="p">(</span><span class="mi">5</span><span class="p">),</span> <span class="mi">4</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"P(at most 2 heads)  ="</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">coin</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="mi">4</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"P(8 or more heads)  ="</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">coin</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="mi">7</span><span class="p">),</span> <span class="mi">4</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"mean, sd:"</span><span class="p">,</span> <span class="n">coin</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="nb">round</span><span class="p">(</span><span class="n">coin</span><span class="o">.</span><span class="n">std</span><span class="p">(),</span> <span class="mi">3</span><span class="p">))</span>
+
+<span class="n">calls</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">poisson</span><span class="p">(</span><span class="n">mu</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>          <span class="c1"># on average 4 calls an hour</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"P(no calls in an hour) ="</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">calls</span><span class="o">.</span><span class="n">pmf</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="mi">4</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"P(more than 8 calls)   ="</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">calls</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="mi">8</span><span class="p">),</span> <span class="mi">4</span><span class="p">))</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>P(exactly 5 heads)  = 0.2461
+P(at most 2 heads)  = 0.0547
+P(8 or more heads)  = 0.0547
+mean, sd: 5.0 1.581
+P(no calls in an hour) = 0.0183
+P(more than 8 calls)   = 0.0214
+</code></pre></div>
+<p>The probability of exactly 5 heads in 10 tosses is only about 0.25: the most likely single value is still unlikely. <span class="arithmatex">\(P(8 \text{ or more heads}) \approx 0.055\)</span> is the value found by counting in Exercise 4 of Chapter 3.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mf">3.2</span><span class="p">))</span>
+<span class="n">k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">11</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">coin</span><span class="o">.</span><span class="n">pmf</span><span class="p">(</span><span class="n">k</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="s2">"tab:blue"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"Number of heads in 10 tosses"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"Probability"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Binomial(n=10, p=0.5): a pmf"</span><span class="p">)</span>
+
+<span class="n">h</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">140</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">300</span><span class="p">)</span>
+<span class="n">height</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mi">170</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">height</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">h</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="s2">"tab:red"</span><span class="p">)</span>
+<span class="n">mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">h</span> <span class="o">&gt;=</span> <span class="mi">162</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">h</span> <span class="o">&lt;=</span> <span class="mi">178</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">h</span><span class="p">[</span><span class="n">mask</span><span class="p">],</span> <span class="n">height</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">h</span><span class="p">[</span><span class="n">mask</span><span class="p">]),</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"tab:red"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"Height (cm)"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"Density"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Normal(170, 8): area within 1 sd = 0.68"</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">"distributions.svg"</span><span class="p">)</span>
+</code></pre></div>
+<figure class="fig fig-diagram">
+<img src="img/distributions.svg" alt="Left: a bar chart of the binomial distribution for 10 tosses of a fair coin, symmetric with its highest bar at 5 heads, about 0.25. Right: the bell-shaped normal density with mean 170 cm and standard deviation 8 cm, with the area between 162 and 178 cm shaded; that area is about 0.68." loading="lazy" width="950" height="297">
+<figcaption><strong>Figure 7.1 A discrete and a continuous distribution.</strong> Left: a bar chart of the binomial distribution for 10 tosses of a fair coin, symmetric with its highest bar at 5 heads, about 0.25. Right: the bell-shaped normal density with mean 170 cm and standard deviation 8 cm, with the area between 162 and 178 cm shaded; that area is about 0.68.</figcaption>
+</figure>
+<h2 id="73-the-normal-distribution-and-z-scores">7.3 The normal distribution and z-scores<a class="headerlink" href="#73-the-normal-distribution-and-z-scores" title="Permanent link">&para;</a></h2>
+<p>The <strong>normal distribution</strong> is the symmetric bell curve of Figure 7.1. It is fixed by its mean <span class="arithmatex">\(\mu\)</span> (the centre) and standard deviation <span class="arithmatex">\(\sigma\)</span> (the width). Many measurements are approximately normal, and, more importantly, averages of many observations are approximately normal whatever the shape of the original data (Section 7.4).</p>
+<p>For any normal distribution, about 68% of values lie within one standard deviation of the mean, about 95% within two (more precisely 1.96), and about 99.7% within three. This is the <strong>68–95–99.7 rule</strong>.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">z</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>                   <span class="c1"># the standard normal</span>
+<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mf">1.96</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"P(-</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2"> &lt; Z &lt; </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">) = </span><span class="si">{</span><span class="n">z</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">z</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="o">-</span><span class="n">k</span><span class="p">)</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"97.5th percentile:"</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">z</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="mf">0.975</span><span class="p">),</span> <span class="mi">4</span><span class="p">))</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>P(-1 &lt; Z &lt; 1) = 0.6827
+P(-1.96 &lt; Z &lt; 1.96) = 0.9500
+P(-2 &lt; Z &lt; 2) = 0.9545
+P(-3 &lt; Z &lt; 3) = 0.9973
+97.5th percentile: 1.96
+</code></pre></div>
+<p>The <strong>z-score</strong> of a value <span class="arithmatex">\(x\)</span> says how many standard deviations it lies from the mean:</p>
+<div class="arithmatex">\[
+z = \frac{x - \mu}{\sigma}.
+\]</div>
+<p>z-scores put different variables on a common scale (this is the standardisation of Section 3.7). If adult heights are roughly normal with mean 170 cm and standard deviation 8 cm, a height of 186 cm has <span class="arithmatex">\(z = (186 - 170)/8 = 2\)</span>, and only about 2.3% of adults are taller:</p>
+<div class="language-python highlight"><pre><span></span><code><span class="nb">print</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">height</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="mi">186</span><span class="p">),</span> <span class="mi">4</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">height</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="mf">0.90</span><span class="p">),</span> <span class="mi">1</span><span class="p">),</span> <span class="s2">"cm is the 90th percentile"</span><span class="p">)</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>0.0228
+180.3 cm is the 90th percentile
+</code></pre></div>
+<h2 id="74-sampling-distributions-and-the-central-limit-theorem">7.4 Sampling distributions and the central limit theorem<a class="headerlink" href="#74-sampling-distributions-and-the-central-limit-theorem" title="Permanent link">&para;</a></h2>
+<p>Suppose we want the mean of some quantity in a large <strong>population</strong> (all customers, all students), but can measure only a <strong>sample</strong> of <span class="arithmatex">\(n\)</span> of them. The population mean <span class="arithmatex">\(\mu\)</span> is a fixed but unknown number, a <strong>parameter</strong>. The sample mean <span class="arithmatex">\(\bar{x}\)</span> is a <strong>statistic</strong>, computed from the sample, and it varies from sample to sample. The distribution of a statistic over all possible samples is its <strong>sampling distribution</strong>.</p>
+<p>To see one, we need a population we can sample from again and again. Take delivery times that are strongly right-skewed: most deliveries take 20 to 40 minutes, a few take much longer. We simulate a population of 100,000 deliveries, then draw many samples of size <span class="arithmatex">\(n\)</span> and record each sample's mean.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">population</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">gamma</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mf">15.0</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">100_000</span><span class="p">)</span> <span class="o">+</span> <span class="mi">10</span>   <span class="c1"># minutes</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"population mean </span><span class="si">{</span><span class="n">population</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">, sd </span><span class="si">{</span><span class="n">population</span><span class="o">.</span><span class="n">std</span><span class="p">()</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">sample_means</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">reps</span><span class="o">=</span><span class="mi">10_000</span><span class="p">):</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">population</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="n">reps</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">population</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">40</span><span class="p">]:</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">sample_means</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"n=</span><span class="si">{</span><span class="n">n</span><span class="si">:</span><span class="s2">&gt;3</span><span class="si">}</span><span class="s2">: mean of sample means </span><span class="si">{</span><span class="n">m</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">, "</span>
+          <span class="sa">f</span><span class="s2">"sd of sample means </span><span class="si">{</span><span class="n">m</span><span class="o">.</span><span class="n">std</span><span class="p">()</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">, sigma/sqrt(n) </span><span class="si">{</span><span class="n">population</span><span class="o">.</span><span class="n">std</span><span class="p">()</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>population mean 40.02, sd 21.33
+n=  2: mean of sample means 40.40, sd of sample means 15.28, sigma/sqrt(n) 15.08
+n= 10: mean of sample means 39.90, sd of sample means 6.82, sigma/sqrt(n) 6.75
+n= 40: mean of sample means 40.01, sd of sample means 3.42, sigma/sqrt(n) 3.37
+</code></pre></div>
+<div class="language-python highlight"><pre><span></span><code><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mf">2.8</span><span class="p">))</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">population</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">60</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"gray"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Population (skewed)"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"minutes"</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">ax</span><span class="p">,</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">40</span><span class="p">]):</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">sample_means</span><span class="p">(</span><span class="n">n</span><span class="p">),</span> <span class="n">bins</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"tab:blue"</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Means of samples, n = </span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"sample mean (minutes)"</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">120</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">120</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">"clt.svg"</span><span class="p">)</span>
+</code></pre></div>
+<figure class="fig fig-diagram">
+<img src="img/clt.svg" alt="Four histograms on the same horizontal scale from 10 to 120 minutes. The first is the population of delivery times, strongly right-skewed with a long tail. The next three show the means of 10,000 samples of size 2, 10 and 40: as the sample size grows, the histogram of sample means becomes narrower and more symmetric and bell-shaped, centred on the population mean of about 40 minutes." loading="lazy" width="1142" height="258">
+<figcaption><strong>Figure 7.2 The central limit theorem at work.</strong> Four histograms on the same horizontal scale from 10 to 120 minutes. The first is the population of delivery times, strongly right-skewed with a long tail. The next three show the means of 10,000 samples of size 2, 10 and 40: as the sample size grows, the histogram of sample means becomes narrower and more symmetric and bell-shaped, centred on the population mean of about 40 minutes.</figcaption>
+</figure>
+<p>Three facts appear in the numbers and Figure 7.2:</p>
+<ol>
+<li>The sample means are centred on the population mean. The sample mean is an <strong>unbiased</strong> estimate of <span class="arithmatex">\(\mu\)</span>.</li>
+<li>Their spread shrinks as <span class="arithmatex">\(n\)</span> grows, exactly as <span class="arithmatex">\(\sigma / \sqrt{n}\)</span>. This quantity, the standard deviation of a statistic's sampling distribution, is called its <strong>standard error</strong>. To halve the standard error you need four times as many observations.</li>
+<li>Their distribution becomes <strong>normal</strong> as <span class="arithmatex">\(n\)</span> grows, even though the population is skewed. This is the <strong>central limit theorem</strong>: for large enough <span class="arithmatex">\(n\)</span>, the mean of <span class="arithmatex">\(n\)</span> independent observations from almost any population is approximately normal, with mean <span class="arithmatex">\(\mu\)</span> and standard deviation <span class="arithmatex">\(\sigma/\sqrt{n}\)</span>.</li>
+</ol>
+<div class="admonition tip">
+<p class="admonition-title">Key idea</p>
+<p>The central limit theorem is why the normal distribution is everywhere in statistics. We rarely know the shape of the population, but we know that averages (and many other statistics built from sums) are approximately normal, with a standard error we can estimate from the sample itself as <span class="arithmatex">\(s/\sqrt{n}\)</span>.</p>
+</div>
+<p>In practice <span class="arithmatex">\(\sigma\)</span> is unknown and is estimated by the sample standard deviation</p>
+<div class="arithmatex">\[
+s = \sqrt{\frac{1}{n-1}\sum_{i=1}^{n}(x_i - \bar{x})^2}.
+\]</div>
+<p>The divisor <span class="arithmatex">\(n - 1\)</span> rather than <span class="arithmatex">\(n\)</span> corrects for the fact that deviations are measured from <span class="arithmatex">\(\bar{x}\)</span>, which is itself fitted to the sample and so sits closer to the data than <span class="arithmatex">\(\mu\)</span> does; dividing by <span class="arithmatex">\(n\)</span> would underestimate <span class="arithmatex">\(\sigma^2\)</span> on average. This is the <code>ddof=1</code> of NumPy and the default of pandas (Section 3.6).</p>
+<h2 id="75-confidence-intervals">7.5 Confidence intervals<a class="headerlink" href="#75-confidence-intervals" title="Permanent link">&para;</a></h2>
+<p>A single number such as <span class="arithmatex">\(\bar{x} = 41.3\)</span> minutes says nothing about how far it might be from the truth. A <strong>confidence interval</strong> gives a range of plausible values for the parameter, together with a confidence level.</p>
+<p>By the central limit theorem, <span class="arithmatex">\(\bar{x}\)</span> lies within about 1.96 standard errors of <span class="arithmatex">\(\mu\)</span> in 95% of samples. Turning this around gives the interval <span class="arithmatex">\(\bar{x} \pm 1.96\,\text{SE}\)</span>. Because the standard error is itself estimated from the sample, the exact recipe replaces 1.96 by a slightly larger value from the <strong>t distribution</strong> with <span class="arithmatex">\(n - 1\)</span> degrees of freedom:</p>
+<div class="arithmatex">\[
+\bar{x} \pm t_{n-1,\,0.975}\,\frac{s}{\sqrt{n}}.
+\]</div>
+<p>For large <span class="arithmatex">\(n\)</span> the t value is close to 1.96; for small samples it is larger, widening the interval to allow for the extra uncertainty in <span class="arithmatex">\(s\)</span>.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
+<span class="n">sample</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">population</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span>
+<span class="n">xbar</span><span class="p">,</span> <span class="n">s</span> <span class="o">=</span> <span class="n">sample</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">sample</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">ddof</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">se</span> <span class="o">=</span> <span class="n">s</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+<span class="n">t_crit</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="mf">0.975</span><span class="p">,</span> <span class="n">df</span><span class="o">=</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"n=</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">, mean=</span><span class="si">{</span><span class="n">xbar</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">, s=</span><span class="si">{</span><span class="n">s</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">, SE=</span><span class="si">{</span><span class="n">se</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">, t=</span><span class="si">{</span><span class="n">t_crit</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"95% CI: (</span><span class="si">{</span><span class="n">xbar</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">t_crit</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">se</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">xbar</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">t_crit</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">se</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">)"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"same with scipy:"</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">stats</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">interval</span><span class="p">(</span><span class="mf">0.95</span><span class="p">,</span> <span class="n">df</span><span class="o">=</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="n">xbar</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">se</span><span class="p">),</span> <span class="mi">2</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"true population mean:"</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">population</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="mi">2</span><span class="p">))</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>n=30, mean=39.34, s=20.02, SE=3.65, t=2.045
+95% CI: (31.86, 46.81)
+same with scipy: [31.86 46.81]
+true population mean: 40.02
+</code></pre></div>
+<h3 id="what-95-confidence-means">What "95% confidence" means<a class="headerlink" href="#what-95-confidence-means" title="Permanent link">&para;</a></h3>
+<p>The interpretation is subtle and often stated wrongly. The population mean is fixed; it is the interval that is random, because it depends on the sample. "95% confidence" means that <strong>the method</strong> produces intervals that contain the true mean in 95% of samples. A simulation makes this concrete: draw 1,000 samples, build an interval from each, and count how many contain the true mean.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">mu</span> <span class="o">=</span> <span class="n">population</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="n">hits</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1000</span><span class="p">):</span>
+    <span class="n">smp</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">population</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">m</span><span class="p">,</span> <span class="n">se_</span> <span class="o">=</span> <span class="n">smp</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">smp</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">ddof</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
+    <span class="n">lo</span><span class="p">,</span> <span class="n">hi</span> <span class="o">=</span> <span class="n">m</span> <span class="o">-</span> <span class="n">t_crit</span> <span class="o">*</span> <span class="n">se_</span><span class="p">,</span> <span class="n">m</span> <span class="o">+</span> <span class="n">t_crit</span> <span class="o">*</span> <span class="n">se_</span>
+    <span class="n">hits</span> <span class="o">+=</span> <span class="n">lo</span> <span class="o">&lt;=</span> <span class="n">mu</span> <span class="o">&lt;=</span> <span class="n">hi</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">hits</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">)</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>0.938
+</code></pre></div>
+<p>About 95% of the intervals cover the truth (a little less here, because the population is so skewed that <span class="arithmatex">\(n = 30\)</span> is only just large enough for the normal approximation). For any <em>one</em> interval we cannot know whether it is one of the lucky 95% or the unlucky 5%.</p>
+<div class="admonition warning">
+<p class="admonition-title">Caution: common misreadings of a confidence interval</p>
+<p>A 95% confidence interval does <strong>not</strong> mean that 95% of the data lies in the interval (the data is far more spread out than the interval for its mean), nor that there is a 95% probability that <span class="arithmatex">\(\mu\)</span> lies in this particular interval (in this framework <span class="arithmatex">\(\mu\)</span> is fixed and either is or is not inside). It means the procedure captures <span class="arithmatex">\(\mu\)</span> in 95% of samples. In practice, read it as "the values of <span class="arithmatex">\(\mu\)</span> that are consistent with the data".</p>
+</div>
+<h3 id="the-bootstrap">The bootstrap<a class="headerlink" href="#the-bootstrap" title="Permanent link">&para;</a></h3>
+<p>The formula needs the sampling distribution to be roughly normal. The <strong>bootstrap</strong> is a general alternative that works for almost any statistic (a median, a ratio, a correlation) by simulation: treat the sample as a stand-in for the population, draw many <strong>resamples</strong> of the same size from it <em>with replacement</em>, compute the statistic on each, and take the middle 95% of the results as the interval (the <em>percentile</em> bootstrap).</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">boot_rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">boot_means</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">boot_rng</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">sample</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10_000</span><span class="p">)])</span>
+<span class="n">boot_medians</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">boot_rng</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">sample</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10_000</span><span class="p">)])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"bootstrap 95% CI for the mean:  "</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">boot_means</span><span class="p">,</span> <span class="p">[</span><span class="mf">2.5</span><span class="p">,</span> <span class="mf">97.5</span><span class="p">])</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"bootstrap 95% CI for the median:"</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">boot_medians</span><span class="p">,</span> <span class="p">[</span><span class="mf">2.5</span><span class="p">,</span> <span class="mf">97.5</span><span class="p">])</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>bootstrap 95% CI for the mean:   [32.48 46.62]
+bootstrap 95% CI for the median: [25.75 42.05]
+</code></pre></div>
+<p>The bootstrap interval for the mean is close to the t interval, and the same three lines give an interval for the median, for which there is no simple formula.</p>
+<h2 id="76-hypothesis-tests">7.6 Hypothesis tests<a class="headerlink" href="#76-hypothesis-tests" title="Permanent link">&para;</a></h2>
+<p>A <strong>hypothesis test</strong> asks whether a pattern in the data could plausibly be due to chance. It follows a fixed logic.</p>
+<ol>
+<li>State a <strong>null hypothesis</strong> <span class="arithmatex">\(H_0\)</span>, the "nothing going on" position: for example, two groups have the same population mean.</li>
+<li>State the <strong>alternative</strong> <span class="arithmatex">\(H_1\)</span>: the means differ.</li>
+<li>Choose a <strong>test statistic</strong> that measures how far the data departs from <span class="arithmatex">\(H_0\)</span>, such as the difference in sample means divided by its standard error.</li>
+<li>Compute the <strong>p-value</strong>: the probability, <em>if <span class="arithmatex">\(H_0\)</span> were true</em>, of a test statistic at least as extreme as the one observed.</li>
+<li>A small p-value means the data would be surprising if <span class="arithmatex">\(H_0\)</span> were true, which counts as evidence against <span class="arithmatex">\(H_0\)</span>. A conventional threshold, the <strong>significance level</strong> <span class="arithmatex">\(\alpha\)</span>, is 0.05: results with <span class="arithmatex">\(p &lt; \alpha\)</span> are called <em>statistically significant</em>.</li>
+</ol>
+<h3 id="a-two-sample-t-test">A two-sample t-test<a class="headerlink" href="#a-two-sample-t-test" title="Permanent link">&para;</a></h3>
+<p>A shop tests two page layouts. Visitors were randomly shown layout A or layout B, and the time each spent on the page was recorded. Is the average time different?</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">21</span><span class="p">)</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mi">52</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>     <span class="c1"># seconds on page, layout A</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mi">60</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>     <span class="c1"># layout B</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"A: mean </span><span class="si">{</span><span class="n">a</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">, sd </span><span class="si">{</span><span class="n">a</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">ddof</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"B: mean </span><span class="si">{</span><span class="n">b</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">, sd </span><span class="si">{</span><span class="n">b</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">ddof</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"difference B - A: </span><span class="si">{</span><span class="n">b</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">a</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> seconds"</span><span class="p">)</span>
+<span class="n">res</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">ttest_ind</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">equal_var</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"t = </span><span class="si">{</span><span class="n">res</span><span class="o">.</span><span class="n">statistic</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, p = </span><span class="si">{</span><span class="n">res</span><span class="o">.</span><span class="n">pvalue</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>A: mean 53.17, sd 14.32
+B: mean 60.30, sd 12.30
+difference B - A: 7.13 seconds
+t = 2.669, p = 0.0089
+</code></pre></div>
+<p>The test statistic is</p>
+<div class="arithmatex">\[
+t = \frac{\bar{x}_B - \bar{x}_A}{\sqrt{s_A^2/n_A + s_B^2/n_B}},
+\]</div>
+<p>the observed difference measured in standard errors. <code>equal_var=False</code> gives <strong>Welch's t-test</strong>, which does not assume the two groups have the same variance and is the safer default. The p-value is small: if the layouts truly made no difference, a gap this large would arise by chance only rarely. We reject <span class="arithmatex">\(H_0\)</span> and conclude that layout B holds visitors longer. The confidence interval for the difference says by how much, which is usually the more useful statement:</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">ci</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">confidence_interval</span><span class="p">(</span><span class="n">confidence_level</span><span class="o">=</span><span class="mf">0.95</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"95% CI for the difference: (</span><span class="si">{</span><span class="n">ci</span><span class="o">.</span><span class="n">low</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">ci</span><span class="o">.</span><span class="n">high</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">) seconds"</span><span class="p">)</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>95% CI for the difference: (1.83, 12.43) seconds
+</code></pre></div>
+<h3 id="a-permutation-test">A permutation test<a class="headerlink" href="#a-permutation-test" title="Permanent link">&para;</a></h3>
+<p>The t-test relies on approximations. A <strong>permutation test</strong> reaches the same kind of answer by simulation and makes almost no assumptions. If <span class="arithmatex">\(H_0\)</span> is true, the labels "A" and "B" are arbitrary: shuffling them should produce differences as large as the observed one quite often. So shuffle the labels many times, recompute the difference each time, and see how often a shuffled difference is at least as extreme as the real one.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">observed</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">-</span> <span class="n">a</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="n">pooled</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">])</span>
+<span class="n">perm_rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">diffs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">10_000</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10_000</span><span class="p">):</span>
+    <span class="n">shuffled</span> <span class="o">=</span> <span class="n">perm_rng</span><span class="o">.</span><span class="n">permutation</span><span class="p">(</span><span class="n">pooled</span><span class="p">)</span>
+    <span class="n">diffs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">shuffled</span><span class="p">[</span><span class="mi">50</span><span class="p">:]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">-</span> <span class="n">shuffled</span><span class="p">[:</span><span class="mi">50</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="n">p_perm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">diffs</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">observed</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"observed difference </span><span class="si">{</span><span class="n">observed</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">, permutation p-value </span><span class="si">{</span><span class="n">p_perm</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>observed difference 7.13, permutation p-value 0.0091
+</code></pre></div>
+<p>The two tests agree closely. The permutation test makes the meaning of a p-value concrete: it is literally the fraction of "no-effect worlds" that look at least as extreme as ours.</p>
+<h3 id="errors-and-power">Errors and power<a class="headerlink" href="#errors-and-power" title="Permanent link">&para;</a></h3>
+<p>A test can be wrong in two ways:</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th><span class="arithmatex">\(H_0\)</span> true (no effect)</th>
+<th><span class="arithmatex">\(H_0\)</span> false (real effect)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Reject <span class="arithmatex">\(H_0\)</span></td>
+<td><strong>Type I error</strong> (false positive), probability <span class="arithmatex">\(\alpha\)</span></td>
+<td>correct; probability = <strong>power</strong></td>
+</tr>
+<tr>
+<td>Do not reject <span class="arithmatex">\(H_0\)</span></td>
+<td>correct</td>
+<td><strong>Type II error</strong> (false negative)</td>
+</tr>
+</tbody>
+</table>
+<p><em>Table 7.2. The two kinds of error in a hypothesis test.</em></p>
+<p>Choosing <span class="arithmatex">\(\alpha = 0.05\)</span> fixes the type I error rate at 5%. The <strong>power</strong>, the probability of detecting a real effect, depends on the size of the effect, the noise, and the sample size: small samples often miss real but modest effects. A simulation shows how power grows with <span class="arithmatex">\(n\)</span> for the layout example (a true difference of 8 seconds with standard deviation 15):</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">pw_rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">80</span><span class="p">]:</span>
+    <span class="n">rejections</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2000</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">pw_rng</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">52</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">pw_rng</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">60</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+        <span class="n">rejections</span> <span class="o">+=</span> <span class="n">stats</span><span class="o">.</span><span class="n">ttest_ind</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">equal_var</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">pvalue</span> <span class="o">&lt;</span> <span class="mf">0.05</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"n = </span><span class="si">{</span><span class="n">n</span><span class="si">:</span><span class="s2">&gt;2</span><span class="si">}</span><span class="s2"> per group: power about </span><span class="si">{</span><span class="n">rejections</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">2000</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>n = 10 per group: power about 0.21
+n = 20 per group: power about 0.38
+n = 50 per group: power about 0.75
+n = 80 per group: power about 0.91
+</code></pre></div>
+<p>With 10 visitors per group the test would miss this real effect most of the time. Our experiment, with 50 per group, had roughly a three-in-four chance of detecting it; with 80 per group the test almost always finds it. "Not significant" therefore does not mean "no effect"; it may mean "not enough data".</p>
+<div class="admonition warning">
+<p class="admonition-title">Caution: what a p-value is not</p>
+<ul>
+<li>It is <strong>not</strong> the probability that <span class="arithmatex">\(H_0\)</span> is true. It is the probability of data this extreme <em>if</em> <span class="arithmatex">\(H_0\)</span> were true.</li>
+<li>It is <strong>not</strong> a measure of the size or importance of an effect. With huge samples, trivial differences become "significant". Always report the estimated effect and its confidence interval.</li>
+<li><span class="arithmatex">\(p = 0.049\)</span> and <span class="arithmatex">\(p = 0.051\)</span> are practically the same evidence; treating 0.05 as a cliff is a habit, not a law.</li>
+<li><strong>Multiple testing</strong>: run 20 tests on pure noise at <span class="arithmatex">\(\alpha = 0.05\)</span> and you expect about one "significant" result. Testing many things and reporting only the significant ones manufactures false discoveries.</li>
+</ul>
+</div>
+<h3 id="testing-a-relationship-between-two-categorical-variables">Testing a relationship between two categorical variables<a class="headerlink" href="#testing-a-relationship-between-two-categorical-variables" title="Permanent link">&para;</a></h3>
+<p>For two categorical variables, the <strong>chi-square test of independence</strong> compares the observed counts in a contingency table with the counts expected if the variables were unrelated.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">table</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s2">"bought"</span><span class="p">:</span> <span class="p">[</span><span class="mi">48</span><span class="p">,</span> <span class="mi">71</span><span class="p">],</span> <span class="s2">"did not buy"</span><span class="p">:</span> <span class="p">[</span><span class="mi">152</span><span class="p">,</span> <span class="mi">129</span><span class="p">]},</span> <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="s2">"email A"</span><span class="p">,</span> <span class="s2">"email B"</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">table</span><span class="p">)</span>
+<span class="n">chi2</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">dof</span><span class="p">,</span> <span class="n">expected</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">chi2_contingency</span><span class="p">(</span><span class="n">table</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"chi2 = </span><span class="si">{</span><span class="n">chi2</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, dof = </span><span class="si">{</span><span class="n">dof</span><span class="si">}</span><span class="s2">, p = </span><span class="si">{</span><span class="n">p</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">((</span><span class="n">table</span><span class="p">[</span><span class="s2">"bought"</span><span class="p">]</span> <span class="o">/</span> <span class="n">table</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>         bought  did not buy
+email A      48          152
+email B      71          129
+chi2 = 5.790, dof = 1, p = 0.0161
+email A    0.240
+email B    0.355
+dtype: float64
+</code></pre></div>
+<p>Email B converted 35.5% of its 200 recipients against 24% for email A, and the p-value says a difference this large would be unusual if the emails were equally effective.</p>
+<h2 id="77-summary">7.7 Summary<a class="headerlink" href="#77-summary" title="Permanent link">&para;</a></h2>
+<div class="admonition abstract">
+<p class="admonition-title">Summary</p>
+<ul>
+<li>Probabilities combine by the complement, addition and multiplication rules; conditional probability restricts to the cases where the condition holds, and <span class="arithmatex">\(P(A \mid B) \ne P(B \mid A)\)</span> in general.</li>
+<li>A distribution gives the probabilities of a random variable's values: binomial and Poisson for counts, uniform and normal for continuous values. <code>scipy.stats</code> gives their pmf/pdf, cdf, ppf and random samples.</li>
+<li>In a normal distribution about 68%, 95% and 99.7% of values lie within 1, 2 and 3 standard deviations; a z-score measures distance from the mean in standard deviations.</li>
+<li>A statistic varies from sample to sample. The sample mean is unbiased, its standard error is <span class="arithmatex">\(\sigma/\sqrt{n}\)</span>, and by the central limit theorem its distribution is approximately normal for large <span class="arithmatex">\(n\)</span>.</li>
+<li>A 95% confidence interval, <span class="arithmatex">\(\bar{x} \pm t\,s/\sqrt{n}\)</span>, comes from a method that captures the parameter in 95% of samples. The bootstrap gives intervals for almost any statistic.</li>
+<li>A hypothesis test computes a p-value: the probability, under <span class="arithmatex">\(H_0\)</span>, of a result at least as extreme as observed. Welch's t-test and the permutation test compare two means; the chi-square test compares categorical proportions.</li>
+<li>Type I errors are false positives (rate <span class="arithmatex">\(\alpha\)</span>); type II errors are missed effects. Power rises with sample size and effect size.</li>
+<li>Report effect sizes with confidence intervals, not only p-values; beware multiple testing.</li>
+</ul>
+</div>
+<h2 id="78-exercises">7.8 Exercises<a class="headerlink" href="#78-exercises" title="Permanent link">&para;</a></h2>
+<div class="admonition example">
+<p class="admonition-title">Exercise 1</p>
+<p>Two fair dice are thrown. What is the probability that the total is at least 10? Check your answer by simulation.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>The pairs with a total of 10, 11 or 12 are (4,6), (5,5), (6,4), (5,6), (6,5), (6,6): 6 of the 36 equally likely pairs, so the probability is <span class="arithmatex">\(6/36 = 1/6 \approx 0.167\)</span>.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">100_000</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">((</span><span class="n">t</span> <span class="o">&gt;=</span> <span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>0.16754
+</code></pre></div>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 2</p>
+<p>A call centre receives on average 3 calls per minute, and calls arrive independently. Using a Poisson model, find the probability of (a) no calls in a minute and (b) more than 5 calls in a minute.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<div class="language-python highlight"><pre><span></span><code><span class="n">calls</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">poisson</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">calls</span><span class="o">.</span><span class="n">pmf</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="mi">4</span><span class="p">),</span> <span class="nb">round</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">calls</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="mi">5</span><span class="p">),</span> <span class="mi">4</span><span class="p">))</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>0.0498 0.0839
+</code></pre></div>
+<p>(a) <span class="arithmatex">\(e^{-3} \approx 0.0498\)</span>; (b) about 0.084.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 3</p>
+<p>Exam marks are roughly normal with mean 60 and standard deviation 12. What fraction of students score above 84? What mark separates the top 10%?</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>84 is two standard deviations above the mean, so about 2.3% score above it. The top 10% starts at the 90th percentile:</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">marks</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="mi">60</span><span class="p">,</span> <span class="mi">12</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">marks</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="mi">84</span><span class="p">),</span> <span class="mi">4</span><span class="p">),</span> <span class="nb">round</span><span class="p">(</span><span class="n">marks</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="mf">0.9</span><span class="p">),</span> <span class="mi">1</span><span class="p">))</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>0.0228 75.4
+</code></pre></div>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 4</p>
+<p>A sample of 25 values has mean 48 and standard deviation 10. Compute a 95% confidence interval for the population mean. How would the interval change with a sample of 100 values with the same mean and standard deviation?</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<div class="language-python highlight"><pre><span></span><code><span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">25</span><span class="p">,</span> <span class="mi">100</span><span class="p">]:</span>
+    <span class="n">se</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="mf">0.975</span><span class="p">,</span> <span class="n">df</span><span class="o">=</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="nb">round</span><span class="p">(</span><span class="mi">48</span> <span class="o">-</span> <span class="n">t</span> <span class="o">*</span> <span class="n">se</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="nb">round</span><span class="p">(</span><span class="mi">48</span> <span class="o">+</span> <span class="n">t</span> <span class="o">*</span> <span class="n">se</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>25 2.064 43.87 52.13
+100 1.984 46.02 49.98
+</code></pre></div>
+<p>With <span class="arithmatex">\(n = 25\)</span> the interval is about (43.9, 52.1). With <span class="arithmatex">\(n = 100\)</span> the standard error halves (from 2 to 1) and the t value shrinks slightly, so the interval is about (46.0, 50.0), a little less than half as wide.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 5</p>
+<p>A study reports "no significant difference (p = 0.32)" between two teaching methods, based on 8 students per method. Does this show the methods are equally effective?</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>No. A large p-value means the data is consistent with no difference, not that there is none. With 8 students per group the power is low, so even a real, meaningful difference would usually go undetected. The confidence interval for the difference would be wide, including both zero and sizeable effects in either direction; that interval is the honest summary.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 6</p>
+<p>A researcher tests 40 different foods for an association with headaches, using <span class="arithmatex">\(\alpha = 0.05\)</span> each time, and reports the two foods with <span class="arithmatex">\(p &lt; 0.05\)</span>. If no food truly has any effect, how many "significant" results would be expected? What should the researcher do?</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>About <span class="arithmatex">\(40 \times 0.05 = 2\)</span> false positives are expected even if no food has any effect, so finding two is exactly what chance predicts. The researcher should report all 40 tests, adjust for multiple testing (for example, the Bonferroni correction tests each at <span class="arithmatex">\(\alpha/40\)</span>), and treat the two findings as hypotheses to check in new data.</p>
+</details>
+<h2 id="79-quiz">7.9 Quiz<a class="headerlink" href="#79-quiz" title="Permanent link">&para;</a></h2>
+<div class="pk-quiz" data-quiz="837b3f947d34">
+<p class="pk-quiz-title">Check your understanding of Chapter 7</p>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;Poisson&quot;,&quot;binomial&quot;,&quot;uniform&quot;,&quot;normal&quot;],&quot;answer&quot;:&quot;binomial&quot;}">
+<p class="admonition-title">Exercise 1</p>
+<p class="pk-q-prompt">Which distribution models the number of heads in 20 tosses of a coin?</p>
+<ol class="pk-q-opts" type="A"><li>Poisson</li><li>binomial</li><li>uniform</li><li>normal</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>binomial</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;0.68&quot;,&quot;0.90&quot;,&quot;0.95&quot;,&quot;0.997&quot;],&quot;answer&quot;:&quot;0.95&quot;}">
+<p class="admonition-title">Exercise 2</p>
+<p class="pk-q-prompt">About what fraction of a normal distribution lies within two standard deviations of the mean?</p>
+<ol class="pk-q-opts" type="A"><li>0.68</li><li>0.90</li><li>0.95</li><li>0.997</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>0.95</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;unchanged&quot;,&quot;halved&quot;,&quot;quartered&quot;,&quot;doubled&quot;],&quot;answer&quot;:&quot;halved&quot;}">
+<p class="admonition-title">Exercise 3</p>
+<p class="pk-q-prompt">If the sample size is multiplied by 4, the standard error of the mean is</p>
+<ol class="pk-q-opts" type="A"><li>unchanged</li><li>halved</li><li>quartered</li><li>doubled</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>halved</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;equal to the population mean&quot;,&quot;normally distributed&quot;,&quot;uniformly distributed&quot;,&quot;skewed like the population&quot;],&quot;answer&quot;:&quot;normally distributed&quot;}">
+<p class="admonition-title">Exercise 4</p>
+<p class="pk-q-prompt">The central limit theorem says that, for large samples, the sample mean is approximately</p>
+<ol class="pk-q-opts" type="A"><li>equal to the population mean</li><li>normally distributed</li><li>uniformly distributed</li><li>skewed like the population</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>normally distributed</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;the null hypothesis being true&quot;,&quot;data at least as extreme as observed if the null hypothesis is true&quot;,&quot;the alternative being true&quot;,&quot;making a type II error&quot;],&quot;answer&quot;:&quot;data at least as extreme as observed if the null hypothesis is true&quot;}">
+<p class="admonition-title">Exercise 5</p>
+<p class="pk-q-prompt">A p-value is the probability of</p>
+<ol class="pk-q-opts" type="A"><li>the null hypothesis being true</li><li>data at least as extreme as observed if the null hypothesis is true</li><li>the alternative being true</li><li>making a type II error</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>data at least as extreme as observed if the null hypothesis is true</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;type I error&quot;,&quot;type II error&quot;,&quot;correct decision&quot;,&quot;power&quot;],&quot;answer&quot;:&quot;type I error&quot;}">
+<p class="admonition-title">Exercise 6</p>
+<p class="pk-q-prompt">Rejecting a true null hypothesis is a</p>
+<ol class="pk-q-opts" type="A"><li>type I error</li><li>type II error</li><li>correct decision</li><li>power</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>type I error</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;text&quot;,&quot;answer&quot;:[&quot;with&quot;,&quot;with replacement&quot;]}">
+<p class="admonition-title">Exercise 7</p>
+<p class="pk-q-prompt">In a bootstrap, resamples are drawn from the sample with or without replacement?</p>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>with / with replacement</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;intervals for statistics such as the median&quot;,&quot;exact p-values&quot;,&quot;larger samples&quot;,&quot;removing bias from the data&quot;],&quot;answer&quot;:&quot;intervals for statistics such as the median&quot;}">
+<p class="admonition-title">Exercise 8</p>
+<p class="pk-q-prompt">What does the bootstrap make possible that the t formula does not?</p>
+<ol class="pk-q-opts" type="A"><li>intervals for statistics such as the median</li><li>exact p-values</li><li>larger samples</li><li>removing bias from the data</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>intervals for statistics such as the median</strong></p>
+</details>
+</div>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button type="button" class="md-top md-icon" data-md-component="top" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+Back to top
+</button>
+</main>
+<footer class="md-footer">
+<nav class="md-footer__inner md-grid" aria-label="Footer" >
+<a href="visualisation-and-exploratory-data-analysis.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: 6. Visualisation and Exploratory Data Analysis">
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</div>
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Previous
+</span>
+<div class="md-ellipsis">
+6. Visualisation and Exploratory Data Analysis
+</div>
+</div>
+</a>
+<a href="regression.html" class="md-footer__link md-footer__link--next" aria-label="Next: 8. Regression">
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Next
+</span>
+<div class="md-ellipsis">
+8. Regression
+</div>
+</div>
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+</div>
+</a>
+</nav>
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+The Open Book Project &middot;
+<a href="../../about.html">About this library</a> &middot;
+<a href="../../publish.html">Publish your book</a> &middot;
+© The authors of the books
+</div>
+Made with
+<a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+Material for MkDocs
+</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "navigation.prune", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "toc.follow", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+<script src="../../assets/mathjax.js"></script>
+<script src="../../assets/viz.js"></script>
+<script src="../../assets/remote.js"></script>
+<script src="../../assets/scans.js"></script>
+<script src="../../assets/reader.js"></script>
+<script src="../../assets/app.js"></script>
+<script src="../../assets/slides.js"></script>
+<script src="../../assets/speak.js"></script>
+<script src="../../assets/quiz.js"></script>
+<script>
+    /* offline reading: the service worker at the site root (its scope is the whole site) */
+    if ("serviceWorker" in navigator && window.isSecureContext) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register(new URL("../../sw.js", location.href).href).catch(function () {});
+      });
+    }
+  </script>
+</body>
+</html>

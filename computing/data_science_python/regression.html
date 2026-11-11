@@ -1,0 +1,1095 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="description" content="The Open Book Project: books on computer science, quantum computing, cyber security, science, the social sciences, university courses and languages, read page by page like an e-book, online or offline.">
+<meta name="author" content="The Open Book Project">
+<link rel="canonical" href="https://open-book-project.github.io/computing/data_science_python/regression.html">
+<link rel="prev" href="probability-and-statistics.html">
+<link rel="next" href="classification.html">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap"></noscript>
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Open Book">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="application-name" content="Open Book"><script src="../../assets/library-data.js"></script><script>
+    (function () {
+      var X = window.XMLHttpRequest, open, gate = new Promise(function (r) { open = r; });
+      if (!X) return;
+      var open0 = X.prototype.open, send0 = X.prototype.send;
+      X.prototype.open = function (method, url) {
+        this.__pkIndex = /\/search\/search_index\.json(\?|#|$)/.test(String(url));
+        return open0.apply(this, arguments);
+      };
+      X.prototype.send = function () {
+        if (!this.__pkIndex) return send0.apply(this, arguments);
+        var xhr = this, args = arguments;
+        gate.then(function () { send0.apply(xhr, args); });
+      };
+      function wake() { open(); }
+      document.addEventListener("focusin", function (e) { if (e.target && e.target.closest && e.target.closest(".md-search")) wake(); });
+      document.addEventListener("click", function (e) { if (e.target && e.target.closest && e.target.closest('label[for="__search"], .md-search')) wake(); }, true);
+      document.addEventListener("keydown", function (e) {
+        var k = e.key;
+        if ((k === "/" || k === "s" || k === "f" || k === "S" || k === "F") && !(e.target && e.target.closest && e.target.closest("input, textarea, [contenteditable]"))) wake();
+      }, true);
+      if (/[?&]q=/.test(location.search)) wake();
+    })();
+  </script><script>
+    try {
+      if ((window.matchMedia && (matchMedia("(display-mode: standalone)").matches || matchMedia("(display-mode: fullscreen)").matches)) || navigator.standalone === true) {
+        document.documentElement.className += " bjp-standalone";
+      }
+    } catch (e) { /* not an installed app */ }
+    /* the books of a subject or of the whole library as covers or as a list (assets/app.js): the reader's choice */
+    try {
+      var bv = localStorage.getItem("bjp.view");
+      if (bv === "list" || (bv !== "grid" && /\/books\.html$/.test(location.pathname))) document.documentElement.className += " bjp-view-list";
+    } catch (e) { /* no storage: covers */ }
+  </script>
+<script>
+    /* a book opened from its cover on the shelf: the page stays blank, in the cover's colour, until the reader is up */
+    try {
+      var cv = sessionStorage.getItem("bjp.reader.cover");
+      if (cv && sessionStorage.getItem("bjp.reader.open") === "1") {
+        var c = JSON.parse(cv), de = document.documentElement;
+        de.className += " bjp-booting";
+        if (c && /^#[0-9a-f]{3,8}$/i.test(c.bg || "")) de.style.background = c.bg;
+        setTimeout(function () { de.classList.remove("bjp-booting"); de.style.background = ""; }, 3000);
+      }
+    } catch (e) { /* no session storage: the page simply opens as usual */ }
+  </script>
+<title>8. Regression - The Open Book Project</title>
+<link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+<link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+<link rel="stylesheet" href="../../assets/extra.css">
+<link rel="stylesheet" href="../../assets/reader.css">
+<link rel="stylesheet" href="../../assets/viz.css">
+<link rel="stylesheet" href="../../assets/app.css">
+<link rel="stylesheet" href="../../assets/theme.css">
+<link rel="stylesheet" href="../../assets/slides.css">
+<link rel="stylesheet" href="../../assets/remote.css">
+<link rel="stylesheet" href="../../assets/scans.css">
+<link rel="stylesheet" href="../../assets/speak.css">
+<link rel="stylesheet" href="../../assets/quiz.css">
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+<input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+<input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a href="#81-the-regression-problem" class="md-skip">
+Skip to content
+</a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav class="md-header__inner md-grid" aria-label="Header">
+<a href="../../index.html" title="The Open Book Project" class="md-header__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+The Open Book Project
+</span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+8. Regression
+</span>
+</div>
+</div>
+</div><a href="../../index.html" class="bjp-libbtn" aria-label="Library: all books" title="Library: all books">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V5h4v15M8 20V9h4v11M14 20L12.6 6l3.8-.8 3 14.2M3 20h18"/></svg><span>Library</span>
+</a>
+<a href="../../subjects/index.html" class="pk-catbtn" aria-haspopup="true" aria-expanded="false" title="Browse the books by category">
+<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><circle cx="17" cy="7" r="3.6"/><path d="M7 13.4l3.9 6.8H3.1z"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg><span>Categories</span>
+</a>
+<form class="md-header__option" data-md-component="palette">
+<input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+<label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+</label>
+<input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+<label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+<label class="md-search__icon md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</label>
+<nav class="md-search__options" aria-label="Search">
+<button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+Initializing search
+</div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--primary bjp-nav bjp-nav--book" aria-label="Navigation" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a href="../../index.html" title="The Open Book Project" class="md-nav__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+The Open Book Project
+</label>
+<ul class="md-nav__list" data-md-scrollfix>
+<li class="md-nav__item bjp-nav-all">
+<a href="../../index.html" class="md-nav__link" aria-label="All books: back to the library">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+<span class="md-ellipsis">All books</span>
+</a>
+</li>
+<li class="md-nav__item bjp-nav-book" role="presentation"><span class="bjp-nav-head">Data Science with Python</span></li>
+<li class="md-nav__item">
+<a href="index.html" class="md-nav__link">
+<span class="md-ellipsis">
+Overview and preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="preface.html" class="md-nav__link">
+<span class="md-ellipsis">
+Preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="the-data-science-workflow.html" class="md-nav__link">
+<span class="md-ellipsis">
+1. The Data Science Workflow
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="python-essentials-for-data-work.html" class="md-nav__link">
+<span class="md-ellipsis">
+2. Python Essentials for Data Work
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="numerical-computing-with-numpy.html" class="md-nav__link">
+<span class="md-ellipsis">
+3. Numerical Computing with NumPy
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="pandas-fundamentals.html" class="md-nav__link">
+<span class="md-ellipsis">
+4. pandas Fundamentals: Series, DataFrames and Selection
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="cleaning-reshaping-grouping-and-joining.html" class="md-nav__link">
+<span class="md-ellipsis">
+5. Cleaning, Reshaping, Grouping and Joining
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="visualisation-and-exploratory-data-analysis.html" class="md-nav__link">
+<span class="md-ellipsis">
+6. Visualisation and Exploratory Data Analysis
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="probability-and-statistics.html" class="md-nav__link">
+<span class="md-ellipsis">
+7. Probability and Statistics for Data Science
+</span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+8. Regression
+</span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a href="regression.html" class="md-nav__link md-nav__link--active">
+<span class="md-ellipsis">
+8. Regression
+</span>
+</a>
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#81-the-regression-problem" class="md-nav__link">
+<span class="md-ellipsis">
+8.1 The regression problem
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#82-simple-linear-regression" class="md-nav__link">
+<span class="md-ellipsis">
+8.2 Simple linear regression
+</span>
+</a>
+<nav class="md-nav" aria-label="8.2 Simple linear regression">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#how-good-is-the-fit-r2" class="md-nav__link">
+<span class="md-ellipsis">
+How good is the fit? R²
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#83-regression-with-scikit-learn" class="md-nav__link">
+<span class="md-ellipsis">
+8.3 Regression with scikit-learn
+</span>
+</a>
+<nav class="md-nav" aria-label="8.3 Regression with scikit-learn">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#training-data-and-test-data" class="md-nav__link">
+<span class="md-ellipsis">
+Training data and test data
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#always-compare-with-a-baseline" class="md-nav__link">
+<span class="md-ellipsis">
+Always compare with a baseline
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#84-multiple-regression" class="md-nav__link">
+<span class="md-ellipsis">
+8.4 Multiple regression
+</span>
+</a>
+<nav class="md-nav" aria-label="8.4 Multiple regression">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#categorical-features-one-hot-encoding" class="md-nav__link">
+<span class="md-ellipsis">
+Categorical features: one-hot encoding
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#residual-plots" class="md-nav__link">
+<span class="md-ellipsis">
+Residual plots
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#85-curves-polynomial-regression-and-overfitting" class="md-nav__link">
+<span class="md-ellipsis">
+8.5 Curves: polynomial regression and overfitting
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#86-regularisation-ridge-and-lasso" class="md-nav__link">
+<span class="md-ellipsis">
+8.6 Regularisation: ridge and lasso
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#87-summary" class="md-nav__link">
+<span class="md-ellipsis">
+8.7 Summary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#88-exercises" class="md-nav__link">
+<span class="md-ellipsis">
+8.8 Exercises
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#89-quiz" class="md-nav__link">
+<span class="md-ellipsis">
+8.9 Quiz
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="classification.html" class="md-nav__link">
+<span class="md-ellipsis">
+9. Classification
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="model-evaluation-and-cross-validation.html" class="md-nav__link">
+<span class="md-ellipsis">
+10. Model Evaluation and Cross-Validation
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="clustering-and-dimensionality-reduction.html" class="md-nav__link">
+<span class="md-ellipsis">
+11. Clustering and Dimensionality Reduction
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="text-and-time-series-basics.html" class="md-nav__link">
+<span class="md-ellipsis">
+12. Text and Time Series Basics
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ethics-privacy-and-reproducibility.html" class="md-nav__link">
+<span class="md-ellipsis">
+13. Ethics, Privacy and Reproducibility
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="an-end-to-end-project.html" class="md-nav__link">
+<span class="md-ellipsis">
+14. An End-to-End Project
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="glossary.html" class="md-nav__link">
+<span class="md-ellipsis">
+Glossary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="further-reading.html" class="md-nav__link">
+<span class="md-ellipsis">
+Further Reading
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#81-the-regression-problem" class="md-nav__link">
+<span class="md-ellipsis">
+8.1 The regression problem
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#82-simple-linear-regression" class="md-nav__link">
+<span class="md-ellipsis">
+8.2 Simple linear regression
+</span>
+</a>
+<nav class="md-nav" aria-label="8.2 Simple linear regression">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#how-good-is-the-fit-r2" class="md-nav__link">
+<span class="md-ellipsis">
+How good is the fit? R²
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#83-regression-with-scikit-learn" class="md-nav__link">
+<span class="md-ellipsis">
+8.3 Regression with scikit-learn
+</span>
+</a>
+<nav class="md-nav" aria-label="8.3 Regression with scikit-learn">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#training-data-and-test-data" class="md-nav__link">
+<span class="md-ellipsis">
+Training data and test data
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#always-compare-with-a-baseline" class="md-nav__link">
+<span class="md-ellipsis">
+Always compare with a baseline
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#84-multiple-regression" class="md-nav__link">
+<span class="md-ellipsis">
+8.4 Multiple regression
+</span>
+</a>
+<nav class="md-nav" aria-label="8.4 Multiple regression">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#categorical-features-one-hot-encoding" class="md-nav__link">
+<span class="md-ellipsis">
+Categorical features: one-hot encoding
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#residual-plots" class="md-nav__link">
+<span class="md-ellipsis">
+Residual plots
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#85-curves-polynomial-regression-and-overfitting" class="md-nav__link">
+<span class="md-ellipsis">
+8.5 Curves: polynomial regression and overfitting
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#86-regularisation-ridge-and-lasso" class="md-nav__link">
+<span class="md-ellipsis">
+8.6 Regularisation: ridge and lasso
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#87-summary" class="md-nav__link">
+<span class="md-ellipsis">
+8.7 Summary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#88-exercises" class="md-nav__link">
+<span class="md-ellipsis">
+8.8 Exercises
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#89-quiz" class="md-nav__link">
+<span class="md-ellipsis">
+8.9 Quiz
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="chapter-8-regression">Chapter 8: Regression<a class="headerlink" href="#chapter-8-regression" title="Permanent link">&para;</a></h1>
+<p><em>Predicting a number: straight lines, many features, curves and regularisation</em></p>
+<div class="admonition note">
+<p class="admonition-title">Learning outcomes</p>
+<p>After this chapter you should be able to:</p>
+<ul>
+<li>state the regression problem in terms of features, a target and a loss;</li>
+<li>fit a simple linear regression by least squares, by formula and with scikit-learn, and interpret its slope and intercept;</li>
+<li>measure fit and prediction error with residuals, MAE, RMSE and <span class="arithmatex">\(R^2\)</span>;</li>
+<li>use scikit-learn's <code>fit</code>/<code>predict</code> interface with a train/test split and a baseline;</li>
+<li>fit a multiple regression, including categorical features through one-hot encoding;</li>
+<li>model curved relationships with polynomial features, and recognise overfitting;</li>
+<li>explain what ridge and lasso regularisation do and when to use them.</li>
+</ul>
+</div>
+<p>So far we have described and compared data. From this chapter on we also <strong>predict</strong>. In <strong>regression</strong> the thing to be predicted, the <strong>target</strong>, is a number: the price of a house, the demand for electricity tomorrow, the time a delivery will take. The information used to predict it, the <strong>features</strong>, can be numbers or categories. A regression model is a rule that turns features into a predicted target, learned from examples where both are known. This is <strong>supervised learning</strong>: the examples supervise the learning by supplying the right answers.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+</code></pre></div>
+<h2 id="81-the-regression-problem">8.1 The regression problem<a class="headerlink" href="#81-the-regression-problem" title="Permanent link">&para;</a></h2>
+<p>We write the features of one example as <span class="arithmatex">\(x\)</span> (a single number, or a vector of several), the true target as <span class="arithmatex">\(y\)</span>, and the model's prediction as <span class="arithmatex">\(\hat{y}\)</span> ("y hat"). The difference <span class="arithmatex">\(y - \hat{y}\)</span> is the <strong>residual</strong>, or error, for that example. A good model makes the residuals small on examples it has <em>not</em> seen.</p>
+<p>"Small" needs a definition, called the <strong>loss</strong>. The most common choice in regression is the squared error <span class="arithmatex">\((y - \hat{y})^2\)</span>, averaged over the examples:</p>
+<div class="arithmatex">\[
+\text{MSE} = \frac{1}{n}\sum_{i=1}^{n}(y_i - \hat{y}_i)^2 .
+\]</div>
+<p>Squaring makes all errors positive and punishes large errors much more than small ones. Its square root, the <strong>root mean squared error</strong> (RMSE), is in the same units as the target. The <strong>mean absolute error</strong> (MAE), <span class="arithmatex">\(\frac{1}{n}\sum |y_i - \hat{y}_i|\)</span>, is easier to explain ("on average the prediction is off by 12 thousand") and less dominated by a few large errors.</p>
+<h2 id="82-simple-linear-regression">8.2 Simple linear regression<a class="headerlink" href="#82-simple-linear-regression" title="Permanent link">&para;</a></h2>
+<p>With one feature, the simplest model is a straight line:</p>
+<div class="arithmatex">\[
+\hat{y} = b_0 + b_1 x ,
+\]</div>
+<p>where <span class="arithmatex">\(b_0\)</span> is the <strong>intercept</strong> (the prediction when <span class="arithmatex">\(x = 0\)</span>) and <span class="arithmatex">\(b_1\)</span> the <strong>slope</strong> (the change in prediction for each one-unit increase in <span class="arithmatex">\(x\)</span>). <strong>Least squares</strong> chooses the <span class="arithmatex">\(b_0\)</span> and <span class="arithmatex">\(b_1\)</span> that make the sum of squared residuals as small as possible. Calculus gives the answer in closed form:</p>
+<div class="arithmatex">\[
+b_1 = \frac{\sum_i (x_i - \bar{x})(y_i - \bar{y})}{\sum_i (x_i - \bar{x})^2}, \qquad b_0 = \bar{y} - b_1 \bar{x}.
+\]</div>
+<p>The slope is the covariance of <span class="arithmatex">\(x\)</span> and <span class="arithmatex">\(y\)</span> divided by the variance of <span class="arithmatex">\(x\)</span>; equivalently <span class="arithmatex">\(b_1 = r\,s_y/s_x\)</span>, where <span class="arithmatex">\(r\)</span> is the correlation of Section 6.6. The line always passes through the point of means <span class="arithmatex">\((\bar{x}, \bar{y})\)</span>.</p>
+<p>Here is a small dataset: the floor area and price of twelve flats in one neighbourhood (price in thousands of a currency unit).</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">area</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">45</span><span class="p">,</span> <span class="mi">52</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">70</span><span class="p">,</span> <span class="mi">75</span><span class="p">,</span> <span class="mi">82</span><span class="p">,</span> <span class="mi">88</span><span class="p">,</span> <span class="mi">95</span><span class="p">,</span> <span class="mi">104</span><span class="p">,</span> <span class="mi">110</span><span class="p">,</span> <span class="mi">125</span><span class="p">])</span>        <span class="c1"># square metres</span>
+<span class="n">price</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">3100</span><span class="p">,</span> <span class="mi">3350</span><span class="p">,</span> <span class="mi">3900</span><span class="p">,</span> <span class="mi">3800</span><span class="p">,</span> <span class="mi">4500</span><span class="p">,</span> <span class="mi">4400</span><span class="p">,</span> <span class="mi">5100</span><span class="p">,</span> <span class="mi">5000</span><span class="p">,</span> <span class="mi">5900</span><span class="p">,</span> <span class="mi">6100</span><span class="p">,</span> <span class="mi">6800</span><span class="p">,</span> <span class="mi">7300</span><span class="p">])</span>
+
+<span class="n">xbar</span><span class="p">,</span> <span class="n">ybar</span> <span class="o">=</span> <span class="n">area</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">price</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="n">b1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">area</span> <span class="o">-</span> <span class="n">xbar</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">price</span> <span class="o">-</span> <span class="n">ybar</span><span class="p">))</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">area</span> <span class="o">-</span> <span class="n">xbar</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">b0</span> <span class="o">=</span> <span class="n">ybar</span> <span class="o">-</span> <span class="n">b1</span> <span class="o">*</span> <span class="n">xbar</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"slope b1 = </span><span class="si">{</span><span class="n">b1</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">, intercept b0 = </span><span class="si">{</span><span class="n">b0</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+<span class="n">pred</span> <span class="o">=</span> <span class="n">b0</span> <span class="o">+</span> <span class="n">b1</span> <span class="o">*</span> <span class="n">area</span>
+<span class="n">resid</span> <span class="o">=</span> <span class="n">price</span> <span class="o">-</span> <span class="n">pred</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"residuals:"</span><span class="p">,</span> <span class="n">resid</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"sum of residuals = </span><span class="si">{</span><span class="n">resid</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>slope b1 = 54.77, intercept b0 = 510.6
+residuals: [ 125.   -8.  103. -216.  156. -218.   99. -330.  187. -106.  265.  -56.]
+sum of residuals = 0.000000
+</code></pre></div>
+<p>The slope says that, among these flats, each extra square metre goes with about 54 thousand more in price. The intercept is the line's value at zero area; it is needed to place the line but has no sensible meaning by itself, because no flat has zero area. Least-squares residuals always add up to zero (up to rounding): the line is balanced among the points.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mf">6.5</span><span class="p">,</span> <span class="mf">3.8</span><span class="p">))</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">area</span><span class="p">,</span> <span class="n">price</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"flats"</span><span class="p">)</span>
+<span class="n">xs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">40</span><span class="p">,</span> <span class="mi">130</span><span class="p">])</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">b0</span> <span class="o">+</span> <span class="n">b1</span> <span class="o">*</span> <span class="n">xs</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"tab:orange"</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">"price = </span><span class="si">{</span><span class="n">b0</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2"> + </span><span class="si">{</span><span class="n">b1</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> x area"</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">area</span><span class="p">,</span> <span class="n">price</span><span class="p">,</span> <span class="n">pred</span><span class="p">):</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="p">],</span> <span class="p">[</span><span class="n">y</span><span class="p">,</span> <span class="n">p</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s2">"gray"</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">":"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"Floor area (square metres)"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"Price (thousands)"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Least-squares line; dotted lines are residuals"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">"regression-line.svg"</span><span class="p">)</span>
+</code></pre></div>
+<figure class="fig fig-diagram">
+<img src="img/regression-line.svg" alt="A scatter plot of price against floor area for twelve flats, rising steadily from about 3,100 at 45 square metres to 7,300 at 125. The fitted least-squares line passes through the middle of the points, and a short dotted vertical line joins each point to the line, showing its residual." loading="lazy" width="565" height="362">
+<figcaption><strong>Figure 8.1 A least-squares line and its residuals.</strong> A scatter plot of price against floor area for twelve flats, rising steadily from about 3,100 at 45 square metres to 7,300 at 125. The fitted least-squares line passes through the middle of the points, and a short dotted vertical line joins each point to the line, showing its residual.</figcaption>
+</figure>
+<h3 id="how-good-is-the-fit-r2">How good is the fit? R²<a class="headerlink" href="#how-good-is-the-fit-r2" title="Permanent link">&para;</a></h3>
+<p>The <strong>coefficient of determination</strong>, <span class="arithmatex">\(R^2\)</span>, compares the model's squared error with that of the simplest possible prediction, the mean <span class="arithmatex">\(\bar{y}\)</span> for everyone:</p>
+<div class="arithmatex">\[
+R^2 = 1 - \frac{\sum_i (y_i - \hat{y}_i)^2}{\sum_i (y_i - \bar{y})^2}.
+\]</div>
+<p><span class="arithmatex">\(R^2 = 1\)</span> means perfect predictions; <span class="arithmatex">\(R^2 = 0\)</span> means no better than predicting the mean; on new data it can even be negative, meaning worse than the mean. For a simple linear regression on the data it was fitted to, <span class="arithmatex">\(R^2\)</span> equals <span class="arithmatex">\(r^2\)</span>, the squared correlation.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">ss_res</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">resid</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">ss_tot</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">price</span> <span class="o">-</span> <span class="n">ybar</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"R^2 = </span><span class="si">{</span><span class="mi">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">ss_res</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">ss_tot</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">, r^2 = </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">corrcoef</span><span class="p">(</span><span class="n">area</span><span class="p">,</span><span class="w"> </span><span class="n">price</span><span class="p">)[</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">**</span><span class="w"> </span><span class="mi">2</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"RMSE = </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">resid</span><span class="w"> </span><span class="o">**</span><span class="w"> </span><span class="mi">2</span><span class="p">))</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">, MAE = </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">resid</span><span class="p">))</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>R^2 = 0.9810, r^2 = 0.9810
+RMSE = 178.6, MAE = 155.8
+</code></pre></div>
+<p>Floor area explains about 98% of the variation in these prices, and a typical prediction is off by about 150 thousand. These are measures of fit on the same data the line was fitted to; Section 8.3 measures error on new data, which is what matters for prediction.</p>
+<div class="admonition warning">
+<p class="admonition-title">Caution: extrapolation</p>
+<p>A fitted line describes the data in the range it came from. Predicting a 300-square-metre flat from data that stops at 125 assumes the straight line continues far beyond the evidence. Large flats may be priced quite differently. Be wary of any prediction outside the range of the training data.</p>
+</div>
+<h2 id="83-regression-with-scikit-learn">8.3 Regression with scikit-learn<a class="headerlink" href="#83-regression-with-scikit-learn" title="Permanent link">&para;</a></h2>
+<p><strong>scikit-learn</strong> provides hundreds of models with one consistent interface. Every model is an object (an <strong>estimator</strong>) that is created with its settings, trained with <code>fit(X, y)</code>, and used with <code>predict(X)</code>. <code>X</code> is a two-dimensional table of features (one row per example, one column per feature) and <code>y</code> a one-dimensional array of targets.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">LinearRegression</span>
+
+<span class="n">X</span> <span class="o">=</span> <span class="n">area</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>          <span class="c1"># 12 rows, 1 feature column</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">LinearRegression</span><span class="p">()</span>
+<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">price</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">intercept_</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">model</span><span class="o">.</span><span class="n">coef_</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">50</span><span class="p">],</span> <span class="p">[</span><span class="mi">100</span><span class="p">]]))</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">price</span><span class="p">),</span> <span class="mi">4</span><span class="p">))</span>       <span class="c1"># R^2</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>510.6 [54.77]
+[3249. 5987.]
+0.981
+</code></pre></div>
+<p>The results match the formulas. Fitted values are stored in attributes ending in an underscore (<code>coef_</code>, <code>intercept_</code>). <code>score</code> returns <span class="arithmatex">\(R^2\)</span> for regressors.</p>
+<h3 id="training-data-and-test-data">Training data and test data<a class="headerlink" href="#training-data-and-test-data" title="Permanent link">&para;</a></h3>
+<p>A model's error on the data it was trained on is optimistic: the model has adapted to those very examples, including their noise. To estimate how it will do on new cases, hold some data back. Split the data at random into a <strong>training set</strong>, used to fit the model, and a <strong>test set</strong>, used only to evaluate it. Chapter 10 develops this into cross-validation; for now a single split is enough.</p>
+<p>To have enough data for a fair split we generate a larger, more realistic dataset of 400 houses with several features. As always, the generating rules are known to us but would not be in real life.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+<span class="n">n</span> <span class="o">=</span> <span class="mi">400</span>
+<span class="n">houses</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+    <span class="s2">"area"</span><span class="p">:</span> <span class="n">rng</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">40</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">"bedrooms"</span><span class="p">:</span> <span class="n">rng</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="n">n</span><span class="p">),</span>
+    <span class="s2">"age"</span><span class="p">:</span> <span class="n">rng</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">"location"</span><span class="p">:</span> <span class="n">rng</span><span class="o">.</span><span class="n">choice</span><span class="p">([</span><span class="s2">"centre"</span><span class="p">,</span> <span class="s2">"suburb"</span><span class="p">,</span> <span class="s2">"outskirts"</span><span class="p">],</span> <span class="n">n</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="p">[</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.45</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">]),</span>
+<span class="p">})</span>
+<span class="n">loc_effect</span> <span class="o">=</span> <span class="n">houses</span><span class="p">[</span><span class="s2">"location"</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">({</span><span class="s2">"centre"</span><span class="p">:</span> <span class="mi">1500</span><span class="p">,</span> <span class="s2">"suburb"</span><span class="p">:</span> <span class="mi">500</span><span class="p">,</span> <span class="s2">"outskirts"</span><span class="p">:</span> <span class="mi">0</span><span class="p">})</span>
+<span class="n">houses</span><span class="p">[</span><span class="s2">"price"</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">800</span> <span class="o">+</span> <span class="mi">45</span> <span class="o">*</span> <span class="n">houses</span><span class="p">[</span><span class="s2">"area"</span><span class="p">]</span> <span class="o">+</span> <span class="mi">150</span> <span class="o">*</span> <span class="n">houses</span><span class="p">[</span><span class="s2">"bedrooms"</span><span class="p">]</span> <span class="o">-</span> <span class="mi">20</span> <span class="o">*</span> <span class="n">houses</span><span class="p">[</span><span class="s2">"age"</span><span class="p">]</span>
+                   <span class="o">+</span> <span class="n">loc_effect</span> <span class="o">+</span> <span class="n">rng</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">400</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">houses</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">houses</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">loc</span><span class="p">[[</span><span class="s2">"mean"</span><span class="p">,</span> <span class="s2">"std"</span><span class="p">,</span> <span class="s2">"min"</span><span class="p">,</span> <span class="s2">"max"</span><span class="p">]])</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>    area  bedrooms   age   location   price
+0   92.0         2  50.0     suburb  4295.0
+1  198.0         1  42.0     suburb  9520.0
+2   91.0         5  27.0     centre  5734.0
+3  166.0         1  34.0     suburb  8077.0
+4  179.0         5  30.0  outskirts  9348.0
+       area  bedrooms   age    price
+mean  119.4       2.9  24.4   6790.3
+std    44.0       1.4  14.1   2122.7
+min    41.0       1.0   0.0   2057.0
+max   200.0       5.0  50.0  11272.0
+</code></pre></div>
+<div class="language-python highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">train_test_split</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">mean_absolute_error</span><span class="p">,</span> <span class="n">root_mean_squared_error</span><span class="p">,</span> <span class="n">r2_score</span>
+
+<span class="n">X</span> <span class="o">=</span> <span class="n">houses</span><span class="p">[[</span><span class="s2">"area"</span><span class="p">]]</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">houses</span><span class="p">[</span><span class="s2">"price"</span><span class="p">]</span>
+<span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">X_train</span><span class="p">),</span> <span class="s2">"training rows,"</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">X_test</span><span class="p">),</span> <span class="s2">"test rows"</span><span class="p">)</span>
+
+<span class="n">simple</span> <span class="o">=</span> <span class="n">LinearRegression</span><span class="p">()</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+<span class="n">pred</span> <span class="o">=</span> <span class="n">simple</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"test MAE  = </span><span class="si">{</span><span class="n">mean_absolute_error</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span><span class="w"> </span><span class="n">pred</span><span class="p">)</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"test RMSE = </span><span class="si">{</span><span class="n">root_mean_squared_error</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span><span class="w"> </span><span class="n">pred</span><span class="p">)</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"test R^2  = </span><span class="si">{</span><span class="n">r2_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span><span class="w"> </span><span class="n">pred</span><span class="p">)</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>300 training rows, 100 test rows
+test MAE  = 643.7
+test RMSE = 798.6
+test R^2  = 0.866
+</code></pre></div>
+<p><code>random_state</code> seeds the random split so that it is the same every time. The metrics come from <code>sklearn.metrics</code>, which always takes the true values first and the predictions second.</p>
+<h3 id="always-compare-with-a-baseline">Always compare with a baseline<a class="headerlink" href="#always-compare-with-a-baseline" title="Permanent link">&para;</a></h3>
+<p>Is an MAE of several hundred good? It depends on how hard the problem is. A <strong>baseline</strong> answers that: the error of a trivial model that ignores the features, such as predicting the training mean for every house. scikit-learn's <code>DummyRegressor</code> does exactly this.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.dummy</span><span class="w"> </span><span class="kn">import</span> <span class="n">DummyRegressor</span>
+
+<span class="n">baseline</span> <span class="o">=</span> <span class="n">DummyRegressor</span><span class="p">(</span><span class="n">strategy</span><span class="o">=</span><span class="s2">"mean"</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"baseline test MAE = </span><span class="si">{</span><span class="n">mean_absolute_error</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span><span class="w"> </span><span class="n">baseline</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">))</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"baseline test R^2 = </span><span class="si">{</span><span class="n">r2_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span><span class="w"> </span><span class="n">baseline</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">))</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>baseline test MAE = 1874.3
+baseline test R^2 = -0.000
+</code></pre></div>
+<p>Floor area alone cuts the baseline error by a large factor. A model that cannot beat the baseline has learned nothing useful, however sophisticated it is.</p>
+<h2 id="84-multiple-regression">8.4 Multiple regression<a class="headerlink" href="#84-multiple-regression" title="Permanent link">&para;</a></h2>
+<p>With several features <span class="arithmatex">\(x_1, \dots, x_p\)</span> the linear model becomes</p>
+<div class="arithmatex">\[
+\hat{y} = b_0 + b_1 x_1 + b_2 x_2 + \dots + b_p x_p ,
+\]</div>
+<p>still fitted by least squares. Each coefficient <span class="arithmatex">\(b_j\)</span> is now the change in prediction for a one-unit increase in <span class="arithmatex">\(x_j\)</span> <strong>with the other features held fixed</strong>. That qualification matters: in the simple regression, the area coefficient also absorbed the effect of anything that goes with area, such as the number of bedrooms.</p>
+<h3 id="categorical-features-one-hot-encoding">Categorical features: one-hot encoding<a class="headerlink" href="#categorical-features-one-hot-encoding" title="Permanent link">&para;</a></h3>
+<p>A model needs numbers, but <code>location</code> is text. <strong>One-hot encoding</strong> replaces a categorical column with one 0/1 column per category. To avoid redundancy (the columns would always add up to 1), one category is usually dropped and becomes the <strong>reference</strong>; each remaining coefficient is then the difference from the reference category.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">encoded</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">get_dummies</span><span class="p">(</span><span class="n">houses</span><span class="p">[[</span><span class="s2">"area"</span><span class="p">,</span> <span class="s2">"bedrooms"</span><span class="p">,</span> <span class="s2">"age"</span><span class="p">,</span> <span class="s2">"location"</span><span class="p">]],</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">"location"</span><span class="p">],</span>
+                         <span class="n">drop_first</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">encoded</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>    area  bedrooms   age  location_outskirts  location_suburb
+0   92.0         2  50.0                   0                1
+1  198.0         1  42.0                   0                1
+2   91.0         5  27.0                   0                0
+</code></pre></div>
+<p>With <code>drop_first=True</code> pandas drops the first category in alphabetical order, here <code>centre</code>, which becomes the reference. <code>location_outskirts</code> is 1 for houses on the outskirts and <code>location_suburb</code> is 1 for houses in the suburbs; a house in the centre has 0 in both. Checking the column names confirms it:</p>
+<div class="language-python highlight"><pre><span></span><code><span class="nb">print</span><span class="p">(</span><span class="n">encoded</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>['area', 'bedrooms', 'age', 'location_outskirts', 'location_suburb']
+</code></pre></div>
+<p>Now fit the multiple regression on the same split:</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">X_all</span> <span class="o">=</span> <span class="n">encoded</span>
+<span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">X_all</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">multi</span> <span class="o">=</span> <span class="n">LinearRegression</span><span class="p">()</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">multi</span><span class="o">.</span><span class="n">coef_</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">X_all</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"intercept"</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">multi</span><span class="o">.</span><span class="n">intercept_</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="n">pred</span> <span class="o">=</span> <span class="n">multi</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"test MAE = </span><span class="si">{</span><span class="n">mean_absolute_error</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span><span class="w"> </span><span class="n">pred</span><span class="p">)</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">, test R^2 = </span><span class="si">{</span><span class="n">r2_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span><span class="w"> </span><span class="n">pred</span><span class="p">)</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>area                    44.7
+bedrooms               159.2
+age                    -20.9
+location_outskirts   -1450.3
+location_suburb       -924.9
+dtype: float64
+intercept 2286.3
+test MAE = 344.4, test R^2 = 0.962
+</code></pre></div>
+<p>The coefficients recover the rules used to generate the data, within the noise: about 45 per square metre, 150 per bedroom, <span class="arithmatex">\(-20\)</span> per year of age; houses on the outskirts about 1,500 cheaper and in the suburbs about 1,000 cheaper than comparable houses in the centre (the reference). The test error falls well below that of area alone.</p>
+<div class="admonition tip">
+<p class="admonition-title">Key idea</p>
+<p>A coefficient in a multiple regression is a <em>conditional</em> effect: the difference in prediction for one unit of that feature among examples that are alike in all the other features in the model. Add or remove a feature and the other coefficients can change. And a coefficient describes the data, not necessarily a cause: in observational data, a feature may stand in for something unmeasured.</p>
+</div>
+<h3 id="residual-plots">Residual plots<a class="headerlink" href="#residual-plots" title="Permanent link">&para;</a></h3>
+<p>A plot of residuals against predicted values checks whether a straight-line model is adequate. If it is, the residuals form a shapeless band around zero. A curve suggests a missing non-linear term; a funnel shape suggests that the errors grow with the size of the prediction.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mf">3.2</span><span class="p">))</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">pred</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">-</span> <span class="n">pred</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"gray"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"Predicted price"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"Residual (actual - predicted)"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Residuals of the multiple regression (test set)"</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">"residuals.svg"</span><span class="p">)</span>
+</code></pre></div>
+<figure class="fig fig-diagram">
+<img src="img/residuals.svg" alt="A scatter plot of residuals against predicted prices for the test houses. The points form an even horizontal band around the zero line, from about -1,000 to +1,000, with no curve or funnel." loading="lazy" width="539" height="317">
+<figcaption><strong>Figure 8.2 A healthy residual plot.</strong> A scatter plot of residuals against predicted prices for the test houses. The points form an even horizontal band around the zero line, from about -1,000 to +1,000, with no curve or funnel.</figcaption>
+</figure>
+<p>Here the residuals show no pattern, as expected, since the data was generated by a linear rule plus noise.</p>
+<h2 id="85-curves-polynomial-regression-and-overfitting">8.5 Curves: polynomial regression and overfitting<a class="headerlink" href="#85-curves-polynomial-regression-and-overfitting" title="Permanent link">&para;</a></h2>
+<p>A straight line cannot follow a curved relationship. One way to fit curves while keeping the machinery of linear regression is to add powers of a feature as new features: <span class="arithmatex">\(x^2\)</span>, <span class="arithmatex">\(x^3\)</span>, and so on. The model <span class="arithmatex">\(\hat{y} = b_0 + b_1 x + b_2 x^2\)</span> is still <em>linear in the coefficients</em>, so least squares fits it in exactly the same way.</p>
+<p>scikit-learn's <code>PolynomialFeatures</code> creates the powers, and a <strong>pipeline</strong> chains it with the regression so that the steps behave as one model. A <code>StandardScaler</code> in between rescales the powers (Section 8.6 explains it); without it, numbers like <span class="arithmatex">\(10^{15}\)</span> next to numbers like 1 make the computation numerically unreliable at high degrees.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.preprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">PolynomialFeatures</span><span class="p">,</span> <span class="n">StandardScaler</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_pipeline</span>
+
+<span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">rng</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">))</span>
+<span class="n">y_curve</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">+</span> <span class="mf">1.5</span> <span class="o">*</span> <span class="n">x</span> <span class="o">-</span> <span class="mf">0.12</span> <span class="o">*</span> <span class="n">x</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">rng</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>     <span class="c1"># a gentle curve plus noise</span>
+<span class="n">x_new</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">rng</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">200</span><span class="p">))</span>                            <span class="c1"># fresh data from the same source</span>
+<span class="n">y_new</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">+</span> <span class="mf">1.5</span> <span class="o">*</span> <span class="n">x_new</span> <span class="o">-</span> <span class="mf">0.12</span> <span class="o">*</span> <span class="n">x_new</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">rng</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">degree</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">15</span><span class="p">]:</span>
+    <span class="n">poly</span> <span class="o">=</span> <span class="n">make_pipeline</span><span class="p">(</span><span class="n">PolynomialFeatures</span><span class="p">(</span><span class="n">degree</span><span class="p">),</span> <span class="n">StandardScaler</span><span class="p">(),</span> <span class="n">LinearRegression</span><span class="p">())</span>
+    <span class="n">poly</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">y_curve</span><span class="p">)</span>
+    <span class="n">train_rmse</span> <span class="o">=</span> <span class="n">root_mean_squared_error</span><span class="p">(</span><span class="n">y_curve</span><span class="p">,</span> <span class="n">poly</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)))</span>
+    <span class="n">new_rmse</span> <span class="o">=</span> <span class="n">root_mean_squared_error</span><span class="p">(</span><span class="n">y_new</span><span class="p">,</span> <span class="n">poly</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">x_new</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"degree </span><span class="si">{</span><span class="n">degree</span><span class="si">:</span><span class="s2">&gt;2</span><span class="si">}</span><span class="s2">: training RMSE </span><span class="si">{</span><span class="n">train_rmse</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, new-data RMSE </span><span class="si">{</span><span class="n">new_rmse</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>degree  1: training RMSE 1.095, new-data RMSE 1.170
+degree  2: training RMSE 0.763, new-data RMSE 0.851
+degree 15: training RMSE 0.618, new-data RMSE 3.432
+</code></pre></div>
+<div class="language-python highlight"><pre><span></span><code><span class="n">grid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">400</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mf">3.2</span><span class="p">),</span> <span class="n">sharey</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">ax</span><span class="p">,</span> <span class="n">degree</span><span class="p">,</span> <span class="n">title</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">15</span><span class="p">],</span> <span class="p">[</span><span class="s2">"underfit"</span><span class="p">,</span> <span class="s2">"about right"</span><span class="p">,</span> <span class="s2">"overfit"</span><span class="p">]):</span>
+    <span class="n">poly</span> <span class="o">=</span> <span class="n">make_pipeline</span><span class="p">(</span><span class="n">PolynomialFeatures</span><span class="p">(</span><span class="n">degree</span><span class="p">),</span> <span class="n">StandardScaler</span><span class="p">(),</span> <span class="n">LinearRegression</span><span class="p">())</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">y_curve</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y_curve</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">poly</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">grid</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="s2">"tab:orange"</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">9</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">"degree </span><span class="si">{</span><span class="n">degree</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">title</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"x"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"y"</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">"polynomial-fits.svg"</span><span class="p">)</span>
+</code></pre></div>
+<figure class="fig fig-diagram">
+<img src="img/polynomial-fits.svg" alt="Three panels showing the same 20 points, which follow a gentle hump. A straight line (degree 1) misses the curvature. A degree-2 curve follows the hump smoothly. A degree-15 polynomial wiggles through many individual points and swings wildly near the ends." loading="lazy" width="1142" height="297">
+<figcaption><strong>Figure 8.3 Underfitting, a good fit and overfitting.</strong> Three panels showing the same 20 points, which follow a gentle hump. A straight line (degree 1) misses the curvature. A degree-2 curve follows the hump smoothly. A degree-15 polynomial wiggles through many individual points and swings wildly near the ends.</figcaption>
+</figure>
+<p>The numbers and the picture tell the central story of all machine learning:</p>
+<ul>
+<li>The straight line <strong>underfits</strong>: it is too simple to capture the curve, so its error is high on both training and new data. This is <strong>bias</strong>.</li>
+<li>Degree 2 matches the true shape and has the lowest error on new data.</li>
+<li>Degree 15 <strong>overfits</strong>: it bends to follow the noise in the 20 training points, so its training error is the lowest of all, but on new data it does worse than degree 2, with wild swings near the edges. This is <strong>variance</strong>: the fit would change a lot with a different sample.</li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Caution: training error always falls as complexity rises</p>
+<p>Adding features or flexibility can only lower the error on the training data, so training error cannot be used to choose a model's complexity. Use held-out data: a test set, or the cross-validation of Chapter 10.</p>
+</div>
+<h2 id="86-regularisation-ridge-and-lasso">8.6 Regularisation: ridge and lasso<a class="headerlink" href="#86-regularisation-ridge-and-lasso" title="Permanent link">&para;</a></h2>
+<p>Overfitting shows up as coefficients that are very large, balancing each other to chase the noise. <strong>Regularisation</strong> discourages this by adding a penalty on the size of the coefficients to the loss. <strong>Ridge regression</strong> minimises</p>
+<div class="arithmatex">\[
+\sum_i (y_i - \hat{y}_i)^2 + \alpha \sum_j b_j^2 ,
+\]</div>
+<p>and <strong>lasso regression</strong> uses <span class="arithmatex">\(\alpha \sum_j |b_j|\)</span> instead. The <strong>hyperparameter</strong> <span class="arithmatex">\(\alpha \ge 0\)</span> sets the strength of the penalty: <span class="arithmatex">\(\alpha = 0\)</span> gives ordinary least squares, and a large <span class="arithmatex">\(\alpha\)</span> shrinks the coefficients towards zero. The lasso can shrink some coefficients exactly to zero, effectively selecting features. (The intercept is not penalised.)</p>
+<p>Because the penalty adds up the coefficients of different features, the features should be on comparable scales, so regularised models are almost always preceded by <strong>standardisation</strong> (Section 3.7), done by <code>StandardScaler</code>.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">Ridge</span><span class="p">,</span> <span class="n">Lasso</span>
+
+<span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">reg</span> <span class="ow">in</span> <span class="p">[(</span><span class="s2">"plain"</span><span class="p">,</span> <span class="n">LinearRegression</span><span class="p">()),</span> <span class="p">(</span><span class="s2">"ridge"</span><span class="p">,</span> <span class="n">Ridge</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)),</span> <span class="p">(</span><span class="s2">"lasso"</span><span class="p">,</span> <span class="n">Lasso</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">50_000</span><span class="p">))]:</span>
+    <span class="n">pipe</span> <span class="o">=</span> <span class="n">make_pipeline</span><span class="p">(</span><span class="n">PolynomialFeatures</span><span class="p">(</span><span class="mi">15</span><span class="p">),</span> <span class="n">StandardScaler</span><span class="p">(),</span> <span class="n">reg</span><span class="p">)</span>
+    <span class="n">pipe</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">y_curve</span><span class="p">)</span>
+    <span class="n">coefs</span> <span class="o">=</span> <span class="n">pipe</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">coef_</span>
+    <span class="n">new_rmse</span> <span class="o">=</span> <span class="n">root_mean_squared_error</span><span class="p">(</span><span class="n">y_new</span><span class="p">,</span> <span class="n">pipe</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">x_new</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">name</span><span class="si">:</span><span class="s2">&gt;5</span><span class="si">}</span><span class="s2">: new-data RMSE </span><span class="si">{</span><span class="n">new_rmse</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, largest |coef| </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">coefs</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="si">:</span><span class="s2">10.1f</span><span class="si">}</span><span class="s2">, "</span>
+          <span class="sa">f</span><span class="s2">"zero coefs </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">coefs</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mf">1e-8</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>plain: new-data RMSE 3.432, largest |coef|    14745.0, zero coefs 1
+ridge: new-data RMSE 0.965, largest |coef|        1.2, zero coefs 1
+lasso: new-data RMSE 0.902, largest |coef|        2.1, zero coefs 13
+</code></pre></div>
+<p>With the same degree-15 features, ridge and lasso keep the coefficients small and the error on new data comes back close to that of the well-chosen degree-2 model. The lasso has set most of the 16 coefficients to exactly zero, keeping only a few powers. (One coefficient is zero in every row: <code>PolynomialFeatures</code> adds a constant column of ones, which becomes a column of zeros after scaling and so gets no weight; the intercept does its job.) The right <span class="arithmatex">\(\alpha\)</span> is found by trying several values on held-out data, which is the subject of Chapter 10.</p>
+<h2 id="87-summary">8.7 Summary<a class="headerlink" href="#87-summary" title="Permanent link">&para;</a></h2>
+<div class="admonition abstract">
+<p class="admonition-title">Summary</p>
+<ul>
+<li>Regression predicts a numerical target from features, learned from examples (supervised learning). Residuals are actual minus predicted.</li>
+<li>Least squares minimises the sum of squared residuals. For one feature, <span class="arithmatex">\(b_1 = \sum (x_i - \bar{x})(y_i - \bar{y}) / \sum (x_i - \bar{x})^2\)</span> and <span class="arithmatex">\(b_0 = \bar{y} - b_1\bar{x}\)</span>.</li>
+<li>MAE and RMSE measure error in the target's units; <span class="arithmatex">\(R^2\)</span> compares the model with predicting the mean.</li>
+<li>scikit-learn estimators share <code>fit(X, y)</code>, <code>predict(X)</code> and <code>score</code>; evaluate on a held-out test set and against a <code>DummyRegressor</code> baseline.</li>
+<li>In multiple regression each coefficient is an effect with the other features held fixed. Encode categories one-hot, dropping a reference category.</li>
+<li>Residual plots reveal curvature and changing spread.</li>
+<li>Polynomial features fit curves; too little flexibility underfits (bias), too much overfits (variance). Training error cannot choose the complexity.</li>
+<li>Ridge and lasso penalise large coefficients; standardise features first; lasso can zero out coefficients. Choose <span class="arithmatex">\(\alpha\)</span> on held-out data.</li>
+</ul>
+</div>
+<h2 id="88-exercises">8.8 Exercises<a class="headerlink" href="#88-exercises" title="Permanent link">&para;</a></h2>
+<div class="admonition example">
+<p class="admonition-title">Exercise 1</p>
+<p>For the points <span class="arithmatex">\((1, 2), (2, 3), (3, 5), (4, 6)\)</span>, compute the least-squares slope and intercept by hand, and check with NumPy.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p><span class="arithmatex">\(\bar{x} = 2.5\)</span>, <span class="arithmatex">\(\bar{y} = 4\)</span>. The deviations of <span class="arithmatex">\(x\)</span> are <span class="arithmatex">\(-1.5, -0.5, 0.5, 1.5\)</span> and of <span class="arithmatex">\(y\)</span> are <span class="arithmatex">\(-2, -1, 1, 2\)</span>. <span class="arithmatex">\(\sum (x - \bar{x})(y - \bar{y}) = 3 + 0.5 + 0.5 + 3 = 7\)</span> and <span class="arithmatex">\(\sum (x - \bar{x})^2 = 2.25 + 0.25 + 0.25 + 2.25 = 5\)</span>. So <span class="arithmatex">\(b_1 = 7/5 = 1.4\)</span> and <span class="arithmatex">\(b_0 = 4 - 1.4 \times 2.5 = 0.5\)</span>.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">polyfit</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span> <span class="n">deg</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>[1.4 0.5]
+</code></pre></div>
+<p><code>np.polyfit</code> returns the coefficients from the highest power down: slope 1.4, intercept 0.5.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 2</p>
+<p>A model has test <span class="arithmatex">\(R^2 = -0.15\)</span>. What does that mean?</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>On the test data the model's squared error is 15% larger than that of simply predicting the mean target for every example. It is worse than the trivial baseline, usually because it overfits the training data or because the test data differs from the training data.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 3</p>
+<p>In the multiple regression on <code>houses</code>, the coefficient of <code>bedrooms</code> is about 150. A friend concludes, "adding a bedroom to a house raises its value by 150 thousand." What is right and what is wrong with that?</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>Right: among houses with the same area, age and location in this data, each extra bedroom goes with about 150 thousand more in predicted price. Wrong, or at least unsupported: this is an association in data, not the result of adding bedrooms to houses. Adding a bedroom without changing the area means making the other rooms smaller, which is not what the data compares. In this simulated data we built the effect in, but with real data a causal claim would need more than a regression coefficient.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 4</p>
+<p>Fit a simple regression of price on <code>age</code> alone for the <code>houses</code> data, using the same split as Section 8.3 (<code>test_size=0.25</code>, <code>random_state=0</code>), and compare its test MAE with the baseline's.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<div class="language-python highlight"><pre><span></span><code><span class="n">Xa</span> <span class="o">=</span> <span class="n">houses</span><span class="p">[[</span><span class="s2">"age"</span><span class="p">]]</span>
+<span class="n">Xa_tr</span><span class="p">,</span> <span class="n">Xa_te</span><span class="p">,</span> <span class="n">ya_tr</span><span class="p">,</span> <span class="n">ya_te</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">Xa</span><span class="p">,</span> <span class="n">houses</span><span class="p">[</span><span class="s2">"price"</span><span class="p">],</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">age_model</span> <span class="o">=</span> <span class="n">LinearRegression</span><span class="p">()</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">Xa_tr</span><span class="p">,</span> <span class="n">ya_tr</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">age_model</span><span class="o">.</span><span class="n">coef_</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">mean_absolute_error</span><span class="p">(</span><span class="n">ya_te</span><span class="p">,</span> <span class="n">age_model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">Xa_te</span><span class="p">)),</span> <span class="mi">1</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">mean_absolute_error</span><span class="p">(</span><span class="n">ya_te</span><span class="p">,</span> <span class="n">DummyRegressor</span><span class="p">()</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">Xa_tr</span><span class="p">,</span> <span class="n">ya_tr</span><span class="p">)</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">Xa_te</span><span class="p">)),</span> <span class="mi">1</span><span class="p">))</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>-2.3
+1868.0
+1874.3
+</code></pre></div>
+<p>Age alone barely improves on the baseline. Its fitted slope, about <span class="arithmatex">\(-2\)</span> per year, is also far from the <span class="arithmatex">\(-20\)</span> per year that generated the data. Age's true effect (at most about 1,000 across the whole age range) is small compared with the variation in price driven by area, and when area is left out, that variation stays in the residuals and makes the age slope very imprecise. A feature can matter in a multiple regression and still be poorly estimated, and predict poorly, on its own.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 5</p>
+<p>Why must features be standardised before ridge or lasso regression, but not before ordinary least squares?</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>Ordinary least squares gives the same predictions whatever the units of the features: rescaling a feature just rescales its coefficient. The ridge and lasso penalties add up the sizes of the coefficients, so a feature measured in small units (needing a large coefficient) would be penalised more than the same feature in large units. Standardising puts all features on the same scale so that the penalty treats them equally.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 6</p>
+<p>Explain in your own words why the degree-15 polynomial has the lowest training error but not the lowest error on new data.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>With 16 coefficients and only 20 points, the polynomial is flexible enough to bend towards each training point, fitting the random noise as well as the underlying curve. That lowers the training error, but the noise in new data is different, so the bends that fitted the old noise are wrong for the new points, especially near the ends of the range where the polynomial swings. The degree-2 model cannot follow the noise, so what it learns is closer to the true shape that the new data shares.</p>
+</details>
+<h2 id="89-quiz">8.9 Quiz<a class="headerlink" href="#89-quiz" title="Permanent link">&para;</a></h2>
+<div class="pk-quiz" data-quiz="f673a88d5b9f">
+<p class="pk-quiz-title">Check your understanding of Chapter 8</p>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;the origin&quot;,&quot;the point of means&quot;,&quot;the first data point&quot;,&quot;the largest residual&quot;],&quot;answer&quot;:&quot;the point of means&quot;}">
+<p class="admonition-title">Exercise 1</p>
+<p class="pk-q-prompt">In simple linear regression, the least-squares line always passes through</p>
+<ol class="pk-q-opts" type="A"><li>the origin</li><li>the point of means</li><li>the first data point</li><li>the largest residual</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>the point of means</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;MSE&quot;,&quot;MAE&quot;,&quot;R squared&quot;,&quot;correlation&quot;],&quot;answer&quot;:&quot;MAE&quot;}">
+<p class="admonition-title">Exercise 2</p>
+<p class="pk-q-prompt">Which metric is in the same units as the target and averages absolute errors?</p>
+<ol class="pk-q-opts" type="A"><li>MSE</li><li>MAE</li><li>R squared</li><li>correlation</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>MAE</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;perfect&quot;,&quot;as good as predicting the mean&quot;,&quot;useless and harmful&quot;,&quot;overfitting&quot;],&quot;answer&quot;:&quot;as good as predicting the mean&quot;}">
+<p class="admonition-title">Exercise 3</p>
+<p class="pk-q-prompt">An R squared of 0 on test data means the model is</p>
+<ol class="pk-q-opts" type="A"><li>perfect</li><li>as good as predicting the mean</li><li>useless and harmful</li><li>overfitting</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>as good as predicting the mean</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;predict&quot;,&quot;fit&quot;,&quot;score&quot;,&quot;transform&quot;],&quot;answer&quot;:&quot;fit&quot;}">
+<p class="admonition-title">Exercise 4</p>
+<p class="pk-q-prompt">Which scikit-learn method trains a model?</p>
+<ol class="pk-q-opts" type="A"><li>predict</li><li>fit</li><li>score</li><li>transform</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>fit</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;underfitting&quot;,&quot;overfitting&quot;,&quot;a baseline&quot;,&quot;regularised&quot;],&quot;answer&quot;:&quot;overfitting&quot;}">
+<p class="admonition-title">Exercise 5</p>
+<p class="pk-q-prompt">A model with very low training error and high test error is</p>
+<ol class="pk-q-opts" type="A"><li>underfitting</li><li>overfitting</li><li>a baseline</li><li>regularised</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>overfitting</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;ridge&quot;,&quot;lasso&quot;,&quot;least squares&quot;,&quot;polynomial features&quot;],&quot;answer&quot;:&quot;lasso&quot;}">
+<p class="admonition-title">Exercise 6</p>
+<p class="pk-q-prompt">Which regularisation can set coefficients exactly to zero?</p>
+<ol class="pk-q-opts" type="A"><li>ridge</li><li>lasso</li><li>least squares</li><li>polynomial features</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>lasso</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;text&quot;,&quot;answer&quot;:[&quot;DummyRegressor&quot;]}">
+<p class="admonition-title">Exercise 7</p>
+<p class="pk-q-prompt">Which scikit-learn class gives a mean-prediction baseline for regression?</p>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>DummyRegressor</strong></p>
+</details>
+</div>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button type="button" class="md-top md-icon" data-md-component="top" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+Back to top
+</button>
+</main>
+<footer class="md-footer">
+<nav class="md-footer__inner md-grid" aria-label="Footer" >
+<a href="probability-and-statistics.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: 7. Probability and Statistics for Data Science">
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</div>
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Previous
+</span>
+<div class="md-ellipsis">
+7. Probability and Statistics for Data Science
+</div>
+</div>
+</a>
+<a href="classification.html" class="md-footer__link md-footer__link--next" aria-label="Next: 9. Classification">
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Next
+</span>
+<div class="md-ellipsis">
+9. Classification
+</div>
+</div>
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+</div>
+</a>
+</nav>
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+The Open Book Project &middot;
+<a href="../../about.html">About this library</a> &middot;
+<a href="../../publish.html">Publish your book</a> &middot;
+© The authors of the books
+</div>
+Made with
+<a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+Material for MkDocs
+</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "navigation.prune", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "toc.follow", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+<script src="../../assets/mathjax.js"></script>
+<script src="../../assets/viz.js"></script>
+<script src="../../assets/remote.js"></script>
+<script src="../../assets/scans.js"></script>
+<script src="../../assets/reader.js"></script>
+<script src="../../assets/app.js"></script>
+<script src="../../assets/slides.js"></script>
+<script src="../../assets/speak.js"></script>
+<script src="../../assets/quiz.js"></script>
+<script>
+    /* offline reading: the service worker at the site root (its scope is the whole site) */
+    if ("serviceWorker" in navigator && window.isSecureContext) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register(new URL("../../sw.js", location.href).href).catch(function () {});
+      });
+    }
+  </script>
+</body>
+</html>

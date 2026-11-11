@@ -1,0 +1,1201 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="description" content="The Open Book Project: books on computer science, quantum computing, cyber security, science, the social sciences, university courses and languages, read page by page like an e-book, online or offline.">
+<meta name="author" content="The Open Book Project">
+<link rel="canonical" href="https://open-book-project.github.io/mathematics/discrete_mathematics/number-theory-and-cryptography.html">
+<link rel="prev" href="recurrence-relations-and-generating-functions.html">
+<link rel="next" href="graphs.html">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap"></noscript>
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Open Book">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="application-name" content="Open Book"><script src="../../assets/library-data.js"></script><script>
+    (function () {
+      var X = window.XMLHttpRequest, open, gate = new Promise(function (r) { open = r; });
+      if (!X) return;
+      var open0 = X.prototype.open, send0 = X.prototype.send;
+      X.prototype.open = function (method, url) {
+        this.__pkIndex = /\/search\/search_index\.json(\?|#|$)/.test(String(url));
+        return open0.apply(this, arguments);
+      };
+      X.prototype.send = function () {
+        if (!this.__pkIndex) return send0.apply(this, arguments);
+        var xhr = this, args = arguments;
+        gate.then(function () { send0.apply(xhr, args); });
+      };
+      function wake() { open(); }
+      document.addEventListener("focusin", function (e) { if (e.target && e.target.closest && e.target.closest(".md-search")) wake(); });
+      document.addEventListener("click", function (e) { if (e.target && e.target.closest && e.target.closest('label[for="__search"], .md-search')) wake(); }, true);
+      document.addEventListener("keydown", function (e) {
+        var k = e.key;
+        if ((k === "/" || k === "s" || k === "f" || k === "S" || k === "F") && !(e.target && e.target.closest && e.target.closest("input, textarea, [contenteditable]"))) wake();
+      }, true);
+      if (/[?&]q=/.test(location.search)) wake();
+    })();
+  </script><script>
+    try {
+      if ((window.matchMedia && (matchMedia("(display-mode: standalone)").matches || matchMedia("(display-mode: fullscreen)").matches)) || navigator.standalone === true) {
+        document.documentElement.className += " bjp-standalone";
+      }
+    } catch (e) { /* not an installed app */ }
+    /* the books of a subject or of the whole library as covers or as a list (assets/app.js): the reader's choice */
+    try {
+      var bv = localStorage.getItem("bjp.view");
+      if (bv === "list" || (bv !== "grid" && /\/books\.html$/.test(location.pathname))) document.documentElement.className += " bjp-view-list";
+    } catch (e) { /* no storage: covers */ }
+  </script>
+<script>
+    /* a book opened from its cover on the shelf: the page stays blank, in the cover's colour, until the reader is up */
+    try {
+      var cv = sessionStorage.getItem("bjp.reader.cover");
+      if (cv && sessionStorage.getItem("bjp.reader.open") === "1") {
+        var c = JSON.parse(cv), de = document.documentElement;
+        de.className += " bjp-booting";
+        if (c && /^#[0-9a-f]{3,8}$/i.test(c.bg || "")) de.style.background = c.bg;
+        setTimeout(function () { de.classList.remove("bjp-booting"); de.style.background = ""; }, 3000);
+      }
+    } catch (e) { /* no session storage: the page simply opens as usual */ }
+  </script>
+<title>10. Number Theory and Cryptography - The Open Book Project</title>
+<link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+<link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+<link rel="stylesheet" href="../../assets/extra.css">
+<link rel="stylesheet" href="../../assets/reader.css">
+<link rel="stylesheet" href="../../assets/viz.css">
+<link rel="stylesheet" href="../../assets/app.css">
+<link rel="stylesheet" href="../../assets/theme.css">
+<link rel="stylesheet" href="../../assets/slides.css">
+<link rel="stylesheet" href="../../assets/remote.css">
+<link rel="stylesheet" href="../../assets/scans.css">
+<link rel="stylesheet" href="../../assets/speak.css">
+<link rel="stylesheet" href="../../assets/quiz.css">
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+<input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+<input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a href="#101-divisibility" class="md-skip">
+Skip to content
+</a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav class="md-header__inner md-grid" aria-label="Header">
+<a href="../../index.html" title="The Open Book Project" class="md-header__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+The Open Book Project
+</span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+10. Number Theory and Cryptography
+</span>
+</div>
+</div>
+</div><a href="../../index.html" class="bjp-libbtn" aria-label="Library: all books" title="Library: all books">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V5h4v15M8 20V9h4v11M14 20L12.6 6l3.8-.8 3 14.2M3 20h18"/></svg><span>Library</span>
+</a>
+<a href="../../subjects/index.html" class="pk-catbtn" aria-haspopup="true" aria-expanded="false" title="Browse the books by category">
+<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><circle cx="17" cy="7" r="3.6"/><path d="M7 13.4l3.9 6.8H3.1z"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg><span>Categories</span>
+</a>
+<form class="md-header__option" data-md-component="palette">
+<input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+<label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+</label>
+<input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+<label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+<label class="md-search__icon md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</label>
+<nav class="md-search__options" aria-label="Search">
+<button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+Initializing search
+</div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--primary bjp-nav bjp-nav--book" aria-label="Navigation" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a href="../../index.html" title="The Open Book Project" class="md-nav__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+The Open Book Project
+</label>
+<ul class="md-nav__list" data-md-scrollfix>
+<li class="md-nav__item bjp-nav-all">
+<a href="../../index.html" class="md-nav__link" aria-label="All books: back to the library">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+<span class="md-ellipsis">All books</span>
+</a>
+</li>
+<li class="md-nav__item bjp-nav-book" role="presentation"><span class="bjp-nav-head">Discrete Mathematics</span></li>
+<li class="md-nav__item">
+<a href="index.html" class="md-nav__link">
+<span class="md-ellipsis">
+Overview and preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="preface.html" class="md-nav__link">
+<span class="md-ellipsis">
+Preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="propositional-logic.html" class="md-nav__link">
+<span class="md-ellipsis">
+1. Propositional Logic
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="predicate-logic-and-quantifiers.html" class="md-nav__link">
+<span class="md-ellipsis">
+2. Predicate Logic and Quantifiers
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="methods-of-proof.html" class="md-nav__link">
+<span class="md-ellipsis">
+3. Methods of Proof
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="sets-and-functions.html" class="md-nav__link">
+<span class="md-ellipsis">
+4. Sets and Functions
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="relations.html" class="md-nav__link">
+<span class="md-ellipsis">
+5. Relations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="induction-and-recursion.html" class="md-nav__link">
+<span class="md-ellipsis">
+6. Induction and Recursion
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="counting.html" class="md-nav__link">
+<span class="md-ellipsis">
+7. Counting
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="discrete-probability.html" class="md-nav__link">
+<span class="md-ellipsis">
+8. Discrete Probability
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="recurrence-relations-and-generating-functions.html" class="md-nav__link">
+<span class="md-ellipsis">
+9. Recurrence Relations and Generating Functions
+</span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+10. Number Theory and Cryptography
+</span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a href="number-theory-and-cryptography.html" class="md-nav__link md-nav__link--active">
+<span class="md-ellipsis">
+10. Number Theory and Cryptography
+</span>
+</a>
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#101-divisibility" class="md-nav__link">
+<span class="md-ellipsis">
+10.1 Divisibility
+</span>
+</a>
+<nav class="md-nav" aria-label="10.1 Divisibility">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#representing-integers-in-any-base" class="md-nav__link">
+<span class="md-ellipsis">
+Representing integers in any base
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#102-primes" class="md-nav__link">
+<span class="md-ellipsis">
+10.2 Primes
+</span>
+</a>
+<nav class="md-nav" aria-label="10.2 Primes">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#finding-primes" class="md-nav__link">
+<span class="md-ellipsis">
+Finding primes
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#103-greatest-common-divisors-and-euclids-algorithm" class="md-nav__link">
+<span class="md-ellipsis">
+10.3 Greatest common divisors and Euclid's algorithm
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#104-bezouts-identity-and-unique-factorisation" class="md-nav__link">
+<span class="md-ellipsis">
+10.4 Bézout's identity and unique factorisation
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#105-modular-arithmetic" class="md-nav__link">
+<span class="md-ellipsis">
+10.5 Modular arithmetic
+</span>
+</a>
+<nav class="md-nav" aria-label="10.5 Modular arithmetic">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#fast-modular-exponentiation" class="md-nav__link">
+<span class="md-ellipsis">
+Fast modular exponentiation
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#106-inverses-linear-congruences-and-the-chinese-remainder-theorem" class="md-nav__link">
+<span class="md-ellipsis">
+10.6 Inverses, linear congruences and the Chinese remainder theorem
+</span>
+</a>
+<nav class="md-nav" aria-label="10.6 Inverses, linear congruences and the Chinese remainder theorem">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#the-chinese-remainder-theorem" class="md-nav__link">
+<span class="md-ellipsis">
+The Chinese remainder theorem
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#107-fermats-little-theorem" class="md-nav__link">
+<span class="md-ellipsis">
+10.7 Fermat's little theorem
+</span>
+</a>
+<nav class="md-nav" aria-label="10.7 Fermat&#39;s little theorem">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#eulers-theorem" class="md-nav__link">
+<span class="md-ellipsis">
+Euler's theorem
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#108-the-rsa-cryptosystem" class="md-nav__link">
+<span class="md-ellipsis">
+10.8 The RSA cryptosystem
+</span>
+</a>
+<nav class="md-nav" aria-label="10.8 The RSA cryptosystem">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#how-rsa-works" class="md-nav__link">
+<span class="md-ellipsis">
+How RSA works
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#why-decryption-works" class="md-nav__link">
+<span class="md-ellipsis">
+Why decryption works
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#why-rsa-is-believed-secure" class="md-nav__link">
+<span class="md-ellipsis">
+Why RSA is believed secure
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#check-digits" class="md-nav__link">
+<span class="md-ellipsis">
+Check digits
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#109-summary" class="md-nav__link">
+<span class="md-ellipsis">
+10.9 Summary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1010-exercises" class="md-nav__link">
+<span class="md-ellipsis">
+10.10 Exercises
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1011-quiz" class="md-nav__link">
+<span class="md-ellipsis">
+10.11 Quiz
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="graphs.html" class="md-nav__link">
+<span class="md-ellipsis">
+11. Graphs
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="trees.html" class="md-nav__link">
+<span class="md-ellipsis">
+12. Trees
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="boolean-algebra-and-logic-circuits.html" class="md-nav__link">
+<span class="md-ellipsis">
+13. Boolean Algebra and Logic Circuits
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="automata-and-languages.html" class="md-nav__link">
+<span class="md-ellipsis">
+14. Automata and Languages
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="glossary.html" class="md-nav__link">
+<span class="md-ellipsis">
+Glossary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="further-reading.html" class="md-nav__link">
+<span class="md-ellipsis">
+Further Reading
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#101-divisibility" class="md-nav__link">
+<span class="md-ellipsis">
+10.1 Divisibility
+</span>
+</a>
+<nav class="md-nav" aria-label="10.1 Divisibility">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#representing-integers-in-any-base" class="md-nav__link">
+<span class="md-ellipsis">
+Representing integers in any base
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#102-primes" class="md-nav__link">
+<span class="md-ellipsis">
+10.2 Primes
+</span>
+</a>
+<nav class="md-nav" aria-label="10.2 Primes">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#finding-primes" class="md-nav__link">
+<span class="md-ellipsis">
+Finding primes
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#103-greatest-common-divisors-and-euclids-algorithm" class="md-nav__link">
+<span class="md-ellipsis">
+10.3 Greatest common divisors and Euclid's algorithm
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#104-bezouts-identity-and-unique-factorisation" class="md-nav__link">
+<span class="md-ellipsis">
+10.4 Bézout's identity and unique factorisation
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#105-modular-arithmetic" class="md-nav__link">
+<span class="md-ellipsis">
+10.5 Modular arithmetic
+</span>
+</a>
+<nav class="md-nav" aria-label="10.5 Modular arithmetic">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#fast-modular-exponentiation" class="md-nav__link">
+<span class="md-ellipsis">
+Fast modular exponentiation
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#106-inverses-linear-congruences-and-the-chinese-remainder-theorem" class="md-nav__link">
+<span class="md-ellipsis">
+10.6 Inverses, linear congruences and the Chinese remainder theorem
+</span>
+</a>
+<nav class="md-nav" aria-label="10.6 Inverses, linear congruences and the Chinese remainder theorem">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#the-chinese-remainder-theorem" class="md-nav__link">
+<span class="md-ellipsis">
+The Chinese remainder theorem
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#107-fermats-little-theorem" class="md-nav__link">
+<span class="md-ellipsis">
+10.7 Fermat's little theorem
+</span>
+</a>
+<nav class="md-nav" aria-label="10.7 Fermat&#39;s little theorem">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#eulers-theorem" class="md-nav__link">
+<span class="md-ellipsis">
+Euler's theorem
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#108-the-rsa-cryptosystem" class="md-nav__link">
+<span class="md-ellipsis">
+10.8 The RSA cryptosystem
+</span>
+</a>
+<nav class="md-nav" aria-label="10.8 The RSA cryptosystem">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#how-rsa-works" class="md-nav__link">
+<span class="md-ellipsis">
+How RSA works
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#why-decryption-works" class="md-nav__link">
+<span class="md-ellipsis">
+Why decryption works
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#why-rsa-is-believed-secure" class="md-nav__link">
+<span class="md-ellipsis">
+Why RSA is believed secure
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#check-digits" class="md-nav__link">
+<span class="md-ellipsis">
+Check digits
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#109-summary" class="md-nav__link">
+<span class="md-ellipsis">
+10.9 Summary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1010-exercises" class="md-nav__link">
+<span class="md-ellipsis">
+10.10 Exercises
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1011-quiz" class="md-nav__link">
+<span class="md-ellipsis">
+10.11 Quiz
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="chapter-10-number-theory-and-cryptography">Chapter 10: Number Theory and Cryptography<a class="headerlink" href="#chapter-10-number-theory-and-cryptography" title="Permanent link">&para;</a></h1>
+<p><em>Divisibility, primes, modular arithmetic and the RSA cryptosystem</em></p>
+<div class="admonition note">
+<p class="admonition-title">Learning outcomes</p>
+<p>After this chapter you should be able to:</p>
+<ul>
+<li>use divisibility, the division algorithm and the fundamental theorem of arithmetic;</li>
+<li>compute greatest common divisors with Euclid's algorithm, and express them as integer combinations with the extended algorithm;</li>
+<li>calculate in modular arithmetic, including fast modular exponentiation;</li>
+<li>solve linear congruences with modular inverses, and systems of congruences with the Chinese remainder theorem;</li>
+<li>state and use Fermat's little theorem and Euler's theorem;</li>
+<li>explain how RSA keys are made, how messages are encrypted and decrypted, why decryption works, and what its security rests on.</li>
+</ul>
+</div>
+<h2 id="101-divisibility">10.1 Divisibility<a class="headerlink" href="#101-divisibility" title="Permanent link">&para;</a></h2>
+<p>Number theory is the study of the integers. For centuries it was admired as the purest of mathematics, with no practical use. Today it secures every online payment. This chapter covers the number theory needed for that application.</p>
+<p>Recall from Chapter 3 that <span class="arithmatex">\(a \mid b\)</span> ("<span class="arithmatex">\(a\)</span> divides <span class="arithmatex">\(b\)</span>") means <span class="arithmatex">\(b = ak\)</span> for some integer <span class="arithmatex">\(k\)</span>, for <span class="arithmatex">\(a \ne 0\)</span>. Then <span class="arithmatex">\(a\)</span> is a <strong>factor</strong> or <strong>divisor</strong> of <span class="arithmatex">\(b\)</span>, and <span class="arithmatex">\(b\)</span> is a <strong>multiple</strong> of <span class="arithmatex">\(a\)</span>.</p>
+<div class="admonition note">
+<p class="admonition-title">Theorem 10.1 (properties of divisibility)</p>
+<p>For integers <span class="arithmatex">\(a, b, c\)</span> with <span class="arithmatex">\(a \ne 0\)</span>:</p>
+<ol>
+<li>if <span class="arithmatex">\(a \mid b\)</span> and <span class="arithmatex">\(a \mid c\)</span>, then <span class="arithmatex">\(a \mid (b + c)\)</span>;</li>
+<li>if <span class="arithmatex">\(a \mid b\)</span>, then <span class="arithmatex">\(a \mid bc\)</span> for every integer <span class="arithmatex">\(c\)</span>;</li>
+<li>if <span class="arithmatex">\(a \mid b\)</span> and <span class="arithmatex">\(b \mid c\)</span> (with <span class="arithmatex">\(b \ne 0\)</span>), then <span class="arithmatex">\(a \mid c\)</span>;</li>
+<li>if <span class="arithmatex">\(a \mid b\)</span> and <span class="arithmatex">\(a \mid c\)</span>, then <span class="arithmatex">\(a \mid (sb + tc)\)</span> for all integers <span class="arithmatex">\(s, t\)</span>.</li>
+</ol>
+</div>
+<p>The proofs are one line each, by the definition (Example 3.2 and Exercise 3.2). Property 4 is the one used most.</p>
+<p>The <strong>division algorithm</strong> (Theorem 6.1) says that for an integer <span class="arithmatex">\(a\)</span> and a positive integer <span class="arithmatex">\(d\)</span> there are unique integers <span class="arithmatex">\(q\)</span> (the quotient) and <span class="arithmatex">\(r\)</span> (the remainder) with</p>
+<div class="arithmatex">\[
+a = dq + r, \qquad 0 \le r &lt; d.
+\]</div>
+<p>We write <span class="arithmatex">\(q = a \;\mathrm{div}\; d = \lfloor a/d \rfloor\)</span> and <span class="arithmatex">\(r = a \bmod d\)</span>. For example, <span class="arithmatex">\(101 = 11 \cdot 9 + 2\)</span>, so <span class="arithmatex">\(101 \bmod 11 = 2\)</span>; and <span class="arithmatex">\(-11 = 3 \cdot (-4) + 1\)</span>, so <span class="arithmatex">\(-11 \bmod 3 = 1\)</span>.</p>
+<h3 id="representing-integers-in-any-base">Representing integers in any base<a class="headerlink" href="#representing-integers-in-any-base" title="Permanent link">&para;</a></h3>
+<p>The division algorithm also explains positional notation. For an integer <span class="arithmatex">\(b &gt; 1\)</span>, every positive integer <span class="arithmatex">\(n\)</span> can be written uniquely as <span class="arithmatex">\(n = a_k b^k + \dots + a_1 b + a_0\)</span> with digits <span class="arithmatex">\(0 \le a_i &lt; b\)</span> and <span class="arithmatex">\(a_k \ne 0\)</span>. The last digit is <span class="arithmatex">\(a_0 = n \bmod b\)</span>, and the others are the digits of <span class="arithmatex">\(n \;\mathrm{div}\; b\)</span>. So repeated division gives the digits from right to left: <span class="arithmatex">\(241 = 2 \cdot 120 + 1\)</span>, <span class="arithmatex">\(120 = 2 \cdot 60 + 0\)</span>, <span class="arithmatex">\(60 = 2 \cdot 30 + 0\)</span>, <span class="arithmatex">\(30 = 2 \cdot 15 + 0\)</span>, <span class="arithmatex">\(15 = 2 \cdot 7 + 1\)</span>, <span class="arithmatex">\(7 = 2 \cdot 3 + 1\)</span>, <span class="arithmatex">\(3 = 2 \cdot 1 + 1\)</span>, <span class="arithmatex">\(1 = 2 \cdot 0 + 1\)</span>, so <span class="arithmatex">\(241 = (11110001)_2\)</span>. Computers use base 2 (binary) and, for humans reading binary, base 16 (hexadecimal): <span class="arithmatex">\((11110001)_2 = (\mathrm{F1})_{16}\)</span>.</p>
+<h2 id="102-primes">10.2 Primes<a class="headerlink" href="#102-primes" title="Permanent link">&para;</a></h2>
+<p>Recall that an integer <span class="arithmatex">\(p &gt; 1\)</span> is <strong>prime</strong> if its only positive divisors are <span class="arithmatex">\(1\)</span> and <span class="arithmatex">\(p\)</span>. The primes below 50 are</p>
+<div class="arithmatex">\[
+2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47.
+\]</div>
+<p>We have proved that every integer <span class="arithmatex">\(n \ge 2\)</span> is a product of primes (Example 6.6) and that there are infinitely many primes (Example 3.7). The factorisation is also unique, which we prove in Section 10.4.</p>
+<div class="admonition note">
+<p class="admonition-title">Theorem 10.2 (the fundamental theorem of arithmetic)</p>
+<p>Every integer <span class="arithmatex">\(n \ge 2\)</span> can be written as a product of primes, <span class="arithmatex">\(n = p_1 p_2 \cdots p_k\)</span> with <span class="arithmatex">\(p_1 \le p_2 \le \dots \le p_k\)</span>, in exactly one way.</p>
+</div>
+<p>For example, <span class="arithmatex">\(360 = 2 \cdot 2 \cdot 2 \cdot 3 \cdot 3 \cdot 5 = 2^3 \cdot 3^2 \cdot 5\)</span>.</p>
+<h3 id="finding-primes">Finding primes<a class="headerlink" href="#finding-primes" title="Permanent link">&para;</a></h3>
+<p>To test whether <span class="arithmatex">\(n\)</span> is prime, it is enough to try dividing by the primes up to <span class="arithmatex">\(\sqrt{n}\)</span>: if <span class="arithmatex">\(n = ab\)</span> with <span class="arithmatex">\(1 &lt; a \le b\)</span>, then <span class="arithmatex">\(a \le \sqrt{n}\)</span> (Example 3.5), and any prime factor of <span class="arithmatex">\(a\)</span> divides <span class="arithmatex">\(n\)</span>. To show 101 is prime, try 2, 3, 5 and 7 (since <span class="arithmatex">\(11^2 = 121 &gt; 101\)</span>); none divides it.</p>
+<p>To list all primes up to <span class="arithmatex">\(N\)</span>, the <strong>sieve of Eratosthenes</strong> is far faster. Write the numbers from 2 to <span class="arithmatex">\(N\)</span>. The first number not crossed out, 2, is prime; cross out its multiples. The next uncrossed number, 3, is prime; cross out its multiples. Continue. Once the current prime exceeds <span class="arithmatex">\(\sqrt{N}\)</span>, every number left is prime.</p>
+<p>Primes thin out but never stop. The <strong>prime number theorem</strong> (proved in 1896) says that the number of primes up to <span class="arithmatex">\(x\)</span> is approximately <span class="arithmatex">\(x/\ln x\)</span>, so a randomly chosen number near <span class="arithmatex">\(x\)</span> is prime with probability about <span class="arithmatex">\(1/\ln x\)</span>. Near <span class="arithmatex">\(10^{300}\)</span>, about one number in 700 is prime: large primes are plentiful, which RSA depends on.</p>
+<div class="admonition warning">
+<p class="admonition-title">Testing primality is easy; factoring is hard</p>
+<p>There are fast algorithms that decide whether a number with hundreds of digits is prime, without finding any factor. But no fast method is known for <strong>factoring</strong> a large number that is the product of two large primes. The security of RSA rests on this difference.</p>
+</div>
+<h2 id="103-greatest-common-divisors-and-euclids-algorithm">10.3 Greatest common divisors and Euclid's algorithm<a class="headerlink" href="#103-greatest-common-divisors-and-euclids-algorithm" title="Permanent link">&para;</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Definitions: gcd and lcm</p>
+<p>For integers <span class="arithmatex">\(a\)</span> and <span class="arithmatex">\(b\)</span>, not both zero, the <strong>greatest common divisor</strong> <span class="arithmatex">\(\gcd(a, b)\)</span> is the largest integer that divides both. Integers with <span class="arithmatex">\(\gcd(a, b) = 1\)</span> are <strong>relatively prime</strong> (or coprime). For positive <span class="arithmatex">\(a\)</span> and <span class="arithmatex">\(b\)</span>, the <strong>least common multiple</strong> <span class="arithmatex">\(\mathrm{lcm}(a, b)\)</span> is the smallest positive integer divisible by both.</p>
+</div>
+<p>With prime factorisations, <span class="arithmatex">\(\gcd\)</span> takes the smaller power of each prime and <span class="arithmatex">\(\mathrm{lcm}\)</span> the larger: for <span class="arithmatex">\(120 = 2^3 \cdot 3 \cdot 5\)</span> and <span class="arithmatex">\(500 = 2^2 \cdot 5^3\)</span>, <span class="arithmatex">\(\gcd = 2^2 \cdot 5 = 20\)</span> and <span class="arithmatex">\(\mathrm{lcm} = 2^3 \cdot 3 \cdot 5^3 = 3000\)</span>. Since <span class="arithmatex">\(\min(x, y) + \max(x, y) = x + y\)</span>, it follows that <span class="arithmatex">\(\gcd(a, b) \cdot \mathrm{lcm}(a, b) = ab\)</span>.</p>
+<p>But factoring is hard, so this is not how gcds are computed. Euclid's algorithm, over two thousand years old, is much faster and needs no factoring. It rests on one lemma.</p>
+<div class="admonition note">
+<p class="admonition-title">Lemma 10.3</p>
+<p>If <span class="arithmatex">\(a = bq + r\)</span>, then <span class="arithmatex">\(\gcd(a, b) = \gcd(b, r)\)</span>.</p>
+</div>
+<p><strong>Proof.</strong> If <span class="arithmatex">\(d\)</span> divides <span class="arithmatex">\(a\)</span> and <span class="arithmatex">\(b\)</span>, then <span class="arithmatex">\(d\)</span> divides <span class="arithmatex">\(r = a - bq\)</span> (Theorem 10.1(4)). If <span class="arithmatex">\(d\)</span> divides <span class="arithmatex">\(b\)</span> and <span class="arithmatex">\(r\)</span>, then <span class="arithmatex">\(d\)</span> divides <span class="arithmatex">\(a = bq + r\)</span>. So <span class="arithmatex">\(a, b\)</span> and <span class="arithmatex">\(b, r\)</span> have exactly the same common divisors, hence the same greatest one. <span class="arithmatex">\(\blacksquare\)</span></p>
+<p><strong>Euclid's algorithm.</strong> To find <span class="arithmatex">\(\gcd(a, b)\)</span> with <span class="arithmatex">\(a \ge b &gt; 0\)</span>: divide <span class="arithmatex">\(a\)</span> by <span class="arithmatex">\(b\)</span> to get remainder <span class="arithmatex">\(r\)</span>; replace <span class="arithmatex">\((a, b)\)</span> by <span class="arithmatex">\((b, r)\)</span>; repeat until the remainder is <span class="arithmatex">\(0\)</span>. The last non-zero remainder is the gcd. The remainders strictly decrease and stay non-negative, so the algorithm stops; by Lemma 10.3 the gcd never changes, and <span class="arithmatex">\(\gcd(g, 0) = g\)</span>.</p>
+<div class="admonition example">
+<p class="admonition-title">Example 10.1: Euclid's algorithm</p>
+<p><strong>Problem.</strong> Find <span class="arithmatex">\(\gcd(252, 198)\)</span>.</p>
+<p><strong>Solution.</strong></p>
+<div class="arithmatex">\[
+\begin{aligned}
+252 &amp;= 1 \cdot 198 + 54 \\
+198 &amp;= 3 \cdot 54 + 36 \\
+54 &amp;= 1 \cdot 36 + 18 \\
+36 &amp;= 2 \cdot 18 + 0
+\end{aligned}
+\]</div>
+<p>The last non-zero remainder is <span class="arithmatex">\(18\)</span>, so <span class="arithmatex">\(\gcd(252, 198) = 18\)</span>.</p>
+</div>
+<p>Euclid's algorithm is fast: one can prove (Lamé's theorem) that the number of divisions is at most five times the number of decimal digits of the smaller number. A gcd of two 300-digit numbers needs at most about 1,500 divisions.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">gcd</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="k">while</span> <span class="n">b</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">b</span><span class="p">,</span> <span class="n">a</span> <span class="o">%</span> <span class="n">b</span>
+    <span class="k">return</span> <span class="n">a</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">gcd</span><span class="p">(</span><span class="mi">252</span><span class="p">,</span> <span class="mi">198</span><span class="p">))</span>   <span class="c1"># 18</span>
+</code></pre></div>
+<h2 id="104-bezouts-identity-and-unique-factorisation">10.4 Bézout's identity and unique factorisation<a class="headerlink" href="#104-bezouts-identity-and-unique-factorisation" title="Permanent link">&para;</a></h2>
+<p>Running Euclid's algorithm backwards shows that the gcd is a combination of the two numbers.</p>
+<div class="admonition note">
+<p class="admonition-title">Theorem 10.4 (Bézout's identity)</p>
+<p>For integers <span class="arithmatex">\(a\)</span> and <span class="arithmatex">\(b\)</span>, not both zero, there are integers <span class="arithmatex">\(s\)</span> and <span class="arithmatex">\(t\)</span> with <span class="arithmatex">\(\gcd(a, b) = sa + tb\)</span>.</p>
+</div>
+<p><strong>Proof.</strong> Let <span class="arithmatex">\(S = \{sa + tb : s, t \in \mathbb{Z}\}\)</span> and let <span class="arithmatex">\(g\)</span> be the smallest positive element of <span class="arithmatex">\(S\)</span> (it exists by well-ordering, since <span class="arithmatex">\(S\)</span> contains <span class="arithmatex">\(\lvert a \rvert\)</span> or <span class="arithmatex">\(\lvert b \rvert\)</span>). Write <span class="arithmatex">\(a = gq + r\)</span> with <span class="arithmatex">\(0 \le r &lt; g\)</span>. Then <span class="arithmatex">\(r = a - q(sa + tb) = (1 - qs)a + (-qt)b\)</span> is in <span class="arithmatex">\(S\)</span>, and <span class="arithmatex">\(r &lt; g\)</span>, so <span class="arithmatex">\(r\)</span> cannot be positive: <span class="arithmatex">\(r = 0\)</span> and <span class="arithmatex">\(g \mid a\)</span>. In the same way <span class="arithmatex">\(g \mid b\)</span>. And any common divisor of <span class="arithmatex">\(a\)</span> and <span class="arithmatex">\(b\)</span> divides <span class="arithmatex">\(sa + tb = g\)</span>, so is at most <span class="arithmatex">\(g\)</span>. Hence <span class="arithmatex">\(g = \gcd(a, b)\)</span>. <span class="arithmatex">\(\blacksquare\)</span></p>
+<p>The proof shows that <span class="arithmatex">\(s\)</span> and <span class="arithmatex">\(t\)</span> exist; the <strong>extended Euclidean algorithm</strong> finds them, by substituting back through the steps of Euclid's algorithm.</p>
+<div class="admonition example">
+<p class="admonition-title">Example 10.2: The extended Euclidean algorithm</p>
+<p><strong>Problem.</strong> Find integers <span class="arithmatex">\(s, t\)</span> with <span class="arithmatex">\(18 = 252s + 198t\)</span>.</p>
+<p><strong>Solution.</strong> From Example 10.1, solve each line for its remainder: <span class="arithmatex">\(54 = 252 - 198\)</span>, <span class="arithmatex">\(36 = 198 - 3 \cdot 54\)</span>, <span class="arithmatex">\(18 = 54 - 36\)</span>. Now substitute from the bottom up:</p>
+<div class="arithmatex">\[
+\begin{aligned}
+18 &amp;= 54 - 36 = 54 - (198 - 3 \cdot 54) = 4 \cdot 54 - 198 \\
+&amp;= 4(252 - 198) - 198 = 4 \cdot 252 - 5 \cdot 198.
+\end{aligned}
+\]</div>
+<p>So <span class="arithmatex">\(s = 4\)</span>, <span class="arithmatex">\(t = -5\)</span>. Check: <span class="arithmatex">\(1008 - 990 = 18\)</span>.</p>
+</div>
+<p>The same computation can be organised as a recursive program:</p>
+<div class="language-python highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">extended_gcd</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Return (g, s, t) with g = gcd(a, b) = s*a + t*b."""</span>
+    <span class="k">if</span> <span class="n">b</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">a</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span>
+    <span class="n">g</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">t</span> <span class="o">=</span> <span class="n">extended_gcd</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">a</span> <span class="o">%</span> <span class="n">b</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">g</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">s</span> <span class="o">-</span> <span class="p">(</span><span class="n">a</span> <span class="o">//</span> <span class="n">b</span><span class="p">)</span> <span class="o">*</span> <span class="n">t</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">extended_gcd</span><span class="p">(</span><span class="mi">252</span><span class="p">,</span> <span class="mi">198</span><span class="p">))</span>   <span class="c1"># (18, 4, -5)</span>
+</code></pre></div>
+<p>Bézout's identity gives the key fact about primes.</p>
+<div class="admonition note">
+<p class="admonition-title">Lemma 10.5 (Euclid's lemma)</p>
+<p>If <span class="arithmatex">\(p\)</span> is prime and <span class="arithmatex">\(p \mid ab\)</span>, then <span class="arithmatex">\(p \mid a\)</span> or <span class="arithmatex">\(p \mid b\)</span>. More generally, if <span class="arithmatex">\(\gcd(a, b) = 1\)</span> and <span class="arithmatex">\(a \mid bc\)</span>, then <span class="arithmatex">\(a \mid c\)</span>.</p>
+</div>
+<p><strong>Proof.</strong> For the general form: by Bézout, <span class="arithmatex">\(1 = sa + tb\)</span>. Multiply by <span class="arithmatex">\(c\)</span>: <span class="arithmatex">\(c = sac + tbc\)</span>. Now <span class="arithmatex">\(a \mid sac\)</span>, and <span class="arithmatex">\(a \mid tbc\)</span> because <span class="arithmatex">\(a \mid bc\)</span>. So <span class="arithmatex">\(a \mid c\)</span>. For the prime case: if <span class="arithmatex">\(p \nmid a\)</span>, then <span class="arithmatex">\(\gcd(p, a) = 1\)</span> (the only positive divisors of <span class="arithmatex">\(p\)</span> are 1 and <span class="arithmatex">\(p\)</span>), so <span class="arithmatex">\(p \mid b\)</span>. <span class="arithmatex">\(\blacksquare\)</span></p>
+<p><strong>Proof of uniqueness in Theorem 10.2.</strong> Suppose some integer has two different prime factorisations, <span class="arithmatex">\(p_1 \cdots p_k = q_1 \cdots q_m\)</span>. Cancel the primes common to both sides; what remains is an equation of the same form with no prime on both sides (both sides cannot become empty, since the factorisations were different). Then <span class="arithmatex">\(p_1\)</span> divides <span class="arithmatex">\(q_1 \cdots q_m\)</span>, and by repeated use of Euclid's lemma, <span class="arithmatex">\(p_1\)</span> divides some <span class="arithmatex">\(q_j\)</span>; since <span class="arithmatex">\(q_j\)</span> is prime, <span class="arithmatex">\(p_1 = q_j\)</span>, contradicting that no prime is on both sides. <span class="arithmatex">\(\blacksquare\)</span></p>
+<div class="admonition warning">
+<p class="admonition-title">Euclid's lemma needs a prime</p>
+<p><span class="arithmatex">\(6 \mid 4 \cdot 9\)</span> but <span class="arithmatex">\(6 \nmid 4\)</span> and <span class="arithmatex">\(6 \nmid 9\)</span>. The lemma holds for primes, or for <span class="arithmatex">\(a\)</span> coprime to <span class="arithmatex">\(b\)</span>, and not in general.</p>
+</div>
+<h2 id="105-modular-arithmetic">10.5 Modular arithmetic<a class="headerlink" href="#105-modular-arithmetic" title="Permanent link">&para;</a></h2>
+<p>Clocks do arithmetic modulo 12: nine o'clock plus five hours is two o'clock. Section 5.4 defined <strong>congruence</strong>: <span class="arithmatex">\(a \equiv b \pmod{m}\)</span> when <span class="arithmatex">\(m \mid (a - b)\)</span>. Equivalently, <span class="arithmatex">\(a\)</span> and <span class="arithmatex">\(b\)</span> have the same remainder on division by <span class="arithmatex">\(m\)</span>: <span class="arithmatex">\(a \equiv b \pmod m\)</span> if and only if <span class="arithmatex">\(a \bmod m = b \bmod m\)</span>.</p>
+<figure class="fig fig-diagram">
+<img src="img/clock-mod-12.svg" alt="A clock face with the numbers 0 to 11 arranged in a circle. An arc from 9 travels five steps clockwise past 10, 11 and 0 to 2, illustrating that 9 + 5 is congruent to 2 modulo 12." loading="lazy" width="420" height="400">
+<figcaption><strong>Figure 10.1 Arithmetic modulo 12.</strong> A clock face with the numbers 0 to 11 arranged in a circle. An arc from 9 travels five steps clockwise past 10, 11 and 0 to 2, illustrating that 9 + 5 is congruent to 2 modulo 12.</figcaption>
+</figure>
+<p>Congruences can be added and multiplied like equations.</p>
+<div class="admonition note">
+<p class="admonition-title">Theorem 10.6</p>
+<p>If <span class="arithmatex">\(a \equiv b \pmod{m}\)</span> and <span class="arithmatex">\(c \equiv d \pmod{m}\)</span>, then <span class="arithmatex">\(a + c \equiv b + d \pmod{m}\)</span> and <span class="arithmatex">\(ac \equiv bd \pmod{m}\)</span>.</p>
+</div>
+<p><strong>Proof.</strong> Write <span class="arithmatex">\(a = b + km\)</span> and <span class="arithmatex">\(c = d + \ell m\)</span>. Then <span class="arithmatex">\(a + c = (b + d) + (k + \ell)m\)</span> and <span class="arithmatex">\(ac = bd + (b\ell + dk + k\ell m)m\)</span>. <span class="arithmatex">\(\blacksquare\)</span></p>
+<p>So in a long calculation modulo <span class="arithmatex">\(m\)</span>, we may reduce modulo <span class="arithmatex">\(m\)</span> at every step, which keeps the numbers small. The set <span class="arithmatex">\(\mathbb{Z}_m = \{0, 1, \dots, m-1\}\)</span> with addition and multiplication modulo <span class="arithmatex">\(m\)</span> is the <strong>integers modulo <span class="arithmatex">\(m\)</span></strong>; it obeys the usual laws of arithmetic (commutative, associative, distributive, with <span class="arithmatex">\(0\)</span> and <span class="arithmatex">\(1\)</span> as identities).</p>
+<div class="admonition warning">
+<p class="admonition-title">You cannot always divide</p>
+<p><span class="arithmatex">\(14 \equiv 8 \pmod 6\)</span>, but dividing both sides by 2 gives <span class="arithmatex">\(7 \equiv 4 \pmod 6\)</span>, which is false. Division modulo <span class="arithmatex">\(m\)</span> is possible only by numbers coprime to <span class="arithmatex">\(m\)</span> (Section 10.6).</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title">Example 10.3: Last digits</p>
+<p><strong>Problem.</strong> What is the last digit of <span class="arithmatex">\(7^{2026}\)</span>?</p>
+<p><strong>Solution.</strong> We need <span class="arithmatex">\(7^{2026} \bmod 10\)</span>. The powers of 7 modulo 10 are <span class="arithmatex">\(7, 9, 3, 1, 7, 9, 3, 1, \dots\)</span> (since <span class="arithmatex">\(7^4 = 2401 \equiv 1\)</span>). Because <span class="arithmatex">\(2026 = 4 \cdot 506 + 2\)</span>, <span class="arithmatex">\(7^{2026} = (7^4)^{506} \cdot 7^2 \equiv 1 \cdot 49 \equiv 9 \pmod{10}\)</span>. The last digit is 9.</p>
+</div>
+<h3 id="fast-modular-exponentiation">Fast modular exponentiation<a class="headerlink" href="#fast-modular-exponentiation" title="Permanent link">&para;</a></h3>
+<p>Cryptography needs <span class="arithmatex">\(b^e \bmod m\)</span> for numbers with hundreds of digits. Multiplying <span class="arithmatex">\(b\)</span> by itself <span class="arithmatex">\(e - 1\)</span> times is impossible, but <strong>repeated squaring</strong> needs only about <span class="arithmatex">\(2\log_2 e\)</span> multiplications. Write <span class="arithmatex">\(e\)</span> in binary; compute <span class="arithmatex">\(b, b^2, b^4, b^8, \dots\)</span> modulo <span class="arithmatex">\(m\)</span> by squaring; multiply together the powers corresponding to the 1 bits of <span class="arithmatex">\(e\)</span>.</p>
+<div class="admonition example">
+<p class="admonition-title">Example 10.4: Repeated squaring</p>
+<p><strong>Problem.</strong> Compute <span class="arithmatex">\(7^{13} \bmod 11\)</span>.</p>
+<p><strong>Solution.</strong> <span class="arithmatex">\(13 = (1101)_2 = 8 + 4 + 1\)</span>. Squaring modulo 11: <span class="arithmatex">\(7^1 \equiv 7\)</span>, <span class="arithmatex">\(7^2 = 49 \equiv 5\)</span>, <span class="arithmatex">\(7^4 \equiv 5^2 = 25 \equiv 3\)</span>, <span class="arithmatex">\(7^8 \equiv 3^2 = 9\)</span>. So <span class="arithmatex">\(7^{13} = 7^8 \cdot 7^4 \cdot 7^1 \equiv 9 \cdot 3 \cdot 7 = 189 \equiv 2 \pmod{11}\)</span>.</p>
+</div>
+<div class="language-python highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">power_mod</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">b</span> <span class="o">%</span> <span class="n">m</span>
+    <span class="k">while</span> <span class="n">e</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">e</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>          <span class="c1"># the current binary digit of e is 1</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="p">(</span><span class="n">result</span> <span class="o">*</span> <span class="n">b</span><span class="p">)</span> <span class="o">%</span> <span class="n">m</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="p">(</span><span class="n">b</span> <span class="o">*</span> <span class="n">b</span><span class="p">)</span> <span class="o">%</span> <span class="n">m</span>         <span class="c1"># square for the next binary digit</span>
+        <span class="n">e</span> <span class="o">=</span> <span class="n">e</span> <span class="o">//</span> <span class="mi">2</span>
+    <span class="k">return</span> <span class="n">result</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">power_mod</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">11</span><span class="p">),</span> <span class="n">power_mod</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">13</span><span class="p">))</span>   <span class="c1"># 2 9</span>
+</code></pre></div>
+<p>Python's built-in <code>pow(b, e, m)</code> does the same thing.</p>
+<h2 id="106-inverses-linear-congruences-and-the-chinese-remainder-theorem">10.6 Inverses, linear congruences and the Chinese remainder theorem<a class="headerlink" href="#106-inverses-linear-congruences-and-the-chinese-remainder-theorem" title="Permanent link">&para;</a></h2>
+<p>To solve <span class="arithmatex">\(3x \equiv 4 \pmod 7\)</span>, we would like to divide by 3. Modulo 7, "dividing by 3" means multiplying by a number <span class="arithmatex">\(\bar{3}\)</span> with <span class="arithmatex">\(3\bar{3} \equiv 1\)</span>; trying values, <span class="arithmatex">\(3 \cdot 5 = 15 \equiv 1\)</span>, so <span class="arithmatex">\(\bar{3} = 5\)</span>. Then <span class="arithmatex">\(x \equiv 5 \cdot 4 = 20 \equiv 6 \pmod 7\)</span>. Check: <span class="arithmatex">\(3 \cdot 6 = 18 \equiv 4\)</span>.</p>
+<div class="admonition note">
+<p class="admonition-title">Theorem 10.7 (modular inverses)</p>
+<p>If <span class="arithmatex">\(\gcd(a, m) = 1\)</span> and <span class="arithmatex">\(m &gt; 1\)</span>, there is an integer <span class="arithmatex">\(\bar{a}\)</span>, unique modulo <span class="arithmatex">\(m\)</span>, with <span class="arithmatex">\(a\bar{a} \equiv 1 \pmod{m}\)</span>; it is called an <strong>inverse</strong> of <span class="arithmatex">\(a\)</span> modulo <span class="arithmatex">\(m\)</span>. If <span class="arithmatex">\(\gcd(a, m) &gt; 1\)</span>, no inverse exists.</p>
+</div>
+<p><strong>Proof.</strong> By Bézout, <span class="arithmatex">\(1 = sa + tm\)</span> for some <span class="arithmatex">\(s, t\)</span>, so <span class="arithmatex">\(sa \equiv 1 \pmod{m}\)</span>: take <span class="arithmatex">\(\bar{a} = s\)</span>. If <span class="arithmatex">\(\bar{a}\)</span> and <span class="arithmatex">\(\bar{a}'\)</span> are both inverses, then <span class="arithmatex">\(\bar{a} \equiv \bar{a}(a\bar{a}') = (\bar{a}a)\bar{a}' \equiv \bar{a}' \pmod m\)</span>. If <span class="arithmatex">\(d = \gcd(a, m) &gt; 1\)</span> and <span class="arithmatex">\(ax \equiv 1\)</span>, then <span class="arithmatex">\(ax - 1 = km\)</span>, and <span class="arithmatex">\(d\)</span> divides <span class="arithmatex">\(ax - km = 1\)</span>, which is impossible. <span class="arithmatex">\(\blacksquare\)</span></p>
+<div class="admonition example">
+<p class="admonition-title">Example 10.5: An inverse by the extended algorithm</p>
+<p><strong>Problem.</strong> Find the inverse of 17 modulo 60, and solve <span class="arithmatex">\(17x \equiv 5 \pmod{60}\)</span>.</p>
+<p><strong>Solution.</strong> Euclid: <span class="arithmatex">\(60 = 3 \cdot 17 + 9\)</span>, <span class="arithmatex">\(17 = 1 \cdot 9 + 8\)</span>, <span class="arithmatex">\(9 = 1 \cdot 8 + 1\)</span>. Back-substitute: <span class="arithmatex">\(1 = 9 - 8 = 9 - (17 - 9) = 2 \cdot 9 - 17 = 2(60 - 3 \cdot 17) - 17 = 2 \cdot 60 - 7 \cdot 17\)</span>. So <span class="arithmatex">\(-7 \cdot 17 \equiv 1\)</span>, and the inverse is <span class="arithmatex">\(-7 \equiv 53 \pmod{60}\)</span>. Check: <span class="arithmatex">\(17 \cdot 53 = 901 = 15 \cdot 60 + 1\)</span>. Then <span class="arithmatex">\(x \equiv 53 \cdot 5 = 265 \equiv 25 \pmod{60}\)</span>. Check: <span class="arithmatex">\(17 \cdot 25 = 425 = 7 \cdot 60 + 5\)</span>.</p>
+</div>
+<p>In particular, when <span class="arithmatex">\(p\)</span> is prime every non-zero element of <span class="arithmatex">\(\mathbb{Z}_p\)</span> has an inverse, so <span class="arithmatex">\(\mathbb{Z}_p\)</span> is a <strong>field</strong>: one can add, subtract, multiply and divide (by non-zero elements), just as with rational numbers.</p>
+<h3 id="the-chinese-remainder-theorem">The Chinese remainder theorem<a class="headerlink" href="#the-chinese-remainder-theorem" title="Permanent link">&para;</a></h3>
+<p>An ancient Chinese mathematical text poses the problem: find a number that leaves remainder 2 when divided by 3, remainder 3 when divided by 5, and remainder 2 when divided by 7.</p>
+<div class="admonition note">
+<p class="admonition-title">Theorem 10.8 (the Chinese remainder theorem)</p>
+<p>Let <span class="arithmatex">\(m_1, \dots, m_n\)</span> be pairwise relatively prime positive integers and <span class="arithmatex">\(m = m_1 m_2 \cdots m_n\)</span>. For any integers <span class="arithmatex">\(a_1, \dots, a_n\)</span>, the system</p>
+<div class="arithmatex">\[
+x \equiv a_1 \pmod{m_1}, \quad x \equiv a_2 \pmod{m_2}, \quad \dots, \quad x \equiv a_n \pmod{m_n}
+\]</div>
+<p>has a solution, and any two solutions are congruent modulo <span class="arithmatex">\(m\)</span>.</p>
+</div>
+<p><strong>Proof.</strong> <em>Existence.</em> Let <span class="arithmatex">\(M_k = m/m_k\)</span>, the product of all the moduli except <span class="arithmatex">\(m_k\)</span>. Since the <span class="arithmatex">\(m_i\)</span> are pairwise coprime, <span class="arithmatex">\(\gcd(M_k, m_k) = 1\)</span>, so <span class="arithmatex">\(M_k\)</span> has an inverse <span class="arithmatex">\(y_k\)</span> modulo <span class="arithmatex">\(m_k\)</span>. Let</p>
+<div class="arithmatex">\[
+x = a_1 M_1 y_1 + a_2 M_2 y_2 + \dots + a_n M_n y_n.
+\]</div>
+<p>For each <span class="arithmatex">\(k\)</span>, every term except the <span class="arithmatex">\(k\)</span>-th is divisible by <span class="arithmatex">\(m_k\)</span> (because <span class="arithmatex">\(M_j\)</span> contains the factor <span class="arithmatex">\(m_k\)</span> for <span class="arithmatex">\(j \ne k\)</span>), and the <span class="arithmatex">\(k\)</span>-th term is <span class="arithmatex">\(a_k M_k y_k \equiv a_k \cdot 1 \pmod{m_k}\)</span>. So <span class="arithmatex">\(x \equiv a_k \pmod{m_k}\)</span> for every <span class="arithmatex">\(k\)</span>.</p>
+<p><em>Uniqueness.</em> If <span class="arithmatex">\(x\)</span> and <span class="arithmatex">\(x'\)</span> are solutions, each <span class="arithmatex">\(m_k\)</span> divides <span class="arithmatex">\(x - x'\)</span>; since the <span class="arithmatex">\(m_k\)</span> are pairwise coprime, their product <span class="arithmatex">\(m\)</span> divides <span class="arithmatex">\(x - x'\)</span> (by repeated use of Lemma 10.5). <span class="arithmatex">\(\blacksquare\)</span></p>
+<div class="admonition example">
+<p class="admonition-title">Example 10.6: Solving the ancient problem</p>
+<p><strong>Problem.</strong> Solve <span class="arithmatex">\(x \equiv 2 \pmod 3\)</span>, <span class="arithmatex">\(x \equiv 3 \pmod 5\)</span>, <span class="arithmatex">\(x \equiv 2 \pmod 7\)</span>.</p>
+<p><strong>Solution.</strong> <span class="arithmatex">\(m = 105\)</span>; <span class="arithmatex">\(M_1 = 35\)</span>, <span class="arithmatex">\(M_2 = 21\)</span>, <span class="arithmatex">\(M_3 = 15\)</span>. Inverses: <span class="arithmatex">\(35 \equiv 2 \pmod 3\)</span>, inverse <span class="arithmatex">\(y_1 = 2\)</span> (as <span class="arithmatex">\(2 \cdot 2 = 4 \equiv 1\)</span>); <span class="arithmatex">\(21 \equiv 1 \pmod 5\)</span>, <span class="arithmatex">\(y_2 = 1\)</span>; <span class="arithmatex">\(15 \equiv 1 \pmod 7\)</span>, <span class="arithmatex">\(y_3 = 1\)</span>. So</p>
+<div class="arithmatex">\[
+x = 2 \cdot 35 \cdot 2 + 3 \cdot 21 \cdot 1 + 2 \cdot 15 \cdot 1 = 140 + 63 + 30 = 233 \equiv 23 \pmod{105}.
+\]</div>
+<p>Check: <span class="arithmatex">\(23 = 3 \cdot 7 + 2 = 5 \cdot 4 + 3 = 7 \cdot 3 + 2\)</span>. The solutions are <span class="arithmatex">\(23, 128, 233, \dots\)</span></p>
+</div>
+<p>The theorem says that a number modulo <span class="arithmatex">\(m\)</span> is the same as its list of remainders modulo <span class="arithmatex">\(m_1, \dots, m_n\)</span>. Computers use this to do arithmetic with huge numbers as several independent computations with small ones.</p>
+<h2 id="107-fermats-little-theorem">10.7 Fermat's little theorem<a class="headerlink" href="#107-fermats-little-theorem" title="Permanent link">&para;</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Theorem 10.9 (Fermat's little theorem)</p>
+<p>If <span class="arithmatex">\(p\)</span> is prime and <span class="arithmatex">\(p \nmid a\)</span>, then</p>
+<div class="arithmatex">\[
+a^{p-1} \equiv 1 \pmod{p}.
+\]</div>
+<p>Consequently <span class="arithmatex">\(a^p \equiv a \pmod p\)</span> for every integer <span class="arithmatex">\(a\)</span>.</p>
+</div>
+<p><strong>Proof.</strong> Consider the <span class="arithmatex">\(p - 1\)</span> numbers <span class="arithmatex">\(a, 2a, 3a, \dots, (p-1)a\)</span> modulo <span class="arithmatex">\(p\)</span>. None is <span class="arithmatex">\(0\)</span>, because <span class="arithmatex">\(p \nmid ka\)</span> for <span class="arithmatex">\(1 \le k \le p - 1\)</span> (Euclid's lemma). No two are congruent: if <span class="arithmatex">\(ia \equiv ja\)</span>, then multiplying by the inverse of <span class="arithmatex">\(a\)</span> gives <span class="arithmatex">\(i \equiv j\)</span>, so <span class="arithmatex">\(i = j\)</span>. So these numbers are <span class="arithmatex">\(1, 2, \dots, p - 1\)</span> in some order, and their products agree:</p>
+<div class="arithmatex">\[
+a \cdot 2a \cdots (p-1)a \equiv 1 \cdot 2 \cdots (p-1) \pmod p, \quad\text{that is,}\quad a^{p-1}(p-1)! \equiv (p-1)! \pmod p.
+\]</div>
+<p>Since <span class="arithmatex">\((p-1)!\)</span> is coprime to <span class="arithmatex">\(p\)</span>, we may cancel it (multiply by its inverse), giving <span class="arithmatex">\(a^{p-1} \equiv 1\)</span>. For the consequence: if <span class="arithmatex">\(p \nmid a\)</span>, multiply by <span class="arithmatex">\(a\)</span>; if <span class="arithmatex">\(p \mid a\)</span>, both sides are <span class="arithmatex">\(0\)</span>. <span class="arithmatex">\(\blacksquare\)</span></p>
+<div class="admonition example">
+<p class="admonition-title">Example 10.7: Using Fermat's little theorem</p>
+<p><strong>Problem.</strong> Find <span class="arithmatex">\(3^{200} \bmod 13\)</span>.</p>
+<p><strong>Solution.</strong> By Fermat, <span class="arithmatex">\(3^{12} \equiv 1 \pmod{13}\)</span>. Since <span class="arithmatex">\(200 = 12 \cdot 16 + 8\)</span>, <span class="arithmatex">\(3^{200} \equiv 3^8 = 6561\)</span>. And <span class="arithmatex">\(6561 = 13 \cdot 504 + 9\)</span>, so <span class="arithmatex">\(3^{200} \equiv 9 \pmod{13}\)</span>.</p>
+</div>
+<p>Fermat's theorem gives a quick test that can prove a number composite: if <span class="arithmatex">\(a^{n-1} \not\equiv 1 \pmod n\)</span> for some <span class="arithmatex">\(a\)</span> coprime to <span class="arithmatex">\(n\)</span>, then <span class="arithmatex">\(n\)</span> is not prime. (For <span class="arithmatex">\(n = 15\)</span>, <span class="arithmatex">\(2^{14} = 16384 \equiv 4 \pmod{15}\)</span>, so 15 is composite.) Refinements of this idea, such as the Miller-Rabin test, are how large primes are found in practice.</p>
+<h3 id="eulers-theorem">Euler's theorem<a class="headerlink" href="#eulers-theorem" title="Permanent link">&para;</a></h3>
+<p>For a composite modulus the right generalisation uses <strong>Euler's function</strong> <span class="arithmatex">\(\varphi(n)\)</span>, the number of integers in <span class="arithmatex">\(\{1, 2, \dots, n\}\)</span> that are coprime to <span class="arithmatex">\(n\)</span>. For a prime <span class="arithmatex">\(p\)</span>, <span class="arithmatex">\(\varphi(p) = p - 1\)</span>. For two distinct primes <span class="arithmatex">\(p\)</span> and <span class="arithmatex">\(q\)</span>,</p>
+<div class="arithmatex">\[
+\varphi(pq) = (p - 1)(q - 1),
+\]</div>
+<p>because among <span class="arithmatex">\(1, \dots, pq\)</span> the multiples of <span class="arithmatex">\(p\)</span> (<span class="arithmatex">\(q\)</span> of them) and the multiples of <span class="arithmatex">\(q\)</span> (<span class="arithmatex">\(p\)</span> of them) share only <span class="arithmatex">\(pq\)</span> itself, so <span class="arithmatex">\(pq - q - p + 1 = (p-1)(q-1)\)</span> numbers remain (inclusion-exclusion).</p>
+<div class="admonition note">
+<p class="admonition-title">Theorem 10.10 (Euler's theorem)</p>
+<p>If <span class="arithmatex">\(\gcd(a, n) = 1\)</span>, then <span class="arithmatex">\(a^{\varphi(n)} \equiv 1 \pmod{n}\)</span>.</p>
+</div>
+<p>The proof is the same as for Fermat's theorem, using the <span class="arithmatex">\(\varphi(n)\)</span> numbers coprime to <span class="arithmatex">\(n\)</span> in place of <span class="arithmatex">\(1, \dots, p - 1\)</span>.</p>
+<h2 id="108-the-rsa-cryptosystem">10.8 The RSA cryptosystem<a class="headerlink" href="#108-the-rsa-cryptosystem" title="Permanent link">&para;</a></h2>
+<p>In a classical cipher the sender and receiver share a secret key, which must somehow be agreed in advance. In 1976 Diffie and Hellman proposed <strong>public-key cryptography</strong>, in which each person has two keys: a <strong>public key</strong>, published for anyone to use for encrypting messages to them, and a <strong>private key</strong>, kept secret, for decrypting. In 1977 Rivest, Shamir and Adleman found a practical way to do it, now called <strong>RSA</strong>. (A similar system had been found a few years earlier by Clifford Cocks at the British intelligence agency GCHQ, but this was kept secret until 1997.)</p>
+<h3 id="how-rsa-works">How RSA works<a class="headerlink" href="#how-rsa-works" title="Permanent link">&para;</a></h3>
+<p><strong>Making keys.</strong> The receiver, Asha:</p>
+<ol>
+<li>chooses two large distinct primes <span class="arithmatex">\(p\)</span> and <span class="arithmatex">\(q\)</span> (hundreds of digits each) and computes <span class="arithmatex">\(n = pq\)</span>;</li>
+<li>computes <span class="arithmatex">\(\varphi(n) = (p - 1)(q - 1)\)</span>;</li>
+<li>chooses an exponent <span class="arithmatex">\(e\)</span> with <span class="arithmatex">\(1 &lt; e &lt; \varphi(n)\)</span> and <span class="arithmatex">\(\gcd(e, \varphi(n)) = 1\)</span>;</li>
+<li>computes <span class="arithmatex">\(d\)</span>, the inverse of <span class="arithmatex">\(e\)</span> modulo <span class="arithmatex">\(\varphi(n)\)</span>, with the extended Euclidean algorithm.</li>
+</ol>
+<p>The <strong>public key</strong> is <span class="arithmatex">\((n, e)\)</span>. The <strong>private key</strong> is <span class="arithmatex">\(d\)</span> (and <span class="arithmatex">\(p\)</span>, <span class="arithmatex">\(q\)</span> and <span class="arithmatex">\(\varphi(n)\)</span> are kept secret, or destroyed).</p>
+<p><strong>Encrypting.</strong> A message is first encoded as an integer <span class="arithmatex">\(M\)</span> with <span class="arithmatex">\(0 \le M &lt; n\)</span> (long messages are split into blocks). The sender computes <span class="arithmatex">\(C = M^e \bmod n\)</span> and sends <span class="arithmatex">\(C\)</span>.</p>
+<p><strong>Decrypting.</strong> Asha computes <span class="arithmatex">\(C^d \bmod n\)</span>, which equals <span class="arithmatex">\(M\)</span>.</p>
+<figure class="fig fig-mermaid">
+<pre class="mermaid">sequenceDiagram
+    participant S as Sender
+    participant A as Asha (receiver)
+    A-&gt;&gt;S: public key (n, e)
+    Note over S: C = M^e mod n
+    S-&gt;&gt;A: ciphertext C
+    Note over A: M = C^d mod n</pre>
+<figcaption><strong>Figure 10.2 The flow of an RSA message.</strong> The sender needs only the public key (n, e); only the holder of d can decrypt.</figcaption>
+</figure>
+<div class="admonition example">
+<p class="admonition-title">Example 10.8: RSA with small numbers</p>
+<p><strong>Problem.</strong> Make an RSA key with <span class="arithmatex">\(p = 59\)</span>, <span class="arithmatex">\(q = 67\)</span> and <span class="arithmatex">\(e = 5\)</span>. Encrypt <span class="arithmatex">\(M = 708\)</span> and decrypt the result.</p>
+<p><strong>Solution.</strong> <span class="arithmatex">\(n = 59 \cdot 67 = 3953\)</span> and <span class="arithmatex">\(\varphi(n) = 58 \cdot 66 = 3828\)</span>. Since <span class="arithmatex">\(3828 = 2^2 \cdot 3 \cdot 11 \cdot 29\)</span>, <span class="arithmatex">\(\gcd(5, 3828) = 1\)</span>.</p>
+<p><em>Private key.</em> Euclid: <span class="arithmatex">\(3828 = 765 \cdot 5 + 3\)</span>, <span class="arithmatex">\(5 = 1 \cdot 3 + 2\)</span>, <span class="arithmatex">\(3 = 1 \cdot 2 + 1\)</span>. Back-substitute: <span class="arithmatex">\(1 = 3 - 2 = 2 \cdot 3 - 5 = 2(3828 - 765 \cdot 5) - 5 = 2 \cdot 3828 - 1531 \cdot 5\)</span>. So <span class="arithmatex">\(d \equiv -1531 \equiv 2297 \pmod{3828}\)</span>. Check: <span class="arithmatex">\(5 \cdot 2297 = 11485 = 3 \cdot 3828 + 1\)</span>.</p>
+<p><em>Encrypt.</em> <span class="arithmatex">\(C = 708^5 \bmod 3953\)</span>. By repeated squaring: <span class="arithmatex">\(708^2 \equiv 3186\)</span>, <span class="arithmatex">\(708^4 \equiv 3186^2 \equiv 3245\)</span>, and <span class="arithmatex">\(708^5 \equiv 3245 \cdot 708 \equiv 767 \pmod{3953}\)</span>. So <span class="arithmatex">\(C = 767\)</span>.</p>
+<p><em>Decrypt.</em> <span class="arithmatex">\(767^{2297} \bmod 3953 = 708\)</span> (by repeated squaring; a computer does it instantly), recovering <span class="arithmatex">\(M\)</span>.</p>
+</div>
+<h3 id="why-decryption-works">Why decryption works<a class="headerlink" href="#why-decryption-works" title="Permanent link">&para;</a></h3>
+<div class="admonition note">
+<p class="admonition-title">Theorem 10.11</p>
+<p>With <span class="arithmatex">\(n = pq\)</span>, <span class="arithmatex">\(e\)</span> and <span class="arithmatex">\(d\)</span> as above, <span class="arithmatex">\((M^e)^d \equiv M \pmod n\)</span> for every integer <span class="arithmatex">\(M\)</span> with <span class="arithmatex">\(0 \le M &lt; n\)</span>.</p>
+</div>
+<p><strong>Proof.</strong> Since <span class="arithmatex">\(ed \equiv 1 \pmod{\varphi(n)}\)</span>, we have <span class="arithmatex">\(ed = 1 + k(p-1)(q-1)\)</span> for some integer <span class="arithmatex">\(k \ge 0\)</span>. We show <span class="arithmatex">\(M^{ed} \equiv M\)</span> modulo <span class="arithmatex">\(p\)</span> and modulo <span class="arithmatex">\(q\)</span> separately.</p>
+<p>Modulo <span class="arithmatex">\(p\)</span>: if <span class="arithmatex">\(p \mid M\)</span>, both sides are <span class="arithmatex">\(0\)</span>. Otherwise, by Fermat's little theorem <span class="arithmatex">\(M^{p-1} \equiv 1 \pmod p\)</span>, so</p>
+<div class="arithmatex">\[
+M^{ed} = M \cdot \bigl(M^{p-1}\bigr)^{k(q-1)} \equiv M \cdot 1 = M \pmod{p}.
+\]</div>
+<p>The same argument gives <span class="arithmatex">\(M^{ed} \equiv M \pmod q\)</span>. So <span class="arithmatex">\(p\)</span> and <span class="arithmatex">\(q\)</span> both divide <span class="arithmatex">\(M^{ed} - M\)</span>, and since they are distinct primes, <span class="arithmatex">\(pq = n\)</span> divides it (Chinese remainder theorem, uniqueness part). Hence <span class="arithmatex">\(M^{ed} \equiv M \pmod n\)</span>, and because <span class="arithmatex">\(0 \le M &lt; n\)</span>, <span class="arithmatex">\(C^d \bmod n = M\)</span>. <span class="arithmatex">\(\blacksquare\)</span></p>
+<h3 id="why-rsa-is-believed-secure">Why RSA is believed secure<a class="headerlink" href="#why-rsa-is-believed-secure" title="Permanent link">&para;</a></h3>
+<p>An eavesdropper knows <span class="arithmatex">\(n\)</span>, <span class="arithmatex">\(e\)</span> and <span class="arithmatex">\(C\)</span>. If she could factor <span class="arithmatex">\(n\)</span> into <span class="arithmatex">\(p\)</span> and <span class="arithmatex">\(q\)</span>, she could compute <span class="arithmatex">\(\varphi(n)\)</span> and then <span class="arithmatex">\(d\)</span>, exactly as Asha did. So RSA is at most as hard to break as factoring <span class="arithmatex">\(n\)</span>. No efficient factoring method is known for well-chosen numbers of the sizes used in practice (2048 bits, about 617 decimal digits, is a common choice), and so RSA is believed secure. It has never been proved that breaking RSA requires factoring, nor that factoring is hard; the security is a well-tested belief, not a theorem. A large enough quantum computer could factor such numbers quickly with Shor's algorithm, which is why new "post-quantum" systems are being introduced.</p>
+<div class="admonition warning">
+<p class="admonition-title">Textbook RSA is not enough</p>
+<p>The scheme above, used directly, has weaknesses: the same message always gives the same ciphertext, and small messages with small <span class="arithmatex">\(e\)</span> can be attacked. Real systems add random padding to the message before encrypting, use carefully generated primes, and in practice use RSA mainly to exchange a key for a faster symmetric cipher, or to make <strong>digital signatures</strong> (Asha "signs" by computing <span class="arithmatex">\(M^d \bmod n\)</span> with her private key, and anyone can check with <span class="arithmatex">\(e\)</span> that the result raised to <span class="arithmatex">\(e\)</span> gives <span class="arithmatex">\(M\)</span>).</p>
+</div>
+<h3 id="check-digits">Check digits<a class="headerlink" href="#check-digits" title="Permanent link">&para;</a></h3>
+<p>Modular arithmetic has humbler uses too. An <strong>ISBN-10</strong> book number <span class="arithmatex">\(x_1 x_2 \dots x_{10}\)</span> is chosen so that</p>
+<div class="arithmatex">\[
+\sum_{i=1}^{10} i\, x_i \equiv 0 \pmod{11},
+\]</div>
+<p>with the check digit <span class="arithmatex">\(x_{10}\)</span> written X when it is 10. (Some descriptions use the weights <span class="arithmatex">\(10, 9, \dots, 1\)</span> instead; since <span class="arithmatex">\(11 - i \equiv -i \pmod{11}\)</span>, the two conditions are equivalent.) If one digit is mistyped, the sum changes by <span class="arithmatex">\(i\)</span> times a non-zero difference of less than 11, which is not divisible by the prime 11, so the error is detected. For the first nine digits <span class="arithmatex">\(9, 3, 5, 2, 7, 1, 4, 8, 6\)</span>, the weighted sum is <span class="arithmatex">\(9 + 6 + 15 + 8 + 35 + 6 + 28 + 64 + 54 = 225\)</span>, and we need <span class="arithmatex">\(225 + 10x_{10} \equiv 0\)</span>; since <span class="arithmatex">\(225 \equiv 5\)</span> and <span class="arithmatex">\(10 \equiv -1 \pmod{11}\)</span>, this means <span class="arithmatex">\(x_{10} \equiv 5\)</span>. The check digit is 5.</p>
+<h2 id="109-summary">10.9 Summary<a class="headerlink" href="#109-summary" title="Permanent link">&para;</a></h2>
+<div class="admonition abstract">
+<p class="admonition-title">Summary</p>
+<ul>
+<li><strong>Division algorithm:</strong> <span class="arithmatex">\(a = dq + r\)</span> with <span class="arithmatex">\(0 \le r &lt; d\)</span>. Every integer <span class="arithmatex">\(n \ge 2\)</span> factors into primes in exactly one way.</li>
+<li><strong>Euclid's algorithm</strong> computes <span class="arithmatex">\(\gcd(a, b)\)</span> by <span class="arithmatex">\(\gcd(a, b) = \gcd(b, a \bmod b)\)</span>. Back-substitution gives <strong>Bézout's identity</strong> <span class="arithmatex">\(\gcd(a, b) = sa + tb\)</span>, which proves Euclid's lemma and unique factorisation.</li>
+<li><strong>Congruences</strong> can be added and multiplied; reduce at every step. <strong>Repeated squaring</strong> computes <span class="arithmatex">\(b^e \bmod m\)</span> in about <span class="arithmatex">\(2\log_2 e\)</span> multiplications.</li>
+<li><span class="arithmatex">\(a\)</span> has an <strong>inverse</strong> modulo <span class="arithmatex">\(m\)</span> exactly when <span class="arithmatex">\(\gcd(a, m) = 1\)</span>; find it with the extended algorithm. The <strong>Chinese remainder theorem</strong> solves systems with coprime moduli.</li>
+<li><strong>Fermat:</strong> <span class="arithmatex">\(a^{p-1} \equiv 1 \pmod p\)</span> for prime <span class="arithmatex">\(p \nmid a\)</span>. <strong>Euler:</strong> <span class="arithmatex">\(a^{\varphi(n)} \equiv 1 \pmod n\)</span> when <span class="arithmatex">\(\gcd(a, n) = 1\)</span>; <span class="arithmatex">\(\varphi(pq) = (p-1)(q-1)\)</span>.</li>
+<li><strong>RSA:</strong> public key <span class="arithmatex">\((n, e)\)</span> with <span class="arithmatex">\(n = pq\)</span>; private key <span class="arithmatex">\(d = e^{-1} \bmod \varphi(n)\)</span>; <span class="arithmatex">\(C = M^e \bmod n\)</span>, <span class="arithmatex">\(M = C^d \bmod n\)</span>. It works by Fermat and the Chinese remainder theorem, and its security rests on the difficulty of factoring <span class="arithmatex">\(n\)</span>.</li>
+</ul>
+</div>
+<h2 id="1010-exercises">10.10 Exercises<a class="headerlink" href="#1010-exercises" title="Permanent link">&para;</a></h2>
+<div class="admonition example">
+<p class="admonition-title">Exercise 1</p>
+<p>Find <span class="arithmatex">\(\gcd(1071, 462)\)</span> by Euclid's algorithm, and express it as <span class="arithmatex">\(1071s + 462t\)</span>.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p><span class="arithmatex">\(1071 = 2 \cdot 462 + 147\)</span>; <span class="arithmatex">\(462 = 3 \cdot 147 + 21\)</span>; <span class="arithmatex">\(147 = 7 \cdot 21\)</span>. So <span class="arithmatex">\(\gcd = 21\)</span>. Then <span class="arithmatex">\(21 = 462 - 3 \cdot 147 = 462 - 3(1071 - 2 \cdot 462) = 7 \cdot 462 - 3 \cdot 1071\)</span>: <span class="arithmatex">\(s = -3\)</span>, <span class="arithmatex">\(t = 7\)</span>.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 2</p>
+<p>Write 2026 in binary and in hexadecimal.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p><span class="arithmatex">\(2026 = 1024 + 512 + 256 + 128 + 64 + 32 + 8 + 2 = (11111101010)_2\)</span>. Grouping bits in fours from the right: <span class="arithmatex">\(0111\;1110\;1010 = (7\mathrm{EA})_{16}\)</span>.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 3</p>
+<p>Find the inverse of 7 modulo 26, and solve <span class="arithmatex">\(7x \equiv 3 \pmod{26}\)</span>.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p><span class="arithmatex">\(26 = 3 \cdot 7 + 5\)</span>, <span class="arithmatex">\(7 = 5 + 2\)</span>, <span class="arithmatex">\(5 = 2 \cdot 2 + 1\)</span>. Back: <span class="arithmatex">\(1 = 5 - 2 \cdot 2 = 5 - 2(7 - 5) = 3 \cdot 5 - 2 \cdot 7 = 3(26 - 3 \cdot 7) - 2 \cdot 7 = 3 \cdot 26 - 11 \cdot 7\)</span>. Inverse <span class="arithmatex">\(-11 \equiv 15\)</span> (check <span class="arithmatex">\(7 \cdot 15 = 105 = 4 \cdot 26 + 1\)</span>). Then <span class="arithmatex">\(x \equiv 15 \cdot 3 = 45 \equiv 19 \pmod{26}\)</span>.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 4</p>
+<p>Does <span class="arithmatex">\(6x \equiv 4 \pmod{9}\)</span> have a solution? Does <span class="arithmatex">\(6x \equiv 3 \pmod 9\)</span>?</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p><span class="arithmatex">\(6x - 4 = 9k\)</span> would make <span class="arithmatex">\(3 \mid 4\)</span>, so the first has no solution. The second: <span class="arithmatex">\(6x \equiv 3 \pmod 9\)</span> means <span class="arithmatex">\(9 \mid 6x - 3\)</span>, that is, <span class="arithmatex">\(3 \mid 2x - 1\)</span>, so <span class="arithmatex">\(x \equiv 2 \pmod 3\)</span>: solutions <span class="arithmatex">\(x \equiv 2, 5, 8 \pmod 9\)</span>. A congruence <span class="arithmatex">\(ax \equiv b \pmod m\)</span> is solvable exactly when <span class="arithmatex">\(\gcd(a, m) \mid b\)</span>.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 5</p>
+<p>Compute <span class="arithmatex">\(5^{117} \bmod 19\)</span> using Fermat's little theorem.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p><span class="arithmatex">\(5^{18} \equiv 1 \pmod{19}\)</span> and <span class="arithmatex">\(117 = 6 \cdot 18 + 9\)</span>, so <span class="arithmatex">\(5^{117} \equiv 5^9\)</span>. Now <span class="arithmatex">\(5^2 = 25 \equiv 6\)</span>, <span class="arithmatex">\(5^4 \equiv 36 \equiv 17 \equiv -2\)</span>, <span class="arithmatex">\(5^8 \equiv 4\)</span>, <span class="arithmatex">\(5^9 \equiv 20 \equiv 1\)</span>. So <span class="arithmatex">\(5^{117} \equiv 1 \pmod{19}\)</span>.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 6</p>
+<p>Find all <span class="arithmatex">\(x\)</span> with <span class="arithmatex">\(x \equiv 1 \pmod 4\)</span>, <span class="arithmatex">\(x \equiv 2 \pmod 5\)</span>, <span class="arithmatex">\(x \equiv 3 \pmod 7\)</span>.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p><span class="arithmatex">\(m = 140\)</span>; <span class="arithmatex">\(M_1 = 35 \equiv 3 \pmod 4\)</span>, inverse 3; <span class="arithmatex">\(M_2 = 28 \equiv 3 \pmod 5\)</span>, inverse 2; <span class="arithmatex">\(M_3 = 20 \equiv 6 \pmod 7\)</span>, inverse 6. <span class="arithmatex">\(x = 1 \cdot 35 \cdot 3 + 2 \cdot 28 \cdot 2 + 3 \cdot 20 \cdot 6 = 105 + 112 + 360 = 577 \equiv 17 \pmod{140}\)</span>. Check: <span class="arithmatex">\(17 = 4 \cdot 4 + 1 = 5 \cdot 3 + 2 = 7 \cdot 2 + 3\)</span>.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 7</p>
+<p>Show that <span class="arithmatex">\(n^5 - n\)</span> is divisible by 30 for every integer <span class="arithmatex">\(n\)</span>.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p><span class="arithmatex">\(30 = 2 \cdot 3 \cdot 5\)</span>. By Fermat in the form <span class="arithmatex">\(a^p \equiv a\)</span>: <span class="arithmatex">\(n^5 \equiv n \pmod 5\)</span> directly; <span class="arithmatex">\(n^5 = (n^2)^2 n \equiv n^2 \cdot n = n^3 \equiv n \pmod 3\)</span> (using <span class="arithmatex">\(n^3 \equiv n\)</span> twice); and <span class="arithmatex">\(n^5 \equiv n \pmod 2\)</span> since <span class="arithmatex">\(n^5\)</span> and <span class="arithmatex">\(n\)</span> have the same parity. So 2, 3 and 5 all divide <span class="arithmatex">\(n^5 - n\)</span>, and since they are coprime, so does 30.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 8</p>
+<p>An RSA public key is <span class="arithmatex">\((n, e) = (55, 3)\)</span>. Find the private key <span class="arithmatex">\(d\)</span> and decrypt <span class="arithmatex">\(C = 13\)</span>.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p><span class="arithmatex">\(55 = 5 \cdot 11\)</span>, <span class="arithmatex">\(\varphi = 4 \cdot 10 = 40\)</span>. Inverse of 3 mod 40: <span class="arithmatex">\(3 \cdot 27 = 81 = 2 \cdot 40 + 1\)</span>, so <span class="arithmatex">\(d = 27\)</span>. <span class="arithmatex">\(M = 13^{27} \bmod 55\)</span>: <span class="arithmatex">\(13^2 = 169 \equiv 4\)</span>, <span class="arithmatex">\(13^4 \equiv 16\)</span>, <span class="arithmatex">\(13^8 \equiv 256 \equiv 36\)</span>, <span class="arithmatex">\(13^{16} \equiv 1296 \equiv 31\)</span>. <span class="arithmatex">\(27 = 16 + 8 + 2 + 1\)</span>, so <span class="arithmatex">\(13^{27} \equiv 31 \cdot 36 \cdot 4 \cdot 13\)</span>. <span class="arithmatex">\(31 \cdot 36 = 1116 \equiv 16\)</span>; <span class="arithmatex">\(16 \cdot 4 = 64 \equiv 9\)</span>; <span class="arithmatex">\(9 \cdot 13 = 117 \equiv 7\)</span>. So <span class="arithmatex">\(M = 7\)</span>. Check: <span class="arithmatex">\(7^3 = 343 = 6 \cdot 55 + 13\)</span>.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 9</p>
+<p>Why must <span class="arithmatex">\(e\)</span> be coprime to <span class="arithmatex">\(\varphi(n)\)</span> in RSA?</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>Decryption needs <span class="arithmatex">\(d\)</span> with <span class="arithmatex">\(ed \equiv 1 \pmod{\varphi(n)}\)</span>, and such an inverse exists only when <span class="arithmatex">\(\gcd(e, \varphi(n)) = 1\)</span> (Theorem 10.7). Without it, different messages can encrypt to the same ciphertext and cannot be told apart.</p>
+</details>
+<h2 id="1011-quiz">10.11 Quiz<a class="headerlink" href="#1011-quiz" title="Permanent link">&para;</a></h2>
+<div class="pk-quiz" data-quiz="03d6486b5ff4">
+<p class="pk-quiz-title">Check your understanding of number theory</p>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;text&quot;,&quot;answer&quot;:[&quot;12&quot;]}">
+<p class="admonition-title">Exercise 1</p>
+<p class="pk-q-prompt">What is gcd(84, 36)?</p>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>12</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;text&quot;,&quot;answer&quot;:[&quot;5&quot;]}">
+<p class="admonition-title">Exercise 2</p>
+<p class="pk-q-prompt">What is 47 mod 6?</p>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>5</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;text&quot;,&quot;answer&quot;:[&quot;4&quot;]}">
+<p class="admonition-title">Exercise 3</p>
+<p class="pk-q-prompt">What is the inverse of 3 modulo 11? (a number from 1 to 10)</p>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>4</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;a is prime&quot;,&quot;m is prime&quot;,&quot;gcd(a, m) = 1&quot;,&quot;a is less than m&quot;],&quot;answer&quot;:&quot;gcd(a, m) = 1&quot;}">
+<p class="admonition-title">Exercise 4</p>
+<p class="pk-q-prompt">An integer a has an inverse modulo m exactly when</p>
+<ol class="pk-q-opts" type="A"><li>a is prime</li><li>m is prime</li><li>gcd(a, m) = 1</li><li>a is less than m</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>gcd(a, m) = 1</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;text&quot;,&quot;answer&quot;:[&quot;1&quot;]}">
+<p class="admonition-title">Exercise 5</p>
+<p class="pk-q-prompt">By Fermat's little theorem, what is 2 to the power 10, modulo 11?</p>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>1</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;text&quot;,&quot;answer&quot;:[&quot;24&quot;]}">
+<p class="admonition-title">Exercise 6</p>
+<p class="pk-q-prompt">What is φ(35), the number of integers from 1 to 35 coprime to 35?</p>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>24</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;testing whether a number is prime&quot;,&quot;factoring the modulus n&quot;,&quot;computing gcds&quot;,&quot;fast exponentiation&quot;],&quot;answer&quot;:&quot;factoring the modulus n&quot;}">
+<p class="admonition-title">Exercise 7</p>
+<p class="pk-q-prompt">The security of RSA rests on the difficulty of</p>
+<ol class="pk-q-opts" type="A"><li>testing whether a number is prime</li><li>factoring the modulus n</li><li>computing gcds</li><li>fast exponentiation</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>factoring the modulus n</strong></p>
+</details>
+</div>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button type="button" class="md-top md-icon" data-md-component="top" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+Back to top
+</button>
+</main>
+<footer class="md-footer">
+<nav class="md-footer__inner md-grid" aria-label="Footer" >
+<a href="recurrence-relations-and-generating-functions.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: 9. Recurrence Relations and Generating Functions">
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</div>
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Previous
+</span>
+<div class="md-ellipsis">
+9. Recurrence Relations and Generating Functions
+</div>
+</div>
+</a>
+<a href="graphs.html" class="md-footer__link md-footer__link--next" aria-label="Next: 11. Graphs">
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Next
+</span>
+<div class="md-ellipsis">
+11. Graphs
+</div>
+</div>
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+</div>
+</a>
+</nav>
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+The Open Book Project &middot;
+<a href="../../about.html">About this library</a> &middot;
+<a href="../../publish.html">Publish your book</a> &middot;
+© The authors of the books
+</div>
+Made with
+<a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+Material for MkDocs
+</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "navigation.prune", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "toc.follow", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+<script src="../../assets/mathjax.js"></script>
+<script src="../../assets/viz.js"></script>
+<script src="../../assets/remote.js"></script>
+<script src="../../assets/scans.js"></script>
+<script src="../../assets/reader.js"></script>
+<script src="../../assets/app.js"></script>
+<script src="../../assets/slides.js"></script>
+<script src="../../assets/speak.js"></script>
+<script src="../../assets/quiz.js"></script>
+<script>
+    /* offline reading: the service worker at the site root (its scope is the whole site) */
+    if ("serviceWorker" in navigator && window.isSecureContext) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register(new URL("../../sw.js", location.href).href).catch(function () {});
+      });
+    }
+  </script>
+</body>
+</html>

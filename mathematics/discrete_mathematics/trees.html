@@ -1,0 +1,1136 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="description" content="The Open Book Project: books on computer science, quantum computing, cyber security, science, the social sciences, university courses and languages, read page by page like an e-book, online or offline.">
+<meta name="author" content="The Open Book Project">
+<link rel="canonical" href="https://open-book-project.github.io/mathematics/discrete_mathematics/trees.html">
+<link rel="prev" href="graphs.html">
+<link rel="next" href="boolean-algebra-and-logic-circuits.html">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap"></noscript>
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Open Book">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="application-name" content="Open Book"><script src="../../assets/library-data.js"></script><script>
+    (function () {
+      var X = window.XMLHttpRequest, open, gate = new Promise(function (r) { open = r; });
+      if (!X) return;
+      var open0 = X.prototype.open, send0 = X.prototype.send;
+      X.prototype.open = function (method, url) {
+        this.__pkIndex = /\/search\/search_index\.json(\?|#|$)/.test(String(url));
+        return open0.apply(this, arguments);
+      };
+      X.prototype.send = function () {
+        if (!this.__pkIndex) return send0.apply(this, arguments);
+        var xhr = this, args = arguments;
+        gate.then(function () { send0.apply(xhr, args); });
+      };
+      function wake() { open(); }
+      document.addEventListener("focusin", function (e) { if (e.target && e.target.closest && e.target.closest(".md-search")) wake(); });
+      document.addEventListener("click", function (e) { if (e.target && e.target.closest && e.target.closest('label[for="__search"], .md-search')) wake(); }, true);
+      document.addEventListener("keydown", function (e) {
+        var k = e.key;
+        if ((k === "/" || k === "s" || k === "f" || k === "S" || k === "F") && !(e.target && e.target.closest && e.target.closest("input, textarea, [contenteditable]"))) wake();
+      }, true);
+      if (/[?&]q=/.test(location.search)) wake();
+    })();
+  </script><script>
+    try {
+      if ((window.matchMedia && (matchMedia("(display-mode: standalone)").matches || matchMedia("(display-mode: fullscreen)").matches)) || navigator.standalone === true) {
+        document.documentElement.className += " bjp-standalone";
+      }
+    } catch (e) { /* not an installed app */ }
+    /* the books of a subject or of the whole library as covers or as a list (assets/app.js): the reader's choice */
+    try {
+      var bv = localStorage.getItem("bjp.view");
+      if (bv === "list" || (bv !== "grid" && /\/books\.html$/.test(location.pathname))) document.documentElement.className += " bjp-view-list";
+    } catch (e) { /* no storage: covers */ }
+  </script>
+<script>
+    /* a book opened from its cover on the shelf: the page stays blank, in the cover's colour, until the reader is up */
+    try {
+      var cv = sessionStorage.getItem("bjp.reader.cover");
+      if (cv && sessionStorage.getItem("bjp.reader.open") === "1") {
+        var c = JSON.parse(cv), de = document.documentElement;
+        de.className += " bjp-booting";
+        if (c && /^#[0-9a-f]{3,8}$/i.test(c.bg || "")) de.style.background = c.bg;
+        setTimeout(function () { de.classList.remove("bjp-booting"); de.style.background = ""; }, 3000);
+      }
+    } catch (e) { /* no session storage: the page simply opens as usual */ }
+  </script>
+<title>12. Trees - The Open Book Project</title>
+<link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+<link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+<link rel="stylesheet" href="../../assets/extra.css">
+<link rel="stylesheet" href="../../assets/reader.css">
+<link rel="stylesheet" href="../../assets/viz.css">
+<link rel="stylesheet" href="../../assets/app.css">
+<link rel="stylesheet" href="../../assets/theme.css">
+<link rel="stylesheet" href="../../assets/slides.css">
+<link rel="stylesheet" href="../../assets/remote.css">
+<link rel="stylesheet" href="../../assets/scans.css">
+<link rel="stylesheet" href="../../assets/speak.css">
+<link rel="stylesheet" href="../../assets/quiz.css">
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+<input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+<input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a href="#121-what-a-tree-is" class="md-skip">
+Skip to content
+</a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav class="md-header__inner md-grid" aria-label="Header">
+<a href="../../index.html" title="The Open Book Project" class="md-header__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+The Open Book Project
+</span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+12. Trees
+</span>
+</div>
+</div>
+</div><a href="../../index.html" class="bjp-libbtn" aria-label="Library: all books" title="Library: all books">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V5h4v15M8 20V9h4v11M14 20L12.6 6l3.8-.8 3 14.2M3 20h18"/></svg><span>Library</span>
+</a>
+<a href="../../subjects/index.html" class="pk-catbtn" aria-haspopup="true" aria-expanded="false" title="Browse the books by category">
+<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><circle cx="17" cy="7" r="3.6"/><path d="M7 13.4l3.9 6.8H3.1z"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg><span>Categories</span>
+</a>
+<form class="md-header__option" data-md-component="palette">
+<input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+<label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+</label>
+<input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+<label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+<label class="md-search__icon md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</label>
+<nav class="md-search__options" aria-label="Search">
+<button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+Initializing search
+</div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--primary bjp-nav bjp-nav--book" aria-label="Navigation" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a href="../../index.html" title="The Open Book Project" class="md-nav__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+The Open Book Project
+</label>
+<ul class="md-nav__list" data-md-scrollfix>
+<li class="md-nav__item bjp-nav-all">
+<a href="../../index.html" class="md-nav__link" aria-label="All books: back to the library">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+<span class="md-ellipsis">All books</span>
+</a>
+</li>
+<li class="md-nav__item bjp-nav-book" role="presentation"><span class="bjp-nav-head">Discrete Mathematics</span></li>
+<li class="md-nav__item">
+<a href="index.html" class="md-nav__link">
+<span class="md-ellipsis">
+Overview and preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="preface.html" class="md-nav__link">
+<span class="md-ellipsis">
+Preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="propositional-logic.html" class="md-nav__link">
+<span class="md-ellipsis">
+1. Propositional Logic
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="predicate-logic-and-quantifiers.html" class="md-nav__link">
+<span class="md-ellipsis">
+2. Predicate Logic and Quantifiers
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="methods-of-proof.html" class="md-nav__link">
+<span class="md-ellipsis">
+3. Methods of Proof
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="sets-and-functions.html" class="md-nav__link">
+<span class="md-ellipsis">
+4. Sets and Functions
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="relations.html" class="md-nav__link">
+<span class="md-ellipsis">
+5. Relations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="induction-and-recursion.html" class="md-nav__link">
+<span class="md-ellipsis">
+6. Induction and Recursion
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="counting.html" class="md-nav__link">
+<span class="md-ellipsis">
+7. Counting
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="discrete-probability.html" class="md-nav__link">
+<span class="md-ellipsis">
+8. Discrete Probability
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="recurrence-relations-and-generating-functions.html" class="md-nav__link">
+<span class="md-ellipsis">
+9. Recurrence Relations and Generating Functions
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="number-theory-and-cryptography.html" class="md-nav__link">
+<span class="md-ellipsis">
+10. Number Theory and Cryptography
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="graphs.html" class="md-nav__link">
+<span class="md-ellipsis">
+11. Graphs
+</span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+12. Trees
+</span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a href="trees.html" class="md-nav__link md-nav__link--active">
+<span class="md-ellipsis">
+12. Trees
+</span>
+</a>
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#121-what-a-tree-is" class="md-nav__link">
+<span class="md-ellipsis">
+12.1 What a tree is
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#122-rooted-trees" class="md-nav__link">
+<span class="md-ellipsis">
+12.2 Rooted trees
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#123-trees-at-work" class="md-nav__link">
+<span class="md-ellipsis">
+12.3 Trees at work
+</span>
+</a>
+<nav class="md-nav" aria-label="12.3 Trees at work">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#binary-search-trees" class="md-nav__link">
+<span class="md-ellipsis">
+Binary search trees
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#decision-trees-and-the-cost-of-sorting" class="md-nav__link">
+<span class="md-ellipsis">
+Decision trees and the cost of sorting
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#prefix-codes-and-huffman-coding" class="md-nav__link">
+<span class="md-ellipsis">
+Prefix codes and Huffman coding
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#124-tree-traversal" class="md-nav__link">
+<span class="md-ellipsis">
+12.4 Tree traversal
+</span>
+</a>
+<nav class="md-nav" aria-label="12.4 Tree traversal">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#expression-trees-and-polish-notation" class="md-nav__link">
+<span class="md-ellipsis">
+Expression trees and Polish notation
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#125-spanning-trees" class="md-nav__link">
+<span class="md-ellipsis">
+12.5 Spanning trees
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#126-minimum-spanning-trees" class="md-nav__link">
+<span class="md-ellipsis">
+12.6 Minimum spanning trees
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#127-summary" class="md-nav__link">
+<span class="md-ellipsis">
+12.7 Summary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#128-exercises" class="md-nav__link">
+<span class="md-ellipsis">
+12.8 Exercises
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#129-quiz" class="md-nav__link">
+<span class="md-ellipsis">
+12.9 Quiz
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="boolean-algebra-and-logic-circuits.html" class="md-nav__link">
+<span class="md-ellipsis">
+13. Boolean Algebra and Logic Circuits
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="automata-and-languages.html" class="md-nav__link">
+<span class="md-ellipsis">
+14. Automata and Languages
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="glossary.html" class="md-nav__link">
+<span class="md-ellipsis">
+Glossary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="further-reading.html" class="md-nav__link">
+<span class="md-ellipsis">
+Further Reading
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#121-what-a-tree-is" class="md-nav__link">
+<span class="md-ellipsis">
+12.1 What a tree is
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#122-rooted-trees" class="md-nav__link">
+<span class="md-ellipsis">
+12.2 Rooted trees
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#123-trees-at-work" class="md-nav__link">
+<span class="md-ellipsis">
+12.3 Trees at work
+</span>
+</a>
+<nav class="md-nav" aria-label="12.3 Trees at work">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#binary-search-trees" class="md-nav__link">
+<span class="md-ellipsis">
+Binary search trees
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#decision-trees-and-the-cost-of-sorting" class="md-nav__link">
+<span class="md-ellipsis">
+Decision trees and the cost of sorting
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#prefix-codes-and-huffman-coding" class="md-nav__link">
+<span class="md-ellipsis">
+Prefix codes and Huffman coding
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#124-tree-traversal" class="md-nav__link">
+<span class="md-ellipsis">
+12.4 Tree traversal
+</span>
+</a>
+<nav class="md-nav" aria-label="12.4 Tree traversal">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#expression-trees-and-polish-notation" class="md-nav__link">
+<span class="md-ellipsis">
+Expression trees and Polish notation
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#125-spanning-trees" class="md-nav__link">
+<span class="md-ellipsis">
+12.5 Spanning trees
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#126-minimum-spanning-trees" class="md-nav__link">
+<span class="md-ellipsis">
+12.6 Minimum spanning trees
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#127-summary" class="md-nav__link">
+<span class="md-ellipsis">
+12.7 Summary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#128-exercises" class="md-nav__link">
+<span class="md-ellipsis">
+12.8 Exercises
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#129-quiz" class="md-nav__link">
+<span class="md-ellipsis">
+12.9 Quiz
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="chapter-12-trees">Chapter 12: Trees<a class="headerlink" href="#chapter-12-trees" title="Permanent link">&para;</a></h1>
+<p><em>Rooted trees, traversals, codes and minimum spanning trees</em></p>
+<div class="admonition note">
+<p class="admonition-title">Learning outcomes</p>
+<p>After this chapter you should be able to:</p>
+<ul>
+<li>define trees and prove the equivalence of their main characterisations, including that a tree with <span class="arithmatex">\(n\)</span> vertices has <span class="arithmatex">\(n - 1\)</span> edges;</li>
+<li>use the vocabulary of rooted trees and the counting theorems for full <span class="arithmatex">\(m\)</span>-ary trees;</li>
+<li>build and search binary search trees, use decision trees to bound the cost of sorting, and construct Huffman codes;</li>
+<li>traverse trees in preorder, inorder and postorder, and evaluate expressions in prefix and postfix notation;</li>
+<li>find spanning trees by depth-first and breadth-first search, and minimum spanning trees by the algorithms of Kruskal and Prim.</li>
+</ul>
+</div>
+<h2 id="121-what-a-tree-is">12.1 What a tree is<a class="headerlink" href="#121-what-a-tree-is" title="Permanent link">&para;</a></h2>
+<p>Family trees, the folders on a computer, the structure of a sentence, the moves of a game, the plan of an organisation: all are trees. In graph theory the word has a precise meaning.</p>
+<div class="admonition note">
+<p class="admonition-title">Definition: tree and forest</p>
+<p>A <strong>tree</strong> is a connected graph with no cycles. A graph with no cycles (each of whose components is therefore a tree) is a <strong>forest</strong>.</p>
+</div>
+<p>A tree cannot have multiple edges or loops (each would be a cycle), so trees are simple graphs. Trees are the "thinnest" connected graphs: they have just enough edges to hold together. The next theorem makes this precise in several equivalent ways.</p>
+<div class="admonition note">
+<p class="admonition-title">Lemma 12.1</p>
+<p>Every tree with at least two vertices has at least two <strong>leaves</strong> (vertices of degree 1).</p>
+</div>
+<p><strong>Proof.</strong> Take a longest path <span class="arithmatex">\(v_0, v_1, \dots, v_k\)</span> in the tree (<span class="arithmatex">\(k \ge 1\)</span> since there is an edge). If <span class="arithmatex">\(v_0\)</span> had a neighbour other than <span class="arithmatex">\(v_1\)</span>, that neighbour is either on the path, giving a cycle, or off it, giving a longer path. Neither is possible, so <span class="arithmatex">\(\deg(v_0) = 1\)</span>. Likewise <span class="arithmatex">\(\deg(v_k) = 1\)</span>. <span class="arithmatex">\(\blacksquare\)</span></p>
+<div class="admonition note">
+<p class="admonition-title">Theorem 12.2 (characterisations of trees)</p>
+<p>For a simple graph <span class="arithmatex">\(T\)</span> with <span class="arithmatex">\(n\)</span> vertices, the following are equivalent:</p>
+<ol>
+<li><span class="arithmatex">\(T\)</span> is a tree (connected, with no cycles);</li>
+<li>there is exactly one path between every pair of vertices;</li>
+<li><span class="arithmatex">\(T\)</span> is connected and has <span class="arithmatex">\(n - 1\)</span> edges;</li>
+<li><span class="arithmatex">\(T\)</span> has no cycles and has <span class="arithmatex">\(n - 1\)</span> edges;</li>
+<li><span class="arithmatex">\(T\)</span> is connected, and removing any edge disconnects it;</li>
+<li><span class="arithmatex">\(T\)</span> has no cycles, and adding any edge creates a cycle.</li>
+</ol>
+</div>
+<p><strong>Proof of (1) <span class="arithmatex">\(\Leftrightarrow\)</span> (2).</strong> If there were two different paths from <span class="arithmatex">\(u\)</span> to <span class="arithmatex">\(v\)</span>, following one out and the other back, and cutting out shared stretches, would give a cycle. Conversely, if there is a cycle, any two vertices on it are joined by two paths, one each way round. And "a path between every pair" is the definition of connected.</p>
+<p><strong>Proof that a tree has <span class="arithmatex">\(n - 1\)</span> edges.</strong> By induction on <span class="arithmatex">\(n\)</span>. A tree with one vertex has no edges. If <span class="arithmatex">\(n \ge 2\)</span>, remove a leaf (Lemma 12.1) and its edge; what remains is still connected and acyclic, a tree with <span class="arithmatex">\(n - 1\)</span> vertices, and by the inductive hypothesis <span class="arithmatex">\(n - 2\)</span> edges. Putting the leaf back gives <span class="arithmatex">\(n - 1\)</span> edges.</p>
+<p>The remaining equivalences follow in the same spirit; for instance, (3) <span class="arithmatex">\(\Rightarrow\)</span> (1): if a connected graph with <span class="arithmatex">\(n - 1\)</span> edges had a cycle, removing an edge of the cycle would leave it connected; repeat until no cycle is left, giving a tree with fewer than <span class="arithmatex">\(n - 1\)</span> edges, which contradicts what we just proved. <span class="arithmatex">\(\blacksquare\)</span></p>
+<div class="admonition example">
+<p class="admonition-title">Example 12.1: Counting with trees</p>
+<p><strong>Problem.</strong> (a) A forest has 20 vertices and 3 components. How many edges does it have? (b) A molecule of a saturated hydrocarbon <span class="arithmatex">\(\mathrm{C}_k\mathrm{H}_{2k+2}\)</span> has carbon atoms of degree 4 and hydrogen atoms of degree 1. Show that its graph is a tree.</p>
+<p><strong>Solution.</strong> (a) Each component is a tree with <span class="arithmatex">\(n_i\)</span> vertices and <span class="arithmatex">\(n_i - 1\)</span> edges, so the forest has <span class="arithmatex">\(20 - 3 = 17\)</span> edges. (b) There are <span class="arithmatex">\(3k + 2\)</span> atoms, and by handshaking <span class="arithmatex">\(2e = 4k + (2k + 2) = 6k + 2\)</span>, so <span class="arithmatex">\(e = 3k + 1\)</span>, one less than the number of vertices. A molecule is connected, so by (3) its graph is a tree.</p>
+</div>
+<h2 id="122-rooted-trees">12.2 Rooted trees<a class="headerlink" href="#122-rooted-trees" title="Permanent link">&para;</a></h2>
+<p>Choosing one vertex of a tree as the <strong>root</strong> and directing every edge away from it gives a <strong>rooted tree</strong>, usually drawn with the root at the top (Figure 12.1). Its vocabulary comes from family trees.</p>
+<ul>
+<li>If <span class="arithmatex">\(uv\)</span> is an edge with <span class="arithmatex">\(u\)</span> nearer the root, <span class="arithmatex">\(u\)</span> is the <strong>parent</strong> of <span class="arithmatex">\(v\)</span> and <span class="arithmatex">\(v\)</span> a <strong>child</strong> of <span class="arithmatex">\(u\)</span>. Vertices with the same parent are <strong>siblings</strong>.</li>
+<li>The <strong>ancestors</strong> of <span class="arithmatex">\(v\)</span> are the vertices on the path from the root to <span class="arithmatex">\(v\)</span> (other than <span class="arithmatex">\(v\)</span>); its <strong>descendants</strong> are the vertices that have <span class="arithmatex">\(v\)</span> as an ancestor.</li>
+<li>A vertex with no children is a <strong>leaf</strong>; one with children is an <strong>internal</strong> vertex.</li>
+<li>The <strong>subtree</strong> at <span class="arithmatex">\(v\)</span> consists of <span class="arithmatex">\(v\)</span> and its descendants.</li>
+<li>The <strong>level</strong> (or depth) of <span class="arithmatex">\(v\)</span> is the length of the path from the root to <span class="arithmatex">\(v\)</span>; the <strong>height</strong> of the tree is the largest level.</li>
+</ul>
+<figure class="fig fig-diagram">
+<img src="img/rooted-tree.svg" alt="A rooted tree drawn with the root r at the top, at level 0. The root has children a, b and c at level 1. Vertex a has children d and e; c has child f; these are at level 2. Vertex e has children g and h at level 3. The leaves are d, g, h, b and f. The tree has height 3, and the subtree at a is outlined." loading="lazy" width="620" height="330">
+<figcaption><strong>Figure 12.1 A rooted tree of height 3.</strong> A rooted tree drawn with the root r at the top, at level 0. The root has children a, b and c at level 1. Vertex a has children d and e; c has child f; these are at level 2. Vertex e has children g and h at level 3. The leaves are d, g, h, b and f. The tree has height 3, and the subtree at a is outlined.</figcaption>
+</figure>
+<p>A rooted tree is <strong><span class="arithmatex">\(m\)</span>-ary</strong> if every internal vertex has at most <span class="arithmatex">\(m\)</span> children, and <strong>full <span class="arithmatex">\(m\)</span>-ary</strong> if every internal vertex has exactly <span class="arithmatex">\(m\)</span> children. A <strong>binary</strong> tree has <span class="arithmatex">\(m = 2\)</span>; in an <strong>ordered</strong> binary tree the children of each vertex are distinguished as the <strong>left child</strong> and the <strong>right child</strong>.</p>
+<div class="admonition note">
+<p class="admonition-title">Theorem 12.3 (counting full <span class="arithmatex">\(m\)</span>-ary trees)</p>
+<p>A full <span class="arithmatex">\(m\)</span>-ary tree with <span class="arithmatex">\(i\)</span> internal vertices has <span class="arithmatex">\(n = mi + 1\)</span> vertices and <span class="arithmatex">\(\ell = (m - 1)i + 1\)</span> leaves.</p>
+</div>
+<p><strong>Proof.</strong> Every vertex except the root is a child of exactly one internal vertex, and each internal vertex has <span class="arithmatex">\(m\)</span> children, so <span class="arithmatex">\(n - 1 = mi\)</span>. The leaves are the vertices that are not internal: <span class="arithmatex">\(\ell = n - i = (m - 1)i + 1\)</span>. <span class="arithmatex">\(\blacksquare\)</span></p>
+<div class="admonition example">
+<p class="admonition-title">Example 12.2: A knockout tournament</p>
+<p><strong>Problem.</strong> A knockout tournament starts with 64 players. How many matches are played?</p>
+<p><strong>Solution.</strong> Draw the tournament as a full binary tree: the players are the leaves, each match is an internal vertex (its two children are the two players or matches that feed into it), and the final is the root. With <span class="arithmatex">\(\ell = 64\)</span> leaves and <span class="arithmatex">\(m = 2\)</span>, Theorem 12.3 gives <span class="arithmatex">\(64 = i + 1\)</span>, so <span class="arithmatex">\(i = 63\)</span> matches. (More simply: every match eliminates one player, and 63 must be eliminated.)</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Theorem 12.4 (height and leaves)</p>
+<p>An <span class="arithmatex">\(m\)</span>-ary tree of height <span class="arithmatex">\(h\)</span> has at most <span class="arithmatex">\(m^h\)</span> leaves. Hence an <span class="arithmatex">\(m\)</span>-ary tree with <span class="arithmatex">\(\ell\)</span> leaves has height at least <span class="arithmatex">\(\lceil \log_m \ell \rceil\)</span>.</p>
+</div>
+<p><strong>Proof.</strong> By induction on <span class="arithmatex">\(h\)</span>. A tree of height 0 is a single vertex, one leaf. A tree of height <span class="arithmatex">\(h \ge 1\)</span> consists of a root and at most <span class="arithmatex">\(m\)</span> subtrees of height at most <span class="arithmatex">\(h - 1\)</span>, each with at most <span class="arithmatex">\(m^{h-1}\)</span> leaves by the inductive hypothesis; together at most <span class="arithmatex">\(m \cdot m^{h-1} = m^h\)</span>. Then <span class="arithmatex">\(\ell \le m^h\)</span> gives <span class="arithmatex">\(h \ge \log_m \ell\)</span>, and <span class="arithmatex">\(h\)</span> is an integer. <span class="arithmatex">\(\blacksquare\)</span></p>
+<p>A tree of height <span class="arithmatex">\(h\)</span> is <strong>balanced</strong> if all its leaves are at levels <span class="arithmatex">\(h\)</span> or <span class="arithmatex">\(h - 1\)</span>. Balanced trees reach the bound: they hold many items at small depth, which is why search structures try to stay balanced.</p>
+<h2 id="123-trees-at-work">12.3 Trees at work<a class="headerlink" href="#123-trees-at-work" title="Permanent link">&para;</a></h2>
+<h3 id="binary-search-trees">Binary search trees<a class="headerlink" href="#binary-search-trees" title="Permanent link">&para;</a></h3>
+<p>A <strong>binary search tree</strong> stores items with keys (numbers, words) at its vertices so that, for every vertex <span class="arithmatex">\(v\)</span>, every key in the left subtree of <span class="arithmatex">\(v\)</span> is smaller than the key at <span class="arithmatex">\(v\)</span>, and every key in the right subtree is larger. To search for a key, start at the root and go left or right according to whether the key is smaller or larger than the one at the current vertex, until you find it or fall off the tree. To insert a key, search for it, and attach it where the search fell off.</p>
+<div class="admonition example">
+<p class="admonition-title">Example 12.3: Building a binary search tree</p>
+<p><strong>Problem.</strong> Insert the keys 50, 30, 70, 20, 40, 60, 80, 35 in this order into an empty binary search tree. How many comparisons does a search for 35 take?</p>
+<p><strong>Solution.</strong> 50 becomes the root. 30 &lt; 50 goes left; 70 &gt; 50 goes right. 20 goes left of 30; 40 right of 30; 60 left of 70; 80 right of 70. Finally 35: less than 50, more than 30, less than 40, so it becomes the left child of 40. The result is Figure 12.2. Searching for 35 compares it with 50, 30, 40 and 35: four comparisons.</p>
+</div>
+<figure class="fig fig-diagram">
+<img src="img/bst.svg" alt="A binary search tree with root 50. Its left child is 30, with children 20 and 40; 40 has left child 35. Its right child is 70, with children 60 and 80. The search path 50, 30, 40, 35 is highlighted." loading="lazy" width="560" height="330">
+<figcaption><strong>Figure 12.2 A binary search tree.</strong> A binary search tree with root 50. Its left child is 30, with children 20 and 40; 40 has left child 35. Its right child is 70, with children 60 and 80. The search path 50, 30, 40, 35 is highlighted.</figcaption>
+</figure>
+<p>The cost of a search is at most the height plus one. Inserting keys in a random order gives an average depth of about <span class="arithmatex">\(2\ln n \approx 1.39\log_2 n\)</span>, and a height that is still proportional to <span class="arithmatex">\(\log n\)</span>; but inserting them in sorted order produces a single long path of height <span class="arithmatex">\(n - 1\)</span>. Balanced variants (AVL trees, red-black trees) rearrange the tree as keys are inserted to keep the height near <span class="arithmatex">\(\log_2 n\)</span>.</p>
+<h3 id="decision-trees-and-the-cost-of-sorting">Decision trees and the cost of sorting<a class="headerlink" href="#decision-trees-and-the-cost-of-sorting" title="Permanent link">&para;</a></h3>
+<p>A <strong>decision tree</strong> represents an algorithm that proceeds by asking questions: each internal vertex is a question, each branch an answer, and each leaf an outcome. Theorem 12.4 then gives a lower bound on the number of questions needed.</p>
+<div class="admonition note">
+<p class="admonition-title">Theorem 12.5</p>
+<p>Any sorting algorithm that works only by comparing pairs of items needs at least <span class="arithmatex">\(\lceil \log_2 n! \rceil\)</span> comparisons in the worst case to sort <span class="arithmatex">\(n\)</span> items.</p>
+</div>
+<p><strong>Proof.</strong> The algorithm is a binary decision tree whose internal vertices are comparisons. Every one of the <span class="arithmatex">\(n!\)</span> orderings of the input must lead to a different leaf, because each needs a different rearrangement to sort it. So the tree has at least <span class="arithmatex">\(n!\)</span> leaves, and by Theorem 12.4 its height, the worst-case number of comparisons, is at least <span class="arithmatex">\(\lceil \log_2 n! \rceil\)</span>. <span class="arithmatex">\(\blacksquare\)</span></p>
+<p>Since <span class="arithmatex">\(\log_2 n!\)</span> is roughly <span class="arithmatex">\(n \log_2 n\)</span>, no comparison sort can do essentially better than merge sort (Section 9.5). For <span class="arithmatex">\(n = 3\)</span> items, <span class="arithmatex">\(3! = 6\)</span> leaves need height at least 3: three comparisons are necessary, and they suffice.</p>
+<h3 id="prefix-codes-and-huffman-coding">Prefix codes and Huffman coding<a class="headerlink" href="#prefix-codes-and-huffman-coding" title="Permanent link">&para;</a></h3>
+<p>Text is stored as bits. A fixed-length code gives every symbol the same number of bits (ASCII uses 8). If some symbols are more common than others, a variable-length code that gives short codewords to common symbols saves space. But decoding must be unambiguous: if E is <code>0</code> and T is <code>01</code>, the string <code>01</code> could be "T" or "E" followed by something else. The solution is a <strong>prefix code</strong>, in which no codeword is the beginning of another. A prefix code is a binary tree: each symbol is a leaf, and its codeword records the path from the root, <code>0</code> for left and <code>1</code> for right. To decode, start at the root, follow the bits, and output a symbol at each leaf.</p>
+<p><strong>Huffman's algorithm</strong> finds a prefix code that minimises the average codeword length for given symbol frequencies:</p>
+<ol>
+<li>Start with one single-vertex tree for each symbol, weighted by its frequency.</li>
+<li>Repeatedly remove the two trees of smallest weight, join them as the left and right subtrees of a new root whose weight is their sum, and put the new tree back.</li>
+<li>When one tree remains, read the codewords from it.</li>
+</ol>
+<div class="admonition example">
+<p class="admonition-title">Example 12.4: A Huffman code</p>
+<p><strong>Problem.</strong> Six symbols occur with frequencies E 30%, T 20%, A 18%, O 15%, N 10%, R 7%. Construct a Huffman code and find the average number of bits per symbol.</p>
+<p><strong>Solution.</strong> Merge the two lightest trees at each step:</p>
+<table>
+<thead>
+<tr>
+<th>Step</th>
+<th>Merge</th>
+<th>New weight</th>
+<th>Trees remaining</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>R (7) + N (10)</td>
+<td>17</td>
+<td>E 30, T 20, A 18, {R,N} 17, O 15</td>
+</tr>
+<tr>
+<td>2</td>
+<td>O (15) + {R,N} (17)</td>
+<td>32</td>
+<td>{O,R,N} 32, E 30, T 20, A 18</td>
+</tr>
+<tr>
+<td>3</td>
+<td>A (18) + T (20)</td>
+<td>38</td>
+<td>{A,T} 38, {O,R,N} 32, E 30</td>
+</tr>
+<tr>
+<td>4</td>
+<td>E (30) + {O,R,N} (32)</td>
+<td>62</td>
+<td>{E,O,R,N} 62, {A,T} 38</td>
+</tr>
+<tr>
+<td>5</td>
+<td>{A,T} (38) + {E,O,R,N} (62)</td>
+<td>100</td>
+<td>one tree</td>
+</tr>
+</tbody>
+</table>
+<p>Labelling the lighter subtree <code>0</code> and the heavier <code>1</code> at each merge gives the tree of Figure 12.3 and the codewords A <code>00</code>, T <code>01</code>, E <code>10</code>, O <code>110</code>, R <code>1110</code>, N <code>1111</code>. The average length is</p>
+<div class="arithmatex">\[
+0.18 \cdot 2 + 0.20 \cdot 2 + 0.30 \cdot 2 + 0.15 \cdot 3 + 0.07 \cdot 4 + 0.10 \cdot 4 = 2.49 \text{ bits},
+\]</div>
+<p>against 3 bits for a fixed-length code for six symbols, a saving of 17%.</p>
+</div>
+<figure class="fig fig-diagram">
+<img src="img/huffman-tree.svg" alt="The Huffman tree for the six symbols. The root (weight 100) has left subtree {A, T} (38) with leaves A (18, code 00) and T (20, code 01), and right subtree (62) with leaf E (30, code 10) and subtree (32) with leaf O (15, code 110) and subtree (17) with leaves R (7, code 1110) and N (10, code 1111)." loading="lazy" width="690" height="400">
+<figcaption><strong>Figure 12.3 A Huffman tree.</strong> The Huffman tree for the six symbols. The root (weight 100) has left subtree {A, T} (38) with leaves A (18, code 00) and T (20, code 01), and right subtree (62) with leaf E (30, code 10) and subtree (32) with leaf O (15, code 110) and subtree (17) with leaves R (7, code 1110) and N (10, code 1111).</figcaption>
+</figure>
+<div class="language-python highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">heapq</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">huffman</span><span class="p">(</span><span class="n">freq</span><span class="p">):</span>
+    <span class="c1"># each heap entry: (weight, tie-breaker, {symbol: code so far})</span>
+    <span class="n">heap</span> <span class="o">=</span> <span class="p">[(</span><span class="n">w</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="p">{</span><span class="n">s</span><span class="p">:</span> <span class="s2">""</span><span class="p">})</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">freq</span><span class="o">.</span><span class="n">items</span><span class="p">())]</span>
+    <span class="n">heapq</span><span class="o">.</span><span class="n">heapify</span><span class="p">(</span><span class="n">heap</span><span class="p">)</span>
+    <span class="n">count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">heap</span><span class="p">)</span>
+    <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">heap</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">w1</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">c1</span> <span class="o">=</span> <span class="n">heapq</span><span class="o">.</span><span class="n">heappop</span><span class="p">(</span><span class="n">heap</span><span class="p">)</span>       <span class="c1"># the two lightest trees</span>
+        <span class="n">w2</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">c2</span> <span class="o">=</span> <span class="n">heapq</span><span class="o">.</span><span class="n">heappop</span><span class="p">(</span><span class="n">heap</span><span class="p">)</span>
+        <span class="n">merged</span> <span class="o">=</span> <span class="p">{</span><span class="n">s</span><span class="p">:</span> <span class="s2">"0"</span> <span class="o">+</span> <span class="n">c</span> <span class="k">for</span> <span class="n">s</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">c1</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+        <span class="n">merged</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">s</span><span class="p">:</span> <span class="s2">"1"</span> <span class="o">+</span> <span class="n">c</span> <span class="k">for</span> <span class="n">s</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">c2</span><span class="o">.</span><span class="n">items</span><span class="p">()})</span>
+        <span class="n">heapq</span><span class="o">.</span><span class="n">heappush</span><span class="p">(</span><span class="n">heap</span><span class="p">,</span> <span class="p">(</span><span class="n">w1</span> <span class="o">+</span> <span class="n">w2</span><span class="p">,</span> <span class="n">count</span><span class="p">,</span> <span class="n">merged</span><span class="p">))</span>
+        <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">heap</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span>
+
+<span class="n">freq</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"E"</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span> <span class="s2">"T"</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span> <span class="s2">"A"</span><span class="p">:</span> <span class="mi">18</span><span class="p">,</span> <span class="s2">"O"</span><span class="p">:</span> <span class="mi">15</span><span class="p">,</span> <span class="s2">"N"</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s2">"R"</span><span class="p">:</span> <span class="mi">7</span><span class="p">}</span>
+<span class="n">codes</span> <span class="o">=</span> <span class="n">huffman</span><span class="p">(</span><span class="n">freq</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">freq</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">codes</span><span class="p">[</span><span class="n">s</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">freq</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">codes</span><span class="p">[</span><span class="n">s</span><span class="p">])</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">freq</span><span class="p">)</span> <span class="o">/</span> <span class="mi">100</span><span class="p">)</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>E 10
+T 01
+A 00
+O 110
+N 1111
+R 1110
+2.49
+</code></pre></div>
+<p>Huffman coding (in combination with other methods) is used inside common compressed file and image formats.</p>
+<h2 id="124-tree-traversal">12.4 Tree traversal<a class="headerlink" href="#124-tree-traversal" title="Permanent link">&para;</a></h2>
+<p>To process every vertex of an ordered rooted tree, we need a systematic order. The three standard orders are defined recursively. Let <span class="arithmatex">\(T\)</span> have root <span class="arithmatex">\(r\)</span> and subtrees <span class="arithmatex">\(T_1, \dots, T_k\)</span> from left to right.</p>
+<ul>
+<li><strong>Preorder:</strong> visit <span class="arithmatex">\(r\)</span>, then traverse <span class="arithmatex">\(T_1, \dots, T_k\)</span> in preorder.</li>
+<li><strong>Postorder:</strong> traverse <span class="arithmatex">\(T_1, \dots, T_k\)</span> in postorder, then visit <span class="arithmatex">\(r\)</span>.</li>
+<li><strong>Inorder</strong> (for binary trees): traverse the left subtree in inorder, visit <span class="arithmatex">\(r\)</span>, then traverse the right subtree in inorder.</li>
+</ul>
+<p>For the tree of Figure 12.1 (children in alphabetical order), preorder is <span class="arithmatex">\(r, a, d, e, g, h, b, c, f\)</span> and postorder is <span class="arithmatex">\(d, g, h, e, a, b, f, c, r\)</span>. An inorder traversal of a binary search tree visits the keys in increasing order: for Figure 12.2 it gives <span class="arithmatex">\(20, 30, 35, 40, 50, 60, 70, 80\)</span>. That is a sorting algorithm: insert the keys into a binary search tree, then read them inorder.</p>
+<h3 id="expression-trees-and-polish-notation">Expression trees and Polish notation<a class="headerlink" href="#expression-trees-and-polish-notation" title="Permanent link">&para;</a></h3>
+<p>An arithmetic expression is a tree: each operator is an internal vertex whose subtrees are its operands, and the numbers and variables are leaves. The expression <span class="arithmatex">\(((x + 3) \times (y - 2)) / 4\)</span> is the tree of Figure 12.4.</p>
+<figure class="fig fig-diagram">
+<img src="img/expression-tree.svg" alt="The expression tree for ((x + 3) × (y − 2)) / 4. The root is the division sign, with left child × and right child 4. The × has left child + (with children x and 3) and right child − (with children y and 2)." loading="lazy" width="500" height="330">
+<figcaption><strong>Figure 12.4 An expression tree.</strong> The expression tree for ((x + 3) × (y − 2)) / 4. The root is the division sign, with left child × and right child 4. The × has left child + (with children x and 3) and right child − (with children y and 2).</figcaption>
+</figure>
+<p>The three traversals give three ways of writing the expression.</p>
+<ul>
+<li><strong>Inorder</strong> gives the usual <strong>infix</strong> form, which needs brackets: <span class="arithmatex">\(x + 3 \times y - 2 / 4\)</span> would be ambiguous without them.</li>
+<li><strong>Preorder</strong> gives <strong>prefix</strong> form (Polish notation, after the logician Jan Łukasiewicz): <span class="arithmatex">\(/\; \times\; +\; x\; 3\; -\; y\; 2\; 4\)</span>.</li>
+<li><strong>Postorder</strong> gives <strong>postfix</strong> form (reverse Polish notation): <span class="arithmatex">\(x\; 3\; +\; y\; 2\; -\; \times\; 4\; /\)</span>.</li>
+</ul>
+<p>Prefix and postfix forms need no brackets at all, because each operator is applied to a fixed number of operands. A postfix expression is evaluated with a <strong>stack</strong>: read from left to right; push each number; at each operator, pop two numbers, apply the operator (the first popped is the right operand), and push the result.</p>
+<div class="admonition example">
+<p class="admonition-title">Example 12.5: Evaluating postfix</p>
+<p><strong>Problem.</strong> Evaluate <span class="arithmatex">\(x\; 3\; +\; y\; 2\; -\; \times\; 4\; /\)</span> with <span class="arithmatex">\(x = 5\)</span> and <span class="arithmatex">\(y = 6\)</span>.</p>
+<p><strong>Solution.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Read</th>
+<th>Stack afterwards</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>5</td>
+<td>5</td>
+</tr>
+<tr>
+<td>3</td>
+<td>5, 3</td>
+</tr>
+<tr>
+<td>+</td>
+<td>8</td>
+</tr>
+<tr>
+<td>6</td>
+<td>8, 6</td>
+</tr>
+<tr>
+<td>2</td>
+<td>8, 6, 2</td>
+</tr>
+<tr>
+<td>−</td>
+<td>8, 4</td>
+</tr>
+<tr>
+<td>×</td>
+<td>32</td>
+</tr>
+<tr>
+<td>4</td>
+<td>32, 4</td>
+</tr>
+<tr>
+<td>/</td>
+<td>8</td>
+</tr>
+</tbody>
+</table>
+<p>The value is 8. Compilers translate expressions into postfix form, which matches how a processor evaluates them.</p>
+</div>
+<h2 id="125-spanning-trees">12.5 Spanning trees<a class="headerlink" href="#125-spanning-trees" title="Permanent link">&para;</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Definition: spanning tree</p>
+<p>A <strong>spanning tree</strong> of a connected graph <span class="arithmatex">\(G\)</span> is a subgraph that is a tree and contains every vertex of <span class="arithmatex">\(G\)</span>.</p>
+</div>
+<p>A road authority that must keep a network of villages connected while ploughing as few roads as possible after a snowfall needs a spanning tree.</p>
+<div class="admonition note">
+<p class="admonition-title">Theorem 12.6</p>
+<p>Every connected graph has a spanning tree.</p>
+</div>
+<p><strong>Proof.</strong> While the graph has a cycle, remove one edge of a cycle. Removing an edge of a cycle never disconnects the graph (the rest of the cycle still joins its ends). The process stops, since each step removes an edge, and it ends with a connected graph with no cycles that contains every vertex: a spanning tree. <span class="arithmatex">\(\blacksquare\)</span></p>
+<p>Removing cycles one at a time is inefficient. Instead, spanning trees are grown by searching.</p>
+<ul>
+<li><strong>Depth-first search</strong> (DFS) starts at a vertex and repeatedly moves to an unvisited neighbour of the current vertex, adding that edge; when the current vertex has no unvisited neighbour, it <strong>backtracks</strong> to the previous vertex and tries again. It produces a tree with long branches.</li>
+<li><strong>Breadth-first search</strong> (BFS, Section 11.4) adds all unvisited neighbours of the root, then all unvisited neighbours of those, level by level. It produces a bushy tree in which the path from the root to each vertex is a shortest path.</li>
+</ul>
+<p>Both visit each vertex and edge a bounded number of times, so they run in time proportional to <span class="arithmatex">\(\lvert V \rvert + \lvert E \rvert\)</span>. Depth-first search with backtracking is also a general method for searching for solutions to puzzles and combinatorial problems, such as placing eight queens on a chessboard so that no two attack each other.</p>
+<p>A connected graph usually has many spanning trees. Cayley's formula says that the complete graph <span class="arithmatex">\(K_n\)</span> has <span class="arithmatex">\(n^{n-2}\)</span> of them: <span class="arithmatex">\(K_4\)</span> has 16.</p>
+<h2 id="126-minimum-spanning-trees">12.6 Minimum spanning trees<a class="headerlink" href="#126-minimum-spanning-trees" title="Permanent link">&para;</a></h2>
+<p>In a <strong>weighted</strong> connected graph, a <strong>minimum spanning tree</strong> is a spanning tree whose total edge weight is as small as possible. It answers questions such as: what is the cheapest way to lay cable so that every building is connected? Two greedy algorithms solve the problem, each making the locally best choice at every step.</p>
+<p><strong>Kruskal's algorithm.</strong> Sort the edges by weight. Go through them from lightest to heaviest, adding an edge to the tree if it does not form a cycle with the edges already chosen, and discarding it if it does. Stop when <span class="arithmatex">\(n - 1\)</span> edges have been chosen.</p>
+<p><strong>Prim's algorithm.</strong> Start from any vertex. Repeatedly add the lightest edge that joins a vertex already in the tree to a vertex not yet in it. Stop when every vertex is in the tree.</p>
+<p>Kruskal's algorithm grows a forest that gradually joins up; Prim's grows a single tree outwards.</p>
+<figure class="fig fig-diagram fig-steps" data-steps-title="Kruskal&#x27;s algorithm on a weighted graph" data-interval="1800">
+<div class="steps-stage">
+<div class="steps-frame"><img src="img/kruskal-0.svg" alt="The graph. Edges in order of weight: ef 1, bc 2, ab 3, cd 4, ac 5, bd 6, de 7, ce 8, df 9." loading="lazy" width="700" height="380"><p class="steps-cap"><span class="steps-n">1</span>The graph. Edges in order of weight: ef 1, bc 2, ab 3, cd 4, ac 5, bd 6, de 7, ce 8, df 9.</p></div>
+<div class="steps-frame"><img src="img/kruskal-1.svg" alt="Take ef (weight 1)." loading="lazy" width="700" height="380"><p class="steps-cap"><span class="steps-n">2</span>Take ef (weight 1).</p></div>
+<div class="steps-frame"><img src="img/kruskal-2.svg" alt="Take bc (weight 2)." loading="lazy" width="700" height="380"><p class="steps-cap"><span class="steps-n">3</span>Take bc (weight 2).</p></div>
+<div class="steps-frame"><img src="img/kruskal-3.svg" alt="Take ab (weight 3)." loading="lazy" width="700" height="380"><p class="steps-cap"><span class="steps-n">4</span>Take ab (weight 3).</p></div>
+<div class="steps-frame"><img src="img/kruskal-4.svg" alt="Take cd (weight 4)." loading="lazy" width="700" height="380"><p class="steps-cap"><span class="steps-n">5</span>Take cd (weight 4).</p></div>
+<div class="steps-frame"><img src="img/kruskal-5.svg" alt="Reject ac (weight 5): a and c are already joined, through b, so it would close a cycle." loading="lazy" width="700" height="380"><p class="steps-cap"><span class="steps-n">6</span>Reject ac (weight 5): a and c are already joined, through b, so it would close a cycle.</p></div>
+<div class="steps-frame"><img src="img/kruskal-6.svg" alt="Reject bd (weight 6): it would close the cycle b, c, d." loading="lazy" width="700" height="380"><p class="steps-cap"><span class="steps-n">7</span>Reject bd (weight 6): it would close the cycle b, c, d.</p></div>
+<div class="steps-frame"><img src="img/kruskal-7.svg" alt="Take de (weight 7). Five edges join all six vertices; total weight 1 + 2 + 3 + 4 + 7 = 17." loading="lazy" width="700" height="380"><p class="steps-cap"><span class="steps-n">8</span>Take de (weight 7). Five edges join all six vertices; total weight 1 + 2 + 3 + 4 + 7 = 17.</p></div>
+</div>
+<figcaption><strong>Figure 12.5 Kruskal&#x27;s algorithm, one edge at a time.</strong> Kruskal&#x27;s algorithm on a weighted graph</figcaption>
+</figure>
+<div class="admonition example">
+<p class="admonition-title">Example 12.6: Prim's algorithm on the same graph</p>
+<p><strong>Problem.</strong> Run Prim's algorithm from <span class="arithmatex">\(a\)</span> on the graph of Figure 12.5.</p>
+<p><strong>Solution.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Tree so far</th>
+<th>Lightest edge leaving it</th>
+<th>Added</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="arithmatex">\(\{a\}\)</span></td>
+<td><span class="arithmatex">\(ab\)</span> (3)</td>
+<td><span class="arithmatex">\(b\)</span></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(\{a, b\}\)</span></td>
+<td><span class="arithmatex">\(bc\)</span> (2)</td>
+<td><span class="arithmatex">\(c\)</span></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(\{a, b, c\}\)</span></td>
+<td><span class="arithmatex">\(cd\)</span> (4)</td>
+<td><span class="arithmatex">\(d\)</span></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(\{a, b, c, d\}\)</span></td>
+<td><span class="arithmatex">\(de\)</span> (7)</td>
+<td><span class="arithmatex">\(e\)</span></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(\{a, b, c, d, e\}\)</span></td>
+<td><span class="arithmatex">\(ef\)</span> (1)</td>
+<td><span class="arithmatex">\(f\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>The tree has edges <span class="arithmatex">\(ab, bc, cd, de, ef\)</span> and weight 17, the same as Kruskal's. (When all weights are different, the minimum spanning tree is unique.)</p>
+</div>
+<p>Why do greedy choices give the best tree? Both algorithms rest on one property.</p>
+<div class="admonition note">
+<p class="admonition-title">Theorem 12.7 (the cut property)</p>
+<p>Let <span class="arithmatex">\(G\)</span> be a connected weighted graph, let <span class="arithmatex">\(S\)</span> be a set of vertices with <span class="arithmatex">\(\varnothing \ne S \ne V\)</span>, and let <span class="arithmatex">\(e\)</span> be an edge of least weight among the edges joining <span class="arithmatex">\(S\)</span> to <span class="arithmatex">\(V - S\)</span>. Then some minimum spanning tree contains <span class="arithmatex">\(e\)</span>.</p>
+</div>
+<p><strong>Proof.</strong> Let <span class="arithmatex">\(T\)</span> be a minimum spanning tree. If <span class="arithmatex">\(e \in T\)</span> we are done. Otherwise adding <span class="arithmatex">\(e = uv\)</span> (with <span class="arithmatex">\(u \in S\)</span>, <span class="arithmatex">\(v \notin S\)</span>) to <span class="arithmatex">\(T\)</span> creates a cycle, which crosses from <span class="arithmatex">\(S\)</span> to <span class="arithmatex">\(V - S\)</span> along <span class="arithmatex">\(e\)</span> and must cross back along some other edge <span class="arithmatex">\(e'\)</span> of <span class="arithmatex">\(T\)</span>. Removing <span class="arithmatex">\(e'\)</span> gives a spanning tree <span class="arithmatex">\(T' = T + e - e'\)</span> (it is connected, since any path that used <span class="arithmatex">\(e'\)</span> can go round the cycle instead, and it has <span class="arithmatex">\(n - 1\)</span> edges). Since <span class="arithmatex">\(w(e) \le w(e')\)</span>, <span class="arithmatex">\(w(T') \le w(T)\)</span>, so <span class="arithmatex">\(T'\)</span> is also a minimum spanning tree, and it contains <span class="arithmatex">\(e\)</span>. <span class="arithmatex">\(\blacksquare\)</span></p>
+<p>Each step of Prim's algorithm adds the lightest edge leaving the current tree <span class="arithmatex">\(S\)</span>, and each edge accepted by Kruskal's algorithm is the lightest edge leaving the component of one of its endpoints. By the cut property (applied step by step, with induction on the number of edges chosen), the edges chosen always lie in some minimum spanning tree, so the final tree is minimum.</p>
+<div class="admonition warning">
+<p class="admonition-title">Greedy does not always work</p>
+<p>The greedy idea succeeds for minimum spanning trees because of the cut property, not because greed is generally wise. For the travelling salesperson problem (Section 11.6), "always go to the nearest unvisited city" can produce tours far from the best.</p>
+</div>
+<h2 id="127-summary">12.7 Summary<a class="headerlink" href="#127-summary" title="Permanent link">&para;</a></h2>
+<div class="admonition abstract">
+<p class="admonition-title">Summary</p>
+<ul>
+<li>A <strong>tree</strong> is a connected acyclic graph; equivalently, it has a unique path between any two vertices, or is connected with <span class="arithmatex">\(n - 1\)</span> edges, or is acyclic with <span class="arithmatex">\(n - 1\)</span> edges. Every tree with two or more vertices has at least two leaves.</li>
+<li>A <strong>rooted tree</strong> has parents, children, ancestors, descendants, leaves, levels and a height. A full <span class="arithmatex">\(m\)</span>-ary tree with <span class="arithmatex">\(i\)</span> internal vertices has <span class="arithmatex">\(mi + 1\)</span> vertices and <span class="arithmatex">\((m-1)i + 1\)</span> leaves; an <span class="arithmatex">\(m\)</span>-ary tree of height <span class="arithmatex">\(h\)</span> has at most <span class="arithmatex">\(m^h\)</span> leaves.</li>
+<li><strong>Binary search trees</strong> search in time proportional to their height. <strong>Decision trees</strong> show that comparison sorting needs at least <span class="arithmatex">\(\lceil \log_2 n! \rceil\)</span> comparisons. <strong>Huffman's algorithm</strong> builds an optimal prefix code by repeatedly merging the two lightest trees.</li>
+<li><strong>Preorder</strong>, <strong>inorder</strong> and <strong>postorder</strong> traversals give prefix, infix and postfix forms of expressions; postfix is evaluated with a stack.</li>
+<li>Every connected graph has a <strong>spanning tree</strong>, found by DFS or BFS. <strong>Kruskal</strong> and <strong>Prim</strong> find minimum spanning trees greedily; the <strong>cut property</strong> proves them correct.</li>
+</ul>
+</div>
+<h2 id="128-exercises">12.8 Exercises<a class="headerlink" href="#128-exercises" title="Permanent link">&para;</a></h2>
+<div class="admonition example">
+<p class="admonition-title">Exercise 1</p>
+<p>A tree has 2 vertices of degree 4, 1 vertex of degree 3, and all its other vertices are leaves. How many leaves does it have?</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>Let there be <span class="arithmatex">\(\ell\)</span> leaves; then <span class="arithmatex">\(n = 3 + \ell\)</span> and <span class="arithmatex">\(e = n - 1 = 2 + \ell\)</span>. Handshaking: <span class="arithmatex">\(2 \cdot 4 + 3 + \ell = 2(2 + \ell)\)</span>, so <span class="arithmatex">\(11 + \ell = 4 + 2\ell\)</span> and <span class="arithmatex">\(\ell = 7\)</span>.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 2</p>
+<p>How many edges must be removed from a connected graph with 15 vertices and 25 edges to obtain a spanning tree?</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>A spanning tree has 14 edges, so <span class="arithmatex">\(25 - 14 = 11\)</span> edges must be removed.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 3</p>
+<p>A full ternary (3-ary) tree has 100 internal vertices. How many vertices and leaves does it have?</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p><span class="arithmatex">\(n = 3 \cdot 100 + 1 = 301\)</span> vertices and <span class="arithmatex">\(\ell = 2 \cdot 100 + 1 = 201\)</span> leaves.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 4</p>
+<p>What is the least possible height of a binary tree with 1000 leaves?</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p><span class="arithmatex">\(\lceil \log_2 1000 \rceil = 10\)</span>, since <span class="arithmatex">\(2^9 = 512 &lt; 1000 \le 1024 = 2^{10}\)</span>.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 5</p>
+<p>Insert the words <em>mango, apple, papaya, banana, cherry, orange</em> in this order into a binary search tree (alphabetical order). What is its height? List the words in inorder.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>mango is the root; apple left; papaya right; banana right of apple; cherry right of banana; orange left of papaya. Height 3 (path mango, apple, banana, cherry). Inorder: apple, banana, cherry, mango, orange, papaya, in alphabetical order.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 6</p>
+<p>Write <span class="arithmatex">\((a - b) \times (c + d / e)\)</span> in prefix and postfix notation, and evaluate the postfix form with <span class="arithmatex">\(a = 7, b = 2, c = 1, d = 6, e = 3\)</span>.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>Prefix: <span class="arithmatex">\(\times\; -\; a\; b\; +\; c\; /\; d\; e\)</span>. Postfix: <span class="arithmatex">\(a\; b\; -\; c\; d\; e\; /\; +\; \times\)</span>. Evaluation: after <span class="arithmatex">\(7\;2\;-\)</span> the stack is 5; after <span class="arithmatex">\(1\;6\;3\)</span> it is 5, 1, 6, 3; <span class="arithmatex">\(/\)</span> makes it 5, 1, 2; <span class="arithmatex">\(+\)</span> makes it 5, 3; and <span class="arithmatex">\(\times\)</span> leaves 15.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 7</p>
+<p>Is the code A <code>0</code>, B <code>10</code>, C <code>110</code>, D <code>111</code> a prefix code? Decode <code>0110100111</code>.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>Yes: no codeword begins another. Reading left to right: <code>0</code> A, <code>110</code> C, <code>10</code> B, <code>0</code> A, <code>111</code> D. So ACBAD.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 8</p>
+<p>Construct a Huffman code for symbols with frequencies P 0.4, Q 0.3, R 0.2, S 0.1, and give the average codeword length.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>Merge S (0.1) + R (0.2) = 0.3; then Q (0.3) + {S,R} (0.3) = 0.6; then P (0.4) + 0.6. Codewords (one labelling): P <code>0</code>, Q <code>10</code>, R <code>111</code>, S <code>110</code>, or with the roles of Q and the subtree swapped. Average length <span class="arithmatex">\(0.4 \cdot 1 + 0.3 \cdot 2 + 0.2 \cdot 3 + 0.1 \cdot 3 = 1.9\)</span> bits.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 9</p>
+<p>Find a minimum spanning tree of the graph with vertices <span class="arithmatex">\(p, q, r, s, t\)</span> and edges <span class="arithmatex">\(pq\)</span> 4, <span class="arithmatex">\(pr\)</span> 1, <span class="arithmatex">\(qr\)</span> 2, <span class="arithmatex">\(qs\)</span> 5, <span class="arithmatex">\(rs\)</span> 8, <span class="arithmatex">\(rt\)</span> 9, <span class="arithmatex">\(st\)</span> 3, using Kruskal's algorithm.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>In order: <span class="arithmatex">\(pr\)</span> 1 (take), <span class="arithmatex">\(qr\)</span> 2 (take), <span class="arithmatex">\(st\)</span> 3 (take), <span class="arithmatex">\(pq\)</span> 4 (reject: <span class="arithmatex">\(p, q\)</span> already joined through <span class="arithmatex">\(r\)</span>), <span class="arithmatex">\(qs\)</span> 5 (take: joins <span class="arithmatex">\(\{p,q,r\}\)</span> and <span class="arithmatex">\(\{s,t\}\)</span>). Four edges, done. Total <span class="arithmatex">\(1 + 2 + 3 + 5 = 11\)</span>.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 10</p>
+<p>Prove that a graph is a tree if and only if it is connected and every edge is a bridge.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>If <span class="arithmatex">\(G\)</span> is a tree and <span class="arithmatex">\(e = uv\)</span> is removed, the unique path from <span class="arithmatex">\(u\)</span> to <span class="arithmatex">\(v\)</span> was <span class="arithmatex">\(e\)</span> itself, so <span class="arithmatex">\(u\)</span> and <span class="arithmatex">\(v\)</span> are no longer joined: <span class="arithmatex">\(e\)</span> is a bridge. Conversely, if <span class="arithmatex">\(G\)</span> is connected and had a cycle, an edge on the cycle would not be a bridge (the rest of the cycle joins its ends). So a connected graph in which every edge is a bridge has no cycle, and is a tree. <span class="arithmatex">\(\blacksquare\)</span></p>
+</details>
+<h2 id="129-quiz">12.9 Quiz<a class="headerlink" href="#129-quiz" title="Permanent link">&para;</a></h2>
+<div class="pk-quiz" data-quiz="468d8a7a8cf2">
+<p class="pk-quiz-title">Check your understanding of trees</p>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;text&quot;,&quot;answer&quot;:[&quot;49&quot;]}">
+<p class="admonition-title">Exercise 1</p>
+<p class="pk-q-prompt">How many edges does a tree with 50 vertices have?</p>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>49</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;text&quot;,&quot;answer&quot;:[&quot;21&quot;]}">
+<p class="admonition-title">Exercise 2</p>
+<p class="pk-q-prompt">A full binary tree has 20 internal vertices. How many leaves does it have?</p>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>21</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;preorder&quot;,&quot;inorder&quot;,&quot;postorder&quot;,&quot;breadth-first&quot;],&quot;answer&quot;:&quot;inorder&quot;}">
+<p class="admonition-title">Exercise 3</p>
+<p class="pk-q-prompt">Which traversal of a binary search tree lists the keys in increasing order?</p>
+<ol class="pk-q-opts" type="A"><li>preorder</li><li>inorder</li><li>postorder</li><li>breadth-first</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>inorder</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;text&quot;,&quot;answer&quot;:[&quot;18&quot;]}">
+<p class="admonition-title">Exercise 4</p>
+<p class="pk-q-prompt">Evaluate the postfix expression 4 2 + 3 ×</p>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>18</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;it is the heaviest edge&quot;,&quot;it would form a cycle&quot;,&quot;it joins two leaves&quot;,&quot;its weight is odd&quot;],&quot;answer&quot;:&quot;it would form a cycle&quot;}">
+<p class="admonition-title">Exercise 5</p>
+<p class="pk-q-prompt">Kruskal's algorithm rejects an edge when</p>
+<ol class="pk-q-opts" type="A"><li>it is the heaviest edge</li><li>it would form a cycle</li><li>it joins two leaves</li><li>its weight is odd</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>it would form a cycle</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;text&quot;,&quot;answer&quot;:[&quot;16&quot;]}">
+<p class="admonition-title">Exercise 6</p>
+<p class="pk-q-prompt">How many spanning trees does the complete graph K4 have?</p>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>16</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;every codeword has the same length&quot;,&quot;no codeword is the beginning of another&quot;,&quot;the most common symbol has the longest codeword&quot;,&quot;codewords use only zeros&quot;],&quot;answer&quot;:&quot;no codeword is the beginning of another&quot;}">
+<p class="admonition-title">Exercise 7</p>
+<p class="pk-q-prompt">In a prefix code</p>
+<ol class="pk-q-opts" type="A"><li>every codeword has the same length</li><li>no codeword is the beginning of another</li><li>the most common symbol has the longest codeword</li><li>codewords use only zeros</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>no codeword is the beginning of another</strong></p>
+</details>
+</div>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button type="button" class="md-top md-icon" data-md-component="top" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+Back to top
+</button>
+</main>
+<footer class="md-footer">
+<nav class="md-footer__inner md-grid" aria-label="Footer" >
+<a href="graphs.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: 11. Graphs">
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</div>
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Previous
+</span>
+<div class="md-ellipsis">
+11. Graphs
+</div>
+</div>
+</a>
+<a href="boolean-algebra-and-logic-circuits.html" class="md-footer__link md-footer__link--next" aria-label="Next: 13. Boolean Algebra and Logic Circuits">
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Next
+</span>
+<div class="md-ellipsis">
+13. Boolean Algebra and Logic Circuits
+</div>
+</div>
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+</div>
+</a>
+</nav>
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+The Open Book Project &middot;
+<a href="../../about.html">About this library</a> &middot;
+<a href="../../publish.html">Publish your book</a> &middot;
+© The authors of the books
+</div>
+Made with
+<a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+Material for MkDocs
+</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "navigation.prune", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "toc.follow", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+<script src="../../assets/mathjax.js"></script>
+<script src="../../assets/viz.js"></script>
+<script src="../../assets/remote.js"></script>
+<script src="../../assets/scans.js"></script>
+<script src="../../assets/reader.js"></script>
+<script src="../../assets/app.js"></script>
+<script src="../../assets/slides.js"></script>
+<script src="../../assets/speak.js"></script>
+<script src="../../assets/quiz.js"></script>
+<script>
+    /* offline reading: the service worker at the site root (its scope is the whole site) */
+    if ("serviceWorker" in navigator && window.isSecureContext) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register(new URL("../../sw.js", location.href).href).catch(function () {});
+      });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,1142 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="description" content="The Open Book Project: books on computer science, quantum computing, cyber security, science, the social sciences, university courses and languages, read page by page like an e-book, online or offline.">
+<meta name="author" content="The Open Book Project">
+<link rel="canonical" href="https://open-book-project.github.io/engineering/signals_systems/lti-systems-and-convolution.html">
+<link rel="prev" href="systems-and-their-properties.html">
+<link rel="next" href="fourier-series.html">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap"></noscript>
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Open Book">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="application-name" content="Open Book"><script src="../../assets/library-data.js"></script><script>
+    (function () {
+      var X = window.XMLHttpRequest, open, gate = new Promise(function (r) { open = r; });
+      if (!X) return;
+      var open0 = X.prototype.open, send0 = X.prototype.send;
+      X.prototype.open = function (method, url) {
+        this.__pkIndex = /\/search\/search_index\.json(\?|#|$)/.test(String(url));
+        return open0.apply(this, arguments);
+      };
+      X.prototype.send = function () {
+        if (!this.__pkIndex) return send0.apply(this, arguments);
+        var xhr = this, args = arguments;
+        gate.then(function () { send0.apply(xhr, args); });
+      };
+      function wake() { open(); }
+      document.addEventListener("focusin", function (e) { if (e.target && e.target.closest && e.target.closest(".md-search")) wake(); });
+      document.addEventListener("click", function (e) { if (e.target && e.target.closest && e.target.closest('label[for="__search"], .md-search')) wake(); }, true);
+      document.addEventListener("keydown", function (e) {
+        var k = e.key;
+        if ((k === "/" || k === "s" || k === "f" || k === "S" || k === "F") && !(e.target && e.target.closest && e.target.closest("input, textarea, [contenteditable]"))) wake();
+      }, true);
+      if (/[?&]q=/.test(location.search)) wake();
+    })();
+  </script><script>
+    try {
+      if ((window.matchMedia && (matchMedia("(display-mode: standalone)").matches || matchMedia("(display-mode: fullscreen)").matches)) || navigator.standalone === true) {
+        document.documentElement.className += " bjp-standalone";
+      }
+    } catch (e) { /* not an installed app */ }
+    /* the books of a subject or of the whole library as covers or as a list (assets/app.js): the reader's choice */
+    try {
+      var bv = localStorage.getItem("bjp.view");
+      if (bv === "list" || (bv !== "grid" && /\/books\.html$/.test(location.pathname))) document.documentElement.className += " bjp-view-list";
+    } catch (e) { /* no storage: covers */ }
+  </script>
+<script>
+    /* a book opened from its cover on the shelf: the page stays blank, in the cover's colour, until the reader is up */
+    try {
+      var cv = sessionStorage.getItem("bjp.reader.cover");
+      if (cv && sessionStorage.getItem("bjp.reader.open") === "1") {
+        var c = JSON.parse(cv), de = document.documentElement;
+        de.className += " bjp-booting";
+        if (c && /^#[0-9a-f]{3,8}$/i.test(c.bg || "")) de.style.background = c.bg;
+        setTimeout(function () { de.classList.remove("bjp-booting"); de.style.background = ""; }, 3000);
+      }
+    } catch (e) { /* no session storage: the page simply opens as usual */ }
+  </script>
+<title>4. LTI Systems and Convolution - The Open Book Project</title>
+<link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+<link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+<link rel="stylesheet" href="../../assets/extra.css">
+<link rel="stylesheet" href="../../assets/reader.css">
+<link rel="stylesheet" href="../../assets/viz.css">
+<link rel="stylesheet" href="../../assets/app.css">
+<link rel="stylesheet" href="../../assets/theme.css">
+<link rel="stylesheet" href="../../assets/slides.css">
+<link rel="stylesheet" href="../../assets/remote.css">
+<link rel="stylesheet" href="../../assets/scans.css">
+<link rel="stylesheet" href="../../assets/speak.css">
+<link rel="stylesheet" href="../../assets/quiz.css">
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+<input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+<input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a href="#41-the-idea-one-response-tells-all" class="md-skip">
+Skip to content
+</a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav class="md-header__inner md-grid" aria-label="Header">
+<a href="../../index.html" title="The Open Book Project" class="md-header__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+The Open Book Project
+</span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+4. LTI Systems and Convolution
+</span>
+</div>
+</div>
+</div><a href="../../index.html" class="bjp-libbtn" aria-label="Library: all books" title="Library: all books">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V5h4v15M8 20V9h4v11M14 20L12.6 6l3.8-.8 3 14.2M3 20h18"/></svg><span>Library</span>
+</a>
+<a href="../../subjects/index.html" class="pk-catbtn" aria-haspopup="true" aria-expanded="false" title="Browse the books by category">
+<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><circle cx="17" cy="7" r="3.6"/><path d="M7 13.4l3.9 6.8H3.1z"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg><span>Categories</span>
+</a>
+<form class="md-header__option" data-md-component="palette">
+<input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+<label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+</label>
+<input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+<label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+<label class="md-search__icon md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</label>
+<nav class="md-search__options" aria-label="Search">
+<button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+Initializing search
+</div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--primary bjp-nav bjp-nav--book" aria-label="Navigation" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a href="../../index.html" title="The Open Book Project" class="md-nav__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+The Open Book Project
+</label>
+<ul class="md-nav__list" data-md-scrollfix>
+<li class="md-nav__item bjp-nav-all">
+<a href="../../index.html" class="md-nav__link" aria-label="All books: back to the library">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+<span class="md-ellipsis">All books</span>
+</a>
+</li>
+<li class="md-nav__item bjp-nav-book" role="presentation"><span class="bjp-nav-head">Signals and Systems</span></li>
+<li class="md-nav__item">
+<a href="index.html" class="md-nav__link">
+<span class="md-ellipsis">
+Overview and preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="preface.html" class="md-nav__link">
+<span class="md-ellipsis">
+Preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="signals-and-their-classification.html" class="md-nav__link">
+<span class="md-ellipsis">
+1. Signals and Their Classification
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="elementary-signals-and-operations.html" class="md-nav__link">
+<span class="md-ellipsis">
+2. Elementary Signals and Operations on Signals
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="systems-and-their-properties.html" class="md-nav__link">
+<span class="md-ellipsis">
+3. Systems and Their Properties
+</span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+4. LTI Systems and Convolution
+</span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a href="lti-systems-and-convolution.html" class="md-nav__link md-nav__link--active">
+<span class="md-ellipsis">
+4. LTI Systems and Convolution
+</span>
+</a>
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#41-the-idea-one-response-tells-all" class="md-nav__link">
+<span class="md-ellipsis">
+4.1 The idea: one response tells all
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#conv-sum" class="md-nav__link">
+<span class="md-ellipsis">
+4.2 The convolution sum
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#43-computing-the-convolution-sum" class="md-nav__link">
+<span class="md-ellipsis">
+4.3 Computing the convolution sum
+</span>
+</a>
+<nav class="md-nav" aria-label="4.3 Computing the convolution sum">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#method-1-a-table-for-finite-sequences" class="md-nav__link">
+<span class="md-ellipsis">
+Method 1: a table for finite sequences
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#method-2-flip-and-slide" class="md-nav__link">
+<span class="md-ellipsis">
+Method 2: flip and slide
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#method-3-direct-summation-for-closed-forms" class="md-nav__link">
+<span class="md-ellipsis">
+Method 3: direct summation for closed forms
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#conv-integral" class="md-nav__link">
+<span class="md-ellipsis">
+4.4 The convolution integral
+</span>
+</a>
+<nav class="md-nav" aria-label="4.4 The convolution integral">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#working-an-integral-step-by-step" class="md-nav__link">
+<span class="md-ellipsis">
+Working an integral step by step
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#conv-properties" class="md-nav__link">
+<span class="md-ellipsis">
+4.5 Properties of convolution
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#lti-properties" class="md-nav__link">
+<span class="md-ellipsis">
+4.6 Reading system properties from the impulse response
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#47-the-step-response" class="md-nav__link">
+<span class="md-ellipsis">
+4.7 The step response
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#eigenfunctions" class="md-nav__link">
+<span class="md-ellipsis">
+4.8 Complex exponentials are eigenfunctions
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#49-convolution-in-numpy" class="md-nav__link">
+<span class="md-ellipsis">
+4.9 Convolution in NumPy
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#410-summary" class="md-nav__link">
+<span class="md-ellipsis">
+4.10 Summary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#411-exercises" class="md-nav__link">
+<span class="md-ellipsis">
+4.11 Exercises
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#412-quiz" class="md-nav__link">
+<span class="md-ellipsis">
+4.12 Quiz
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="fourier-series.html" class="md-nav__link">
+<span class="md-ellipsis">
+5. Fourier Series
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="the-continuous-time-fourier-transform.html" class="md-nav__link">
+<span class="md-ellipsis">
+6. The Continuous-Time Fourier Transform
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="the-discrete-time-fourier-transform.html" class="md-nav__link">
+<span class="md-ellipsis">
+7. The Discrete-Time Fourier Transform
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="the-dft-and-the-fft.html" class="md-nav__link">
+<span class="md-ellipsis">
+8. The DFT and the FFT
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="sampling-and-aliasing.html" class="md-nav__link">
+<span class="md-ellipsis">
+9. Sampling and Aliasing
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="the-laplace-transform.html" class="md-nav__link">
+<span class="md-ellipsis">
+10. The Laplace Transform
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="the-z-transform.html" class="md-nav__link">
+<span class="md-ellipsis">
+11. The z-Transform
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="frequency-response-and-filters.html" class="md-nav__link">
+<span class="md-ellipsis">
+12. Frequency Response and Filters
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="state-space-models.html" class="md-nav__link">
+<span class="md-ellipsis">
+13. State-Space Models
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="applications-audio-communication-and-control.html" class="md-nav__link">
+<span class="md-ellipsis">
+14. Applications: Audio, Communication and Control
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="tables-of-transforms.html" class="md-nav__link">
+<span class="md-ellipsis">
+Tables of Transforms
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="glossary.html" class="md-nav__link">
+<span class="md-ellipsis">
+Glossary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="further-reading.html" class="md-nav__link">
+<span class="md-ellipsis">
+Further Reading
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#41-the-idea-one-response-tells-all" class="md-nav__link">
+<span class="md-ellipsis">
+4.1 The idea: one response tells all
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#conv-sum" class="md-nav__link">
+<span class="md-ellipsis">
+4.2 The convolution sum
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#43-computing-the-convolution-sum" class="md-nav__link">
+<span class="md-ellipsis">
+4.3 Computing the convolution sum
+</span>
+</a>
+<nav class="md-nav" aria-label="4.3 Computing the convolution sum">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#method-1-a-table-for-finite-sequences" class="md-nav__link">
+<span class="md-ellipsis">
+Method 1: a table for finite sequences
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#method-2-flip-and-slide" class="md-nav__link">
+<span class="md-ellipsis">
+Method 2: flip and slide
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#method-3-direct-summation-for-closed-forms" class="md-nav__link">
+<span class="md-ellipsis">
+Method 3: direct summation for closed forms
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#conv-integral" class="md-nav__link">
+<span class="md-ellipsis">
+4.4 The convolution integral
+</span>
+</a>
+<nav class="md-nav" aria-label="4.4 The convolution integral">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#working-an-integral-step-by-step" class="md-nav__link">
+<span class="md-ellipsis">
+Working an integral step by step
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#conv-properties" class="md-nav__link">
+<span class="md-ellipsis">
+4.5 Properties of convolution
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#lti-properties" class="md-nav__link">
+<span class="md-ellipsis">
+4.6 Reading system properties from the impulse response
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#47-the-step-response" class="md-nav__link">
+<span class="md-ellipsis">
+4.7 The step response
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#eigenfunctions" class="md-nav__link">
+<span class="md-ellipsis">
+4.8 Complex exponentials are eigenfunctions
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#49-convolution-in-numpy" class="md-nav__link">
+<span class="md-ellipsis">
+4.9 Convolution in NumPy
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#410-summary" class="md-nav__link">
+<span class="md-ellipsis">
+4.10 Summary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#411-exercises" class="md-nav__link">
+<span class="md-ellipsis">
+4.11 Exercises
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#412-quiz" class="md-nav__link">
+<span class="md-ellipsis">
+4.12 Quiz
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="chapter-4-lti-systems-and-convolution">Chapter 4: LTI Systems and Convolution<a class="headerlink" href="#chapter-4-lti-systems-and-convolution" title="Permanent link">&para;</a></h1>
+<p><em>How the impulse response determines everything, in discrete and continuous time</em></p>
+<div class="admonition note">
+<p class="admonition-title">Learning outcomes</p>
+<p>After this chapter you should be able to:</p>
+<ul>
+<li>derive the convolution sum and the convolution integral from linearity and time invariance;</li>
+<li>compute convolutions of finite sequences by table, of closed-form signals by direct summation or integration, and of any signals by the flip-and-slide method;</li>
+<li>use the commutative, associative and distributive properties to simplify interconnections of LTI systems;</li>
+<li>read memory, causality, stability and invertibility of an LTI system directly from its impulse response;</li>
+<li>relate the step response to the impulse response, and explain why complex exponentials are eigenfunctions of LTI systems.</li>
+</ul>
+</div>
+<h2 id="41-the-idea-one-response-tells-all">4.1 The idea: one response tells all<a class="headerlink" href="#41-the-idea-one-response-tells-all" title="Permanent link">&para;</a></h2>
+<p>Chapter 3 introduced linearity and time invariance separately. Together they have a remarkable consequence: <strong>if we know how an LTI system responds to a single impulse, we can compute its response to any input.</strong> The response to the unit impulse is called the <strong>impulse response</strong>, written <span class="arithmatex">\(h[n]\)</span> in discrete time and <span class="arithmatex">\(h(t)\)</span> in continuous time:</p>
+<div class="arithmatex">\[
+h[n] = T\{\delta[n]\}, \qquad h(t) = T\{\delta(t)\}.
+\]</div>
+<p>The argument has three steps, and it is the same in both domains. First, write the input as a sum of shifted, scaled impulses. Second, use time invariance: each shifted impulse produces a shifted copy of <span class="arithmatex">\(h\)</span>. Third, use linearity: the scaled sum of impulses produces the same scaled sum of shifted impulse responses. The result is an operation called <strong>convolution</strong>. This chapter derives it, shows how to compute it, and draws out its consequences.</p>
+<h2 id="conv-sum">4.2 The convolution sum<a class="headerlink" href="#conv-sum" title="Permanent link">&para;</a></h2>
+<p>Chapter 2 showed that every sequence is a weighted sum of shifted impulses:</p>
+<div class="arithmatex">\[
+x[n] = \sum_{k=-\infty}^{\infty} x[k]\,\delta[n - k].
+\]</div>
+<p>Read this as a recipe: at each position <span class="arithmatex">\(k\)</span> there is an impulse <span class="arithmatex">\(\delta[n-k]\)</span> with weight <span class="arithmatex">\(x[k]\)</span>. Now pass it through an LTI system.</p>
+<ul>
+<li>By <strong>time invariance</strong>, the input <span class="arithmatex">\(\delta[n - k]\)</span> produces <span class="arithmatex">\(h[n - k]\)</span>.</li>
+<li>By <strong>homogeneity</strong>, the input <span class="arithmatex">\(x[k]\,\delta[n - k]\)</span> produces <span class="arithmatex">\(x[k]\,h[n - k]\)</span> (the weight <span class="arithmatex">\(x[k]\)</span> is just a number).</li>
+<li>By <strong>additivity</strong>, the sum of all these inputs produces the sum of all these outputs.</li>
+</ul>
+<p>Therefore</p>
+<div class="arithmatex">\[
+\boxed{\,y[n] = \sum_{k=-\infty}^{\infty} x[k]\,h[n - k] = x[n] * h[n]\,}
+\]</div>
+<p>This is the <strong>convolution sum</strong>, and the star denotes convolution (not multiplication). The output at time <span class="arithmatex">\(n\)</span> is a weighted sum of input samples, and the weight given to the input at time <span class="arithmatex">\(k\)</span> is <span class="arithmatex">\(h[n - k]\)</span>: the impulse response evaluated at the time elapsed since <span class="arithmatex">\(k\)</span>. A system with a long impulse response "remembers" inputs from long ago.</p>
+<div class="admonition abstract">
+<p class="admonition-title">Key idea</p>
+<p>An LTI system is completely characterised by its impulse response. Once <span class="arithmatex">\(h\)</span> is known, the output for any input is <span class="arithmatex">\(y = x * h\)</span>.</p>
+</div>
+<h2 id="43-computing-the-convolution-sum">4.3 Computing the convolution sum<a class="headerlink" href="#43-computing-the-convolution-sum" title="Permanent link">&para;</a></h2>
+<p>There are three practical methods. Choose by the form of the signals.</p>
+<h3 id="method-1-a-table-for-finite-sequences">Method 1: a table for finite sequences<a class="headerlink" href="#method-1-a-table-for-finite-sequences" title="Permanent link">&para;</a></h3>
+<p>When <span class="arithmatex">\(x\)</span> and <span class="arithmatex">\(h\)</span> are short lists, write the output as a sum of shifted copies of <span class="arithmatex">\(h\)</span>, one for each input sample, and add the columns. Let <span class="arithmatex">\(x[n] = \{1, 2, 3\}\)</span> and <span class="arithmatex">\(h[n] = \{1, 1, 1\}\)</span>, both starting at <span class="arithmatex">\(n = 0\)</span>.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th><span class="arithmatex">\(n = 0\)</span></th>
+<th>1</th>
+<th>2</th>
+<th>3</th>
+<th>4</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="arithmatex">\(x[0]\,h[n] = 1\cdot h[n]\)</span></td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(x[1]\,h[n-1] = 2\cdot h[n-1]\)</span></td>
+<td></td>
+<td>2</td>
+<td>2</td>
+<td>2</td>
+<td></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(x[2]\,h[n-2] = 3\cdot h[n-2]\)</span></td>
+<td></td>
+<td></td>
+<td>3</td>
+<td>3</td>
+<td>3</td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(y[n]\)</span></td>
+<td><strong>1</strong></td>
+<td><strong>3</strong></td>
+<td><strong>6</strong></td>
+<td><strong>5</strong></td>
+<td><strong>3</strong></td>
+</tr>
+</tbody>
+</table>
+<p><em>Table 4.1. Convolution of two finite sequences by adding shifted copies of h.</em></p>
+<p>The procedure is exactly the multiplication of polynomials: <span class="arithmatex">\((1 + 2z + 3z^2)(1 + z + z^2) = 1 + 3z + 6z^2 + 5z^3 + 3z^4\)</span>. Two facts follow. If <span class="arithmatex">\(x\)</span> has <span class="arithmatex">\(N_x\)</span> samples starting at <span class="arithmatex">\(n_1\)</span> and <span class="arithmatex">\(h\)</span> has <span class="arithmatex">\(N_h\)</span> samples starting at <span class="arithmatex">\(n_2\)</span>, then <span class="arithmatex">\(y\)</span> has <span class="arithmatex">\(N_x + N_h - 1\)</span> samples starting at <span class="arithmatex">\(n_1 + n_2\)</span>. And the sum of the output samples is the product of the input sums: here <span class="arithmatex">\(18 = 6 \times 3\)</span>.</p>
+<h3 id="method-2-flip-and-slide">Method 2: flip and slide<a class="headerlink" href="#method-2-flip-and-slide" title="Permanent link">&para;</a></h3>
+<p>To compute one output sample <span class="arithmatex">\(y[n]\)</span> directly from the formula, think of <span class="arithmatex">\(h[n - k]\)</span> as a function of <span class="arithmatex">\(k\)</span>. It is <span class="arithmatex">\(h[k]\)</span> <strong>flipped</strong> (reflected to <span class="arithmatex">\(h[-k]\)</span>) and then <strong>slid</strong> to the right by <span class="arithmatex">\(n\)</span>. Multiply it, sample by sample, with <span class="arithmatex">\(x[k]\)</span> and add up the products. Then increase <span class="arithmatex">\(n\)</span> by one, slide the flipped sequence one step further, and repeat. The step-through figure below does this for the sequences of Table 4.1.</p>
+<figure class="fig fig-diagram fig-steps" data-steps-title="Flip-and-slide convolution of x = {1, 2, 3} with h = {1, 1, 1}" data-interval="2200">
+<div class="steps-stage">
+<div class="steps-frame"><img src="img/conv-step-1.svg" alt="n = 0. Only x[0] overlaps the flipped h, so y[0] = 1." loading="lazy" width="720" height="420"><p class="steps-cap"><span class="steps-n">1</span>n = 0. Only x[0] overlaps the flipped h, so y[0] = 1.</p></div>
+<div class="steps-frame"><img src="img/conv-step-2.svg" alt="n = 1. Two samples overlap: y[1] = 1 + 2 = 3." loading="lazy" width="720" height="420"><p class="steps-cap"><span class="steps-n">2</span>n = 1. Two samples overlap: y[1] = 1 + 2 = 3.</p></div>
+<div class="steps-frame"><img src="img/conv-step-3.svg" alt="n = 2. Full overlap: y[2] = 1 + 2 + 3 = 6." loading="lazy" width="720" height="420"><p class="steps-cap"><span class="steps-n">3</span>n = 2. Full overlap: y[2] = 1 + 2 + 3 = 6.</p></div>
+<div class="steps-frame"><img src="img/conv-step-4.svg" alt="n = 3. The flipped h starts to leave x: y[3] = 2 + 3 = 5." loading="lazy" width="720" height="420"><p class="steps-cap"><span class="steps-n">4</span>n = 3. The flipped h starts to leave x: y[3] = 2 + 3 = 5.</p></div>
+<div class="steps-frame"><img src="img/conv-step-5.svg" alt="n = 4. Only x[2] overlaps: y[4] = 3. For n ≥ 5 there is no overlap and y[n] = 0." loading="lazy" width="720" height="420"><p class="steps-cap"><span class="steps-n">5</span>n = 4. Only x[2] overlaps: y[4] = 3. For n ≥ 5 there is no overlap and y[n] = 0.</p></div>
+</div>
+<figcaption><strong>Figure 4.1 Flip and slide.</strong> The flipped impulse response h[n − k] slides past x[k]; at each n the overlapping products are added to give y[n].</figcaption>
+</figure>
+<p>Flip and slide is the method to use when the signals are given by sketches or when you need to know where the output is non-zero. The overlap picture also explains the length rule: the output is non-zero from the first moment of overlap to the last.</p>
+<h3 id="method-3-direct-summation-for-closed-forms">Method 3: direct summation for closed forms<a class="headerlink" href="#method-3-direct-summation-for-closed-forms" title="Permanent link">&para;</a></h3>
+<p>When the signals are given by formulas, substitute them into the sum, use the steps to fix the limits, and sum a geometric series.</p>
+<div class="admonition example">
+<p class="admonition-title">Example 4.1 Exponential convolved with a step</p>
+<p>Find <span class="arithmatex">\(y[n] = a^n u[n] * u[n]\)</span> for <span class="arithmatex">\(|a| \ne 1\)</span>.</p>
+<div class="arithmatex">\[
+y[n] = \sum_{k=-\infty}^{\infty} a^k u[k]\,u[n - k].
+\]</div>
+<p>The factor <span class="arithmatex">\(u[k]\)</span> is zero for <span class="arithmatex">\(k &lt; 0\)</span>; the factor <span class="arithmatex">\(u[n - k]\)</span> is zero for <span class="arithmatex">\(k &gt; n\)</span>. So for <span class="arithmatex">\(n &lt; 0\)</span> every term vanishes and <span class="arithmatex">\(y[n] = 0\)</span>. For <span class="arithmatex">\(n \ge 0\)</span> the sum runs from <span class="arithmatex">\(k = 0\)</span> to <span class="arithmatex">\(k = n\)</span>:</p>
+<div class="arithmatex">\[
+y[n] = \sum_{k=0}^{n} a^k = \frac{1 - a^{n+1}}{1 - a}, \qquad n \ge 0 .
+\]</div>
+<p>So <span class="arithmatex">\(y[n] = \dfrac{1 - a^{n+1}}{1 - a}\,u[n]\)</span>. With <span class="arithmatex">\(a = 0.5\)</span> the output climbs <span class="arithmatex">\(1, 1.5, 1.75, 1.875, \ldots\)</span> towards 2, which is the step response found by iteration in Exercise 3.8. That is no coincidence: <span class="arithmatex">\((0.5)^n u[n]\)</span> is the impulse response of <span class="arithmatex">\(y[n] = x[n] + 0.5y[n-1]\)</span>, and convolving it with <span class="arithmatex">\(u[n]\)</span> gives the response to a step.</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title">Example 4.2 Two exponentials</p>
+<p>Find <span class="arithmatex">\(y[n] = a^n u[n] * b^n u[n]\)</span> with <span class="arithmatex">\(a \ne b\)</span>.</p>
+<p>For <span class="arithmatex">\(n \ge 0\)</span>,</p>
+<div class="arithmatex">\[
+y[n] = \sum_{k=0}^{n} a^k b^{n-k} = b^n\sum_{k=0}^{n}\left(\frac{a}{b}\right)^k = b^n\,\frac{1 - (a/b)^{n+1}}{1 - a/b} = \frac{a^{n+1} - b^{n+1}}{a - b}.
+\]</div>
+<p>So <span class="arithmatex">\(y[n] = \dfrac{a^{n+1} - b^{n+1}}{a - b}\,u[n]\)</span>. Check <span class="arithmatex">\(n = 0\)</span>: <span class="arithmatex">\(y[0] = 1\)</span>, which is <span class="arithmatex">\(a^0b^0\)</span>. Check <span class="arithmatex">\(n = 1\)</span>: <span class="arithmatex">\(y[1] = a + b\)</span>, which is <span class="arithmatex">\(x[0]h[1] + x[1]h[0]\)</span>.</p>
+</div>
+<h2 id="conv-integral">4.4 The convolution integral<a class="headerlink" href="#conv-integral" title="Permanent link">&para;</a></h2>
+<p>The continuous-time argument mirrors the discrete one. The sifting property of Chapter 2 lets us write any signal as a "sum" (an integral) of shifted impulses:</p>
+<div class="arithmatex">\[
+x(t) = \int_{-\infty}^{\infty} x(\tau)\,\delta(t - \tau)\,d\tau .
+\]</div>
+<p>An impulse at time <span class="arithmatex">\(\tau\)</span> produces <span class="arithmatex">\(h(t - \tau)\)</span> by time invariance. Its weight is <span class="arithmatex">\(x(\tau)\,d\tau\)</span>. Linearity lets us add (integrate) the responses:</p>
+<div class="arithmatex">\[
+\boxed{\,y(t) = \int_{-\infty}^{\infty} x(\tau)\,h(t - \tau)\,d\tau = x(t) * h(t)\,}
+\]</div>
+<p>This is the <strong>convolution integral</strong>. The graphical meaning is the same as before: flip <span class="arithmatex">\(h(\tau)\)</span> to <span class="arithmatex">\(h(-\tau)\)</span>, slide it right by <span class="arithmatex">\(t\)</span> to get <span class="arithmatex">\(h(t - \tau)\)</span>, multiply by <span class="arithmatex">\(x(\tau)\)</span>, and take the <strong>area</strong> of the product. The area depends on <span class="arithmatex">\(t\)</span>, and it is the output <span class="arithmatex">\(y(t)\)</span>.</p>
+<h3 id="working-an-integral-step-by-step">Working an integral step by step<a class="headerlink" href="#working-an-integral-step-by-step" title="Permanent link">&para;</a></h3>
+<p>The skill is in finding the limits. Because the signals usually switch on and off, the product <span class="arithmatex">\(x(\tau)h(t - \tau)\)</span> is non-zero only on an interval whose ends depend on <span class="arithmatex">\(t\)</span>, and the form of the integral changes as <span class="arithmatex">\(t\)</span> crosses certain values. Sketch first, then integrate on each range.</p>
+<figure class="fig fig-diagram">
+<img src="img/ct-convolution.svg" alt="Top: a unit pulse x(t) on 0 ≤ t &lt; 1, the impulse response h(t) = e^(−t)u(t), and the overlap of x(τ) with the flipped and shifted h(t − τ) at t = 0.6 (shaded). Bottom: the output y(t), which rises as 1 − e^(−t) while the pulse is on and decays as (e − 1)e^(−t) afterwards." loading="lazy" width="800" height="420">
+<figcaption><strong>Figure 4.2 A continuous-time convolution.</strong> Top: a unit pulse x(t) on 0 ≤ t &lt; 1, the impulse response h(t) = e^(−t)u(t), and the overlap of x(τ) with the flipped and shifted h(t − τ) at t = 0.6 (shaded). Bottom: the output y(t), which rises as 1 − e^(−t) while the pulse is on and decays as (e − 1)e^(−t) afterwards.</figcaption>
+</figure>
+<div class="admonition example">
+<p class="admonition-title">Example 4.3 A pulse into a first-order system</p>
+<p>Let <span class="arithmatex">\(x(t) = u(t) - u(t - 1)\)</span> (a unit pulse lasting one second) and <span class="arithmatex">\(h(t) = e^{-t}u(t)\)</span> (the impulse response of an RC circuit with <span class="arithmatex">\(RC = 1\)</span>). Find <span class="arithmatex">\(y = x * h\)</span>.</p>
+<p>As a function of <span class="arithmatex">\(\tau\)</span>, <span class="arithmatex">\(x(\tau)\)</span> is 1 on <span class="arithmatex">\([0, 1)\)</span>. The flipped, shifted response <span class="arithmatex">\(h(t - \tau) = e^{-(t - \tau)}\)</span> is non-zero for <span class="arithmatex">\(\tau &lt; t\)</span>: it ends at <span class="arithmatex">\(\tau = t\)</span> and trails off to the left. There are three cases.</p>
+<p><strong><span class="arithmatex">\(t &lt; 0\)</span>.</strong> The flipped response lies entirely left of the pulse. No overlap: <span class="arithmatex">\(y(t) = 0\)</span>.</p>
+<p><strong><span class="arithmatex">\(0 \le t &lt; 1\)</span>.</strong> Overlap on <span class="arithmatex">\(0 \le \tau \le t\)</span> (shaded in Figure 4.2):</p>
+<div class="arithmatex">\[
+y(t) = \int_0^t e^{-(t - \tau)}\,d\tau = e^{-t}\left[e^{\tau}\right]_0^t = 1 - e^{-t}.
+\]</div>
+<p><strong><span class="arithmatex">\(t \ge 1\)</span>.</strong> Overlap on the whole pulse, <span class="arithmatex">\(0 \le \tau &lt; 1\)</span>:</p>
+<div class="arithmatex">\[
+y(t) = \int_0^1 e^{-(t - \tau)}\,d\tau = e^{-t}(e - 1).
+\]</div>
+<p>The two pieces agree at <span class="arithmatex">\(t = 1\)</span>, where both equal <span class="arithmatex">\(1 - e^{-1} \approx 0.632\)</span>, as they must for a continuous output. Physically, the capacitor charges towards 1 while the pulse is on, reaching 63% of the way, and then discharges.</p>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Five checks for a convolution</p>
+<p>(1) The output starts at the sum of the start times and ends at the sum of the end times. (2) The pieces join continuously unless one signal contains an impulse. (3) The area of <span class="arithmatex">\(y\)</span> is the product of the areas of <span class="arithmatex">\(x\)</span> and <span class="arithmatex">\(h\)</span>. (4) For a causal <span class="arithmatex">\(h\)</span>, <span class="arithmatex">\(y\)</span> cannot start before <span class="arithmatex">\(x\)</span>. (5) The answer has the right units: an integral over <span class="arithmatex">\(\tau\)</span> adds a factor of time.</p>
+</div>
+<p>Check (3) on Example 4.3: the area of <span class="arithmatex">\(x\)</span> is 1, the area of <span class="arithmatex">\(h\)</span> is <span class="arithmatex">\(\int_0^\infty e^{-t}dt = 1\)</span>, and the area of <span class="arithmatex">\(y\)</span> is <span class="arithmatex">\(\int_0^1(1 - e^{-t})dt + \int_1^\infty(e - 1)e^{-t}dt = e^{-1} + (e - 1)e^{-1} = 1\)</span>. It agrees.</p>
+<h2 id="conv-properties">4.5 Properties of convolution<a class="headerlink" href="#conv-properties" title="Permanent link">&para;</a></h2>
+<p>Convolution behaves like multiplication in several ways. Each property below holds in both domains; we write them for continuous time.</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Statement</th>
+<th>Meaning for systems</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Commutative</td>
+<td><span class="arithmatex">\(x * h = h * x\)</span></td>
+<td>input and impulse response are interchangeable</td>
+</tr>
+<tr>
+<td>Associative</td>
+<td><span class="arithmatex">\((x * h_1) * h_2 = x * (h_1 * h_2)\)</span></td>
+<td>a cascade has impulse response <span class="arithmatex">\(h_1 * h_2\)</span></td>
+</tr>
+<tr>
+<td>Distributive</td>
+<td><span class="arithmatex">\(x * (h_1 + h_2) = x * h_1 + x * h_2\)</span></td>
+<td>a parallel connection has impulse response <span class="arithmatex">\(h_1 + h_2\)</span></td>
+</tr>
+<tr>
+<td>Identity</td>
+<td><span class="arithmatex">\(x * \delta = x\)</span></td>
+<td>the identity system has <span class="arithmatex">\(h = \delta\)</span></td>
+</tr>
+<tr>
+<td>Shift</td>
+<td><span class="arithmatex">\(x(t) * \delta(t - t_0) = x(t - t_0)\)</span></td>
+<td>the ideal delay has <span class="arithmatex">\(h = \delta(t - t_0)\)</span></td>
+</tr>
+<tr>
+<td>Shift of both</td>
+<td>if <span class="arithmatex">\(y = x * h\)</span> then <span class="arithmatex">\(x(t - t_1) * h(t - t_2) = y(t - t_1 - t_2)\)</span></td>
+<td>delays add</td>
+</tr>
+<tr>
+<td>Derivative</td>
+<td><span class="arithmatex">\(\frac{d}{dt}(x * h) = \frac{dx}{dt} * h = x * \frac{dh}{dt}\)</span></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><em>Table 4.2. Properties of convolution.</em></p>
+<p>The commutative property follows from the substitution <span class="arithmatex">\(\sigma = t - \tau\)</span> in the integral. Its practical meaning is surprising: <strong>the order of LTI systems in a cascade does not matter</strong>, because <span class="arithmatex">\(h_1 * h_2 = h_2 * h_1\)</span>. An equaliser followed by an amplifier gives the same output as the amplifier followed by the equaliser, provided both are linear and time-invariant. (Real amplifiers clip, which is nonlinear; then the order does matter.)</p>
+<p>The associative and distributive properties let us reduce any network of LTI systems without feedback to a single equivalent impulse response. Feedback networks are easier to reduce in the transform domain, as Chapter 10 shows.</p>
+<div class="admonition example">
+<p class="admonition-title">Example 4.4 Reducing an interconnection</p>
+<p>A system consists of <span class="arithmatex">\(h_1[n] = \delta[n] - \delta[n-1]\)</span> in cascade with <span class="arithmatex">\(h_2[n] = u[n]\)</span>. What is the overall impulse response?</p>
+<p><span class="arithmatex">\(h[n] = h_1 * h_2 = u[n] - u[n-1] = \delta[n]\)</span>. The cascade is the identity: the first difference undoes the accumulator. This confirms that the two are inverse systems.</p>
+</div>
+<h2 id="lti-properties">4.6 Reading system properties from the impulse response<a class="headerlink" href="#lti-properties" title="Permanent link">&para;</a></h2>
+<p>For an LTI system, every property of Chapter 3 becomes a simple condition on <span class="arithmatex">\(h\)</span>.</p>
+<p><strong>Memory.</strong> An LTI system is memoryless if and only if <span class="arithmatex">\(h[n] = K\delta[n]\)</span> (or <span class="arithmatex">\(h(t) = K\delta(t)\)</span>). Then <span class="arithmatex">\(y = Kx\)</span>. Any other impulse response mixes in inputs from other times.</p>
+<p><strong>Causality.</strong> An LTI system is causal if and only if</p>
+<div class="arithmatex">\[
+h[n] = 0 \text{ for } n &lt; 0, \qquad h(t) = 0 \text{ for } t &lt; 0 .
+\]</div>
+<p>The reason: <span class="arithmatex">\(y[n] = \sum_k h[k]x[n-k]\)</span>, and a non-zero <span class="arithmatex">\(h[k]\)</span> with <span class="arithmatex">\(k &lt; 0\)</span> would make <span class="arithmatex">\(y[n]\)</span> depend on the future input <span class="arithmatex">\(x[n - k]\)</span>. For a causal system the sum runs only over <span class="arithmatex">\(k \ge 0\)</span>: <span class="arithmatex">\(y[n] = \sum_{k=0}^{\infty}h[k]\,x[n-k]\)</span>.</p>
+<p><strong>Stability.</strong> An LTI system is BIBO stable if and only if its impulse response is <strong>absolutely summable</strong> (or <strong>absolutely integrable</strong>):</p>
+<div class="arithmatex">\[
+\sum_{n=-\infty}^{\infty} |h[n]| &lt; \infty, \qquad \int_{-\infty}^{\infty}|h(t)|\,dt &lt; \infty .
+\]</div>
+<p><em>Proof of sufficiency.</em> If <span class="arithmatex">\(|x[n]| \le B\)</span> for all <span class="arithmatex">\(n\)</span>, then</p>
+<div class="arithmatex">\[
+|y[n]| = \Big|\sum_k h[k]\,x[n-k]\Big| \le \sum_k |h[k]|\,|x[n-k]| \le B\sum_k|h[k]| ,
+\]</div>
+<p>which is finite. <em>Proof of necessity.</em> If <span class="arithmatex">\(\sum|h[k]|\)</span> is infinite, choose the bounded input <span class="arithmatex">\(x[n] = \mathrm{sgn}(h[-n])\)</span> (that is, <span class="arithmatex">\(\pm1\)</span> with the sign of <span class="arithmatex">\(h[-n]\)</span>, and 0 where <span class="arithmatex">\(h[-n] = 0\)</span>). Then <span class="arithmatex">\(y[0] = \sum_k h[k]\,\mathrm{sgn}(h[k]) = \sum_k|h[k]|\)</span>, which is infinite. So the system is unstable.</p>
+<p><strong>Invertibility.</strong> An LTI system with impulse response <span class="arithmatex">\(h\)</span> has an LTI inverse with impulse response <span class="arithmatex">\(h_{\text{inv}}\)</span> if and only if</p>
+<div class="arithmatex">\[
+h * h_{\text{inv}} = \delta .
+\]</div>
+<div class="admonition example">
+<p class="admonition-title">Example 4.5 Properties from h</p>
+<p>(a) <span class="arithmatex">\(h[n] = (0.9)^n u[n]\)</span>: causal (<span class="arithmatex">\(h = 0\)</span> for <span class="arithmatex">\(n &lt; 0\)</span>); stable (<span class="arithmatex">\(\sum 0.9^n = 10\)</span>); has memory.</p>
+<p>(b) <span class="arithmatex">\(h[n] = 2^n u[-n]\)</span>: not causal (non-zero for negative <span class="arithmatex">\(n\)</span>); stable, because <span class="arithmatex">\(\sum_{n=-\infty}^{0}2^n = \sum_{m=0}^{\infty}2^{-m} = 2\)</span>.</p>
+<p>(c) <span class="arithmatex">\(h(t) = u(t)\)</span>, the integrator: causal, but <span class="arithmatex">\(\int_0^\infty 1\,dt\)</span> is infinite, so unstable (as Example 3.1 found by another route).</p>
+<p>(d) <span class="arithmatex">\(h(t) = e^{-2|t|}\)</span>: not causal; stable, with <span class="arithmatex">\(\int|h| = 1\)</span>.</p>
+<p>(e) <span class="arithmatex">\(h(t) = \delta(t - 3)\)</span>: a pure delay; causal, stable, has memory, and invertible (the inverse <span class="arithmatex">\(\delta(t + 3)\)</span> is an advance, which is not causal).</p>
+</div>
+<h2 id="47-the-step-response">4.7 The step response<a class="headerlink" href="#47-the-step-response" title="Permanent link">&para;</a></h2>
+<p>The response of an LTI system to a unit step is its <strong>step response</strong> <span class="arithmatex">\(s\)</span>. Since <span class="arithmatex">\(u = u * \delta\)</span>, the step response is the convolution of <span class="arithmatex">\(u\)</span> with <span class="arithmatex">\(h\)</span>:</p>
+<div class="arithmatex">\[
+s[n] = \sum_{k=-\infty}^{n} h[k], \qquad s(t) = \int_{-\infty}^{t} h(\tau)\,d\tau .
+\]</div>
+<p>The step response is the running sum (or integral) of the impulse response; conversely</p>
+<div class="arithmatex">\[
+h[n] = s[n] - s[n-1], \qquad h(t) = \frac{ds(t)}{dt}.
+\]</div>
+<p>The step response is often easier to measure in the laboratory than the impulse response, because a step (switching something on) is easier to produce than a very short, very strong pulse. Differentiating the measured step response then gives <span class="arithmatex">\(h\)</span>. For the RC circuit with <span class="arithmatex">\(h(t) = \frac{1}{RC}e^{-t/RC}u(t)\)</span>, the step response is <span class="arithmatex">\(s(t) = (1 - e^{-t/RC})u(t)\)</span>, the familiar charging curve.</p>
+<h2 id="eigenfunctions">4.8 Complex exponentials are eigenfunctions<a class="headerlink" href="#eigenfunctions" title="Permanent link">&para;</a></h2>
+<p>One more consequence of convolution sets up the second half of the book. Feed the complex exponential <span class="arithmatex">\(x(t) = e^{st}\)</span> into an LTI system:</p>
+<div class="arithmatex">\[
+y(t) = \int_{-\infty}^{\infty} h(\tau)\,e^{s(t - \tau)}\,d\tau = e^{st}\int_{-\infty}^{\infty}h(\tau)\,e^{-s\tau}\,d\tau = H(s)\,e^{st},
+\]</div>
+<p>where <span class="arithmatex">\(H(s) = \int h(\tau)e^{-s\tau}d\tau\)</span>, provided the integral converges. The output is <strong>the same exponential, multiplied by a complex constant</strong>. A signal that passes through a system unchanged in shape, merely scaled, is called an <strong>eigenfunction</strong> of the system, and the scale factor <span class="arithmatex">\(H(s)\)</span> is its <strong>eigenvalue</strong>. In discrete time the same calculation with <span class="arithmatex">\(x[n] = z^n\)</span> gives <span class="arithmatex">\(y[n] = H(z)\,z^n\)</span> with <span class="arithmatex">\(H(z) = \sum_k h[k]z^{-k}\)</span>.</p>
+<p>This is the reason complex exponentials dominate the theory. If we can write an input as a sum of complex exponentials, each passes through the system multiplied by its own <span class="arithmatex">\(H\)</span>, and the output is the sum of the scaled exponentials. Convolution, a hard operation, becomes multiplication, an easy one. With <span class="arithmatex">\(s = j\omega\)</span> the factor <span class="arithmatex">\(H(j\omega)\)</span> is the <strong>frequency response</strong>; writing signals as sums of <span class="arithmatex">\(e^{j\omega t}\)</span> is Fourier analysis (Chapters 5 to 8); allowing general <span class="arithmatex">\(s\)</span> and <span class="arithmatex">\(z\)</span> gives the Laplace and z-transforms (Chapters 10 and 11).</p>
+<div class="admonition example">
+<p class="admonition-title">Example 4.6 An eigenvalue</p>
+<p>For <span class="arithmatex">\(h(t) = e^{-t}u(t)\)</span>, find the output for <span class="arithmatex">\(x(t) = e^{j t}\)</span>.</p>
+<p><span class="arithmatex">\(H(s) = \int_0^\infty e^{-\tau}e^{-s\tau}d\tau = \dfrac{1}{s + 1}\)</span> for <span class="arithmatex">\(\mathrm{Re}\{s\} &gt; -1\)</span>. At <span class="arithmatex">\(s = j\)</span>, <span class="arithmatex">\(H(j) = \dfrac{1}{1 + j} = \dfrac{1}{\sqrt{2}}e^{-j\pi/4}\)</span>. So <span class="arithmatex">\(y(t) = \dfrac{1}{\sqrt2}e^{j(t - \pi/4)}\)</span>: the same frequency, amplitude reduced by <span class="arithmatex">\(\sqrt{2}\)</span>, phase delayed by <span class="arithmatex">\(45°\)</span>. Taking real parts, the input <span class="arithmatex">\(\cos t\)</span> produces <span class="arithmatex">\(\frac{1}{\sqrt2}\cos(t - \pi/4)\)</span>.</p>
+</div>
+<h2 id="49-convolution-in-numpy">4.9 Convolution in NumPy<a class="headerlink" href="#49-convolution-in-numpy" title="Permanent link">&para;</a></h2>
+<p><code>np.convolve</code> computes the convolution of two finite arrays. It does not know where the sequences start, so you must keep track of the starting index yourself: the output starts at the sum of the two starting indices. For continuous-time signals, sampling both at a small step <span class="arithmatex">\(\Delta t\)</span> and multiplying the discrete convolution by <span class="arithmatex">\(\Delta t\)</span> approximates the integral by a Riemann sum.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="c1"># Finite sequences: the convolution sum is polynomial multiplication</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>          <span class="c1"># x[0], x[1], x[2]</span>
+<span class="n">h</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>          <span class="c1"># h[0], h[1], h[2]</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"x * h        ="</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">convolve</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">h</span><span class="p">))</span>
+
+<span class="c1"># a^n u[n] convolved with u[n]: compare with the closed form</span>
+<span class="n">a</span> <span class="o">=</span> <span class="mf">0.5</span>
+<span class="n">n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">convolve</span><span class="p">(</span><span class="n">a</span> <span class="o">**</span> <span class="n">n</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">8</span><span class="p">))[:</span><span class="mi">8</span><span class="p">]</span>      <span class="c1"># first 8 samples are exact</span>
+<span class="n">closed</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">a</span> <span class="o">**</span> <span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">a</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"numerical    ="</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"closed form  ="</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">closed</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+
+<span class="c1"># Continuous time: pulse of width 1 convolved with exp(-t)u(t), by a Riemann sum</span>
+<span class="n">dt</span> <span class="o">=</span> <span class="mf">1e-3</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">dt</span><span class="p">)</span>
+<span class="n">xc</span> <span class="o">=</span> <span class="p">((</span><span class="n">t</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">t</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+<span class="n">hc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">t</span><span class="p">)</span>
+<span class="n">yc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">convolve</span><span class="p">(</span><span class="n">xc</span><span class="p">,</span> <span class="n">hc</span><span class="p">)[:</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">)]</span> <span class="o">*</span> <span class="n">dt</span>
+<span class="n">exact</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">t</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">t</span><span class="p">),</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">e</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">t</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"y(0.5), y(2) ="</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">yc</span><span class="p">[[</span><span class="mi">500</span><span class="p">,</span> <span class="mi">2000</span><span class="p">]],</span> <span class="mi">4</span><span class="p">),</span> <span class="s2">" exact:"</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">exact</span><span class="p">[[</span><span class="mi">500</span><span class="p">,</span> <span class="mi">2000</span><span class="p">]],</span> <span class="mi">4</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"largest error:"</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">yc</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">exact</span><span class="p">))</span><span class="si">:</span><span class="s2">.1e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>x * h        = [1 3 6 5 3]
+numerical    = [1.     1.5    1.75   1.875  1.9375 1.9688 1.9844 1.9922]
+closed form  = [1.     1.5    1.75   1.875  1.9375 1.9688 1.9844 1.9922]
+y(0.5), y(2) = [0.3943 0.2324]  exact: [0.3935 0.2325]
+largest error: 1.0e-03
+</code></pre></div>
+<p>Two details deserve comment. Truncating <span class="arithmatex">\(a^n u[n]\)</span> and <span class="arithmatex">\(u[n]\)</span> to 8 samples does not spoil the first 8 output samples, because <span class="arithmatex">\(y[n]\)</span> for <span class="arithmatex">\(n &lt; 8\)</span> uses only <span class="arithmatex">\(x[k]\)</span> and <span class="arithmatex">\(h[k]\)</span> with <span class="arithmatex">\(k \le n\)</span>. And the Riemann-sum error of about <span class="arithmatex">\(10^{-3}\)</span> is of the order of the step <span class="arithmatex">\(\Delta t\)</span>, as expected for a rectangle rule; a smaller step gives a smaller error.</p>
+<h2 id="410-summary">4.10 Summary<a class="headerlink" href="#410-summary" title="Permanent link">&para;</a></h2>
+<div class="admonition abstract">
+<p class="admonition-title">Summary</p>
+<ul>
+<li>An LTI system is characterised by its <strong>impulse response</strong>. The output is the <strong>convolution</strong> of the input with it: <span class="arithmatex">\(y[n] = \sum_k x[k]h[n-k]\)</span> and <span class="arithmatex">\(y(t) = \int x(\tau)h(t-\tau)\,d\tau\)</span>.</li>
+<li>Compute convolutions by a table of shifted copies (finite sequences), by direct summation with geometric series (closed forms), or by flipping and sliding (sketches). Fix the limits of the integral case by case.</li>
+<li>Convolution is commutative, associative and distributive, with <span class="arithmatex">\(\delta\)</span> as identity. Cascades <strong>convolve</strong> impulse responses, parallel connections <strong>add</strong> them, and the order of a cascade of LTI systems does not matter.</li>
+<li>An LTI system is memoryless iff <span class="arithmatex">\(h = K\delta\)</span>; causal iff <span class="arithmatex">\(h = 0\)</span> for negative time; BIBO stable iff <span class="arithmatex">\(h\)</span> is absolutely summable or integrable; invertible iff some <span class="arithmatex">\(h_{\text{inv}}\)</span> gives <span class="arithmatex">\(h * h_{\text{inv}} = \delta\)</span>.</li>
+<li>The step response is the running integral of the impulse response.</li>
+<li>Complex exponentials <span class="arithmatex">\(e^{st}\)</span> and <span class="arithmatex">\(z^n\)</span> are eigenfunctions of LTI systems: they come out scaled by <span class="arithmatex">\(H(s)\)</span> or <span class="arithmatex">\(H(z)\)</span>. This is the doorway to the frequency domain.</li>
+</ul>
+</div>
+<h2 id="411-exercises">4.11 Exercises<a class="headerlink" href="#411-exercises" title="Permanent link">&para;</a></h2>
+<div class="admonition example">
+<p class="admonition-title">Exercise 4.1</p>
+<p>Convolve <span class="arithmatex">\(x[n] = \{2, -1, 1\}\)</span> (starting at <span class="arithmatex">\(n = 0\)</span>) with <span class="arithmatex">\(h[n] = \{1, 3\}\)</span> (starting at <span class="arithmatex">\(n = -1\)</span>).</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>Polynomial product: <span class="arithmatex">\((2 - z + z^2)(1 + 3z) = 2 + 5z - 2z^2 + 3z^3\)</span>. The output starts at <span class="arithmatex">\(0 + (-1) = -1\)</span>, so <span class="arithmatex">\(y[-1] = 2\)</span>, <span class="arithmatex">\(y[0] = 5\)</span>, <span class="arithmatex">\(y[1] = -2\)</span>, <span class="arithmatex">\(y[2] = 3\)</span>.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 4.2</p>
+<p>Find <span class="arithmatex">\(y[n] = u[n] * u[n]\)</span>.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>For <span class="arithmatex">\(n \ge 0\)</span>, <span class="arithmatex">\(y[n] = \sum_{k=0}^{n}1 = n + 1\)</span>. So <span class="arithmatex">\(y[n] = (n+1)u[n]\)</span>, a ramp starting at 1.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 4.3</p>
+<p>Find <span class="arithmatex">\(y[n] = (0.5)^n u[n] * (0.25)^n u[n]\)</span> and give <span class="arithmatex">\(y[2]\)</span>.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>By Example 4.2, <span class="arithmatex">\(y[n] = \dfrac{0.5^{n+1} - 0.25^{n+1}}{0.25}u[n] = (2\cdot0.5^{n} - 0.25^{n})u[n]\)</span>. Then <span class="arithmatex">\(y[2] = 0.5 - 0.0625 = 0.4375\)</span>. Directly: <span class="arithmatex">\(1\cdot0.0625 + 0.5\cdot0.25 + 0.25\cdot1 = 0.4375\)</span>.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 4.4</p>
+<p>Show that <span class="arithmatex">\(\mathrm{rect}(t) * \mathrm{rect}(t)\)</span> is the triangle <span class="arithmatex">\(\Lambda(t)\)</span>, equal to <span class="arithmatex">\(1 - |t|\)</span> for <span class="arithmatex">\(|t| \le 1\)</span> and 0 otherwise.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>The two unit-width pulses overlap only for <span class="arithmatex">\(|t| &lt; 1\)</span>. For <span class="arithmatex">\(-1 \le t \le 0\)</span> the overlap runs from <span class="arithmatex">\(-\tfrac12\)</span> to <span class="arithmatex">\(t + \tfrac12\)</span>, length <span class="arithmatex">\(1 + t\)</span>. For <span class="arithmatex">\(0 \le t \le 1\)</span> it runs from <span class="arithmatex">\(t - \tfrac12\)</span> to <span class="arithmatex">\(\tfrac12\)</span>, length <span class="arithmatex">\(1 - t\)</span>. So <span class="arithmatex">\(y(t) = 1 - |t|\)</span> on <span class="arithmatex">\([-1, 1]\)</span>.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 4.5</p>
+<p>Find <span class="arithmatex">\(y(t) = e^{-2t}u(t) * u(t)\)</span>.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>For <span class="arithmatex">\(t &gt; 0\)</span>, <span class="arithmatex">\(y(t) = \int_0^t e^{-2\tau}\,d\tau = \tfrac12(1 - e^{-2t})\)</span>. So <span class="arithmatex">\(y(t) = \tfrac12(1 - e^{-2t})u(t)\)</span>. (This is the step response of the system with <span class="arithmatex">\(h(t) = e^{-2t}u(t)\)</span>.)</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 4.6</p>
+<p>Find <span class="arithmatex">\(y(t) = e^{-t}u(t) * e^{-3t}u(t)\)</span>.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>For <span class="arithmatex">\(t &gt; 0\)</span>, <span class="arithmatex">\(y(t) = \int_0^t e^{-\tau}e^{-3(t-\tau)}d\tau = e^{-3t}\int_0^t e^{2\tau}d\tau = \tfrac12(e^{-t} - e^{-3t})\)</span>. So <span class="arithmatex">\(y(t) = \tfrac12(e^{-t} - e^{-3t})u(t)\)</span>.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 4.7</p>
+<p>Is the system with <span class="arithmatex">\(h[n] = (1.1)^n u[n]\)</span> stable? Is <span class="arithmatex">\(h[n] = (-0.5)^n u[n] + \delta[n+2]\)</span> causal? stable?</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>The first is unstable: <span class="arithmatex">\(\sum 1.1^n\)</span> diverges. The second is not causal (the impulse at <span class="arithmatex">\(n = -2\)</span>) but is stable: <span class="arithmatex">\(\sum|h| = \sum 0.5^n + 1 = 3\)</span>.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 4.8</p>
+<p>The step response of an LTI system is <span class="arithmatex">\(s(t) = (1 - e^{-5t})u(t)\)</span>. Find its impulse response.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p><span class="arithmatex">\(h(t) = ds/dt = 5e^{-5t}u(t)\)</span>. (The derivative of <span class="arithmatex">\(u(t)\)</span> multiplies <span class="arithmatex">\(1 - e^{-5t}\)</span>, which is zero at <span class="arithmatex">\(t = 0\)</span>, so no impulse appears.)</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 4.9</p>
+<p>Two LTI systems with <span class="arithmatex">\(h_1(t) = \delta(t - 1)\)</span> and <span class="arithmatex">\(h_2(t) = e^{-t}u(t)\)</span> are connected in parallel, and the combination is followed by <span class="arithmatex">\(h_3(t) = 2\delta(t)\)</span>. Find the overall impulse response.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p><span class="arithmatex">\(h = (h_1 + h_2) * h_3 = 2\delta(t - 1) + 2e^{-t}u(t)\)</span>.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 4.10</p>
+<p>For <span class="arithmatex">\(h[n] = \delta[n] + \delta[n-1]\)</span>, find the output for <span class="arithmatex">\(x[n] = e^{j\pi n/2}\)</span>, using the eigenfunction property.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p><span class="arithmatex">\(H(z) = 1 + z^{-1}\)</span>; with <span class="arithmatex">\(z = e^{j\pi/2} = j\)</span>, <span class="arithmatex">\(H = 1 - j = \sqrt2 e^{-j\pi/4}\)</span>. So <span class="arithmatex">\(y[n] = \sqrt2\,e^{j(\pi n/2 - \pi/4)}\)</span>. Direct check: <span class="arithmatex">\(y[n] = e^{j\pi n/2} + e^{j\pi(n-1)/2} = e^{j\pi n/2}(1 - j)\)</span>.</p>
+</details>
+<h2 id="412-quiz">4.12 Quiz<a class="headerlink" href="#412-quiz" title="Permanent link">&para;</a></h2>
+<div class="pk-quiz" data-quiz="ed126f35cb0d">
+<p class="pk-quiz-title">Check your understanding of Chapter 4</p>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;text&quot;,&quot;answer&quot;:[&quot;8&quot;]}">
+<p class="admonition-title">Exercise 1</p>
+<p class="pk-q-prompt">x[n] has 5 non-zero samples and h[n] has 4. How many samples (at most) does x * h have?</p>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>8</strong></p>
+<p class="pk-q-why">N_x + N_h − 1 = 5 + 4 − 1 = 8.</p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;h(t) = 0 for t &lt; 0&quot;,&quot;h(t) is absolutely integrable&quot;,&quot;h(t) = Kδ(t)&quot;,&quot;h(t) is even&quot;],&quot;answer&quot;:&quot;h(t) = 0 for t &lt; 0&quot;}">
+<p class="admonition-title">Exercise 2</p>
+<p class="pk-q-prompt">An LTI system is causal if and only if</p>
+<ol class="pk-q-opts" type="A"><li>h(t) = 0 for t &lt; 0</li><li>h(t) is absolutely integrable</li><li>h(t) = Kδ(t)</li><li>h(t) is even</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>h(t) = 0 for t &lt; 0</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;h1 + h2&quot;,&quot;h1 · h2&quot;,&quot;h1 * h2&quot;,&quot;h1 − h2&quot;],&quot;answer&quot;:&quot;h1 * h2&quot;}">
+<p class="admonition-title">Exercise 3</p>
+<p class="pk-q-prompt">The impulse response of a cascade of two LTI systems is</p>
+<ol class="pk-q-opts" type="A"><li>h1 + h2</li><li>h1 · h2</li><li>h1 * h2</li><li>h1 − h2</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>h1 * h2</strong></p>
+<p class="pk-q-why">Cascades convolve impulse responses; parallel connections add them.</p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;u[n]&quot;,&quot;1.2ⁿ u[n]&quot;,&quot;0.7ⁿ u[n]&quot;,&quot;n u[n]&quot;],&quot;answer&quot;:&quot;0.7ⁿ u[n]&quot;}">
+<p class="admonition-title">Exercise 4</p>
+<p class="pk-q-prompt">Which impulse response gives a BIBO stable system?</p>
+<ol class="pk-q-opts" type="A"><li>u[n]</li><li>1.2ⁿ u[n]</li><li>0.7ⁿ u[n]</li><li>n u[n]</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>0.7ⁿ u[n]</strong></p>
+<p class="pk-q-why">Only 0.7ⁿ u[n] is absolutely summable (sum = 1/0.3).</p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;blanks&quot;,&quot;answer&quot;:[[&quot;derivative&quot;]]}">
+<p class="admonition-title">Exercise 5</p>
+<p class="pk-q-prompt">The impulse response is the <span class="pk-blank" data-i="0">___</span> of the step response with respect to time.</p>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>derivative</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;text&quot;,&quot;answer&quot;:[&quot;6&quot;]}">
+<p class="admonition-title">Exercise 6</p>
+<p class="pk-q-prompt">Compute y[2] for {1, 2, 3} * {1, 1, 1}, both starting at n = 0.</p>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>6</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;H(s) e^(st)&quot;,&quot;e^(st) * e^(st)&quot;,&quot;a different exponential e^(−st)&quot;,&quot;zero&quot;],&quot;answer&quot;:&quot;H(s) e^(st)&quot;}">
+<p class="admonition-title">Exercise 7</p>
+<p class="pk-q-prompt">When e^(st) is the input to an LTI system, the output is</p>
+<ol class="pk-q-opts" type="A"><li>H(s) e^(st)</li><li>e^(st) * e^(st)</li><li>a different exponential e^(−st)</li><li>zero</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>H(s) e^(st)</strong></p>
+<p class="pk-q-why">Complex exponentials are eigenfunctions of LTI systems.</p>
+</details>
+</div>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button type="button" class="md-top md-icon" data-md-component="top" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+Back to top
+</button>
+</main>
+<footer class="md-footer">
+<nav class="md-footer__inner md-grid" aria-label="Footer" >
+<a href="systems-and-their-properties.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: 3. Systems and Their Properties">
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</div>
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Previous
+</span>
+<div class="md-ellipsis">
+3. Systems and Their Properties
+</div>
+</div>
+</a>
+<a href="fourier-series.html" class="md-footer__link md-footer__link--next" aria-label="Next: 5. Fourier Series">
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Next
+</span>
+<div class="md-ellipsis">
+5. Fourier Series
+</div>
+</div>
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+</div>
+</a>
+</nav>
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+The Open Book Project &middot;
+<a href="../../about.html">About this library</a> &middot;
+<a href="../../publish.html">Publish your book</a> &middot;
+© The authors of the books
+</div>
+Made with
+<a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+Material for MkDocs
+</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "navigation.prune", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "toc.follow", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+<script src="../../assets/mathjax.js"></script>
+<script src="../../assets/viz.js"></script>
+<script src="../../assets/remote.js"></script>
+<script src="../../assets/scans.js"></script>
+<script src="../../assets/reader.js"></script>
+<script src="../../assets/app.js"></script>
+<script src="../../assets/slides.js"></script>
+<script src="../../assets/speak.js"></script>
+<script src="../../assets/quiz.js"></script>
+<script>
+    /* offline reading: the service worker at the site root (its scope is the whole site) */
+    if ("serviceWorker" in navigator && window.isSecureContext) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register(new URL("../../sw.js", location.href).href).catch(function () {});
+      });
+    }
+  </script>
+</body>
+</html>

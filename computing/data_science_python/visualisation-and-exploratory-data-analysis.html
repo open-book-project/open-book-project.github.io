@@ -1,0 +1,1284 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="description" content="The Open Book Project: books on computer science, quantum computing, cyber security, science, the social sciences, university courses and languages, read page by page like an e-book, online or offline.">
+<meta name="author" content="The Open Book Project">
+<link rel="canonical" href="https://open-book-project.github.io/computing/data_science_python/visualisation-and-exploratory-data-analysis.html">
+<link rel="prev" href="cleaning-reshaping-grouping-and-joining.html">
+<link rel="next" href="probability-and-statistics.html">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap"></noscript>
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Open Book">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="application-name" content="Open Book"><script src="../../assets/library-data.js"></script><script>
+    (function () {
+      var X = window.XMLHttpRequest, open, gate = new Promise(function (r) { open = r; });
+      if (!X) return;
+      var open0 = X.prototype.open, send0 = X.prototype.send;
+      X.prototype.open = function (method, url) {
+        this.__pkIndex = /\/search\/search_index\.json(\?|#|$)/.test(String(url));
+        return open0.apply(this, arguments);
+      };
+      X.prototype.send = function () {
+        if (!this.__pkIndex) return send0.apply(this, arguments);
+        var xhr = this, args = arguments;
+        gate.then(function () { send0.apply(xhr, args); });
+      };
+      function wake() { open(); }
+      document.addEventListener("focusin", function (e) { if (e.target && e.target.closest && e.target.closest(".md-search")) wake(); });
+      document.addEventListener("click", function (e) { if (e.target && e.target.closest && e.target.closest('label[for="__search"], .md-search')) wake(); }, true);
+      document.addEventListener("keydown", function (e) {
+        var k = e.key;
+        if ((k === "/" || k === "s" || k === "f" || k === "S" || k === "F") && !(e.target && e.target.closest && e.target.closest("input, textarea, [contenteditable]"))) wake();
+      }, true);
+      if (/[?&]q=/.test(location.search)) wake();
+    })();
+  </script><script>
+    try {
+      if ((window.matchMedia && (matchMedia("(display-mode: standalone)").matches || matchMedia("(display-mode: fullscreen)").matches)) || navigator.standalone === true) {
+        document.documentElement.className += " bjp-standalone";
+      }
+    } catch (e) { /* not an installed app */ }
+    /* the books of a subject or of the whole library as covers or as a list (assets/app.js): the reader's choice */
+    try {
+      var bv = localStorage.getItem("bjp.view");
+      if (bv === "list" || (bv !== "grid" && /\/books\.html$/.test(location.pathname))) document.documentElement.className += " bjp-view-list";
+    } catch (e) { /* no storage: covers */ }
+  </script>
+<script>
+    /* a book opened from its cover on the shelf: the page stays blank, in the cover's colour, until the reader is up */
+    try {
+      var cv = sessionStorage.getItem("bjp.reader.cover");
+      if (cv && sessionStorage.getItem("bjp.reader.open") === "1") {
+        var c = JSON.parse(cv), de = document.documentElement;
+        de.className += " bjp-booting";
+        if (c && /^#[0-9a-f]{3,8}$/i.test(c.bg || "")) de.style.background = c.bg;
+        setTimeout(function () { de.classList.remove("bjp-booting"); de.style.background = ""; }, 3000);
+      }
+    } catch (e) { /* no session storage: the page simply opens as usual */ }
+  </script>
+<title>6. Visualisation and Exploratory Data Analysis - The Open Book Project</title>
+<link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+<link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+<link rel="stylesheet" href="../../assets/extra.css">
+<link rel="stylesheet" href="../../assets/reader.css">
+<link rel="stylesheet" href="../../assets/viz.css">
+<link rel="stylesheet" href="../../assets/app.css">
+<link rel="stylesheet" href="../../assets/theme.css">
+<link rel="stylesheet" href="../../assets/slides.css">
+<link rel="stylesheet" href="../../assets/remote.css">
+<link rel="stylesheet" href="../../assets/scans.css">
+<link rel="stylesheet" href="../../assets/speak.css">
+<link rel="stylesheet" href="../../assets/quiz.css">
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+<input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+<input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a href="#61-why-look-at-the-data" class="md-skip">
+Skip to content
+</a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav class="md-header__inner md-grid" aria-label="Header">
+<a href="../../index.html" title="The Open Book Project" class="md-header__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+The Open Book Project
+</span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+6. Visualisation and Exploratory Data Analysis
+</span>
+</div>
+</div>
+</div><a href="../../index.html" class="bjp-libbtn" aria-label="Library: all books" title="Library: all books">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V5h4v15M8 20V9h4v11M14 20L12.6 6l3.8-.8 3 14.2M3 20h18"/></svg><span>Library</span>
+</a>
+<a href="../../subjects/index.html" class="pk-catbtn" aria-haspopup="true" aria-expanded="false" title="Browse the books by category">
+<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><circle cx="17" cy="7" r="3.6"/><path d="M7 13.4l3.9 6.8H3.1z"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg><span>Categories</span>
+</a>
+<form class="md-header__option" data-md-component="palette">
+<input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+<label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+</label>
+<input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+<label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+<label class="md-search__icon md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</label>
+<nav class="md-search__options" aria-label="Search">
+<button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+Initializing search
+</div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--primary bjp-nav bjp-nav--book" aria-label="Navigation" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a href="../../index.html" title="The Open Book Project" class="md-nav__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+The Open Book Project
+</label>
+<ul class="md-nav__list" data-md-scrollfix>
+<li class="md-nav__item bjp-nav-all">
+<a href="../../index.html" class="md-nav__link" aria-label="All books: back to the library">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+<span class="md-ellipsis">All books</span>
+</a>
+</li>
+<li class="md-nav__item bjp-nav-book" role="presentation"><span class="bjp-nav-head">Data Science with Python</span></li>
+<li class="md-nav__item">
+<a href="index.html" class="md-nav__link">
+<span class="md-ellipsis">
+Overview and preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="preface.html" class="md-nav__link">
+<span class="md-ellipsis">
+Preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="the-data-science-workflow.html" class="md-nav__link">
+<span class="md-ellipsis">
+1. The Data Science Workflow
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="python-essentials-for-data-work.html" class="md-nav__link">
+<span class="md-ellipsis">
+2. Python Essentials for Data Work
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="numerical-computing-with-numpy.html" class="md-nav__link">
+<span class="md-ellipsis">
+3. Numerical Computing with NumPy
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="pandas-fundamentals.html" class="md-nav__link">
+<span class="md-ellipsis">
+4. pandas Fundamentals: Series, DataFrames and Selection
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="cleaning-reshaping-grouping-and-joining.html" class="md-nav__link">
+<span class="md-ellipsis">
+5. Cleaning, Reshaping, Grouping and Joining
+</span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+6. Visualisation and Exploratory Data Analysis
+</span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a href="visualisation-and-exploratory-data-analysis.html" class="md-nav__link md-nav__link--active">
+<span class="md-ellipsis">
+6. Visualisation and Exploratory Data Analysis
+</span>
+</a>
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#61-why-look-at-the-data" class="md-nav__link">
+<span class="md-ellipsis">
+6.1 Why look at the data?
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#62-how-matplotlib-works" class="md-nav__link">
+<span class="md-ellipsis">
+6.2 How matplotlib works
+</span>
+</a>
+<nav class="md-nav" aria-label="6.2 How matplotlib works">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#choosing-a-chart" class="md-nav__link">
+<span class="md-ellipsis">
+Choosing a chart
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#63-a-dataset-to-explore" class="md-nav__link">
+<span class="md-ellipsis">
+6.3 A dataset to explore
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#64-one-numerical-variable-the-distribution" class="md-nav__link">
+<span class="md-ellipsis">
+6.4 One numerical variable: the distribution
+</span>
+</a>
+<nav class="md-nav" aria-label="6.4 One numerical variable: the distribution">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#histograms" class="md-nav__link">
+<span class="md-ellipsis">
+Histograms
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#box-plots" class="md-nav__link">
+<span class="md-ellipsis">
+Box plots
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#65-comparing-groups" class="md-nav__link">
+<span class="md-ellipsis">
+6.5 Comparing groups
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#66-relationships-between-two-numerical-variables" class="md-nav__link">
+<span class="md-ellipsis">
+6.6 Relationships between two numerical variables
+</span>
+</a>
+<nav class="md-nav" aria-label="6.6 Relationships between two numerical variables">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#scatter-plots" class="md-nav__link">
+<span class="md-ellipsis">
+Scatter plots
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#correlation" class="md-nav__link">
+<span class="md-ellipsis">
+Correlation
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#67-change-over-time" class="md-nav__link">
+<span class="md-ellipsis">
+6.7 Change over time
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#68-making-charts-honest-and-clear" class="md-nav__link">
+<span class="md-ellipsis">
+6.8 Making charts honest and clear
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#69-an-exploratory-analysis-step-by-step" class="md-nav__link">
+<span class="md-ellipsis">
+6.9 An exploratory analysis, step by step
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#610-summary" class="md-nav__link">
+<span class="md-ellipsis">
+6.10 Summary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#611-exercises" class="md-nav__link">
+<span class="md-ellipsis">
+6.11 Exercises
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#612-quiz" class="md-nav__link">
+<span class="md-ellipsis">
+6.12 Quiz
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="probability-and-statistics.html" class="md-nav__link">
+<span class="md-ellipsis">
+7. Probability and Statistics for Data Science
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="regression.html" class="md-nav__link">
+<span class="md-ellipsis">
+8. Regression
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="classification.html" class="md-nav__link">
+<span class="md-ellipsis">
+9. Classification
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="model-evaluation-and-cross-validation.html" class="md-nav__link">
+<span class="md-ellipsis">
+10. Model Evaluation and Cross-Validation
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="clustering-and-dimensionality-reduction.html" class="md-nav__link">
+<span class="md-ellipsis">
+11. Clustering and Dimensionality Reduction
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="text-and-time-series-basics.html" class="md-nav__link">
+<span class="md-ellipsis">
+12. Text and Time Series Basics
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ethics-privacy-and-reproducibility.html" class="md-nav__link">
+<span class="md-ellipsis">
+13. Ethics, Privacy and Reproducibility
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="an-end-to-end-project.html" class="md-nav__link">
+<span class="md-ellipsis">
+14. An End-to-End Project
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="glossary.html" class="md-nav__link">
+<span class="md-ellipsis">
+Glossary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="further-reading.html" class="md-nav__link">
+<span class="md-ellipsis">
+Further Reading
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#61-why-look-at-the-data" class="md-nav__link">
+<span class="md-ellipsis">
+6.1 Why look at the data?
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#62-how-matplotlib-works" class="md-nav__link">
+<span class="md-ellipsis">
+6.2 How matplotlib works
+</span>
+</a>
+<nav class="md-nav" aria-label="6.2 How matplotlib works">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#choosing-a-chart" class="md-nav__link">
+<span class="md-ellipsis">
+Choosing a chart
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#63-a-dataset-to-explore" class="md-nav__link">
+<span class="md-ellipsis">
+6.3 A dataset to explore
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#64-one-numerical-variable-the-distribution" class="md-nav__link">
+<span class="md-ellipsis">
+6.4 One numerical variable: the distribution
+</span>
+</a>
+<nav class="md-nav" aria-label="6.4 One numerical variable: the distribution">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#histograms" class="md-nav__link">
+<span class="md-ellipsis">
+Histograms
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#box-plots" class="md-nav__link">
+<span class="md-ellipsis">
+Box plots
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#65-comparing-groups" class="md-nav__link">
+<span class="md-ellipsis">
+6.5 Comparing groups
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#66-relationships-between-two-numerical-variables" class="md-nav__link">
+<span class="md-ellipsis">
+6.6 Relationships between two numerical variables
+</span>
+</a>
+<nav class="md-nav" aria-label="6.6 Relationships between two numerical variables">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#scatter-plots" class="md-nav__link">
+<span class="md-ellipsis">
+Scatter plots
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#correlation" class="md-nav__link">
+<span class="md-ellipsis">
+Correlation
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#67-change-over-time" class="md-nav__link">
+<span class="md-ellipsis">
+6.7 Change over time
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#68-making-charts-honest-and-clear" class="md-nav__link">
+<span class="md-ellipsis">
+6.8 Making charts honest and clear
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#69-an-exploratory-analysis-step-by-step" class="md-nav__link">
+<span class="md-ellipsis">
+6.9 An exploratory analysis, step by step
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#610-summary" class="md-nav__link">
+<span class="md-ellipsis">
+6.10 Summary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#611-exercises" class="md-nav__link">
+<span class="md-ellipsis">
+6.11 Exercises
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#612-quiz" class="md-nav__link">
+<span class="md-ellipsis">
+6.12 Quiz
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="chapter-6-visualisation-and-exploratory-data-analysis">Chapter 6: Visualisation and Exploratory Data Analysis<a class="headerlink" href="#chapter-6-visualisation-and-exploratory-data-analysis" title="Permanent link">&para;</a></h1>
+<p><em>Looking at data with matplotlib before drawing conclusions from it</em></p>
+<div class="admonition note">
+<p class="admonition-title">Learning outcomes</p>
+<p>After this chapter you should be able to:</p>
+<ul>
+<li>explain why summary statistics alone can mislead, using Anscombe's quartet;</li>
+<li>build a matplotlib figure with the object-oriented interface (<code>fig, ax = plt.subplots()</code>), label it and save it as SVG;</li>
+<li>choose a suitable chart for a question: histogram, box plot, bar chart, scatter plot or line plot;</li>
+<li>describe a distribution by its centre, spread, shape and unusual values;</li>
+<li>compare groups and explore the relationship between two variables, including correlation;</li>
+<li>apply the rules that make a chart honest and readable;</li>
+<li>carry out a structured exploratory analysis of a new dataset and write down its findings.</li>
+</ul>
+</div>
+<p><strong>Exploratory data analysis</strong> (EDA) is the stage of the workflow where you get to know a dataset: what each variable looks like, how variables relate to each other, what is missing or strange, and which questions the data can and cannot answer. Its main tool is the chart. A good chart shows in a second what a table of numbers hides, and it is also the best way to communicate a result at the end. This chapter teaches matplotlib, the standard plotting library for Python, and uses it to explore data systematically.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+</code></pre></div>
+<h2 id="61-why-look-at-the-data">6.1 Why look at the data?<a class="headerlink" href="#61-why-look-at-the-data" title="Permanent link">&para;</a></h2>
+<p>In 1973 the statistician Francis Anscombe published four small datasets, now known as <strong>Anscombe's quartet</strong>, to make a point. Each has eleven pairs of numbers <span class="arithmatex">\((x, y)\)</span>. Here they are, with their summary statistics:</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
+<span class="n">anscombe</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"I"</span><span class="p">:</span>   <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">[</span><span class="mf">8.04</span><span class="p">,</span> <span class="mf">6.95</span><span class="p">,</span> <span class="mf">7.58</span><span class="p">,</span> <span class="mf">8.81</span><span class="p">,</span> <span class="mf">8.33</span><span class="p">,</span> <span class="mf">9.96</span><span class="p">,</span> <span class="mf">7.24</span><span class="p">,</span> <span class="mf">4.26</span><span class="p">,</span> <span class="mf">10.84</span><span class="p">,</span> <span class="mf">4.82</span><span class="p">,</span> <span class="mf">5.68</span><span class="p">]),</span>
+    <span class="s2">"II"</span><span class="p">:</span>  <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">[</span><span class="mf">9.14</span><span class="p">,</span> <span class="mf">8.14</span><span class="p">,</span> <span class="mf">8.74</span><span class="p">,</span> <span class="mf">8.77</span><span class="p">,</span> <span class="mf">9.26</span><span class="p">,</span> <span class="mf">8.10</span><span class="p">,</span> <span class="mf">6.13</span><span class="p">,</span> <span class="mf">3.10</span><span class="p">,</span> <span class="mf">9.13</span><span class="p">,</span> <span class="mf">7.26</span><span class="p">,</span> <span class="mf">4.74</span><span class="p">]),</span>
+    <span class="s2">"III"</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">[</span><span class="mf">7.46</span><span class="p">,</span> <span class="mf">6.77</span><span class="p">,</span> <span class="mf">12.74</span><span class="p">,</span> <span class="mf">7.11</span><span class="p">,</span> <span class="mf">7.81</span><span class="p">,</span> <span class="mf">8.84</span><span class="p">,</span> <span class="mf">6.08</span><span class="p">,</span> <span class="mf">5.39</span><span class="p">,</span> <span class="mf">8.15</span><span class="p">,</span> <span class="mf">6.42</span><span class="p">,</span> <span class="mf">5.73</span><span class="p">]),</span>
+    <span class="s2">"IV"</span><span class="p">:</span>  <span class="p">([</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">19</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">],</span>
+            <span class="p">[</span><span class="mf">6.58</span><span class="p">,</span> <span class="mf">5.76</span><span class="p">,</span> <span class="mf">7.71</span><span class="p">,</span> <span class="mf">8.84</span><span class="p">,</span> <span class="mf">8.47</span><span class="p">,</span> <span class="mf">7.04</span><span class="p">,</span> <span class="mf">5.25</span><span class="p">,</span> <span class="mf">12.50</span><span class="p">,</span> <span class="mf">5.56</span><span class="p">,</span> <span class="mf">7.91</span><span class="p">,</span> <span class="mf">6.89</span><span class="p">]),</span>
+<span class="p">}</span>
+<span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">ys</span><span class="p">)</span> <span class="ow">in</span> <span class="n">anscombe</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">xs</span><span class="p">,</span> <span class="n">ys</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">xs</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ys</span><span class="p">)</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">corrcoef</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">ys</span><span class="p">)[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">name</span><span class="si">:</span><span class="s2">&gt;3</span><span class="si">}</span><span class="s2">: mean x </span><span class="si">{</span><span class="n">xs</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">, mean y </span><span class="si">{</span><span class="n">ys</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">, "</span>
+          <span class="sa">f</span><span class="s2">"sd y </span><span class="si">{</span><span class="n">ys</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">ddof</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">, correlation </span><span class="si">{</span><span class="n">r</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>  I: mean x 9.00, mean y 7.50, sd y 2.03, correlation 0.816
+ II: mean x 9.00, mean y 7.50, sd y 2.03, correlation 0.816
+III: mean x 9.00, mean y 7.50, sd y 2.03, correlation 0.816
+ IV: mean x 9.00, mean y 7.50, sd y 2.03, correlation 0.817
+</code></pre></div>
+<p>The four datasets have, to two decimal places, the same means, the same standard deviation of <span class="arithmatex">\(y\)</span> and the same correlation. A summary table would call them identical. Now look at them:</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="mf">2.8</span><span class="p">),</span> <span class="n">sharex</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sharey</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">ax</span><span class="p">,</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">ys</span><span class="p">))</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span> <span class="n">anscombe</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">ys</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"tab:blue"</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">20</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="mi">20</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s2">"tab:orange"</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Dataset </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"x"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"y"</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">"anscombe.svg"</span><span class="p">)</span>
+</code></pre></div>
+<figure class="fig fig-diagram">
+<img src="img/anscombe.svg" alt="Anscombe&#x27;s quartet as four scatter plots with the same fitted line y = 3 + 0.5x. Dataset I is a noisy straight-line relationship; II is a smooth curve; III is an exact straight line with one outlier; IV has all points at x = 8 except one point at x = 19, which alone creates the correlation." loading="lazy" width="1046" height="259">
+<figcaption><strong>Figure 6.1 Anscombe&#x27;s quartet.</strong> Anscombe&#x27;s quartet as four scatter plots with the same fitted line y = 3 + 0.5x. Dataset I is a noisy straight-line relationship; II is a smooth curve; III is an exact straight line with one outlier; IV has all points at x = 8 except one point at x = 19, which alone creates the correlation.</figcaption>
+</figure>
+<p>Dataset I is a scattered straight-line relationship, the kind the summaries suggest. Dataset II is a curve. Dataset III is a perfect line spoiled by one outlier. In dataset IV there is no relationship at all except that created by a single point. The straight line <span class="arithmatex">\(y = 3 + 0.5x\)</span> drawn on each is the best-fitting line for all four (Chapter 8), and it describes only the first one well.</p>
+<div class="admonition tip">
+<p class="admonition-title">Key idea</p>
+<p>Summary statistics compress data, and compression throws information away. Always plot the data before trusting a summary, a correlation or a model fitted to it.</p>
+</div>
+<h2 id="62-how-matplotlib-works">6.2 How matplotlib works<a class="headerlink" href="#62-how-matplotlib-works" title="Permanent link">&para;</a></h2>
+<p>A matplotlib picture is a <strong>Figure</strong> (the whole image) containing one or more <strong>Axes</strong> (individual plots, each with its own x and y axis). The recommended way to work is to create both with <code>plt.subplots</code> and then call methods on the Axes object, conventionally named <code>ax</code>. This is the <strong>object-oriented interface</strong>; it scales cleanly from one plot to a grid of many.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">days</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+<span class="n">cups</span> <span class="o">=</span> <span class="p">[</span><span class="mi">112</span><span class="p">,</span> <span class="mi">98</span><span class="p">,</span> <span class="mi">105</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span> <span class="mi">131</span><span class="p">,</span> <span class="mi">164</span><span class="p">,</span> <span class="mi">158</span><span class="p">]</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mf">3.2</span><span class="p">))</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">days</span><span class="p">,</span> <span class="n">cups</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s2">"o"</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"cups sold"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">cups</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="s2">"gray"</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">"--"</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"weekly mean"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"Day of the week (1 = Monday)"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"Cups sold"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Tea stall sales, one week"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">180</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">"first-plot.svg"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>Figure Axes
+</code></pre></div>
+<figure class="fig fig-diagram">
+<img src="img/first-plot.svg" alt="A line plot of cups sold on days 1 to 7, rising from about 100 on weekdays to about 160 on days 6 and 7, with a dashed horizontal line at the weekly mean of about 127. The y axis starts at zero." loading="lazy" width="519" height="317">
+<figcaption><strong>Figure 6.2 A first matplotlib figure.</strong> A line plot of cups sold on days 1 to 7, rising from about 100 on weekdays to about 160 on days 6 and 7, with a dashed horizontal line at the weekly mean of about 127. The y axis starts at zero.</figcaption>
+</figure>
+<p>The pieces of this example appear in nearly every plot: a plotting method (<code>plot</code>, <code>scatter</code>, <code>bar</code>, <code>hist</code>, <code>boxplot</code>), axis labels with units, a title, axis limits where they matter, a legend when there is more than one series, and <code>savefig</code> to write the image. The file format follows the extension: <code>.svg</code> for a sharp vector image (used for every figure in this book), <code>.png</code> for a raster image (add <code>dpi=200</code> for good resolution), <code>.pdf</code> for print. In a notebook the figure is also shown automatically; in a script, <code>plt.show()</code> opens a window.</p>
+<p>You will also see code that calls functions directly on <code>plt</code> (<code>plt.plot(...)</code>, <code>plt.xlabel(...)</code>). That is the older <strong>pyplot interface</strong>, which draws on "the current Axes". It is convenient for a single quick plot but confusing with several, so this book uses <code>fig, ax = plt.subplots()</code> throughout. pandas offers a third route, <code>df.plot(...)</code>, which calls matplotlib for you and returns an Axes you can keep adjusting.</p>
+<h3 id="choosing-a-chart">Choosing a chart<a class="headerlink" href="#choosing-a-chart" title="Permanent link">&para;</a></h3>
+<p>The chart follows from the question, and from the kinds of variable involved (Section 1.4).</p>
+<table>
+<thead>
+<tr>
+<th>Question</th>
+<th>Variables</th>
+<th>Chart</th>
+<th>matplotlib</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>How is one numerical variable distributed?</td>
+<td>one numerical</td>
+<td>histogram; box plot</td>
+<td><code>ax.hist</code>, <code>ax.boxplot</code></td>
+</tr>
+<tr>
+<td>How does a numerical variable differ between groups?</td>
+<td>numerical + categorical</td>
+<td>side-by-side box plots; bar chart of means</td>
+<td><code>ax.boxplot</code>, <code>ax.bar</code></td>
+</tr>
+<tr>
+<td>How often does each category occur?</td>
+<td>one categorical</td>
+<td>bar chart (sorted)</td>
+<td><code>ax.bar</code>, <code>ax.barh</code></td>
+</tr>
+<tr>
+<td>How are two numerical variables related?</td>
+<td>two numerical</td>
+<td>scatter plot</td>
+<td><code>ax.scatter</code></td>
+</tr>
+<tr>
+<td>How does a quantity change over time?</td>
+<td>time + numerical</td>
+<td>line plot</td>
+<td><code>ax.plot</code></td>
+</tr>
+<tr>
+<td>How are many variables related to each other?</td>
+<td>several numerical</td>
+<td>correlation matrix as a heat map; grid of scatter plots</td>
+<td><code>ax.imshow</code>, <code>pd.plotting.scatter_matrix</code></td>
+</tr>
+</tbody>
+</table>
+<p><em>Table 6.1. Matching the chart to the question.</em></p>
+<h2 id="63-a-dataset-to-explore">6.3 A dataset to explore<a class="headerlink" href="#63-a-dataset-to-explore" title="Permanent link">&para;</a></h2>
+<p>The rest of the chapter explores one dataset, generated with a seeded random generator so that it is the same for every reader. It describes 200 students: their class section, weekly hours of self-study, average hours of sleep, attendance (as a percentage), and final mark out of 100. The way it is generated builds in some relationships for the exploration to discover; in real work you would not know them in advance.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">11</span><span class="p">)</span>
+<span class="n">n</span> <span class="o">=</span> <span class="mi">200</span>
+<span class="n">section</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">choice</span><span class="p">([</span><span class="s2">"A"</span><span class="p">,</span> <span class="s2">"B"</span><span class="p">,</span> <span class="s2">"C"</span><span class="p">],</span> <span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="p">[</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.35</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">])</span>
+<span class="n">study</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">gamma</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>           <span class="c1"># right-skewed hours</span>
+<span class="n">sleep</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mf">7.0</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">attendance</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">rng</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">82</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">),</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">mark</span> <span class="o">=</span> <span class="p">(</span><span class="mi">30</span> <span class="o">+</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">study</span> <span class="o">+</span> <span class="mf">3.0</span> <span class="o">*</span> <span class="p">(</span><span class="n">sleep</span> <span class="o">-</span> <span class="mi">7</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.3</span> <span class="o">*</span> <span class="p">(</span><span class="n">attendance</span> <span class="o">-</span> <span class="mi">80</span><span class="p">)</span>
+        <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">section</span> <span class="o">==</span> <span class="s2">"C"</span><span class="p">,</span> <span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">rng</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">))</span>
+<span class="n">mark</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">mark</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">students</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s2">"section"</span><span class="p">:</span> <span class="n">section</span><span class="p">,</span> <span class="s2">"study_hours"</span><span class="p">:</span> <span class="n">study</span><span class="p">,</span> <span class="s2">"sleep_hours"</span><span class="p">:</span> <span class="n">sleep</span><span class="p">,</span>
+                         <span class="s2">"attendance"</span><span class="p">:</span> <span class="n">attendance</span><span class="p">,</span> <span class="s2">"mark"</span><span class="p">:</span> <span class="n">mark</span><span class="p">})</span>
+<span class="n">students</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">rng</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span> <span class="s2">"sleep_hours"</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>   <span class="c1"># some missing</span>
+<span class="n">students</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="mi">17</span><span class="p">,</span> <span class="s2">"study_hours"</span><span class="p">]</span> <span class="o">=</span> <span class="mf">60.0</span>                                       <span class="c1"># a suspicious value</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">students</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">students</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>  section  study_hours  sleep_hours  attendance  mark
+0       A          1.1          7.3        81.0  38.0
+1       B          1.1          5.7        89.0  36.0
+2       B          7.4          8.5        61.0  42.0
+3       A          6.3          8.8        85.0  53.0
+4       A          7.0          6.1        69.0  38.0
+(200, 5)
+</code></pre></div>
+<p>The first steps are those of Chapter 4: types, missing values, summaries.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="nb">print</span><span class="p">(</span><span class="n">students</span><span class="o">.</span><span class="n">dtypes</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">students</span><span class="o">.</span><span class="n">isna</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">students</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>section            str
+study_hours    float64
+sleep_hours    float64
+attendance     float64
+mark           float64
+dtype: object
+section        0
+study_hours    0
+sleep_hours    6
+attendance     0
+mark           0
+dtype: int64
+       study_hours  sleep_hours  attendance   mark
+count        200.0        194.0       200.0  200.0
+mean           6.0          7.0        82.0   41.1
+std            5.2          1.0         9.8   11.5
+min            0.4          4.8        54.0   12.0
+25%            3.0          6.3        75.8   33.0
+50%            5.4          6.9        83.0   40.0
+75%            7.7          7.8        88.0   48.0
+max           60.0          9.2       100.0   80.0
+</code></pre></div>
+<p>Already the summary raises questions. The maximum of <code>study_hours</code> (60) is far beyond the 75th percentile (about 8): is it real, or a typing error for 6.0? <code>sleep_hours</code> has 6 missing values. The marks range widely. Charts will tell us more.</p>
+<h2 id="64-one-numerical-variable-the-distribution">6.4 One numerical variable: the distribution<a class="headerlink" href="#64-one-numerical-variable-the-distribution" title="Permanent link">&para;</a></h2>
+<p>The <strong>distribution</strong> of a variable is the pattern of how often each value occurs. Four features describe it:</p>
+<ul>
+<li><strong>centre</strong>: where the typical values are (mean, median);</li>
+<li><strong>spread</strong>: how far values vary (standard deviation, interquartile range, range);</li>
+<li><strong>shape</strong>: symmetric or <strong>skewed</strong> (with a long tail to one side), one peak or several;</li>
+<li><strong>unusual values</strong>: outliers, gaps, impossible values, suspicious spikes.</li>
+</ul>
+<h3 id="histograms">Histograms<a class="headerlink" href="#histograms" title="Permanent link">&para;</a></h3>
+<p>A <strong>histogram</strong> divides the range into intervals (bins) and draws a bar for the number of values in each.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mf">3.2</span><span class="p">))</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">students</span><span class="p">[</span><span class="s2">"mark"</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"tab:blue"</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s2">"white"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"Final mark"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"Number of students"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Marks: roughly symmetric"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">students</span><span class="p">[</span><span class="s2">"study_hours"</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"tab:orange"</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s2">"white"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"Weekly study hours"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Study hours: right-skewed, one extreme value"</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">"histograms.svg"</span><span class="p">)</span>
+</code></pre></div>
+<figure class="fig fig-diagram">
+<img src="img/histograms.svg" alt="Two histograms. Left: final marks form a single, roughly symmetric hump centred around 40. Right: weekly study hours pile up between 0 and 10 with a long tail to the right, and one isolated bar far out at 60 hours." loading="lazy" width="950" height="297">
+<figcaption><strong>Figure 6.3 Histograms of two variables.</strong> Two histograms. Left: final marks form a single, roughly symmetric hump centred around 40. Right: weekly study hours pile up between 0 and 10 with a long tail to the right, and one isolated bar far out at 60 hours.</figcaption>
+</figure>
+<p>The marks form one roughly symmetric hump. Study hours are <strong>right-skewed</strong>: most students study a few hours, a few study a lot, and the tail stretches to the right. For a right-skewed variable the mean is pulled towards the tail and lies above the median. The single value at 60 stands out as isolated from everything else.</p>
+<div class="admonition warning">
+<p class="admonition-title">Caution: the number of bins changes the picture</p>
+<p>Too few bins hide the shape; too many turn it into noise. Try a few values (say 10, 20 and 40) before deciding what the shape is. matplotlib's default is 10 bins, which is often too few.</p>
+</div>
+<h3 id="box-plots">Box plots<a class="headerlink" href="#box-plots" title="Permanent link">&para;</a></h3>
+<p>A <strong>box plot</strong> summarises a distribution in five numbers. The box runs from the first quartile <span class="arithmatex">\(Q_1\)</span> to the third <span class="arithmatex">\(Q_3\)</span>, so it contains the middle half of the data; a line inside marks the median. The whiskers extend to the most extreme values within <span class="arithmatex">\(1.5 \times \text{IQR}\)</span> of the box, and points beyond them are drawn individually as possible outliers (the rule of Section 5.6).</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mf">2.6</span><span class="p">))</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">students</span><span class="p">[</span><span class="s2">"study_hours"</span><span class="p">],</span> <span class="n">orientation</span><span class="o">=</span><span class="s2">"horizontal"</span><span class="p">,</span> <span class="n">widths</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"Weekly study hours"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">([])</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Box plot of study hours"</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">"boxplot-study.svg"</span><span class="p">)</span>
+
+<span class="n">q1</span><span class="p">,</span> <span class="n">med</span><span class="p">,</span> <span class="n">q3</span> <span class="o">=</span> <span class="n">students</span><span class="p">[</span><span class="s2">"study_hours"</span><span class="p">]</span><span class="o">.</span><span class="n">quantile</span><span class="p">([</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Q1 </span><span class="si">{</span><span class="n">q1</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">, median </span><span class="si">{</span><span class="n">med</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">, Q3 </span><span class="si">{</span><span class="n">q3</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">, upper fence </span><span class="si">{</span><span class="n">q3</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">1.5</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">q3</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">q1</span><span class="p">)</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"mean"</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">students</span><span class="p">[</span><span class="s2">"study_hours"</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="mi">2</span><span class="p">))</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>Q1 3.0, median 5.4, Q3 7.7, upper fence 14.9
+mean 5.96
+</code></pre></div>
+<figure class="fig fig-diagram">
+<img src="img/boxplot-study.svg" alt="A horizontal box plot of weekly study hours. The box spans roughly 3 to 8 hours with the median near 5; the right whisker is longer than the left and reaches about 15, one point lies just beyond it, and one point lies far away at 60." loading="lazy" width="466" height="273">
+<figcaption><strong>Figure 6.4 A box plot shows centre, spread and outliers.</strong> A horizontal box plot of weekly study hours. The box spans roughly 3 to 8 hours with the median near 5; the right whisker is longer than the left and reaches about 15, one point lies just beyond it, and one point lies far away at 60.</figcaption>
+</figure>
+<p>The box plot shows the skew (the right whisker is longer than the left) and flags two points beyond the upper fence of 14.9 hours. One, at 15.3 hours, is only just beyond it and is perfectly plausible for a skewed variable; the other, at 60 hours a week of self-study on top of classes, is not. We will treat it as an error and set it to missing, and record that decision.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">students</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">students</span><span class="p">[</span><span class="s2">"study_hours"</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">40</span><span class="p">,</span> <span class="s2">"study_hours"</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">students</span><span class="p">[</span><span class="s2">"study_hours"</span><span class="p">]</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>count    199.00
+mean       5.69
+std        3.51
+min        0.40
+25%        2.90
+50%        5.40
+75%        7.70
+max       15.30
+Name: study_hours, dtype: float64
+</code></pre></div>
+<h2 id="65-comparing-groups">6.5 Comparing groups<a class="headerlink" href="#65-comparing-groups" title="Permanent link">&para;</a></h2>
+<p>Do the three sections differ in marks? Side-by-side box plots compare whole distributions, not just averages.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">groups</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"A"</span><span class="p">,</span> <span class="s2">"B"</span><span class="p">,</span> <span class="s2">"C"</span><span class="p">]</span>
+<span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">students</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">students</span><span class="p">[</span><span class="s2">"section"</span><span class="p">]</span> <span class="o">==</span> <span class="n">g</span><span class="p">,</span> <span class="s2">"mark"</span><span class="p">]</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">groups</span><span class="p">]</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mf">3.4</span><span class="p">))</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">tick_labels</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s2">"Section </span><span class="si">{</span><span class="n">g</span><span class="si">}</span><span class="s2">"</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">groups</span><span class="p">])</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"Final mark"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Marks by section"</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">"boxplot-sections.svg"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">students</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">"section"</span><span class="p">)[</span><span class="s2">"mark"</span><span class="p">]</span><span class="o">.</span><span class="n">agg</span><span class="p">([</span><span class="s2">"count"</span><span class="p">,</span> <span class="s2">"mean"</span><span class="p">,</span> <span class="s2">"median"</span><span class="p">,</span> <span class="s2">"std"</span><span class="p">])</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>         count  mean  median   std
+section                           
+A           89  41.8    40.0  11.3
+B           65  42.3    41.0  11.6
+C           46  37.9    37.5  11.6
+</code></pre></div>
+<figure class="fig fig-diagram">
+<img src="img/boxplot-sections.svg" alt="Three box plots of final marks, one per section. Sections A and B have similar boxes and medians; section C&#x27;s box and median sit a few marks lower. The three boxes overlap a great deal." loading="lazy" width="511" height="313">
+<figcaption><strong>Figure 6.5 Comparing distributions across groups.</strong> Three box plots of final marks, one per section. Sections A and B have similar boxes and medians; section C&#x27;s box and median sit a few marks lower. The three boxes overlap a great deal.</figcaption>
+</figure>
+<p>Section C's median is a few marks lower than those of A and B, but the boxes overlap heavily: plenty of students in C do better than plenty in A. Whether a difference of this size could be due to chance is a question for Chapter 7. The group summary table includes <code>count</code>, because a mean from 50 students deserves more trust than one from 5.</p>
+<p>A <strong>bar chart</strong> is the right chart for counts of categories, and it can show group means as well. Bars encode values by their length, so the value axis must start at zero.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">counts</span> <span class="o">=</span> <span class="n">students</span><span class="p">[</span><span class="s2">"section"</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span>
+<span class="n">means</span> <span class="o">=</span> <span class="n">students</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">"section"</span><span class="p">)[</span><span class="s2">"mark"</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">counts</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">counts</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"tab:green"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Students per section"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"Count"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">means</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">means</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"tab:purple"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Mean mark per section"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"Mean mark"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">"bars.svg"</span><span class="p">)</span>
+</code></pre></div>
+<figure class="fig fig-diagram">
+<img src="img/bars.svg" alt="Two bar charts. Left: the number of students in sections A, B and C, with A the largest and C the smallest. Right: the mean mark per section on an axis from 0 to 100; the three bars are of similar height, with C slightly lower." loading="lazy" width="854" height="278">
+<figcaption><strong>Figure 6.6 Bar charts of counts and of means.</strong> Two bar charts. Left: the number of students in sections A, B and C, with A the largest and C the smallest. Right: the mean mark per section on an axis from 0 to 100; the three bars are of similar height, with C slightly lower.</figcaption>
+</figure>
+<p>On an axis starting at zero, the difference in mean marks looks as modest as it is. Starting the axis at 40 would make section C's bar look half as tall as the others: a visual lie.</p>
+<h2 id="66-relationships-between-two-numerical-variables">6.6 Relationships between two numerical variables<a class="headerlink" href="#66-relationships-between-two-numerical-variables" title="Permanent link">&para;</a></h2>
+<h3 id="scatter-plots">Scatter plots<a class="headerlink" href="#scatter-plots" title="Permanent link">&para;</a></h3>
+<p>A <strong>scatter plot</strong> draws one point per observation, with one variable on each axis. It shows the <strong>direction</strong> of a relationship (up or down), its <strong>form</strong> (straight or curved), its <strong>strength</strong> (how tightly the points follow the pattern), and points that do not fit.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mf">3.4</span><span class="p">),</span> <span class="n">sharey</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">students</span><span class="p">[</span><span class="s2">"study_hours"</span><span class="p">],</span> <span class="n">students</span><span class="p">[</span><span class="s2">"mark"</span><span class="p">],</span> <span class="n">s</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.6</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"Weekly study hours"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"Final mark"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Marks rise with study"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">students</span><span class="p">[</span><span class="s2">"sleep_hours"</span><span class="p">],</span> <span class="n">students</span><span class="p">[</span><span class="s2">"mark"</span><span class="p">],</span> <span class="n">s</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"tab:red"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"Average sleep (hours)"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"A weaker relationship with sleep"</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">"scatter.svg"</span><span class="p">)</span>
+</code></pre></div>
+<figure class="fig fig-diagram">
+<img src="img/scatter.svg" alt="Two scatter plots of final mark. Left, against weekly study hours: a clear upward trend, the points forming a broad band rising from about 30 marks at 0 hours to about 60 at 15 hours. Right, against average sleep: a much fainter upward drift within a wide cloud." loading="lazy" width="950" height="316">
+<figcaption><strong>Figure 6.7 Scatter plots of two relationships.</strong> Two scatter plots of final mark. Left, against weekly study hours: a clear upward trend, the points forming a broad band rising from about 30 marks at 0 hours to about 60 at 15 hours. Right, against average sleep: a much fainter upward drift within a wide cloud.</figcaption>
+</figure>
+<p>Marks clearly rise with study hours, roughly in a straight line, with a lot of scatter around it. With sleep the upward drift is much weaker. Setting <code>alpha</code> below 1 makes the points partly transparent, so that places where many points overlap show up darker.</p>
+<h3 id="correlation">Correlation<a class="headerlink" href="#correlation" title="Permanent link">&para;</a></h3>
+<p>The <strong>correlation coefficient</strong> <span class="arithmatex">\(r\)</span> (Pearson's correlation) measures the strength of a <em>straight-line</em> relationship on a scale from <span class="arithmatex">\(-1\)</span> to <span class="arithmatex">\(+1\)</span>. For <span class="arithmatex">\(n\)</span> pairs <span class="arithmatex">\((x_i, y_i)\)</span> with means <span class="arithmatex">\(\bar{x}\)</span>, <span class="arithmatex">\(\bar{y}\)</span> and standard deviations <span class="arithmatex">\(s_x\)</span>, <span class="arithmatex">\(s_y\)</span>,</p>
+<div class="arithmatex">\[
+r = \frac{1}{n-1} \sum_{i=1}^{n} \left(\frac{x_i - \bar{x}}{s_x}\right)\left(\frac{y_i - \bar{y}}{s_y}\right).
+\]</div>
+<p>Each term multiplies the standardised values of a pair. When large <span class="arithmatex">\(x\)</span> go with large <span class="arithmatex">\(y\)</span> (and small with small), most products are positive and <span class="arithmatex">\(r\)</span> is positive; when large <span class="arithmatex">\(x\)</span> go with small <span class="arithmatex">\(y\)</span>, <span class="arithmatex">\(r\)</span> is negative. <span class="arithmatex">\(r = \pm 1\)</span> means the points lie exactly on a line; <span class="arithmatex">\(r = 0\)</span> means no straight-line relationship.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">num</span> <span class="o">=</span> <span class="n">students</span><span class="p">[[</span><span class="s2">"study_hours"</span><span class="p">,</span> <span class="s2">"sleep_hours"</span><span class="p">,</span> <span class="s2">"attendance"</span><span class="p">,</span> <span class="s2">"mark"</span><span class="p">]]</span>
+<span class="n">corr</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">corr</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">corr</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>             study_hours  sleep_hours  attendance  mark
+study_hours         1.00         0.12        0.02  0.62
+sleep_hours         0.12         1.00        0.02  0.29
+attendance          0.02         0.02        1.00  0.21
+mark                0.62         0.29        0.21  1.00
+</code></pre></div>
+<p>pandas computes all pairwise correlations at once, using for each pair the rows where both values are present. A <strong>heat map</strong> of the matrix makes it easy to scan:</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="n">im</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">corr</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"RdBu_r"</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">corr</span><span class="p">)),</span> <span class="n">corr</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s2">"right"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">corr</span><span class="p">)),</span> <span class="n">corr</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">corr</span><span class="p">)):</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">corr</span><span class="p">)):</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">corr</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">j</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">value</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s2">"center"</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s2">"center"</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span>
+                <span class="n">color</span><span class="o">=</span><span class="s2">"white"</span> <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.7</span> <span class="k">else</span> <span class="s2">"black"</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"correlation"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Correlation matrix"</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">"correlation.svg"</span><span class="p">)</span>
+</code></pre></div>
+<figure class="fig fig-diagram">
+<img src="img/correlation.svg" alt="A four by four heat map of correlations between study hours, sleep hours, attendance and mark, coloured from blue for -1 through white for 0 to red for +1, with the value written in each cell. The diagonal is 1; the strongest off-diagonal value is between study hours and mark; correlations among the three predictors are close to zero." loading="lazy" width="508" height="396">
+<figcaption><strong>Figure 6.8 A correlation matrix as a heat map.</strong> A four by four heat map of correlations between study hours, sleep hours, attendance and mark, coloured from blue for -1 through white for 0 to red for +1, with the value written in each cell. The diagonal is 1; the strongest off-diagonal value is between study hours and mark; correlations among the three predictors are close to zero.</figcaption>
+</figure>
+<p>Mark is most strongly correlated with study hours (<span class="arithmatex">\(r = 0.62\)</span>), and much more weakly with sleep (0.29) and attendance (0.21). The correlations among the three predictors are close to zero (the largest is 0.12), which matches how the data was generated: they were drawn independently.</p>
+<div class="admonition warning">
+<p class="admonition-title">Caution: what correlation does not tell you</p>
+<p>Three warnings belong with every correlation. <strong>It measures only straight-line relationships</strong>: a perfect U-shaped relationship can have <span class="arithmatex">\(r = 0\)</span>. <strong>It is sensitive to outliers</strong>: one extreme point can create or destroy a correlation, as dataset IV of Anscombe's quartet shows (that is one reason we removed the 60-hour value). <strong>Correlation is not causation</strong>: students who study more may also differ in motivation, background or other ways that affect marks. Only a controlled experiment, or careful reasoning about other causes, supports a causal claim.</p>
+</div>
+<h2 id="67-change-over-time">6.7 Change over time<a class="headerlink" href="#67-change-over-time" title="Permanent link">&para;</a></h2>
+<p>A <strong>line plot</strong> joins points in time order, so that trends, seasonal patterns and sudden changes stand out. Here are 120 days of simulated sales from a small shop, with a weekly pattern, a slow upward trend, and noise:</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">rng_t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">dates</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">date_range</span><span class="p">(</span><span class="s2">"2024-01-01"</span><span class="p">,</span> <span class="n">periods</span><span class="o">=</span><span class="mi">120</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="s2">"D"</span><span class="p">)</span>
+<span class="n">weekly</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">dates</span><span class="o">.</span><span class="n">dayofweek</span> <span class="o">&gt;=</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>            <span class="c1"># weekends are busier</span>
+<span class="n">trend</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">dates</span><span class="p">))</span>
+<span class="n">daily</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="mi">150</span> <span class="o">+</span> <span class="n">trend</span> <span class="o">+</span> <span class="n">weekly</span> <span class="o">+</span> <span class="n">rng_t</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">dates</span><span class="p">)),</span> <span class="n">index</span><span class="o">=</span><span class="n">dates</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">()</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mf">3.2</span><span class="p">))</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">daily</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">daily</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"lightgray"</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"daily"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">daily</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">daily</span><span class="o">.</span><span class="n">rolling</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">color</span><span class="o">=</span><span class="s2">"tab:blue"</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="n">label</span><span class="o">=</span><span class="s2">"7-day rolling mean"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"Items sold"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Daily sales with a weekly cycle and a rising trend"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">autofmt_xdate</span><span class="p">()</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">"timeseries.svg"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">daily</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">8</span><span class="p">))</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>2024-01-01    174.0
+2024-01-02    120.0
+2024-01-03    156.0
+2024-01-04    144.0
+2024-01-05    146.0
+2024-01-06    189.0
+2024-01-07    167.0
+2024-01-08    149.0
+Freq: D, dtype: float64
+</code></pre></div>
+<figure class="fig fig-diagram">
+<img src="img/timeseries.svg" alt="A line plot of daily items sold over 120 days from January 2024. The raw daily series in light gray zigzags with a weekly rhythm, peaking every weekend; a thick blue 7-day rolling mean runs through it, rising smoothly from about 160 to about 190." loading="lazy" width="742" height="308">
+<figcaption><strong>Figure 6.9 A time series and its rolling mean.</strong> A line plot of daily items sold over 120 days from January 2024. The raw daily series in light gray zigzags with a weekly rhythm, peaking every weekend; a thick blue 7-day rolling mean runs through it, rising smoothly from about 160 to about 190.</figcaption>
+</figure>
+<p>The raw series zigzags with the weekly cycle; the <strong>rolling mean</strong> (the average of each 7-day window) smooths the cycle away and reveals the trend. Chapter 12 returns to time series.</p>
+<h2 id="68-making-charts-honest-and-clear">6.8 Making charts honest and clear<a class="headerlink" href="#68-making-charts-honest-and-clear" title="Permanent link">&para;</a></h2>
+<p>A chart is an argument, and it can mislead as easily as words. These rules prevent most problems.</p>
+<ol>
+<li><strong>Label everything.</strong> Axis labels with units, a title that says what the chart shows, a legend when there are several series.</li>
+<li><strong>Start bar charts at zero.</strong> Bars encode values by length. Line and scatter plots need not start at zero, because they encode values by position.</li>
+<li><strong>Use the same scale when comparing.</strong> Side-by-side panels should share axes (<code>sharex</code>, <code>sharey</code>) unless there is a reason not to, and the reader should be told if they do not.</li>
+<li><strong>Prefer position and length to area, angle and colour.</strong> People judge positions along a common scale most accurately. Pie charts (angles) and bubble sizes (areas) are harder to read; 3D effects distort everything.</li>
+<li><strong>Sort categorical bars</strong> by value, unless the categories have a natural order (months, ratings).</li>
+<li><strong>Choose colours with care.</strong> Use colour to encode a variable only when needed, avoid red–green contrasts that colour-blind readers cannot distinguish, and use a diverging colour map (like the one in Figure 6.8) only for data with a meaningful centre.</li>
+<li><strong>Show the data, not just a summary,</strong> when there is not too much of it: the points, a box plot or a histogram, rather than a single bar for a mean.</li>
+<li><strong>Say how many.</strong> Report the number of observations behind every summary.</li>
+</ol>
+<h2 id="69-an-exploratory-analysis-step-by-step">6.9 An exploratory analysis, step by step<a class="headerlink" href="#69-an-exploratory-analysis-step-by-step" title="Permanent link">&para;</a></h2>
+<p>EDA is not a fixed procedure, but a checklist keeps it thorough. Here it is, with what we found for the student data.</p>
+<table>
+<thead>
+<tr>
+<th>Step</th>
+<th>What to do</th>
+<th>Students dataset</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1. Structure</td>
+<td>rows, columns, types; what is one row?</td>
+<td>200 students × 5 variables; one row per student</td>
+</tr>
+<tr>
+<td>2. Missing values</td>
+<td>count by column; is missingness related to anything?</td>
+<td>6 sleep values missing; 1 study value set to missing</td>
+</tr>
+<tr>
+<td>3. One variable at a time</td>
+<td>histograms, box plots, counts</td>
+<td>marks symmetric; study hours right-skewed; one impossible value</td>
+</tr>
+<tr>
+<td>4. Two variables at a time</td>
+<td>scatter plots, correlations, grouped box plots</td>
+<td>mark rises with study (strongest), more weakly with sleep and attendance; section C a little lower</td>
+</tr>
+<tr>
+<td>5. Questions and caveats</td>
+<td>what can and cannot be concluded</td>
+<td>association, not causation; group differences need a test</td>
+</tr>
+</tbody>
+</table>
+<p><em>Table 6.2. An EDA checklist applied to the students dataset.</em></p>
+<p>A short written summary is the real output of EDA. For this dataset:</p>
+<div class="admonition example">
+<p class="admonition-title">Example 6.1: Findings of the exploration</p>
+<ul>
+<li>The data has 200 students and five variables. Six sleep values are missing; one study value of 60 hours a week was judged impossible and set to missing.</li>
+<li>Marks are roughly symmetric around 40, with a wide spread. Study hours are right-skewed: a median of about 5 hours, with a tail up to about 15.</li>
+<li>Marks rise with study hours (the strongest correlation, 0.62), and more weakly with sleep and attendance (about 0.2 to 0.3).</li>
+<li>Section C's median mark is a few points lower than A's and B's, with heavily overlapping distributions; Chapter 7 tests whether this could be chance.</li>
+<li>These are associations in observational data. They do not show that studying more <em>causes</em> higher marks, although that is plausible.</li>
+</ul>
+</div>
+<p>Every figure in this chapter was made with a few lines of matplotlib. The craft lies not in the code but in choosing the right chart, looking at it carefully, and saying what it shows, and what it does not.</p>
+<h2 id="610-summary">6.10 Summary<a class="headerlink" href="#610-summary" title="Permanent link">&para;</a></h2>
+<div class="admonition abstract">
+<p class="admonition-title">Summary</p>
+<ul>
+<li>Summaries can hide everything that matters (Anscombe's quartet): always plot.</li>
+<li>In matplotlib, a Figure holds Axes; create them with <code>fig, ax = plt.subplots()</code>, draw with methods of <code>ax</code>, label everything, and save with <code>fig.savefig("name.svg")</code>.</li>
+<li>Choose the chart from the question: histogram or box plot for a distribution, box plots or bars for groups, bars for counts, scatter for two numerical variables, lines for time.</li>
+<li>Describe a distribution by centre, spread, shape and unusual values. Skew pulls the mean towards the tail.</li>
+<li>A box plot shows the quartiles, the median and points beyond the <span class="arithmatex">\(1.5 \times \text{IQR}\)</span> fences.</li>
+<li>Pearson's <span class="arithmatex">\(r\)</span> measures straight-line association from <span class="arithmatex">\(-1\)</span> to <span class="arithmatex">\(1\)</span>; it is sensitive to outliers and says nothing about causation.</li>
+<li>Honest charts label axes, start bars at zero, share scales, avoid 3D and pie charts, and report counts.</li>
+<li>EDA ends with written findings and caveats.</li>
+</ul>
+</div>
+<h2 id="611-exercises">6.11 Exercises<a class="headerlink" href="#611-exercises" title="Permanent link">&para;</a></h2>
+<div class="admonition example">
+<p class="admonition-title">Exercise 1</p>
+<p>For each question, name the most suitable chart: (a) how monthly rainfall changed over ten years; (b) whether taller people tend to weigh more; (c) how many customers chose each of five payment methods; (d) whether delivery times differ between three couriers.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>(a) a line plot (time on the x axis); (b) a scatter plot; (c) a bar chart, sorted by count; (d) side-by-side box plots of delivery time, one per courier.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 2</p>
+<p>A variable has mean 52 and median 38. What does this suggest about its shape, and what would its histogram look like?</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>The mean is well above the median, which suggests a right skew: most values are moderate and a long tail of large values pulls the mean up. The histogram would have its peak on the left and a tail stretching to the right. (Incomes and waiting times often look like this.)</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 3</p>
+<p>Make a histogram of the students' attendance with 15 bins, labelled properly, and describe its shape. What explains the bar at 100?</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<div class="language-python highlight"><pre><span></span><code><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">students</span><span class="p">[</span><span class="s2">"attendance"</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s2">"white"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"Attendance (%)"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"Number of students"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Attendance"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">((</span><span class="n">students</span><span class="p">[</span><span class="s2">"attendance"</span><span class="p">]</span> <span class="o">==</span> <span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(),</span> <span class="s2">"students at exactly 100%"</span><span class="p">)</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>9 students at exactly 100%
+</code></pre></div>
+<p>The histogram is a single hump around 80%, fairly symmetric, with a pile-up at 100. Attendance cannot exceed 100%, and the data was clipped there, so every value that "would have been" above 100 is recorded as exactly 100. Pile-ups at a boundary like this are common in real data (test scores at the maximum, ages recorded as 0) and are worth noticing.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 4</p>
+<p>Compute the correlation between <code>x = np.arange(-5, 6)</code> and <code>y = x**2</code>. Explain the result, and say what a scatter plot would show.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<div class="language-python highlight"><pre><span></span><code><span class="n">xq</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">corrcoef</span><span class="p">(</span><span class="n">xq</span><span class="p">,</span> <span class="n">xq</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">6</span><span class="p">))</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>0.0
+</code></pre></div>
+<p>The correlation is 0 (up to rounding), although <span class="arithmatex">\(y\)</span> is completely determined by <span class="arithmatex">\(x\)</span>. The relationship is a U-shaped parabola, symmetric about <span class="arithmatex">\(x = 0\)</span>, so there is no straight-line trend for Pearson's <span class="arithmatex">\(r\)</span> to measure. A scatter plot shows the U at once.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 5</p>
+<p>A news chart shows two bars, for 41% and 45%, with the vertical axis running from 40% to 46%. What is wrong with it?</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>The axis does not start at zero, so the bars' lengths are 1 and 5 units: the second bar looks five times as large, while the real values differ by about a tenth (45 is about 1.1 times 41). Bar charts must start at zero; alternatively show the two values as points or simply state them.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 6</p>
+<p>In the students data, the correlation between study hours and mark is clearly positive. Give two reasons why this does not prove that studying more raises marks.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>First, other factors may drive both: motivated students, or those with more time or support at home, may both study more and do better for other reasons (confounding). Second, the direction could partly run the other way: students who are doing well may enjoy the subject and study more. Only an experiment, or careful analysis of such alternatives, supports a causal conclusion. (In this simulated data we know study hours were built into the marks, but with real data we would not.)</p>
+</details>
+<h2 id="612-quiz">6.12 Quiz<a class="headerlink" href="#612-quiz" title="Permanent link">&para;</a></h2>
+<div class="pk-quiz" data-quiz="5aab36a7256f">
+<p class="pk-quiz-title">Check your understanding of Chapter 6</p>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;pie chart&quot;,&quot;histogram&quot;,&quot;line plot&quot;,&quot;bar chart of the mean&quot;],&quot;answer&quot;:&quot;histogram&quot;}">
+<p class="admonition-title">Exercise 1</p>
+<p class="pk-q-prompt">Which chart is best for showing how one numerical variable is distributed?</p>
+<ol class="pk-q-opts" type="A"><li>pie chart</li><li>histogram</li><li>line plot</li><li>bar chart of the mean</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>histogram</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;below the median&quot;,&quot;equal to the median&quot;,&quot;above the median&quot;,&quot;zero&quot;],&quot;answer&quot;:&quot;above the median&quot;}">
+<p class="admonition-title">Exercise 2</p>
+<p class="pk-q-prompt">In a right-skewed distribution, the mean is usually</p>
+<ol class="pk-q-opts" type="A"><li>below the median</li><li>equal to the median</li><li>above the median</li><li>zero</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>above the median</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;the minimum to the maximum&quot;,&quot;the mean plus and minus one standard deviation&quot;,&quot;the first to the third quartile&quot;,&quot;the 5th to the 95th percentile&quot;],&quot;answer&quot;:&quot;the first to the third quartile&quot;}">
+<p class="admonition-title">Exercise 3</p>
+<p class="pk-q-prompt">What does the box of a box plot span?</p>
+<ol class="pk-q-opts" type="A"><li>the minimum to the maximum</li><li>the mean plus and minus one standard deviation</li><li>the first to the third quartile</li><li>the 5th to the 95th percentile</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>the first to the third quartile</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;the variables are unrelated in every way&quot;,&quot;there is no straight-line relationship&quot;,&quot;one variable causes the other&quot;,&quot;the data has an error&quot;],&quot;answer&quot;:&quot;there is no straight-line relationship&quot;}">
+<p class="admonition-title">Exercise 4</p>
+<p class="pk-q-prompt">A correlation of r = 0 means</p>
+<ol class="pk-q-opts" type="A"><li>the variables are unrelated in every way</li><li>there is no straight-line relationship</li><li>one variable causes the other</li><li>the data has an error</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>there is no straight-line relationship</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;scatter plot&quot;,&quot;line plot&quot;,&quot;bar chart&quot;,&quot;box plot&quot;],&quot;answer&quot;:&quot;bar chart&quot;}">
+<p class="admonition-title">Exercise 5</p>
+<p class="pk-q-prompt">Which kind of chart must have its value axis start at zero?</p>
+<ol class="pk-q-opts" type="A"><li>scatter plot</li><li>line plot</li><li>bar chart</li><li>box plot</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>bar chart</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;text&quot;,&quot;answer&quot;:[&quot;plt.subplots&quot;,&quot;plt.subplots()&quot;,&quot;subplots&quot;]}">
+<p class="admonition-title">Exercise 6</p>
+<p class="pk-q-prompt">Which matplotlib call creates a Figure and an Axes together?</p>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>plt.subplots / plt.subplots() / subplots</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;that correlation implies causation&quot;,&quot;that identical summaries can come from very different data&quot;,&quot;that histograms need 10 bins&quot;,&quot;that scatter plots are misleading&quot;],&quot;answer&quot;:&quot;that identical summaries can come from very different data&quot;}">
+<p class="admonition-title">Exercise 7</p>
+<p class="pk-q-prompt">What does Anscombe's quartet demonstrate?</p>
+<ol class="pk-q-opts" type="A"><li>that correlation implies causation</li><li>that identical summaries can come from very different data</li><li>that histograms need 10 bins</li><li>that scatter plots are misleading</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>that identical summaries can come from very different data</strong></p>
+</details>
+</div>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button type="button" class="md-top md-icon" data-md-component="top" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+Back to top
+</button>
+</main>
+<footer class="md-footer">
+<nav class="md-footer__inner md-grid" aria-label="Footer" >
+<a href="cleaning-reshaping-grouping-and-joining.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: 5. Cleaning, Reshaping, Grouping and Joining">
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</div>
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Previous
+</span>
+<div class="md-ellipsis">
+5. Cleaning, Reshaping, Grouping and Joining
+</div>
+</div>
+</a>
+<a href="probability-and-statistics.html" class="md-footer__link md-footer__link--next" aria-label="Next: 7. Probability and Statistics for Data Science">
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Next
+</span>
+<div class="md-ellipsis">
+7. Probability and Statistics for Data Science
+</div>
+</div>
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+</div>
+</a>
+</nav>
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+The Open Book Project &middot;
+<a href="../../about.html">About this library</a> &middot;
+<a href="../../publish.html">Publish your book</a> &middot;
+© The authors of the books
+</div>
+Made with
+<a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+Material for MkDocs
+</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "navigation.prune", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "toc.follow", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+<script src="../../assets/mathjax.js"></script>
+<script src="../../assets/viz.js"></script>
+<script src="../../assets/remote.js"></script>
+<script src="../../assets/scans.js"></script>
+<script src="../../assets/reader.js"></script>
+<script src="../../assets/app.js"></script>
+<script src="../../assets/slides.js"></script>
+<script src="../../assets/speak.js"></script>
+<script src="../../assets/quiz.js"></script>
+<script>
+    /* offline reading: the service worker at the site root (its scope is the whole site) */
+    if ("serviceWorker" in navigator && window.isSecureContext) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register(new URL("../../sw.js", location.href).href).catch(function () {});
+      });
+    }
+  </script>
+</body>
+</html>

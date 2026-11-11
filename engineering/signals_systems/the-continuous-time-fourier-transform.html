@@ -1,0 +1,1145 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="description" content="The Open Book Project: books on computer science, quantum computing, cyber security, science, the social sciences, university courses and languages, read page by page like an e-book, online or offline.">
+<meta name="author" content="The Open Book Project">
+<link rel="canonical" href="https://open-book-project.github.io/engineering/signals_systems/the-continuous-time-fourier-transform.html">
+<link rel="prev" href="fourier-series.html">
+<link rel="next" href="the-discrete-time-fourier-transform.html">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap"></noscript>
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Open Book">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="application-name" content="Open Book"><script src="../../assets/library-data.js"></script><script>
+    (function () {
+      var X = window.XMLHttpRequest, open, gate = new Promise(function (r) { open = r; });
+      if (!X) return;
+      var open0 = X.prototype.open, send0 = X.prototype.send;
+      X.prototype.open = function (method, url) {
+        this.__pkIndex = /\/search\/search_index\.json(\?|#|$)/.test(String(url));
+        return open0.apply(this, arguments);
+      };
+      X.prototype.send = function () {
+        if (!this.__pkIndex) return send0.apply(this, arguments);
+        var xhr = this, args = arguments;
+        gate.then(function () { send0.apply(xhr, args); });
+      };
+      function wake() { open(); }
+      document.addEventListener("focusin", function (e) { if (e.target && e.target.closest && e.target.closest(".md-search")) wake(); });
+      document.addEventListener("click", function (e) { if (e.target && e.target.closest && e.target.closest('label[for="__search"], .md-search')) wake(); }, true);
+      document.addEventListener("keydown", function (e) {
+        var k = e.key;
+        if ((k === "/" || k === "s" || k === "f" || k === "S" || k === "F") && !(e.target && e.target.closest && e.target.closest("input, textarea, [contenteditable]"))) wake();
+      }, true);
+      if (/[?&]q=/.test(location.search)) wake();
+    })();
+  </script><script>
+    try {
+      if ((window.matchMedia && (matchMedia("(display-mode: standalone)").matches || matchMedia("(display-mode: fullscreen)").matches)) || navigator.standalone === true) {
+        document.documentElement.className += " bjp-standalone";
+      }
+    } catch (e) { /* not an installed app */ }
+    /* the books of a subject or of the whole library as covers or as a list (assets/app.js): the reader's choice */
+    try {
+      var bv = localStorage.getItem("bjp.view");
+      if (bv === "list" || (bv !== "grid" && /\/books\.html$/.test(location.pathname))) document.documentElement.className += " bjp-view-list";
+    } catch (e) { /* no storage: covers */ }
+  </script>
+<script>
+    /* a book opened from its cover on the shelf: the page stays blank, in the cover's colour, until the reader is up */
+    try {
+      var cv = sessionStorage.getItem("bjp.reader.cover");
+      if (cv && sessionStorage.getItem("bjp.reader.open") === "1") {
+        var c = JSON.parse(cv), de = document.documentElement;
+        de.className += " bjp-booting";
+        if (c && /^#[0-9a-f]{3,8}$/i.test(c.bg || "")) de.style.background = c.bg;
+        setTimeout(function () { de.classList.remove("bjp-booting"); de.style.background = ""; }, 3000);
+      }
+    } catch (e) { /* no session storage: the page simply opens as usual */ }
+  </script>
+<title>6. The Continuous-Time Fourier Transform - The Open Book Project</title>
+<link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+<link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+<link rel="stylesheet" href="../../assets/extra.css">
+<link rel="stylesheet" href="../../assets/reader.css">
+<link rel="stylesheet" href="../../assets/viz.css">
+<link rel="stylesheet" href="../../assets/app.css">
+<link rel="stylesheet" href="../../assets/theme.css">
+<link rel="stylesheet" href="../../assets/slides.css">
+<link rel="stylesheet" href="../../assets/remote.css">
+<link rel="stylesheet" href="../../assets/scans.css">
+<link rel="stylesheet" href="../../assets/speak.css">
+<link rel="stylesheet" href="../../assets/quiz.css">
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+<input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+<input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a href="#series-to-transform" class="md-skip">
+Skip to content
+</a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav class="md-header__inner md-grid" aria-label="Header">
+<a href="../../index.html" title="The Open Book Project" class="md-header__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+The Open Book Project
+</span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+6. The Continuous-Time Fourier Transform
+</span>
+</div>
+</div>
+</div><a href="../../index.html" class="bjp-libbtn" aria-label="Library: all books" title="Library: all books">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V5h4v15M8 20V9h4v11M14 20L12.6 6l3.8-.8 3 14.2M3 20h18"/></svg><span>Library</span>
+</a>
+<a href="../../subjects/index.html" class="pk-catbtn" aria-haspopup="true" aria-expanded="false" title="Browse the books by category">
+<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><circle cx="17" cy="7" r="3.6"/><path d="M7 13.4l3.9 6.8H3.1z"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg><span>Categories</span>
+</a>
+<form class="md-header__option" data-md-component="palette">
+<input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+<label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+</label>
+<input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+<label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+<label class="md-search__icon md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</label>
+<nav class="md-search__options" aria-label="Search">
+<button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+Initializing search
+</div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--primary bjp-nav bjp-nav--book" aria-label="Navigation" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a href="../../index.html" title="The Open Book Project" class="md-nav__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+The Open Book Project
+</label>
+<ul class="md-nav__list" data-md-scrollfix>
+<li class="md-nav__item bjp-nav-all">
+<a href="../../index.html" class="md-nav__link" aria-label="All books: back to the library">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+<span class="md-ellipsis">All books</span>
+</a>
+</li>
+<li class="md-nav__item bjp-nav-book" role="presentation"><span class="bjp-nav-head">Signals and Systems</span></li>
+<li class="md-nav__item">
+<a href="index.html" class="md-nav__link">
+<span class="md-ellipsis">
+Overview and preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="preface.html" class="md-nav__link">
+<span class="md-ellipsis">
+Preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="signals-and-their-classification.html" class="md-nav__link">
+<span class="md-ellipsis">
+1. Signals and Their Classification
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="elementary-signals-and-operations.html" class="md-nav__link">
+<span class="md-ellipsis">
+2. Elementary Signals and Operations on Signals
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="systems-and-their-properties.html" class="md-nav__link">
+<span class="md-ellipsis">
+3. Systems and Their Properties
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="lti-systems-and-convolution.html" class="md-nav__link">
+<span class="md-ellipsis">
+4. LTI Systems and Convolution
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="fourier-series.html" class="md-nav__link">
+<span class="md-ellipsis">
+5. Fourier Series
+</span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+6. The Continuous-Time Fourier Transform
+</span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a href="the-continuous-time-fourier-transform.html" class="md-nav__link md-nav__link--active">
+<span class="md-ellipsis">
+6. The Continuous-Time Fourier Transform
+</span>
+</a>
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#series-to-transform" class="md-nav__link">
+<span class="md-ellipsis">
+6.1 From series to transform
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#ft-pair" class="md-nav__link">
+<span class="md-ellipsis">
+6.2 The Fourier transform pair
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#ft-pairs" class="md-nav__link">
+<span class="md-ellipsis">
+6.3 Standard transform pairs
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#ft-properties" class="md-nav__link">
+<span class="md-ellipsis">
+6.4 Properties of the Fourier transform
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#convolution-property" class="md-nav__link">
+<span class="md-ellipsis">
+6.5 The convolution property and the frequency response
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#periodic-ft" class="md-nav__link">
+<span class="md-ellipsis">
+6.6 Periodic signals and the modulation property
+</span>
+</a>
+<nav class="md-nav" aria-label="6.6 Periodic signals and the modulation property">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#fourier-transforms-of-periodic-signals" class="md-nav__link">
+<span class="md-ellipsis">
+Fourier transforms of periodic signals
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#modulation" class="md-nav__link">
+<span class="md-ellipsis">
+Modulation
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#energy-bandwidth" class="md-nav__link">
+<span class="md-ellipsis">
+6.7 Energy, bandwidth and the time-bandwidth trade-off
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#68-computing-transforms-numerically" class="md-nav__link">
+<span class="md-ellipsis">
+6.8 Computing transforms numerically
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#69-summary" class="md-nav__link">
+<span class="md-ellipsis">
+6.9 Summary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#610-exercises" class="md-nav__link">
+<span class="md-ellipsis">
+6.10 Exercises
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#611-quiz" class="md-nav__link">
+<span class="md-ellipsis">
+6.11 Quiz
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="the-discrete-time-fourier-transform.html" class="md-nav__link">
+<span class="md-ellipsis">
+7. The Discrete-Time Fourier Transform
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="the-dft-and-the-fft.html" class="md-nav__link">
+<span class="md-ellipsis">
+8. The DFT and the FFT
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="sampling-and-aliasing.html" class="md-nav__link">
+<span class="md-ellipsis">
+9. Sampling and Aliasing
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="the-laplace-transform.html" class="md-nav__link">
+<span class="md-ellipsis">
+10. The Laplace Transform
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="the-z-transform.html" class="md-nav__link">
+<span class="md-ellipsis">
+11. The z-Transform
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="frequency-response-and-filters.html" class="md-nav__link">
+<span class="md-ellipsis">
+12. Frequency Response and Filters
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="state-space-models.html" class="md-nav__link">
+<span class="md-ellipsis">
+13. State-Space Models
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="applications-audio-communication-and-control.html" class="md-nav__link">
+<span class="md-ellipsis">
+14. Applications: Audio, Communication and Control
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="tables-of-transforms.html" class="md-nav__link">
+<span class="md-ellipsis">
+Tables of Transforms
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="glossary.html" class="md-nav__link">
+<span class="md-ellipsis">
+Glossary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="further-reading.html" class="md-nav__link">
+<span class="md-ellipsis">
+Further Reading
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#series-to-transform" class="md-nav__link">
+<span class="md-ellipsis">
+6.1 From series to transform
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#ft-pair" class="md-nav__link">
+<span class="md-ellipsis">
+6.2 The Fourier transform pair
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#ft-pairs" class="md-nav__link">
+<span class="md-ellipsis">
+6.3 Standard transform pairs
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#ft-properties" class="md-nav__link">
+<span class="md-ellipsis">
+6.4 Properties of the Fourier transform
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#convolution-property" class="md-nav__link">
+<span class="md-ellipsis">
+6.5 The convolution property and the frequency response
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#periodic-ft" class="md-nav__link">
+<span class="md-ellipsis">
+6.6 Periodic signals and the modulation property
+</span>
+</a>
+<nav class="md-nav" aria-label="6.6 Periodic signals and the modulation property">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#fourier-transforms-of-periodic-signals" class="md-nav__link">
+<span class="md-ellipsis">
+Fourier transforms of periodic signals
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#modulation" class="md-nav__link">
+<span class="md-ellipsis">
+Modulation
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#energy-bandwidth" class="md-nav__link">
+<span class="md-ellipsis">
+6.7 Energy, bandwidth and the time-bandwidth trade-off
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#68-computing-transforms-numerically" class="md-nav__link">
+<span class="md-ellipsis">
+6.8 Computing transforms numerically
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#69-summary" class="md-nav__link">
+<span class="md-ellipsis">
+6.9 Summary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#610-exercises" class="md-nav__link">
+<span class="md-ellipsis">
+6.10 Exercises
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#611-quiz" class="md-nav__link">
+<span class="md-ellipsis">
+6.11 Quiz
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="chapter-6-the-continuous-time-fourier-transform">Chapter 6: The Continuous-Time Fourier Transform<a class="headerlink" href="#chapter-6-the-continuous-time-fourier-transform" title="Permanent link">&para;</a></h1>
+<p><em>The spectrum of an aperiodic signal, its properties, and filtering as multiplication</em></p>
+<div class="admonition note">
+<p class="admonition-title">Learning outcomes</p>
+<p>After this chapter you should be able to:</p>
+<ul>
+<li>obtain the Fourier transform as the limit of the Fourier series of a periodic signal whose period grows without bound;</li>
+<li>compute the transforms of the standard signals and use a table of pairs;</li>
+<li>apply the properties (shift, scaling, duality, differentiation, convolution, modulation, Parseval) to find transforms without integrating;</li>
+<li>use the frequency response <span class="arithmatex">\(H(j\omega)\)</span> to find the output of an LTI system;</li>
+<li>represent periodic signals by impulses in frequency, and explain the trade-off between duration and bandwidth.</li>
+</ul>
+</div>
+<h2 id="series-to-transform">6.1 From series to transform<a class="headerlink" href="#series-to-transform" title="Permanent link">&para;</a></h2>
+<p>The Fourier series describes periodic signals. Most signals of interest are not periodic: a spoken word, a radar pulse, the response of a circuit to a switch being closed. The trick for extending Fourier's idea to them is to regard an aperiodic signal as a periodic one whose period is infinitely long.</p>
+<p>Take a pulse <span class="arithmatex">\(x(t)\)</span> that is zero outside some interval, and build a periodic signal <span class="arithmatex">\(\tilde{x}(t)\)</span> by repeating it every <span class="arithmatex">\(T_0\)</span> seconds, with <span class="arithmatex">\(T_0\)</span> long enough that the copies do not overlap. Its Fourier coefficients are</p>
+<div class="arithmatex">\[
+a_k = \frac{1}{T_0}\int_{-T_0/2}^{T_0/2}\tilde{x}(t)\,e^{-jk\omega_0 t}\,dt = \frac{1}{T_0}\int_{-\infty}^{\infty}x(t)\,e^{-jk\omega_0 t}\,dt ,
+\]</div>
+<p>because within one period <span class="arithmatex">\(\tilde{x}\)</span> equals <span class="arithmatex">\(x\)</span>, and <span class="arithmatex">\(x\)</span> is zero elsewhere. Define the function</p>
+<div class="arithmatex">\[
+X(j\omega) = \int_{-\infty}^{\infty} x(t)\,e^{-j\omega t}\,dt .
+\]</div>
+<p>Then <span class="arithmatex">\(a_k = \frac{1}{T_0}X(jk\omega_0)\)</span>: the Fourier coefficients are <strong>samples of one fixed function</strong>, spaced <span class="arithmatex">\(\omega_0 = 2\pi/T_0\)</span> apart, scaled by <span class="arithmatex">\(1/T_0\)</span>. We saw exactly this in Figure 5.1, where the coefficients of a pulse train sat on a sinc envelope. The synthesis equation becomes</p>
+<div class="arithmatex">\[
+\tilde{x}(t) = \sum_k \frac{1}{T_0}X(jk\omega_0)\,e^{jk\omega_0 t} = \frac{1}{2\pi}\sum_k X(jk\omega_0)\,e^{jk\omega_0 t}\,\omega_0 .
+\]</div>
+<p>As <span class="arithmatex">\(T_0 \to \infty\)</span>, <span class="arithmatex">\(\tilde{x}\)</span> becomes <span class="arithmatex">\(x\)</span>, the spacing <span class="arithmatex">\(\omega_0\)</span> becomes an infinitesimal <span class="arithmatex">\(d\omega\)</span>, the samples <span class="arithmatex">\(k\omega_0\)</span> become a continuous variable <span class="arithmatex">\(\omega\)</span>, and the sum becomes an integral. The result is the <strong>Fourier transform pair</strong>.</p>
+<h2 id="ft-pair">6.2 The Fourier transform pair<a class="headerlink" href="#ft-pair" title="Permanent link">&para;</a></h2>
+<div class="arithmatex">\[
+X(j\omega) = \int_{-\infty}^{\infty} x(t)\,e^{-j\omega t}\,dt \qquad\text{(analysis, or forward transform)}
+\]</div>
+<div class="arithmatex">\[
+x(t) = \frac{1}{2\pi}\int_{-\infty}^{\infty} X(j\omega)\,e^{j\omega t}\,d\omega \qquad\text{(synthesis, or inverse transform)}
+\]</div>
+<p>We write <span class="arithmatex">\(x(t) \leftrightarrow X(j\omega)\)</span>. The function <span class="arithmatex">\(X(j\omega)\)</span> is the <strong>spectrum</strong> of <span class="arithmatex">\(x\)</span>. The synthesis equation says that <span class="arithmatex">\(x\)</span> is a continuous superposition of complex exponentials <span class="arithmatex">\(e^{j\omega t}\)</span>; the amount at frequency <span class="arithmatex">\(\omega\)</span> is <span class="arithmatex">\(\frac{1}{2\pi}X(j\omega)\,d\omega\)</span>. Unlike the line spectrum of a periodic signal, the spectrum of an aperiodic signal is spread continuously over frequency, and <span class="arithmatex">\(X(j\omega)\)</span> is a <strong>density</strong>: it has the units of the signal multiplied by time.</p>
+<p>The notation <span class="arithmatex">\(X(j\omega)\)</span>, rather than <span class="arithmatex">\(X(\omega)\)</span>, is chosen to match the Laplace transform <span class="arithmatex">\(X(s)\)</span> of Chapter 10, which equals the Fourier transform on the line <span class="arithmatex">\(s = j\omega\)</span>. Some books use the frequency <span class="arithmatex">\(f\)</span> in hertz instead of <span class="arithmatex">\(\omega\)</span>; then <span class="arithmatex">\(X(f) = \int x(t)e^{-j2\pi ft}dt\)</span> and <span class="arithmatex">\(x(t) = \int X(f)e^{j2\pi ft}df\)</span>, with no <span class="arithmatex">\(2\pi\)</span> in front. The two conventions are related by <span class="arithmatex">\(\omega = 2\pi f\)</span>. Formulas in this book use <span class="arithmatex">\(\omega\)</span>.</p>
+<p><strong>Existence.</strong> The transform exists (as an ordinary function) if <span class="arithmatex">\(x\)</span> is absolutely integrable, <span class="arithmatex">\(\int|x(t)|\,dt &lt; \infty\)</span>, and satisfies Dirichlet-type conditions like those of Section 5.5. It also exists, in the energy sense, for every finite-energy signal. Signals such as constants, sinusoids and the step are neither absolutely integrable nor of finite energy, but they have transforms if we allow impulses in frequency (Section 6.6). Growing signals such as <span class="arithmatex">\(e^{t}u(t)\)</span> have no Fourier transform; for them we need the Laplace transform.</p>
+<h2 id="ft-pairs">6.3 Standard transform pairs<a class="headerlink" href="#ft-pairs" title="Permanent link">&para;</a></h2>
+<div class="admonition example">
+<p class="admonition-title">Example 6.1 The decaying exponential</p>
+<p>For <span class="arithmatex">\(x(t) = e^{-at}u(t)\)</span> with <span class="arithmatex">\(a &gt; 0\)</span>:</p>
+<div class="arithmatex">\[
+X(j\omega) = \int_0^{\infty}e^{-at}e^{-j\omega t}dt = \left[\frac{-e^{-(a + j\omega)t}}{a + j\omega}\right]_0^{\infty} = \frac{1}{a + j\omega}.
+\]</div>
+<p>The upper limit vanishes because <span class="arithmatex">\(|e^{-(a+j\omega)t}| = e^{-at} \to 0\)</span>. The magnitude and phase are</p>
+<div class="arithmatex">\[
+|X(j\omega)| = \frac{1}{\sqrt{a^2 + \omega^2}}, \qquad \angle X(j\omega) = -\arctan\frac{\omega}{a}.
+\]</div>
+<p>The magnitude is largest at <span class="arithmatex">\(\omega = 0\)</span> and falls to <span class="arithmatex">\(1/\sqrt2\)</span> of its peak at <span class="arithmatex">\(\omega = a\)</span>; the phase goes from <span class="arithmatex">\(0\)</span> to <span class="arithmatex">\(-\pi/2\)</span> (Figure 6.1). A faster decay (larger <span class="arithmatex">\(a\)</span>) means a wider spectrum.</p>
+</div>
+<figure class="fig fig-diagram">
+<img src="img/exp-transform.svg" alt="Magnitude (left) and phase (right) of the transform of e^(−at)u(t). The magnitude peaks at 1/a at ω = 0 and falls to 0.707/a at ω = ±a. The phase falls from π/2 to −π/2, passing −π/4 at ω = a." loading="lazy" width="780" height="270">
+<figcaption><strong>Figure 6.1 Transform of a decaying exponential.</strong> Magnitude (left) and phase (right) of the transform of e^(−at)u(t). The magnitude peaks at 1/a at ω = 0 and falls to 0.707/a at ω = ±a. The phase falls from π/2 to −π/2, passing −π/4 at ω = a.</figcaption>
+</figure>
+<div class="admonition example">
+<p class="admonition-title">Example 6.2 The rectangular pulse</p>
+<p>For a pulse of height 1 and width <span class="arithmatex">\(\tau\)</span> centred at the origin, <span class="arithmatex">\(x(t) = \mathrm{rect}(t/\tau)\)</span>:</p>
+<div class="arithmatex">\[
+X(j\omega) = \int_{-\tau/2}^{\tau/2}e^{-j\omega t}dt = \frac{e^{j\omega\tau/2} - e^{-j\omega\tau/2}}{j\omega} = \frac{2\sin(\omega\tau/2)}{\omega} = \tau\,\mathrm{sinc}\!\left(\frac{\omega\tau}{2\pi}\right).
+\]</div>
+<p>The spectrum is real (the pulse is real and even), equal to <span class="arithmatex">\(\tau\)</span> (the pulse area) at <span class="arithmatex">\(\omega = 0\)</span>, and zero at <span class="arithmatex">\(\omega = 2\pi m/\tau\)</span> for every non-zero integer <span class="arithmatex">\(m\)</span>. The main lobe extends from <span class="arithmatex">\(-2\pi/\tau\)</span> to <span class="arithmatex">\(2\pi/\tau\)</span>, so its width is inversely proportional to the pulse width.</p>
+</div>
+<figure class="fig fig-diagram">
+<img src="img/rect-sinc.svg" alt="A rectangular pulse of width τ (left) and its Fourier transform, a sinc function with peak τ at ω = 0 and zeros at every non-zero multiple of 2π/τ (right)." loading="lazy" width="780" height="260">
+<figcaption><strong>Figure 6.2 The pulse and the sinc.</strong> A rectangular pulse of width τ (left) and its Fourier transform, a sinc function with peak τ at ω = 0 and zeros at every non-zero multiple of 2π/τ (right).</figcaption>
+</figure>
+<div class="admonition example">
+<p class="admonition-title">Example 6.3 The impulse</p>
+<p><span class="arithmatex">\(\delta(t) \leftrightarrow \int\delta(t)e^{-j\omega t}dt = 1\)</span>. An impulse contains every frequency in equal amount. This is why striking a system with a hammer (an approximate impulse) reveals its whole frequency response, and why a lightning flash causes crackles across the whole radio band.</p>
+</div>
+<p>Table 6.1 collects the pairs used most often. The entries with impulses in frequency are justified in Section 6.6.</p>
+<table>
+<thead>
+<tr>
+<th><span class="arithmatex">\(x(t)\)</span></th>
+<th><span class="arithmatex">\(X(j\omega)\)</span></th>
+<th>Condition</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="arithmatex">\(\delta(t)\)</span></td>
+<td><span class="arithmatex">\(1\)</span></td>
+<td></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(\delta(t - t_0)\)</span></td>
+<td><span class="arithmatex">\(e^{-j\omega t_0}\)</span></td>
+<td></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(1\)</span></td>
+<td><span class="arithmatex">\(2\pi\delta(\omega)\)</span></td>
+<td></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(e^{j\omega_0 t}\)</span></td>
+<td><span class="arithmatex">\(2\pi\delta(\omega - \omega_0)\)</span></td>
+<td></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(\cos\omega_0 t\)</span></td>
+<td><span class="arithmatex">\(\pi[\delta(\omega - \omega_0) + \delta(\omega + \omega_0)]\)</span></td>
+<td></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(\sin\omega_0 t\)</span></td>
+<td><span class="arithmatex">\(\dfrac{\pi}{j}[\delta(\omega - \omega_0) - \delta(\omega + \omega_0)]\)</span></td>
+<td></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(u(t)\)</span></td>
+<td><span class="arithmatex">\(\dfrac{1}{j\omega} + \pi\delta(\omega)\)</span></td>
+<td></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(\mathrm{sgn}(t)\)</span></td>
+<td><span class="arithmatex">\(\dfrac{2}{j\omega}\)</span></td>
+<td></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(e^{-at}u(t)\)</span></td>
+<td><span class="arithmatex">\(\dfrac{1}{a + j\omega}\)</span></td>
+<td><span class="arithmatex">\(a &gt; 0\)</span></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(t\,e^{-at}u(t)\)</span></td>
+<td><span class="arithmatex">\(\dfrac{1}{(a + j\omega)^2}\)</span></td>
+<td><span class="arithmatex">\(a &gt; 0\)</span></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(e^{-a\lvert t\rvert}\)</span></td>
+<td><span class="arithmatex">\(\dfrac{2a}{a^2 + \omega^2}\)</span></td>
+<td><span class="arithmatex">\(a &gt; 0\)</span></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(\mathrm{rect}(t/\tau)\)</span></td>
+<td><span class="arithmatex">\(\tau\,\mathrm{sinc}(\omega\tau/2\pi)\)</span></td>
+<td></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(\dfrac{\sin Wt}{\pi t}\)</span></td>
+<td><span class="arithmatex">\(1\)</span> for <span class="arithmatex">\(\lvert\omega\rvert &lt; W\)</span>, <span class="arithmatex">\(0\)</span> otherwise</td>
+<td></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(e^{-t^2/(2\sigma^2)}\)</span></td>
+<td><span class="arithmatex">\(\sigma\sqrt{2\pi}\,e^{-\sigma^2\omega^2/2}\)</span></td>
+<td><span class="arithmatex">\(\sigma &gt; 0\)</span></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(\sum_n \delta(t - nT)\)</span></td>
+<td><span class="arithmatex">\(\dfrac{2\pi}{T}\sum_k\delta\!\left(\omega - \dfrac{2\pi k}{T}\right)\)</span></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><em>Table 6.1. Common Fourier transform pairs.</em></p>
+<p>The Gaussian is special: its transform is another Gaussian. It is the signal with the smallest possible product of duration and bandwidth (Section 6.7). The last row, the <strong>impulse train</strong>, transforms into another impulse train; it is the mathematical heart of sampling (Chapter 9).</p>
+<h2 id="ft-properties">6.4 Properties of the Fourier transform<a class="headerlink" href="#ft-properties" title="Permanent link">&para;</a></h2>
+<p>The properties are the working tools of Fourier analysis. With a short table of pairs and the properties below, most transforms can be found without integrating. Let <span class="arithmatex">\(x \leftrightarrow X\)</span> and <span class="arithmatex">\(y \leftrightarrow Y\)</span>.</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Signal</th>
+<th>Transform</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Linearity</td>
+<td><span class="arithmatex">\(ax(t) + by(t)\)</span></td>
+<td><span class="arithmatex">\(aX(j\omega) + bY(j\omega)\)</span></td>
+</tr>
+<tr>
+<td>Time shift</td>
+<td><span class="arithmatex">\(x(t - t_0)\)</span></td>
+<td><span class="arithmatex">\(e^{-j\omega t_0}X(j\omega)\)</span></td>
+</tr>
+<tr>
+<td>Frequency shift</td>
+<td><span class="arithmatex">\(e^{j\omega_0 t}x(t)\)</span></td>
+<td><span class="arithmatex">\(X(j(\omega - \omega_0))\)</span></td>
+</tr>
+<tr>
+<td>Time scaling</td>
+<td><span class="arithmatex">\(x(at)\)</span></td>
+<td><span class="arithmatex">\(\dfrac{1}{\lvert a\rvert}X\!\left(\dfrac{j\omega}{a}\right)\)</span></td>
+</tr>
+<tr>
+<td>Time reversal</td>
+<td><span class="arithmatex">\(x(-t)\)</span></td>
+<td><span class="arithmatex">\(X(-j\omega)\)</span></td>
+</tr>
+<tr>
+<td>Conjugation</td>
+<td><span class="arithmatex">\(x^*(t)\)</span></td>
+<td><span class="arithmatex">\(X^*(-j\omega)\)</span></td>
+</tr>
+<tr>
+<td>Duality</td>
+<td><span class="arithmatex">\(X(jt)\)</span></td>
+<td><span class="arithmatex">\(2\pi\,x(-\omega)\)</span></td>
+</tr>
+<tr>
+<td>Differentiation in time</td>
+<td><span class="arithmatex">\(\dfrac{dx}{dt}\)</span></td>
+<td><span class="arithmatex">\(j\omega\,X(j\omega)\)</span></td>
+</tr>
+<tr>
+<td>Integration</td>
+<td><span class="arithmatex">\(\displaystyle\int_{-\infty}^{t}x(\tau)\,d\tau\)</span></td>
+<td><span class="arithmatex">\(\dfrac{X(j\omega)}{j\omega} + \pi X(0)\delta(\omega)\)</span></td>
+</tr>
+<tr>
+<td>Differentiation in frequency</td>
+<td><span class="arithmatex">\(t\,x(t)\)</span></td>
+<td><span class="arithmatex">\(j\dfrac{dX(j\omega)}{d\omega}\)</span></td>
+</tr>
+<tr>
+<td>Convolution</td>
+<td><span class="arithmatex">\(x(t) * y(t)\)</span></td>
+<td><span class="arithmatex">\(X(j\omega)\,Y(j\omega)\)</span></td>
+</tr>
+<tr>
+<td>Multiplication</td>
+<td><span class="arithmatex">\(x(t)\,y(t)\)</span></td>
+<td><span class="arithmatex">\(\dfrac{1}{2\pi}X(j\omega) * Y(j\omega)\)</span></td>
+</tr>
+<tr>
+<td>Real signal</td>
+<td><span class="arithmatex">\(x\)</span> real</td>
+<td><span class="arithmatex">\(X(-j\omega) = X^*(j\omega)\)</span></td>
+</tr>
+<tr>
+<td>Parseval</td>
+<td><span class="arithmatex">\(\displaystyle\int\lvert x(t)\rvert^2dt\)</span></td>
+<td><span class="arithmatex">\(\dfrac{1}{2\pi}\displaystyle\int\lvert X(j\omega)\rvert^2d\omega\)</span></td>
+</tr>
+</tbody>
+</table>
+<p><em>Table 6.2. Properties of the continuous-time Fourier transform.</em></p>
+<p>A few deserve comment.</p>
+<p><strong>Time shift.</strong> Delaying a signal does not change <span class="arithmatex">\(|X|\)</span>; it adds a phase <span class="arithmatex">\(-\omega t_0\)</span>, a straight line through the origin with slope <span class="arithmatex">\(-t_0\)</span>. A system that delays all frequencies equally therefore has <strong>linear phase</strong>, a property prized in audio and data transmission because it preserves the shape of waveforms.</p>
+<p><strong>Scaling.</strong> Compressing a signal in time (<span class="arithmatex">\(a &gt; 1\)</span>) stretches its spectrum in frequency and lowers it. Playing a recording at double speed raises every pitch by an octave. This is the first sign of the <strong>time-bandwidth trade-off</strong>: a signal cannot be both short and narrow-band.</p>
+<p><strong>Duality.</strong> The forward and inverse transforms differ only in the sign of the exponent and the factor <span class="arithmatex">\(2\pi\)</span>, so every pair has a dual. Since <span class="arithmatex">\(\mathrm{rect}(t/\tau) \leftrightarrow \tau\,\mathrm{sinc}(\omega\tau/2\pi)\)</span>, a sinc in time has a rectangular spectrum: that is the pair <span class="arithmatex">\(\frac{\sin Wt}{\pi t} \leftrightarrow\)</span> (1 for <span class="arithmatex">\(|\omega| &lt; W\)</span>) in Table 6.1. Since <span class="arithmatex">\(\delta(t) \leftrightarrow 1\)</span>, the constant <span class="arithmatex">\(1 \leftrightarrow 2\pi\delta(\omega)\)</span>.</p>
+<p><strong>Real signals.</strong> Conjugate symmetry <span class="arithmatex">\(X(-j\omega) = X^*(j\omega)\)</span> means that the magnitude spectrum of a real signal is even and the phase spectrum is odd. The negative frequencies carry no new information; they are the mirror images that make the sum real.</p>
+<div class="admonition example">
+<p class="admonition-title">Example 6.4 Using properties instead of integrals</p>
+<p>Find the transform of <span class="arithmatex">\(y(t) = e^{-2(t - 3)}u(t - 3)\)</span> and of <span class="arithmatex">\(z(t) = e^{-3|t|}\cos(10t)\)</span>.</p>
+<p>For <span class="arithmatex">\(y\)</span>: it is <span class="arithmatex">\(x(t - 3)\)</span> with <span class="arithmatex">\(x(t) = e^{-2t}u(t) \leftrightarrow \frac{1}{2 + j\omega}\)</span>. By the time-shift property, <span class="arithmatex">\(Y(j\omega) = \dfrac{e^{-j3\omega}}{2 + j\omega}\)</span>.</p>
+<p>For <span class="arithmatex">\(z\)</span>: write <span class="arithmatex">\(\cos 10t = \frac12(e^{j10t} + e^{-j10t})\)</span> and use <span class="arithmatex">\(e^{-3|t|} \leftrightarrow \frac{6}{9 + \omega^2}\)</span> with the frequency-shift property:</p>
+<div class="arithmatex">\[
+Z(j\omega) = \frac{3}{9 + (\omega - 10)^2} + \frac{3}{9 + (\omega + 10)^2}.
+\]</div>
+<p>The spectrum of <span class="arithmatex">\(e^{-3|t|}\)</span>, centred at zero, has been moved to <span class="arithmatex">\(\pm10\)</span> and halved.</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title">Example 6.5 Duality and the ideal low-pass filter</p>
+<p>The <strong>ideal low-pass filter</strong> passes all frequencies below <span class="arithmatex">\(W\)</span> unchanged and removes all others: <span class="arithmatex">\(H(j\omega) = 1\)</span> for <span class="arithmatex">\(|\omega| &lt; W\)</span> and <span class="arithmatex">\(0\)</span> otherwise. Its impulse response is</p>
+<div class="arithmatex">\[
+h(t) = \frac{1}{2\pi}\int_{-W}^{W}e^{j\omega t}\,d\omega = \frac{\sin Wt}{\pi t}.
+\]</div>
+<p>This <span class="arithmatex">\(h(t)\)</span> is non-zero for <span class="arithmatex">\(t &lt; 0\)</span>, so the ideal low-pass filter is <strong>not causal</strong>: it would have to respond before the input arrives. It is also not absolutely integrable (it decays only as <span class="arithmatex">\(1/t\)</span>), so it is not BIBO stable. Ideal filters are a reference point, not something that can be built. Chapter 12 designs practical filters that approximate them.</p>
+</div>
+<h2 id="convolution-property">6.5 The convolution property and the frequency response<a class="headerlink" href="#convolution-property" title="Permanent link">&para;</a></h2>
+<p>The most important property is that <strong>convolution in time becomes multiplication in frequency</strong>:</p>
+<div class="arithmatex">\[
+y(t) = x(t) * h(t) \quad\Longleftrightarrow\quad Y(j\omega) = X(j\omega)\,H(j\omega).
+\]</div>
+<p><em>Proof.</em> <span class="arithmatex">\(Y(j\omega) = \int\!\!\int x(\tau)h(t - \tau)\,d\tau\,e^{-j\omega t}dt\)</span>. Substitute <span class="arithmatex">\(t = \tau + \sigma\)</span> and separate: <span class="arithmatex">\(\int x(\tau)e^{-j\omega\tau}d\tau\int h(\sigma)e^{-j\omega\sigma}d\sigma = X(j\omega)H(j\omega)\)</span>.</p>
+<p>The transform of the impulse response, <span class="arithmatex">\(H(j\omega)\)</span>, is the <strong>frequency response</strong> of the system: it is exactly the eigenvalue of Section 4.8 for <span class="arithmatex">\(s = j\omega\)</span>. Writing <span class="arithmatex">\(H(j\omega) = |H(j\omega)|e^{j\angle H(j\omega)}\)</span>, the system multiplies the amplitude of each frequency component by the <strong>gain</strong> <span class="arithmatex">\(|H(j\omega)|\)</span> and shifts its phase by <span class="arithmatex">\(\angle H(j\omega)\)</span>. In terms of magnitudes and phases,</p>
+<div class="arithmatex">\[
+|Y(j\omega)| = |X(j\omega)|\,|H(j\omega)|, \qquad \angle Y(j\omega) = \angle X(j\omega) + \angle H(j\omega).
+\]</div>
+<p>This gives a second route to the output of an LTI system: transform the input, multiply by <span class="arithmatex">\(H\)</span>, and transform back. For systems described by differential equations, the route is especially simple. Transforming <span class="arithmatex">\(\sum a_k \frac{d^k y}{dt^k} = \sum b_k\frac{d^k x}{dt^k}\)</span> term by term with the differentiation property gives</p>
+<div class="arithmatex">\[
+H(j\omega) = \frac{Y(j\omega)}{X(j\omega)} = \frac{\sum_k b_k(j\omega)^k}{\sum_k a_k(j\omega)^k},
+\]</div>
+<p>a ratio of polynomials in <span class="arithmatex">\(j\omega\)</span> that can be written down by inspection.</p>
+<div class="admonition example">
+<p class="admonition-title">Example 6.6 Response of a first-order system</p>
+<p>The system <span class="arithmatex">\(\frac{dy}{dt} + 2y = x(t)\)</span> is driven by <span class="arithmatex">\(x(t) = e^{-t}u(t)\)</span>. Find <span class="arithmatex">\(y(t)\)</span>, assuming initial rest.</p>
+<p>By inspection, <span class="arithmatex">\(H(j\omega) = \dfrac{1}{j\omega + 2}\)</span>, and <span class="arithmatex">\(X(j\omega) = \dfrac{1}{j\omega + 1}\)</span>. So</p>
+<div class="arithmatex">\[
+Y(j\omega) = \frac{1}{(j\omega + 1)(j\omega + 2)} = \frac{1}{j\omega + 1} - \frac{1}{j\omega + 2},
+\]</div>
+<p>by partial fractions (check: the right side is <span class="arithmatex">\(\frac{(j\omega + 2) - (j\omega + 1)}{(j\omega+1)(j\omega+2)}\)</span>). Each term is in the table, so <span class="arithmatex">\(y(t) = (e^{-t} - e^{-2t})u(t)\)</span>. Compare Exercise 4.6, where a similar result came from a convolution integral; here only algebra was needed.</p>
+</div>
+<h2 id="periodic-ft">6.6 Periodic signals and the modulation property<a class="headerlink" href="#periodic-ft" title="Permanent link">&para;</a></h2>
+<h3 id="fourier-transforms-of-periodic-signals">Fourier transforms of periodic signals<a class="headerlink" href="#fourier-transforms-of-periodic-signals" title="Permanent link">&para;</a></h3>
+<p>Since <span class="arithmatex">\(1 \leftrightarrow 2\pi\delta(\omega)\)</span>, the frequency-shift property gives <span class="arithmatex">\(e^{j\omega_0 t} \leftrightarrow 2\pi\delta(\omega - \omega_0)\)</span>: a single complex exponential has all its "spectral mass" at one frequency. A periodic signal is a sum of such exponentials, so</p>
+<div class="arithmatex">\[
+x(t) = \sum_k a_k e^{jk\omega_0 t} \quad\Longleftrightarrow\quad X(j\omega) = \sum_k 2\pi a_k\,\delta(\omega - k\omega_0).
+\]</div>
+<p>The transform of a periodic signal is a train of impulses at the harmonic frequencies, with areas <span class="arithmatex">\(2\pi a_k\)</span>. In this way the Fourier transform includes the Fourier series as a special case, and periodic and aperiodic signals can be handled with one tool. The cosine and sine entries of Table 6.1 are the cases with only <span class="arithmatex">\(a_{\pm1}\)</span> non-zero.</p>
+<h3 id="modulation">Modulation<a class="headerlink" href="#modulation" title="Permanent link">&para;</a></h3>
+<p>The multiplication property says that multiplying two signals in time convolves their spectra (divided by <span class="arithmatex">\(2\pi\)</span>). The most important case is multiplication by a sinusoid, called <strong>modulation</strong>. With <span class="arithmatex">\(\cos\omega_c t = \frac12(e^{j\omega_c t} + e^{-j\omega_c t})\)</span> and the frequency-shift property,</p>
+<div class="arithmatex">\[
+x(t)\cos\omega_c t \quad\Longleftrightarrow\quad \frac12 X(j(\omega - \omega_c)) + \frac12 X(j(\omega + \omega_c)).
+\]</div>
+<p>The spectrum of <span class="arithmatex">\(x\)</span> is copied to <span class="arithmatex">\(\pm\omega_c\)</span> at half height (Figure 6.3). Radio works this way. A speech signal occupies frequencies up to a few kilohertz, which cannot be radiated efficiently and would collide with every other speech signal. Multiplying by a carrier at, say, 1 MHz moves the speech spectrum up to 1 MHz, where an antenna of reasonable size radiates it, and different stations can be placed at different carriers. Chapter 14 returns to this.</p>
+<figure class="fig fig-diagram">
+<img src="img/modulation-spectrum.svg" alt="Left: the spectrum of a message, a triangle extending from −W to W. Right: the spectrum of the message multiplied by cos ω_c t, two half-height copies of the triangle centred at −ω_c and ω_c." loading="lazy" width="780" height="260">
+<figcaption><strong>Figure 6.3 The modulation property.</strong> Left: the spectrum of a message, a triangle extending from −W to W. Right: the spectrum of the message multiplied by cos ω_c t, two half-height copies of the triangle centred at −ω_c and ω_c.</figcaption>
+</figure>
+<div class="admonition example">
+<p class="admonition-title">Example 6.7 Recovering a modulated message</p>
+<p>A receiver multiplies the modulated signal <span class="arithmatex">\(y(t) = x(t)\cos\omega_c t\)</span> by <span class="arithmatex">\(\cos\omega_c t\)</span> again. What does it obtain?</p>
+<p><span class="arithmatex">\(y(t)\cos\omega_c t = x(t)\cos^2\omega_c t = \frac12 x(t) + \frac12 x(t)\cos 2\omega_c t\)</span>. The first term is the message (at half amplitude); the second is the message moved to <span class="arithmatex">\(\pm 2\omega_c\)</span>. If <span class="arithmatex">\(\omega_c &gt; W\)</span> the two do not overlap in frequency, and a low-pass filter with cut-off between <span class="arithmatex">\(W\)</span> and <span class="arithmatex">\(2\omega_c - W\)</span> keeps the message and removes the rest. This is <strong>synchronous demodulation</strong>.</p>
+</div>
+<h2 id="energy-bandwidth">6.7 Energy, bandwidth and the time-bandwidth trade-off<a class="headerlink" href="#energy-bandwidth" title="Permanent link">&para;</a></h2>
+<p><strong>Parseval's relation</strong> for the transform,</p>
+<div class="arithmatex">\[
+E_x = \int_{-\infty}^{\infty}|x(t)|^2dt = \frac{1}{2\pi}\int_{-\infty}^{\infty}|X(j\omega)|^2d\omega ,
+\]</div>
+<p>says that energy can be computed in either domain. The function <span class="arithmatex">\(|X(j\omega)|^2\)</span> is the <strong>energy spectral density</strong>: <span class="arithmatex">\(\frac{1}{2\pi}|X(j\omega)|^2d\omega\)</span> is the energy in the band <span class="arithmatex">\(d\omega\)</span>. For <span class="arithmatex">\(x(t) = e^{-2t}u(t)\)</span>, the energy is <span class="arithmatex">\(\frac14\)</span> by direct integration (Example 1.5), and <span class="arithmatex">\(\frac{1}{2\pi}\int\frac{d\omega}{4 + \omega^2} = \frac{1}{2\pi}\cdot\frac{\pi}{2} = \frac14\)</span> in frequency.</p>
+<p>The <strong>bandwidth</strong> of a signal is the width of the band of frequencies that contains most of its energy. There are several definitions (the half-power or 3 dB bandwidth, the width of the main lobe, the band containing 99% of the energy), and which is used depends on the application. Whatever the definition, the scaling property guarantees that <strong>duration and bandwidth are inversely proportional</strong>: compress a signal by a factor <span class="arithmatex">\(a\)</span> and its bandwidth grows by <span class="arithmatex">\(a\)</span>. The product of duration and bandwidth cannot be made arbitrarily small. With duration and bandwidth measured as root-mean-square widths of <span class="arithmatex">\(|x(t)|^2\)</span> and <span class="arithmatex">\(|X(j\omega)|^2\)</span>, the product is at least <span class="arithmatex">\(\frac12\)</span>, with equality only for the Gaussian; this is the signal-processing form of the uncertainty principle.</p>
+<p>The trade-off has practical consequences everywhere. A radar that must resolve two targets close together needs short pulses, and therefore wide bandwidth. A data link that sends more symbols per second needs shorter symbols, and therefore more bandwidth. A musician who wants to hear the exact pitch of a note needs to listen for long enough.</p>
+<h2 id="68-computing-transforms-numerically">6.8 Computing transforms numerically<a class="headerlink" href="#68-computing-transforms-numerically" title="Permanent link">&para;</a></h2>
+<p>The analysis integral can be approximated numerically for any signal that decays fast enough. The program below does this with the trapezoidal rule for two signals and compares the results with the formulas of Examples 6.1 and 6.2, then checks Parseval's relation. (<code>np.trapezoid</code> is the NumPy 2 name of the trapezoidal-rule function.)</p>
+<div class="language-python highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">ctft</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">w</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Approximate X(jw) = integral x(t) e^{-jwt} dt by the trapezoidal rule."""</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">trapezoid</span><span class="p">(</span><span class="n">x</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">wk</span> <span class="o">*</span> <span class="n">t</span><span class="p">),</span> <span class="n">t</span><span class="p">)</span> <span class="k">for</span> <span class="n">wk</span> <span class="ow">in</span> <span class="n">w</span><span class="p">])</span>
+
+<span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">400_001</span><span class="p">)</span>
+<span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">])</span>
+
+<span class="c1"># x(t) = e^{-2t} u(t)  &lt;-&gt;  1 / (2 + jw)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">t</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span> <span class="o">*</span> <span class="n">t</span><span class="p">),</span> <span class="mf">0.0</span><span class="p">)</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">ctft</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">wk</span><span class="p">,</span> <span class="n">Xk</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+    <span class="n">exact</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">wk</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"w = </span><span class="si">{</span><span class="n">wk</span><span class="si">:</span><span class="s2">3.0f</span><span class="si">}</span><span class="s2">: |X| = </span><span class="si">{</span><span class="nb">abs</span><span class="p">(</span><span class="n">Xk</span><span class="p">)</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> (exact </span><span class="si">{</span><span class="nb">abs</span><span class="p">(</span><span class="n">exact</span><span class="p">)</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">), "</span>
+          <span class="sa">f</span><span class="s2">"angle = </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">Xk</span><span class="p">))</span><span class="si">:</span><span class="s2">7.2f</span><span class="si">}</span><span class="s2"> deg (exact </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">exact</span><span class="p">))</span><span class="si">:</span><span class="s2">7.2f</span><span class="si">}</span><span class="s2">)"</span><span class="p">)</span>
+
+<span class="c1"># rect pulse of width 1  &lt;-&gt;  sin(w/2) / (w/2) = sinc(w / 2pi)</span>
+<span class="n">p</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mf">0.5</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+<span class="n">P</span> <span class="o">=</span> <span class="n">ctft</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">]))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"rect at w = pi, 2pi, 3pi:"</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">P</span><span class="o">.</span><span class="n">real</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="s2">" exact:"</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sinc</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">])),</span> <span class="mi">4</span><span class="p">))</span>
+
+<span class="c1"># Parseval for e^{-2t}u(t): energy 1/4 in time, (1/2pi) * integral |X|^2 dw in frequency</span>
+<span class="n">wf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">2000</span><span class="p">,</span> <span class="mi">2000</span><span class="p">,</span> <span class="mi">2_000_001</span><span class="p">)</span>
+<span class="n">E_freq</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">trapezoid</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">4</span> <span class="o">+</span> <span class="n">wf</span> <span class="o">**</span> <span class="mi">2</span><span class="p">),</span> <span class="n">wf</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"energy: time </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">trapezoid</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">**</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">)</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">, frequency </span><span class="si">{</span><span class="n">E_freq</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>w =   0: |X| = 0.5001 (exact 0.5000), angle =    0.00 deg (exact    0.00)
+w =   1: |X| = 0.4473 (exact 0.4472), angle =  -26.56 deg (exact  -26.57)
+w =   2: |X| = 0.3536 (exact 0.3536), angle =  -44.99 deg (exact  -45.00)
+w =   5: |X| = 0.1857 (exact 0.1857), angle =  -68.18 deg (exact  -68.20)
+rect at w = pi, 2pi, 3pi: [ 6.366e-01 -1.000e-04 -2.122e-01]  exact: [ 0.6366  0.     -0.2122]
+energy: time 0.2501, frequency 0.2498
+</code></pre></div>
+<p>The small errors (in the fourth decimal place) come from the jumps of the signals: the trapezoidal rule treats a jump as a steep ramp one step wide. In the frequency-domain energy, the error comes from cutting the integral off at <span class="arithmatex">\(|\omega| = 2000\)</span>; the missing tail is about <span class="arithmatex">\(\frac{1}{2\pi}\cdot\frac{2}{2000} \approx 0.00016\)</span>. For signals given only as samples, Chapter 8 shows how the FFT computes many values of the spectrum at once.</p>
+<h2 id="69-summary">6.9 Summary<a class="headerlink" href="#69-summary" title="Permanent link">&para;</a></h2>
+<div class="admonition abstract">
+<p class="admonition-title">Summary</p>
+<ul>
+<li>The Fourier transform <span class="arithmatex">\(X(j\omega) = \int x(t)e^{-j\omega t}dt\)</span> and its inverse <span class="arithmatex">\(x(t) = \frac{1}{2\pi}\int X(j\omega)e^{j\omega t}d\omega\)</span> describe an aperiodic signal as a continuous superposition of exponentials. It is the limit of the Fourier series as the period grows.</li>
+<li>Key pairs: <span class="arithmatex">\(e^{-at}u(t) \leftrightarrow 1/(a + j\omega)\)</span>; <span class="arithmatex">\(\mathrm{rect}(t/\tau) \leftrightarrow \tau\,\mathrm{sinc}(\omega\tau/2\pi)\)</span>; <span class="arithmatex">\(\delta(t) \leftrightarrow 1\)</span>; <span class="arithmatex">\(1 \leftrightarrow 2\pi\delta(\omega)\)</span>; <span class="arithmatex">\(\cos\omega_0 t \leftrightarrow \pi[\delta(\omega - \omega_0) + \delta(\omega + \omega_0)]\)</span>.</li>
+<li>A delay adds linear phase; compression widens the spectrum; differentiation multiplies by <span class="arithmatex">\(j\omega\)</span>; duality swaps the roles of time and frequency.</li>
+<li><strong>Convolution in time is multiplication in frequency:</strong> <span class="arithmatex">\(Y = XH\)</span>. For a differential equation, <span class="arithmatex">\(H(j\omega)\)</span> is a ratio of polynomials in <span class="arithmatex">\(j\omega\)</span> written down by inspection.</li>
+<li>Periodic signals have impulsive spectra <span class="arithmatex">\(\sum 2\pi a_k\delta(\omega - k\omega_0)\)</span>. Multiplying by <span class="arithmatex">\(\cos\omega_c t\)</span> shifts the spectrum to <span class="arithmatex">\(\pm\omega_c\)</span>.</li>
+<li>Parseval: energy is the same in both domains. Duration and bandwidth are inversely proportional.</li>
+</ul>
+</div>
+<h2 id="610-exercises">6.10 Exercises<a class="headerlink" href="#610-exercises" title="Permanent link">&para;</a></h2>
+<div class="admonition example">
+<p class="admonition-title">Exercise 6.1</p>
+<p>Find the Fourier transform of <span class="arithmatex">\(x(t) = e^{-3t}u(t) + e^{3t}u(-t)\)</span>.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>This is <span class="arithmatex">\(e^{-3|t|}\)</span>, so <span class="arithmatex">\(X(j\omega) = \dfrac{6}{9 + \omega^2}\)</span>. (Or add <span class="arithmatex">\(\frac{1}{3 + j\omega}\)</span> and <span class="arithmatex">\(\frac{1}{3 - j\omega}\)</span>, using time reversal for the second.)</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 6.2</p>
+<p>Find the transform of a rectangular pulse of height 2 lasting from <span class="arithmatex">\(t = 0\)</span> to <span class="arithmatex">\(t = 4\)</span>.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>It is <span class="arithmatex">\(2\,\mathrm{rect}((t - 2)/4)\)</span>. So <span class="arithmatex">\(X(j\omega) = 2\cdot4\,\mathrm{sinc}(2\omega/\pi)\,e^{-j2\omega} = \dfrac{4\sin 2\omega}{\omega}e^{-j2\omega}\)</span>.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 6.3</p>
+<p>Use differentiation in frequency to find the transform of <span class="arithmatex">\(t e^{-at}u(t)\)</span>.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p><span class="arithmatex">\(t\,x(t) \leftrightarrow j\frac{d}{d\omega}\frac{1}{a + j\omega} = j\cdot\frac{-j}{(a + j\omega)^2} = \frac{1}{(a + j\omega)^2}\)</span>.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 6.4</p>
+<p>A signal has <span class="arithmatex">\(X(j\omega) = 1\)</span> for <span class="arithmatex">\(|\omega| &lt; 5\)</span> and 0 otherwise. Find <span class="arithmatex">\(x(t)\)</span> and its value at <span class="arithmatex">\(t = 0\)</span>.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p><span class="arithmatex">\(x(t) = \dfrac{\sin 5t}{\pi t}\)</span>, and <span class="arithmatex">\(x(0) = 5/\pi \approx 1.59\)</span> (the area under <span class="arithmatex">\(X\)</span> divided by <span class="arithmatex">\(2\pi\)</span>).</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 6.5</p>
+<p>Find the frequency response of the system <span class="arithmatex">\(\frac{d^2y}{dt^2} + 3\frac{dy}{dt} + 2y = \frac{dx}{dt} + x\)</span>, and simplify it.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p><span class="arithmatex">\(H(j\omega) = \dfrac{j\omega + 1}{(j\omega)^2 + 3j\omega + 2} = \dfrac{j\omega + 1}{(j\omega + 1)(j\omega + 2)} = \dfrac{1}{j\omega + 2}\)</span>.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 6.6</p>
+<p>Find the output of the system with <span class="arithmatex">\(H(j\omega) = \frac{1}{2 + j\omega}\)</span> for the input <span class="arithmatex">\(x(t) = \cos 2t\)</span>.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p><span class="arithmatex">\(H(j2) = \frac{1}{2 + 2j} = \frac{1}{2\sqrt2}e^{-j\pi/4}\)</span>. So <span class="arithmatex">\(y(t) = \frac{1}{2\sqrt2}\cos(2t - \pi/4) \approx 0.354\cos(2t - \pi/4)\)</span>.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 6.7</p>
+<p>Find the energy of <span class="arithmatex">\(x(t) = \dfrac{\sin 3t}{\pi t}\)</span> using Parseval's relation.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p><span class="arithmatex">\(X = 1\)</span> for <span class="arithmatex">\(|\omega| &lt; 3\)</span>, so <span class="arithmatex">\(E = \frac{1}{2\pi}\int_{-3}^{3}1\,d\omega = \frac{6}{2\pi} = \frac{3}{\pi}\)</span>.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 6.8</p>
+<p>The signal <span class="arithmatex">\(x(t)\)</span> has bandwidth 4 kHz. What is the bandwidth of <span class="arithmatex">\(x(3t)\)</span>, and of <span class="arithmatex">\(x(t/2)\)</span>?</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>12 kHz and 2 kHz. Compressing by 3 stretches the spectrum by 3; expanding by 2 compresses it by 2.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 6.9</p>
+<p>Find the Fourier transform of the periodic signal <span class="arithmatex">\(x(t) = 1 + \cos(4t)\)</span>.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p><span class="arithmatex">\(X(j\omega) = 2\pi\delta(\omega) + \pi\delta(\omega - 4) + \pi\delta(\omega + 4)\)</span>.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 6.10</p>
+<p>A message with spectrum confined to <span class="arithmatex">\(|\omega| &lt; 2\pi\cdot 5000\)</span> rad/s is multiplied by <span class="arithmatex">\(\cos(2\pi\cdot 10^5 t)\)</span>. Between which frequencies (in kHz) does the spectrum of the product lie (for positive frequencies)?</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>From 95 kHz to 105 kHz: the message band, 5 kHz wide on each side, is centred on the 100 kHz carrier.</p>
+</details>
+<h2 id="611-quiz">6.11 Quiz<a class="headerlink" href="#611-quiz" title="Permanent link">&para;</a></h2>
+<div class="pk-quiz" data-quiz="5cd2bb84dfc4">
+<p class="pk-quiz-title">Check your understanding of Chapter 6</p>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;1&quot;,&quot;e^(−j2ω)&quot;,&quot;e^(j2ω)&quot;,&quot;2πδ(ω − 2)&quot;],&quot;answer&quot;:&quot;e^(−j2ω)&quot;}">
+<p class="admonition-title">Exercise 1</p>
+<p class="pk-q-prompt">The Fourier transform of δ(t − 2) is</p>
+<ol class="pk-q-opts" type="A"><li>1</li><li>e^(−j2ω)</li><li>e^(j2ω)</li><li>2πδ(ω − 2)</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>e^(−j2ω)</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;multiplication&quot;,&quot;convolution&quot;,&quot;differentiation&quot;,&quot;addition&quot;],&quot;answer&quot;:&quot;multiplication&quot;}">
+<p class="admonition-title">Exercise 2</p>
+<p class="pk-q-prompt">Convolution in time corresponds in frequency to</p>
+<ol class="pk-q-opts" type="A"><li>multiplication</li><li>convolution</li><li>differentiation</li><li>addition</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>multiplication</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;text&quot;,&quot;answer&quot;:[&quot;3&quot;]}">
+<p class="admonition-title">Exercise 3</p>
+<p class="pk-q-prompt">What is the value of the transform of a rectangular pulse of height 1 and width 3 at ω = 0?</p>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>3</strong></p>
+<p class="pk-q-why">X(0) is the area under the signal.</p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;halves its bandwidth&quot;,&quot;doubles its bandwidth&quot;,&quot;leaves its bandwidth unchanged&quot;,&quot;shifts its spectrum by 2&quot;],&quot;answer&quot;:&quot;doubles its bandwidth&quot;}">
+<p class="admonition-title">Exercise 4</p>
+<p class="pk-q-prompt">Compressing a signal in time by a factor 2</p>
+<ol class="pk-q-opts" type="A"><li>halves its bandwidth</li><li>doubles its bandwidth</li><li>leaves its bandwidth unchanged</li><li>shifts its spectrum by 2</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>doubles its bandwidth</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;causal and stable&quot;,&quot;non-causal&quot;,&quot;a pure delay&quot;,&quot;an integrator&quot;],&quot;answer&quot;:&quot;non-causal&quot;}">
+<p class="admonition-title">Exercise 5</p>
+<p class="pk-q-prompt">The ideal low-pass filter is</p>
+<ol class="pk-q-opts" type="A"><li>causal and stable</li><li>non-causal</li><li>a pure delay</li><li>an integrator</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>non-causal</strong></p>
+<p class="pk-q-why">Its impulse response sin(Wt)/(πt) is non-zero for t &lt; 0.</p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;blanks&quot;,&quot;answer&quot;:[[&quot;even&quot;]]}">
+<p class="admonition-title">Exercise 6</p>
+<p class="pk-q-prompt">For a real signal, the magnitude spectrum is <span class="pk-blank" data-i="0">___</span> and the phase spectrum is odd.</p>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>even</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;match&quot;,&quot;pairs&quot;:[[&quot;e^(−at)u(t)&quot;,&quot;1/(a + jω)&quot;],[&quot;1&quot;,&quot;2πδ(ω)&quot;],[&quot;δ(t)&quot;,&quot;1&quot;],[&quot;sgn(t)&quot;,&quot;2/(jω)&quot;]]}">
+<p class="admonition-title">Exercise 7</p>
+<p class="pk-q-prompt">Match each signal with its transform.</p>
+<table class="pk-q-match"><thead><tr><th>A</th><th>B</th></tr></thead><tbody><tr><td>e^(−at)u(t)</td><td>1</td></tr><tr><td>1</td><td>2/(jω)</td></tr><tr><td>δ(t)</td><td>1/(a + jω)</td></tr><tr><td>sgn(t)</td><td>2πδ(ω)</td></tr></tbody></table>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>e^(−at)u(t)</strong> — 1/(a + jω); <strong>1</strong> — 2πδ(ω); <strong>δ(t)</strong> — 1; <strong>sgn(t)</strong> — 2/(jω)</p>
+</details>
+</div>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button type="button" class="md-top md-icon" data-md-component="top" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+Back to top
+</button>
+</main>
+<footer class="md-footer">
+<nav class="md-footer__inner md-grid" aria-label="Footer" >
+<a href="fourier-series.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: 5. Fourier Series">
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</div>
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Previous
+</span>
+<div class="md-ellipsis">
+5. Fourier Series
+</div>
+</div>
+</a>
+<a href="the-discrete-time-fourier-transform.html" class="md-footer__link md-footer__link--next" aria-label="Next: 7. The Discrete-Time Fourier Transform">
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Next
+</span>
+<div class="md-ellipsis">
+7. The Discrete-Time Fourier Transform
+</div>
+</div>
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+</div>
+</a>
+</nav>
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+The Open Book Project &middot;
+<a href="../../about.html">About this library</a> &middot;
+<a href="../../publish.html">Publish your book</a> &middot;
+© The authors of the books
+</div>
+Made with
+<a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+Material for MkDocs
+</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "navigation.prune", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "toc.follow", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+<script src="../../assets/mathjax.js"></script>
+<script src="../../assets/viz.js"></script>
+<script src="../../assets/remote.js"></script>
+<script src="../../assets/scans.js"></script>
+<script src="../../assets/reader.js"></script>
+<script src="../../assets/app.js"></script>
+<script src="../../assets/slides.js"></script>
+<script src="../../assets/speak.js"></script>
+<script src="../../assets/quiz.js"></script>
+<script>
+    /* offline reading: the service worker at the site root (its scope is the whole site) */
+    if ("serviceWorker" in navigator && window.isSecureContext) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register(new URL("../../sw.js", location.href).href).catch(function () {});
+      });
+    }
+  </script>
+</body>
+</html>

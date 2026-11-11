@@ -1,0 +1,1219 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="description" content="The Open Book Project: books on computer science, quantum computing, cyber security, science, the social sciences, university courses and languages, read page by page like an e-book, online or offline.">
+<meta name="author" content="The Open Book Project">
+<link rel="canonical" href="https://open-book-project.github.io/engineering/signals_systems/frequency-response-and-filters.html">
+<link rel="prev" href="the-z-transform.html">
+<link rel="next" href="state-space-models.html">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap"></noscript>
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Open Book">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="application-name" content="Open Book"><script src="../../assets/library-data.js"></script><script>
+    (function () {
+      var X = window.XMLHttpRequest, open, gate = new Promise(function (r) { open = r; });
+      if (!X) return;
+      var open0 = X.prototype.open, send0 = X.prototype.send;
+      X.prototype.open = function (method, url) {
+        this.__pkIndex = /\/search\/search_index\.json(\?|#|$)/.test(String(url));
+        return open0.apply(this, arguments);
+      };
+      X.prototype.send = function () {
+        if (!this.__pkIndex) return send0.apply(this, arguments);
+        var xhr = this, args = arguments;
+        gate.then(function () { send0.apply(xhr, args); });
+      };
+      function wake() { open(); }
+      document.addEventListener("focusin", function (e) { if (e.target && e.target.closest && e.target.closest(".md-search")) wake(); });
+      document.addEventListener("click", function (e) { if (e.target && e.target.closest && e.target.closest('label[for="__search"], .md-search')) wake(); }, true);
+      document.addEventListener("keydown", function (e) {
+        var k = e.key;
+        if ((k === "/" || k === "s" || k === "f" || k === "S" || k === "F") && !(e.target && e.target.closest && e.target.closest("input, textarea, [contenteditable]"))) wake();
+      }, true);
+      if (/[?&]q=/.test(location.search)) wake();
+    })();
+  </script><script>
+    try {
+      if ((window.matchMedia && (matchMedia("(display-mode: standalone)").matches || matchMedia("(display-mode: fullscreen)").matches)) || navigator.standalone === true) {
+        document.documentElement.className += " bjp-standalone";
+      }
+    } catch (e) { /* not an installed app */ }
+    /* the books of a subject or of the whole library as covers or as a list (assets/app.js): the reader's choice */
+    try {
+      var bv = localStorage.getItem("bjp.view");
+      if (bv === "list" || (bv !== "grid" && /\/books\.html$/.test(location.pathname))) document.documentElement.className += " bjp-view-list";
+    } catch (e) { /* no storage: covers */ }
+  </script>
+<script>
+    /* a book opened from its cover on the shelf: the page stays blank, in the cover's colour, until the reader is up */
+    try {
+      var cv = sessionStorage.getItem("bjp.reader.cover");
+      if (cv && sessionStorage.getItem("bjp.reader.open") === "1") {
+        var c = JSON.parse(cv), de = document.documentElement;
+        de.className += " bjp-booting";
+        if (c && /^#[0-9a-f]{3,8}$/i.test(c.bg || "")) de.style.background = c.bg;
+        setTimeout(function () { de.classList.remove("bjp-booting"); de.style.background = ""; }, 3000);
+      }
+    } catch (e) { /* no session storage: the page simply opens as usual */ }
+  </script>
+<title>12. Frequency Response and Filters - The Open Book Project</title>
+<link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+<link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+<link rel="stylesheet" href="../../assets/extra.css">
+<link rel="stylesheet" href="../../assets/reader.css">
+<link rel="stylesheet" href="../../assets/viz.css">
+<link rel="stylesheet" href="../../assets/app.css">
+<link rel="stylesheet" href="../../assets/theme.css">
+<link rel="stylesheet" href="../../assets/slides.css">
+<link rel="stylesheet" href="../../assets/remote.css">
+<link rel="stylesheet" href="../../assets/scans.css">
+<link rel="stylesheet" href="../../assets/speak.css">
+<link rel="stylesheet" href="../../assets/quiz.css">
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+<input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+<input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a href="#frequency-response" class="md-skip">
+Skip to content
+</a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav class="md-header__inner md-grid" aria-label="Header">
+<a href="../../index.html" title="The Open Book Project" class="md-header__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+The Open Book Project
+</span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+12. Frequency Response and Filters
+</span>
+</div>
+</div>
+</div><a href="../../index.html" class="bjp-libbtn" aria-label="Library: all books" title="Library: all books">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V5h4v15M8 20V9h4v11M14 20L12.6 6l3.8-.8 3 14.2M3 20h18"/></svg><span>Library</span>
+</a>
+<a href="../../subjects/index.html" class="pk-catbtn" aria-haspopup="true" aria-expanded="false" title="Browse the books by category">
+<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><circle cx="17" cy="7" r="3.6"/><path d="M7 13.4l3.9 6.8H3.1z"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg><span>Categories</span>
+</a>
+<form class="md-header__option" data-md-component="palette">
+<input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+<label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+</label>
+<input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+<label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+<label class="md-search__icon md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</label>
+<nav class="md-search__options" aria-label="Search">
+<button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+Initializing search
+</div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--primary bjp-nav bjp-nav--book" aria-label="Navigation" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a href="../../index.html" title="The Open Book Project" class="md-nav__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+The Open Book Project
+</label>
+<ul class="md-nav__list" data-md-scrollfix>
+<li class="md-nav__item bjp-nav-all">
+<a href="../../index.html" class="md-nav__link" aria-label="All books: back to the library">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+<span class="md-ellipsis">All books</span>
+</a>
+</li>
+<li class="md-nav__item bjp-nav-book" role="presentation"><span class="bjp-nav-head">Signals and Systems</span></li>
+<li class="md-nav__item">
+<a href="index.html" class="md-nav__link">
+<span class="md-ellipsis">
+Overview and preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="preface.html" class="md-nav__link">
+<span class="md-ellipsis">
+Preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="signals-and-their-classification.html" class="md-nav__link">
+<span class="md-ellipsis">
+1. Signals and Their Classification
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="elementary-signals-and-operations.html" class="md-nav__link">
+<span class="md-ellipsis">
+2. Elementary Signals and Operations on Signals
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="systems-and-their-properties.html" class="md-nav__link">
+<span class="md-ellipsis">
+3. Systems and Their Properties
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="lti-systems-and-convolution.html" class="md-nav__link">
+<span class="md-ellipsis">
+4. LTI Systems and Convolution
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="fourier-series.html" class="md-nav__link">
+<span class="md-ellipsis">
+5. Fourier Series
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="the-continuous-time-fourier-transform.html" class="md-nav__link">
+<span class="md-ellipsis">
+6. The Continuous-Time Fourier Transform
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="the-discrete-time-fourier-transform.html" class="md-nav__link">
+<span class="md-ellipsis">
+7. The Discrete-Time Fourier Transform
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="the-dft-and-the-fft.html" class="md-nav__link">
+<span class="md-ellipsis">
+8. The DFT and the FFT
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="sampling-and-aliasing.html" class="md-nav__link">
+<span class="md-ellipsis">
+9. Sampling and Aliasing
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="the-laplace-transform.html" class="md-nav__link">
+<span class="md-ellipsis">
+10. The Laplace Transform
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="the-z-transform.html" class="md-nav__link">
+<span class="md-ellipsis">
+11. The z-Transform
+</span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+12. Frequency Response and Filters
+</span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a href="frequency-response-and-filters.html" class="md-nav__link md-nav__link--active">
+<span class="md-ellipsis">
+12. Frequency Response and Filters
+</span>
+</a>
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#frequency-response" class="md-nav__link">
+<span class="md-ellipsis">
+12.1 What the frequency response tells us
+</span>
+</a>
+<nav class="md-nav" aria-label="12.1 What the frequency response tells us">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#decibels" class="md-nav__link">
+<span class="md-ellipsis">
+Decibels
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#phase-delay-and-distortion" class="md-nav__link">
+<span class="md-ellipsis">
+Phase, delay and distortion
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#bode" class="md-nav__link">
+<span class="md-ellipsis">
+12.2 Bode plots
+</span>
+</a>
+<nav class="md-nav" aria-label="12.2 Bode plots">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#a-first-order-low-pass-factor" class="md-nav__link">
+<span class="md-ellipsis">
+A first-order low-pass factor
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#second-order-factors" class="md-nav__link">
+<span class="md-ellipsis">
+Second-order factors
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#specifications" class="md-nav__link">
+<span class="md-ellipsis">
+12.3 Filter types and specifications
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#butterworth" class="md-nav__link">
+<span class="md-ellipsis">
+12.4 Analog Butterworth filters
+</span>
+</a>
+<nav class="md-nav" aria-label="12.4 Analog Butterworth filters">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#choosing-the-order" class="md-nav__link">
+<span class="md-ellipsis">
+Choosing the order
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#iir" class="md-nav__link">
+<span class="md-ellipsis">
+12.5 Digital IIR filters
+</span>
+</a>
+<nav class="md-nav" aria-label="12.5 Digital IIR filters">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#the-bilinear-transform" class="md-nav__link">
+<span class="md-ellipsis">
+The bilinear transform
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#placing-poles-and-zeros-directly" class="md-nav__link">
+<span class="md-ellipsis">
+Placing poles and zeros directly
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#fir" class="md-nav__link">
+<span class="md-ellipsis">
+12.6 Digital FIR filters and the window method
+</span>
+</a>
+<nav class="md-nav" aria-label="12.6 Digital FIR filters and the window method">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#the-window-method" class="md-nav__link">
+<span class="md-ellipsis">
+The window method
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#fir-or-iir" class="md-nav__link">
+<span class="md-ellipsis">
+12.7 FIR or IIR?
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#128-designing-filters-in-numpy" class="md-nav__link">
+<span class="md-ellipsis">
+12.8 Designing filters in NumPy
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#129-summary" class="md-nav__link">
+<span class="md-ellipsis">
+12.9 Summary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1210-exercises" class="md-nav__link">
+<span class="md-ellipsis">
+12.10 Exercises
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1211-quiz" class="md-nav__link">
+<span class="md-ellipsis">
+12.11 Quiz
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="state-space-models.html" class="md-nav__link">
+<span class="md-ellipsis">
+13. State-Space Models
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="applications-audio-communication-and-control.html" class="md-nav__link">
+<span class="md-ellipsis">
+14. Applications: Audio, Communication and Control
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="tables-of-transforms.html" class="md-nav__link">
+<span class="md-ellipsis">
+Tables of Transforms
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="glossary.html" class="md-nav__link">
+<span class="md-ellipsis">
+Glossary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="further-reading.html" class="md-nav__link">
+<span class="md-ellipsis">
+Further Reading
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#frequency-response" class="md-nav__link">
+<span class="md-ellipsis">
+12.1 What the frequency response tells us
+</span>
+</a>
+<nav class="md-nav" aria-label="12.1 What the frequency response tells us">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#decibels" class="md-nav__link">
+<span class="md-ellipsis">
+Decibels
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#phase-delay-and-distortion" class="md-nav__link">
+<span class="md-ellipsis">
+Phase, delay and distortion
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#bode" class="md-nav__link">
+<span class="md-ellipsis">
+12.2 Bode plots
+</span>
+</a>
+<nav class="md-nav" aria-label="12.2 Bode plots">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#a-first-order-low-pass-factor" class="md-nav__link">
+<span class="md-ellipsis">
+A first-order low-pass factor
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#second-order-factors" class="md-nav__link">
+<span class="md-ellipsis">
+Second-order factors
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#specifications" class="md-nav__link">
+<span class="md-ellipsis">
+12.3 Filter types and specifications
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#butterworth" class="md-nav__link">
+<span class="md-ellipsis">
+12.4 Analog Butterworth filters
+</span>
+</a>
+<nav class="md-nav" aria-label="12.4 Analog Butterworth filters">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#choosing-the-order" class="md-nav__link">
+<span class="md-ellipsis">
+Choosing the order
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#iir" class="md-nav__link">
+<span class="md-ellipsis">
+12.5 Digital IIR filters
+</span>
+</a>
+<nav class="md-nav" aria-label="12.5 Digital IIR filters">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#the-bilinear-transform" class="md-nav__link">
+<span class="md-ellipsis">
+The bilinear transform
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#placing-poles-and-zeros-directly" class="md-nav__link">
+<span class="md-ellipsis">
+Placing poles and zeros directly
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#fir" class="md-nav__link">
+<span class="md-ellipsis">
+12.6 Digital FIR filters and the window method
+</span>
+</a>
+<nav class="md-nav" aria-label="12.6 Digital FIR filters and the window method">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#the-window-method" class="md-nav__link">
+<span class="md-ellipsis">
+The window method
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#fir-or-iir" class="md-nav__link">
+<span class="md-ellipsis">
+12.7 FIR or IIR?
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#128-designing-filters-in-numpy" class="md-nav__link">
+<span class="md-ellipsis">
+12.8 Designing filters in NumPy
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#129-summary" class="md-nav__link">
+<span class="md-ellipsis">
+12.9 Summary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1210-exercises" class="md-nav__link">
+<span class="md-ellipsis">
+12.10 Exercises
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1211-quiz" class="md-nav__link">
+<span class="md-ellipsis">
+12.11 Quiz
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="chapter-12-frequency-response-and-filters">Chapter 12: Frequency Response and Filters<a class="headerlink" href="#chapter-12-frequency-response-and-filters" title="Permanent link">&para;</a></h1>
+<p><em>Bode plots, filter specifications, Butterworth designs, and digital IIR and FIR filters</em></p>
+<div class="admonition note">
+<p class="admonition-title">Learning outcomes</p>
+<p>After this chapter you should be able to:</p>
+<ul>
+<li>interpret magnitude and phase responses, decibels, group delay and the condition for distortionless transmission;</li>
+<li>sketch Bode plots of first- and second-order factors and combine them;</li>
+<li>write a filter specification in terms of passband, stopband, transition band and tolerances;</li>
+<li>find the order of a Butterworth filter that meets a specification;</li>
+<li>design a digital IIR filter by the bilinear transform with prewarping, and a notch filter by placing poles and zeros;</li>
+<li>design a linear-phase FIR filter by the window method and choose a window;</li>
+<li>compare FIR and IIR filters for a given task.</li>
+</ul>
+</div>
+<h2 id="frequency-response">12.1 What the frequency response tells us<a class="headerlink" href="#frequency-response" title="Permanent link">&para;</a></h2>
+<p>A stable LTI system multiplies the complex exponential <span class="arithmatex">\(e^{j\omega t}\)</span> by <span class="arithmatex">\(H(j\omega)\)</span>, and so, for a real system, it turns the sinusoid <span class="arithmatex">\(A\cos(\omega t + \phi)\)</span> into</p>
+<div class="arithmatex">\[
+A\,|H(j\omega)|\cos\!\big(\omega t + \phi + \angle H(j\omega)\big).
+\]</div>
+<p>The <strong>magnitude response</strong> <span class="arithmatex">\(|H(j\omega)|\)</span> is the gain at each frequency; the <strong>phase response</strong> <span class="arithmatex">\(\angle H(j\omega)\)</span> is the phase shift. (For DT systems replace <span class="arithmatex">\(H(j\omega)\)</span> by <span class="arithmatex">\(H(e^{j\Omega})\)</span>.) Shaping the magnitude response is called <strong>filtering</strong>: passing some frequencies and suppressing others.</p>
+<h3 id="decibels">Decibels<a class="headerlink" href="#decibels" title="Permanent link">&para;</a></h3>
+<p>Gains are usually quoted in <strong>decibels</strong>: <span class="arithmatex">\(|H|_{\text{dB}} = 20\log_{10}|H|\)</span>. The logarithm turns products into sums, so the gain of a cascade in dB is the sum of the gains. Some values are worth knowing by heart:</p>
+<table>
+<thead>
+<tr>
+<th><span class="arithmatex">\(\lvert H\rvert\)</span></th>
+<th>10</th>
+<th>2</th>
+<th><span class="arithmatex">\(\sqrt2\)</span></th>
+<th>1</th>
+<th><span class="arithmatex">\(1/\sqrt2\)</span></th>
+<th><span class="arithmatex">\(1/2\)</span></th>
+<th><span class="arithmatex">\(0.1\)</span></th>
+<th><span class="arithmatex">\(0.01\)</span></th>
+<th><span class="arithmatex">\(0.001\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>dB</td>
+<td>20</td>
+<td>6.0</td>
+<td>3.0</td>
+<td>0</td>
+<td><span class="arithmatex">\(-3.0\)</span></td>
+<td><span class="arithmatex">\(-6.0\)</span></td>
+<td><span class="arithmatex">\(-20\)</span></td>
+<td><span class="arithmatex">\(-40\)</span></td>
+<td><span class="arithmatex">\(-60\)</span></td>
+</tr>
+</tbody>
+</table>
+<p><em>Table 12.1. Gains in decibels.</em></p>
+<p>The frequency at which the gain falls to <span class="arithmatex">\(1/\sqrt2\)</span> of its passband value is the <strong>3 dB</strong> or <strong>half-power</strong> frequency, because the power, proportional to <span class="arithmatex">\(|H|^2\)</span>, has halved.</p>
+<h3 id="phase-delay-and-distortion">Phase, delay and distortion<a class="headerlink" href="#phase-delay-and-distortion" title="Permanent link">&para;</a></h3>
+<p>A system <strong>transmits without distortion</strong> if its output is a scaled, delayed copy of the input, <span class="arithmatex">\(y(t) = Kx(t - t_0)\)</span>. Taking transforms, <span class="arithmatex">\(H(j\omega) = Ke^{-j\omega t_0}\)</span>: <strong>constant magnitude and linear phase</strong>. Within the band occupied by a signal, a filter must therefore have flat magnitude and a phase that is a straight line through the origin if the waveform is to be preserved. The slope of the phase measures the delay; for a general system we define the <strong>group delay</strong></p>
+<div class="arithmatex">\[
+\tau_g(\omega) = -\frac{d\angle H(j\omega)}{d\omega},
+\]</div>
+<p>the delay experienced by a narrow band of frequencies around <span class="arithmatex">\(\omega\)</span>. A linear-phase system has constant group delay; a system whose group delay varies across the band smears the waveform, an effect called <strong>phase distortion</strong>. The ear is fairly tolerant of phase distortion; data transmission and image processing are not.</p>
+<h2 id="bode">12.2 Bode plots<a class="headerlink" href="#bode" title="Permanent link">&para;</a></h2>
+<p>A <strong>Bode plot</strong> draws <span class="arithmatex">\(|H(j\omega)|\)</span> in dB and <span class="arithmatex">\(\angle H(j\omega)\)</span> in degrees against a <strong>logarithmic</strong> frequency axis. The logarithmic axes turn the factors of a rational transfer function into straight-line pieces that simply add.</p>
+<h3 id="a-first-order-low-pass-factor">A first-order low-pass factor<a class="headerlink" href="#a-first-order-low-pass-factor" title="Permanent link">&para;</a></h3>
+<p>Take <span class="arithmatex">\(H(j\omega) = \dfrac{1}{1 + j\omega/\omega_c}\)</span>. Then</p>
+<div class="arithmatex">\[
+|H|_{\text{dB}} = -10\log_{10}\!\left(1 + \frac{\omega^2}{\omega_c^2}\right), \qquad \angle H = -\arctan\frac{\omega}{\omega_c}.
+\]</div>
+<ul>
+<li>For <span class="arithmatex">\(\omega \ll \omega_c\)</span>: <span class="arithmatex">\(|H| \approx 1\)</span>, so 0 dB, and the phase is about <span class="arithmatex">\(0°\)</span>.</li>
+<li>For <span class="arithmatex">\(\omega \gg \omega_c\)</span>: <span class="arithmatex">\(|H| \approx \omega_c/\omega\)</span>, so <span class="arithmatex">\(|H|_{\text{dB}} \approx -20\log_{10}(\omega/\omega_c)\)</span>: a straight line falling at <strong>20 dB per decade</strong> (a decade is a factor of 10 in frequency), and the phase approaches <span class="arithmatex">\(-90°\)</span>.</li>
+<li>At the <strong>corner frequency</strong> <span class="arithmatex">\(\omega = \omega_c\)</span>: <span class="arithmatex">\(|H| = 1/\sqrt2\)</span> (<span class="arithmatex">\(-3\)</span> dB) and the phase is <span class="arithmatex">\(-45°\)</span>.</li>
+</ul>
+<p>The two straight-line <strong>asymptotes</strong> meeting at <span class="arithmatex">\(\omega_c\)</span> approximate the magnitude within 3 dB everywhere. The phase is approximated by a line from <span class="arithmatex">\(0°\)</span> at <span class="arithmatex">\(0.1\omega_c\)</span> to <span class="arithmatex">\(-90°\)</span> at <span class="arithmatex">\(10\omega_c\)</span>.</p>
+<figure class="fig fig-diagram">
+<img src="img/bode-first-order.svg" alt="Bode plot of 1/(1 + jω/ω_c). Left: the magnitude is flat at 0 dB below ω_c and falls at 20 dB per decade above it; the dashed asymptotes meet at the corner frequency, where the true curve is 3 dB down. Right: the phase falls from 0° to −90°, passing −45° at ω_c; the dashed straight-line approximation runs from 0.1ω_c to 10ω_c." loading="lazy" width="780" height="300">
+<figcaption><strong>Figure 12.1 A first-order Bode plot.</strong> Bode plot of 1/(1 + jω/ω_c). Left: the magnitude is flat at 0 dB below ω_c and falls at 20 dB per decade above it; the dashed asymptotes meet at the corner frequency, where the true curve is 3 dB down. Right: the phase falls from 0° to −90°, passing −45° at ω_c; the dashed straight-line approximation runs from 0.1ω_c to 10ω_c.</figcaption>
+</figure>
+<p>A zero factor <span class="arithmatex">\(1 + j\omega/\omega_z\)</span> gives the mirror image: <span class="arithmatex">\(+20\)</span> dB per decade and <span class="arithmatex">\(+90°\)</span> of phase. A pole at the origin, <span class="arithmatex">\(1/(j\omega)\)</span>, gives a line falling at 20 dB per decade through 0 dB at <span class="arithmatex">\(\omega = 1\)</span>, with a constant phase of <span class="arithmatex">\(-90°\)</span>. A constant gain <span class="arithmatex">\(K\)</span> shifts the magnitude by <span class="arithmatex">\(20\log_{10}|K|\)</span>.</p>
+<h3 id="second-order-factors">Second-order factors<a class="headerlink" href="#second-order-factors" title="Permanent link">&para;</a></h3>
+<p>The factor <span class="arithmatex">\(\dfrac{\omega_n^2}{(j\omega)^2 + 2\zeta\omega_n(j\omega) + \omega_n^2}\)</span> of Section 10.7 has asymptotes at 0 dB below <span class="arithmatex">\(\omega_n\)</span> and <span class="arithmatex">\(-40\)</span> dB per decade above it, with the phase going from <span class="arithmatex">\(0°\)</span> to <span class="arithmatex">\(-180°\)</span>. Near <span class="arithmatex">\(\omega_n\)</span> the true curve depends on <span class="arithmatex">\(\zeta\)</span>: at <span class="arithmatex">\(\omega = \omega_n\)</span> the magnitude is <span class="arithmatex">\(\frac{1}{2\zeta}\)</span>. For <span class="arithmatex">\(\zeta &lt; 1/\sqrt2\)</span> there is a <strong>resonant peak</strong> of height <span class="arithmatex">\(\frac{1}{2\zeta\sqrt{1 - \zeta^2}}\)</span> near <span class="arithmatex">\(\omega_n\)</span>; for <span class="arithmatex">\(\zeta = 0.1\)</span> it is about 5, or 14 dB. Lightly damped poles mean a sharp resonance, the frequency-domain image of the ringing step response.</p>
+<div class="admonition example">
+<p class="admonition-title">Example 12.1 A Bode sketch</p>
+<p>Sketch the magnitude of <span class="arithmatex">\(H(s) = \dfrac{100(s + 10)}{(s + 1)(s + 100)}\)</span>.</p>
+<p>Write it in Bode form: <span class="arithmatex">\(H(j\omega) = \dfrac{100\cdot10\,(1 + j\omega/10)}{1\cdot100\,(1 + j\omega)(1 + j\omega/100)} = \dfrac{10(1 + j\omega/10)}{(1 + j\omega)(1 + j\omega/100)}\)</span>.</p>
+<p>The DC gain is 10, or 20 dB. Reading the corners in order: at <span class="arithmatex">\(\omega = 1\)</span> a pole starts a slope of <span class="arithmatex">\(-20\)</span> dB/decade; at <span class="arithmatex">\(\omega = 10\)</span> the zero cancels it, so the magnitude is flat again, at <span class="arithmatex">\(20 - 20 = 0\)</span> dB; at <span class="arithmatex">\(\omega = 100\)</span> the second pole resumes the fall at <span class="arithmatex">\(-20\)</span> dB/decade. So the gain is 20 dB up to 1 rad/s, falls to 0 dB at 10 rad/s, stays near 0 dB to 100 rad/s, and then falls. (Exact value at <span class="arithmatex">\(\omega = 30\)</span>: <span class="arithmatex">\(|H| = \frac{10\sqrt{1 + 9}}{\sqrt{1 + 900}\sqrt{1 + 0.09}} = 1.01\)</span>, about 0 dB, as the sketch says.)</p>
+</div>
+<h2 id="specifications">12.3 Filter types and specifications<a class="headerlink" href="#specifications" title="Permanent link">&para;</a></h2>
+<p>The ideal filters of Chapters 6 and 7 pass a band of frequencies with gain 1 and reject everything else completely:</p>
+<ul>
+<li><strong>low-pass</strong>: passes <span class="arithmatex">\(|\omega| &lt; \omega_c\)</span>;</li>
+<li><strong>high-pass</strong>: passes <span class="arithmatex">\(|\omega| &gt; \omega_c\)</span>;</li>
+<li><strong>band-pass</strong>: passes <span class="arithmatex">\(\omega_1 &lt; |\omega| &lt; \omega_2\)</span>;</li>
+<li><strong>band-stop</strong> (or notch, when narrow): rejects <span class="arithmatex">\(\omega_1 &lt; |\omega| &lt; \omega_2\)</span>.</li>
+</ul>
+<p>They cannot be built: their impulse responses are non-causal and infinitely long (Example 6.5). A practical design therefore starts from a <strong>specification</strong> with tolerances (Figure 12.2):</p>
+<ul>
+<li>a <strong>passband</strong> <span class="arithmatex">\(0 \le \omega \le \omega_p\)</span> in which the gain stays within <span class="arithmatex">\(1 \pm \delta_p\)</span> (or a ripple of so many dB);</li>
+<li>a <strong>stopband</strong> <span class="arithmatex">\(\omega \ge \omega_s\)</span> in which the gain stays below <span class="arithmatex">\(\delta_s\)</span> (an attenuation of <span class="arithmatex">\(-20\log_{10}\delta_s\)</span> dB);</li>
+<li>a <strong>transition band</strong> <span class="arithmatex">\(\omega_p &lt; \omega &lt; \omega_s\)</span> in which anything is allowed.</li>
+</ul>
+<figure class="fig fig-diagram">
+<img src="img/lowpass-spec.svg" alt="The tolerance scheme for a low-pass filter. In the passband (green), up to ω_p, the gain must stay between 1 − δ_p and 1 + δ_p. In the stopband (red), beyond ω_s, it must stay below δ_s. Between them is the transition band. The blue curve meets the specification." loading="lazy" width="700" height="300">
+<figcaption><strong>Figure 12.2 A low-pass specification.</strong> The tolerance scheme for a low-pass filter. In the passband (green), up to ω_p, the gain must stay between 1 − δ_p and 1 + δ_p. In the stopband (red), beyond ω_s, it must stay below δ_s. Between them is the transition band. The blue curve meets the specification.</figcaption>
+</figure>
+<p>The tighter the tolerances and the narrower the transition band, the higher the <strong>order</strong> of filter required, and the more it costs in components or computation. Filter design is the art of meeting the specification with the lowest order.</p>
+<h2 id="butterworth">12.4 Analog Butterworth filters<a class="headerlink" href="#butterworth" title="Permanent link">&para;</a></h2>
+<p>The <strong>Butterworth</strong> low-pass filter of order <span class="arithmatex">\(N\)</span> has</p>
+<div class="arithmatex">\[
+|H(j\omega)|^2 = \frac{1}{1 + (\omega/\omega_c)^{2N}} .
+\]</div>
+<p>Its magnitude is <span class="arithmatex">\(1\)</span> at <span class="arithmatex">\(\omega = 0\)</span>, exactly <span class="arithmatex">\(1/\sqrt2\)</span> (<span class="arithmatex">\(-3\)</span> dB) at <span class="arithmatex">\(\omega = \omega_c\)</span> for every <span class="arithmatex">\(N\)</span>, and falls at <span class="arithmatex">\(20N\)</span> dB per decade far above <span class="arithmatex">\(\omega_c\)</span>. The first <span class="arithmatex">\(2N - 1\)</span> derivatives of <span class="arithmatex">\(|H|^2\)</span> are zero at <span class="arithmatex">\(\omega = 0\)</span>, so the passband is as flat as possible: it is called <strong>maximally flat</strong>. Higher order gives a sharper edge (Figure 12.3).</p>
+<figure class="fig fig-diagram">
+<img src="img/butterworth.svg" alt="Butterworth magnitude responses for N = 1, 2, 4 and 8. All pass through 0.707 at ω = ω_c. Higher orders are flatter in the passband and fall more steeply beyond the cut-off." loading="lazy" width="640" height="300">
+<figcaption><strong>Figure 12.3 Butterworth filters.</strong> Butterworth magnitude responses for N = 1, 2, 4 and 8. All pass through 0.707 at ω = ω_c. Higher orders are flatter in the passband and fall more steeply beyond the cut-off.</figcaption>
+</figure>
+<p>The poles of <span class="arithmatex">\(H(s)H(-s) = 1/(1 + (s/j\omega_c)^{2N})\)</span> lie equally spaced on a circle of radius <span class="arithmatex">\(\omega_c\)</span>; the causal, stable filter takes the <span class="arithmatex">\(N\)</span> of them in the left half-plane. For <span class="arithmatex">\(N = 2\)</span> these are <span class="arithmatex">\(\omega_c e^{\pm j3\pi/4}\)</span>, giving <span class="arithmatex">\(H(s) = \dfrac{\omega_c^2}{s^2 + \sqrt2\,\omega_cs + \omega_c^2}\)</span>, a second-order system with <span class="arithmatex">\(\zeta = 1/\sqrt2\)</span>.</p>
+<h3 id="choosing-the-order">Choosing the order<a class="headerlink" href="#choosing-the-order" title="Permanent link">&para;</a></h3>
+<p>With the cut-off <span class="arithmatex">\(\omega_c\)</span> at the passband edge (3 dB passband loss), the attenuation at the stopband edge <span class="arithmatex">\(\omega_s\)</span> must be at least <span class="arithmatex">\(A_s\)</span> dB:</p>
+<div class="arithmatex">\[
+10\log_{10}\!\left(1 + (\omega_s/\omega_c)^{2N}\right) \ge A_s \quad\Longrightarrow\quad N \ge \frac{\log_{10}\!\left(10^{A_s/10} - 1\right)}{2\log_{10}(\omega_s/\omega_c)} .
+\]</div>
+<div class="admonition example">
+<p class="admonition-title">Example 12.2 Order of a Butterworth filter</p>
+<p>A low-pass filter must be 3 dB down at 1 kHz and at least 40 dB down at 3 kHz. Then <span class="arithmatex">\(N \ge \dfrac{\log_{10}(10^4 - 1)}{2\log_{10}3} = \dfrac{4.000}{0.954} = 4.19\)</span>, so <span class="arithmatex">\(N = 5\)</span>.</p>
+</div>
+<p>Other classical families trade flatness for steepness. <strong>Chebyshev</strong> filters allow ripple in the passband (type I) or stopband (type II) and achieve a sharper transition for the same order; <strong>elliptic</strong> filters allow ripple in both and are sharper still; <strong>Bessel</strong> filters give up sharpness to obtain a nearly linear phase. All are available in libraries such as <code>scipy.signal</code>.</p>
+<h2 id="iir">12.5 Digital IIR filters<a class="headerlink" href="#iir" title="Permanent link">&para;</a></h2>
+<p>An IIR filter is a recursive difference equation whose system function has poles away from the origin. There are two common ways to design one.</p>
+<h3 id="the-bilinear-transform">The bilinear transform<a class="headerlink" href="#the-bilinear-transform" title="Permanent link">&para;</a></h3>
+<p>Start from a good analog design and convert it. The <strong>bilinear transform</strong> replaces <span class="arithmatex">\(s\)</span> by</p>
+<div class="arithmatex">\[
+s = \frac{2}{T}\cdot\frac{1 - z^{-1}}{1 + z^{-1}} .
+\]</div>
+<p>It maps the left half of the s-plane exactly onto the inside of the unit circle, so a stable analog filter always gives a stable digital filter, and it maps the whole <span class="arithmatex">\(j\omega\)</span> axis once around the unit circle, so there is no aliasing. The price is a nonlinear compression of frequency, called <strong>warping</strong>: the analog frequency <span class="arithmatex">\(\omega\)</span> and the digital frequency <span class="arithmatex">\(\Omega\)</span> are related by</p>
+<div class="arithmatex">\[
+\omega = \frac{2}{T}\tan\frac{\Omega}{2} .
+\]</div>
+<p>To place a critical frequency correctly, <strong>prewarp</strong> it: design the analog prototype with cut-off <span class="arithmatex">\(\omega_a = \frac{2}{T}\tan(\Omega_c/2)\)</span>, then transform.</p>
+<div class="admonition example">
+<p class="admonition-title">Example 12.3 A first-order digital low-pass filter</p>
+<p>Design a first-order low-pass filter with a 3 dB cut-off of 1 kHz for a sampling rate of 8 kHz.</p>
+<p><span class="arithmatex">\(\Omega_c = 2\pi\cdot1000/8000 = \pi/4\)</span>. Prewarp: <span class="arithmatex">\(\omega_a = \frac{2}{T}\tan(\pi/8)\)</span>. The analog prototype is <span class="arithmatex">\(H(s) = \frac{\omega_a}{s + \omega_a}\)</span>. Substituting <span class="arithmatex">\(s = \frac{2}{T}\frac{1 - z^{-1}}{1 + z^{-1}}\)</span> and writing <span class="arithmatex">\(c = \omega_aT/2 = \tan(\pi/8) = 0.41421\)</span>:</p>
+<div class="arithmatex">\[
+H(z) = \frac{c(1 + z^{-1})}{(1 + c) - (1 - c)z^{-1}} = \frac{0.29289\,(1 + z^{-1})}{1 - 0.41421\,z^{-1}} .
+\]</div>
+<p>The difference equation is <span class="arithmatex">\(y[n] = 0.41421\,y[n-1] + 0.29289\,(x[n] + x[n-1])\)</span>. Its gain is 1 at DC, <span class="arithmatex">\(1/\sqrt2\)</span> at exactly 1 kHz (thanks to prewarping), and 0 at 4 kHz (the zero at <span class="arithmatex">\(z = -1\)</span>), as the program in Section 12.8 confirms.</p>
+</div>
+<h3 id="placing-poles-and-zeros-directly">Placing poles and zeros directly<a class="headerlink" href="#placing-poles-and-zeros-directly" title="Permanent link">&para;</a></h3>
+<p>Simple filters can be designed straight from the geometric picture of Section 11.7. A <strong>notch filter</strong> that removes one frequency <span class="arithmatex">\(\Omega_0\)</span> puts zeros on the unit circle at <span class="arithmatex">\(e^{\pm j\Omega_0}\)</span> and poles just inside, at <span class="arithmatex">\(re^{\pm j\Omega_0}\)</span> with <span class="arithmatex">\(r\)</span> slightly less than 1:</p>
+<div class="arithmatex">\[
+H(z) = \frac{1 - 2\cos\Omega_0\,z^{-1} + z^{-2}}{1 - 2r\cos\Omega_0\,z^{-1} + r^2z^{-2}} .
+\]</div>
+<p>Away from <span class="arithmatex">\(\Omega_0\)</span>, each pole is almost as far from the point <span class="arithmatex">\(e^{j\Omega}\)</span> as its neighbouring zero, so the gain is close to 1; at <span class="arithmatex">\(\Omega_0\)</span> the zero makes it exactly 0. The width of the notch is roughly <span class="arithmatex">\(2(1 - r)\)</span> rad/sample: the closer the poles to the circle, the narrower the notch.</p>
+<div class="admonition example">
+<p class="admonition-title">Example 12.4 Removing mains hum</p>
+<p>For 50 Hz hum in audio sampled at 8 kHz (Example 9.3), <span class="arithmatex">\(\Omega_0 = \pi/80\)</span>. With <span class="arithmatex">\(r = 0.99\)</span> the notch width is about <span class="arithmatex">\(0.02\)</span> rad/sample, or <span class="arithmatex">\(0.02 \times 8000/(2\pi) \approx 25\)</span> Hz. The program in Section 12.8 measures a 3 dB band from 37 Hz to 63 Hz.</p>
+</div>
+<h2 id="fir">12.6 Digital FIR filters and the window method<a class="headerlink" href="#fir" title="Permanent link">&para;</a></h2>
+<p>An FIR filter <span class="arithmatex">\(y[n] = \sum_{k=0}^{M}h[k]\,x[n-k]\)</span> has a finite impulse response of <span class="arithmatex">\(M + 1\)</span> <strong>taps</strong>. FIR filters are always stable, and they can have <strong>exactly linear phase</strong>: if the coefficients are symmetric, <span class="arithmatex">\(h[k] = h[M - k]\)</span>, the frequency response is <span class="arithmatex">\(H(e^{j\Omega}) = A(\Omega)e^{-j\Omega M/2}\)</span> with <span class="arithmatex">\(A\)</span> real, a pure delay of <span class="arithmatex">\(M/2\)</span> samples times a real gain. This is impossible for a causal IIR filter, and it is the main reason FIR filters are used in audio, communications and image processing.</p>
+<h3 id="the-window-method">The window method<a class="headerlink" href="#the-window-method" title="Permanent link">&para;</a></h3>
+<ol>
+<li>
+<p>Start from the ideal frequency response, for a low-pass filter <span class="arithmatex">\(H_d = 1\)</span> for <span class="arithmatex">\(|\Omega| &lt; \Omega_c\)</span>, with linear phase <span class="arithmatex">\(e^{-j\Omega M/2}\)</span>. Its impulse response is the shifted sinc</p>
+<div class="arithmatex">\[
+h_d[n] = \frac{\sin\!\big(\Omega_c(n - M/2)\big)}{\pi(n - M/2)} ,
+\]</div>
+<p>which is infinitely long.</p>
+</li>
+<li>
+<p>Keep only <span class="arithmatex">\(n = 0, \ldots, M\)</span> and multiply by a <strong>window</strong> <span class="arithmatex">\(w[n]\)</span>: <span class="arithmatex">\(h[n] = h_d[n]\,w[n]\)</span>.</p>
+</li>
+</ol>
+<p>Truncation with the plain rectangular window gives the Gibbs phenomenon of Section 5.5: ripples near the band edge, with a first stopband side lobe only about 21 dB down, whatever the length. A tapered window trades a wider transition band for much smaller ripples. Table 12.2 lists the common windows; the attenuation is a property of the window shape, while the transition width shrinks in proportion to <span class="arithmatex">\(1/M\)</span>.</p>
+<table>
+<thead>
+<tr>
+<th>Window</th>
+<th><span class="arithmatex">\(w[n]\)</span>, <span class="arithmatex">\(0 \le n \le M\)</span></th>
+<th>Peak side lobe of window</th>
+<th>Approx. stopband attenuation of filter</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Rectangular</td>
+<td><span class="arithmatex">\(1\)</span></td>
+<td><span class="arithmatex">\(-13\)</span> dB</td>
+<td>21 dB</td>
+</tr>
+<tr>
+<td>Hann</td>
+<td><span class="arithmatex">\(0.5 - 0.5\cos(2\pi n/M)\)</span></td>
+<td><span class="arithmatex">\(-31\)</span> dB</td>
+<td>44 dB</td>
+</tr>
+<tr>
+<td>Hamming</td>
+<td><span class="arithmatex">\(0.54 - 0.46\cos(2\pi n/M)\)</span></td>
+<td><span class="arithmatex">\(-41\)</span> dB</td>
+<td>53 dB</td>
+</tr>
+<tr>
+<td>Blackman</td>
+<td><span class="arithmatex">\(0.42 - 0.5\cos(2\pi n/M) + 0.08\cos(4\pi n/M)\)</span></td>
+<td><span class="arithmatex">\(-57\)</span> dB</td>
+<td>74 dB</td>
+</tr>
+</tbody>
+</table>
+<p><em>Table 12.2. Windows for FIR design (approximate values from standard tables).</em></p>
+<figure class="fig fig-diagram">
+<img src="img/fir-window.svg" alt="Magnitude response in dB of a 51-tap low-pass filter with cut-off π/4, designed with a rectangular window (blue) and a Hamming window (orange). The rectangular design has a sharper edge but stopband ripples only 20 to 40 dB down; the Hamming design has a wider transition and ripples more than 50 dB down." loading="lazy" width="760" height="300">
+<figcaption><strong>Figure 12.4 Window design of an FIR filter.</strong> Magnitude response in dB of a 51-tap low-pass filter with cut-off π/4, designed with a rectangular window (blue) and a Hamming window (orange). The rectangular design has a sharper edge but stopband ripples only 20 to 40 dB down; the Hamming design has a wider transition and ripples more than 50 dB down.</figcaption>
+</figure>
+<p>More refined methods (frequency sampling, and the optimal equiripple design of Parks and McClellan) give lower orders for the same specification; libraries provide them, but the window method remains the clearest introduction and is often good enough.</p>
+<h2 id="fir-or-iir">12.7 FIR or IIR?<a class="headerlink" href="#fir-or-iir" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>FIR</th>
+<th>IIR</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Stability</td>
+<td>always stable</td>
+<td>must check that poles are inside the unit circle</td>
+</tr>
+<tr>
+<td>Phase</td>
+<td>exactly linear possible</td>
+<td>nonlinear (approximately linear only near DC, or with extra stages)</td>
+</tr>
+<tr>
+<td>Order for a sharp edge</td>
+<td>high (tens to hundreds of taps)</td>
+<td>low (a few poles)</td>
+</tr>
+<tr>
+<td>Computation per sample</td>
+<td>more</td>
+<td>less</td>
+</tr>
+<tr>
+<td>Sensitivity to coefficient rounding</td>
+<td>low</td>
+<td>can be high for poles near the circle</td>
+</tr>
+<tr>
+<td>Design</td>
+<td>windows, equiripple; direct in DT</td>
+<td>from analog prototypes (bilinear transform), pole placement</td>
+</tr>
+</tbody>
+</table>
+<p><em>Table 12.3. FIR and IIR filters compared.</em></p>
+<p>Choose FIR when phase linearity or guaranteed stability matters, or when the filter must adapt; choose IIR when computation is scarce and phase does not matter, or when an analog design is to be copied.</p>
+<h2 id="128-designing-filters-in-numpy">12.8 Designing filters in NumPy<a class="headerlink" href="#128-designing-filters-in-numpy" title="Permanent link">&para;</a></h2>
+<p>The program below computes a Butterworth order, designs the IIR filter of Example 12.3 and checks its gain at four frequencies, designs 51-tap FIR filters with two windows and measures their stopband levels, and measures the width of the notch of Example 12.4. The helper <code>freqz</code> evaluates <span class="arithmatex">\(H(e^{j\Omega})\)</span> from the coefficients in powers of <span class="arithmatex">\(z^{-1}\)</span>.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">freqz</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">W</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""H(e^{jW}) for H(z) = B(z^-1) / A(z^-1)."""</span>
+    <span class="n">zinv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">W</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">polyval</span><span class="p">(</span><span class="n">b</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">zinv</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">polyval</span><span class="p">(</span><span class="n">a</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">zinv</span><span class="p">)</span>
+
+<span class="c1"># 1. Butterworth order: at most 3 dB loss at 1 kHz, at least 40 dB attenuation at 3 kHz</span>
+<span class="n">N</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="mi">10</span> <span class="o">**</span> <span class="p">(</span><span class="mi">40</span> <span class="o">/</span> <span class="mi">10</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="mi">3000</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Butterworth order needed: </span><span class="si">{</span><span class="n">N</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> -&gt; N = </span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">N</span><span class="p">))</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+<span class="c1"># 2. Bilinear transform of H(s) = wa / (s + wa), cut-off 1 kHz at fs = 8 kHz (with prewarping)</span>
+<span class="n">fs</span><span class="p">,</span> <span class="n">fc</span> <span class="o">=</span> <span class="mi">8000</span><span class="p">,</span> <span class="mi">1000</span>
+<span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">fc</span> <span class="o">/</span> <span class="n">fs</span><span class="p">)</span>                 <span class="c1"># = wa / (2 fs) after prewarping</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">c</span><span class="p">,</span> <span class="n">c</span><span class="p">])</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">c</span><span class="p">)</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">c</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">c</span><span class="p">)])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"IIR b ="</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="s2">" a ="</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">2000</span><span class="p">,</span> <span class="mi">3000</span><span class="p">):</span>
+    <span class="n">H</span> <span class="o">=</span> <span class="n">freqz</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">f</span> <span class="o">/</span> <span class="n">fs</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">f</span><span class="si">:</span><span class="s2">4d</span><span class="si">}</span><span class="s2"> Hz: |H| = </span><span class="si">{</span><span class="nb">abs</span><span class="p">(</span><span class="n">H</span><span class="p">)</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="mi">20</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">H</span><span class="p">))</span><span class="si">:</span><span class="s2">7.2f</span><span class="si">}</span><span class="s2"> dB)"</span><span class="p">)</span>
+
+<span class="c1"># 3. Windowed-sinc FIR low-pass: cut-off pi/4, 51 taps, rectangular versus Hamming window</span>
+<span class="n">M</span> <span class="o">=</span> <span class="mi">50</span>                                       <span class="c1"># order; 51 taps, symmetric about n = 25</span>
+<span class="n">n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">M</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">Wc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">4</span>
+<span class="n">hd</span> <span class="o">=</span> <span class="n">Wc</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sinc</span><span class="p">(</span><span class="n">Wc</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="n">M</span> <span class="o">/</span> <span class="mi">2</span><span class="p">))</span>      <span class="c1"># sin(Wc m)/(pi m), m = n - M/2</span>
+<span class="n">W</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">4001</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">w</span> <span class="ow">in</span> <span class="p">((</span><span class="s2">"rectangular"</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">M</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)),</span> <span class="p">(</span><span class="s2">"Hamming"</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">hamming</span><span class="p">(</span><span class="n">M</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))):</span>
+    <span class="n">h</span> <span class="o">=</span> <span class="n">hd</span> <span class="o">*</span> <span class="n">w</span>
+    <span class="n">H</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">freqz</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">]),</span> <span class="n">W</span><span class="p">))</span>
+    <span class="n">stop</span> <span class="o">=</span> <span class="n">W</span> <span class="o">&gt;=</span> <span class="n">Wc</span> <span class="o">+</span> <span class="mf">0.15</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>            <span class="c1"># stopband from 0.4 pi</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">name</span><span class="si">:</span><span class="s2">11s</span><span class="si">}</span><span class="s2">: DC gain </span><span class="si">{</span><span class="n">H</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">, worst stopband level </span><span class="si">{</span><span class="mi">20</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">H</span><span class="p">[</span><span class="n">stop</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">())</span><span class="si">:</span><span class="s2">6.1f</span><span class="si">}</span><span class="s2"> dB,"</span>
+          <span class="sa">f</span><span class="s2">" symmetric (linear phase): </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="w"> </span><span class="n">h</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+<span class="c1"># 4. Notch at 50 Hz for fs = 8 kHz: zeros on the circle, poles at radius 0.99</span>
+<span class="n">W0</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="mi">50</span> <span class="o">/</span> <span class="mi">8000</span>
+<span class="n">bn</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">W0</span><span class="p">),</span> <span class="mi">1</span><span class="p">])</span>
+<span class="n">an</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span> <span class="o">*</span> <span class="mf">0.99</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">W0</span><span class="p">),</span> <span class="mf">0.99</span> <span class="o">**</span> <span class="mi">2</span><span class="p">])</span>
+<span class="n">f</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">20001</span><span class="p">)</span>
+<span class="n">Hn</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">freqz</span><span class="p">(</span><span class="n">bn</span><span class="p">,</span> <span class="n">an</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">f</span> <span class="o">/</span> <span class="mi">8000</span><span class="p">))</span>
+<span class="n">band</span> <span class="o">=</span> <span class="n">f</span><span class="p">[</span><span class="n">Hn</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">)]</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"notch: |H| at 50 Hz = </span><span class="si">{</span><span class="n">Hn</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">f</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">50</span><span class="p">))]</span><span class="si">:</span><span class="s2">.1e</span><span class="si">}</span><span class="s2">, at 0 Hz = </span><span class="si">{</span><span class="n">Hn</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">,"</span>
+      <span class="sa">f</span><span class="s2">" -3 dB band </span><span class="si">{</span><span class="n">band</span><span class="o">.</span><span class="n">min</span><span class="p">()</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">band</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> Hz"</span><span class="p">)</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>Butterworth order needed: 4.19 -&gt; N = 5
+IIR b = [0.29289 0.29289]  a = [ 1.      -0.41421]
+     0 Hz: |H| = 1.0000 (   0.00 dB)
+  1000 Hz: |H| = 0.7071 (  -3.01 dB)
+  2000 Hz: |H| = 0.3827 (  -8.34 dB)
+  3000 Hz: |H| = 0.1691 ( -15.44 dB)
+  rectangular: DC gain 0.9862, worst stopband level  -30.2 dB, symmetric (linear phase): True
+  Hamming    : DC gain 0.9992, worst stopband level  -55.2 dB, symmetric (linear phase): True
+notch: |H| at 50 Hz = 1.4e-13, at 0 Hz = 0.948, -3 dB band 37.2 to 62.7 Hz
+</code></pre></div>
+<p>The IIR filter is exactly 3 dB down at 1 kHz. The stopband here starts at <span class="arithmatex">\(0.4\pi\)</span>, past the transition band of both FIR designs; the rectangular design's worst ripple beyond that point is <span class="arithmatex">\(-30\)</span> dB, while its first side lobe, just after the edge, is near <span class="arithmatex">\(-21\)</span> dB, as Figure 12.4 shows. The Hamming design stays below <span class="arithmatex">\(-55\)</span> dB. The notch removes 50 Hz completely; because it sits so close to DC, it also lowers the gain at 0 Hz slightly (to 0.948), which could be corrected by a constant gain if it mattered.</p>
+<h2 id="129-summary">12.9 Summary<a class="headerlink" href="#129-summary" title="Permanent link">&para;</a></h2>
+<div class="admonition abstract">
+<p class="admonition-title">Summary</p>
+<ul>
+<li>A sinusoid is scaled by <span class="arithmatex">\(|H|\)</span> and shifted by <span class="arithmatex">\(\angle H\)</span>. Gains are quoted in dB, <span class="arithmatex">\(20\log_{10}|H|\)</span>; the 3 dB frequency is where the power halves.</li>
+<li>Distortionless transmission needs constant magnitude and linear phase; group delay <span class="arithmatex">\(-d\angle H/d\omega\)</span> measures delay versus frequency.</li>
+<li>Bode plots add straight-line asymptotes: each pole bends the magnitude down by 20 dB/decade and adds up to <span class="arithmatex">\(-90°\)</span>; each zero does the opposite. Lightly damped second-order poles give a resonant peak <span class="arithmatex">\(\approx 1/(2\zeta)\)</span>.</li>
+<li>Practical filters meet a tolerance scheme of passband ripple, stopband attenuation and transition width.</li>
+<li>Butterworth filters are maximally flat, <span class="arithmatex">\(-3\)</span> dB at <span class="arithmatex">\(\omega_c\)</span>, falling <span class="arithmatex">\(20N\)</span> dB/decade; the order follows from the specification.</li>
+<li>The bilinear transform <span class="arithmatex">\(s = \frac2T\frac{1 - z^{-1}}{1 + z^{-1}}\)</span> turns stable analog filters into stable digital ones; prewarp with <span class="arithmatex">\(\omega = \frac2T\tan\frac\Omega2\)</span>. Notches come from zeros on the unit circle with poles just inside.</li>
+<li>FIR filters by the window method: truncate the ideal sinc and taper it. Symmetric taps give exact linear phase; the window sets the stopband attenuation, the length sets the transition width.</li>
+</ul>
+</div>
+<h2 id="1210-exercises">12.10 Exercises<a class="headerlink" href="#1210-exercises" title="Permanent link">&para;</a></h2>
+<div class="admonition example">
+<p class="admonition-title">Exercise 12.1</p>
+<p>A filter has gain 0.05 at some frequency. Express it in dB.</p>
+</div>
+<details class="note typed">
+<summary>Answer</summary>
+<p><strong>−26 dB.</strong> <span class="arithmatex">\(20\log_{10}0.05 = 20(-1.301) = -26.0\)</span> dB.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 12.2</p>
+<p>Find the corner frequency and the gain at <span class="arithmatex">\(\omega = 1000\)</span> rad/s of <span class="arithmatex">\(H(s) = \dfrac{1}{1 + s/100}\)</span>, both exactly and from the asymptote.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>Corner at 100 rad/s. Exact: <span class="arithmatex">\(|H| = 1/\sqrt{1 + 100} = 0.0995\)</span>, or <span class="arithmatex">\(-20.04\)</span> dB. Asymptote: one decade above the corner, <span class="arithmatex">\(-20\)</span> dB.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 12.3</p>
+<p>What is the group delay of the FIR filter <span class="arithmatex">\(y[n] = \frac14(x[n] + 2x[n-1] + x[n-2])\)</span>?</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>The coefficients are symmetric about <span class="arithmatex">\(n = 1\)</span>, so the phase is <span class="arithmatex">\(-\Omega\)</span> (where the real amplitude <span class="arithmatex">\(\frac12(1 + \cos\Omega)\)</span> is non-negative, which is everywhere): a constant group delay of 1 sample.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 12.4</p>
+<p>Find the Butterworth order needed for at most 3 dB loss at 2 kHz and at least 60 dB attenuation at 8 kHz.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p><span class="arithmatex">\(N \ge \dfrac{\log_{10}(10^6 - 1)}{2\log_{10}4} = \dfrac{6.0}{1.204} = 4.98\)</span>, so <span class="arithmatex">\(N = 5\)</span>.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 12.5</p>
+<p>At what height is the resonant peak of a second-order low-pass factor with <span class="arithmatex">\(\zeta = 0.25\)</span>? Express it in dB.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p><span class="arithmatex">\(\frac{1}{2\cdot0.25\sqrt{1 - 0.0625}} = \frac{1}{0.5\cdot0.968} = 2.07\)</span>, or about 6.3 dB.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 12.6</p>
+<p>With <span class="arithmatex">\(f_s = 10\)</span> kHz, a digital filter is to have its cut-off at 2.5 kHz. What analog cut-off must the prototype have before the bilinear transform? Express it in hertz.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p><span class="arithmatex">\(\Omega_c = \pi/2\)</span>; <span class="arithmatex">\(\omega_a = 2f_s\tan(\pi/4) = 20000\)</span> rad/s, which is <span class="arithmatex">\(20000/2\pi \approx 3183\)</span> Hz, higher than 2.5 kHz because of warping.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 12.7</p>
+<p>Write the system function of a notch filter that removes <span class="arithmatex">\(\Omega_0 = \pi/2\)</span>, with poles at radius 0.9.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p><span class="arithmatex">\(\cos(\pi/2) = 0\)</span>, so <span class="arithmatex">\(H(z) = \dfrac{1 + z^{-2}}{1 + 0.81z^{-2}}\)</span>.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 12.8</p>
+<p>An FIR filter has coefficients <span class="arithmatex">\(h = [1, -2, 3, -2, 1]\)</span>. Does it have linear phase? What is its delay?</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>Yes: the coefficients are symmetric about <span class="arithmatex">\(n = 2\)</span>. The delay is 2 samples.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 12.9</p>
+<p>An FIR low-pass filter needs at least 50 dB of stopband attenuation. Which windows in Table 12.2 are suitable?</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>Hamming (about 53 dB) and Blackman (about 74 dB). Rectangular and Hann fall short.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 12.10</p>
+<p>Compute the first three coefficients <span class="arithmatex">\(h[0], h[1], h[2]\)</span> of the ideal low-pass impulse response with <span class="arithmatex">\(\Omega_c = \pi/2\)</span> and <span class="arithmatex">\(M = 4\)</span> (before windowing).</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p><span class="arithmatex">\(h_d[n] = \frac{\sin(\pi(n - 2)/2)}{\pi(n - 2)}\)</span>. <span class="arithmatex">\(h[0] = \frac{\sin(-\pi)}{-2\pi} = 0\)</span>; <span class="arithmatex">\(h[1] = \frac{\sin(-\pi/2)}{-\pi} = \frac{1}{\pi} \approx 0.318\)</span>; <span class="arithmatex">\(h[2] = \frac{\Omega_c}{\pi} = 0.5\)</span>. By symmetry <span class="arithmatex">\(h[3] = 0.318\)</span> and <span class="arithmatex">\(h[4] = 0\)</span>.</p>
+</details>
+<h2 id="1211-quiz">12.11 Quiz<a class="headerlink" href="#1211-quiz" title="Permanent link">&para;</a></h2>
+<div class="pk-quiz" data-quiz="79b4ce6367e1">
+<p class="pk-quiz-title">Check your understanding of Chapter 12</p>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;text&quot;,&quot;answer&quot;:[&quot;20&quot;,&quot;20 dB&quot;]}">
+<p class="admonition-title">Exercise 1</p>
+<p class="pk-q-prompt">How many dB does a first-order low-pass response fall per decade well above its corner?</p>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>20 / 20 dB</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;−45°&quot;,&quot;−90°&quot;,&quot;0°&quot;,&quot;−180°&quot;],&quot;answer&quot;:&quot;−45°&quot;}">
+<p class="admonition-title">Exercise 2</p>
+<p class="pk-q-prompt">At the corner frequency of a first-order low-pass filter, the phase is</p>
+<ol class="pk-q-opts" type="A"><li>−45°</li><li>−90°</li><li>0°</li><li>−180°</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>−45°</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;constant magnitude and linear phase&quot;,&quot;constant phase&quot;,&quot;a resonant peak&quot;,&quot;zero group delay only&quot;],&quot;answer&quot;:&quot;constant magnitude and linear phase&quot;}">
+<p class="admonition-title">Exercise 3</p>
+<p class="pk-q-prompt">A system transmits a signal without distortion if, in the signal's band, it has</p>
+<ol class="pk-q-opts" type="A"><li>constant magnitude and linear phase</li><li>constant phase</li><li>a resonant peak</li><li>zero group delay only</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>constant magnitude and linear phase</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;1/√2&quot;,&quot;1/2&quot;,&quot;1&quot;,&quot;0&quot;],&quot;answer&quot;:&quot;1/√2&quot;}">
+<p class="admonition-title">Exercise 4</p>
+<p class="pk-q-prompt">A Butterworth filter of any order has, at ω = ωc, a gain of</p>
+<ol class="pk-q-opts" type="A"><li>1/√2</li><li>1/2</li><li>1</li><li>0</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>1/√2</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;FIR filters with symmetric coefficients&quot;,&quot;all IIR filters&quot;,&quot;Butterworth filters&quot;,&quot;notch filters&quot;],&quot;answer&quot;:&quot;FIR filters with symmetric coefficients&quot;}">
+<p class="admonition-title">Exercise 5</p>
+<p class="pk-q-prompt">Which filters can have exactly linear phase?</p>
+<ol class="pk-q-opts" type="A"><li>FIR filters with symmetric coefficients</li><li>all IIR filters</li><li>Butterworth filters</li><li>notch filters</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>FIR filters with symmetric coefficients</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;the inside of the unit circle&quot;,&quot;the outside of the unit circle&quot;,&quot;the real axis&quot;,&quot;the unit circle&quot;],&quot;answer&quot;:&quot;the inside of the unit circle&quot;}">
+<p class="admonition-title">Exercise 6</p>
+<p class="pk-q-prompt">The bilinear transform maps the left half of the s-plane to</p>
+<ol class="pk-q-opts" type="A"><li>the inside of the unit circle</li><li>the outside of the unit circle</li><li>the real axis</li><li>the unit circle</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>the inside of the unit circle</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;blanks&quot;,&quot;answer&quot;:[[&quot;transition&quot;]]}">
+<p class="admonition-title">Exercise 7</p>
+<p class="pk-q-prompt">In window design, a tapered window reduces ripple at the cost of a wider <span class="pk-blank" data-i="0">___</span> band.</p>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>transition</strong></p>
+</details>
+</div>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button type="button" class="md-top md-icon" data-md-component="top" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+Back to top
+</button>
+</main>
+<footer class="md-footer">
+<nav class="md-footer__inner md-grid" aria-label="Footer" >
+<a href="the-z-transform.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: 11. The z-Transform">
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</div>
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Previous
+</span>
+<div class="md-ellipsis">
+11. The z-Transform
+</div>
+</div>
+</a>
+<a href="state-space-models.html" class="md-footer__link md-footer__link--next" aria-label="Next: 13. State-Space Models">
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Next
+</span>
+<div class="md-ellipsis">
+13. State-Space Models
+</div>
+</div>
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+</div>
+</a>
+</nav>
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+The Open Book Project &middot;
+<a href="../../about.html">About this library</a> &middot;
+<a href="../../publish.html">Publish your book</a> &middot;
+© The authors of the books
+</div>
+Made with
+<a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+Material for MkDocs
+</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "navigation.prune", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "toc.follow", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+<script src="../../assets/mathjax.js"></script>
+<script src="../../assets/viz.js"></script>
+<script src="../../assets/remote.js"></script>
+<script src="../../assets/scans.js"></script>
+<script src="../../assets/reader.js"></script>
+<script src="../../assets/app.js"></script>
+<script src="../../assets/slides.js"></script>
+<script src="../../assets/speak.js"></script>
+<script src="../../assets/quiz.js"></script>
+<script>
+    /* offline reading: the service worker at the site root (its scope is the whole site) */
+    if ("serviceWorker" in navigator && window.isSecureContext) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register(new URL("../../sw.js", location.href).href).catch(function () {});
+      });
+    }
+  </script>
+</body>
+</html>

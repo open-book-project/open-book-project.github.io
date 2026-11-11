@@ -1,0 +1,1113 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="description" content="The Open Book Project: books on computer science, quantum computing, cyber security, science, the social sciences, university courses and languages, read page by page like an e-book, online or offline.">
+<meta name="author" content="The Open Book Project">
+<link rel="canonical" href="https://open-book-project.github.io/computing/data_science_python/an-end-to-end-project.html">
+<link rel="prev" href="ethics-privacy-and-reproducibility.html">
+<link rel="next" href="glossary.html">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap"></noscript>
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Open Book">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="application-name" content="Open Book"><script src="../../assets/library-data.js"></script><script>
+    (function () {
+      var X = window.XMLHttpRequest, open, gate = new Promise(function (r) { open = r; });
+      if (!X) return;
+      var open0 = X.prototype.open, send0 = X.prototype.send;
+      X.prototype.open = function (method, url) {
+        this.__pkIndex = /\/search\/search_index\.json(\?|#|$)/.test(String(url));
+        return open0.apply(this, arguments);
+      };
+      X.prototype.send = function () {
+        if (!this.__pkIndex) return send0.apply(this, arguments);
+        var xhr = this, args = arguments;
+        gate.then(function () { send0.apply(xhr, args); });
+      };
+      function wake() { open(); }
+      document.addEventListener("focusin", function (e) { if (e.target && e.target.closest && e.target.closest(".md-search")) wake(); });
+      document.addEventListener("click", function (e) { if (e.target && e.target.closest && e.target.closest('label[for="__search"], .md-search')) wake(); }, true);
+      document.addEventListener("keydown", function (e) {
+        var k = e.key;
+        if ((k === "/" || k === "s" || k === "f" || k === "S" || k === "F") && !(e.target && e.target.closest && e.target.closest("input, textarea, [contenteditable]"))) wake();
+      }, true);
+      if (/[?&]q=/.test(location.search)) wake();
+    })();
+  </script><script>
+    try {
+      if ((window.matchMedia && (matchMedia("(display-mode: standalone)").matches || matchMedia("(display-mode: fullscreen)").matches)) || navigator.standalone === true) {
+        document.documentElement.className += " bjp-standalone";
+      }
+    } catch (e) { /* not an installed app */ }
+    /* the books of a subject or of the whole library as covers or as a list (assets/app.js): the reader's choice */
+    try {
+      var bv = localStorage.getItem("bjp.view");
+      if (bv === "list" || (bv !== "grid" && /\/books\.html$/.test(location.pathname))) document.documentElement.className += " bjp-view-list";
+    } catch (e) { /* no storage: covers */ }
+  </script>
+<script>
+    /* a book opened from its cover on the shelf: the page stays blank, in the cover's colour, until the reader is up */
+    try {
+      var cv = sessionStorage.getItem("bjp.reader.cover");
+      if (cv && sessionStorage.getItem("bjp.reader.open") === "1") {
+        var c = JSON.parse(cv), de = document.documentElement;
+        de.className += " bjp-booting";
+        if (c && /^#[0-9a-f]{3,8}$/i.test(c.bg || "")) de.style.background = c.bg;
+        setTimeout(function () { de.classList.remove("bjp-booting"); de.style.background = ""; }, 3000);
+      }
+    } catch (e) { /* no session storage: the page simply opens as usual */ }
+  </script>
+<title>14. An End-to-End Project - The Open Book Project</title>
+<link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+<link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+<link rel="stylesheet" href="../../assets/extra.css">
+<link rel="stylesheet" href="../../assets/reader.css">
+<link rel="stylesheet" href="../../assets/viz.css">
+<link rel="stylesheet" href="../../assets/app.css">
+<link rel="stylesheet" href="../../assets/theme.css">
+<link rel="stylesheet" href="../../assets/slides.css">
+<link rel="stylesheet" href="../../assets/remote.css">
+<link rel="stylesheet" href="../../assets/scans.css">
+<link rel="stylesheet" href="../../assets/speak.css">
+<link rel="stylesheet" href="../../assets/quiz.css">
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+<input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+<input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a href="#141-the-question" class="md-skip">
+Skip to content
+</a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav class="md-header__inner md-grid" aria-label="Header">
+<a href="../../index.html" title="The Open Book Project" class="md-header__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+The Open Book Project
+</span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+14. An End-to-End Project
+</span>
+</div>
+</div>
+</div><a href="../../index.html" class="bjp-libbtn" aria-label="Library: all books" title="Library: all books">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V5h4v15M8 20V9h4v11M14 20L12.6 6l3.8-.8 3 14.2M3 20h18"/></svg><span>Library</span>
+</a>
+<a href="../../subjects/index.html" class="pk-catbtn" aria-haspopup="true" aria-expanded="false" title="Browse the books by category">
+<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><circle cx="17" cy="7" r="3.6"/><path d="M7 13.4l3.9 6.8H3.1z"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg><span>Categories</span>
+</a>
+<form class="md-header__option" data-md-component="palette">
+<input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+<label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+</label>
+<input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+<label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+<label class="md-search__icon md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</label>
+<nav class="md-search__options" aria-label="Search">
+<button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+Initializing search
+</div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--primary bjp-nav bjp-nav--book" aria-label="Navigation" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a href="../../index.html" title="The Open Book Project" class="md-nav__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+The Open Book Project
+</label>
+<ul class="md-nav__list" data-md-scrollfix>
+<li class="md-nav__item bjp-nav-all">
+<a href="../../index.html" class="md-nav__link" aria-label="All books: back to the library">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+<span class="md-ellipsis">All books</span>
+</a>
+</li>
+<li class="md-nav__item bjp-nav-book" role="presentation"><span class="bjp-nav-head">Data Science with Python</span></li>
+<li class="md-nav__item">
+<a href="index.html" class="md-nav__link">
+<span class="md-ellipsis">
+Overview and preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="preface.html" class="md-nav__link">
+<span class="md-ellipsis">
+Preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="the-data-science-workflow.html" class="md-nav__link">
+<span class="md-ellipsis">
+1. The Data Science Workflow
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="python-essentials-for-data-work.html" class="md-nav__link">
+<span class="md-ellipsis">
+2. Python Essentials for Data Work
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="numerical-computing-with-numpy.html" class="md-nav__link">
+<span class="md-ellipsis">
+3. Numerical Computing with NumPy
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="pandas-fundamentals.html" class="md-nav__link">
+<span class="md-ellipsis">
+4. pandas Fundamentals: Series, DataFrames and Selection
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="cleaning-reshaping-grouping-and-joining.html" class="md-nav__link">
+<span class="md-ellipsis">
+5. Cleaning, Reshaping, Grouping and Joining
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="visualisation-and-exploratory-data-analysis.html" class="md-nav__link">
+<span class="md-ellipsis">
+6. Visualisation and Exploratory Data Analysis
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="probability-and-statistics.html" class="md-nav__link">
+<span class="md-ellipsis">
+7. Probability and Statistics for Data Science
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="regression.html" class="md-nav__link">
+<span class="md-ellipsis">
+8. Regression
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="classification.html" class="md-nav__link">
+<span class="md-ellipsis">
+9. Classification
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="model-evaluation-and-cross-validation.html" class="md-nav__link">
+<span class="md-ellipsis">
+10. Model Evaluation and Cross-Validation
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="clustering-and-dimensionality-reduction.html" class="md-nav__link">
+<span class="md-ellipsis">
+11. Clustering and Dimensionality Reduction
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="text-and-time-series-basics.html" class="md-nav__link">
+<span class="md-ellipsis">
+12. Text and Time Series Basics
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ethics-privacy-and-reproducibility.html" class="md-nav__link">
+<span class="md-ellipsis">
+13. Ethics, Privacy and Reproducibility
+</span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+14. An End-to-End Project
+</span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a href="an-end-to-end-project.html" class="md-nav__link md-nav__link--active">
+<span class="md-ellipsis">
+14. An End-to-End Project
+</span>
+</a>
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#141-the-question" class="md-nav__link">
+<span class="md-ellipsis">
+14.1 The question
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#142-getting-the-data" class="md-nav__link">
+<span class="md-ellipsis">
+14.2 Getting the data
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#143-cleaning" class="md-nav__link">
+<span class="md-ellipsis">
+14.3 Cleaning
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#144-exploring" class="md-nav__link">
+<span class="md-ellipsis">
+14.4 Exploring
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#145-the-pipeline" class="md-nav__link">
+<span class="md-ellipsis">
+14.5 The pipeline
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#146-baselines-and-candidate-models" class="md-nav__link">
+<span class="md-ellipsis">
+14.6 Baselines and candidate models
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#147-tuning" class="md-nav__link">
+<span class="md-ellipsis">
+14.7 Tuning
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#148-the-final-test" class="md-nav__link">
+<span class="md-ellipsis">
+14.8 The final test
+</span>
+</a>
+<nav class="md-nav" aria-label="14.8 The final test">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#errors-by-group" class="md-nav__link">
+<span class="md-ellipsis">
+Errors by group
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#what-the-model-relies-on" class="md-nav__link">
+<span class="md-ellipsis">
+What the model relies on
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#149-communicating-the-result" class="md-nav__link">
+<span class="md-ellipsis">
+14.9 Communicating the result
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1410-summary" class="md-nav__link">
+<span class="md-ellipsis">
+14.10 Summary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1411-exercises" class="md-nav__link">
+<span class="md-ellipsis">
+14.11 Exercises
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1412-quiz" class="md-nav__link">
+<span class="md-ellipsis">
+14.12 Quiz
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="glossary.html" class="md-nav__link">
+<span class="md-ellipsis">
+Glossary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="further-reading.html" class="md-nav__link">
+<span class="md-ellipsis">
+Further Reading
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#141-the-question" class="md-nav__link">
+<span class="md-ellipsis">
+14.1 The question
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#142-getting-the-data" class="md-nav__link">
+<span class="md-ellipsis">
+14.2 Getting the data
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#143-cleaning" class="md-nav__link">
+<span class="md-ellipsis">
+14.3 Cleaning
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#144-exploring" class="md-nav__link">
+<span class="md-ellipsis">
+14.4 Exploring
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#145-the-pipeline" class="md-nav__link">
+<span class="md-ellipsis">
+14.5 The pipeline
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#146-baselines-and-candidate-models" class="md-nav__link">
+<span class="md-ellipsis">
+14.6 Baselines and candidate models
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#147-tuning" class="md-nav__link">
+<span class="md-ellipsis">
+14.7 Tuning
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#148-the-final-test" class="md-nav__link">
+<span class="md-ellipsis">
+14.8 The final test
+</span>
+</a>
+<nav class="md-nav" aria-label="14.8 The final test">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#errors-by-group" class="md-nav__link">
+<span class="md-ellipsis">
+Errors by group
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#what-the-model-relies-on" class="md-nav__link">
+<span class="md-ellipsis">
+What the model relies on
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#149-communicating-the-result" class="md-nav__link">
+<span class="md-ellipsis">
+14.9 Communicating the result
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1410-summary" class="md-nav__link">
+<span class="md-ellipsis">
+14.10 Summary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1411-exercises" class="md-nav__link">
+<span class="md-ellipsis">
+14.11 Exercises
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#1412-quiz" class="md-nav__link">
+<span class="md-ellipsis">
+14.12 Quiz
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="chapter-14-an-end-to-end-project">Chapter 14: An End-to-End Project<a class="headerlink" href="#chapter-14-an-end-to-end-project" title="Permanent link">&para;</a></h1>
+<p><em>Predicting delivery times, from raw data to a report</em></p>
+<div class="admonition note">
+<p class="admonition-title">Learning outcomes</p>
+<p>After this chapter you should be able to:</p>
+<ul>
+<li>frame a practical problem as a data science question with a target, a metric and a baseline;</li>
+<li>write a cleaning function that turns a raw export into an analysis table and reports what it changed;</li>
+<li>explore the data to guide feature choices;</li>
+<li>build a complete preprocessing-and-model pipeline with <code>ColumnTransformer</code>, including imputation and encoding;</li>
+<li>compare candidate models by cross-validation, tune the best one, and evaluate it once on a held-out test set;</li>
+<li>analyse errors by group and explain a model with permutation importance;</li>
+<li>write a short, honest report of the result and its limitations.</li>
+</ul>
+</div>
+<p>This chapter carries out a complete project, using the tools of the whole book in the order the workflow of Chapter 1 prescribes. The problem is a common one: a food-delivery service shows customers an estimated delivery time when they order, and the estimates are often wrong. The project's aim is a better estimate. As everywhere in this book, the data is simulated in code, so that every step can be run and checked; the simulation includes the kinds of mess that real exports contain.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">io</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+</code></pre></div>
+<h2 id="141-the-question">14.1 The question<a class="headerlink" href="#141-the-question" title="Permanent link">&para;</a></h2>
+<p>The service's current estimate is a fixed rule: <strong>30 minutes plus 2 minutes per kilometre</strong>. Customers complain that it is too optimistic at busy times and too pessimistic for short orders. Talking to the operations team sharpens the request into a question:</p>
+<blockquote>
+<p><em>At the moment an order is placed, using only information available then, can we predict how many minutes the delivery will take more accurately than the current rule?</em></p>
+</blockquote>
+<p>Three decisions follow from this framing.</p>
+<ul>
+<li><strong>Target</strong>: delivery time in minutes, from order to doorstep: a regression problem (Chapter 8).</li>
+<li><strong>Metric</strong>: mean absolute error (MAE) in minutes, because customers experience the size of the error directly and the team finds "off by 6 minutes on average" easy to understand. We will also report the share of orders predicted within 10 minutes.</li>
+<li><strong>Baselines</strong>: the current rule, and predicting the average delivery time. A new model is worthwhile only if it clearly beats the rule.</li>
+</ul>
+<p>The phrase <em>available at the moment of ordering</em> rules out features such as the actual time the food left the kitchen, which would leak the answer (Section 10.4).</p>
+<h2 id="142-getting-the-data">14.2 Getting the data<a class="headerlink" href="#142-getting-the-data" title="Permanent link">&para;</a></h2>
+<p>The operations team provides an export of 2,000 recent orders. We simulate it, including its problems; in a real project this code would be replaced by <code>pd.read_csv("orders_export.csv")</code>.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">simulate_export</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">2000</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">2024</span><span class="p">):</span>
+    <span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+    <span class="n">day</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+    <span class="n">hour_weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+    <span class="n">hour</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">24</span><span class="p">),</span> <span class="n">n</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="n">hour_weights</span> <span class="o">/</span> <span class="n">hour_weights</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+    <span class="n">minute</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+    <span class="n">placed</span> <span class="o">=</span> <span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">Timestamp</span><span class="p">(</span><span class="s2">"2024-01-01"</span><span class="p">)</span> <span class="o">+</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_timedelta</span><span class="p">(</span><span class="n">day</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">"D"</span><span class="p">)</span>
+              <span class="o">+</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_timedelta</span><span class="p">(</span><span class="n">hour</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">"h"</span><span class="p">)</span> <span class="o">+</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_timedelta</span><span class="p">(</span><span class="n">minute</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">"min"</span><span class="p">))</span>
+    <span class="n">kinds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s2">"pizza"</span><span class="p">,</span> <span class="s2">"north indian"</span><span class="p">,</span> <span class="s2">"south indian"</span><span class="p">,</span> <span class="s2">"chinese"</span><span class="p">,</span> <span class="s2">"cafe"</span><span class="p">])</span>
+    <span class="n">restaurant</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">kinds</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="p">[</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.15</span><span class="p">,</span> <span class="mf">0.15</span><span class="p">])</span>
+    <span class="n">prep</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">restaurant</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">({</span><span class="s2">"pizza"</span><span class="p">:</span> <span class="mi">15</span><span class="p">,</span> <span class="s2">"north indian"</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span> <span class="s2">"south indian"</span><span class="p">:</span> <span class="mi">12</span><span class="p">,</span>
+                                      <span class="s2">"chinese"</span><span class="p">:</span> <span class="mi">18</span><span class="p">,</span> <span class="s2">"cafe"</span><span class="p">:</span> <span class="mi">8</span><span class="p">})</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+    <span class="n">distance</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">rng</span><span class="o">.</span><span class="n">gamma</span><span class="p">(</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">1.8</span><span class="p">,</span> <span class="n">n</span><span class="p">),</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">items</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">rng</span><span class="o">.</span><span class="n">poisson</span><span class="p">(</span><span class="mf">1.5</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+    <span class="n">weather</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">choice</span><span class="p">([</span><span class="s2">"clear"</span><span class="p">,</span> <span class="s2">"rain"</span><span class="p">,</span> <span class="s2">"fog"</span><span class="p">],</span> <span class="n">n</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="p">[</span><span class="mf">0.75</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">])</span>
+    <span class="n">rider_exp</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+    <span class="n">rush</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">hour</span><span class="p">,</span> <span class="p">[</span><span class="mi">12</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">19</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">21</span><span class="p">])</span>
+    <span class="n">weekend</span> <span class="o">=</span> <span class="n">placed</span><span class="o">.</span><span class="n">dayofweek</span> <span class="o">&gt;=</span> <span class="mi">5</span>
+    <span class="n">wx</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">weather</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">({</span><span class="s2">"clear"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">"rain"</span><span class="p">:</span> <span class="mi">7</span><span class="p">,</span> <span class="s2">"fog"</span><span class="p">:</span> <span class="mi">10</span><span class="p">})</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+    <span class="n">minutes</span> <span class="o">=</span> <span class="p">(</span><span class="mi">10</span> <span class="o">+</span> <span class="n">prep</span> <span class="o">+</span> <span class="mf">3.2</span> <span class="o">*</span> <span class="n">distance</span> <span class="o">+</span> <span class="mf">1.5</span> <span class="o">*</span> <span class="n">items</span> <span class="o">+</span> <span class="mi">8</span> <span class="o">*</span> <span class="n">rush</span> <span class="o">+</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">weekend</span> <span class="o">+</span> <span class="n">wx</span>
+               <span class="o">-</span> <span class="mf">0.08</span> <span class="o">*</span> <span class="n">rider_exp</span> <span class="o">+</span> <span class="n">rng</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span> <span class="o">+</span> <span class="n">rng</span><span class="o">.</span><span class="n">exponential</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s2">"order_id"</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">100001</span><span class="p">,</span> <span class="mi">100001</span> <span class="o">+</span> <span class="n">n</span><span class="p">),</span> <span class="s2">"placed_at"</span><span class="p">:</span> <span class="n">placed</span><span class="p">,</span>
+                       <span class="s2">"restaurant_type"</span><span class="p">:</span> <span class="n">restaurant</span><span class="p">,</span> <span class="s2">"distance_km"</span><span class="p">:</span> <span class="n">distance</span><span class="p">,</span> <span class="s2">"items"</span><span class="p">:</span> <span class="n">items</span><span class="p">,</span>
+                       <span class="s2">"weather"</span><span class="p">:</span> <span class="n">weather</span><span class="p">,</span> <span class="s2">"rider_exp_months"</span><span class="p">:</span> <span class="n">rider_exp</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">),</span>
+                       <span class="s2">"delivery_minutes"</span><span class="p">:</span> <span class="n">minutes</span><span class="p">})</span>
+    <span class="c1"># the mess of a real export</span>
+    <span class="n">messy</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">messy</span><span class="p">[:</span><span class="mi">100</span><span class="p">],</span> <span class="s2">"restaurant_type"</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">messy</span><span class="p">[:</span><span class="mi">100</span><span class="p">],</span> <span class="s2">"restaurant_type"</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">title</span><span class="p">()</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">messy</span><span class="p">[</span><span class="mi">100</span><span class="p">:],</span> <span class="s2">"restaurant_type"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">" "</span> <span class="o">+</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">messy</span><span class="p">[</span><span class="mi">100</span><span class="p">:],</span> <span class="s2">"restaurant_type"</span><span class="p">]</span> <span class="o">+</span> <span class="s2">" "</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">rng</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span> <span class="s2">"weather"</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">rng</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span> <span class="s2">"rider_exp_months"</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">rng</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span> <span class="s2">"distance_km"</span><span class="p">]</span> <span class="o">*=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">rng</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span> <span class="s2">"delivery_minutes"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">480</span><span class="p">,</span> <span class="mi">600</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">720</span><span class="p">]</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">df</span><span class="p">,</span> <span class="n">df</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="n">seed</span><span class="p">)],</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="n">raw_csv</span> <span class="o">=</span> <span class="n">simulate_export</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">raw_csv</span><span class="p">[:</span><span class="mi">300</span><span class="p">])</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>order_id,placed_at,restaurant_type,distance_km,items,weather,rider_exp_months,delivery_minutes
+100001,2024-01-22 22:05:00,pizza,3.0,4,clear,29.0,38.0
+100002,2024-03-01 12:01:00, south indian ,7.7,4,clear,52.0,61.0
+100003,2024-01-09 16:09:00,pizza,4.4,2,clear,36.0,44.0
+100004,2024-01-20 17:25:00,
+</code></pre></div>
+<h2 id="143-cleaning">14.3 Cleaning<a class="headerlink" href="#143-cleaning" title="Permanent link">&para;</a></h2>
+<p>First, a look at the raw table, exactly as Chapter 4 recommends:</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">raw</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">io</span><span class="o">.</span><span class="n">StringIO</span><span class="p">(</span><span class="n">raw_csv</span><span class="p">),</span> <span class="n">parse_dates</span><span class="o">=</span><span class="p">[</span><span class="s2">"placed_at"</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">raw</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">raw</span><span class="o">.</span><span class="n">isna</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">raw</span><span class="p">[</span><span class="s2">"restaurant_type"</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">8</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">raw</span><span class="p">[[</span><span class="s2">"distance_km"</span><span class="p">,</span> <span class="s2">"items"</span><span class="p">,</span> <span class="s2">"rider_exp_months"</span><span class="p">,</span> <span class="s2">"delivery_minutes"</span><span class="p">]]</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"duplicated order ids:"</span><span class="p">,</span> <span class="n">raw</span><span class="p">[</span><span class="s2">"order_id"</span><span class="p">]</span><span class="o">.</span><span class="n">duplicated</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>(2015, 8)
+order_id              0
+placed_at             0
+restaurant_type       0
+distance_km           0
+items                 0
+weather             100
+rider_exp_months     60
+delivery_minutes      0
+dtype: int64
+restaurant_type
+pizza             474
+north indian      440
+south indian      375
+chinese           269
+cafe              254
+Pizza              32
+ pizza             30
+ south indian      26
+Name: count, dtype: int64
+       distance_km   items  rider_exp_months  delivery_minutes
+count       2015.0  2015.0            1955.0            2015.0
+mean           3.6     2.5              29.6              48.0
+std            2.6     1.2              17.2              24.9
+min           -7.6     1.0               0.0               0.0
+25%            1.7     2.0              15.0              39.0
+50%            3.1     2.0              30.0              47.0
+75%            4.9     3.0              44.0              55.0
+max           19.7     7.0              59.0             720.0
+duplicated order ids: 15
+</code></pre></div>
+<p>The inspection finds: 15 duplicated orders; restaurant types with stray spaces and capitals; missing weather (100) and rider experience (60); negative distances; and delivery times of 0, 1 and several hundred minutes, which are impossible for a local delivery and look like system errors (an order left open, a test order). Following Section 5.11, the fixes go into one function that starts from the raw text and reports what it did.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">clean_orders</span><span class="p">(</span><span class="n">csv_text</span><span class="p">):</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">io</span><span class="o">.</span><span class="n">StringIO</span><span class="p">(</span><span class="n">csv_text</span><span class="p">),</span> <span class="n">parse_dates</span><span class="o">=</span><span class="p">[</span><span class="s2">"placed_at"</span><span class="p">])</span>
+    <span class="n">log</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"raw rows"</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)}</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="s2">"order_id"</span><span class="p">)</span>
+    <span class="n">log</span><span class="p">[</span><span class="s2">"duplicates removed"</span><span class="p">]</span> <span class="o">=</span> <span class="n">log</span><span class="p">[</span><span class="s2">"raw rows"</span><span class="p">]</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+    <span class="n">df</span><span class="p">[</span><span class="s2">"restaurant_type"</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">"restaurant_type"</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    <span class="n">bad_distance</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">"distance_km"</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">0</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">bad_distance</span><span class="p">,</span> <span class="s2">"distance_km"</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+    <span class="n">log</span><span class="p">[</span><span class="s2">"impossible distances set missing"</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">bad_distance</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+    <span class="n">bad_time</span> <span class="o">=</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">"delivery_minutes"</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">"delivery_minutes"</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">180</span><span class="p">)</span>
+    <span class="n">log</span><span class="p">[</span><span class="s2">"impossible delivery times dropped"</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">bad_time</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="o">~</span><span class="n">bad_time</span><span class="p">]</span>                                 <span class="c1"># the target must be trustworthy</span>
+    <span class="n">log</span><span class="p">[</span><span class="s2">"final rows"</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">df</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">log</span>
+
+<span class="n">orders</span><span class="p">,</span> <span class="n">log</span> <span class="o">=</span> <span class="n">clean_orders</span><span class="p">(</span><span class="n">raw_csv</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">log</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">k</span><span class="si">:</span><span class="s2">&gt;34</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">orders</span><span class="p">[</span><span class="s2">"restaurant_type"</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">())</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>                          raw rows: 2015
+                duplicates removed: 15
+  impossible distances set missing: 5
+ impossible delivery times dropped: 6
+                        final rows: 1994
+restaurant_type
+pizza           530
+north indian    484
+south indian    407
+chinese         298
+cafe            275
+Name: count, dtype: int64
+</code></pre></div>
+<p>Two different treatments were chosen on purpose. Rows with an impossible <strong>target</strong> are dropped: a model cannot learn from a wrong answer, and there are only six. Impossible <strong>feature</strong> values (negative distances) are set to missing and left for the pipeline to impute, because the rest of each row is fine. Missing weather and rider experience are also left to the pipeline, so that the same imputation is learned from training data and applied identically to new orders.</p>
+<h2 id="144-exploring">14.4 Exploring<a class="headerlink" href="#144-exploring" title="Permanent link">&para;</a></h2>
+<p>The exploration asks which information available at order time relates to delivery time. We first derive the time features, the hour of the day and whether it is a weekend, since the timestamp itself means nothing to a model.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">orders</span><span class="p">[</span><span class="s2">"hour"</span><span class="p">]</span> <span class="o">=</span> <span class="n">orders</span><span class="p">[</span><span class="s2">"placed_at"</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">hour</span>
+<span class="n">orders</span><span class="p">[</span><span class="s2">"weekend"</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">orders</span><span class="p">[</span><span class="s2">"placed_at"</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">dayofweek</span> <span class="o">&gt;=</span> <span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">orders</span><span class="p">[</span><span class="s2">"delivery_minutes"</span><span class="p">]</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">orders</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">"weather"</span><span class="p">,</span> <span class="n">dropna</span><span class="o">=</span><span class="kc">False</span><span class="p">)[</span><span class="s2">"delivery_minutes"</span><span class="p">]</span><span class="o">.</span><span class="n">agg</span><span class="p">([</span><span class="s2">"count"</span><span class="p">,</span> <span class="s2">"median"</span><span class="p">])</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">orders</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">"restaurant_type"</span><span class="p">)[</span><span class="s2">"delivery_minutes"</span><span class="p">]</span><span class="o">.</span><span class="n">median</span><span class="p">()</span><span class="o">.</span><span class="n">sort_values</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"correlation with distance:"</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">orders</span><span class="p">[</span><span class="s2">"delivery_minutes"</span><span class="p">]</span><span class="o">.</span><span class="n">corr</span><span class="p">(</span><span class="n">orders</span><span class="p">[</span><span class="s2">"distance_km"</span><span class="p">]),</span> <span class="mi">3</span><span class="p">))</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>count    1994.0
+mean       47.3
+std        12.2
+min         8.0
+25%        39.0
+50%        47.0
+75%        55.0
+max       104.0
+Name: delivery_minutes, dtype: float64
+         count  median
+weather               
+clear     1404    45.0
+fog         80    53.5
+rain       410    52.5
+NaN        100    44.5
+restaurant_type
+cafe            40.0
+south indian    43.0
+pizza           46.0
+chinese         50.0
+north indian    52.0
+Name: delivery_minutes, dtype: float64
+correlation with distance: 0.669
+</code></pre></div>
+<div class="language-python highlight"><pre><span></span><code><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="mi">7</span><span class="p">))</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">orders</span><span class="p">[</span><span class="s2">"delivery_minutes"</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s2">"white"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"delivery time (minutes)"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"orders"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Distribution of delivery times"</span><span class="p">)</span>
+
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">orders</span><span class="p">[</span><span class="s2">"distance_km"</span><span class="p">],</span> <span class="n">orders</span><span class="p">[</span><span class="s2">"delivery_minutes"</span><span class="p">],</span> <span class="n">s</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.4</span><span class="p">)</span>
+<span class="n">d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="mi">30</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">d</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"tab:red"</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"current rule: 30 + 2 x km"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"distance (km)"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"delivery time (minutes)"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Time against distance"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+
+<span class="n">by_hour</span> <span class="o">=</span> <span class="n">orders</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">"hour"</span><span class="p">)[</span><span class="s2">"delivery_minutes"</span><span class="p">]</span><span class="o">.</span><span class="n">median</span><span class="p">()</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">by_hour</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">by_hour</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s2">"o"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"hour of the day"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"median delivery time"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Rush hours are slower"</span><span class="p">)</span>
+
+<span class="n">groups</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"clear"</span><span class="p">,</span> <span class="s2">"rain"</span><span class="p">,</span> <span class="s2">"fog"</span><span class="p">]</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">boxplot</span><span class="p">([</span><span class="n">orders</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">orders</span><span class="p">[</span><span class="s2">"weather"</span><span class="p">]</span> <span class="o">==</span> <span class="n">g</span><span class="p">,</span> <span class="s2">"delivery_minutes"</span><span class="p">]</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">groups</span><span class="p">],</span>
+                   <span class="n">tick_labels</span><span class="o">=</span><span class="n">groups</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"delivery time (minutes)"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Weather"</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">"project-eda.svg"</span><span class="p">)</span>
+</code></pre></div>
+<figure class="fig fig-diagram">
+<img src="img/project-eda.svg" alt="Four panels. Top left: a histogram of delivery times, a single hump around 40 to 50 minutes with a tail to the right. Top right: delivery time against distance, a rising cloud of points; the red line of the current rule lies below most of the cloud for short distances and has a shallower slope than the points. Bottom left: median delivery time by hour, with peaks at lunch (12 to 13) and dinner (19 to 21). Bottom right: box plots of delivery time for clear, rain and fog, with rain and fog higher than clear." loading="lazy" width="1046" height="662">
+<figcaption><strong>Figure 14.1 Exploring the delivery data.</strong> Four panels. Top left: a histogram of delivery times, a single hump around 40 to 50 minutes with a tail to the right. Top right: delivery time against distance, a rising cloud of points; the red line of the current rule lies below most of the cloud for short distances and has a shallower slope than the points. Bottom left: median delivery time by hour, with peaks at lunch (12 to 13) and dinner (19 to 21). Bottom right: box plots of delivery time for clear, rain and fog, with rain and fog higher than clear.</figcaption>
+</figure>
+<p>The exploration supports the operations team's complaints and suggests what a model needs:</p>
+<ul>
+<li>Delivery time rises with distance, more steeply than the rule's 2 minutes per kilometre, and the rule's 30-minute base is too low for most orders.</li>
+<li>Lunch and dinner rush hours are slower, which the rule ignores.</li>
+<li>Rain and fog add several minutes.</li>
+<li>Restaurant types differ, cafés being fastest, presumably through preparation time.</li>
+</ul>
+<h2 id="145-the-pipeline">14.5 The pipeline<a class="headerlink" href="#145-the-pipeline" title="Permanent link">&para;</a></h2>
+<p>The model's inputs mix numerical columns (some with missing values) and categorical columns (one with missing values). scikit-learn's <strong>ColumnTransformer</strong> applies different preprocessing to different columns and joins the results, and the whole thing goes into one pipeline with the model, so that every learned step is fitted on training data only.</p>
+<ul>
+<li>Numerical columns: fill missing values with the training median (<code>SimpleImputer</code>), then standardise.</li>
+<li>Categorical columns: fill missing values with the label <code>"unknown"</code>, then one-hot encode, ignoring categories never seen in training (<code>handle_unknown="ignore"</code>), so that a new restaurant type does not crash the model.</li>
+</ul>
+<div class="language-python highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.compose</span><span class="w"> </span><span class="kn">import</span> <span class="n">ColumnTransformer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pipeline</span><span class="p">,</span> <span class="n">make_pipeline</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.impute</span><span class="w"> </span><span class="kn">import</span> <span class="n">SimpleImputer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.preprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">StandardScaler</span><span class="p">,</span> <span class="n">OneHotEncoder</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">train_test_split</span>
+
+<span class="n">numeric</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"distance_km"</span><span class="p">,</span> <span class="s2">"items"</span><span class="p">,</span> <span class="s2">"rider_exp_months"</span><span class="p">,</span> <span class="s2">"hour"</span><span class="p">,</span> <span class="s2">"weekend"</span><span class="p">]</span>
+<span class="n">categorical</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"restaurant_type"</span><span class="p">,</span> <span class="s2">"weather"</span><span class="p">]</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">orders</span><span class="p">[</span><span class="n">numeric</span> <span class="o">+</span> <span class="n">categorical</span><span class="p">]</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">orders</span><span class="p">[</span><span class="s2">"delivery_minutes"</span><span class="p">]</span>
+<span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+
+<span class="n">preprocess</span> <span class="o">=</span> <span class="n">ColumnTransformer</span><span class="p">([</span>
+    <span class="p">(</span><span class="s2">"num"</span><span class="p">,</span> <span class="n">make_pipeline</span><span class="p">(</span><span class="n">SimpleImputer</span><span class="p">(</span><span class="n">strategy</span><span class="o">=</span><span class="s2">"median"</span><span class="p">),</span> <span class="n">StandardScaler</span><span class="p">()),</span> <span class="n">numeric</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"cat"</span><span class="p">,</span> <span class="n">make_pipeline</span><span class="p">(</span><span class="n">SimpleImputer</span><span class="p">(</span><span class="n">strategy</span><span class="o">=</span><span class="s2">"constant"</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="s2">"unknown"</span><span class="p">),</span>
+                          <span class="n">OneHotEncoder</span><span class="p">(</span><span class="n">handle_unknown</span><span class="o">=</span><span class="s2">"ignore"</span><span class="p">)),</span> <span class="n">categorical</span><span class="p">),</span>
+<span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">X_train</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">X_test</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">preprocess</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>(1595, 7) (399, 7)
+(1595, 14)
+</code></pre></div>
+<p>Seven input columns become 14 model features: five numerical columns plus one-hot columns for five restaurant types and four weather values (three kinds plus "unknown").</p>
+<div class="admonition info">
+<p class="admonition-title">Note: why hour is used as a number here</p>
+<p>Treating the hour as a number lets a linear model fit only a straight-line trend through the day, which cannot capture two rush-hour peaks. Tree-based models can split the hour into ranges and find the peaks. An alternative for linear models would be a "rush hour" indicator or one-hot encoding of the hour. The comparison of models below shows the difference this makes.</p>
+</div>
+<h2 id="146-baselines-and-candidate-models">14.6 Baselines and candidate models<a class="headerlink" href="#146-baselines-and-candidate-models" title="Permanent link">&para;</a></h2>
+<p>First the two baselines, on the training data, so that every candidate has a target to beat. The current rule needs no training; for the mean baseline, cross-validation keeps it fair.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">KFold</span><span class="p">,</span> <span class="n">cross_val_score</span><span class="p">,</span> <span class="n">cross_val_predict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.dummy</span><span class="w"> </span><span class="kn">import</span> <span class="n">DummyRegressor</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">mean_absolute_error</span>
+
+<span class="n">cv</span> <span class="o">=</span> <span class="n">KFold</span><span class="p">(</span><span class="n">n_splits</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">rule_train</span> <span class="o">=</span> <span class="mi">30</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">X_train</span><span class="p">[</span><span class="s2">"distance_km"</span><span class="p">]</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">X_train</span><span class="p">[</span><span class="s2">"distance_km"</span><span class="p">]</span><span class="o">.</span><span class="n">median</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"current rule:   MAE </span><span class="si">{</span><span class="n">mean_absolute_error</span><span class="p">(</span><span class="n">y_train</span><span class="p">,</span><span class="w"> </span><span class="n">rule_train</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="n">mean_mae</span> <span class="o">=</span> <span class="o">-</span><span class="n">cross_val_score</span><span class="p">(</span><span class="n">DummyRegressor</span><span class="p">(),</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="n">cv</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="s2">"neg_mean_absolute_error"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"mean baseline:  MAE </span><span class="si">{</span><span class="n">mean_mae</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>current rule:   MAE 11.50
+mean baseline:  MAE 9.62
+</code></pre></div>
+<p>The current rule is worse even than predicting the average delivery time for every order: its base of 30 minutes is too low for most orders. Now three candidate models in the same pipeline: linear regression, a random forest, and <strong>histogram gradient boosting</strong>, a fast implementation of gradient-boosted trees (an ensemble that adds trees one after another, each correcting the errors of those before). Cross-validated on the same folds:</p>
+<div class="language-python highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">LinearRegression</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.ensemble</span><span class="w"> </span><span class="kn">import</span> <span class="n">RandomForestRegressor</span><span class="p">,</span> <span class="n">HistGradientBoostingRegressor</span>
+
+<span class="n">candidates</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"linear regression"</span><span class="p">:</span> <span class="n">LinearRegression</span><span class="p">(),</span>
+    <span class="s2">"random forest"</span><span class="p">:</span> <span class="n">RandomForestRegressor</span><span class="p">(</span><span class="n">n_estimators</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">min_samples_leaf</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=-</span><span class="mi">1</span><span class="p">),</span>
+    <span class="s2">"gradient boosting"</span><span class="p">:</span> <span class="n">HistGradientBoostingRegressor</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
+<span class="p">}</span>
+<span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">model</span> <span class="ow">in</span> <span class="n">candidates</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">pipe</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">([(</span><span class="s2">"prep"</span><span class="p">,</span> <span class="n">preprocess</span><span class="p">),</span> <span class="p">(</span><span class="s2">"model"</span><span class="p">,</span> <span class="n">model</span><span class="p">)])</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="o">-</span><span class="n">cross_val_score</span><span class="p">(</span><span class="n">pipe</span><span class="p">,</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="n">cv</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="s2">"neg_mean_absolute_error"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">name</span><span class="si">:</span><span class="s2">&gt;18</span><span class="si">}</span><span class="s2">: MAE </span><span class="si">{</span><span class="n">s</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> +/- </span><span class="si">{</span><span class="n">s</span><span class="o">.</span><span class="n">std</span><span class="p">()</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code> linear regression: MAE 5.64 +/- 0.25
+     random forest: MAE 5.54 +/- 0.37
+ gradient boosting: MAE 4.95 +/- 0.22
+</code></pre></div>
+<p>All three models beat both baselines by a wide margin. Gradient boosting is the strongest; it can split the hour into ranges and so capture the rush-hour peaks, as the note above predicted. The random forest is only slightly better than linear regression. We tune gradient boosting.</p>
+<h2 id="147-tuning">14.7 Tuning<a class="headerlink" href="#147-tuning" title="Permanent link">&para;</a></h2>
+<p>Histogram gradient boosting has a few important hyperparameters: the <code>learning_rate</code> (how much each new tree corrects), <code>max_iter</code> (the number of trees), and <code>max_leaf_nodes</code> (the size of each tree). A small grid, cross-validated:</p>
+<div class="language-python highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">GridSearchCV</span>
+
+<span class="n">pipe</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">([(</span><span class="s2">"prep"</span><span class="p">,</span> <span class="n">preprocess</span><span class="p">),</span> <span class="p">(</span><span class="s2">"model"</span><span class="p">,</span> <span class="n">HistGradientBoostingRegressor</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">))])</span>
+<span class="n">grid</span> <span class="o">=</span> <span class="n">GridSearchCV</span><span class="p">(</span><span class="n">pipe</span><span class="p">,</span> <span class="p">{</span>
+    <span class="s2">"model__learning_rate"</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.03</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">],</span>
+    <span class="s2">"model__max_iter"</span><span class="p">:</span> <span class="p">[</span><span class="mi">200</span><span class="p">,</span> <span class="mi">400</span><span class="p">],</span>
+    <span class="s2">"model__max_leaf_nodes"</span><span class="p">:</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">31</span><span class="p">],</span>
+<span class="p">},</span> <span class="n">cv</span><span class="o">=</span><span class="n">cv</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="s2">"neg_mean_absolute_error"</span><span class="p">)</span>
+<span class="n">grid</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"best settings:"</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">best_params_</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"best CV MAE: </span><span class="si">{</span><span class="o">-</span><span class="n">grid</span><span class="o">.</span><span class="n">best_score_</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>best settings: {'model__learning_rate': 0.03, 'model__max_iter': 400, 'model__max_leaf_nodes': 7}
+best CV MAE: 4.67
+</code></pre></div>
+<p>The improvement over the default settings is modest, which is common: a sensible model with default settings is usually most of the way there, and tuning adds a little. <code>GridSearchCV</code> has refitted the best pipeline on the whole training set, ready for the test.</p>
+<h2 id="148-the-final-test">14.8 The final test<a class="headerlink" href="#148-the-final-test" title="Permanent link">&para;</a></h2>
+<p>All decisions are made. The test set, untouched until now, gives the honest estimate:</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">final</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">best_estimator_</span>
+<span class="n">pred</span> <span class="o">=</span> <span class="n">final</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+<span class="n">rule_test</span> <span class="o">=</span> <span class="mi">30</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">X_test</span><span class="p">[</span><span class="s2">"distance_km"</span><span class="p">]</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">X_train</span><span class="p">[</span><span class="s2">"distance_km"</span><span class="p">]</span><span class="o">.</span><span class="n">median</span><span class="p">())</span>
+<span class="n">err_model</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">y_test</span> <span class="o">-</span> <span class="n">pred</span><span class="p">)</span>
+<span class="n">err_rule</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">y_test</span> <span class="o">-</span> <span class="n">rule_test</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"test MAE: model </span><span class="si">{</span><span class="n">err_model</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> min, current rule </span><span class="si">{</span><span class="n">err_rule</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> min"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"within 10 minutes: model </span><span class="si">{</span><span class="p">(</span><span class="n">err_model</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.1%</span><span class="si">}</span><span class="s2">, rule </span><span class="si">{</span><span class="p">(</span><span class="n">err_rule</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.1%</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"mean signed error (actual - predicted): model </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">y_test</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">pred</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">, rule </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">y_test</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">rule_test</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>test MAE: model 4.71 min, current rule 11.06 min
+within 10 minutes: model 91.5%, rule 51.1%
+mean signed error (actual - predicted): model 0.10, rule 9.19
+</code></pre></div>
+<p>The test MAE agrees with the cross-validated estimate, a sign that nothing leaked. The model's typical error is less than half the rule's, and it is close to unbiased, while the rule underestimates on average by many minutes, which is exactly the customers' complaint.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">pred</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">lims</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">120</span><span class="p">]</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">lims</span><span class="p">,</span> <span class="n">lims</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"gray"</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">"--"</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"perfect prediction"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"actual delivery time (minutes)"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"predicted (minutes)"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Model predictions on the test set"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="mi">60</span><span class="p">,</span> <span class="mi">61</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">y_test</span> <span class="o">-</span> <span class="n">rule_test</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"current rule"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">y_test</span> <span class="o">-</span> <span class="n">pred</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"model"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"gray"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"error: actual - predicted (minutes)"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"orders"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Errors: model against current rule"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">"project-results.svg"</span><span class="p">)</span>
+</code></pre></div>
+<figure class="fig fig-diagram">
+<img src="img/project-results.svg" alt="Left: predicted against actual delivery time for the test orders; the points lie in a band along the dashed diagonal of perfect prediction. Right: overlapping histograms of errors. The model&#x27;s errors form a narrow peak centred on zero; the current rule&#x27;s errors form a much wider distribution shifted to the right, meaning actual times are usually longer than the rule predicts." loading="lazy" width="1046" height="374">
+<figcaption><strong>Figure 14.2 Test-set results.</strong> Left: predicted against actual delivery time for the test orders; the points lie in a band along the dashed diagonal of perfect prediction. Right: overlapping histograms of errors. The model&#x27;s errors form a narrow peak centred on zero; the current rule&#x27;s errors form a much wider distribution shifted to the right, meaning actual times are usually longer than the rule predicts.</figcaption>
+</figure>
+<h3 id="errors-by-group">Errors by group<a class="headerlink" href="#errors-by-group" title="Permanent link">&para;</a></h3>
+<p>An average can hide groups for which the model does badly (Section 13.3). The test errors by weather and by time of day:</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">res</span> <span class="o">=</span> <span class="n">X_test</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">abs_error</span><span class="o">=</span><span class="n">err_model</span><span class="p">,</span> <span class="n">rule_error</span><span class="o">=</span><span class="n">err_rule</span><span class="p">,</span>
+                    <span class="n">rush</span><span class="o">=</span><span class="n">X_test</span><span class="p">[</span><span class="s2">"hour"</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">([</span><span class="mi">12</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">19</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">21</span><span class="p">]))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="s2">"weather"</span><span class="p">]</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="s2">"unknown"</span><span class="p">))[[</span><span class="s2">"abs_error"</span><span class="p">,</span> <span class="s2">"rule_error"</span><span class="p">]]</span><span class="o">.</span><span class="n">agg</span><span class="p">([</span><span class="s2">"count"</span><span class="p">,</span> <span class="s2">"mean"</span><span class="p">])</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">"rush"</span><span class="p">)[[</span><span class="s2">"abs_error"</span><span class="p">,</span> <span class="s2">"rule_error"</span><span class="p">]]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>        abs_error       rule_error       
+            count  mean      count   mean
+weather                                  
+clear         295  4.63        295   9.63
+fog            11  5.25         11  19.22
+rain           72  4.86         72  15.79
+unknown        21  5.06         21  10.67
+       abs_error  rule_error
+rush                        
+False       4.90        8.12
+True        4.55       13.63
+</code></pre></div>
+<p>The model's error is similar across weather conditions and times of day, while the rule's error is largest exactly where the model helps most: in rain and fog, and at rush hours. Orders whose weather was not recorded are predicted about as well as the rest, because the pipeline imputes "unknown" and the other features carry most of the information; the small count for fog means its average is the least certain.</p>
+<h3 id="what-the-model-relies-on">What the model relies on<a class="headerlink" href="#what-the-model-relies-on" title="Permanent link">&para;</a></h3>
+<p><strong>Permutation importance</strong> measures how much the test error grows when one feature's values are randomly shuffled, breaking its link with the target while keeping everything else. A large increase means the model depends on that feature. Because it is applied to the whole pipeline, it works with the original columns:</p>
+<div class="language-python highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.inspection</span><span class="w"> </span><span class="kn">import</span> <span class="n">permutation_importance</span>
+
+<span class="n">imp</span> <span class="o">=</span> <span class="n">permutation_importance</span><span class="p">(</span><span class="n">final</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="s2">"neg_mean_absolute_error"</span><span class="p">,</span>
+                             <span class="n">n_repeats</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">importance</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">imp</span><span class="o">.</span><span class="n">importances_mean</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">X_test</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"increase in MAE (minutes) when each column is shuffled:"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">importance</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>increase in MAE (minutes) when each column is shuffled:
+distance_km         5.55
+hour                1.91
+restaurant_type     1.79
+weather             1.00
+items               0.33
+rider_exp_months    0.20
+weekend             0.15
+dtype: float64
+</code></pre></div>
+<p>Distance matters most by far, followed by the hour of the day and the restaurant type, then the weather, with smaller contributions from the number of items, rider experience and weekends. This matches the operations team's understanding, which is reassuring: a model that relied on something implausible would need investigating before use.</p>
+<h2 id="149-communicating-the-result">14.9 Communicating the result<a class="headerlink" href="#149-communicating-the-result" title="Permanent link">&para;</a></h2>
+<p>The final product of the project is not the model but a decision, so the result has to be written for the people who will make it. A short report might read as follows.</p>
+<div class="admonition example">
+<p class="admonition-title">Example 14.1: Project report</p>
+<p><strong>Question.</strong> Can we estimate delivery times at the moment of ordering more accurately than the current rule (30 minutes + 2 minutes per km)?</p>
+<p><strong>Data.</strong> 2,000 orders from a 90-day export. We removed 15 duplicates and 6 orders with impossible delivery times (under 5 or over 180 minutes); 5 negative distances and the missing weather (100 orders) and rider-experience values (60) were imputed inside the model.</p>
+<p><strong>Method.</strong> A gradient-boosted tree model using distance, number of items, restaurant type, weather, hour, weekend and rider experience, all known when an order is placed. Settings were chosen by 5-fold cross-validation on 80% of the orders; the remaining 20% were used once for the final evaluation.</p>
+<p><strong>Result.</strong> On the held-out orders, the model's average error is about 4.7 minutes, against about 11.1 minutes for the current rule, and about 91% of its estimates are within 10 minutes of the actual time, against about 51% for the rule. The rule underestimates on average by about 9 minutes and is worst in rain, in fog and at rush hours; the model's accuracy is similar across these conditions.</p>
+<p><strong>Limitations.</strong> The data covers 90 days in winter; behaviour in other seasons, during festivals or after changes to the rider fleet is untested. Fog is rare in the data, so estimates in fog are the least certain. The model predicts typical times; individual deliveries vary by several minutes for reasons not recorded.</p>
+<p><strong>Recommendation.</strong> Trial the model's estimates on a share of orders, monitor the error weekly, and retrain monthly as new data arrives.</p>
+</div>
+<p>The numbers in the report are taken from the outputs above; in a real project they would be filled in by code, so that the report cannot drift out of step with the analysis. Everything here can be reproduced by running the chapter's code from the top: the data simulation, the cleaning function, the fixed seeds and the single pipeline make the whole path from raw export to report repeatable (Section 13.5).</p>
+<h2 id="1410-summary">14.10 Summary<a class="headerlink" href="#1410-summary" title="Permanent link">&para;</a></h2>
+<div class="admonition abstract">
+<p class="admonition-title">Summary</p>
+<ul>
+<li>Start with a precise question: target, metric, baselines, and the information available at prediction time.</li>
+<li>Inspect the raw export, then write a cleaning function that logs every change. Drop rows with an untrustworthy target; leave feature problems to imputation inside the pipeline.</li>
+<li>Explore to find which features matter and how (a non-linear effect of hour suggested tree models).</li>
+<li><code>ColumnTransformer</code> applies imputation, scaling and one-hot encoding to the right columns inside one pipeline; <code>handle_unknown="ignore"</code> protects against new categories.</li>
+<li>Compare baselines and candidates with the same cross-validation folds; tune the best with <code>GridSearchCV</code>; test once.</li>
+<li>Analyse errors by group, and explain the model with permutation importance; check that the explanation makes sense.</li>
+<li>Report the question, data, method, result with uncertainty, limitations and recommendation, in the reader's language.</li>
+</ul>
+</div>
+<h2 id="1411-exercises">14.11 Exercises<a class="headerlink" href="#1411-exercises" title="Permanent link">&para;</a></h2>
+<div class="admonition example">
+<p class="admonition-title">Exercise 1</p>
+<p>Add a feature <code>rush</code> (1 for orders placed at 12, 13, 19, 20 or 21 hours, else 0) and cross-validate the linear regression pipeline again. Does the linear model improve, and why?</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<div class="language-python highlight"><pre><span></span><code><span class="n">Xr</span> <span class="o">=</span> <span class="n">X_train</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">rush</span><span class="o">=</span><span class="n">X_train</span><span class="p">[</span><span class="s2">"hour"</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">([</span><span class="mi">12</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">19</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">21</span><span class="p">])</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">))</span>
+<span class="n">prep_r</span> <span class="o">=</span> <span class="n">ColumnTransformer</span><span class="p">([</span>
+    <span class="p">(</span><span class="s2">"num"</span><span class="p">,</span> <span class="n">make_pipeline</span><span class="p">(</span><span class="n">SimpleImputer</span><span class="p">(</span><span class="n">strategy</span><span class="o">=</span><span class="s2">"median"</span><span class="p">),</span> <span class="n">StandardScaler</span><span class="p">()),</span> <span class="n">numeric</span> <span class="o">+</span> <span class="p">[</span><span class="s2">"rush"</span><span class="p">]),</span>
+    <span class="p">(</span><span class="s2">"cat"</span><span class="p">,</span> <span class="n">make_pipeline</span><span class="p">(</span><span class="n">SimpleImputer</span><span class="p">(</span><span class="n">strategy</span><span class="o">=</span><span class="s2">"constant"</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="s2">"unknown"</span><span class="p">),</span>
+                          <span class="n">OneHotEncoder</span><span class="p">(</span><span class="n">handle_unknown</span><span class="o">=</span><span class="s2">"ignore"</span><span class="p">)),</span> <span class="n">categorical</span><span class="p">)])</span>
+<span class="n">s</span> <span class="o">=</span> <span class="o">-</span><span class="n">cross_val_score</span><span class="p">(</span><span class="n">Pipeline</span><span class="p">([(</span><span class="s2">"prep"</span><span class="p">,</span> <span class="n">prep_r</span><span class="p">),</span> <span class="p">(</span><span class="s2">"model"</span><span class="p">,</span> <span class="n">LinearRegression</span><span class="p">())]),</span>
+                     <span class="n">Xr</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="n">cv</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="s2">"neg_mean_absolute_error"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"linear regression with rush flag: MAE </span><span class="si">{</span><span class="n">s</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>linear regression with rush flag: MAE 4.36
+</code></pre></div>
+<p>Yes, a great deal: the MAE falls from about 5.6 to about 4.4 minutes, below even the tuned gradient boosting model (4.67). The rush flag gives the linear model the two peaks that a straight-line trend in <code>hour</code> could not represent, and since this simulated data was generated by an additive rule, a linear model with the right features suits it very well. Good features can matter more than the choice of model. In a real project this finding would send the work back to the modelling stage (the loop of Figure 1.1), to compare both kinds of model with the improved features by cross-validation, before the test set is touched.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 2</p>
+<p>Why were rows with impossible delivery times dropped, while negative distances were set to missing instead?</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>The delivery time is the target: a row with a wrong target teaches the model a wrong answer and corrupts the evaluation, and it cannot be sensibly imputed. A negative distance is a bad value in one feature of an otherwise valid row; setting it to missing keeps the row's correct target and other features, and the pipeline fills the gap in the same way it will for any new order with missing data.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 3</p>
+<p>A team member suggests adding the feature "minutes from order to pick-up by the rider", which makes the test MAE fall to 2 minutes. Should it be used?</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>No, not for this purpose. The pick-up time is known only after the order has been prepared, so it is not available when the estimate must be shown to the customer. Using it is target leakage: it makes the evaluation look excellent but the model cannot be used at order time. (It could be useful for a different question, such as updating the estimate after pick-up.)</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 4</p>
+<p>Compute, for the test set, the share of orders for which the model's estimate was too optimistic by more than 10 minutes (actual more than 10 minutes longer than predicted). Why might the company care about this number separately from the MAE?</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<div class="language-python highlight"><pre><span></span><code><span class="n">late</span> <span class="o">=</span> <span class="p">(</span><span class="n">y_test</span> <span class="o">-</span> <span class="n">pred</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">10</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">late</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.1%</span><span class="si">}</span><span class="s2"> of test orders arrived more than 10 minutes after the estimate"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"for the rule: </span><span class="si">{</span><span class="p">((</span><span class="n">y_test</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">rule_test</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.1%</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>4.3% of test orders arrived more than 10 minutes after the estimate
+for the rule: 45.6%
+</code></pre></div>
+<p>Errors are not equally costly: a delivery that arrives much later than promised annoys customers far more than one that arrives early. The MAE treats both directions alike, so the share of badly late deliveries is worth tracking on its own, and the company might even prefer a model that errs slightly on the late side of its estimates.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 5</p>
+<p>List three things you would check before deploying this model, beyond its test MAE.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>For example: that the features are available in the live system at the moment of ordering, with the same definitions and units (for instance that distance is measured the same way); that performance holds in other periods (validate on the most recent weeks, or on a period after the training data, rather than a random split); and how the model behaves for unusual inputs (new restaurant types, very long distances, missing values), together with a plan to monitor the error after launch and retrain.</p>
+</details>
+<h2 id="1412-quiz">14.12 Quiz<a class="headerlink" href="#1412-quiz" title="Permanent link">&para;</a></h2>
+<p class="viz-note"><em>(a quiz block could not be built: question 4 (choice): the answer is not one of the options)</em></p>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button type="button" class="md-top md-icon" data-md-component="top" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+Back to top
+</button>
+</main>
+<footer class="md-footer">
+<nav class="md-footer__inner md-grid" aria-label="Footer" >
+<a href="ethics-privacy-and-reproducibility.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: 13. Ethics, Privacy and Reproducibility">
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</div>
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Previous
+</span>
+<div class="md-ellipsis">
+13. Ethics, Privacy and Reproducibility
+</div>
+</div>
+</a>
+<a href="glossary.html" class="md-footer__link md-footer__link--next" aria-label="Next: Glossary">
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Next
+</span>
+<div class="md-ellipsis">
+Glossary
+</div>
+</div>
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+</div>
+</a>
+</nav>
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+The Open Book Project &middot;
+<a href="../../about.html">About this library</a> &middot;
+<a href="../../publish.html">Publish your book</a> &middot;
+© The authors of the books
+</div>
+Made with
+<a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+Material for MkDocs
+</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "navigation.prune", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "toc.follow", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+<script src="../../assets/mathjax.js"></script>
+<script src="../../assets/viz.js"></script>
+<script src="../../assets/remote.js"></script>
+<script src="../../assets/scans.js"></script>
+<script src="../../assets/reader.js"></script>
+<script src="../../assets/app.js"></script>
+<script src="../../assets/slides.js"></script>
+<script src="../../assets/speak.js"></script>
+<script src="../../assets/quiz.js"></script>
+<script>
+    /* offline reading: the service worker at the site root (its scope is the whole site) */
+    if ("serviceWorker" in navigator && window.isSecureContext) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register(new URL("../../sw.js", location.href).href).catch(function () {});
+      });
+    }
+  </script>
+</body>
+</html>

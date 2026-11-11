@@ -1,0 +1,1066 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="description" content="The Open Book Project: books on computer science, quantum computing, cyber security, science, the social sciences, university courses and languages, read page by page like an e-book, online or offline.">
+<meta name="author" content="The Open Book Project">
+<link rel="canonical" href="https://open-book-project.github.io/computing/data_science_python/ethics-privacy-and-reproducibility.html">
+<link rel="prev" href="text-and-time-series-basics.html">
+<link rel="next" href="an-end-to-end-project.html">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap"></noscript>
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Open Book">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="application-name" content="Open Book"><script src="../../assets/library-data.js"></script><script>
+    (function () {
+      var X = window.XMLHttpRequest, open, gate = new Promise(function (r) { open = r; });
+      if (!X) return;
+      var open0 = X.prototype.open, send0 = X.prototype.send;
+      X.prototype.open = function (method, url) {
+        this.__pkIndex = /\/search\/search_index\.json(\?|#|$)/.test(String(url));
+        return open0.apply(this, arguments);
+      };
+      X.prototype.send = function () {
+        if (!this.__pkIndex) return send0.apply(this, arguments);
+        var xhr = this, args = arguments;
+        gate.then(function () { send0.apply(xhr, args); });
+      };
+      function wake() { open(); }
+      document.addEventListener("focusin", function (e) { if (e.target && e.target.closest && e.target.closest(".md-search")) wake(); });
+      document.addEventListener("click", function (e) { if (e.target && e.target.closest && e.target.closest('label[for="__search"], .md-search')) wake(); }, true);
+      document.addEventListener("keydown", function (e) {
+        var k = e.key;
+        if ((k === "/" || k === "s" || k === "f" || k === "S" || k === "F") && !(e.target && e.target.closest && e.target.closest("input, textarea, [contenteditable]"))) wake();
+      }, true);
+      if (/[?&]q=/.test(location.search)) wake();
+    })();
+  </script><script>
+    try {
+      if ((window.matchMedia && (matchMedia("(display-mode: standalone)").matches || matchMedia("(display-mode: fullscreen)").matches)) || navigator.standalone === true) {
+        document.documentElement.className += " bjp-standalone";
+      }
+    } catch (e) { /* not an installed app */ }
+    /* the books of a subject or of the whole library as covers or as a list (assets/app.js): the reader's choice */
+    try {
+      var bv = localStorage.getItem("bjp.view");
+      if (bv === "list" || (bv !== "grid" && /\/books\.html$/.test(location.pathname))) document.documentElement.className += " bjp-view-list";
+    } catch (e) { /* no storage: covers */ }
+  </script>
+<script>
+    /* a book opened from its cover on the shelf: the page stays blank, in the cover's colour, until the reader is up */
+    try {
+      var cv = sessionStorage.getItem("bjp.reader.cover");
+      if (cv && sessionStorage.getItem("bjp.reader.open") === "1") {
+        var c = JSON.parse(cv), de = document.documentElement;
+        de.className += " bjp-booting";
+        if (c && /^#[0-9a-f]{3,8}$/i.test(c.bg || "")) de.style.background = c.bg;
+        setTimeout(function () { de.classList.remove("bjp-booting"); de.style.background = ""; }, 3000);
+      }
+    } catch (e) { /* no session storage: the page simply opens as usual */ }
+  </script>
+<title>13. Ethics, Privacy and Reproducibility - The Open Book Project</title>
+<link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+<link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+<link rel="stylesheet" href="../../assets/extra.css">
+<link rel="stylesheet" href="../../assets/reader.css">
+<link rel="stylesheet" href="../../assets/viz.css">
+<link rel="stylesheet" href="../../assets/app.css">
+<link rel="stylesheet" href="../../assets/theme.css">
+<link rel="stylesheet" href="../../assets/slides.css">
+<link rel="stylesheet" href="../../assets/remote.css">
+<link rel="stylesheet" href="../../assets/scans.css">
+<link rel="stylesheet" href="../../assets/speak.css">
+<link rel="stylesheet" href="../../assets/quiz.css">
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+<input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+<input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a href="#131-ethics-across-the-workflow" class="md-skip">
+Skip to content
+</a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav class="md-header__inner md-grid" aria-label="Header">
+<a href="../../index.html" title="The Open Book Project" class="md-header__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+The Open Book Project
+</span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+13. Ethics, Privacy and Reproducibility
+</span>
+</div>
+</div>
+</div><a href="../../index.html" class="bjp-libbtn" aria-label="Library: all books" title="Library: all books">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V5h4v15M8 20V9h4v11M14 20L12.6 6l3.8-.8 3 14.2M3 20h18"/></svg><span>Library</span>
+</a>
+<a href="../../subjects/index.html" class="pk-catbtn" aria-haspopup="true" aria-expanded="false" title="Browse the books by category">
+<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><circle cx="17" cy="7" r="3.6"/><path d="M7 13.4l3.9 6.8H3.1z"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg><span>Categories</span>
+</a>
+<form class="md-header__option" data-md-component="palette">
+<input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+<label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+</label>
+<input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+<label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+<label class="md-search__icon md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</label>
+<nav class="md-search__options" aria-label="Search">
+<button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+Initializing search
+</div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--primary bjp-nav bjp-nav--book" aria-label="Navigation" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a href="../../index.html" title="The Open Book Project" class="md-nav__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+The Open Book Project
+</label>
+<ul class="md-nav__list" data-md-scrollfix>
+<li class="md-nav__item bjp-nav-all">
+<a href="../../index.html" class="md-nav__link" aria-label="All books: back to the library">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+<span class="md-ellipsis">All books</span>
+</a>
+</li>
+<li class="md-nav__item bjp-nav-book" role="presentation"><span class="bjp-nav-head">Data Science with Python</span></li>
+<li class="md-nav__item">
+<a href="index.html" class="md-nav__link">
+<span class="md-ellipsis">
+Overview and preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="preface.html" class="md-nav__link">
+<span class="md-ellipsis">
+Preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="the-data-science-workflow.html" class="md-nav__link">
+<span class="md-ellipsis">
+1. The Data Science Workflow
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="python-essentials-for-data-work.html" class="md-nav__link">
+<span class="md-ellipsis">
+2. Python Essentials for Data Work
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="numerical-computing-with-numpy.html" class="md-nav__link">
+<span class="md-ellipsis">
+3. Numerical Computing with NumPy
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="pandas-fundamentals.html" class="md-nav__link">
+<span class="md-ellipsis">
+4. pandas Fundamentals: Series, DataFrames and Selection
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="cleaning-reshaping-grouping-and-joining.html" class="md-nav__link">
+<span class="md-ellipsis">
+5. Cleaning, Reshaping, Grouping and Joining
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="visualisation-and-exploratory-data-analysis.html" class="md-nav__link">
+<span class="md-ellipsis">
+6. Visualisation and Exploratory Data Analysis
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="probability-and-statistics.html" class="md-nav__link">
+<span class="md-ellipsis">
+7. Probability and Statistics for Data Science
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="regression.html" class="md-nav__link">
+<span class="md-ellipsis">
+8. Regression
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="classification.html" class="md-nav__link">
+<span class="md-ellipsis">
+9. Classification
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="model-evaluation-and-cross-validation.html" class="md-nav__link">
+<span class="md-ellipsis">
+10. Model Evaluation and Cross-Validation
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="clustering-and-dimensionality-reduction.html" class="md-nav__link">
+<span class="md-ellipsis">
+11. Clustering and Dimensionality Reduction
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="text-and-time-series-basics.html" class="md-nav__link">
+<span class="md-ellipsis">
+12. Text and Time Series Basics
+</span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+13. Ethics, Privacy and Reproducibility
+</span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a href="ethics-privacy-and-reproducibility.html" class="md-nav__link md-nav__link--active">
+<span class="md-ellipsis">
+13. Ethics, Privacy and Reproducibility
+</span>
+</a>
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#131-ethics-across-the-workflow" class="md-nav__link">
+<span class="md-ellipsis">
+13.1 Ethics across the workflow
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#132-privacy" class="md-nav__link">
+<span class="md-ellipsis">
+13.2 Privacy
+</span>
+</a>
+<nav class="md-nav" aria-label="13.2 Privacy">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#de-identification-techniques" class="md-nav__link">
+<span class="md-ellipsis">
+De-identification techniques
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#k-anonymity" class="md-nav__link">
+<span class="md-ellipsis">
+k-anonymity
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#re-identification" class="md-nav__link">
+<span class="md-ellipsis">
+Re-identification
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#133-bias-and-fairness" class="md-nav__link">
+<span class="md-ellipsis">
+13.3 Bias and fairness
+</span>
+</a>
+<nav class="md-nav" aria-label="13.3 Bias and fairness">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#measuring-fairness-by-group" class="md-nav__link">
+<span class="md-ellipsis">
+Measuring fairness by group
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#134-honest-analysis-and-communication" class="md-nav__link">
+<span class="md-ellipsis">
+13.4 Honest analysis and communication
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#135-reproducibility" class="md-nav__link">
+<span class="md-ellipsis">
+13.5 Reproducibility
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#136-a-checklist-for-responsible-projects" class="md-nav__link">
+<span class="md-ellipsis">
+13.6 A checklist for responsible projects
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#137-summary" class="md-nav__link">
+<span class="md-ellipsis">
+13.7 Summary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#138-exercises" class="md-nav__link">
+<span class="md-ellipsis">
+13.8 Exercises
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#139-quiz" class="md-nav__link">
+<span class="md-ellipsis">
+13.9 Quiz
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="an-end-to-end-project.html" class="md-nav__link">
+<span class="md-ellipsis">
+14. An End-to-End Project
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="glossary.html" class="md-nav__link">
+<span class="md-ellipsis">
+Glossary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="further-reading.html" class="md-nav__link">
+<span class="md-ellipsis">
+Further Reading
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#131-ethics-across-the-workflow" class="md-nav__link">
+<span class="md-ellipsis">
+13.1 Ethics across the workflow
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#132-privacy" class="md-nav__link">
+<span class="md-ellipsis">
+13.2 Privacy
+</span>
+</a>
+<nav class="md-nav" aria-label="13.2 Privacy">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#de-identification-techniques" class="md-nav__link">
+<span class="md-ellipsis">
+De-identification techniques
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#k-anonymity" class="md-nav__link">
+<span class="md-ellipsis">
+k-anonymity
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#re-identification" class="md-nav__link">
+<span class="md-ellipsis">
+Re-identification
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#133-bias-and-fairness" class="md-nav__link">
+<span class="md-ellipsis">
+13.3 Bias and fairness
+</span>
+</a>
+<nav class="md-nav" aria-label="13.3 Bias and fairness">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#measuring-fairness-by-group" class="md-nav__link">
+<span class="md-ellipsis">
+Measuring fairness by group
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#134-honest-analysis-and-communication" class="md-nav__link">
+<span class="md-ellipsis">
+13.4 Honest analysis and communication
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#135-reproducibility" class="md-nav__link">
+<span class="md-ellipsis">
+13.5 Reproducibility
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#136-a-checklist-for-responsible-projects" class="md-nav__link">
+<span class="md-ellipsis">
+13.6 A checklist for responsible projects
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#137-summary" class="md-nav__link">
+<span class="md-ellipsis">
+13.7 Summary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#138-exercises" class="md-nav__link">
+<span class="md-ellipsis">
+13.8 Exercises
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#139-quiz" class="md-nav__link">
+<span class="md-ellipsis">
+13.9 Quiz
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="chapter-13-ethics-privacy-and-reproducibility">Chapter 13: Ethics, Privacy and Reproducibility<a class="headerlink" href="#chapter-13-ethics-privacy-and-reproducibility" title="Permanent link">&para;</a></h1>
+<p><em>Doing data science that is fair to people and that others can check</em></p>
+<div class="admonition note">
+<p class="admonition-title">Learning outcomes</p>
+<p>After this chapter you should be able to:</p>
+<ul>
+<li>explain why ethical questions arise at every stage of the data science workflow;</li>
+<li>distinguish direct identifiers from quasi-identifiers, and apply data minimisation;</li>
+<li>pseudonymise, generalise and suppress data, check k-anonymity, and explain why de-identification can fail;</li>
+<li>name the main sources of bias in data and models, and compute simple fairness measures by group;</li>
+<li>report results honestly, with their uncertainty and limitations;</li>
+<li>make an analysis reproducible: seeds, recorded versions, scripted steps, untouched raw data and version control.</li>
+</ul>
+</div>
+<p>Data science is done with data about people, for decisions that affect people: who gets a loan, which neighbourhoods get more inspections, which patients are called for a check-up, which job applicants are shortlisted. The same techniques that find useful patterns can expose private lives, repeat old injustices at scale, or give false confidence in a wrong answer. This chapter treats these risks as part of the technical work, because that is where they are created and where most of them can be prevented. It also covers <strong>reproducibility</strong>: whether someone else (including you, six months later) can repeat the analysis and get the same result, which is the basis of trust in any finding.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">hashlib</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+</code></pre></div>
+<h2 id="131-ethics-across-the-workflow">13.1 Ethics across the workflow<a class="headerlink" href="#131-ethics-across-the-workflow" title="Permanent link">&para;</a></h2>
+<p>Every stage of the workflow of Chapter 1 has its own ethical questions.</p>
+<table>
+<thead>
+<tr>
+<th>Stage</th>
+<th>Questions to ask</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ask</td>
+<td>Who benefits from the answer, and who could be harmed? Should this be predicted at all?</td>
+</tr>
+<tr>
+<td>Get data</td>
+<td>Was it collected with consent, for a purpose compatible with this one? Do we need all of it?</td>
+</tr>
+<tr>
+<td>Clean</td>
+<td>Do our cleaning choices (dropping rows, filling values) affect some groups more than others?</td>
+</tr>
+<tr>
+<td>Explore</td>
+<td>Are some groups missing or under-represented?</td>
+</tr>
+<tr>
+<td>Model</td>
+<td>Does the model use features that stand in for sensitive characteristics?</td>
+</tr>
+<tr>
+<td>Evaluate</td>
+<td>Is it equally accurate for different groups? What happens to people when it is wrong?</td>
+</tr>
+<tr>
+<td>Communicate</td>
+<td>Are uncertainty and limitations stated? Could the result be misread or misused?</td>
+</tr>
+</tbody>
+</table>
+<p><em>Table 13.1. Ethical questions at each stage of the workflow.</em></p>
+<p>No checklist settles these questions mechanically. They call for judgement, for knowledge of the setting, and often for the views of the people affected. What a data scientist can always do is notice them, measure what can be measured, and say clearly what was decided and why.</p>
+<h2 id="132-privacy">13.2 Privacy<a class="headerlink" href="#132-privacy" title="Permanent link">&para;</a></h2>
+<p><strong>Personal data</strong> is any information relating to an identifiable person. Some fields identify a person directly: name, phone number, email address, government ID number. These are <strong>direct identifiers</strong>. Other fields do not identify anyone alone but can in combination: date of birth, PIN code, gender, occupation. These are <strong>quasi-identifiers</strong>. In many populations, the combination of full date of birth, gender and postal code is unique for a large share of people, so a table with names removed but those three columns kept may still identify almost everyone in it.</p>
+<p>Many countries have data protection laws, such as the European Union's General Data Protection Regulation (GDPR) and India's Digital Personal Data Protection Act, 2023. Their details differ and are a matter for legal advice, but they share principles that are good practice everywhere:</p>
+<ul>
+<li><strong>Purpose limitation</strong>: collect data for a stated purpose and do not reuse it for unrelated purposes without a proper basis.</li>
+<li><strong>Data minimisation</strong>: collect and keep only what the purpose needs.</li>
+<li><strong>Consent and transparency</strong>: people should know what is collected about them and why.</li>
+<li><strong>Security</strong>: protect data against unauthorised access; restrict who can see identifying fields.</li>
+<li><strong>Retention limits</strong>: delete data when it is no longer needed.</li>
+</ul>
+<div class="admonition tip">
+<p class="admonition-title">Key idea</p>
+<p>The safest personal data is data you never collected. Before asking how to protect a column, ask whether the analysis needs it at all.</p>
+</div>
+<h3 id="de-identification-techniques">De-identification techniques<a class="headerlink" href="#de-identification-techniques" title="Permanent link">&para;</a></h3>
+<p>When personal data must be used, several techniques reduce the risk. A small table of (fictional) patient records shows them:</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">patients</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+    <span class="s2">"name"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"A. Rao"</span><span class="p">,</span> <span class="s2">"B. Singh"</span><span class="p">,</span> <span class="s2">"C. Das"</span><span class="p">,</span> <span class="s2">"D. Iyer"</span><span class="p">,</span> <span class="s2">"E. Khan"</span><span class="p">,</span> <span class="s2">"F. Roy"</span><span class="p">,</span> <span class="s2">"G. Paul"</span><span class="p">,</span> <span class="s2">"H. Nair"</span><span class="p">],</span>
+    <span class="s2">"phone"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"98100 11111"</span><span class="p">,</span> <span class="s2">"98100 22222"</span><span class="p">,</span> <span class="s2">"98100 33333"</span><span class="p">,</span> <span class="s2">"98100 44444"</span><span class="p">,</span>
+              <span class="s2">"98100 55555"</span><span class="p">,</span> <span class="s2">"98100 66666"</span><span class="p">,</span> <span class="s2">"98100 77777"</span><span class="p">,</span> <span class="s2">"98100 88888"</span><span class="p">],</span>
+    <span class="s2">"age"</span><span class="p">:</span> <span class="p">[</span><span class="mi">34</span><span class="p">,</span> <span class="mi">36</span><span class="p">,</span> <span class="mi">52</span><span class="p">,</span> <span class="mi">57</span><span class="p">,</span> <span class="mi">33</span><span class="p">,</span> <span class="mi">55</span><span class="p">,</span> <span class="mi">38</span><span class="p">,</span> <span class="mi">51</span><span class="p">],</span>
+    <span class="s2">"pin"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"411001"</span><span class="p">,</span> <span class="s2">"411002"</span><span class="p">,</span> <span class="s2">"560001"</span><span class="p">,</span> <span class="s2">"560002"</span><span class="p">,</span> <span class="s2">"411003"</span><span class="p">,</span> <span class="s2">"560003"</span><span class="p">,</span> <span class="s2">"411004"</span><span class="p">,</span> <span class="s2">"560004"</span><span class="p">],</span>
+    <span class="s2">"condition"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"asthma"</span><span class="p">,</span> <span class="s2">"diabetes"</span><span class="p">,</span> <span class="s2">"diabetes"</span><span class="p">,</span> <span class="s2">"hypertension"</span><span class="p">,</span> <span class="s2">"asthma"</span><span class="p">,</span> <span class="s2">"diabetes"</span><span class="p">,</span> <span class="s2">"asthma"</span><span class="p">,</span> <span class="s2">"hypertension"</span><span class="p">],</span>
+<span class="p">})</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">patients</span><span class="p">)</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>       name        phone  age     pin     condition
+0    A. Rao  98100 11111   34  411001        asthma
+1  B. Singh  98100 22222   36  411002      diabetes
+2    C. Das  98100 33333   52  560001      diabetes
+3   D. Iyer  98100 44444   57  560002  hypertension
+4   E. Khan  98100 55555   33  411003        asthma
+5    F. Roy  98100 66666   55  560003      diabetes
+6   G. Paul  98100 77777   38  411004        asthma
+7   H. Nair  98100 88888   51  560004  hypertension
+</code></pre></div>
+<p><strong>Removal.</strong> Drop direct identifiers that the analysis does not need, such as names and phone numbers.</p>
+<p><strong>Pseudonymisation.</strong> Replace an identifier with a code, so that records of the same person can still be linked (across visits, say) without revealing who it is. A <strong>cryptographic hash</strong> of the identifier combined with a secret value (a <strong>salt</strong>, or better a key) gives a stable code; without the secret, the code cannot be reversed by trying all possible phone numbers.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">SECRET</span> <span class="o">=</span> <span class="s2">"replace-with-a-long-random-secret-kept-out-of-the-code"</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">pseudonym</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">secret</span><span class="o">=</span><span class="n">SECRET</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">((</span><span class="n">secret</span> <span class="o">+</span> <span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">"utf-8"</span><span class="p">))</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()[:</span><span class="mi">12</span><span class="p">]</span>
+
+<span class="n">deid</span> <span class="o">=</span> <span class="n">patients</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">pid</span><span class="o">=</span><span class="n">patients</span><span class="p">[</span><span class="s2">"phone"</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">pseudonym</span><span class="p">))</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">"name"</span><span class="p">,</span> <span class="s2">"phone"</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">deid</span><span class="p">[[</span><span class="s2">"pid"</span><span class="p">,</span> <span class="s2">"age"</span><span class="p">,</span> <span class="s2">"pin"</span><span class="p">,</span> <span class="s2">"condition"</span><span class="p">]]</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>            pid  age     pin condition
+0  251d1fd16c70   34  411001    asthma
+1  0a169f24a0a3   36  411002  diabetes
+2  7a38048e3edd   52  560001  diabetes
+</code></pre></div>
+<div class="admonition warning">
+<p class="admonition-title">Caution: pseudonymised data is still personal data</p>
+<p>A pseudonym can be linked back to the person by anyone who holds the secret, and the remaining columns may identify people anyway. Hashing a phone number <em>without</em> a secret is especially weak: there are only so many phone numbers, and an attacker can hash them all and look up the codes. Keep the secret separate from the data, and treat pseudonymised data with nearly the same care as the original.</p>
+</div>
+<p><strong>Generalisation.</strong> Make quasi-identifiers coarser: exact age becomes an age band, a six-digit PIN code becomes its first three digits (a wider area), a date of birth becomes a year.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">deid</span><span class="p">[</span><span class="s2">"age_band"</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">deid</span><span class="p">[</span><span class="s2">"age"</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="p">[</span><span class="mi">30</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">60</span><span class="p">],</span> <span class="n">right</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s2">"30-39"</span><span class="p">,</span> <span class="s2">"40-49"</span><span class="p">,</span> <span class="s2">"50-59"</span><span class="p">])</span>
+<span class="n">deid</span><span class="p">[</span><span class="s2">"area"</span><span class="p">]</span> <span class="o">=</span> <span class="n">deid</span><span class="p">[</span><span class="s2">"pin"</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span>
+<span class="n">released</span> <span class="o">=</span> <span class="n">deid</span><span class="p">[[</span><span class="s2">"pid"</span><span class="p">,</span> <span class="s2">"age_band"</span><span class="p">,</span> <span class="s2">"area"</span><span class="p">,</span> <span class="s2">"condition"</span><span class="p">]]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">released</span><span class="p">)</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>            pid age_band area     condition
+0  251d1fd16c70    30-39  411        asthma
+1  0a169f24a0a3    30-39  411      diabetes
+2  7a38048e3edd    50-59  560      diabetes
+3  9a9500beea8d    50-59  560  hypertension
+4  b23f216cd50c    30-39  411        asthma
+5  7260b72d69ad    50-59  560      diabetes
+6  37950db4bce6    30-39  411        asthma
+7  3e66d62ddec6    50-59  560  hypertension
+</code></pre></div>
+<h3 id="k-anonymity">k-anonymity<a class="headerlink" href="#k-anonymity" title="Permanent link">&para;</a></h3>
+<p>A table is <strong>k-anonymous</strong> (with respect to a set of quasi-identifiers) if every combination of their values that appears is shared by at least <span class="arithmatex">\(k\)</span> records. Then any one person is indistinguishable from at least <span class="arithmatex">\(k - 1\)</span> others on those fields. Checking it is a <code>groupby</code>:</p>
+<div class="language-python highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">k_anonymity</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">quasi</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">quasi</span><span class="p">,</span> <span class="n">observed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">size</span><span class="p">()</span><span class="o">.</span><span class="n">min</span><span class="p">())</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"original (age, pin):     k ="</span><span class="p">,</span> <span class="n">k_anonymity</span><span class="p">(</span><span class="n">deid</span><span class="p">,</span> <span class="p">[</span><span class="s2">"age"</span><span class="p">,</span> <span class="s2">"pin"</span><span class="p">]))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"generalised (band, area): k ="</span><span class="p">,</span> <span class="n">k_anonymity</span><span class="p">(</span><span class="n">released</span><span class="p">,</span> <span class="p">[</span><span class="s2">"age_band"</span><span class="p">,</span> <span class="s2">"area"</span><span class="p">]))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">released</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s2">"age_band"</span><span class="p">,</span> <span class="s2">"area"</span><span class="p">],</span> <span class="n">observed</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="s2">"condition"</span><span class="p">]</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="nb">list</span><span class="p">))</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>original (age, pin):     k = 1
+generalised (band, area): k = 4
+age_band  area
+30-39     411                   [asthma, diabetes, asthma, asthma]
+50-59     560     [diabetes, hypertension, diabetes, hypertension]
+Name: condition, dtype: object
+</code></pre></div>
+<p>In the original table every person is unique on age and PIN code (<span class="arithmatex">\(k = 1\)</span>). After generalisation every combination is shared by four people (<span class="arithmatex">\(k = 4\)</span>). But look at the groups' conditions: if everyone in a group had the same condition, knowing that someone is in the group would reveal their condition even with <span class="arithmatex">\(k = 4\)</span>. Here each group mixes conditions, but this weakness of k-anonymity is real, and stronger notions (such as requiring diverse sensitive values within each group, or the mathematical framework of <strong>differential privacy</strong>, which adds carefully calibrated noise to published results) exist for that reason.</p>
+<p><strong>Suppressing small counts.</strong> Published tables of counts leak information when cells are small: "1 patient aged 50–59 in area 411 has hypertension" identifies someone to anyone who knows them. A common rule is to suppress or round cells below a threshold before publication.</p>
+<h3 id="re-identification">Re-identification<a class="headerlink" href="#re-identification" title="Permanent link">&para;</a></h3>
+<p>De-identified datasets have repeatedly been re-identified by <strong>linking</strong> them with other data that contains names together with the same quasi-identifiers (public records, social media, other leaked datasets). The lesson is general: whether a dataset identifies people depends not only on what it contains but on what else exists. Release as little detail as the purpose allows, and prefer sharing aggregates to sharing records.</p>
+<h2 id="133-bias-and-fairness">13.3 Bias and fairness<a class="headerlink" href="#133-bias-and-fairness" title="Permanent link">&para;</a></h2>
+<p>A model learns patterns from data, and if the data reflects unequal treatment or unequal measurement, so will the model. Bias enters in several ways:</p>
+<ul>
+<li><strong>Sampling bias</strong>: the data does not represent the population the model will be used on (a health model trained mostly on one region or age group).</li>
+<li><strong>Measurement bias</strong>: a variable is measured differently, or with different accuracy, for different groups.</li>
+<li><strong>Historical bias</strong>: the data faithfully records past decisions that were themselves unfair (past hiring decisions used as the "correct" labels for a hiring model).</li>
+<li><strong>Proxy features</strong>: a model that is not given a sensitive attribute (gender, caste, religion) can still pick it up through correlated features, such as a PIN code or the name of a college.</li>
+</ul>
+<h3 id="measuring-fairness-by-group">Measuring fairness by group<a class="headerlink" href="#measuring-fairness-by-group" title="Permanent link">&para;</a></h3>
+<p>The first step is to measure. Here is a simulated lending scenario. Applicants belong to group A or group B. Their true ability to repay is distributed identically in the two groups, but the historical data recorded group B's repayment ability through a noisier and lower-scored "credit history" feature, as can happen when one group has had less access to formal credit. A model is trained on that data and used to approve loans.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">LogisticRegression</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">train_test_split</span>
+
+<span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">13</span><span class="p">)</span>
+<span class="n">n</span> <span class="o">=</span> <span class="mi">4000</span>
+<span class="n">group</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">choice</span><span class="p">([</span><span class="s2">"A"</span><span class="p">,</span> <span class="s2">"B"</span><span class="p">],</span> <span class="n">n</span><span class="p">)</span>
+<span class="n">ability</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>                                   <span class="c1"># same distribution in both groups</span>
+<span class="n">income</span> <span class="o">=</span> <span class="n">ability</span> <span class="o">*</span> <span class="mf">0.8</span> <span class="o">+</span> <span class="n">rng</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+<span class="n">history</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">group</span> <span class="o">==</span> <span class="s2">"A"</span><span class="p">,</span> <span class="n">ability</span> <span class="o">+</span> <span class="n">rng</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">n</span><span class="p">),</span>
+                   <span class="n">ability</span> <span class="o">-</span> <span class="mf">0.7</span> <span class="o">+</span> <span class="n">rng</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>       <span class="c1"># biased, noisier for B</span>
+<span class="n">repaid</span> <span class="o">=</span> <span class="p">(</span><span class="n">ability</span> <span class="o">+</span> <span class="n">rng</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mf">0.3</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+<span class="n">loans</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s2">"group"</span><span class="p">:</span> <span class="n">group</span><span class="p">,</span> <span class="s2">"income"</span><span class="p">:</span> <span class="n">income</span><span class="p">,</span> <span class="s2">"history"</span><span class="p">:</span> <span class="n">history</span><span class="p">,</span> <span class="s2">"repaid"</span><span class="p">:</span> <span class="n">repaid</span><span class="p">})</span>
+
+<span class="n">X</span> <span class="o">=</span> <span class="n">loans</span><span class="p">[[</span><span class="s2">"income"</span><span class="p">,</span> <span class="s2">"history"</span><span class="p">]]</span>                                 <span class="c1"># the group itself is NOT a feature</span>
+<span class="n">X_tr</span><span class="p">,</span> <span class="n">X_te</span><span class="p">,</span> <span class="n">y_tr</span><span class="p">,</span> <span class="n">y_te</span><span class="p">,</span> <span class="n">g_tr</span><span class="p">,</span> <span class="n">g_te</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">loans</span><span class="p">[</span><span class="s2">"repaid"</span><span class="p">],</span> <span class="n">loans</span><span class="p">[</span><span class="s2">"group"</span><span class="p">],</span>
+                                                      <span class="n">test_size</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">()</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_tr</span><span class="p">,</span> <span class="n">y_tr</span><span class="p">)</span>
+<span class="n">approve</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_te</span><span class="p">)</span>
+
+<span class="n">report</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s2">"group"</span><span class="p">:</span> <span class="n">g_te</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="s2">"repaid"</span><span class="p">:</span> <span class="n">y_te</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="s2">"approved"</span><span class="p">:</span> <span class="n">approve</span><span class="p">})</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">rates</span><span class="p">(</span><span class="n">d</span><span class="p">):</span>
+    <span class="n">good</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s2">"repaid"</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">({</span>
+        <span class="s2">"applicants"</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">),</span>
+        <span class="s2">"actual repay rate"</span><span class="p">:</span> <span class="n">d</span><span class="p">[</span><span class="s2">"repaid"</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span>
+        <span class="s2">"approval rate"</span><span class="p">:</span> <span class="n">d</span><span class="p">[</span><span class="s2">"approved"</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span>
+        <span class="s2">"approved | would repay"</span><span class="p">:</span> <span class="n">d</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">good</span><span class="p">,</span> <span class="s2">"approved"</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span>       <span class="c1"># true positive rate</span>
+        <span class="s2">"approved | would default"</span><span class="p">:</span> <span class="n">d</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="o">~</span><span class="n">good</span><span class="p">,</span> <span class="s2">"approved"</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span>    <span class="c1"># false positive rate</span>
+    <span class="p">})</span>
+<span class="n">fair</span> <span class="o">=</span> <span class="n">report</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">"group"</span><span class="p">)[[</span><span class="s2">"repaid"</span><span class="p">,</span> <span class="s2">"approved"</span><span class="p">]]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">rates</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">fair</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>group                            A        B
+applicants                1032.000  968.000
+actual repay rate            0.610    0.610
+approval rate                0.694    0.596
+approved | would repay       0.905    0.810
+approved | would default     0.363    0.262
+</code></pre></div>
+<p>The two groups would repay at the same rate (61%), yet group B is approved noticeably less often, and, more tellingly, among applicants who <em>would</em> repay, a smaller share of group B is approved. The model never saw the group label; the bias came in through the <code>history</code> feature, which measures group B's ability less accurately and systematically lower.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mf">6.5</span><span class="p">,</span> <span class="mf">3.4</span><span class="p">))</span>
+<span class="n">metrics</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"actual repay rate"</span><span class="p">,</span> <span class="s2">"approval rate"</span><span class="p">,</span> <span class="s2">"approved | would repay"</span><span class="p">]</span>
+<span class="n">xpos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">metrics</span><span class="p">))</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">xpos</span> <span class="o">-</span> <span class="mf">0.2</span><span class="p">,</span> <span class="n">fair</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s2">"A"</span><span class="p">,</span> <span class="n">metrics</span><span class="p">],</span> <span class="n">width</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"group A"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">xpos</span> <span class="o">+</span> <span class="mf">0.2</span><span class="p">,</span> <span class="n">fair</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s2">"B"</span><span class="p">,</span> <span class="n">metrics</span><span class="p">],</span> <span class="n">width</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"group B"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="n">xpos</span><span class="p">,</span> <span class="p">[</span><span class="s2">"would repay"</span><span class="p">,</span> <span class="s2">"approved"</span><span class="p">,</span> <span class="s2">"approved if</span><span class="se">\n</span><span class="s2">would repay"</span><span class="p">])</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"rate"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Same ability to repay, different treatment"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">"fairness.svg"</span><span class="p">)</span>
+</code></pre></div>
+<figure class="fig fig-diagram">
+<img src="img/fairness.svg" alt="A grouped bar chart comparing groups A and B on three rates. The share who would repay is almost the same for both groups. The approval rate is lower for group B, and the approval rate among applicants who would repay is also clearly lower for group B than for group A." loading="lazy" width="552" height="332">
+<figcaption><strong>Figure 13.1 A model can treat equally able groups differently.</strong> A grouped bar chart comparing groups A and B on three rates. The share who would repay is almost the same for both groups. The approval rate is lower for group B, and the approval rate among applicants who would repay is also clearly lower for group B than for group A.</figcaption>
+</figure>
+<p>Several fairness criteria are in common use. <strong>Demographic parity</strong> asks for equal approval rates across groups. <strong>Equal opportunity</strong> asks for equal true positive rates: those who would repay should be approved at the same rate whatever their group. <strong>Equalised odds</strong> asks for equal true positive <em>and</em> false positive rates. When the groups' base rates differ, these criteria generally cannot all hold at once, so choosing between them is a value judgement about what fairness means in the setting, not a technical detail.</p>
+<div class="admonition warning">
+<p class="admonition-title">Caution: removing the sensitive column is not enough</p>
+<p>The model above never used the group label and was still unfair, because another feature carried the group's disadvantage. "We don't use gender (or caste, or religion) in the model" is not a demonstration of fairness. Fairness has to be measured, which requires knowing group membership for at least an evaluation sample.</p>
+</div>
+<p>What can be done? Improve the data (measure the disadvantaged group's ability better, collect more representative data); reconsider features that act as proxies; adjust decision thresholds per group to equalise a chosen criterion, where that is lawful and appropriate; and, sometimes, decide that a decision should not be automated at all. Whatever is done, report the group-wise metrics with the model.</p>
+<h2 id="134-honest-analysis-and-communication">13.4 Honest analysis and communication<a class="headerlink" href="#134-honest-analysis-and-communication" title="Permanent link">&para;</a></h2>
+<p>Ethics also concerns the truthfulness of results. Earlier chapters met the main ways analyses mislead:</p>
+<ul>
+<li><strong>Charts that distort</strong>: bar charts not starting at zero, unequal scales, cherry-picked time windows (Section 6.8).</li>
+<li><strong>Fishing for significance</strong>: running many tests and reporting the ones with <span class="arithmatex">\(p &lt; 0.05\)</span>; adjusting the analysis until a desired result appears (Section 7.6).</li>
+<li><strong>Optimistic evaluation</strong>: tuning on the test set, leakage, no baseline (Chapter 10).</li>
+<li><strong>Causal language for associations</strong>: "studying causes higher marks" from observational data (Section 6.6).</li>
+<li><strong>Hiding uncertainty</strong>: reporting a single number without an interval, or with false precision.</li>
+</ul>
+<p>The remedy is a habit of reporting that a sceptical colleague could check: the question, the data and its limitations, every exclusion and cleaning decision, the methods, the uncertainty, and what the result does <em>not</em> show.</p>
+<h2 id="135-reproducibility">13.5 Reproducibility<a class="headerlink" href="#135-reproducibility" title="Permanent link">&para;</a></h2>
+<p>An analysis is <strong>reproducible</strong> if someone else can take the same data and code and obtain the same results. It sounds automatic for computer work, but in practice results are often impossible to recreate: a cell run out of order in a notebook, a file edited by hand, a library that changed its defaults, an unrecorded random seed. Reproducibility is what lets errors be found and results be trusted.</p>
+<p>The practices are simple:</p>
+<ol>
+<li><strong>Never edit raw data.</strong> Keep the original files read-only, and do every cleaning step in code (Section 5.11), so that the path from raw data to result is complete.</li>
+<li><strong>Fix random seeds.</strong> Pass <code>random_state</code> to scikit-learn and use <code>np.random.default_rng(seed)</code>, as this book does everywhere.</li>
+<li><strong>Record the environment.</strong> Note the versions of Python and of each library; the same code can give different results, or fail, under other versions.</li>
+<li><strong>Script the analysis.</strong> Put the steps in functions and scripts that run from start to finish. In a notebook, regularly use "restart and run all" to confirm the notebook runs top to bottom and produces what it shows.</li>
+<li><strong>Use version control.</strong> Keep code (and small data or its description) in a version-control system such as git, so that every result can be tied to the exact code that produced it.</li>
+<li><strong>Document decisions.</strong> A short text file explaining the data source, each cleaning decision and the reasons for the modelling choices is worth more than any amount of clever code.</li>
+</ol>
+<p>Recording versions takes two lines:</p>
+<div class="language-python highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span><span class="o">,</span><span class="w"> </span><span class="nn">sklearn</span><span class="o">,</span><span class="w"> </span><span class="nn">matplotlib</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Python"</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">version</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"numpy"</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">__version__</span><span class="p">,</span> <span class="s2">"| pandas"</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">__version__</span><span class="p">,</span>
+      <span class="s2">"| matplotlib"</span><span class="p">,</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">__version__</span><span class="p">,</span> <span class="s2">"| scikit-learn"</span><span class="p">,</span> <span class="n">sklearn</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>Python 3.12.10
+numpy 2.5.3 | pandas 3.0.5 | matplotlib 3.11.2 | scikit-learn 1.9.0
+</code></pre></div>
+<p>A file listing the exact versions, conventionally <code>requirements.txt</code>, lets others install the same environment with <code>pip install -r requirements.txt</code>:</p>
+<div class="language-text highlight"><pre><span></span><code>numpy==2.5.3
+pandas==3.0.5
+matplotlib==3.11.2
+scikit-learn==1.9.0
+</code></pre></div>
+<p>A seed makes a random result repeatable, which is easy to check:</p>
+<div class="language-python highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.ensemble</span><span class="w"> </span><span class="kn">import</span> <span class="n">RandomForestClassifier</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">fit_score</span><span class="p">(</span><span class="n">seed</span><span class="p">):</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">RandomForestClassifier</span><span class="p">(</span><span class="n">n_estimators</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_tr</span><span class="p">,</span> <span class="n">y_tr</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">round</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">X_te</span><span class="p">,</span> <span class="n">y_te</span><span class="p">),</span> <span class="mi">4</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">fit_score</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">fit_score</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">fit_score</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>0.7565 0.7565 0.7535
+</code></pre></div>
+<p>The same seed gives exactly the same score; a different seed gives a slightly different one. That difference is also informative: if a result changes materially with the seed, it was never robust, and reporting the spread over several seeds is more honest than reporting the best one.</p>
+<div class="admonition info">
+<p class="admonition-title">Note: reproducible is not the same as correct</p>
+<p>A reproducible analysis can still be wrong, but its errors can be found, because anyone can rerun it, inspect each step and change one thing at a time. An irreproducible analysis cannot even be checked.</p>
+</div>
+<h2 id="136-a-checklist-for-responsible-projects">13.6 A checklist for responsible projects<a class="headerlink" href="#136-a-checklist-for-responsible-projects" title="Permanent link">&para;</a></h2>
+<div class="admonition example">
+<p class="admonition-title">Example 13.1: Questions to answer before a model is used</p>
+<ul>
+<li><strong>Purpose</strong>: What decision will this support, and who is affected by it?</li>
+<li><strong>Data</strong>: Where did the data come from, with what consent, and which groups are missing or under-represented?</li>
+<li><strong>Privacy</strong>: Which personal fields are used, and are they all necessary? How are they protected, and when will they be deleted?</li>
+<li><strong>Performance</strong>: How does the model compare with a baseline, measured without leakage, with uncertainty?</li>
+<li><strong>Fairness</strong>: Are error rates similar across relevant groups? If not, what has been done, and is the remaining difference acceptable?</li>
+<li><strong>Failure</strong>: What happens to a person when the model is wrong, and can they challenge the decision?</li>
+<li><strong>Reproducibility</strong>: Can the result be recreated from raw data with recorded code, seeds and versions?</li>
+<li><strong>Monitoring</strong>: Who checks the model after deployment, and how often?</li>
+</ul>
+</div>
+<h2 id="137-summary">13.7 Summary<a class="headerlink" href="#137-summary" title="Permanent link">&para;</a></h2>
+<div class="admonition abstract">
+<p class="admonition-title">Summary</p>
+<ul>
+<li>Ethical questions arise at every stage of the workflow; notice them, measure what can be measured, and document decisions.</li>
+<li>Direct identifiers name people; quasi-identifiers identify them in combination. Collect only what the purpose needs.</li>
+<li>Remove, pseudonymise (keyed hashes, secret kept separate), generalise and suppress; check k-anonymity with a <code>groupby</code>. De-identified data can be re-identified by linkage, and pseudonymised data is still personal data.</li>
+<li>Bias enters through sampling, measurement, historical labels and proxy features. Removing a sensitive column does not remove bias.</li>
+<li>Measure fairness by group: approval rates (demographic parity), true positive rates (equal opportunity), and false positive rates (equalised odds). Choosing a criterion is a value judgement.</li>
+<li>Report honestly: undistorted charts, no fishing, no leakage, no causal claims from associations, and uncertainty stated.</li>
+<li>Reproducibility: raw data untouched, seeds fixed, versions recorded, steps scripted, code under version control, decisions documented.</li>
+</ul>
+</div>
+<h2 id="138-exercises">13.8 Exercises<a class="headerlink" href="#138-exercises" title="Permanent link">&para;</a></h2>
+<div class="admonition example">
+<p class="admonition-title">Exercise 1</p>
+<p>Classify each field as a direct identifier, a quasi-identifier, or neither: (a) email address; (b) year of birth; (c) blood pressure reading; (d) PIN code; (e) passport number; (f) occupation.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>Direct identifiers: (a) email address, (e) passport number. Quasi-identifiers: (b) year of birth, (d) PIN code, (f) occupation, which can identify people in combination. (c) A blood pressure reading is a sensitive attribute but not normally an identifier (though in a small dataset an unusual value combined with other fields could help identify someone).</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 2</p>
+<p>Why is <code>hashlib.sha256(phone.encode()).hexdigest()</code> a weak way to pseudonymise ten-digit phone numbers? How does the chapter's <code>pseudonym</code> function improve on it?</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>There are at most <span class="arithmatex">\(10^{10}\)</span> ten-digit numbers, so an attacker can hash every possible number and build a lookup table from codes back to numbers; an unsalted hash therefore hides nothing. Adding a long secret value before hashing means the attacker would also need the secret to build the table. The secret must be kept separate from the data, since anyone holding it can still re-identify.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 3</p>
+<p>For the table below, what is the k-anonymity with respect to (age_band, area)? Generalise it to make <span class="arithmatex">\(k \ge 2\)</span>.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">t</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s2">"age_band"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"20-29"</span><span class="p">,</span> <span class="s2">"20-29"</span><span class="p">,</span> <span class="s2">"30-39"</span><span class="p">,</span> <span class="s2">"30-39"</span><span class="p">,</span> <span class="s2">"30-39"</span><span class="p">],</span>
+                  <span class="s2">"area"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"411"</span><span class="p">,</span> <span class="s2">"411"</span><span class="p">,</span> <span class="s2">"411"</span><span class="p">,</span> <span class="s2">"560"</span><span class="p">,</span> <span class="s2">"560"</span><span class="p">]})</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">k_anonymity</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="p">[</span><span class="s2">"age_band"</span><span class="p">,</span> <span class="s2">"area"</span><span class="p">]))</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>1
+</code></pre></div>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p><span class="arithmatex">\(k = 1\)</span>: the combination (30-39, 411) occurs once. One fix is to generalise the area for that band, for example replacing all areas by a coarser region, or merging the age bands to "20-39":</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">t2</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">age_band</span><span class="o">=</span><span class="s2">"20-39"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">k_anonymity</span><span class="p">(</span><span class="n">t2</span><span class="p">,</span> <span class="p">[</span><span class="s2">"age_band"</span><span class="p">,</span> <span class="s2">"area"</span><span class="p">]))</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>2
+</code></pre></div>
+<p>Now the groups are (20-39, 411) with 3 records and (20-39, 560) with 2, so <span class="arithmatex">\(k = 2\)</span>. Each generalisation loses detail; the art is to lose as little as needed.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 4</p>
+<p>In the lending example, compute the false positive rate (approval among applicants who would default) for each group from <code>fair</code>, and say which fairness criterion the comparison relates to.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<div class="language-python highlight"><pre><span></span><code><span class="nb">print</span><span class="p">(</span><span class="n">fair</span><span class="p">[</span><span class="s2">"approved | would default"</span><span class="p">])</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>group
+A    0.363
+B    0.262
+Name: approved | would default, dtype: float64
+</code></pre></div>
+<p>This is the false positive rate per group. Comparing false positive rates (together with true positive rates) is the equalised odds criterion; equal true positive rates alone is equal opportunity.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 5</p>
+<p>A colleague's notebook gives a different answer each time it is run from the top. List three likely causes.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>For example: a random step (a train/test split, a shuffle, a random forest, k-means initialisation) without a fixed seed; cells that depend on state created by cells run earlier out of order, or on variables that have since been deleted; data read from a file or a source that changes between runs (a live database, a file someone edits). Less often: library versions that differ between machines.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 6</p>
+<p>A city wants to use a model to decide where to send food-safety inspectors, trained on past inspection results. Name one way historical bias could enter, and one check you would make.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>Past inspections may have been concentrated in certain neighbourhoods, so violations were found more often there simply because more inspections took place; a model trained on those results would send inspectors back to the same places, reinforcing the pattern. A check: compare inspection rates and violation rates <em>per inspection</em> across neighbourhoods, and evaluate the model on a sample of randomly chosen inspections, which are free of the old targeting.</p>
+</details>
+<h2 id="139-quiz">13.9 Quiz<a class="headerlink" href="#139-quiz" title="Permanent link">&para;</a></h2>
+<div class="pk-quiz" data-quiz="fe9466c59a4a">
+<p class="pk-quiz-title">Check your understanding of Chapter 13</p>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;full name&quot;,&quot;passport number&quot;,&quot;date of birth&quot;,&quot;a random study number&quot;],&quot;answer&quot;:&quot;date of birth&quot;}">
+<p class="admonition-title">Exercise 1</p>
+<p class="pk-q-prompt">Which of these is a quasi-identifier?</p>
+<ol class="pk-q-opts" type="A"><li>full name</li><li>passport number</li><li>date of birth</li><li>a random study number</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>date of birth</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;it has 3 columns&quot;,&quot;every combination of quasi-identifier values appears at least 3 times&quot;,&quot;3 identifiers were removed&quot;,&quot;3 people can see it&quot;],&quot;answer&quot;:&quot;every combination of quasi-identifier values appears at least 3 times&quot;}">
+<p class="admonition-title">Exercise 2</p>
+<p class="pk-q-prompt">A table is 3-anonymous on its quasi-identifiers if</p>
+<ol class="pk-q-opts" type="A"><li>it has 3 columns</li><li>every combination of quasi-identifier values appears at least 3 times</li><li>3 identifiers were removed</li><li>3 people can see it</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>every combination of quasi-identifier values appears at least 3 times</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;guarantees fairness&quot;,&quot;does not by itself guarantee fairness&quot;,&quot;is illegal&quot;,&quot;always lowers accuracy&quot;],&quot;answer&quot;:&quot;does not by itself guarantee fairness&quot;}">
+<p class="admonition-title">Exercise 3</p>
+<p class="pk-q-prompt">Removing the sensitive attribute from a model's features</p>
+<ol class="pk-q-opts" type="A"><li>guarantees fairness</li><li>does not by itself guarantee fairness</li><li>is illegal</li><li>always lowers accuracy</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>does not by itself guarantee fairness</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;approval rates&quot;,&quot;true positive rates&quot;,&quot;accuracy&quot;,&quot;group sizes&quot;],&quot;answer&quot;:&quot;true positive rates&quot;}">
+<p class="admonition-title">Exercise 4</p>
+<p class="pk-q-prompt">Equal opportunity asks for equal</p>
+<ol class="pk-q-opts" type="A"><li>approval rates</li><li>true positive rates</li><li>accuracy</li><li>group sizes</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>true positive rates</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;using more data&quot;,&quot;fixing the random seed&quot;,&quot;using a notebook&quot;,&quot;removing outliers&quot;],&quot;answer&quot;:&quot;fixing the random seed&quot;}">
+<p class="admonition-title">Exercise 5</p>
+<p class="pk-q-prompt">Which practice most directly makes a random result repeatable?</p>
+<ol class="pk-q-opts" type="A"><li>using more data</li><li>fixing the random seed</li><li>using a notebook</li><li>removing outliers</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>fixing the random seed</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;text&quot;,&quot;answer&quot;:[&quot;requirements.txt&quot;]}">
+<p class="admonition-title">Exercise 6</p>
+<p class="pk-q-prompt">What is the conventional name of the file that lists a Python project's exact package versions?</p>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>requirements.txt</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;anonymous and free to share&quot;,&quot;still personal data&quot;,&quot;always encrypted&quot;,&quot;useless for analysis&quot;],&quot;answer&quot;:&quot;still personal data&quot;}">
+<p class="admonition-title">Exercise 7</p>
+<p class="pk-q-prompt">Pseudonymised data is</p>
+<ol class="pk-q-opts" type="A"><li>anonymous and free to share</li><li>still personal data</li><li>always encrypted</li><li>useless for analysis</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>still personal data</strong></p>
+</details>
+</div>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button type="button" class="md-top md-icon" data-md-component="top" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+Back to top
+</button>
+</main>
+<footer class="md-footer">
+<nav class="md-footer__inner md-grid" aria-label="Footer" >
+<a href="text-and-time-series-basics.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: 12. Text and Time Series Basics">
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</div>
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Previous
+</span>
+<div class="md-ellipsis">
+12. Text and Time Series Basics
+</div>
+</div>
+</a>
+<a href="an-end-to-end-project.html" class="md-footer__link md-footer__link--next" aria-label="Next: 14. An End-to-End Project">
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Next
+</span>
+<div class="md-ellipsis">
+14. An End-to-End Project
+</div>
+</div>
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+</div>
+</a>
+</nav>
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+The Open Book Project &middot;
+<a href="../../about.html">About this library</a> &middot;
+<a href="../../publish.html">Publish your book</a> &middot;
+© The authors of the books
+</div>
+Made with
+<a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+Material for MkDocs
+</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "navigation.prune", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "toc.follow", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+<script src="../../assets/mathjax.js"></script>
+<script src="../../assets/viz.js"></script>
+<script src="../../assets/remote.js"></script>
+<script src="../../assets/scans.js"></script>
+<script src="../../assets/reader.js"></script>
+<script src="../../assets/app.js"></script>
+<script src="../../assets/slides.js"></script>
+<script src="../../assets/speak.js"></script>
+<script src="../../assets/quiz.js"></script>
+<script>
+    /* offline reading: the service worker at the site root (its scope is the whole site) */
+    if ("serviceWorker" in navigator && window.isSecureContext) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register(new URL("../../sw.js", location.href).href).catch(function () {});
+      });
+    }
+  </script>
+</body>
+</html>

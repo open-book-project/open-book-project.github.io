@@ -1,0 +1,1049 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="description" content="The Open Book Project: books on computer science, quantum computing, cyber security, science, the social sciences, university courses and languages, read page by page like an e-book, online or offline.">
+<meta name="author" content="The Open Book Project">
+<link rel="canonical" href="https://open-book-project.github.io/mathematics/discrete_mathematics/recurrence-relations-and-generating-functions.html">
+<link rel="prev" href="discrete-probability.html">
+<link rel="next" href="number-theory-and-cryptography.html">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap"></noscript>
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Open Book">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="application-name" content="Open Book"><script src="../../assets/library-data.js"></script><script>
+    (function () {
+      var X = window.XMLHttpRequest, open, gate = new Promise(function (r) { open = r; });
+      if (!X) return;
+      var open0 = X.prototype.open, send0 = X.prototype.send;
+      X.prototype.open = function (method, url) {
+        this.__pkIndex = /\/search\/search_index\.json(\?|#|$)/.test(String(url));
+        return open0.apply(this, arguments);
+      };
+      X.prototype.send = function () {
+        if (!this.__pkIndex) return send0.apply(this, arguments);
+        var xhr = this, args = arguments;
+        gate.then(function () { send0.apply(xhr, args); });
+      };
+      function wake() { open(); }
+      document.addEventListener("focusin", function (e) { if (e.target && e.target.closest && e.target.closest(".md-search")) wake(); });
+      document.addEventListener("click", function (e) { if (e.target && e.target.closest && e.target.closest('label[for="__search"], .md-search')) wake(); }, true);
+      document.addEventListener("keydown", function (e) {
+        var k = e.key;
+        if ((k === "/" || k === "s" || k === "f" || k === "S" || k === "F") && !(e.target && e.target.closest && e.target.closest("input, textarea, [contenteditable]"))) wake();
+      }, true);
+      if (/[?&]q=/.test(location.search)) wake();
+    })();
+  </script><script>
+    try {
+      if ((window.matchMedia && (matchMedia("(display-mode: standalone)").matches || matchMedia("(display-mode: fullscreen)").matches)) || navigator.standalone === true) {
+        document.documentElement.className += " bjp-standalone";
+      }
+    } catch (e) { /* not an installed app */ }
+    /* the books of a subject or of the whole library as covers or as a list (assets/app.js): the reader's choice */
+    try {
+      var bv = localStorage.getItem("bjp.view");
+      if (bv === "list" || (bv !== "grid" && /\/books\.html$/.test(location.pathname))) document.documentElement.className += " bjp-view-list";
+    } catch (e) { /* no storage: covers */ }
+  </script>
+<script>
+    /* a book opened from its cover on the shelf: the page stays blank, in the cover's colour, until the reader is up */
+    try {
+      var cv = sessionStorage.getItem("bjp.reader.cover");
+      if (cv && sessionStorage.getItem("bjp.reader.open") === "1") {
+        var c = JSON.parse(cv), de = document.documentElement;
+        de.className += " bjp-booting";
+        if (c && /^#[0-9a-f]{3,8}$/i.test(c.bg || "")) de.style.background = c.bg;
+        setTimeout(function () { de.classList.remove("bjp-booting"); de.style.background = ""; }, 3000);
+      }
+    } catch (e) { /* no session storage: the page simply opens as usual */ }
+  </script>
+<title>9. Recurrence Relations and Generating Functions - The Open Book Project</title>
+<link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+<link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+<link rel="stylesheet" href="../../assets/extra.css">
+<link rel="stylesheet" href="../../assets/reader.css">
+<link rel="stylesheet" href="../../assets/viz.css">
+<link rel="stylesheet" href="../../assets/app.css">
+<link rel="stylesheet" href="../../assets/theme.css">
+<link rel="stylesheet" href="../../assets/slides.css">
+<link rel="stylesheet" href="../../assets/remote.css">
+<link rel="stylesheet" href="../../assets/scans.css">
+<link rel="stylesheet" href="../../assets/speak.css">
+<link rel="stylesheet" href="../../assets/quiz.css">
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+<input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+<input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a href="#91-recurrence-relations-as-models" class="md-skip">
+Skip to content
+</a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav class="md-header__inner md-grid" aria-label="Header">
+<a href="../../index.html" title="The Open Book Project" class="md-header__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+The Open Book Project
+</span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+9. Recurrence Relations and Generating Functions
+</span>
+</div>
+</div>
+</div><a href="../../index.html" class="bjp-libbtn" aria-label="Library: all books" title="Library: all books">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V5h4v15M8 20V9h4v11M14 20L12.6 6l3.8-.8 3 14.2M3 20h18"/></svg><span>Library</span>
+</a>
+<a href="../../subjects/index.html" class="pk-catbtn" aria-haspopup="true" aria-expanded="false" title="Browse the books by category">
+<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><circle cx="17" cy="7" r="3.6"/><path d="M7 13.4l3.9 6.8H3.1z"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg><span>Categories</span>
+</a>
+<form class="md-header__option" data-md-component="palette">
+<input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+<label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+</label>
+<input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+<label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+<label class="md-search__icon md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</label>
+<nav class="md-search__options" aria-label="Search">
+<button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+Initializing search
+</div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--primary bjp-nav bjp-nav--book" aria-label="Navigation" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a href="../../index.html" title="The Open Book Project" class="md-nav__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+The Open Book Project
+</label>
+<ul class="md-nav__list" data-md-scrollfix>
+<li class="md-nav__item bjp-nav-all">
+<a href="../../index.html" class="md-nav__link" aria-label="All books: back to the library">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+<span class="md-ellipsis">All books</span>
+</a>
+</li>
+<li class="md-nav__item bjp-nav-book" role="presentation"><span class="bjp-nav-head">Discrete Mathematics</span></li>
+<li class="md-nav__item">
+<a href="index.html" class="md-nav__link">
+<span class="md-ellipsis">
+Overview and preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="preface.html" class="md-nav__link">
+<span class="md-ellipsis">
+Preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="propositional-logic.html" class="md-nav__link">
+<span class="md-ellipsis">
+1. Propositional Logic
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="predicate-logic-and-quantifiers.html" class="md-nav__link">
+<span class="md-ellipsis">
+2. Predicate Logic and Quantifiers
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="methods-of-proof.html" class="md-nav__link">
+<span class="md-ellipsis">
+3. Methods of Proof
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="sets-and-functions.html" class="md-nav__link">
+<span class="md-ellipsis">
+4. Sets and Functions
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="relations.html" class="md-nav__link">
+<span class="md-ellipsis">
+5. Relations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="induction-and-recursion.html" class="md-nav__link">
+<span class="md-ellipsis">
+6. Induction and Recursion
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="counting.html" class="md-nav__link">
+<span class="md-ellipsis">
+7. Counting
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="discrete-probability.html" class="md-nav__link">
+<span class="md-ellipsis">
+8. Discrete Probability
+</span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+9. Recurrence Relations and Generating Functions
+</span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a href="recurrence-relations-and-generating-functions.html" class="md-nav__link md-nav__link--active">
+<span class="md-ellipsis">
+9. Recurrence Relations and Generating Functions
+</span>
+</a>
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#91-recurrence-relations-as-models" class="md-nav__link">
+<span class="md-ellipsis">
+9.1 Recurrence relations as models
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#92-solving-by-iteration" class="md-nav__link">
+<span class="md-ellipsis">
+9.2 Solving by iteration
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#93-linear-homogeneous-recurrences" class="md-nav__link">
+<span class="md-ellipsis">
+9.3 Linear homogeneous recurrences
+</span>
+</a>
+<nav class="md-nav" aria-label="9.3 Linear homogeneous recurrences">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#repeated-roots" class="md-nav__link">
+<span class="md-ellipsis">
+Repeated roots
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#94-non-homogeneous-recurrences" class="md-nav__link">
+<span class="md-ellipsis">
+9.4 Non-homogeneous recurrences
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#95-divide-and-conquer-recurrences" class="md-nav__link">
+<span class="md-ellipsis">
+9.5 Divide-and-conquer recurrences
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#96-generating-functions" class="md-nav__link">
+<span class="md-ellipsis">
+9.6 Generating functions
+</span>
+</a>
+<nav class="md-nav" aria-label="9.6 Generating functions">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#solving-recurrences-with-generating-functions" class="md-nav__link">
+<span class="md-ellipsis">
+Solving recurrences with generating functions
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#97-summary" class="md-nav__link">
+<span class="md-ellipsis">
+9.7 Summary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#98-exercises" class="md-nav__link">
+<span class="md-ellipsis">
+9.8 Exercises
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#99-quiz" class="md-nav__link">
+<span class="md-ellipsis">
+9.9 Quiz
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="number-theory-and-cryptography.html" class="md-nav__link">
+<span class="md-ellipsis">
+10. Number Theory and Cryptography
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="graphs.html" class="md-nav__link">
+<span class="md-ellipsis">
+11. Graphs
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="trees.html" class="md-nav__link">
+<span class="md-ellipsis">
+12. Trees
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="boolean-algebra-and-logic-circuits.html" class="md-nav__link">
+<span class="md-ellipsis">
+13. Boolean Algebra and Logic Circuits
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="automata-and-languages.html" class="md-nav__link">
+<span class="md-ellipsis">
+14. Automata and Languages
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="glossary.html" class="md-nav__link">
+<span class="md-ellipsis">
+Glossary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="further-reading.html" class="md-nav__link">
+<span class="md-ellipsis">
+Further Reading
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#91-recurrence-relations-as-models" class="md-nav__link">
+<span class="md-ellipsis">
+9.1 Recurrence relations as models
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#92-solving-by-iteration" class="md-nav__link">
+<span class="md-ellipsis">
+9.2 Solving by iteration
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#93-linear-homogeneous-recurrences" class="md-nav__link">
+<span class="md-ellipsis">
+9.3 Linear homogeneous recurrences
+</span>
+</a>
+<nav class="md-nav" aria-label="9.3 Linear homogeneous recurrences">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#repeated-roots" class="md-nav__link">
+<span class="md-ellipsis">
+Repeated roots
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#94-non-homogeneous-recurrences" class="md-nav__link">
+<span class="md-ellipsis">
+9.4 Non-homogeneous recurrences
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#95-divide-and-conquer-recurrences" class="md-nav__link">
+<span class="md-ellipsis">
+9.5 Divide-and-conquer recurrences
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#96-generating-functions" class="md-nav__link">
+<span class="md-ellipsis">
+9.6 Generating functions
+</span>
+</a>
+<nav class="md-nav" aria-label="9.6 Generating functions">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#solving-recurrences-with-generating-functions" class="md-nav__link">
+<span class="md-ellipsis">
+Solving recurrences with generating functions
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#97-summary" class="md-nav__link">
+<span class="md-ellipsis">
+9.7 Summary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#98-exercises" class="md-nav__link">
+<span class="md-ellipsis">
+9.8 Exercises
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#99-quiz" class="md-nav__link">
+<span class="md-ellipsis">
+9.9 Quiz
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="chapter-9-recurrence-relations-and-generating-functions">Chapter 9: Recurrence Relations and Generating Functions<a class="headerlink" href="#chapter-9-recurrence-relations-and-generating-functions" title="Permanent link">&para;</a></h1>
+<p><em>How sequences grow, and how to find their formulas</em></p>
+<div class="admonition note">
+<p class="admonition-title">Learning outcomes</p>
+<p>After this chapter you should be able to:</p>
+<ul>
+<li>model counting problems and algorithms with recurrence relations and initial conditions;</li>
+<li>solve simple recurrences by iteration, and prove the result by induction;</li>
+<li>solve linear homogeneous recurrences with constant coefficients by the characteristic equation, with distinct or repeated roots;</li>
+<li>find particular solutions of linear non-homogeneous recurrences;</li>
+<li>analyse divide-and-conquer algorithms with recurrences and the master theorem;</li>
+<li>use generating functions to count and to solve recurrences.</li>
+</ul>
+</div>
+<h2 id="91-recurrence-relations-as-models">9.1 Recurrence relations as models<a class="headerlink" href="#91-recurrence-relations-as-models" title="Permanent link">&para;</a></h2>
+<p>A <strong>recurrence relation</strong> for a sequence <span class="arithmatex">\(a_0, a_1, a_2, \dots\)</span> expresses <span class="arithmatex">\(a_n\)</span> in terms of earlier terms. Together with enough <strong>initial conditions</strong> (the first few terms), it determines the whole sequence, just as the recursive definitions of Section 6.4 do. A <strong>solution</strong> is a formula for <span class="arithmatex">\(a_n\)</span> in terms of <span class="arithmatex">\(n\)</span> alone.</p>
+<p>Many problems are easiest to describe by a recurrence: how the problem of size <span class="arithmatex">\(n\)</span> is built from smaller ones. Solving the recurrence then gives the answer.</p>
+<div class="admonition example">
+<p class="admonition-title">Example 9.1: Compound interest</p>
+<p><strong>Problem.</strong> A deposit of 10,000 rupees earns 7% interest a year, compounded yearly. How much is in the account after <span class="arithmatex">\(n\)</span> years?</p>
+<p><strong>Solution.</strong> Let <span class="arithmatex">\(P_n\)</span> be the amount after <span class="arithmatex">\(n\)</span> years. Then <span class="arithmatex">\(P_0 = 10000\)</span> and <span class="arithmatex">\(P_n = P_{n-1} + 0.07P_{n-1} = 1.07P_{n-1}\)</span>. Iterating, <span class="arithmatex">\(P_n = 1.07^n \cdot 10000\)</span>. After 10 years that is about 19,672 rupees.</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title">Example 9.2: The Tower of Hanoi</p>
+<p><strong>Problem.</strong> Three pegs; <span class="arithmatex">\(n\)</span> discs of different sizes on the first, largest at the bottom. A move takes the top disc from one peg and puts it on another, never on a smaller disc. How many moves are needed to move the whole tower to the third peg?</p>
+<p><strong>Solution.</strong> Let <span class="arithmatex">\(H_n\)</span> be the least number of moves for <span class="arithmatex">\(n\)</span> discs. To move the largest disc at all, the <span class="arithmatex">\(n - 1\)</span> smaller discs must first be stacked on the middle peg, which takes <span class="arithmatex">\(H_{n-1}\)</span> moves. Then the largest disc moves (1 move), and the <span class="arithmatex">\(n - 1\)</span> smaller discs are moved on top of it (<span class="arithmatex">\(H_{n-1}\)</span> moves). So</p>
+<div class="arithmatex">\[
+H_n = 2H_{n-1} + 1, \qquad H_1 = 1.
+\]</div>
+<p>The values are <span class="arithmatex">\(1, 3, 7, 15, 31, \dots\)</span>, which suggests <span class="arithmatex">\(H_n = 2^n - 1\)</span>; Section 9.2 proves it. Figure 9.1 steps through the 7 moves for three discs.</p>
+</div>
+<figure class="fig fig-diagram fig-steps" data-steps-title="The Tower of Hanoi with three discs" data-interval="1600">
+<div class="steps-stage">
+<div class="steps-frame"><img src="img/hanoi-0.svg" alt="The start: three discs on the left peg." loading="lazy" width="600" height="230"><p class="steps-cap"><span class="steps-n">1</span>The start: three discs on the left peg.</p></div>
+<div class="steps-frame"><img src="img/hanoi-1.svg" alt="Move 1: the small disc to the right peg." loading="lazy" width="600" height="230"><p class="steps-cap"><span class="steps-n">2</span>Move 1: the small disc to the right peg.</p></div>
+<div class="steps-frame"><img src="img/hanoi-2.svg" alt="Move 2: the middle disc to the middle peg." loading="lazy" width="600" height="230"><p class="steps-cap"><span class="steps-n">3</span>Move 2: the middle disc to the middle peg.</p></div>
+<div class="steps-frame"><img src="img/hanoi-3.svg" alt="Move 3: the small disc onto the middle disc. The two smaller discs are now on the middle peg." loading="lazy" width="600" height="230"><p class="steps-cap"><span class="steps-n">4</span>Move 3: the small disc onto the middle disc. The two smaller discs are now on the middle peg.</p></div>
+<div class="steps-frame"><img src="img/hanoi-4.svg" alt="Move 4: the large disc to the right peg." loading="lazy" width="600" height="230"><p class="steps-cap"><span class="steps-n">5</span>Move 4: the large disc to the right peg.</p></div>
+<div class="steps-frame"><img src="img/hanoi-5.svg" alt="Move 5: the small disc to the left peg." loading="lazy" width="600" height="230"><p class="steps-cap"><span class="steps-n">6</span>Move 5: the small disc to the left peg.</p></div>
+<div class="steps-frame"><img src="img/hanoi-6.svg" alt="Move 6: the middle disc onto the large disc." loading="lazy" width="600" height="230"><p class="steps-cap"><span class="steps-n">7</span>Move 6: the middle disc onto the large disc.</p></div>
+<div class="steps-frame"><img src="img/hanoi-7.svg" alt="Move 7: the small disc on top. The tower has moved in 2 to the power 3 minus 1 = 7 moves." loading="lazy" width="600" height="230"><p class="steps-cap"><span class="steps-n">8</span>Move 7: the small disc on top. The tower has moved in 2 to the power 3 minus 1 = 7 moves.</p></div>
+</div>
+<figcaption><strong>Figure 9.1 Seven moves for three discs.</strong> The Tower of Hanoi with three discs</figcaption>
+</figure>
+<div class="admonition example">
+<p class="admonition-title">Example 9.3: Bit strings without two consecutive zeros</p>
+<p><strong>Problem.</strong> Find a recurrence for <span class="arithmatex">\(a_n\)</span>, the number of bit strings of length <span class="arithmatex">\(n\)</span> with no two consecutive 0s.</p>
+<p><strong>Solution.</strong> Split the valid strings of length <span class="arithmatex">\(n \ge 3\)</span> by their last bit. Those ending in 1 are a valid string of length <span class="arithmatex">\(n - 1\)</span> followed by 1: <span class="arithmatex">\(a_{n-1}\)</span> of them. Those ending in 0 must end in 10 (two 0s are forbidden), and are a valid string of length <span class="arithmatex">\(n - 2\)</span> followed by 10: <span class="arithmatex">\(a_{n-2}\)</span> of them. So</p>
+<div class="arithmatex">\[
+a_n = a_{n-1} + a_{n-2}, \qquad a_1 = 2 \;(\texttt{0}, \texttt{1}), \quad a_2 = 3 \;(\texttt{01}, \texttt{10}, \texttt{11}).
+\]</div>
+<p>This is the Fibonacci recurrence, shifted: <span class="arithmatex">\(a_n = f_{n+2}\)</span>.</p>
+</div>
+<h2 id="92-solving-by-iteration">9.2 Solving by iteration<a class="headerlink" href="#92-solving-by-iteration" title="Permanent link">&para;</a></h2>
+<p>The most direct method is to unwind the recurrence until a pattern appears, then prove the pattern by induction.</p>
+<div class="admonition example">
+<p class="admonition-title">Example 9.4: Solving the Tower of Hanoi recurrence</p>
+<p><strong>Problem.</strong> Solve <span class="arithmatex">\(H_n = 2H_{n-1} + 1\)</span> with <span class="arithmatex">\(H_1 = 1\)</span>.</p>
+<p><strong>Solution.</strong> Iterate:</p>
+<div class="arithmatex">\[
+\begin{aligned}
+H_n &amp;= 2H_{n-1} + 1 = 2(2H_{n-2} + 1) + 1 = 2^2H_{n-2} + 2 + 1 \\
+&amp;= 2^3H_{n-3} + 2^2 + 2 + 1 = \dots = 2^{n-1}H_1 + 2^{n-2} + \dots + 2 + 1 \\
+&amp;= 2^{n-1} + 2^{n-2} + \dots + 1 = 2^n - 1,
+\end{aligned}
+\]</div>
+<p>by the geometric sum (Theorem 4.5). <em>Proof by induction:</em> <span class="arithmatex">\(H_1 = 1 = 2^1 - 1\)</span>, and if <span class="arithmatex">\(H_{k} = 2^{k} - 1\)</span> then <span class="arithmatex">\(H_{k+1} = 2(2^{k} - 1) + 1 = 2^{k+1} - 1\)</span>. <span class="arithmatex">\(\blacksquare\)</span></p>
+<p>With 64 discs, <span class="arithmatex">\(2^{64} - 1 \approx 1.8 \times 10^{19}\)</span> moves: at one move a second, more than 500 billion years.</p>
+</div>
+<p>Iteration works well for first-order recurrences (those involving only <span class="arithmatex">\(a_{n-1}\)</span>). For others we need a theory.</p>
+<h2 id="93-linear-homogeneous-recurrences">9.3 Linear homogeneous recurrences<a class="headerlink" href="#93-linear-homogeneous-recurrences" title="Permanent link">&para;</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Definition</p>
+<p>A <strong>linear homogeneous recurrence relation of degree <span class="arithmatex">\(k\)</span> with constant coefficients</strong> has the form</p>
+<div class="arithmatex">\[
+a_n = c_1 a_{n-1} + c_2 a_{n-2} + \dots + c_k a_{n-k},
+\]</div>
+<p>with real constants <span class="arithmatex">\(c_1, \dots, c_k\)</span> and <span class="arithmatex">\(c_k \ne 0\)</span>. <em>Linear</em>: the earlier terms appear to the first power, not multiplied together. <em>Homogeneous</em>: every term involves some <span class="arithmatex">\(a_j\)</span>, with no added function of <span class="arithmatex">\(n\)</span>. <em>Degree <span class="arithmatex">\(k\)</span></em>: <span class="arithmatex">\(a_n\)</span> depends on the previous <span class="arithmatex">\(k\)</span> terms, so <span class="arithmatex">\(k\)</span> initial conditions determine the sequence.</p>
+</div>
+<p>The Fibonacci recurrence <span class="arithmatex">\(f_n = f_{n-1} + f_{n-2}\)</span> is linear homogeneous of degree 2. The Hanoi recurrence <span class="arithmatex">\(H_n = 2H_{n-1} + 1\)</span> is not homogeneous, because of the <span class="arithmatex">\(+1\)</span>, and <span class="arithmatex">\(a_n = a_{n-1}^2\)</span> is not linear.</p>
+<p>The key idea: look for solutions of the form <span class="arithmatex">\(a_n = r^n\)</span>. Substituting into the recurrence and dividing by <span class="arithmatex">\(r^{n-k}\)</span> gives</p>
+<div class="arithmatex">\[
+r^k - c_1 r^{k-1} - c_2 r^{k-2} - \dots - c_k = 0,
+\]</div>
+<p>the <strong>characteristic equation</strong>, whose roots are the <strong>characteristic roots</strong>. So <span class="arithmatex">\(r^n\)</span> is a solution exactly when <span class="arithmatex">\(r\)</span> is a characteristic root. And because the recurrence is linear and homogeneous, any combination <span class="arithmatex">\(\alpha_1 r_1^n + \alpha_2 r_2^n\)</span> of solutions is again a solution.</p>
+<div class="admonition note">
+<p class="admonition-title">Theorem 9.1 (distinct roots, degree 2)</p>
+<p>Suppose <span class="arithmatex">\(r^2 - c_1 r - c_2 = 0\)</span> has two distinct roots <span class="arithmatex">\(r_1\)</span> and <span class="arithmatex">\(r_2\)</span>. Then a sequence satisfies <span class="arithmatex">\(a_n = c_1 a_{n-1} + c_2 a_{n-2}\)</span> if and only if</p>
+<div class="arithmatex">\[
+a_n = \alpha_1 r_1^n + \alpha_2 r_2^n \qquad \text{for all } n \ge 0,
+\]</div>
+<p>for some constants <span class="arithmatex">\(\alpha_1, \alpha_2\)</span>, which are determined by the initial conditions <span class="arithmatex">\(a_0\)</span> and <span class="arithmatex">\(a_1\)</span>.</p>
+</div>
+<p><strong>Proof.</strong> <em>Every such sequence is a solution:</em> since <span class="arithmatex">\(r_i^2 = c_1 r_i + c_2\)</span>, we have <span class="arithmatex">\(c_1 r_i^{n-1} + c_2 r_i^{n-2} = r_i^{n-2}(c_1 r_i + c_2) = r_i^n\)</span>, and adding <span class="arithmatex">\(\alpha_1\)</span> times this for <span class="arithmatex">\(r_1\)</span> to <span class="arithmatex">\(\alpha_2\)</span> times it for <span class="arithmatex">\(r_2\)</span> shows <span class="arithmatex">\(\alpha_1 r_1^n + \alpha_2 r_2^n\)</span> satisfies the recurrence.</p>
+<p><em>Every solution has this form:</em> given a solution <span class="arithmatex">\(a_n\)</span>, choose <span class="arithmatex">\(\alpha_1, \alpha_2\)</span> with <span class="arithmatex">\(\alpha_1 + \alpha_2 = a_0\)</span> and <span class="arithmatex">\(\alpha_1 r_1 + \alpha_2 r_2 = a_1\)</span>. This linear system has the unique solution <span class="arithmatex">\(\alpha_2 = (a_1 - a_0 r_1)/(r_2 - r_1)\)</span>, <span class="arithmatex">\(\alpha_1 = a_0 - \alpha_2\)</span>, because <span class="arithmatex">\(r_1 \ne r_2\)</span>. Then <span class="arithmatex">\(a_n\)</span> and <span class="arithmatex">\(\alpha_1 r_1^n + \alpha_2 r_2^n\)</span> are two solutions of the recurrence with the same two initial terms, and a degree-2 recurrence determines every later term from the two before it, so (by strong induction) they agree for all <span class="arithmatex">\(n\)</span>. <span class="arithmatex">\(\blacksquare\)</span></p>
+<div class="admonition example">
+<p class="admonition-title">Example 9.5: Distinct roots</p>
+<p><strong>Problem.</strong> Solve <span class="arithmatex">\(a_n = 5a_{n-1} - 6a_{n-2}\)</span> with <span class="arithmatex">\(a_0 = 1\)</span>, <span class="arithmatex">\(a_1 = 4\)</span>.</p>
+<p><strong>Solution.</strong> The characteristic equation <span class="arithmatex">\(r^2 - 5r + 6 = 0\)</span> factors as <span class="arithmatex">\((r - 2)(r - 3) = 0\)</span>, with roots 2 and 3. So <span class="arithmatex">\(a_n = \alpha_1 2^n + \alpha_2 3^n\)</span>. The initial conditions give <span class="arithmatex">\(\alpha_1 + \alpha_2 = 1\)</span> and <span class="arithmatex">\(2\alpha_1 + 3\alpha_2 = 4\)</span>, so <span class="arithmatex">\(\alpha_2 = 2\)</span> and <span class="arithmatex">\(\alpha_1 = -1\)</span>:</p>
+<div class="arithmatex">\[
+a_n = 2 \cdot 3^n - 2^n.
+\]</div>
+<p>Check: <span class="arithmatex">\(a_2 = 5 \cdot 4 - 6 \cdot 1 = 14\)</span>, and <span class="arithmatex">\(2 \cdot 9 - 4 = 14\)</span>.</p>
+</div>
+<p>A short program can check such a solution against the recurrence for many terms; this does not prove it, but it catches arithmetic slips.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">iterate</span><span class="p">(</span><span class="n">a0</span><span class="p">,</span> <span class="n">a1</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+    <span class="n">seq</span> <span class="o">=</span> <span class="p">[</span><span class="n">a0</span><span class="p">,</span> <span class="n">a1</span><span class="p">]</span>
+    <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">n</span><span class="p">:</span>
+        <span class="n">seq</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">5</span> <span class="o">*</span> <span class="n">seq</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">6</span> <span class="o">*</span> <span class="n">seq</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">seq</span>
+
+<span class="n">seq</span> <span class="o">=</span> <span class="n">iterate</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">all</span><span class="p">(</span><span class="n">seq</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span> <span class="o">*</span> <span class="mi">3</span><span class="o">**</span><span class="n">n</span> <span class="o">-</span> <span class="mi">2</span><span class="o">**</span><span class="n">n</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">11</span><span class="p">)))</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>[1, 4, 14, 46, 146, 454, 1394, 4246, 12866, 38854, 117074]
+True
+</code></pre></div>
+<div class="admonition example">
+<p class="admonition-title">Example 9.6: A formula for the Fibonacci numbers</p>
+<p><strong>Problem.</strong> Solve <span class="arithmatex">\(f_n = f_{n-1} + f_{n-2}\)</span> with <span class="arithmatex">\(f_0 = 0\)</span>, <span class="arithmatex">\(f_1 = 1\)</span>.</p>
+<p><strong>Solution.</strong> The characteristic equation <span class="arithmatex">\(r^2 - r - 1 = 0\)</span> has roots <span class="arithmatex">\(\alpha = \frac{1 + \sqrt{5}}{2}\)</span> and <span class="arithmatex">\(\beta = \frac{1 - \sqrt{5}}{2}\)</span>. So <span class="arithmatex">\(f_n = \alpha_1\alpha^n + \alpha_2\beta^n\)</span>, with <span class="arithmatex">\(\alpha_1 + \alpha_2 = 0\)</span> and <span class="arithmatex">\(\alpha_1\alpha + \alpha_2\beta = 1\)</span>. Then <span class="arithmatex">\(\alpha_1(\alpha - \beta) = 1\)</span>, and <span class="arithmatex">\(\alpha - \beta = \sqrt{5}\)</span>, so <span class="arithmatex">\(\alpha_1 = 1/\sqrt{5} = -\alpha_2\)</span>:</p>
+<div class="arithmatex">\[
+f_n = \frac{1}{\sqrt{5}}\left(\frac{1 + \sqrt{5}}{2}\right)^{n} - \frac{1}{\sqrt{5}}\left(\frac{1 - \sqrt{5}}{2}\right)^{n}.
+\]</div>
+<p>This is <strong>Binet's formula</strong>. Remarkably, the irrational numbers combine to give an integer for every <span class="arithmatex">\(n\)</span>. Since <span class="arithmatex">\(\lvert \beta \rvert &lt; 1\)</span>, the second term is tiny, and <span class="arithmatex">\(f_n\)</span> is the integer nearest to <span class="arithmatex">\(\alpha^n/\sqrt{5}\)</span>: the Fibonacci numbers grow like powers of the golden ratio <span class="arithmatex">\(\alpha \approx 1.618\)</span>.</p>
+</div>
+<h3 id="repeated-roots">Repeated roots<a class="headerlink" href="#repeated-roots" title="Permanent link">&para;</a></h3>
+<p>If the characteristic equation has a repeated root, <span class="arithmatex">\(r^n\)</span> gives only one solution, and a second is needed.</p>
+<div class="admonition note">
+<p class="admonition-title">Theorem 9.2 (a repeated root, degree 2)</p>
+<p>If <span class="arithmatex">\(r^2 - c_1 r - c_2 = 0\)</span> has a single repeated root <span class="arithmatex">\(r_0\)</span>, then the solutions of <span class="arithmatex">\(a_n = c_1 a_{n-1} + c_2 a_{n-2}\)</span> are exactly</p>
+<div class="arithmatex">\[
+a_n = \alpha_1 r_0^n + \alpha_2\, n\, r_0^n.
+\]</div>
+</div>
+<p><strong>Proof sketch.</strong> A repeated root means <span class="arithmatex">\(r^2 - c_1 r - c_2 = (r - r_0)^2\)</span>, so <span class="arithmatex">\(c_1 = 2r_0\)</span> and <span class="arithmatex">\(c_2 = -r_0^2\)</span>. Check that <span class="arithmatex">\(n r_0^n\)</span> is a solution: <span class="arithmatex">\(c_1 (n-1) r_0^{n-1} + c_2 (n-2) r_0^{n-2} = 2(n-1) r_0^n - (n-2) r_0^n = n r_0^n\)</span>. The rest of the argument (fitting <span class="arithmatex">\(\alpha_1, \alpha_2\)</span> to the initial conditions) is as in Theorem 9.1. <span class="arithmatex">\(\blacksquare\)</span></p>
+<div class="admonition example">
+<p class="admonition-title">Example 9.7: A repeated root</p>
+<p><strong>Problem.</strong> Solve <span class="arithmatex">\(a_n = 6a_{n-1} - 9a_{n-2}\)</span> with <span class="arithmatex">\(a_0 = 1\)</span>, <span class="arithmatex">\(a_1 = 6\)</span>.</p>
+<p><strong>Solution.</strong> <span class="arithmatex">\(r^2 - 6r + 9 = (r - 3)^2\)</span>, a double root at 3. So <span class="arithmatex">\(a_n = (\alpha_1 + \alpha_2 n)3^n\)</span>. From <span class="arithmatex">\(a_0 = 1\)</span>, <span class="arithmatex">\(\alpha_1 = 1\)</span>; from <span class="arithmatex">\(a_1 = 6\)</span>, <span class="arithmatex">\(3(1 + \alpha_2) = 6\)</span>, so <span class="arithmatex">\(\alpha_2 = 1\)</span>. Hence <span class="arithmatex">\(a_n = (n + 1)3^n\)</span>. Check: <span class="arithmatex">\(a_2 = 36 - 9 = 27 = 3 \cdot 9\)</span>.</p>
+</div>
+<p>The same ideas extend to any degree <span class="arithmatex">\(k\)</span>: a root <span class="arithmatex">\(r\)</span> of multiplicity <span class="arithmatex">\(m\)</span> contributes the terms <span class="arithmatex">\((\alpha_0 + \alpha_1 n + \dots + \alpha_{m-1}n^{m-1})r^n\)</span>.</p>
+<h2 id="94-non-homogeneous-recurrences">9.4 Non-homogeneous recurrences<a class="headerlink" href="#94-non-homogeneous-recurrences" title="Permanent link">&para;</a></h2>
+<p>A <strong>linear non-homogeneous</strong> recurrence has the form</p>
+<div class="arithmatex">\[
+a_n = c_1 a_{n-1} + \dots + c_k a_{n-k} + F(n),
+\]</div>
+<p>where <span class="arithmatex">\(F(n)\)</span> is a function of <span class="arithmatex">\(n\)</span>, not identically zero. Dropping <span class="arithmatex">\(F(n)\)</span> gives the <strong>associated homogeneous recurrence</strong>.</p>
+<div class="admonition note">
+<p class="admonition-title">Theorem 9.3</p>
+<p>If <span class="arithmatex">\(p_n\)</span> is one particular solution of the non-homogeneous recurrence, then every solution has the form <span class="arithmatex">\(a_n = p_n + h_n\)</span>, where <span class="arithmatex">\(h_n\)</span> is a solution of the associated homogeneous recurrence.</p>
+</div>
+<p><strong>Proof.</strong> If <span class="arithmatex">\(a_n\)</span> is any solution, subtracting the equations for <span class="arithmatex">\(a_n\)</span> and <span class="arithmatex">\(p_n\)</span> shows that <span class="arithmatex">\(a_n - p_n\)</span> satisfies the homogeneous recurrence (the <span class="arithmatex">\(F(n)\)</span> cancels). Conversely, <span class="arithmatex">\(p_n + h_n\)</span> is a solution because adding the two equations gives back the non-homogeneous one. <span class="arithmatex">\(\blacksquare\)</span></p>
+<p>So the method is: (1) solve the homogeneous part; (2) find one particular solution, by guessing a form like <span class="arithmatex">\(F(n)\)</span>; (3) add them and fit the constants to the initial conditions, <strong>after</strong> adding.</p>
+<table>
+<thead>
+<tr>
+<th><span class="arithmatex">\(F(n)\)</span></th>
+<th>Try <span class="arithmatex">\(p_n =\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>a constant <span class="arithmatex">\(c\)</span></td>
+<td>a constant <span class="arithmatex">\(A\)</span></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(cn\)</span> or <span class="arithmatex">\(cn + d\)</span></td>
+<td><span class="arithmatex">\(An + B\)</span></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(cn^2\)</span></td>
+<td><span class="arithmatex">\(An^2 + Bn + C\)</span></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(c \cdot s^n\)</span>, where <span class="arithmatex">\(s\)</span> is not a characteristic root</td>
+<td><span class="arithmatex">\(A s^n\)</span></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(c \cdot s^n\)</span>, where <span class="arithmatex">\(s\)</span> is a root of multiplicity <span class="arithmatex">\(m\)</span></td>
+<td><span class="arithmatex">\(A n^m s^n\)</span></td>
+</tr>
+</tbody>
+</table>
+<p><em>Table 9.1. Forms to try for a particular solution.</em></p>
+<div class="admonition example">
+<p class="admonition-title">Example 9.8: A non-homogeneous recurrence</p>
+<p><strong>Problem.</strong> Solve <span class="arithmatex">\(a_n = 2a_{n-1} + n\)</span> with <span class="arithmatex">\(a_0 = 1\)</span>.</p>
+<p><strong>Solution.</strong> <em>Homogeneous part:</em> <span class="arithmatex">\(a_n = 2a_{n-1}\)</span> has solutions <span class="arithmatex">\(\alpha 2^n\)</span>. <em>Particular solution:</em> try <span class="arithmatex">\(p_n = An + B\)</span>. Substituting: <span class="arithmatex">\(An + B = 2(A(n-1) + B) + n = (2A + 1)n + (2B - 2A)\)</span>. Comparing coefficients of <span class="arithmatex">\(n\)</span>: <span class="arithmatex">\(A = 2A + 1\)</span>, so <span class="arithmatex">\(A = -1\)</span>. Comparing constants: <span class="arithmatex">\(B = 2B - 2A\)</span>, so <span class="arithmatex">\(B = 2A = -2\)</span>. Hence <span class="arithmatex">\(p_n = -n - 2\)</span>. <em>General solution:</em> <span class="arithmatex">\(a_n = \alpha 2^n - n - 2\)</span>. <em>Initial condition:</em> <span class="arithmatex">\(a_0 = \alpha - 2 = 1\)</span>, so <span class="arithmatex">\(\alpha = 3\)</span>:</p>
+<div class="arithmatex">\[
+a_n = 3 \cdot 2^n - n - 2.
+\]</div>
+<p>Check: <span class="arithmatex">\(a_1 = 2 + 1 = 3\)</span> and <span class="arithmatex">\(6 - 1 - 2 = 3\)</span>; <span class="arithmatex">\(a_2 = 6 + 2 = 8\)</span> and <span class="arithmatex">\(12 - 2 - 2 = 8\)</span>.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Fit the constants last</p>
+<p>The initial conditions apply to the complete solution <span class="arithmatex">\(p_n + h_n\)</span>, not to <span class="arithmatex">\(h_n\)</span> alone. Fitting them to the homogeneous part before adding <span class="arithmatex">\(p_n\)</span> gives the wrong constants.</p>
+</div>
+<h2 id="95-divide-and-conquer-recurrences">9.5 Divide-and-conquer recurrences<a class="headerlink" href="#95-divide-and-conquer-recurrences" title="Permanent link">&para;</a></h2>
+<p>A <strong>divide-and-conquer</strong> algorithm splits a problem of size <span class="arithmatex">\(n\)</span> into <span class="arithmatex">\(a\)</span> subproblems of size <span class="arithmatex">\(n/b\)</span>, solves them recursively, and combines the answers with extra work <span class="arithmatex">\(g(n)\)</span>. Its running time satisfies</p>
+<div class="arithmatex">\[
+f(n) = a\,f(n/b) + g(n).
+\]</div>
+<ul>
+<li><strong>Binary search</strong> (Section 6.5) makes one comparison and recurses on half the list: <span class="arithmatex">\(f(n) = f(n/2) + 1\)</span>.</li>
+<li><strong>Merge sort</strong> sorts each half recursively and merges the two sorted halves with at most <span class="arithmatex">\(n - 1\)</span> comparisons: <span class="arithmatex">\(f(n) = 2f(n/2) + n\)</span>, roughly.</li>
+</ul>
+<p>For <span class="arithmatex">\(n = 2^k\)</span> these can be solved by iteration. For binary search, <span class="arithmatex">\(f(2^k) = f(2^{k-1}) + 1 = \dots = f(1) + k\)</span>, so <span class="arithmatex">\(f(n) = f(1) + \log_2 n\)</span>. For merge sort with <span class="arithmatex">\(f(1) = 0\)</span>, dividing <span class="arithmatex">\(f(2^k) = 2f(2^{k-1}) + 2^k\)</span> by <span class="arithmatex">\(2^k\)</span> gives <span class="arithmatex">\(f(2^k)/2^k = f(2^{k-1})/2^{k-1} + 1\)</span>, so <span class="arithmatex">\(f(2^k)/2^k = k\)</span> and</p>
+<div class="arithmatex">\[
+f(n) = n \log_2 n.
+\]</div>
+<p>Figure 9.2 shows where this comes from: the recursion has <span class="arithmatex">\(\log_2 n\)</span> levels, and the merging at each level costs <span class="arithmatex">\(n\)</span> in total.</p>
+<figure class="fig fig-diagram">
+<img src="img/merge-sort-tree.svg" alt="The recursion tree of merge sort on n items. The top node is one problem of size n with merging cost n. The next level has two problems of size n/2, total cost n. The next has four of size n/4, total cost n. The levels continue down to n problems of size 1. There are log2 n levels, each costing n, for a total of n log2 n." loading="lazy" width="760" height="330">
+<figcaption><strong>Figure 9.2 The cost of merge sort, level by level.</strong> The recursion tree of merge sort on n items. The top node is one problem of size n with merging cost n. The next level has two problems of size n/2, total cost n. The next has four of size n/4, total cost n. The levels continue down to n problems of size 1. There are log2 n levels, each costing n, for a total of n log2 n.</figcaption>
+</figure>
+<p>The general pattern is captured by the following theorem, stated here without proof. It uses big-O notation: <span class="arithmatex">\(f(n)\)</span> is <span class="arithmatex">\(O(h(n))\)</span> if <span class="arithmatex">\(f(n) \le C\,h(n)\)</span> for some constant <span class="arithmatex">\(C\)</span> and all large enough <span class="arithmatex">\(n\)</span>.</p>
+<div class="admonition note">
+<p class="admonition-title">Theorem 9.4 (the master theorem)</p>
+<p>Let <span class="arithmatex">\(f\)</span> be an increasing function with <span class="arithmatex">\(f(n) = a\,f(n/b) + c\,n^d\)</span> whenever <span class="arithmatex">\(n\)</span> is a power of <span class="arithmatex">\(b\)</span>, where <span class="arithmatex">\(a \ge 1\)</span>, <span class="arithmatex">\(b &gt; 1\)</span> is an integer, <span class="arithmatex">\(c &gt; 0\)</span> and <span class="arithmatex">\(d \ge 0\)</span>. Then</p>
+<div class="arithmatex">\[
+f(n) \text{ is }
+\begin{cases}
+O(n^d) &amp; \text{if } a &lt; b^d, \\
+O(n^d \log n) &amp; \text{if } a = b^d, \\
+O(n^{\log_b a}) &amp; \text{if } a &gt; b^d.
+\end{cases}
+\]</div>
+</div>
+<p>The three cases compare the work done at the top of the recursion (<span class="arithmatex">\(n^d\)</span>) with the number of leaves at the bottom (<span class="arithmatex">\(n^{\log_b a}\)</span>). For binary search, <span class="arithmatex">\(a = 1\)</span>, <span class="arithmatex">\(b = 2\)</span>, <span class="arithmatex">\(d = 0\)</span>: <span class="arithmatex">\(a = b^d\)</span>, so <span class="arithmatex">\(O(\log n)\)</span>. For merge sort, <span class="arithmatex">\(a = 2\)</span>, <span class="arithmatex">\(b = 2\)</span>, <span class="arithmatex">\(d = 1\)</span>: <span class="arithmatex">\(a = b^d\)</span>, so <span class="arithmatex">\(O(n \log n)\)</span>. Karatsuba's method multiplies two <span class="arithmatex">\(n\)</span>-digit numbers with three half-size multiplications instead of four, <span class="arithmatex">\(f(n) = 3f(n/2) + cn\)</span>: <span class="arithmatex">\(a = 3 &gt; 2 = b^d\)</span>, so <span class="arithmatex">\(O(n^{\log_2 3}) \approx O(n^{1.585})\)</span>, faster than the <span class="arithmatex">\(O(n^2)\)</span> of school multiplication.</p>
+<h2 id="96-generating-functions">9.6 Generating functions<a class="headerlink" href="#96-generating-functions" title="Permanent link">&para;</a></h2>
+<p>A <strong>generating function</strong> packs an entire sequence into a single object.</p>
+<div class="admonition note">
+<p class="admonition-title">Definition: generating function</p>
+<p>The <strong>generating function</strong> of the sequence <span class="arithmatex">\(a_0, a_1, a_2, \dots\)</span> is the power series</p>
+<div class="arithmatex">\[
+G(x) = a_0 + a_1 x + a_2 x^2 + \dots = \sum_{n=0}^{\infty} a_n x^n.
+\]</div>
+</div>
+<p>We treat <span class="arithmatex">\(G(x)\)</span> as a formal object: <span class="arithmatex">\(x\)</span> is a placeholder whose powers hold the terms of the sequence in order, and we do not worry about convergence. Adding or multiplying generating functions, as one would polynomials, gives the generating functions of new sequences.</p>
+<p>The most important example is the geometric series:</p>
+<div class="arithmatex">\[
+\frac{1}{1 - x} = 1 + x + x^2 + x^3 + \dots,
+\]</div>
+<p>which you can check by multiplying out <span class="arithmatex">\((1 - x)(1 + x + x^2 + \dots) = 1\)</span>. Replacing <span class="arithmatex">\(x\)</span> by <span class="arithmatex">\(ax\)</span>, differentiating, and similar manipulations give Table 9.2.</p>
+<table>
+<thead>
+<tr>
+<th>Sequence <span class="arithmatex">\(a_n\)</span></th>
+<th>Generating function</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="arithmatex">\(1, 1, 1, \dots\)</span></td>
+<td><span class="arithmatex">\(\dfrac{1}{1 - x}\)</span></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(a^n\)</span></td>
+<td><span class="arithmatex">\(\dfrac{1}{1 - ax}\)</span></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(n + 1\)</span></td>
+<td><span class="arithmatex">\(\dfrac{1}{(1 - x)^2}\)</span></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(\dbinom{n + k - 1}{k - 1}\)</span></td>
+<td><span class="arithmatex">\(\dfrac{1}{(1 - x)^k}\)</span></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(\dbinom{m}{n}\)</span> (zero for <span class="arithmatex">\(n &gt; m\)</span>)</td>
+<td><span class="arithmatex">\((1 + x)^m\)</span></td>
+</tr>
+<tr>
+<td><span class="arithmatex">\(1\)</span> for <span class="arithmatex">\(n \le m\)</span>, then <span class="arithmatex">\(0\)</span></td>
+<td><span class="arithmatex">\(\dfrac{1 - x^{m+1}}{1 - x} = 1 + x + \dots + x^m\)</span></td>
+</tr>
+</tbody>
+</table>
+<p><em>Table 9.2. Some generating functions.</em></p>
+<p>The product of generating functions has a counting meaning. The coefficient of <span class="arithmatex">\(x^n\)</span> in <span class="arithmatex">\(A(x)B(x)\)</span> is <span class="arithmatex">\(\sum_{k=0}^{n} a_k b_{n-k}\)</span>: the sum over all ways of splitting <span class="arithmatex">\(n\)</span> into a part <span class="arithmatex">\(k\)</span> counted by <span class="arithmatex">\(A\)</span> and a part <span class="arithmatex">\(n - k\)</span> counted by <span class="arithmatex">\(B\)</span>. So <strong>generating functions turn "choose this, then that" into multiplication</strong>.</p>
+<div class="admonition example">
+<p class="admonition-title">Example 9.9: Counting with a generating function</p>
+<p><strong>Problem.</strong> In how many ways can 8 identical sweets be shared among 3 children so that each gets at least 2 and at most 4?</p>
+<p><strong>Solution.</strong> Each child's share is described by <span class="arithmatex">\(x^2 + x^3 + x^4\)</span>: the exponent is the number of sweets. The number of ways is the coefficient of <span class="arithmatex">\(x^8\)</span> in</p>
+<div class="arithmatex">\[
+(x^2 + x^3 + x^4)^3 = x^6(1 + x + x^2)^3.
+\]</div>
+<p>So we need the coefficient of <span class="arithmatex">\(x^2\)</span> in <span class="arithmatex">\((1 + x + x^2)^3 = 1 + 3x + 6x^2 + 7x^3 + 6x^4 + 3x^5 + x^6\)</span>, which is <strong>6</strong>. (The six ways: <span class="arithmatex">\((2,2,4)\)</span>, <span class="arithmatex">\((2,4,2)\)</span>, <span class="arithmatex">\((4,2,2)\)</span>, <span class="arithmatex">\((2,3,3)\)</span>, <span class="arithmatex">\((3,2,3)\)</span>, <span class="arithmatex">\((3,3,2)\)</span>.)</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title">Example 9.10: Stars and bars again</p>
+<p><strong>Problem.</strong> Use generating functions to count the solutions of <span class="arithmatex">\(x_1 + \dots + x_k = n\)</span> in natural numbers.</p>
+<p><strong>Solution.</strong> Each variable contributes <span class="arithmatex">\(1 + x + x^2 + \dots = 1/(1-x)\)</span>, so the answer is the coefficient of <span class="arithmatex">\(x^n\)</span> in <span class="arithmatex">\(1/(1-x)^k\)</span>, which by Table 9.2 is <span class="arithmatex">\(\binom{n + k - 1}{k - 1}\)</span>, the answer of Theorem 7.5.</p>
+</div>
+<h3 id="solving-recurrences-with-generating-functions">Solving recurrences with generating functions<a class="headerlink" href="#solving-recurrences-with-generating-functions" title="Permanent link">&para;</a></h3>
+<p>Generating functions also solve recurrences: multiply the recurrence by <span class="arithmatex">\(x^n\)</span>, sum over <span class="arithmatex">\(n\)</span>, solve the resulting equation for <span class="arithmatex">\(G(x)\)</span>, and read off the coefficients.</p>
+<div class="admonition example">
+<p class="admonition-title">Example 9.11: A recurrence solved by generating function</p>
+<p><strong>Problem.</strong> Solve <span class="arithmatex">\(a_n = 5a_{n-1} - 6a_{n-2}\)</span> for <span class="arithmatex">\(n \ge 2\)</span>, with <span class="arithmatex">\(a_0 = 1\)</span>, <span class="arithmatex">\(a_1 = 4\)</span>, using generating functions.</p>
+<p><strong>Solution.</strong> Let <span class="arithmatex">\(G(x) = \sum_{n \ge 0} a_n x^n\)</span>. Then</p>
+<div class="arithmatex">\[
+G(x) - 5xG(x) + 6x^2G(x) = a_0 + (a_1 - 5a_0)x + \sum_{n \ge 2}(a_n - 5a_{n-1} + 6a_{n-2})x^n = 1 - x,
+\]</div>
+<p>because the recurrence makes every coefficient from <span class="arithmatex">\(x^2\)</span> on zero. So</p>
+<div class="arithmatex">\[
+G(x) = \frac{1 - x}{1 - 5x + 6x^2} = \frac{1 - x}{(1 - 2x)(1 - 3x)}.
+\]</div>
+<p>By partial fractions, write <span class="arithmatex">\(\frac{1 - x}{(1 - 2x)(1 - 3x)} = \frac{A}{1 - 2x} + \frac{B}{1 - 3x}\)</span>. Then <span class="arithmatex">\(1 - x = A(1 - 3x) + B(1 - 2x)\)</span>; putting <span class="arithmatex">\(x = 1/2\)</span> gives <span class="arithmatex">\(A = -1\)</span>, and <span class="arithmatex">\(x = 1/3\)</span> gives <span class="arithmatex">\(B = 2\)</span>. So</p>
+<div class="arithmatex">\[
+G(x) = \frac{-1}{1 - 2x} + \frac{2}{1 - 3x} = \sum_{n \ge 0} (2 \cdot 3^n - 2^n)x^n,
+\]</div>
+<p>and <span class="arithmatex">\(a_n = 2 \cdot 3^n - 2^n\)</span>, as in Example 9.5.</p>
+</div>
+<p>The characteristic-equation method is quicker for linear recurrences with constant coefficients; generating functions are more general, and they are the standard tool when a counting problem leads to a product of choices.</p>
+<h2 id="97-summary">9.7 Summary<a class="headerlink" href="#97-summary" title="Permanent link">&para;</a></h2>
+<div class="admonition abstract">
+<p class="admonition-title">Summary</p>
+<ul>
+<li>A <strong>recurrence relation</strong> with initial conditions defines a sequence. Model a problem by asking how an instance of size <span class="arithmatex">\(n\)</span> is built from smaller instances.</li>
+<li><strong>Iteration</strong>: unwind, spot the pattern, prove it by induction. The Tower of Hanoi needs <span class="arithmatex">\(2^n - 1\)</span> moves.</li>
+<li>For <span class="arithmatex">\(a_n = c_1a_{n-1} + c_2a_{n-2}\)</span>, solve <span class="arithmatex">\(r^2 = c_1r + c_2\)</span>. Distinct roots give <span class="arithmatex">\(\alpha_1r_1^n + \alpha_2r_2^n\)</span>; a repeated root gives <span class="arithmatex">\((\alpha_1 + \alpha_2n)r_0^n\)</span>. Fibonacci gives Binet's formula.</li>
+<li><strong>Non-homogeneous</strong>: general solution = particular solution + homogeneous solution; fit the constants last.</li>
+<li><strong>Divide and conquer</strong>: <span class="arithmatex">\(f(n) = af(n/b) + cn^d\)</span>; the master theorem compares <span class="arithmatex">\(a\)</span> with <span class="arithmatex">\(b^d\)</span>. Binary search is <span class="arithmatex">\(O(\log n)\)</span>, merge sort <span class="arithmatex">\(O(n\log n)\)</span>.</li>
+<li>A <strong>generating function</strong> <span class="arithmatex">\(\sum a_nx^n\)</span> turns sequences into algebra: products count combined choices, and recurrences become equations for <span class="arithmatex">\(G(x)\)</span>.</li>
+</ul>
+</div>
+<h2 id="98-exercises">9.8 Exercises<a class="headerlink" href="#98-exercises" title="Permanent link">&para;</a></h2>
+<div class="admonition example">
+<p class="admonition-title">Exercise 1</p>
+<p>Solve <span class="arithmatex">\(a_n = 3a_{n-1}\)</span> with <span class="arithmatex">\(a_0 = 2\)</span>, and <span class="arithmatex">\(b_n = b_{n-1} + 4\)</span> with <span class="arithmatex">\(b_0 = 1\)</span>.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p><span class="arithmatex">\(a_n = 2 \cdot 3^n\)</span> and <span class="arithmatex">\(b_n = 1 + 4n\)</span>, by iteration.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 2</p>
+<p>Find a recurrence for the number <span class="arithmatex">\(s_n\)</span> of ways to climb <span class="arithmatex">\(n\)</span> stairs taking 1 or 2 steps at a time. Give <span class="arithmatex">\(s_1, \dots, s_6\)</span>.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>The first step is 1 or 2 stairs, leaving <span class="arithmatex">\(n - 1\)</span> or <span class="arithmatex">\(n - 2\)</span>: <span class="arithmatex">\(s_n = s_{n-1} + s_{n-2}\)</span>, <span class="arithmatex">\(s_1 = 1\)</span>, <span class="arithmatex">\(s_2 = 2\)</span>. Values <span class="arithmatex">\(1, 2, 3, 5, 8, 13\)</span>; <span class="arithmatex">\(s_n = f_{n+1}\)</span>.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 3</p>
+<p>Solve <span class="arithmatex">\(a_n = a_{n-1} + 6a_{n-2}\)</span> with <span class="arithmatex">\(a_0 = 3\)</span>, <span class="arithmatex">\(a_1 = 6\)</span>.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p><span class="arithmatex">\(r^2 - r - 6 = (r - 3)(r + 2)\)</span>, so <span class="arithmatex">\(a_n = \alpha_1 3^n + \alpha_2(-2)^n\)</span>. Then <span class="arithmatex">\(\alpha_1 + \alpha_2 = 3\)</span> and <span class="arithmatex">\(3\alpha_1 - 2\alpha_2 = 6\)</span>, giving <span class="arithmatex">\(\alpha_1 = 12/5\)</span>, <span class="arithmatex">\(\alpha_2 = 3/5\)</span>: <span class="arithmatex">\(a_n = \frac{12}{5}3^n + \frac{3}{5}(-2)^n\)</span>. Check <span class="arithmatex">\(a_2 = 6 + 18 = 24\)</span> and <span class="arithmatex">\(\frac{108}{5} + \frac{12}{5} = 24\)</span>.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 4</p>
+<p>Solve <span class="arithmatex">\(a_n = 4a_{n-1} - 4a_{n-2}\)</span> with <span class="arithmatex">\(a_0 = 1\)</span>, <span class="arithmatex">\(a_1 = 4\)</span>.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>Double root 2: <span class="arithmatex">\(a_n = (\alpha_1 + \alpha_2 n)2^n\)</span>. <span class="arithmatex">\(\alpha_1 = 1\)</span>; <span class="arithmatex">\(2(1 + \alpha_2) = 4\)</span> gives <span class="arithmatex">\(\alpha_2 = 1\)</span>. So <span class="arithmatex">\(a_n = (n + 1)2^n\)</span>.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 5</p>
+<p>Solve <span class="arithmatex">\(a_n = 3a_{n-1} + 2^n\)</span> with <span class="arithmatex">\(a_0 = 1\)</span>.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>Homogeneous: <span class="arithmatex">\(\alpha 3^n\)</span>. Particular: try <span class="arithmatex">\(A2^n\)</span>: <span class="arithmatex">\(A2^n = 3A2^{n-1} + 2^n\)</span>; dividing by <span class="arithmatex">\(2^{n-1}\)</span>, <span class="arithmatex">\(2A = 3A + 2\)</span>, so <span class="arithmatex">\(A = -2\)</span> and <span class="arithmatex">\(p_n = -2^{n+1}\)</span>. Then <span class="arithmatex">\(a_n = \alpha 3^n - 2^{n+1}\)</span>, and <span class="arithmatex">\(a_0 = \alpha - 2 = 1\)</span> gives <span class="arithmatex">\(\alpha = 3\)</span>: <span class="arithmatex">\(a_n = 3^{n+1} - 2^{n+1}\)</span>. Check: <span class="arithmatex">\(a_1 = 3 + 2 = 5 = 9 - 4\)</span>.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 6</p>
+<p>Use the master theorem to give the order of growth of <span class="arithmatex">\(f(n) = 4f(n/2) + n\)</span> and <span class="arithmatex">\(f(n) = 2f(n/4) + n\)</span>.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>First: <span class="arithmatex">\(a = 4\)</span>, <span class="arithmatex">\(b = 2\)</span>, <span class="arithmatex">\(d = 1\)</span>, <span class="arithmatex">\(a &gt; b^d = 2\)</span>: <span class="arithmatex">\(O(n^{\log_2 4}) = O(n^2)\)</span>. Second: <span class="arithmatex">\(a = 2\)</span>, <span class="arithmatex">\(b = 4\)</span>, <span class="arithmatex">\(d = 1\)</span>, <span class="arithmatex">\(a &lt; b^d = 4\)</span>: <span class="arithmatex">\(O(n)\)</span>.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 7</p>
+<p>Find the generating function of the sequence <span class="arithmatex">\(1, 2, 4, 8, \dots\)</span> and of <span class="arithmatex">\(0, 1, 2, 3, \dots\)</span>.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p><span class="arithmatex">\(\sum 2^nx^n = \dfrac{1}{1 - 2x}\)</span>. For <span class="arithmatex">\(a_n = n\)</span>: <span class="arithmatex">\(\sum_{n \ge 0} nx^n = x\sum_{n \ge 1} nx^{n-1} = x\sum_{m \ge 0} (m+1)x^m = \dfrac{x}{(1 - x)^2}\)</span>, using Table 9.2.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 8</p>
+<p>How many ways are there to pay 10 rupees using 1-rupee and 2-rupee coins, where only the number of each coin matters? Use a generating function, then check by direct reasoning.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>The coefficient of <span class="arithmatex">\(x^{10}\)</span> in <span class="arithmatex">\(\frac{1}{1-x}\cdot\frac{1}{1-x^2}\)</span>. Directly: the number of 2-rupee coins can be <span class="arithmatex">\(0, 1, \dots, 5\)</span>, and the rest is made with 1-rupee coins, so <strong>6</strong> ways. (The coefficient of <span class="arithmatex">\(x^{10}\)</span> counts the pairs <span class="arithmatex">\((a, b)\)</span> with <span class="arithmatex">\(a + 2b = 10\)</span>, the same thing.)</p>
+</details>
+<h2 id="99-quiz">9.9 Quiz<a class="headerlink" href="#99-quiz" title="Permanent link">&para;</a></h2>
+<div class="pk-quiz" data-quiz="6dfc76f6a187">
+<p class="pk-quiz-title">Check your understanding of recurrences</p>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;text&quot;,&quot;answer&quot;:[&quot;31&quot;]}">
+<p class="admonition-title">Exercise 1</p>
+<p class="pk-q-prompt">How many moves does the Tower of Hanoi need with 5 discs?</p>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>31</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;r^2 - 7r + 10 = 0&quot;,&quot;r^2 + 7r - 10 = 0&quot;,&quot;r^2 - 10r + 7 = 0&quot;,&quot;7r - 10 = 0&quot;],&quot;answer&quot;:&quot;r^2 - 7r + 10 = 0&quot;}">
+<p class="admonition-title">Exercise 2</p>
+<p class="pk-q-prompt">The characteristic equation of a(n) = 7a(n-1) - 10a(n-2) is</p>
+<ol class="pk-q-opts" type="A"><li>r^2 - 7r + 10 = 0</li><li>r^2 + 7r - 10 = 0</li><li>r^2 - 10r + 7 = 0</li><li>7r - 10 = 0</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>r^2 - 7r + 10 = 0</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;α 2^n + β 5^n&quot;,&quot;(α + βn) 2^n&quot;,&quot;α 2^n 5^n&quot;,&quot;α 7^n&quot;],&quot;answer&quot;:&quot;α 2^n + β 5^n&quot;}">
+<p class="admonition-title">Exercise 3</p>
+<p class="pk-q-prompt">If the characteristic roots are 2 and 5, the general solution is</p>
+<ol class="pk-q-opts" type="A"><li>α 2^n + β 5^n</li><li>(α + βn) 2^n</li><li>α 2^n 5^n</li><li>α 7^n</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>α 2^n + β 5^n</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;O(log n)&quot;,&quot;O(n)&quot;,&quot;O(n log n)&quot;,&quot;O(n^2)&quot;],&quot;answer&quot;:&quot;O(n log n)&quot;}">
+<p class="admonition-title">Exercise 4</p>
+<p class="pk-q-prompt">Merge sort, with f(n) = 2f(n/2) + n, runs in time</p>
+<ol class="pk-q-opts" type="A"><li>O(log n)</li><li>O(n)</li><li>O(n log n)</li><li>O(n^2)</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>O(n log n)</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;text&quot;,&quot;answer&quot;:[&quot;8&quot;]}">
+<p class="admonition-title">Exercise 5</p>
+<p class="pk-q-prompt">What is the coefficient of x^3 in the generating function 1/(1 - 2x)?</p>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>8</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;the homogeneous solution only&quot;,&quot;the particular solution only&quot;,&quot;the sum of the particular and homogeneous solutions&quot;],&quot;answer&quot;:&quot;the sum of the particular and homogeneous solutions&quot;}">
+<p class="admonition-title">Exercise 6</p>
+<p class="pk-q-prompt">When solving a non-homogeneous recurrence, the initial conditions are fitted to</p>
+<ol class="pk-q-opts" type="A"><li>the homogeneous solution only</li><li>the particular solution only</li><li>the sum of the particular and homogeneous solutions</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>the sum of the particular and homogeneous solutions</strong></p>
+</details>
+</div>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button type="button" class="md-top md-icon" data-md-component="top" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+Back to top
+</button>
+</main>
+<footer class="md-footer">
+<nav class="md-footer__inner md-grid" aria-label="Footer" >
+<a href="discrete-probability.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: 8. Discrete Probability">
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</div>
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Previous
+</span>
+<div class="md-ellipsis">
+8. Discrete Probability
+</div>
+</div>
+</a>
+<a href="number-theory-and-cryptography.html" class="md-footer__link md-footer__link--next" aria-label="Next: 10. Number Theory and Cryptography">
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Next
+</span>
+<div class="md-ellipsis">
+10. Number Theory and Cryptography
+</div>
+</div>
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+</div>
+</a>
+</nav>
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+The Open Book Project &middot;
+<a href="../../about.html">About this library</a> &middot;
+<a href="../../publish.html">Publish your book</a> &middot;
+© The authors of the books
+</div>
+Made with
+<a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+Material for MkDocs
+</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "navigation.prune", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "toc.follow", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+<script src="../../assets/mathjax.js"></script>
+<script src="../../assets/viz.js"></script>
+<script src="../../assets/remote.js"></script>
+<script src="../../assets/scans.js"></script>
+<script src="../../assets/reader.js"></script>
+<script src="../../assets/app.js"></script>
+<script src="../../assets/slides.js"></script>
+<script src="../../assets/speak.js"></script>
+<script src="../../assets/quiz.js"></script>
+<script>
+    /* offline reading: the service worker at the site root (its scope is the whole site) */
+    if ("serviceWorker" in navigator && window.isSecureContext) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register(new URL("../../sw.js", location.href).href).catch(function () {});
+      });
+    }
+  </script>
+</body>
+</html>

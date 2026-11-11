@@ -1,0 +1,1136 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="description" content="The Open Book Project: books on computer science, quantum computing, cyber security, science, the social sciences, university courses and languages, read page by page like an e-book, online or offline.">
+<meta name="author" content="The Open Book Project">
+<link rel="canonical" href="https://open-book-project.github.io/computing/data_science_python/classification.html">
+<link rel="prev" href="regression.html">
+<link rel="next" href="model-evaluation-and-cross-validation.html">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap"></noscript>
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Open Book">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="application-name" content="Open Book"><script src="../../assets/library-data.js"></script><script>
+    (function () {
+      var X = window.XMLHttpRequest, open, gate = new Promise(function (r) { open = r; });
+      if (!X) return;
+      var open0 = X.prototype.open, send0 = X.prototype.send;
+      X.prototype.open = function (method, url) {
+        this.__pkIndex = /\/search\/search_index\.json(\?|#|$)/.test(String(url));
+        return open0.apply(this, arguments);
+      };
+      X.prototype.send = function () {
+        if (!this.__pkIndex) return send0.apply(this, arguments);
+        var xhr = this, args = arguments;
+        gate.then(function () { send0.apply(xhr, args); });
+      };
+      function wake() { open(); }
+      document.addEventListener("focusin", function (e) { if (e.target && e.target.closest && e.target.closest(".md-search")) wake(); });
+      document.addEventListener("click", function (e) { if (e.target && e.target.closest && e.target.closest('label[for="__search"], .md-search')) wake(); }, true);
+      document.addEventListener("keydown", function (e) {
+        var k = e.key;
+        if ((k === "/" || k === "s" || k === "f" || k === "S" || k === "F") && !(e.target && e.target.closest && e.target.closest("input, textarea, [contenteditable]"))) wake();
+      }, true);
+      if (/[?&]q=/.test(location.search)) wake();
+    })();
+  </script><script>
+    try {
+      if ((window.matchMedia && (matchMedia("(display-mode: standalone)").matches || matchMedia("(display-mode: fullscreen)").matches)) || navigator.standalone === true) {
+        document.documentElement.className += " bjp-standalone";
+      }
+    } catch (e) { /* not an installed app */ }
+    /* the books of a subject or of the whole library as covers or as a list (assets/app.js): the reader's choice */
+    try {
+      var bv = localStorage.getItem("bjp.view");
+      if (bv === "list" || (bv !== "grid" && /\/books\.html$/.test(location.pathname))) document.documentElement.className += " bjp-view-list";
+    } catch (e) { /* no storage: covers */ }
+  </script>
+<script>
+    /* a book opened from its cover on the shelf: the page stays blank, in the cover's colour, until the reader is up */
+    try {
+      var cv = sessionStorage.getItem("bjp.reader.cover");
+      if (cv && sessionStorage.getItem("bjp.reader.open") === "1") {
+        var c = JSON.parse(cv), de = document.documentElement;
+        de.className += " bjp-booting";
+        if (c && /^#[0-9a-f]{3,8}$/i.test(c.bg || "")) de.style.background = c.bg;
+        setTimeout(function () { de.classList.remove("bjp-booting"); de.style.background = ""; }, 3000);
+      }
+    } catch (e) { /* no session storage: the page simply opens as usual */ }
+  </script>
+<title>9. Classification - The Open Book Project</title>
+<link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+<link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+<link rel="stylesheet" href="../../assets/extra.css">
+<link rel="stylesheet" href="../../assets/reader.css">
+<link rel="stylesheet" href="../../assets/viz.css">
+<link rel="stylesheet" href="../../assets/app.css">
+<link rel="stylesheet" href="../../assets/theme.css">
+<link rel="stylesheet" href="../../assets/slides.css">
+<link rel="stylesheet" href="../../assets/remote.css">
+<link rel="stylesheet" href="../../assets/scans.css">
+<link rel="stylesheet" href="../../assets/speak.css">
+<link rel="stylesheet" href="../../assets/quiz.css">
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+<input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+<input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a href="#91-a-dataset-to-classify" class="md-skip">
+Skip to content
+</a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav class="md-header__inner md-grid" aria-label="Header">
+<a href="../../index.html" title="The Open Book Project" class="md-header__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+The Open Book Project
+</span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+9. Classification
+</span>
+</div>
+</div>
+</div><a href="../../index.html" class="bjp-libbtn" aria-label="Library: all books" title="Library: all books">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V5h4v15M8 20V9h4v11M14 20L12.6 6l3.8-.8 3 14.2M3 20h18"/></svg><span>Library</span>
+</a>
+<a href="../../subjects/index.html" class="pk-catbtn" aria-haspopup="true" aria-expanded="false" title="Browse the books by category">
+<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><circle cx="17" cy="7" r="3.6"/><path d="M7 13.4l3.9 6.8H3.1z"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg><span>Categories</span>
+</a>
+<form class="md-header__option" data-md-component="palette">
+<input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+<label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+</label>
+<input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+<label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+<label class="md-search__icon md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</label>
+<nav class="md-search__options" aria-label="Search">
+<button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+Initializing search
+</div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--primary bjp-nav bjp-nav--book" aria-label="Navigation" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a href="../../index.html" title="The Open Book Project" class="md-nav__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+The Open Book Project
+</label>
+<ul class="md-nav__list" data-md-scrollfix>
+<li class="md-nav__item bjp-nav-all">
+<a href="../../index.html" class="md-nav__link" aria-label="All books: back to the library">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+<span class="md-ellipsis">All books</span>
+</a>
+</li>
+<li class="md-nav__item bjp-nav-book" role="presentation"><span class="bjp-nav-head">Data Science with Python</span></li>
+<li class="md-nav__item">
+<a href="index.html" class="md-nav__link">
+<span class="md-ellipsis">
+Overview and preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="preface.html" class="md-nav__link">
+<span class="md-ellipsis">
+Preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="the-data-science-workflow.html" class="md-nav__link">
+<span class="md-ellipsis">
+1. The Data Science Workflow
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="python-essentials-for-data-work.html" class="md-nav__link">
+<span class="md-ellipsis">
+2. Python Essentials for Data Work
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="numerical-computing-with-numpy.html" class="md-nav__link">
+<span class="md-ellipsis">
+3. Numerical Computing with NumPy
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="pandas-fundamentals.html" class="md-nav__link">
+<span class="md-ellipsis">
+4. pandas Fundamentals: Series, DataFrames and Selection
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="cleaning-reshaping-grouping-and-joining.html" class="md-nav__link">
+<span class="md-ellipsis">
+5. Cleaning, Reshaping, Grouping and Joining
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="visualisation-and-exploratory-data-analysis.html" class="md-nav__link">
+<span class="md-ellipsis">
+6. Visualisation and Exploratory Data Analysis
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="probability-and-statistics.html" class="md-nav__link">
+<span class="md-ellipsis">
+7. Probability and Statistics for Data Science
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="regression.html" class="md-nav__link">
+<span class="md-ellipsis">
+8. Regression
+</span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+9. Classification
+</span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a href="classification.html" class="md-nav__link md-nav__link--active">
+<span class="md-ellipsis">
+9. Classification
+</span>
+</a>
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#91-a-dataset-to-classify" class="md-nav__link">
+<span class="md-ellipsis">
+9.1 A dataset to classify
+</span>
+</a>
+<nav class="md-nav" aria-label="9.1 A dataset to classify">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#the-baseline" class="md-nav__link">
+<span class="md-ellipsis">
+The baseline
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#92-k-nearest-neighbours" class="md-nav__link">
+<span class="md-ellipsis">
+9.2 k-nearest neighbours
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#93-logistic-regression" class="md-nav__link">
+<span class="md-ellipsis">
+9.3 Logistic regression
+</span>
+</a>
+<nav class="md-nav" aria-label="9.3 Logistic regression">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#reading-the-coefficients" class="md-nav__link">
+<span class="md-ellipsis">
+Reading the coefficients
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#94-decision-trees" class="md-nav__link">
+<span class="md-ellipsis">
+9.4 Decision trees
+</span>
+</a>
+<nav class="md-nav" aria-label="9.4 Decision trees">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#random-forests" class="md-nav__link">
+<span class="md-ellipsis">
+Random forests
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#95-decision-boundaries" class="md-nav__link">
+<span class="md-ellipsis">
+9.5 Decision boundaries
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#96-measuring-a-classifier" class="md-nav__link">
+<span class="md-ellipsis">
+9.6 Measuring a classifier
+</span>
+</a>
+<nav class="md-nav" aria-label="9.6 Measuring a classifier">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#the-confusion-matrix" class="md-nav__link">
+<span class="md-ellipsis">
+The confusion matrix
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#moving-the-threshold" class="md-nav__link">
+<span class="md-ellipsis">
+Moving the threshold
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#97-summary" class="md-nav__link">
+<span class="md-ellipsis">
+9.7 Summary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#98-exercises" class="md-nav__link">
+<span class="md-ellipsis">
+9.8 Exercises
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#99-quiz" class="md-nav__link">
+<span class="md-ellipsis">
+9.9 Quiz
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="model-evaluation-and-cross-validation.html" class="md-nav__link">
+<span class="md-ellipsis">
+10. Model Evaluation and Cross-Validation
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="clustering-and-dimensionality-reduction.html" class="md-nav__link">
+<span class="md-ellipsis">
+11. Clustering and Dimensionality Reduction
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="text-and-time-series-basics.html" class="md-nav__link">
+<span class="md-ellipsis">
+12. Text and Time Series Basics
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ethics-privacy-and-reproducibility.html" class="md-nav__link">
+<span class="md-ellipsis">
+13. Ethics, Privacy and Reproducibility
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="an-end-to-end-project.html" class="md-nav__link">
+<span class="md-ellipsis">
+14. An End-to-End Project
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="glossary.html" class="md-nav__link">
+<span class="md-ellipsis">
+Glossary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="further-reading.html" class="md-nav__link">
+<span class="md-ellipsis">
+Further Reading
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#91-a-dataset-to-classify" class="md-nav__link">
+<span class="md-ellipsis">
+9.1 A dataset to classify
+</span>
+</a>
+<nav class="md-nav" aria-label="9.1 A dataset to classify">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#the-baseline" class="md-nav__link">
+<span class="md-ellipsis">
+The baseline
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#92-k-nearest-neighbours" class="md-nav__link">
+<span class="md-ellipsis">
+9.2 k-nearest neighbours
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#93-logistic-regression" class="md-nav__link">
+<span class="md-ellipsis">
+9.3 Logistic regression
+</span>
+</a>
+<nav class="md-nav" aria-label="9.3 Logistic regression">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#reading-the-coefficients" class="md-nav__link">
+<span class="md-ellipsis">
+Reading the coefficients
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#94-decision-trees" class="md-nav__link">
+<span class="md-ellipsis">
+9.4 Decision trees
+</span>
+</a>
+<nav class="md-nav" aria-label="9.4 Decision trees">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#random-forests" class="md-nav__link">
+<span class="md-ellipsis">
+Random forests
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#95-decision-boundaries" class="md-nav__link">
+<span class="md-ellipsis">
+9.5 Decision boundaries
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#96-measuring-a-classifier" class="md-nav__link">
+<span class="md-ellipsis">
+9.6 Measuring a classifier
+</span>
+</a>
+<nav class="md-nav" aria-label="9.6 Measuring a classifier">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#the-confusion-matrix" class="md-nav__link">
+<span class="md-ellipsis">
+The confusion matrix
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#moving-the-threshold" class="md-nav__link">
+<span class="md-ellipsis">
+Moving the threshold
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#97-summary" class="md-nav__link">
+<span class="md-ellipsis">
+9.7 Summary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#98-exercises" class="md-nav__link">
+<span class="md-ellipsis">
+9.8 Exercises
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#99-quiz" class="md-nav__link">
+<span class="md-ellipsis">
+9.9 Quiz
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="chapter-9-classification">Chapter 9: Classification<a class="headerlink" href="#chapter-9-classification" title="Permanent link">&para;</a></h1>
+<p><em>Predicting a category: nearest neighbours, logistic regression and decision trees</em></p>
+<div class="admonition note">
+<p class="admonition-title">Learning outcomes</p>
+<p>After this chapter you should be able to:</p>
+<ul>
+<li>state the classification problem and explain what a decision boundary is;</li>
+<li>classify with k-nearest neighbours and explain why features must be scaled for it;</li>
+<li>explain logistic regression: the sigmoid, predicted probabilities, coefficients as changes in log-odds, and the threshold;</li>
+<li>grow and read a decision tree, and control its depth to avoid overfitting;</li>
+<li>describe a random forest as an ensemble of trees;</li>
+<li>compute accuracy, a confusion matrix, precision, recall and F1, and compare a classifier with a baseline;</li>
+<li>explain why accuracy misleads when the classes are imbalanced.</li>
+</ul>
+</div>
+<p>In <strong>classification</strong> the target is a category, called a <strong>class</strong> or <strong>label</strong>: spam or not spam, which of three species a flower belongs to, whether a customer will cancel a subscription. With two classes the problem is <strong>binary</strong> classification, usually with a "positive" class (the one we are looking for, such as spam or fraud) and a "negative" class; with more classes it is <strong>multiclass</strong>. Everything from Chapter 8 about features, training and test sets, baselines and overfitting carries over. What changes are the models, which must output a class (and ideally a probability), and the ways of measuring error.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">train_test_split</span>
+</code></pre></div>
+<h2 id="91-a-dataset-to-classify">9.1 A dataset to classify<a class="headerlink" href="#91-a-dataset-to-classify" title="Permanent link">&para;</a></h2>
+<p>A subscription service wants to predict which customers will leave (<strong>churn</strong>) in the next month, so that it can offer them something to stay. We generate 1,000 customers with four features: months as a customer (<code>tenure</code>), monthly charge, number of support calls last quarter, and contract type. The rules that decide who churns (shorter tenure, higher charges, more support calls and monthly contracts all make churning more likely) are built in with some randomness, as in real life.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">n</span> <span class="o">=</span> <span class="mi">1000</span>
+<span class="n">tenure</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">72</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+<span class="n">charge</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">1200</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">calls</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">poisson</span><span class="p">(</span><span class="mf">1.5</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+<span class="n">contract</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">choice</span><span class="p">([</span><span class="s2">"monthly"</span><span class="p">,</span> <span class="s2">"yearly"</span><span class="p">],</span> <span class="n">n</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="p">[</span><span class="mf">0.55</span><span class="p">,</span> <span class="mf">0.45</span><span class="p">])</span>
+<span class="n">logit</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mf">2.5</span> <span class="o">-</span> <span class="mf">0.05</span> <span class="o">*</span> <span class="n">tenure</span> <span class="o">+</span> <span class="mf">0.0025</span> <span class="o">*</span> <span class="n">charge</span> <span class="o">+</span> <span class="mf">0.45</span> <span class="o">*</span> <span class="n">calls</span>
+         <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">contract</span> <span class="o">==</span> <span class="s2">"monthly"</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.8</span><span class="p">))</span>
+<span class="n">p_churn</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">logit</span><span class="p">))</span>
+<span class="n">churn</span> <span class="o">=</span> <span class="p">(</span><span class="n">rng</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">p_churn</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+<span class="n">customers</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s2">"tenure"</span><span class="p">:</span> <span class="n">tenure</span><span class="p">,</span> <span class="s2">"charge"</span><span class="p">:</span> <span class="n">charge</span><span class="p">,</span> <span class="s2">"calls"</span><span class="p">:</span> <span class="n">calls</span><span class="p">,</span>
+                          <span class="s2">"contract"</span><span class="p">:</span> <span class="n">contract</span><span class="p">,</span> <span class="s2">"churn"</span><span class="p">:</span> <span class="n">churn</span><span class="p">})</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">customers</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">customers</span><span class="p">[</span><span class="s2">"churn"</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">customers</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">"contract"</span><span class="p">)[</span><span class="s2">"churn"</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>   tenure  charge  calls contract  churn
+0      56   576.0      3   yearly      0
+1      68  1027.0      1   yearly      0
+2      19   331.0      2  monthly      0
+3      15   397.0      0   yearly      0
+4      57  1031.0      2  monthly      1
+churn
+0    756
+1    244
+Name: count, dtype: int64
+contract
+monthly    0.363
+yearly     0.100
+Name: churn, dtype: float64
+</code></pre></div>
+<p>About one customer in four churns, and monthly-contract customers churn far more often than yearly ones. We turn the contract into a 0/1 feature, split the data, and keep the test set aside until the end. <code>stratify=y</code> makes the split keep the same proportion of churners in both parts.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">customers</span><span class="p">[</span><span class="s2">"monthly"</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">customers</span><span class="p">[</span><span class="s2">"contract"</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"monthly"</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+<span class="n">features</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"tenure"</span><span class="p">,</span> <span class="s2">"charge"</span><span class="p">,</span> <span class="s2">"calls"</span><span class="p">,</span> <span class="s2">"monthly"</span><span class="p">]</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">customers</span><span class="p">[</span><span class="n">features</span><span class="p">]</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">customers</span><span class="p">[</span><span class="s2">"churn"</span><span class="p">]</span>
+<span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">stratify</span><span class="o">=</span><span class="n">y</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">X_train</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">X_test</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">y_train</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="mi">3</span><span class="p">),</span> <span class="nb">round</span><span class="p">(</span><span class="n">y_test</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="mi">3</span><span class="p">))</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>(750, 4) (250, 4) 0.244 0.244
+</code></pre></div>
+<h3 id="the-baseline">The baseline<a class="headerlink" href="#the-baseline" title="Permanent link">&para;</a></h3>
+<p>The simplest classifier always predicts the most common class. Its accuracy, the <strong>majority-class baseline</strong>, is the number every real model must beat.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.dummy</span><span class="w"> </span><span class="kn">import</span> <span class="n">DummyClassifier</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">accuracy_score</span>
+
+<span class="n">dummy</span> <span class="o">=</span> <span class="n">DummyClassifier</span><span class="p">(</span><span class="n">strategy</span><span class="o">=</span><span class="s2">"most_frequent"</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"baseline accuracy:"</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">dummy</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)),</span> <span class="mi">3</span><span class="p">))</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>baseline accuracy: 0.756
+</code></pre></div>
+<p>Predicting "nobody churns" is right about three times in four, yet it is useless: it never finds a single churner. Keep this in mind whenever an accuracy figure sounds impressive.</p>
+<h2 id="92-k-nearest-neighbours">9.2 k-nearest neighbours<a class="headerlink" href="#92-k-nearest-neighbours" title="Permanent link">&para;</a></h2>
+<p>The <strong>k-nearest-neighbours</strong> (k-NN) classifier is the most intuitive of all: to classify a new example, find the <span class="arithmatex">\(k\)</span> training examples closest to it and take a majority vote of their classes. There is no real training step; the model is the stored training data. "Closest" usually means <strong>Euclidean distance</strong>: for two examples with features <span class="arithmatex">\(x\)</span> and <span class="arithmatex">\(z\)</span>,</p>
+<div class="arithmatex">\[
+d(x, z) = \sqrt{\sum_{j} (x_j - z_j)^2}.
+\]</div>
+<p>Because the distance adds up differences across features, a feature measured in large numbers dominates. Here <code>charge</code> runs from 200 to 1,200 while <code>calls</code> runs from 0 to about 7, so without rescaling, k-NN would almost ignore the calls. <strong>Standardising</strong> the features first (Section 3.7) puts them on an equal footing. The scaler must learn its means and standard deviations from the training data only, which a pipeline guarantees.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.neighbors</span><span class="w"> </span><span class="kn">import</span> <span class="n">KNeighborsClassifier</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.preprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">StandardScaler</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_pipeline</span>
+
+<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">25</span><span class="p">]:</span>
+    <span class="n">raw</span> <span class="o">=</span> <span class="n">KNeighborsClassifier</span><span class="p">(</span><span class="n">n_neighbors</span><span class="o">=</span><span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+    <span class="n">scaled</span> <span class="o">=</span> <span class="n">make_pipeline</span><span class="p">(</span><span class="n">StandardScaler</span><span class="p">(),</span> <span class="n">KNeighborsClassifier</span><span class="p">(</span><span class="n">n_neighbors</span><span class="o">=</span><span class="n">k</span><span class="p">))</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"k=</span><span class="si">{</span><span class="n">k</span><span class="si">:</span><span class="s2">&gt;2</span><span class="si">}</span><span class="s2">: accuracy unscaled </span><span class="si">{</span><span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span><span class="w"> </span><span class="n">raw</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">))</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, "</span>
+          <span class="sa">f</span><span class="s2">"scaled </span><span class="si">{</span><span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span><span class="w"> </span><span class="n">scaled</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">))</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>k= 1: accuracy unscaled 0.688, scaled 0.736
+k= 5: accuracy unscaled 0.776, scaled 0.808
+k=25: accuracy unscaled 0.752, scaled 0.836
+</code></pre></div>
+<p>Two lessons appear. Scaling helps, often a great deal. And <span class="arithmatex">\(k\)</span> controls flexibility: <span class="arithmatex">\(k = 1\)</span> follows every training point, noise included (low bias, high variance), while a larger <span class="arithmatex">\(k\)</span> averages over more neighbours and gives a smoother, more stable rule. <span class="arithmatex">\(k\)</span> is a <strong>hyperparameter</strong>, chosen on held-out data (Chapter 10), never on the test set.</p>
+<div class="admonition warning">
+<p class="admonition-title">Caution: fit preprocessing on the training data only</p>
+<p>If the scaler is fitted on all the data before splitting, the test set's means and spreads leak into training, and the test score becomes slightly optimistic. Putting the scaler inside a pipeline, and fitting the pipeline on the training data, prevents this <strong>data leakage</strong> automatically. Chapter 10 returns to leakage, which is one of the most common ways evaluations go wrong.</p>
+</div>
+<h2 id="93-logistic-regression">9.3 Logistic regression<a class="headerlink" href="#93-logistic-regression" title="Permanent link">&para;</a></h2>
+<p>Despite its name, <strong>logistic regression</strong> is a classification method. It predicts the <em>probability</em> that an example belongs to the positive class. A linear combination of the features, <span class="arithmatex">\(z = b_0 + b_1 x_1 + \dots + b_p x_p\)</span>, can be any number, so it is passed through the <strong>sigmoid</strong> (logistic) function, which squeezes any number into the range 0 to 1:</p>
+<div class="arithmatex">\[
+\sigma(z) = \frac{1}{1 + e^{-z}}, \qquad \hat{p} = P(y = 1 \mid x) = \sigma(b_0 + b_1 x_1 + \dots + b_p x_p).
+\]</div>
+<div class="language-python highlight"><pre><span></span><code><span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">z</span><span class="p">)),</span> <span class="n">color</span><span class="o">=</span><span class="s2">"tab:blue"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"gray"</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">"--"</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"gray"</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">"--"</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"z = b0 + b1 x1 + ... + bp xp"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"predicted probability"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"The sigmoid function"</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">"sigmoid.svg"</span><span class="p">)</span>
+</code></pre></div>
+<figure class="fig fig-diagram">
+<img src="img/sigmoid.svg" alt="The S-shaped sigmoid curve rising from 0 on the far left to 1 on the far right, passing through probability 0.5 at z = 0, steepest in the middle and flattening at both ends." loading="lazy" width="515" height="302">
+<figcaption><strong>Figure 9.1 The sigmoid turns a score into a probability.</strong> The S-shaped sigmoid curve rising from 0 on the far left to 1 on the far right, passing through probability 0.5 at z = 0, steepest in the middle and flattening at both ends.</figcaption>
+</figure>
+<p>The model predicts the positive class when <span class="arithmatex">\(\hat{p}\)</span> is at least a <strong>threshold</strong>, by default 0.5, which corresponds to <span class="arithmatex">\(z \ge 0\)</span>. The coefficients are fitted by maximising the likelihood of the training labels (equivalently, minimising a loss called log-loss) rather than by least squares.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">LogisticRegression</span>
+
+<span class="n">logreg</span> <span class="o">=</span> <span class="n">make_pipeline</span><span class="p">(</span><span class="n">StandardScaler</span><span class="p">(),</span> <span class="n">LogisticRegression</span><span class="p">())</span>
+<span class="n">logreg</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"accuracy:"</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">logreg</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)),</span> <span class="mi">3</span><span class="p">))</span>
+<span class="n">coefs</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">logreg</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">coef_</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">index</span><span class="o">=</span><span class="n">features</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">coefs</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">logreg</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X_test</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:</span><span class="mi">3</span><span class="p">])</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>accuracy: 0.856
+tenure    -1.134
+charge     0.884
+calls      0.490
+monthly    1.016
+dtype: float64
+[[0.915 0.085]
+ [0.763 0.237]
+ [0.809 0.191]]
+</code></pre></div>
+<p><code>predict_proba</code> returns, for each example, the probability of each class (columns in the order of <code>classes_</code>, here 0 then 1). <code>predict</code> applies the 0.5 threshold to the second column.</p>
+<h3 id="reading-the-coefficients">Reading the coefficients<a class="headerlink" href="#reading-the-coefficients" title="Permanent link">&para;</a></h3>
+<p>The <strong>odds</strong> of an event with probability <span class="arithmatex">\(p\)</span> are <span class="arithmatex">\(p/(1-p)\)</span>: a probability of 0.8 is odds of 4 to 1. Logistic regression is linear in the <strong>log-odds</strong>:</p>
+<div class="arithmatex">\[
+\log\frac{\hat{p}}{1-\hat{p}} = b_0 + b_1 x_1 + \dots + b_p x_p .
+\]</div>
+<p>So each coefficient is the change in log-odds for a one-unit increase in its feature, other features fixed, and <span class="arithmatex">\(e^{b_j}\)</span> is the factor by which the odds are multiplied. Because the features were standardised, "one unit" here means one standard deviation, which makes the sizes comparable: tenure has the largest effect (negative: longer-standing customers are less likely to leave), followed by the monthly contract and the charge, and then support calls (all positive).</p>
+<div class="language-python highlight"><pre><span></span><code><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">coefs</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>tenure     0.32
+charge     2.42
+calls      1.63
+monthly    2.76
+dtype: float64
+</code></pre></div>
+<p>For example, one standard deviation more tenure (about 20 months) multiplies the odds of churning by about 0.3, cutting them by about two-thirds.</p>
+<div class="admonition info">
+<p class="admonition-title">Note: regularisation is on by default</p>
+<p>scikit-learn's <code>LogisticRegression</code> applies a ridge-type penalty by default, with strength set by the parameter <code>C</code> (the <em>inverse</em> of the penalty: smaller <code>C</code> means stronger regularisation). With plenty of data and few features it makes little difference, but it is one more reason to standardise the features first.</p>
+</div>
+<h2 id="94-decision-trees">9.4 Decision trees<a class="headerlink" href="#94-decision-trees" title="Permanent link">&para;</a></h2>
+<p>A <strong>decision tree</strong> classifies by asking a sequence of yes/no questions about the features, such as "is tenure at most 12 months?", each answer leading to another question or to a final class. It is grown from the training data top-down: at each step, the algorithm searches all features and thresholds for the split that makes the two resulting groups as <strong>pure</strong> as possible (each dominated by one class), and repeats within each group.</p>
+<p>Purity is measured by the <strong>Gini impurity</strong>. For a group in which a fraction <span class="arithmatex">\(p_c\)</span> of the examples belongs to class <span class="arithmatex">\(c\)</span>,</p>
+<div class="arithmatex">\[
+G = 1 - \sum_c p_c^2 .
+\]</div>
+<p>A pure group has <span class="arithmatex">\(G = 0\)</span>; a 50/50 mix of two classes has <span class="arithmatex">\(G = 0.5\)</span>, the maximum for two classes. The chosen split is the one that most reduces the size-weighted impurity of the two groups.</p>
+<div class="admonition example">
+<p class="admonition-title">Example 9.1: Choosing between two splits</p>
+<p>A group of 10 customers contains 4 churners, so <span class="arithmatex">\(G = 1 - (0.4^2 + 0.6^2) = 0.48\)</span>. Split A divides them into a group of 5 with 4 churners and a group of 5 with none. Split B makes a group of 6 with 3 churners and a group of 4 with 1.</p>
+<ul>
+<li>Split A: <span class="arithmatex">\(G_1 = 1 - (0.8^2 + 0.2^2) = 0.32\)</span>, <span class="arithmatex">\(G_2 = 0\)</span>; weighted <span class="arithmatex">\(= 0.5 \times 0.32 + 0.5 \times 0 = 0.16\)</span>.</li>
+<li>Split B: <span class="arithmatex">\(G_1 = 1 - (0.5^2 + 0.5^2) = 0.5\)</span>, <span class="arithmatex">\(G_2 = 1 - (0.25^2 + 0.75^2) = 0.375\)</span>; weighted <span class="arithmatex">\(= 0.6 \times 0.5 + 0.4 \times 0.375 = 0.45\)</span>.</li>
+</ul>
+<p>Split A reduces the impurity from 0.48 to 0.16, far more than B, so the tree chooses A.</p>
+</div>
+<p>Trees need no scaling (a threshold on charge works the same in any units) and handle interactions naturally. Left to grow until every leaf is pure, though, a tree memorises the training data. Limiting its depth is the simplest control:</p>
+<div class="language-python highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.tree</span><span class="w"> </span><span class="kn">import</span> <span class="n">DecisionTreeClassifier</span><span class="p">,</span> <span class="n">export_text</span>
+
+<span class="k">for</span> <span class="n">depth</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+    <span class="n">tree</span> <span class="o">=</span> <span class="n">DecisionTreeClassifier</span><span class="p">(</span><span class="n">max_depth</span><span class="o">=</span><span class="n">depth</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"max_depth=</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">depth</span><span class="p">)</span><span class="si">:</span><span class="s2">&gt;4</span><span class="si">}</span><span class="s2">: train accuracy </span><span class="si">{</span><span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_train</span><span class="p">,</span><span class="w"> </span><span class="n">tree</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_train</span><span class="p">))</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, "</span>
+          <span class="sa">f</span><span class="s2">"test accuracy </span><span class="si">{</span><span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span><span class="w"> </span><span class="n">tree</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">))</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, leaves </span><span class="si">{</span><span class="n">tree</span><span class="o">.</span><span class="n">get_n_leaves</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>max_depth=   1: train accuracy 0.756, test accuracy 0.756, leaves 2
+max_depth=   3: train accuracy 0.824, test accuracy 0.812, leaves 8
+max_depth=   5: train accuracy 0.847, test accuracy 0.816, leaves 26
+max_depth=None: train accuracy 1.000, test accuracy 0.748, leaves 162
+</code></pre></div>
+<p>The unlimited tree is perfect on the training data and clearly worse on the test data: overfitting again, as with the degree-15 polynomial. A shallow tree has the great advantage that a person can read it:</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">small_tree</span> <span class="o">=</span> <span class="n">DecisionTreeClassifier</span><span class="p">(</span><span class="n">max_depth</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">export_text</span><span class="p">(</span><span class="n">small_tree</span><span class="p">,</span> <span class="n">feature_names</span><span class="o">=</span><span class="n">features</span><span class="p">,</span> <span class="n">show_weights</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>|--- monthly &lt;= 0.50
+|   |--- charge &lt;= 1005.50
+|   |   |--- tenure &lt;= 31.50
+|   |   |   |--- weights: [100.00, 12.00] class: 0
+|   |   |--- tenure &gt;  31.50
+|   |   |   |--- weights: [153.00, 3.00] class: 0
+|   |--- charge &gt;  1005.50
+|   |   |--- tenure &lt;= 12.50
+|   |   |   |--- weights: [5.00, 9.00] class: 1
+|   |   |--- tenure &gt;  12.50
+|   |   |   |--- weights: [48.00, 12.00] class: 0
+|--- monthly &gt;  0.50
+|   |--- tenure &lt;= 42.50
+|   |   |--- charge &lt;= 665.50
+|   |   |   |--- weights: [83.00, 38.00] class: 0
+|   |   |--- charge &gt;  665.50
+|   |   |   |--- weights: [42.00, 87.00] class: 1
+|   |--- tenure &gt;  42.50
+|   |   |--- calls &lt;= 5.50
+|   |   |   |--- weights: [136.00, 20.00] class: 0
+|   |   |--- calls &gt;  5.50
+|   |   |   |--- weights: [0.00, 2.00] class: 1
+</code></pre></div>
+<p>Each line is a question. Each leaf shows how many training customers reached it in each class (stayed, churned) and the class it predicts, the majority there. The tree first splits on contract type. The largest group of churners is monthly customers with tenure up to about 42 months and a charge above about 665: 87 of the 129 customers in that leaf churned. Among yearly customers, only those paying a high charge who joined within the last year are predicted to churn. This readability is why trees are popular where decisions must be explained.</p>
+<h3 id="random-forests">Random forests<a class="headerlink" href="#random-forests" title="Permanent link">&para;</a></h3>
+<p>A single deep tree is unstable: a slightly different training set can give a very different tree. A <strong>random forest</strong> grows many trees, each on a random resample of the training data (a bootstrap sample, Section 7.5) and considering a random subset of features at each split, and lets them vote. Averaging many unstable but different trees cancels much of their variance. Forests are among the most reliable general-purpose classifiers, at the cost of the single tree's readability.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.ensemble</span><span class="w"> </span><span class="kn">import</span> <span class="n">RandomForestClassifier</span>
+
+<span class="n">forest</span> <span class="o">=</span> <span class="n">RandomForestClassifier</span><span class="p">(</span><span class="n">n_estimators</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">min_samples_leaf</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">forest</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"forest test accuracy:"</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">forest</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)),</span> <span class="mi">3</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">forest</span><span class="o">.</span><span class="n">feature_importances_</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">features</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>forest test accuracy: 0.852
+tenure     0.399
+charge     0.335
+monthly    0.174
+calls      0.091
+dtype: float64
+</code></pre></div>
+<p><code>feature_importances_</code> measures how much each feature reduced impurity across all the trees. It is a rough guide to what the model relies on, not a causal statement, and it tends to favour features with many distinct values.</p>
+<h2 id="95-decision-boundaries">9.5 Decision boundaries<a class="headerlink" href="#95-decision-boundaries" title="Permanent link">&para;</a></h2>
+<p>A classifier divides the space of features into regions, one per predicted class; the borders between them are the <strong>decision boundaries</strong>. With two features they can be drawn. Using only tenure and charge, here are the boundaries of the three kinds of model:</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">two</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"tenure"</span><span class="p">,</span> <span class="s2">"charge"</span><span class="p">]</span>
+<span class="n">models</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"k-NN (k=15)"</span><span class="p">:</span> <span class="n">make_pipeline</span><span class="p">(</span><span class="n">StandardScaler</span><span class="p">(),</span> <span class="n">KNeighborsClassifier</span><span class="p">(</span><span class="mi">15</span><span class="p">)),</span>
+    <span class="s2">"logistic regression"</span><span class="p">:</span> <span class="n">make_pipeline</span><span class="p">(</span><span class="n">StandardScaler</span><span class="p">(),</span> <span class="n">LogisticRegression</span><span class="p">()),</span>
+    <span class="s2">"decision tree (depth 4)"</span><span class="p">:</span> <span class="n">DecisionTreeClassifier</span><span class="p">(</span><span class="n">max_depth</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
+<span class="p">}</span>
+<span class="n">tt</span><span class="p">,</span> <span class="n">cc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">72</span><span class="p">,</span> <span class="mi">200</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">1200</span><span class="p">,</span> <span class="mi">200</span><span class="p">))</span>
+<span class="n">grid</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s2">"tenure"</span><span class="p">:</span> <span class="n">tt</span><span class="o">.</span><span class="n">ravel</span><span class="p">(),</span> <span class="s2">"charge"</span><span class="p">:</span> <span class="n">cc</span><span class="o">.</span><span class="n">ravel</span><span class="p">()})</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">),</span> <span class="n">sharey</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">sample</span> <span class="o">=</span> <span class="n">X_train</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">churn</span><span class="o">=</span><span class="n">y_train</span><span class="p">)</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">250</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">ax</span><span class="p">,</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span> <span class="n">models</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+    <span class="n">m</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">[</span><span class="n">two</span><span class="p">],</span> <span class="n">y_train</span><span class="p">)</span>
+    <span class="n">zz</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">grid</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">tt</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">tt</span><span class="p">,</span> <span class="n">cc</span><span class="p">,</span> <span class="n">zz</span><span class="p">,</span> <span class="n">levels</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">],</span> <span class="n">colors</span><span class="o">=</span><span class="p">[</span><span class="s2">"#dce9f5"</span><span class="p">,</span> <span class="s2">"#f7d9c4"</span><span class="p">])</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">sample</span><span class="p">[</span><span class="s2">"tenure"</span><span class="p">],</span> <span class="n">sample</span><span class="p">[</span><span class="s2">"charge"</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="n">sample</span><span class="p">[</span><span class="s2">"churn"</span><span class="p">],</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"coolwarm"</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s2">"none"</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"tenure (months)"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"monthly charge"</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">"decision-boundaries.svg"</span><span class="p">)</span>
+</code></pre></div>
+<figure class="fig fig-diagram">
+<img src="img/decision-boundaries.svg" alt="Three panels with tenure on the horizontal axis and monthly charge on the vertical axis. Each is shaded into a churn region (orange, upper left: short tenure and high charge) and a stay region (blue). Logistic regression separates them by a straight diagonal line; k-NN by an irregular boundary with a few small islands; the depth-4 tree by horizontal and vertical steps, giving a rectangular churn region. Points coloured by their true class overlap the boundary in all three." loading="lazy" width="1141" height="326">
+<figcaption><strong>Figure 9.2 Decision boundaries of three classifiers.</strong> Three panels with tenure on the horizontal axis and monthly charge on the vertical axis. Each is shaded into a churn region (orange, upper left: short tenure and high charge) and a stay region (blue). Logistic regression separates them by a straight diagonal line; k-NN by an irregular boundary with a few small islands; the depth-4 tree by horizontal and vertical steps, giving a rectangular churn region. Points coloured by their true class overlap the boundary in all three.</figcaption>
+</figure>
+<p>Logistic regression always draws a straight boundary (a <em>linear</em> classifier); k-NN draws a flexible, irregular one that follows local clusters of points; a tree draws axis-parallel steps. None separates the classes perfectly, because churn depends on features not shown and on chance. The best model is the one whose kind of boundary suits the data, and that is decided by evaluation, not by looks.</p>
+<h2 id="96-measuring-a-classifier">9.6 Measuring a classifier<a class="headerlink" href="#96-measuring-a-classifier" title="Permanent link">&para;</a></h2>
+<h3 id="the-confusion-matrix">The confusion matrix<a class="headerlink" href="#the-confusion-matrix" title="Permanent link">&para;</a></h3>
+<p>Accuracy, the fraction of correct predictions, hides <em>which</em> mistakes a model makes. A <strong>confusion matrix</strong> counts the four combinations of true and predicted class for a binary problem:</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Predicted negative</th>
+<th>Predicted positive</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Actually negative</strong></td>
+<td>true negatives (TN)</td>
+<td>false positives (FP)</td>
+</tr>
+<tr>
+<td><strong>Actually positive</strong></td>
+<td>false negatives (FN)</td>
+<td>true positives (TP)</td>
+</tr>
+</tbody>
+</table>
+<p><em>Table 9.1. The layout of a confusion matrix (scikit-learn's order: rows are actual classes, columns predicted, negative first).</em></p>
+<p>From it come the measures that matter in most applications:</p>
+<ul>
+<li><strong>Precision</strong> <span class="arithmatex">\(= \dfrac{TP}{TP + FP}\)</span>: of the examples flagged positive, the fraction that really are. (How much can I trust a positive prediction?)</li>
+<li><strong>Recall</strong> (sensitivity) <span class="arithmatex">\(= \dfrac{TP}{TP + FN}\)</span>: of the real positives, the fraction found. (How many churners do I catch?)</li>
+<li><strong>F1 score</strong> <span class="arithmatex">\(= \dfrac{2 \cdot \text{precision} \cdot \text{recall}}{\text{precision} + \text{recall}}\)</span>, their harmonic mean, which is high only when both are.</li>
+</ul>
+<div class="language-python highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">confusion_matrix</span><span class="p">,</span> <span class="n">precision_score</span><span class="p">,</span> <span class="n">recall_score</span><span class="p">,</span> <span class="n">f1_score</span><span class="p">,</span> <span class="n">classification_report</span>
+
+<span class="n">pred</span> <span class="o">=</span> <span class="n">logreg</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">confusion_matrix</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">pred</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"precision </span><span class="si">{</span><span class="n">precision_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span><span class="w"> </span><span class="n">pred</span><span class="p">)</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, recall </span><span class="si">{</span><span class="n">recall_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span><span class="w"> </span><span class="n">pred</span><span class="p">)</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, "</span>
+      <span class="sa">f</span><span class="s2">"F1 </span><span class="si">{</span><span class="n">f1_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span><span class="w"> </span><span class="n">pred</span><span class="p">)</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">classification_report</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">pred</span><span class="p">,</span> <span class="n">digits</span><span class="o">=</span><span class="mi">3</span><span class="p">))</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>[[180   9]
+ [ 27  34]]
+precision 0.791, recall 0.557, F1 0.654
+              precision    recall  f1-score   support
+
+           0      0.870     0.952     0.909       189
+           1      0.791     0.557     0.654        61
+
+    accuracy                          0.856       250
+   macro avg      0.830     0.755     0.781       250
+weighted avg      0.850     0.856     0.847       250
+</code></pre></div>
+<p><code>classification_report</code> prints precision, recall and F1 for each class, with the number of true examples of each (<code>support</code>). For the churn class, the model catches only part of the churners (recall) while most of the customers it flags really do churn (precision).</p>
+<h3 id="moving-the-threshold">Moving the threshold<a class="headerlink" href="#moving-the-threshold" title="Permanent link">&para;</a></h3>
+<p>The 0.5 threshold is a default, not a law. If missing a churner is costly and an offer is cheap, the company should flag customers at a lower probability, accepting more false alarms to catch more churners. Lowering the threshold raises recall and lowers precision:</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">proba</span> <span class="o">=</span> <span class="n">logreg</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X_test</span><span class="p">)[:,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.35</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">]:</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="p">(</span><span class="n">proba</span> <span class="o">&gt;=</span> <span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"threshold </span><span class="si">{</span><span class="n">t</span><span class="si">}</span><span class="s2">: precision </span><span class="si">{</span><span class="n">precision_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">)</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, recall </span><span class="si">{</span><span class="n">recall_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">)</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, "</span>
+          <span class="sa">f</span><span class="s2">"flagged </span><span class="si">{</span><span class="n">p</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="si">}</span><span class="s2"> of </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>threshold 0.5: precision 0.791, recall 0.557, flagged 43 of 250
+threshold 0.35: precision 0.656, recall 0.656, flagged 61 of 250
+threshold 0.2: precision 0.521, recall 0.803, flagged 94 of 250
+</code></pre></div>
+<p>Choosing the threshold is a business decision about the relative costs of the two kinds of error, informed by the model. Chapter 10 shows how to look at all thresholds at once with the ROC curve.</p>
+<div class="admonition warning">
+<p class="admonition-title">Caution: accuracy and imbalanced classes</p>
+<p>When one class is rare, accuracy is dominated by the common class. A fraud detector for a problem where 1 transaction in 1,000 is fraudulent can reach 99.9% accuracy by never flagging anything. For imbalanced problems report the confusion matrix, precision and recall (or F1), and always the baseline.</p>
+</div>
+<h2 id="97-summary">9.7 Summary<a class="headerlink" href="#97-summary" title="Permanent link">&para;</a></h2>
+<div class="admonition abstract">
+<p class="admonition-title">Summary</p>
+<ul>
+<li>Classification predicts a class. A classifier's decision boundaries divide feature space into class regions.</li>
+<li>Compare every classifier with the majority-class baseline (<code>DummyClassifier</code>).</li>
+<li>k-NN votes among the <span class="arithmatex">\(k\)</span> nearest training examples; scale features first; small <span class="arithmatex">\(k\)</span> overfits, large <span class="arithmatex">\(k\)</span> smooths.</li>
+<li>Logistic regression passes a linear score through the sigmoid to get a probability; coefficients are changes in log-odds and <span class="arithmatex">\(e^{b}\)</span> multiplies the odds; predictions use a threshold, 0.5 by default.</li>
+<li>Decision trees split greedily to reduce Gini impurity; they need no scaling and can be read, but overfit unless their depth is limited. Random forests average many randomised trees.</li>
+<li>Fit all preprocessing on training data only, ideally inside a pipeline, to avoid leakage.</li>
+<li>The confusion matrix gives TP, FP, FN, TN; precision <span class="arithmatex">\(= TP/(TP+FP)\)</span>, recall <span class="arithmatex">\(= TP/(TP+FN)\)</span>, F1 their harmonic mean. Moving the threshold trades precision against recall.</li>
+<li>Accuracy misleads for imbalanced classes.</li>
+</ul>
+</div>
+<h2 id="98-exercises">9.8 Exercises<a class="headerlink" href="#98-exercises" title="Permanent link">&para;</a></h2>
+<div class="admonition example">
+<p class="admonition-title">Exercise 1</p>
+<p>A model's confusion matrix on 200 test cases is: TN = 120, FP = 20, FN = 15, TP = 45. Compute accuracy, precision, recall and F1.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>Accuracy <span class="arithmatex">\(= (120 + 45)/200 = 0.825\)</span>. Precision <span class="arithmatex">\(= 45/(45 + 20) = 0.692\)</span>. Recall <span class="arithmatex">\(= 45/(45 + 15) = 0.75\)</span>. F1 <span class="arithmatex">\(= 2 \times 0.692 \times 0.75 / (0.692 + 0.75) = 0.72\)</span>.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">tp</span><span class="p">,</span> <span class="n">fp</span><span class="p">,</span> <span class="n">fn</span><span class="p">,</span> <span class="n">tn</span> <span class="o">=</span> <span class="mi">45</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">120</span>
+<span class="n">prec</span><span class="p">,</span> <span class="n">rec</span> <span class="o">=</span> <span class="n">tp</span> <span class="o">/</span> <span class="p">(</span><span class="n">tp</span> <span class="o">+</span> <span class="n">fp</span><span class="p">),</span> <span class="n">tp</span> <span class="o">/</span> <span class="p">(</span><span class="n">tp</span> <span class="o">+</span> <span class="n">fn</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">round</span><span class="p">((</span><span class="n">tp</span> <span class="o">+</span> <span class="n">tn</span><span class="p">)</span> <span class="o">/</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="nb">round</span><span class="p">(</span><span class="n">prec</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="nb">round</span><span class="p">(</span><span class="n">rec</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="nb">round</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">prec</span> <span class="o">*</span> <span class="n">rec</span> <span class="o">/</span> <span class="p">(</span><span class="n">prec</span> <span class="o">+</span> <span class="n">rec</span><span class="p">),</span> <span class="mi">3</span><span class="p">))</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>0.825 0.692 0.75 0.72
+</code></pre></div>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 2</p>
+<p>Compute the Gini impurity of a group with 3 examples of class A, 3 of class B and 4 of class C.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p><span class="arithmatex">\(G = 1 - (0.3^2 + 0.3^2 + 0.4^2) = 1 - (0.09 + 0.09 + 0.16) = 0.66\)</span>.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 3</p>
+<p>A logistic regression has the equation <span class="arithmatex">\(\log(\text{odds}) = -2 + 0.8x\)</span>. What is the predicted probability at <span class="arithmatex">\(x = 0\)</span> and at <span class="arithmatex">\(x = 5\)</span>? At what <span class="arithmatex">\(x\)</span> is the probability exactly 0.5?</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>At <span class="arithmatex">\(x = 0\)</span>, <span class="arithmatex">\(z = -2\)</span> and <span class="arithmatex">\(\hat{p} = 1/(1 + e^{2}) \approx 0.119\)</span>. At <span class="arithmatex">\(x = 5\)</span>, <span class="arithmatex">\(z = 2\)</span> and <span class="arithmatex">\(\hat{p} = 1/(1 + e^{-2}) \approx 0.881\)</span>. The probability is 0.5 where <span class="arithmatex">\(z = 0\)</span>, that is <span class="arithmatex">\(x = 2.5\)</span>.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">sig</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">z</span><span class="p">:</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">z</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">sig</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span> <span class="o">+</span> <span class="mf">0.8</span> <span class="o">*</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">3</span><span class="p">),</span> <span class="nb">round</span><span class="p">(</span><span class="n">sig</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span> <span class="o">+</span> <span class="mf">0.8</span> <span class="o">*</span> <span class="mi">5</span><span class="p">),</span> <span class="mi">3</span><span class="p">))</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>0.119 0.881
+</code></pre></div>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 4</p>
+<p>Why does k-NN need standardised features while a decision tree does not?</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>k-NN uses distances that add up differences across features, so a feature with a large numerical range dominates the distance and the others are effectively ignored. A tree compares one feature at a time with a threshold; rescaling a feature moves the threshold but does not change which examples go left or right, so the tree is unaffected.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 5</p>
+<p>Train a decision tree of depth 3 on the churn training data and report its precision and recall for the churn class on the test set. How do they compare with logistic regression's?</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<div class="language-python highlight"><pre><span></span><code><span class="n">t3</span> <span class="o">=</span> <span class="n">DecisionTreeClassifier</span><span class="p">(</span><span class="n">max_depth</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+<span class="n">p3</span> <span class="o">=</span> <span class="n">t3</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"tree: precision </span><span class="si">{</span><span class="n">precision_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span><span class="w"> </span><span class="n">p3</span><span class="p">)</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, recall </span><span class="si">{</span><span class="n">recall_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span><span class="w"> </span><span class="n">p3</span><span class="p">)</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"logistic: precision </span><span class="si">{</span><span class="n">precision_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span><span class="w"> </span><span class="n">pred</span><span class="p">)</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, recall </span><span class="si">{</span><span class="n">recall_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span><span class="w"> </span><span class="n">pred</span><span class="p">)</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>tree: precision 0.646, recall 0.508
+logistic: precision 0.791, recall 0.557
+</code></pre></div>
+<p>Compare the two lines: the models make different trade-offs between flagging too many customers and missing churners. Which is better depends on the costs of the two errors, and a single test split is a noisy basis for the choice; Chapter 10 uses cross-validation to compare them more reliably.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 6</p>
+<p>A hospital wants a model to flag patients who might have a serious but treatable condition, for a follow-up test. Should it favour precision or recall, and how would it adjust the threshold?</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>Recall: missing a patient who has the condition (a false negative) is far more costly than an unnecessary follow-up test (a false positive). The hospital should lower the threshold so that more patients are flagged, accepting lower precision, and choose the threshold by the recall it needs, checked on validation data.</p>
+</details>
+<h2 id="99-quiz">9.9 Quiz<a class="headerlink" href="#99-quiz" title="Permanent link">&para;</a></h2>
+<div class="pk-quiz" data-quiz="7dbcf395b8c0">
+<p class="pk-quiz-title">Check your understanding of Chapter 9</p>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;a class label&quot;,&quot;a number between 0 and 1&quot;,&quot;a distance&quot;,&quot;a Gini impurity&quot;],&quot;answer&quot;:&quot;a number between 0 and 1&quot;}">
+<p class="admonition-title">Exercise 1</p>
+<p class="pk-q-prompt">What does the sigmoid function output?</p>
+<ol class="pk-q-opts" type="A"><li>a class label</li><li>a number between 0 and 1</li><li>a distance</li><li>a Gini impurity</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>a number between 0 and 1</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;TP / (TP + FP)&quot;,&quot;TP / (TP + FN)&quot;,&quot;(TP + TN) / total&quot;,&quot;TN / (TN + FP)&quot;],&quot;answer&quot;:&quot;TP / (TP + FN)&quot;}">
+<p class="admonition-title">Exercise 2</p>
+<p class="pk-q-prompt">Recall is</p>
+<ol class="pk-q-opts" type="A"><li>TP / (TP + FP)</li><li>TP / (TP + FN)</li><li>(TP + TN) / total</li><li>TN / (TN + FP)</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>TP / (TP + FN)</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;raises precision and recall&quot;,&quot;raises recall and lowers precision&quot;,&quot;lowers recall and raises precision&quot;,&quot;changes nothing&quot;],&quot;answer&quot;:&quot;raises recall and lowers precision&quot;}">
+<p class="admonition-title">Exercise 3</p>
+<p class="pk-q-prompt">Lowering the classification threshold usually</p>
+<ol class="pk-q-opts" type="A"><li>raises precision and recall</li><li>raises recall and lowers precision</li><li>lowers recall and raises precision</li><li>changes nothing</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>raises recall and lowers precision</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;decision tree&quot;,&quot;random forest&quot;,&quot;k-nearest neighbours&quot;,&quot;majority-class baseline&quot;],&quot;answer&quot;:&quot;k-nearest neighbours&quot;}">
+<p class="admonition-title">Exercise 4</p>
+<p class="pk-q-prompt">Which classifier needs feature scaling the most?</p>
+<ol class="pk-q-opts" type="A"><li>decision tree</li><li>random forest</li><li>k-nearest neighbours</li><li>majority-class baseline</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>k-nearest neighbours</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;text&quot;,&quot;answer&quot;:[&quot;0&quot;]}">
+<p class="admonition-title">Exercise 5</p>
+<p class="pk-q-prompt">What is the Gini impurity of a group that contains only one class?</p>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>0</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;underfitting&quot;,&quot;overfitting&quot;,&quot;data leakage&quot;,&quot;a baseline&quot;],&quot;answer&quot;:&quot;overfitting&quot;}">
+<p class="admonition-title">Exercise 6</p>
+<p class="pk-q-prompt">A decision tree with no depth limit is perfect on the training data and worse on test data. This is</p>
+<ol class="pk-q-opts" type="A"><li>underfitting</li><li>overfitting</li><li>data leakage</li><li>a baseline</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>overfitting</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;the feature has no effect on the predicted odds&quot;,&quot;the feature always predicts class 0&quot;,&quot;the model failed&quot;,&quot;the odds are zero&quot;],&quot;answer&quot;:&quot;the feature has no effect on the predicted odds&quot;}">
+<p class="admonition-title">Exercise 7</p>
+<p class="pk-q-prompt">In logistic regression, a coefficient of 0 for a feature means</p>
+<ol class="pk-q-opts" type="A"><li>the feature has no effect on the predicted odds</li><li>the feature always predicts class 0</li><li>the model failed</li><li>the odds are zero</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>the feature has no effect on the predicted odds</strong></p>
+</details>
+</div>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button type="button" class="md-top md-icon" data-md-component="top" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+Back to top
+</button>
+</main>
+<footer class="md-footer">
+<nav class="md-footer__inner md-grid" aria-label="Footer" >
+<a href="regression.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: 8. Regression">
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</div>
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Previous
+</span>
+<div class="md-ellipsis">
+8. Regression
+</div>
+</div>
+</a>
+<a href="model-evaluation-and-cross-validation.html" class="md-footer__link md-footer__link--next" aria-label="Next: 10. Model Evaluation and Cross-Validation">
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Next
+</span>
+<div class="md-ellipsis">
+10. Model Evaluation and Cross-Validation
+</div>
+</div>
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+</div>
+</a>
+</nav>
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+The Open Book Project &middot;
+<a href="../../about.html">About this library</a> &middot;
+<a href="../../publish.html">Publish your book</a> &middot;
+© The authors of the books
+</div>
+Made with
+<a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+Material for MkDocs
+</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "navigation.prune", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "toc.follow", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+<script src="../../assets/mathjax.js"></script>
+<script src="../../assets/viz.js"></script>
+<script src="../../assets/remote.js"></script>
+<script src="../../assets/scans.js"></script>
+<script src="../../assets/reader.js"></script>
+<script src="../../assets/app.js"></script>
+<script src="../../assets/slides.js"></script>
+<script src="../../assets/speak.js"></script>
+<script src="../../assets/quiz.js"></script>
+<script>
+    /* offline reading: the service worker at the site root (its scope is the whole site) */
+    if ("serviceWorker" in navigator && window.isSecureContext) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register(new URL("../../sw.js", location.href).href).catch(function () {});
+      });
+    }
+  </script>
+</body>
+</html>

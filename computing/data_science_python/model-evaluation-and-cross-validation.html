@@ -1,0 +1,1033 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="description" content="The Open Book Project: books on computer science, quantum computing, cyber security, science, the social sciences, university courses and languages, read page by page like an e-book, online or offline.">
+<meta name="author" content="The Open Book Project">
+<link rel="canonical" href="https://open-book-project.github.io/computing/data_science_python/model-evaluation-and-cross-validation.html">
+<link rel="prev" href="classification.html">
+<link rel="next" href="clustering-and-dimensionality-reduction.html">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap"></noscript>
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Open Book">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="application-name" content="Open Book"><script src="../../assets/library-data.js"></script><script>
+    (function () {
+      var X = window.XMLHttpRequest, open, gate = new Promise(function (r) { open = r; });
+      if (!X) return;
+      var open0 = X.prototype.open, send0 = X.prototype.send;
+      X.prototype.open = function (method, url) {
+        this.__pkIndex = /\/search\/search_index\.json(\?|#|$)/.test(String(url));
+        return open0.apply(this, arguments);
+      };
+      X.prototype.send = function () {
+        if (!this.__pkIndex) return send0.apply(this, arguments);
+        var xhr = this, args = arguments;
+        gate.then(function () { send0.apply(xhr, args); });
+      };
+      function wake() { open(); }
+      document.addEventListener("focusin", function (e) { if (e.target && e.target.closest && e.target.closest(".md-search")) wake(); });
+      document.addEventListener("click", function (e) { if (e.target && e.target.closest && e.target.closest('label[for="__search"], .md-search')) wake(); }, true);
+      document.addEventListener("keydown", function (e) {
+        var k = e.key;
+        if ((k === "/" || k === "s" || k === "f" || k === "S" || k === "F") && !(e.target && e.target.closest && e.target.closest("input, textarea, [contenteditable]"))) wake();
+      }, true);
+      if (/[?&]q=/.test(location.search)) wake();
+    })();
+  </script><script>
+    try {
+      if ((window.matchMedia && (matchMedia("(display-mode: standalone)").matches || matchMedia("(display-mode: fullscreen)").matches)) || navigator.standalone === true) {
+        document.documentElement.className += " bjp-standalone";
+      }
+    } catch (e) { /* not an installed app */ }
+    /* the books of a subject or of the whole library as covers or as a list (assets/app.js): the reader's choice */
+    try {
+      var bv = localStorage.getItem("bjp.view");
+      if (bv === "list" || (bv !== "grid" && /\/books\.html$/.test(location.pathname))) document.documentElement.className += " bjp-view-list";
+    } catch (e) { /* no storage: covers */ }
+  </script>
+<script>
+    /* a book opened from its cover on the shelf: the page stays blank, in the cover's colour, until the reader is up */
+    try {
+      var cv = sessionStorage.getItem("bjp.reader.cover");
+      if (cv && sessionStorage.getItem("bjp.reader.open") === "1") {
+        var c = JSON.parse(cv), de = document.documentElement;
+        de.className += " bjp-booting";
+        if (c && /^#[0-9a-f]{3,8}$/i.test(c.bg || "")) de.style.background = c.bg;
+        setTimeout(function () { de.classList.remove("bjp-booting"); de.style.background = ""; }, 3000);
+      }
+    } catch (e) { /* no session storage: the page simply opens as usual */ }
+  </script>
+<title>10. Model Evaluation and Cross-Validation - The Open Book Project</title>
+<link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+<link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+<link rel="stylesheet" href="../../assets/extra.css">
+<link rel="stylesheet" href="../../assets/reader.css">
+<link rel="stylesheet" href="../../assets/viz.css">
+<link rel="stylesheet" href="../../assets/app.css">
+<link rel="stylesheet" href="../../assets/theme.css">
+<link rel="stylesheet" href="../../assets/slides.css">
+<link rel="stylesheet" href="../../assets/remote.css">
+<link rel="stylesheet" href="../../assets/scans.css">
+<link rel="stylesheet" href="../../assets/speak.css">
+<link rel="stylesheet" href="../../assets/quiz.css">
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+<input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+<input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a href="#101-three-roles-for-data" class="md-skip">
+Skip to content
+</a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav class="md-header__inner md-grid" aria-label="Header">
+<a href="../../index.html" title="The Open Book Project" class="md-header__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+The Open Book Project
+</span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+10. Model Evaluation and Cross-Validation
+</span>
+</div>
+</div>
+</div><a href="../../index.html" class="bjp-libbtn" aria-label="Library: all books" title="Library: all books">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V5h4v15M8 20V9h4v11M14 20L12.6 6l3.8-.8 3 14.2M3 20h18"/></svg><span>Library</span>
+</a>
+<a href="../../subjects/index.html" class="pk-catbtn" aria-haspopup="true" aria-expanded="false" title="Browse the books by category">
+<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><circle cx="17" cy="7" r="3.6"/><path d="M7 13.4l3.9 6.8H3.1z"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg><span>Categories</span>
+</a>
+<form class="md-header__option" data-md-component="palette">
+<input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+<label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+</label>
+<input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+<label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+<label class="md-search__icon md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</label>
+<nav class="md-search__options" aria-label="Search">
+<button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+Initializing search
+</div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--primary bjp-nav bjp-nav--book" aria-label="Navigation" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a href="../../index.html" title="The Open Book Project" class="md-nav__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+The Open Book Project
+</label>
+<ul class="md-nav__list" data-md-scrollfix>
+<li class="md-nav__item bjp-nav-all">
+<a href="../../index.html" class="md-nav__link" aria-label="All books: back to the library">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+<span class="md-ellipsis">All books</span>
+</a>
+</li>
+<li class="md-nav__item bjp-nav-book" role="presentation"><span class="bjp-nav-head">Data Science with Python</span></li>
+<li class="md-nav__item">
+<a href="index.html" class="md-nav__link">
+<span class="md-ellipsis">
+Overview and preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="preface.html" class="md-nav__link">
+<span class="md-ellipsis">
+Preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="the-data-science-workflow.html" class="md-nav__link">
+<span class="md-ellipsis">
+1. The Data Science Workflow
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="python-essentials-for-data-work.html" class="md-nav__link">
+<span class="md-ellipsis">
+2. Python Essentials for Data Work
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="numerical-computing-with-numpy.html" class="md-nav__link">
+<span class="md-ellipsis">
+3. Numerical Computing with NumPy
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="pandas-fundamentals.html" class="md-nav__link">
+<span class="md-ellipsis">
+4. pandas Fundamentals: Series, DataFrames and Selection
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="cleaning-reshaping-grouping-and-joining.html" class="md-nav__link">
+<span class="md-ellipsis">
+5. Cleaning, Reshaping, Grouping and Joining
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="visualisation-and-exploratory-data-analysis.html" class="md-nav__link">
+<span class="md-ellipsis">
+6. Visualisation and Exploratory Data Analysis
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="probability-and-statistics.html" class="md-nav__link">
+<span class="md-ellipsis">
+7. Probability and Statistics for Data Science
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="regression.html" class="md-nav__link">
+<span class="md-ellipsis">
+8. Regression
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="classification.html" class="md-nav__link">
+<span class="md-ellipsis">
+9. Classification
+</span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+10. Model Evaluation and Cross-Validation
+</span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a href="model-evaluation-and-cross-validation.html" class="md-nav__link md-nav__link--active">
+<span class="md-ellipsis">
+10. Model Evaluation and Cross-Validation
+</span>
+</a>
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#101-three-roles-for-data" class="md-nav__link">
+<span class="md-ellipsis">
+10.1 Three roles for data
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#102-k-fold-cross-validation" class="md-nav__link">
+<span class="md-ellipsis">
+10.2 k-fold cross-validation
+</span>
+</a>
+<nav class="md-nav" aria-label="10.2 k-fold cross-validation">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#comparing-models" class="md-nav__link">
+<span class="md-ellipsis">
+Comparing models
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#103-tuning-hyperparameters" class="md-nav__link">
+<span class="md-ellipsis">
+10.3 Tuning hyperparameters
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#104-data-leakage" class="md-nav__link">
+<span class="md-ellipsis">
+10.4 Data leakage
+</span>
+</a>
+<nav class="md-nav" aria-label="10.4 Data leakage">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#leakage-through-preprocessing" class="md-nav__link">
+<span class="md-ellipsis">
+Leakage through preprocessing
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#target-leakage" class="md-nav__link">
+<span class="md-ellipsis">
+Target leakage
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#leakage-through-time-and-groups" class="md-nav__link">
+<span class="md-ellipsis">
+Leakage through time and groups
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#105-roc-curves-auc-and-precisionrecall-curves" class="md-nav__link">
+<span class="md-ellipsis">
+10.5 ROC curves, AUC and precision–recall curves
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#106-reporting-results" class="md-nav__link">
+<span class="md-ellipsis">
+10.6 Reporting results
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#107-summary" class="md-nav__link">
+<span class="md-ellipsis">
+10.7 Summary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#108-exercises" class="md-nav__link">
+<span class="md-ellipsis">
+10.8 Exercises
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#109-quiz" class="md-nav__link">
+<span class="md-ellipsis">
+10.9 Quiz
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="clustering-and-dimensionality-reduction.html" class="md-nav__link">
+<span class="md-ellipsis">
+11. Clustering and Dimensionality Reduction
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="text-and-time-series-basics.html" class="md-nav__link">
+<span class="md-ellipsis">
+12. Text and Time Series Basics
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ethics-privacy-and-reproducibility.html" class="md-nav__link">
+<span class="md-ellipsis">
+13. Ethics, Privacy and Reproducibility
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="an-end-to-end-project.html" class="md-nav__link">
+<span class="md-ellipsis">
+14. An End-to-End Project
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="glossary.html" class="md-nav__link">
+<span class="md-ellipsis">
+Glossary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="further-reading.html" class="md-nav__link">
+<span class="md-ellipsis">
+Further Reading
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#101-three-roles-for-data" class="md-nav__link">
+<span class="md-ellipsis">
+10.1 Three roles for data
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#102-k-fold-cross-validation" class="md-nav__link">
+<span class="md-ellipsis">
+10.2 k-fold cross-validation
+</span>
+</a>
+<nav class="md-nav" aria-label="10.2 k-fold cross-validation">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#comparing-models" class="md-nav__link">
+<span class="md-ellipsis">
+Comparing models
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#103-tuning-hyperparameters" class="md-nav__link">
+<span class="md-ellipsis">
+10.3 Tuning hyperparameters
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#104-data-leakage" class="md-nav__link">
+<span class="md-ellipsis">
+10.4 Data leakage
+</span>
+</a>
+<nav class="md-nav" aria-label="10.4 Data leakage">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#leakage-through-preprocessing" class="md-nav__link">
+<span class="md-ellipsis">
+Leakage through preprocessing
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#target-leakage" class="md-nav__link">
+<span class="md-ellipsis">
+Target leakage
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#leakage-through-time-and-groups" class="md-nav__link">
+<span class="md-ellipsis">
+Leakage through time and groups
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#105-roc-curves-auc-and-precisionrecall-curves" class="md-nav__link">
+<span class="md-ellipsis">
+10.5 ROC curves, AUC and precision–recall curves
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#106-reporting-results" class="md-nav__link">
+<span class="md-ellipsis">
+10.6 Reporting results
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#107-summary" class="md-nav__link">
+<span class="md-ellipsis">
+10.7 Summary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#108-exercises" class="md-nav__link">
+<span class="md-ellipsis">
+10.8 Exercises
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#109-quiz" class="md-nav__link">
+<span class="md-ellipsis">
+10.9 Quiz
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="chapter-10-model-evaluation-and-cross-validation">Chapter 10: Model Evaluation and Cross-Validation<a class="headerlink" href="#chapter-10-model-evaluation-and-cross-validation" title="Permanent link">&para;</a></h1>
+<p><em>Estimating honestly how well a model will do on data it has never seen</em></p>
+<div class="admonition note">
+<p class="admonition-title">Learning outcomes</p>
+<p>After this chapter you should be able to:</p>
+<ul>
+<li>explain why a model must be judged on data not used to build it, and what the test set is for;</li>
+<li>use training, validation and test sets correctly;</li>
+<li>estimate performance with k-fold cross-validation and report its mean and spread;</li>
+<li>tune hyperparameters with a grid search inside cross-validation;</li>
+<li>recognise and prevent data leakage, including leakage through preprocessing, time and groups;</li>
+<li>read a ROC curve and its AUC, and a precision–recall curve;</li>
+<li>compare models fairly and report results with their uncertainty.</li>
+</ul>
+</div>
+<p>A model is useful only if it works on cases it has not seen: next month's customers, tomorrow's transactions, the patient who walks in today. Its performance on the data it was trained on says little about that, because a flexible model can memorise its training data (Chapters 8 and 9). This chapter is about <strong>estimating generalisation performance</strong> honestly. It is the stage of the workflow where most of the self-deception in data science happens, usually by accident, and the habits it teaches matter more than any single algorithm.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">train_test_split</span><span class="p">,</span> <span class="n">cross_val_score</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_pipeline</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.preprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">StandardScaler</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">LogisticRegression</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.neighbors</span><span class="w"> </span><span class="kn">import</span> <span class="n">KNeighborsClassifier</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.tree</span><span class="w"> </span><span class="kn">import</span> <span class="n">DecisionTreeClassifier</span>
+</code></pre></div>
+<p>We reuse the churn data of Chapter 9, generated by the same code, wrapped in a function so that it can be called again:</p>
+<div class="language-python highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">make_churn</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+    <span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+    <span class="n">tenure</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">72</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+    <span class="n">charge</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">1200</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">calls</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">poisson</span><span class="p">(</span><span class="mf">1.5</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+    <span class="n">contract</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">choice</span><span class="p">([</span><span class="s2">"monthly"</span><span class="p">,</span> <span class="s2">"yearly"</span><span class="p">],</span> <span class="n">n</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="p">[</span><span class="mf">0.55</span><span class="p">,</span> <span class="mf">0.45</span><span class="p">])</span>
+    <span class="n">logit</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mf">2.5</span> <span class="o">-</span> <span class="mf">0.05</span> <span class="o">*</span> <span class="n">tenure</span> <span class="o">+</span> <span class="mf">0.0025</span> <span class="o">*</span> <span class="n">charge</span> <span class="o">+</span> <span class="mf">0.45</span> <span class="o">*</span> <span class="n">calls</span>
+             <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">contract</span> <span class="o">==</span> <span class="s2">"monthly"</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.8</span><span class="p">))</span>
+    <span class="n">churn</span> <span class="o">=</span> <span class="p">(</span><span class="n">rng</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">logit</span><span class="p">)))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s2">"tenure"</span><span class="p">:</span> <span class="n">tenure</span><span class="p">,</span> <span class="s2">"charge"</span><span class="p">:</span> <span class="n">charge</span><span class="p">,</span> <span class="s2">"calls"</span><span class="p">:</span> <span class="n">calls</span><span class="p">,</span>
+                      <span class="s2">"monthly"</span><span class="p">:</span> <span class="p">(</span><span class="n">contract</span> <span class="o">==</span> <span class="s2">"monthly"</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)})</span>
+    <span class="k">return</span> <span class="n">X</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">churn</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"churn"</span><span class="p">)</span>
+
+<span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">make_churn</span><span class="p">()</span>
+<span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">stratify</span><span class="o">=</span><span class="n">y</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">X_train</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">X_test</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="mi">3</span><span class="p">))</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>(800, 4) (200, 4) 0.244
+</code></pre></div>
+<h2 id="101-three-roles-for-data">10.1 Three roles for data<a class="headerlink" href="#101-three-roles-for-data" title="Permanent link">&para;</a></h2>
+<p>Data in a modelling project plays three distinct roles.</p>
+<ul>
+<li>The <strong>training set</strong> is used to fit the model's parameters (coefficients, tree splits).</li>
+<li>The <strong>validation set</strong> is used to make choices: which model, which features, which hyperparameters (<span class="arithmatex">\(k\)</span> in k-NN, depth of a tree, <span class="arithmatex">\(\alpha\)</span> in ridge).</li>
+<li>The <strong>test set</strong> is used once, at the end, to estimate how the final chosen model will perform on new data.</li>
+</ul>
+<p>Why not make the choices on the test set? Because every choice made by looking at a dataset adapts the model to that dataset. Try twenty models and keep the one with the best test score, and that score is the maximum of twenty noisy numbers, which is optimistic. The test set must be kept out of every decision so that its score remains an honest estimate. Think of it as an exam paper: if you have seen the questions while studying, your mark no longer measures what you know.</p>
+<div class="admonition tip">
+<p class="admonition-title">Key idea</p>
+<p>Any data used to make a decision about the model, even just to choose between two options, is no longer a fair test. Hold the test set back until all decisions are made, and look at it once.</p>
+</div>
+<p>A single validation set is wasteful when data is limited, and its score is noisy: it depends on which examples happened to land in it. Cross-validation solves both problems.</p>
+<h2 id="102-k-fold-cross-validation">10.2 k-fold cross-validation<a class="headerlink" href="#102-k-fold-cross-validation" title="Permanent link">&para;</a></h2>
+<p>In <strong>k-fold cross-validation</strong> the training data is divided into <span class="arithmatex">\(k\)</span> equal parts, called <strong>folds</strong>. The model is trained <span class="arithmatex">\(k\)</span> times, each time on <span class="arithmatex">\(k - 1\)</span> folds, and scored on the remaining fold. Every example is used for validation exactly once, and the <span class="arithmatex">\(k\)</span> scores are averaged (Figure 10.1). Five or ten folds are the usual choices.</p>
+<figure class="fig fig-diagram">
+<img src="img/cross-validation.svg" alt="The data is first split into a training part (80%) and a test part (20%) that is set aside. The training part is divided into five folds. In each of five rounds a different fold is used for validation and the other four for training, giving five scores, s1 to s5, whose mean is the cross-validated score." loading="lazy" width="720" height="330">
+<figcaption><strong>Figure 10.1 A test set and five-fold cross-validation.</strong> The data is first split into a training part (80%) and a test part (20%) that is set aside. The training part is divided into five folds. In each of five rounds a different fold is used for validation and the other four for training, giving five scores, s1 to s5, whose mean is the cross-validated score.</figcaption>
+</figure>
+<div class="language-python highlight"><pre><span></span><code><span class="n">logreg</span> <span class="o">=</span> <span class="n">make_pipeline</span><span class="p">(</span><span class="n">StandardScaler</span><span class="p">(),</span> <span class="n">LogisticRegression</span><span class="p">())</span>
+<span class="n">scores</span> <span class="o">=</span> <span class="n">cross_val_score</span><span class="p">(</span><span class="n">logreg</span><span class="p">,</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="s2">"accuracy"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">scores</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"mean </span><span class="si">{</span><span class="n">scores</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, sd </span><span class="si">{</span><span class="n">scores</span><span class="o">.</span><span class="n">std</span><span class="p">()</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>[0.819 0.856 0.825 0.819 0.831]
+mean 0.830, sd 0.014
+</code></pre></div>
+<p>The five scores differ by several percentage points, which shows how much a single split could have misled us. Report both the mean and the spread. For classification, scikit-learn's <code>cv=5</code> uses <strong>stratified</strong> folds, each with the same proportion of each class as the whole, which keeps the folds comparable when one class is rare.</p>
+<p>The <code>scoring</code> argument chooses the metric: <code>"accuracy"</code>, <code>"f1"</code>, <code>"precision"</code>, <code>"recall"</code>, <code>"roc_auc"</code> for classifiers; <code>"r2"</code>, <code>"neg_mean_absolute_error"</code>, <code>"neg_root_mean_squared_error"</code> for regressors (negated so that larger is always better). <code>cross_validate</code> computes several at once:</p>
+<div class="language-python highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">cross_validate</span>
+
+<span class="n">res</span> <span class="o">=</span> <span class="n">cross_validate</span><span class="p">(</span><span class="n">logreg</span><span class="p">,</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="p">[</span><span class="s2">"accuracy"</span><span class="p">,</span> <span class="s2">"f1"</span><span class="p">,</span> <span class="s2">"roc_auc"</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">res</span><span class="p">)</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">"fit_time"</span><span class="p">,</span> <span class="s2">"score_time"</span><span class="p">])</span><span class="o">.</span><span class="n">agg</span><span class="p">([</span><span class="s2">"mean"</span><span class="p">,</span> <span class="s2">"std"</span><span class="p">])</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>      test_accuracy  test_f1  test_roc_auc
+mean          0.830    0.600         0.859
+std           0.016    0.055         0.019
+</code></pre></div>
+<h3 id="comparing-models">Comparing models<a class="headerlink" href="#comparing-models" title="Permanent link">&para;</a></h3>
+<p>Cross-validation puts several candidate models on the same footing. Using the same folds for each (by passing the same <code>cv</code> object) makes the comparison fairer still.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">StratifiedKFold</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.ensemble</span><span class="w"> </span><span class="kn">import</span> <span class="n">RandomForestClassifier</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.dummy</span><span class="w"> </span><span class="kn">import</span> <span class="n">DummyClassifier</span>
+
+<span class="n">cv</span> <span class="o">=</span> <span class="n">StratifiedKFold</span><span class="p">(</span><span class="n">n_splits</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">candidates</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"baseline"</span><span class="p">:</span> <span class="n">DummyClassifier</span><span class="p">(</span><span class="n">strategy</span><span class="o">=</span><span class="s2">"most_frequent"</span><span class="p">),</span>
+    <span class="s2">"logistic"</span><span class="p">:</span> <span class="n">make_pipeline</span><span class="p">(</span><span class="n">StandardScaler</span><span class="p">(),</span> <span class="n">LogisticRegression</span><span class="p">()),</span>
+    <span class="s2">"k-NN (k=25)"</span><span class="p">:</span> <span class="n">make_pipeline</span><span class="p">(</span><span class="n">StandardScaler</span><span class="p">(),</span> <span class="n">KNeighborsClassifier</span><span class="p">(</span><span class="mi">25</span><span class="p">)),</span>
+    <span class="s2">"tree (depth 3)"</span><span class="p">:</span> <span class="n">DecisionTreeClassifier</span><span class="p">(</span><span class="n">max_depth</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">"forest"</span><span class="p">:</span> <span class="n">RandomForestClassifier</span><span class="p">(</span><span class="n">n_estimators</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">min_samples_leaf</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
+<span class="p">}</span>
+<span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">model</span> <span class="ow">in</span> <span class="n">candidates</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">cross_val_score</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="n">cv</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="s2">"roc_auc"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">name</span><span class="si">:</span><span class="s2">&gt;15</span><span class="si">}</span><span class="s2">: AUC </span><span class="si">{</span><span class="n">s</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> +/- </span><span class="si">{</span><span class="n">s</span><span class="o">.</span><span class="n">std</span><span class="p">()</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>       baseline: AUC 0.500 +/- 0.000
+       logistic: AUC 0.854 +/- 0.004
+    k-NN (k=25): AUC 0.839 +/- 0.007
+ tree (depth 3): AUC 0.763 +/- 0.019
+         forest: AUC 0.828 +/- 0.019
+</code></pre></div>
+<p>The AUC (Section 10.5) of the baseline is exactly 0.5: it ranks every customer the same. Logistic regression comes out on top here, which is no surprise since the data was generated by a logistic rule; on real data the ranking could be different, which is exactly why we compare. The gaps between the top three are only one to three hundredths of AUC, comparable to the fold-to-fold spread of the forest, so we should not read too much into their exact order. The shallow tree is clearly behind.</p>
+<h2 id="103-tuning-hyperparameters">10.3 Tuning hyperparameters<a class="headerlink" href="#103-tuning-hyperparameters" title="Permanent link">&para;</a></h2>
+<p>Hyperparameters are settings chosen before training: <span class="arithmatex">\(k\)</span> for k-NN, the depth of a tree, the penalty <span class="arithmatex">\(C\)</span> of logistic regression. The standard way to choose them is to try a grid of values and keep the one with the best cross-validated score. <code>GridSearchCV</code> does exactly this, and then refits the best setting on the whole training set.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">GridSearchCV</span>
+
+<span class="n">knn</span> <span class="o">=</span> <span class="n">make_pipeline</span><span class="p">(</span><span class="n">StandardScaler</span><span class="p">(),</span> <span class="n">KNeighborsClassifier</span><span class="p">())</span>
+<span class="n">grid</span> <span class="o">=</span> <span class="n">GridSearchCV</span><span class="p">(</span><span class="n">knn</span><span class="p">,</span> <span class="n">param_grid</span><span class="o">=</span><span class="p">{</span><span class="s2">"kneighborsclassifier__n_neighbors"</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">41</span><span class="p">,</span> <span class="mi">61</span><span class="p">,</span> <span class="mi">91</span><span class="p">]},</span>
+                    <span class="n">cv</span><span class="o">=</span><span class="n">cv</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="s2">"roc_auc"</span><span class="p">)</span>
+<span class="n">grid</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"best k:"</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">best_params_</span><span class="p">,</span> <span class="s2">"CV AUC"</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">best_score_</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">cv_results_</span><span class="p">)[[</span><span class="s2">"param_kneighborsclassifier__n_neighbors"</span><span class="p">,</span> <span class="s2">"mean_test_score"</span><span class="p">,</span> <span class="s2">"std_test_score"</span><span class="p">]]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">to_string</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>best k: {'kneighborsclassifier__n_neighbors': 25} CV AUC 0.839
+ param_kneighborsclassifier__n_neighbors  mean_test_score  std_test_score
+                                       1            0.669           0.039
+                                       3            0.751           0.020
+                                       5            0.793           0.013
+                                       9            0.810           0.021
+                                      15            0.823           0.011
+                                      25            0.839           0.007
+                                      41            0.836           0.016
+                                      61            0.832           0.019
+                                      91            0.834           0.024
+</code></pre></div>
+<p>Parameters of a step inside a pipeline are named <code>step__parameter</code>, with two underscores; <code>make_pipeline</code> names each step after its class in lower case.</p>
+<p>A plot of the score against the hyperparameter, a <strong>validation curve</strong>, shows the trade-off between underfitting and overfitting. Here it is for the depth of a decision tree, with the training score for comparison:</p>
+<div class="language-python highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">validation_curve</span>
+
+<span class="n">depths</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">16</span><span class="p">)</span>
+<span class="n">train_sc</span><span class="p">,</span> <span class="n">val_sc</span> <span class="o">=</span> <span class="n">validation_curve</span><span class="p">(</span><span class="n">DecisionTreeClassifier</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span>
+                                    <span class="n">param_name</span><span class="o">=</span><span class="s2">"max_depth"</span><span class="p">,</span> <span class="n">param_range</span><span class="o">=</span><span class="n">depths</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="n">cv</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="s2">"roc_auc"</span><span class="p">)</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mf">6.5</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">))</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">depths</span><span class="p">,</span> <span class="n">train_sc</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">marker</span><span class="o">=</span><span class="s2">"o"</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"training score"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">depths</span><span class="p">,</span> <span class="n">val_sc</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">marker</span><span class="o">=</span><span class="s2">"o"</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"cross-validated score"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"maximum depth of the tree"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"ROC AUC"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Validation curve for a decision tree"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">"validation-curve.svg"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"best depth:"</span><span class="p">,</span> <span class="n">depths</span><span class="p">[</span><span class="n">val_sc</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">argmax</span><span class="p">()])</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>best depth: 5
+</code></pre></div>
+<figure class="fig fig-diagram">
+<img src="img/validation-curve.svg" alt="A validation curve for a decision tree. The training score rises steadily with depth towards 1. The cross-validated score rises at first, peaks at a small depth, and then falls as the tree grows deeper, while the gap between the two curves widens." loading="lazy" width="560" height="339">
+<figcaption><strong>Figure 10.2 Underfitting on the left, overfitting on the right.</strong> A validation curve for a decision tree. The training score rises steadily with depth towards 1. The cross-validated score rises at first, peaks at a small depth, and then falls as the tree grows deeper, while the gap between the two curves widens.</figcaption>
+</figure>
+<p>On the left both scores are low: shallow trees underfit. On the right the training score keeps climbing while the validation score falls: deep trees overfit. The best depth lies where the validation score peaks.</p>
+<div class="admonition info">
+<p class="admonition-title">Note: the best CV score is itself optimistic</p>
+<p>The winning setting of a grid search was selected because its cross-validated score was highest, so that score is slightly optimistic, for the same reason as choosing on the test set. With a held-out test set this does not matter: the final test score is unbiased. When the data is too small for a test set, <strong>nested cross-validation</strong> (an outer cross-validation loop around the whole grid search) gives an honest estimate.</p>
+</div>
+<h2 id="104-data-leakage">10.4 Data leakage<a class="headerlink" href="#104-data-leakage" title="Permanent link">&para;</a></h2>
+<p><strong>Data leakage</strong> means that information which would not be available at prediction time finds its way into training or evaluation. It produces models that look excellent in evaluation and fail in use. It takes several forms.</p>
+<h3 id="leakage-through-preprocessing">Leakage through preprocessing<a class="headerlink" href="#leakage-through-preprocessing" title="Permanent link">&para;</a></h3>
+<p>Any step that learns from data (a scaler's means, an imputer's medians, a choice of features) must learn from the training folds only. Done on the whole dataset before splitting, it lets the validation data influence training. With a mild step like scaling the effect is small; with feature selection it can be dramatic. Here is a stark demonstration on <strong>pure noise</strong>: 100 examples, 5,000 random features, and random labels, so that no model can truly do better than 50%.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.feature_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">SelectKBest</span><span class="p">,</span> <span class="n">f_classif</span>
+
+<span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">X_noise</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">5000</span><span class="p">))</span>
+<span class="n">y_noise</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+
+<span class="c1"># WRONG: choose the 20 "best" features using all the data, then cross-validate</span>
+<span class="n">selected</span> <span class="o">=</span> <span class="n">SelectKBest</span><span class="p">(</span><span class="n">f_classif</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_noise</span><span class="p">,</span> <span class="n">y_noise</span><span class="p">)</span><span class="o">.</span><span class="n">get_support</span><span class="p">()</span>
+<span class="n">wrong</span> <span class="o">=</span> <span class="n">cross_val_score</span><span class="p">(</span><span class="n">LogisticRegression</span><span class="p">(),</span> <span class="n">X_noise</span><span class="p">[:,</span> <span class="n">selected</span><span class="p">],</span> <span class="n">y_noise</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+<span class="c1"># RIGHT: feature selection inside the pipeline, refitted within each training fold</span>
+<span class="n">right</span> <span class="o">=</span> <span class="n">cross_val_score</span><span class="p">(</span><span class="n">make_pipeline</span><span class="p">(</span><span class="n">SelectKBest</span><span class="p">(</span><span class="n">f_classif</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">20</span><span class="p">),</span> <span class="n">LogisticRegression</span><span class="p">()),</span>
+                        <span class="n">X_noise</span><span class="p">,</span> <span class="n">y_noise</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"selection outside CV: accuracy </span><span class="si">{</span><span class="n">wrong</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"selection inside CV:  accuracy </span><span class="si">{</span><span class="n">right</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>selection outside CV: accuracy 0.85
+selection inside CV:  accuracy 0.48
+</code></pre></div>
+<p>Selecting features on all the data finds the 20 noise features that happen to line up with the labels <em>including the validation examples</em>, so cross-validation then reports an accuracy far above chance on data with no signal at all. Inside the pipeline, the selection is made on each training fold alone and the accuracy falls back to about 50%, the truth.</p>
+<div class="admonition warning">
+<p class="admonition-title">Caution: put every learned step inside the pipeline</p>
+<p>Scaling, imputing missing values, encoding categories, selecting features, reducing dimensions: if a step learns anything from the data, put it in a <code>Pipeline</code> with the model and cross-validate the whole pipeline. Then each fold repeats the full procedure on its own training data, exactly as will happen when the model is used.</p>
+</div>
+<h3 id="target-leakage">Target leakage<a class="headerlink" href="#target-leakage" title="Permanent link">&para;</a></h3>
+<p>A feature can leak the answer. In a churn model, a column "cancellation_reason" is filled in only for customers who have already left; in a model to predict hospital readmission, "number of days in hospital this year" may include the readmission itself. Such features predict superbly in historical data and are useless, or impossible to obtain, at prediction time. The defence is to ask of every feature: <em>would I know this value at the moment I need to make the prediction?</em></p>
+<h3 id="leakage-through-time-and-groups">Leakage through time and groups<a class="headerlink" href="#leakage-through-time-and-groups" title="Permanent link">&para;</a></h3>
+<p>When data has an order in time, random splits let the model train on the future and predict the past. A forecast must be evaluated on periods that come after its training data; scikit-learn's <code>TimeSeriesSplit</code> makes folds that respect order (Chapter 12).</p>
+<p>When several rows belong to the same unit (several visits by one patient, several photos of one person, several readings from one machine), a random split puts rows of the same unit in both training and validation, and the model is rewarded for recognising the unit rather than for generalising to new ones. <code>GroupKFold</code> keeps all rows of a group in the same fold.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">GroupKFold</span>
+
+<span class="n">patients</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span> <span class="mi">3</span><span class="p">)</span>      <span class="c1"># 10 patients, 3 visits each</span>
+<span class="n">gkf</span> <span class="o">=</span> <span class="n">GroupKFold</span><span class="p">(</span><span class="n">n_splits</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">tr</span><span class="p">,</span> <span class="n">va</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">gkf</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">30</span><span class="p">),</span> <span class="n">groups</span><span class="o">=</span><span class="n">patients</span><span class="p">)):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"fold </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">: validation patients </span><span class="si">{</span><span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">patients</span><span class="p">[</span><span class="n">va</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()))</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>fold 0: validation patients [4, 9]
+fold 1: validation patients [3, 8]
+fold 2: validation patients [2, 7]
+fold 3: validation patients [1, 6]
+fold 4: validation patients [0, 5]
+</code></pre></div>
+<h2 id="105-roc-curves-auc-and-precisionrecall-curves">10.5 ROC curves, AUC and precision–recall curves<a class="headerlink" href="#105-roc-curves-auc-and-precisionrecall-curves" title="Permanent link">&para;</a></h2>
+<p>Chapter 9 showed that moving the classification threshold trades precision against recall. Two curves show the whole trade-off at once, for every threshold.</p>
+<p>The <strong>ROC curve</strong> (receiver operating characteristic) plots the <strong>true positive rate</strong> (recall, <span class="arithmatex">\(TP/(TP+FN)\)</span>) against the <strong>false positive rate</strong> (<span class="arithmatex">\(FP/(FP+TN)\)</span>) as the threshold moves from 1 down to 0. A model that ranks perfectly goes straight up to the top-left corner; a model that guesses at random follows the diagonal. The <strong>area under the curve</strong> (AUC) summarises it in one number: 1 is perfect, 0.5 is random. AUC has a useful interpretation: it is the probability that the model gives a randomly chosen positive example a higher score than a randomly chosen negative one.</p>
+<p>The <strong>precision–recall curve</strong> plots precision against recall over all thresholds. It is more informative than the ROC curve when the positive class is rare, because the false positive rate can look tiny even when false positives far outnumber true positives.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">roc_curve</span><span class="p">,</span> <span class="n">roc_auc_score</span><span class="p">,</span> <span class="n">precision_recall_curve</span><span class="p">,</span> <span class="n">average_precision_score</span>
+
+<span class="n">final</span> <span class="o">=</span> <span class="n">make_pipeline</span><span class="p">(</span><span class="n">StandardScaler</span><span class="p">(),</span> <span class="n">LogisticRegression</span><span class="p">())</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+<span class="n">scores_test</span> <span class="o">=</span> <span class="n">final</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X_test</span><span class="p">)[:,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="n">fpr</span><span class="p">,</span> <span class="n">tpr</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">roc_curve</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">scores_test</span><span class="p">)</span>
+<span class="n">prec</span><span class="p">,</span> <span class="n">rec</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">precision_recall_curve</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">scores_test</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mf">3.8</span><span class="p">))</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">fpr</span><span class="p">,</span> <span class="n">tpr</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">"logistic (AUC = </span><span class="si">{</span><span class="n">roc_auc_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span><span class="w"> </span><span class="n">scores_test</span><span class="p">)</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">)"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">"--"</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"gray"</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"random guessing"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"false positive rate"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"true positive rate (recall)"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"ROC curve"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">"lower right"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">rec</span><span class="p">,</span> <span class="n">prec</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">y_test</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">"--"</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"gray"</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"baseline (share of positives)"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"recall"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"precision"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Precision-recall (AP = </span><span class="si">{</span><span class="n">average_precision_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span><span class="w"> </span><span class="n">scores_test</span><span class="p">)</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">)"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">"upper right"</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">"roc-pr.svg"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"test AUC:"</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">roc_auc_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">scores_test</span><span class="p">),</span> <span class="mi">3</span><span class="p">))</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>test AUC: 0.877
+</code></pre></div>
+<figure class="fig fig-diagram">
+<img src="img/roc-pr.svg" alt="Left: a ROC curve that rises steeply from the origin and bends towards the top-left corner, well above the dashed diagonal of random guessing. Right: a precision-recall curve that is jagged at low recall, where only a few customers are flagged, and then falls steadily as recall increases, staying above a dashed horizontal baseline at the share of churners, about 0.24." loading="lazy" width="950" height="354">
+<figcaption><strong>Figure 10.3 ROC and precision-recall curves on the test set.</strong> Left: a ROC curve that rises steeply from the origin and bends towards the top-left corner, well above the dashed diagonal of random guessing. Right: a precision-recall curve that is jagged at low recall, where only a few customers are flagged, and then falls steadily as recall increases, staying above a dashed horizontal baseline at the share of churners, about 0.24.</figcaption>
+</figure>
+<p>The test AUC (0.877) is close to the cross-validated estimate of Section 10.2 (0.854); a gap of this size is normal sampling variation for a test set of 200, and agreement of this kind is what to expect when the test set has been kept clean. The <strong>average precision</strong> (AP) summarises the precision–recall curve; its baseline is the share of positives, not 0.5.</p>
+<h2 id="106-reporting-results">10.6 Reporting results<a class="headerlink" href="#106-reporting-results" title="Permanent link">&para;</a></h2>
+<p>A good evaluation report says:</p>
+<ol>
+<li><strong>What was predicted, and for whom</strong>: the target, the population, the period.</li>
+<li><strong>How the data was split</strong>: random, by time, by group; the sizes; whether the test set was used only once.</li>
+<li><strong>The metric and why it suits the problem</strong>: accuracy, F1, AUC, MAE, and the costs of the different errors.</li>
+<li><strong>The baseline's score</strong>, so the reader can judge the gain.</li>
+<li><strong>Cross-validated scores with their spread</strong>, and the final test score.</li>
+<li><strong>Limitations</strong>: groups the model does worse for, conditions under which it was not tested, assumptions about the future resembling the past.</li>
+</ol>
+<p>Here is the final step for the churn model, carried out once:</p>
+<div class="language-python highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">accuracy_score</span><span class="p">,</span> <span class="n">f1_score</span>
+
+<span class="n">base</span> <span class="o">=</span> <span class="n">DummyClassifier</span><span class="p">(</span><span class="n">strategy</span><span class="o">=</span><span class="s2">"most_frequent"</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+<span class="n">pred</span> <span class="o">=</span> <span class="n">final</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"test accuracy: model </span><span class="si">{</span><span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span><span class="w"> </span><span class="n">pred</span><span class="p">)</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, baseline </span><span class="si">{</span><span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span><span class="w"> </span><span class="n">base</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">))</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"test F1 (churn class): </span><span class="si">{</span><span class="n">f1_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span><span class="w"> </span><span class="n">pred</span><span class="p">)</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"test AUC: </span><span class="si">{</span><span class="n">roc_auc_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span><span class="w"> </span><span class="n">scores_test</span><span class="p">)</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>test accuracy: model 0.840, baseline 0.755
+test F1 (churn class): 0.610
+test AUC: 0.877
+</code></pre></div>
+<div class="admonition warning">
+<p class="admonition-title">Caution: the test score is an estimate too</p>
+<p>With 200 test examples, an accuracy of 0.84 has a standard error of about <span class="arithmatex">\(\sqrt{0.84 \times 0.16 / 200} \approx 0.026\)</span>, so differences of a couple of percentage points between models are within the noise. Report results with sensible precision (two or three digits), not as if the fourth decimal meant something.</p>
+</div>
+<h2 id="107-summary">10.7 Summary<a class="headerlink" href="#107-summary" title="Permanent link">&para;</a></h2>
+<div class="admonition abstract">
+<p class="admonition-title">Summary</p>
+<ul>
+<li>Judge models on data not used to build them. Training data fits parameters, validation data (or cross-validation) makes choices, and the test set is used once at the end.</li>
+<li>k-fold cross-validation trains <span class="arithmatex">\(k\)</span> times, each time validating on a different fold; report the mean and spread of the scores. Classification uses stratified folds.</li>
+<li>Compare candidate models with the same folds, and always include a baseline.</li>
+<li>Tune hyperparameters with <code>GridSearchCV</code>; a validation curve shows underfitting and overfitting. The best CV score is slightly optimistic; the test set or nested CV corrects that.</li>
+<li>Leakage makes evaluations falsely optimistic: fit every learned preprocessing step inside a pipeline; drop features unavailable at prediction time; split by time for forecasts and by group when rows share a unit.</li>
+<li>The ROC curve plots true against false positive rate over all thresholds; AUC is the probability that a random positive outranks a random negative. Precision–recall curves suit rare positive classes.</li>
+<li>Report the target, the split, the metric, the baseline, CV spread, the test score and the limitations.</li>
+</ul>
+</div>
+<h2 id="108-exercises">10.8 Exercises<a class="headerlink" href="#108-exercises" title="Permanent link">&para;</a></h2>
+<div class="admonition example">
+<p class="admonition-title">Exercise 1</p>
+<p>A student tunes <span class="arithmatex">\(k\)</span> for k-NN by trying 30 values and picking the one with the best score on the test set, then reports that score. What is wrong, and how should it be done?</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>The test set has been used to make a choice, so the reported score is the best of 30 noisy estimates and is optimistic. The value of <span class="arithmatex">\(k\)</span> should be chosen by cross-validation (or a separate validation set) within the training data, for example with <code>GridSearchCV</code>; the chosen model is then scored once on the untouched test set.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 2</p>
+<p>With 1,000 training examples and 10-fold cross-validation, how many examples is each model trained on, and how many models are fitted in total? How many are fitted by a grid search over 6 values with 5-fold CV (including the final refit)?</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>Each of the 10 models is trained on 900 examples and validated on 100. The grid search fits <span class="arithmatex">\(6 \times 5 = 30\)</span> models in cross-validation, plus one final refit of the best setting on all the training data: 31 fits.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 3</p>
+<p>Cross-validate a decision tree of depth 4 and a random forest on the churn training data with the folds <code>cv</code>, using F1 as the metric. Which is better, and is the difference larger than the fold-to-fold spread?</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<div class="language-python highlight"><pre><span></span><code><span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">m</span> <span class="ow">in</span> <span class="p">[(</span><span class="s2">"tree"</span><span class="p">,</span> <span class="n">DecisionTreeClassifier</span><span class="p">(</span><span class="n">max_depth</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)),</span>
+                <span class="p">(</span><span class="s2">"forest"</span><span class="p">,</span> <span class="n">RandomForestClassifier</span><span class="p">(</span><span class="n">n_estimators</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">min_samples_leaf</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">))]:</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">cross_val_score</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="n">cv</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="s2">"f1"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: F1 </span><span class="si">{</span><span class="n">s</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> +/- </span><span class="si">{</span><span class="n">s</span><span class="o">.</span><span class="n">std</span><span class="p">()</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>tree: F1 0.567 +/- 0.049
+forest: F1 0.536 +/- 0.077
+</code></pre></div>
+<p>Compare the means with the standard deviations: when the gap between the means is smaller than the spread across folds, the evidence that one is better is weak.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 4</p>
+<p>A model to predict whether a loan will default includes the feature "number of missed payments on this loan". The model's AUC is 0.99. Why should you be suspicious?</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>Missed payments on the loan are only known after the loan has been running for a while, and they are part of what default means; at the moment of deciding whether to grant the loan, the value would be zero or unknown. This is target leakage: the feature carries information about the outcome that is not available at prediction time, and it explains the implausibly high AUC.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 5</p>
+<p>A classifier's AUC is 0.80. Explain what this means in terms of pairs of examples.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>If you pick one positive example and one negative example at random, the model gives the positive one a higher predicted score 80% of the time. (Ties count as half.)</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 6</p>
+<p>A dataset has 5 X-ray images from each of 200 patients. Why is ordinary k-fold cross-validation inappropriate, and what should be used instead?</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>Ordinary k-fold puts images of the same patient in both training and validation folds, so the model can score well by recognising patient-specific features rather than the condition, overestimating its performance on new patients. Use <code>GroupKFold</code> with the patient as the group, so that all images of a patient fall in the same fold.</p>
+</details>
+<h2 id="109-quiz">10.9 Quiz<a class="headerlink" href="#109-quiz" title="Permanent link">&para;</a></h2>
+<div class="pk-quiz" data-quiz="a8ce5b6c4daa">
+<p class="pk-quiz-title">Check your understanding of Chapter 10</p>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;to choose hyperparameters&quot;,&quot;to choose between models&quot;,&quot;once at the end to estimate performance&quot;,&quot;as extra training data&quot;],&quot;answer&quot;:&quot;once at the end to estimate performance&quot;}">
+<p class="admonition-title">Exercise 1</p>
+<p class="pk-q-prompt">The test set should be used</p>
+<ol class="pk-q-opts" type="A"><li>to choose hyperparameters</li><li>to choose between models</li><li>once at the end to estimate performance</li><li>as extra training data</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>once at the end to estimate performance</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;never&quot;,&quot;exactly once&quot;,&quot;five times&quot;,&quot;four times&quot;],&quot;answer&quot;:&quot;exactly once&quot;}">
+<p class="admonition-title">Exercise 2</p>
+<p class="pk-q-prompt">In 5-fold cross-validation, each example is used for validation</p>
+<ol class="pk-q-opts" type="A"><li>never</li><li>exactly once</li><li>five times</li><li>four times</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>exactly once</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;0&quot;,&quot;0.25&quot;,&quot;0.5&quot;,&quot;1&quot;],&quot;answer&quot;:&quot;0.5&quot;}">
+<p class="admonition-title">Exercise 3</p>
+<p class="pk-q-prompt">What AUC does a model that guesses at random have?</p>
+<ol class="pk-q-opts" type="A"><li>0</li><li>0.25</li><li>0.5</li><li>1</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>0.5</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;regularisation&quot;,&quot;data leakage&quot;,&quot;stratification&quot;,&quot;underfitting&quot;],&quot;answer&quot;:&quot;data leakage&quot;}">
+<p class="admonition-title">Exercise 4</p>
+<p class="pk-q-prompt">Selecting features on the whole dataset before cross-validation is an example of</p>
+<ol class="pk-q-opts" type="A"><li>regularisation</li><li>data leakage</li><li>stratification</li><li>underfitting</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>data leakage</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;KFold&quot;,&quot;StratifiedKFold&quot;,&quot;GroupKFold&quot;,&quot;TimeSeriesSplit&quot;],&quot;answer&quot;:&quot;GroupKFold&quot;}">
+<p class="admonition-title">Exercise 5</p>
+<p class="pk-q-prompt">Which splitter keeps all rows of the same patient in one fold?</p>
+<ol class="pk-q-opts" type="A"><li>KFold</li><li>StratifiedKFold</li><li>GroupKFold</li><li>TimeSeriesSplit</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>GroupKFold</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;underfitting&quot;,&quot;overfitting&quot;,&quot;leakage&quot;,&quot;a good model&quot;],&quot;answer&quot;:&quot;overfitting&quot;}">
+<p class="admonition-title">Exercise 6</p>
+<p class="pk-q-prompt">On a validation curve, a large gap between a high training score and a low validation score indicates</p>
+<ol class="pk-q-opts" type="A"><li>underfitting</li><li>overfitting</li><li>leakage</li><li>a good model</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>overfitting</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;text&quot;,&quot;answer&quot;:[&quot;GridSearchCV&quot;]}">
+<p class="admonition-title">Exercise 7</p>
+<p class="pk-q-prompt">Which scikit-learn class searches a grid of hyperparameters with cross-validation?</p>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>GridSearchCV</strong></p>
+</details>
+</div>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button type="button" class="md-top md-icon" data-md-component="top" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+Back to top
+</button>
+</main>
+<footer class="md-footer">
+<nav class="md-footer__inner md-grid" aria-label="Footer" >
+<a href="classification.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: 9. Classification">
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</div>
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Previous
+</span>
+<div class="md-ellipsis">
+9. Classification
+</div>
+</div>
+</a>
+<a href="clustering-and-dimensionality-reduction.html" class="md-footer__link md-footer__link--next" aria-label="Next: 11. Clustering and Dimensionality Reduction">
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Next
+</span>
+<div class="md-ellipsis">
+11. Clustering and Dimensionality Reduction
+</div>
+</div>
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+</div>
+</a>
+</nav>
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+The Open Book Project &middot;
+<a href="../../about.html">About this library</a> &middot;
+<a href="../../publish.html">Publish your book</a> &middot;
+© The authors of the books
+</div>
+Made with
+<a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+Material for MkDocs
+</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "navigation.prune", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "toc.follow", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+<script src="../../assets/mathjax.js"></script>
+<script src="../../assets/viz.js"></script>
+<script src="../../assets/remote.js"></script>
+<script src="../../assets/scans.js"></script>
+<script src="../../assets/reader.js"></script>
+<script src="../../assets/app.js"></script>
+<script src="../../assets/slides.js"></script>
+<script src="../../assets/speak.js"></script>
+<script src="../../assets/quiz.js"></script>
+<script>
+    /* offline reading: the service worker at the site root (its scope is the whole site) */
+    if ("serviceWorker" in navigator && window.isSecureContext) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register(new URL("../../sw.js", location.href).href).catch(function () {});
+      });
+    }
+  </script>
+</body>
+</html>

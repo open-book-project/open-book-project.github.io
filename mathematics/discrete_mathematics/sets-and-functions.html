@@ -1,0 +1,1232 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="description" content="The Open Book Project: books on computer science, quantum computing, cyber security, science, the social sciences, university courses and languages, read page by page like an e-book, online or offline.">
+<meta name="author" content="The Open Book Project">
+<link rel="canonical" href="https://open-book-project.github.io/mathematics/discrete_mathematics/sets-and-functions.html">
+<link rel="prev" href="methods-of-proof.html">
+<link rel="next" href="relations.html">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap"></noscript>
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Open Book">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="application-name" content="Open Book"><script src="../../assets/library-data.js"></script><script>
+    (function () {
+      var X = window.XMLHttpRequest, open, gate = new Promise(function (r) { open = r; });
+      if (!X) return;
+      var open0 = X.prototype.open, send0 = X.prototype.send;
+      X.prototype.open = function (method, url) {
+        this.__pkIndex = /\/search\/search_index\.json(\?|#|$)/.test(String(url));
+        return open0.apply(this, arguments);
+      };
+      X.prototype.send = function () {
+        if (!this.__pkIndex) return send0.apply(this, arguments);
+        var xhr = this, args = arguments;
+        gate.then(function () { send0.apply(xhr, args); });
+      };
+      function wake() { open(); }
+      document.addEventListener("focusin", function (e) { if (e.target && e.target.closest && e.target.closest(".md-search")) wake(); });
+      document.addEventListener("click", function (e) { if (e.target && e.target.closest && e.target.closest('label[for="__search"], .md-search')) wake(); }, true);
+      document.addEventListener("keydown", function (e) {
+        var k = e.key;
+        if ((k === "/" || k === "s" || k === "f" || k === "S" || k === "F") && !(e.target && e.target.closest && e.target.closest("input, textarea, [contenteditable]"))) wake();
+      }, true);
+      if (/[?&]q=/.test(location.search)) wake();
+    })();
+  </script><script>
+    try {
+      if ((window.matchMedia && (matchMedia("(display-mode: standalone)").matches || matchMedia("(display-mode: fullscreen)").matches)) || navigator.standalone === true) {
+        document.documentElement.className += " bjp-standalone";
+      }
+    } catch (e) { /* not an installed app */ }
+    /* the books of a subject or of the whole library as covers or as a list (assets/app.js): the reader's choice */
+    try {
+      var bv = localStorage.getItem("bjp.view");
+      if (bv === "list" || (bv !== "grid" && /\/books\.html$/.test(location.pathname))) document.documentElement.className += " bjp-view-list";
+    } catch (e) { /* no storage: covers */ }
+  </script>
+<script>
+    /* a book opened from its cover on the shelf: the page stays blank, in the cover's colour, until the reader is up */
+    try {
+      var cv = sessionStorage.getItem("bjp.reader.cover");
+      if (cv && sessionStorage.getItem("bjp.reader.open") === "1") {
+        var c = JSON.parse(cv), de = document.documentElement;
+        de.className += " bjp-booting";
+        if (c && /^#[0-9a-f]{3,8}$/i.test(c.bg || "")) de.style.background = c.bg;
+        setTimeout(function () { de.classList.remove("bjp-booting"); de.style.background = ""; }, 3000);
+      }
+    } catch (e) { /* no session storage: the page simply opens as usual */ }
+  </script>
+<title>4. Sets and Functions - The Open Book Project</title>
+<link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+<link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+<link rel="stylesheet" href="../../assets/extra.css">
+<link rel="stylesheet" href="../../assets/reader.css">
+<link rel="stylesheet" href="../../assets/viz.css">
+<link rel="stylesheet" href="../../assets/app.css">
+<link rel="stylesheet" href="../../assets/theme.css">
+<link rel="stylesheet" href="../../assets/slides.css">
+<link rel="stylesheet" href="../../assets/remote.css">
+<link rel="stylesheet" href="../../assets/scans.css">
+<link rel="stylesheet" href="../../assets/speak.css">
+<link rel="stylesheet" href="../../assets/quiz.css">
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+<input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+<input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a href="#41-sets" class="md-skip">
+Skip to content
+</a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav class="md-header__inner md-grid" aria-label="Header">
+<a href="../../index.html" title="The Open Book Project" class="md-header__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+The Open Book Project
+</span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+4. Sets and Functions
+</span>
+</div>
+</div>
+</div><a href="../../index.html" class="bjp-libbtn" aria-label="Library: all books" title="Library: all books">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V5h4v15M8 20V9h4v11M14 20L12.6 6l3.8-.8 3 14.2M3 20h18"/></svg><span>Library</span>
+</a>
+<a href="../../subjects/index.html" class="pk-catbtn" aria-haspopup="true" aria-expanded="false" title="Browse the books by category">
+<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><circle cx="17" cy="7" r="3.6"/><path d="M7 13.4l3.9 6.8H3.1z"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg><span>Categories</span>
+</a>
+<form class="md-header__option" data-md-component="palette">
+<input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+<label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+</label>
+<input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+<label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+<label class="md-search__icon md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</label>
+<nav class="md-search__options" aria-label="Search">
+<button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+Initializing search
+</div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--primary bjp-nav bjp-nav--book" aria-label="Navigation" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a href="../../index.html" title="The Open Book Project" class="md-nav__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+The Open Book Project
+</label>
+<ul class="md-nav__list" data-md-scrollfix>
+<li class="md-nav__item bjp-nav-all">
+<a href="../../index.html" class="md-nav__link" aria-label="All books: back to the library">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+<span class="md-ellipsis">All books</span>
+</a>
+</li>
+<li class="md-nav__item bjp-nav-book" role="presentation"><span class="bjp-nav-head">Discrete Mathematics</span></li>
+<li class="md-nav__item">
+<a href="index.html" class="md-nav__link">
+<span class="md-ellipsis">
+Overview and preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="preface.html" class="md-nav__link">
+<span class="md-ellipsis">
+Preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="propositional-logic.html" class="md-nav__link">
+<span class="md-ellipsis">
+1. Propositional Logic
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="predicate-logic-and-quantifiers.html" class="md-nav__link">
+<span class="md-ellipsis">
+2. Predicate Logic and Quantifiers
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="methods-of-proof.html" class="md-nav__link">
+<span class="md-ellipsis">
+3. Methods of Proof
+</span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+4. Sets and Functions
+</span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a href="sets-and-functions.html" class="md-nav__link md-nav__link--active">
+<span class="md-ellipsis">
+4. Sets and Functions
+</span>
+</a>
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#41-sets" class="md-nav__link">
+<span class="md-ellipsis">
+4.1 Sets
+</span>
+</a>
+<nav class="md-nav" aria-label="4.1 Sets">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsets" class="md-nav__link">
+<span class="md-ellipsis">
+Subsets
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#cardinality-and-power-sets" class="md-nav__link">
+<span class="md-ellipsis">
+Cardinality and power sets
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#42-set-operations" class="md-nav__link">
+<span class="md-ellipsis">
+4.2 Set operations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#43-set-identities" class="md-nav__link">
+<span class="md-ellipsis">
+4.3 Set identities
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#44-cartesian-products" class="md-nav__link">
+<span class="md-ellipsis">
+4.4 Cartesian products
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#45-functions" class="md-nav__link">
+<span class="md-ellipsis">
+4.5 Functions
+</span>
+</a>
+<nav class="md-nav" aria-label="4.5 Functions">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#images-and-preimages-of-sets" class="md-nav__link">
+<span class="md-ellipsis">
+Images and preimages of sets
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#46-one-to-one-and-onto" class="md-nav__link">
+<span class="md-ellipsis">
+4.6 One-to-one and onto
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#47-composition-and-inverses" class="md-nav__link">
+<span class="md-ellipsis">
+4.7 Composition and inverses
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#48-infinite-sets-and-countability" class="md-nav__link">
+<span class="md-ellipsis">
+4.8 Infinite sets and countability
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#49-sequences-and-sums" class="md-nav__link">
+<span class="md-ellipsis">
+4.9 Sequences and sums
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#410-summary" class="md-nav__link">
+<span class="md-ellipsis">
+4.10 Summary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#411-exercises" class="md-nav__link">
+<span class="md-ellipsis">
+4.11 Exercises
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#412-quiz" class="md-nav__link">
+<span class="md-ellipsis">
+4.12 Quiz
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="relations.html" class="md-nav__link">
+<span class="md-ellipsis">
+5. Relations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="induction-and-recursion.html" class="md-nav__link">
+<span class="md-ellipsis">
+6. Induction and Recursion
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="counting.html" class="md-nav__link">
+<span class="md-ellipsis">
+7. Counting
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="discrete-probability.html" class="md-nav__link">
+<span class="md-ellipsis">
+8. Discrete Probability
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="recurrence-relations-and-generating-functions.html" class="md-nav__link">
+<span class="md-ellipsis">
+9. Recurrence Relations and Generating Functions
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="number-theory-and-cryptography.html" class="md-nav__link">
+<span class="md-ellipsis">
+10. Number Theory and Cryptography
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="graphs.html" class="md-nav__link">
+<span class="md-ellipsis">
+11. Graphs
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="trees.html" class="md-nav__link">
+<span class="md-ellipsis">
+12. Trees
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="boolean-algebra-and-logic-circuits.html" class="md-nav__link">
+<span class="md-ellipsis">
+13. Boolean Algebra and Logic Circuits
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="automata-and-languages.html" class="md-nav__link">
+<span class="md-ellipsis">
+14. Automata and Languages
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="glossary.html" class="md-nav__link">
+<span class="md-ellipsis">
+Glossary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="further-reading.html" class="md-nav__link">
+<span class="md-ellipsis">
+Further Reading
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#41-sets" class="md-nav__link">
+<span class="md-ellipsis">
+4.1 Sets
+</span>
+</a>
+<nav class="md-nav" aria-label="4.1 Sets">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#subsets" class="md-nav__link">
+<span class="md-ellipsis">
+Subsets
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#cardinality-and-power-sets" class="md-nav__link">
+<span class="md-ellipsis">
+Cardinality and power sets
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#42-set-operations" class="md-nav__link">
+<span class="md-ellipsis">
+4.2 Set operations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#43-set-identities" class="md-nav__link">
+<span class="md-ellipsis">
+4.3 Set identities
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#44-cartesian-products" class="md-nav__link">
+<span class="md-ellipsis">
+4.4 Cartesian products
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#45-functions" class="md-nav__link">
+<span class="md-ellipsis">
+4.5 Functions
+</span>
+</a>
+<nav class="md-nav" aria-label="4.5 Functions">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#images-and-preimages-of-sets" class="md-nav__link">
+<span class="md-ellipsis">
+Images and preimages of sets
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#46-one-to-one-and-onto" class="md-nav__link">
+<span class="md-ellipsis">
+4.6 One-to-one and onto
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#47-composition-and-inverses" class="md-nav__link">
+<span class="md-ellipsis">
+4.7 Composition and inverses
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#48-infinite-sets-and-countability" class="md-nav__link">
+<span class="md-ellipsis">
+4.8 Infinite sets and countability
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#49-sequences-and-sums" class="md-nav__link">
+<span class="md-ellipsis">
+4.9 Sequences and sums
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#410-summary" class="md-nav__link">
+<span class="md-ellipsis">
+4.10 Summary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#411-exercises" class="md-nav__link">
+<span class="md-ellipsis">
+4.11 Exercises
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#412-quiz" class="md-nav__link">
+<span class="md-ellipsis">
+4.12 Quiz
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="chapter-4-sets-and-functions">Chapter 4: Sets and Functions<a class="headerlink" href="#chapter-4-sets-and-functions" title="Permanent link">&para;</a></h1>
+<p><em>The language in which discrete mathematics is written</em></p>
+<div class="admonition note">
+<p class="admonition-title">Learning outcomes</p>
+<p>After this chapter you should be able to:</p>
+<ul>
+<li>describe sets in roster and set-builder notation, and decide equality and the subset relation;</li>
+<li>compute unions, intersections, differences, complements, power sets and Cartesian products;</li>
+<li>prove set identities by element-chasing and by membership tables;</li>
+<li>state precisely what a function is, and find its domain, codomain, range, images and preimages;</li>
+<li>decide whether a function is one-to-one, onto or a bijection, and compose and invert functions;</li>
+<li>explain what it means for an infinite set to be countable, and prove that <span class="arithmatex">\(\mathbb{Q}\)</span> is countable and <span class="arithmatex">\(\mathbb{R}\)</span> is not;</li>
+<li>use summation notation and the formulas for arithmetic and geometric sums.</li>
+</ul>
+</div>
+<h2 id="41-sets">4.1 Sets<a class="headerlink" href="#41-sets" title="Permanent link">&para;</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Definition: set</p>
+<p>A <strong>set</strong> is an unordered collection of distinct objects, called its <strong>elements</strong> or members. We write <span class="arithmatex">\(a \in A\)</span> if <span class="arithmatex">\(a\)</span> is an element of <span class="arithmatex">\(A\)</span>, and <span class="arithmatex">\(a \notin A\)</span> if it is not.</p>
+</div>
+<p>A set can be described by listing its elements in braces (<strong>roster notation</strong>): <span class="arithmatex">\(V = \{a, e, i, o, u\}\)</span>. For a large set with a clear pattern we use dots: <span class="arithmatex">\(\{1, 2, 3, \dots, 100\}\)</span>. Or a set can be described by a property its elements share (<strong>set-builder notation</strong>):</p>
+<div class="arithmatex">\[
+E = \{\, n \in \mathbb{Z} : n = 2k \text{ for some } k \in \mathbb{Z} \,\}
+\]</div>
+<p>is the set of even integers, read "the set of integers <span class="arithmatex">\(n\)</span> such that <span class="arithmatex">\(n = 2k\)</span> for some integer <span class="arithmatex">\(k\)</span>".</p>
+<p>Two sets are <strong>equal</strong> if they have the same elements: <span class="arithmatex">\(A = B\)</span> means <span class="arithmatex">\(\forall x\, (x \in A \leftrightarrow x \in B)\)</span>. Order and repetition do not matter, so <span class="arithmatex">\(\{1, 2, 3\} = \{3, 1, 2\} = \{1, 1, 2, 3\}\)</span>.</p>
+<p>The <strong>empty set</strong> <span class="arithmatex">\(\varnothing = \{\}\)</span> has no elements. Note that <span class="arithmatex">\(\{\varnothing\}\)</span> is not empty: it is a set with one element, the empty set. Sets can be elements of other sets, just as a folder on a computer can contain other folders.</p>
+<h3 id="subsets">Subsets<a class="headerlink" href="#subsets" title="Permanent link">&para;</a></h3>
+<div class="admonition note">
+<p class="admonition-title">Definition: subset</p>
+<p><span class="arithmatex">\(A\)</span> is a <strong>subset</strong> of <span class="arithmatex">\(B\)</span>, written <span class="arithmatex">\(A \subseteq B\)</span>, if every element of <span class="arithmatex">\(A\)</span> is an element of <span class="arithmatex">\(B\)</span>: <span class="arithmatex">\(\forall x\, (x \in A \to x \in B)\)</span>. If <span class="arithmatex">\(A \subseteq B\)</span> and <span class="arithmatex">\(A \ne B\)</span>, then <span class="arithmatex">\(A\)</span> is a <strong>proper subset</strong> of <span class="arithmatex">\(B\)</span>, written <span class="arithmatex">\(A \subset B\)</span>.</p>
+</div>
+<p>For every set <span class="arithmatex">\(A\)</span>, <span class="arithmatex">\(\varnothing \subseteq A\)</span> (vacuously: there is no element of <span class="arithmatex">\(\varnothing\)</span> that could fail to be in <span class="arithmatex">\(A\)</span>) and <span class="arithmatex">\(A \subseteq A\)</span>. To prove two sets equal, the standard method is to prove <span class="arithmatex">\(A \subseteq B\)</span> and <span class="arithmatex">\(B \subseteq A\)</span>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Element or subset?</p>
+<p><span class="arithmatex">\(\in\)</span> and <span class="arithmatex">\(\subseteq\)</span> are different. For <span class="arithmatex">\(A = \{1, \{2\}\}\)</span>: <span class="arithmatex">\(1 \in A\)</span>, <span class="arithmatex">\(\{2\} \in A\)</span>, <span class="arithmatex">\(\{1\} \subseteq A\)</span>, <span class="arithmatex">\(\{\{2\}\} \subseteq A\)</span>; but <span class="arithmatex">\(2 \notin A\)</span> and <span class="arithmatex">\(\{2\} \not\subseteq A\)</span> (because <span class="arithmatex">\(2 \notin A\)</span>).</p>
+</div>
+<h3 id="cardinality-and-power-sets">Cardinality and power sets<a class="headerlink" href="#cardinality-and-power-sets" title="Permanent link">&para;</a></h3>
+<p>If <span class="arithmatex">\(A\)</span> has exactly <span class="arithmatex">\(n\)</span> distinct elements, <span class="arithmatex">\(A\)</span> is <strong>finite</strong> and its <strong>cardinality</strong> is <span class="arithmatex">\(\lvert A \rvert = n\)</span>. So <span class="arithmatex">\(\lvert \varnothing \rvert = 0\)</span> and <span class="arithmatex">\(\lvert \{a, \{a\}\} \rvert = 2\)</span>.</p>
+<p>The <strong>power set</strong> <span class="arithmatex">\(\mathcal{P}(A)\)</span> is the set of all subsets of <span class="arithmatex">\(A\)</span>. For <span class="arithmatex">\(A = \{1, 2, 3\}\)</span>:</p>
+<div class="arithmatex">\[
+\mathcal{P}(A) = \{\varnothing, \{1\}, \{2\}, \{3\}, \{1,2\}, \{1,3\}, \{2,3\}, \{1,2,3\}\}.
+\]</div>
+<div class="admonition note">
+<p class="admonition-title">Theorem 4.1</p>
+<p>If <span class="arithmatex">\(\lvert A \rvert = n\)</span>, then <span class="arithmatex">\(\lvert \mathcal{P}(A) \rvert = 2^n\)</span>.</p>
+</div>
+<p><strong>Proof.</strong> List the elements of <span class="arithmatex">\(A\)</span> as <span class="arithmatex">\(a_1, \dots, a_n\)</span>. A subset is determined by deciding, for each <span class="arithmatex">\(a_i\)</span> in turn, whether it is in or out. There are 2 choices for each of the <span class="arithmatex">\(n\)</span> elements, so <span class="arithmatex">\(2 \cdot 2 \cdots 2 = 2^n\)</span> subsets. (This uses the product rule of Chapter 7; Chapter 6 gives a proof by induction.) <span class="arithmatex">\(\blacksquare\)</span></p>
+<p>The proof suggests how a computer stores subsets of a small set <span class="arithmatex">\(\{a_1, \dots, a_n\}\)</span>: as a string of <span class="arithmatex">\(n\)</span> bits, with bit <span class="arithmatex">\(i\)</span> equal to 1 when <span class="arithmatex">\(a_i\)</span> is in the subset. With <span class="arithmatex">\(\{1, 2, 3\}\)</span>, the subset <span class="arithmatex">\(\{1, 3\}\)</span> is <span class="arithmatex">\(101\)</span>. Union, intersection and complement then become bitwise OR, AND and NOT (Section 1.8).</p>
+<h2 id="42-set-operations">4.2 Set operations<a class="headerlink" href="#42-set-operations" title="Permanent link">&para;</a></h2>
+<p>Fix a <strong>universal set</strong> <span class="arithmatex">\(U\)</span> containing every element under discussion. For subsets <span class="arithmatex">\(A\)</span> and <span class="arithmatex">\(B\)</span> of <span class="arithmatex">\(U\)</span>:</p>
+<table>
+<thead>
+<tr>
+<th>Operation</th>
+<th>Notation</th>
+<th>Definition</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>union</td>
+<td><span class="arithmatex">\(A \cup B\)</span></td>
+<td><span class="arithmatex">\(\{x : x \in A \vee x \in B\}\)</span></td>
+</tr>
+<tr>
+<td>intersection</td>
+<td><span class="arithmatex">\(A \cap B\)</span></td>
+<td><span class="arithmatex">\(\{x : x \in A \wedge x \in B\}\)</span></td>
+</tr>
+<tr>
+<td>difference</td>
+<td><span class="arithmatex">\(A - B\)</span></td>
+<td><span class="arithmatex">\(\{x : x \in A \wedge x \notin B\}\)</span></td>
+</tr>
+<tr>
+<td>complement</td>
+<td><span class="arithmatex">\(\overline{A}\)</span></td>
+<td><span class="arithmatex">\(\{x \in U : x \notin A\}\)</span></td>
+</tr>
+<tr>
+<td>symmetric difference</td>
+<td><span class="arithmatex">\(A \oplus B\)</span></td>
+<td><span class="arithmatex">\(\{x : x \in A \oplus x \in B\}\)</span></td>
+</tr>
+</tbody>
+</table>
+<p><em>Table 4.1. Operations on sets. Each is defined by a logical connective.</em></p>
+<p>Sets with <span class="arithmatex">\(A \cap B = \varnothing\)</span> are <strong>disjoint</strong>. <strong>Venn diagrams</strong>, as in Figure 4.1, picture the operations: a rectangle for <span class="arithmatex">\(U\)</span> and circles for the sets.</p>
+<figure class="fig fig-diagram">
+<img src="img/venn-operations.svg" alt="Four Venn diagrams with sets A and B inside a universal rectangle U. Shaded regions show A union B (both circles), A intersect B (the overlap), A minus B (the part of A outside B) and the complement of A (everything outside circle A)." loading="lazy" width="920" height="215">
+<figcaption><strong>Figure 4.1 Set operations.</strong> Four Venn diagrams with sets A and B inside a universal rectangle U. Shaded regions show A union B (both circles), A intersect B (the overlap), A minus B (the part of A outside B) and the complement of A (everything outside circle A).</figcaption>
+</figure>
+<div class="admonition example">
+<p class="admonition-title">Example 4.1: Computing with sets</p>
+<p><strong>Problem.</strong> Let <span class="arithmatex">\(U = \{1, 2, \dots, 10\}\)</span>, <span class="arithmatex">\(A = \{1, 2, 3, 4, 5\}\)</span> and <span class="arithmatex">\(B = \{4, 5, 6, 7\}\)</span>. Find <span class="arithmatex">\(A \cup B\)</span>, <span class="arithmatex">\(A \cap B\)</span>, <span class="arithmatex">\(A - B\)</span>, <span class="arithmatex">\(B - A\)</span>, <span class="arithmatex">\(\overline{A}\)</span> and <span class="arithmatex">\(A \oplus B\)</span>.</p>
+<p><strong>Solution.</strong> <span class="arithmatex">\(A \cup B = \{1, \dots, 7\}\)</span>; <span class="arithmatex">\(A \cap B = \{4, 5\}\)</span>; <span class="arithmatex">\(A - B = \{1, 2, 3\}\)</span>; <span class="arithmatex">\(B - A = \{6, 7\}\)</span>; <span class="arithmatex">\(\overline{A} = \{6, 7, 8, 9, 10\}\)</span>; <span class="arithmatex">\(A \oplus B = \{1, 2, 3, 6, 7\} = (A - B) \cup (B - A)\)</span>.</p>
+</div>
+<p>The sizes are related by a formula you can see in the Venn diagram: the elements of <span class="arithmatex">\(A \cap B\)</span> are counted twice in <span class="arithmatex">\(\lvert A \rvert + \lvert B \rvert\)</span>, so</p>
+<div class="arithmatex">\[
+\lvert A \cup B \rvert = \lvert A \rvert + \lvert B \rvert - \lvert A \cap B \rvert.
+\]</div>
+<p>In Example 4.1, <span class="arithmatex">\(7 = 5 + 4 - 2\)</span>. This is the simplest case of the principle of inclusion-exclusion (Chapter 7).</p>
+<h2 id="43-set-identities">4.3 Set identities<a class="headerlink" href="#43-set-identities" title="Permanent link">&para;</a></h2>
+<p>Because each set operation is defined by a logical connective, every law of logic in Table 1.6 gives a law of sets, with <span class="arithmatex">\(\cup\)</span> for <span class="arithmatex">\(\vee\)</span>, <span class="arithmatex">\(\cap\)</span> for <span class="arithmatex">\(\wedge\)</span>, complement for <span class="arithmatex">\(\neg\)</span>, <span class="arithmatex">\(U\)</span> for <span class="arithmatex">\(\mathbf{T}\)</span> and <span class="arithmatex">\(\varnothing\)</span> for <span class="arithmatex">\(\mathbf{F}\)</span>.</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Identity</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Identity</td>
+<td><span class="arithmatex">\(A \cup \varnothing = A\)</span>, <span class="arithmatex">\(\quad A \cap U = A\)</span></td>
+</tr>
+<tr>
+<td>Domination</td>
+<td><span class="arithmatex">\(A \cup U = U\)</span>, <span class="arithmatex">\(\quad A \cap \varnothing = \varnothing\)</span></td>
+</tr>
+<tr>
+<td>Idempotent</td>
+<td><span class="arithmatex">\(A \cup A = A\)</span>, <span class="arithmatex">\(\quad A \cap A = A\)</span></td>
+</tr>
+<tr>
+<td>Complementation</td>
+<td><span class="arithmatex">\(\overline{\overline{A}} = A\)</span></td>
+</tr>
+<tr>
+<td>Commutative</td>
+<td><span class="arithmatex">\(A \cup B = B \cup A\)</span>, <span class="arithmatex">\(\quad A \cap B = B \cap A\)</span></td>
+</tr>
+<tr>
+<td>Associative</td>
+<td><span class="arithmatex">\(A \cup (B \cup C) = (A \cup B) \cup C\)</span>, <span class="arithmatex">\(\quad A \cap (B \cap C) = (A \cap B) \cap C\)</span></td>
+</tr>
+<tr>
+<td>Distributive</td>
+<td><span class="arithmatex">\(A \cup (B \cap C) = (A \cup B) \cap (A \cup C)\)</span>, <span class="arithmatex">\(\quad A \cap (B \cup C) = (A \cap B) \cup (A \cap C)\)</span></td>
+</tr>
+<tr>
+<td>De Morgan</td>
+<td><span class="arithmatex">\(\overline{A \cup B} = \overline{A} \cap \overline{B}\)</span>, <span class="arithmatex">\(\quad \overline{A \cap B} = \overline{A} \cup \overline{B}\)</span></td>
+</tr>
+<tr>
+<td>Absorption</td>
+<td><span class="arithmatex">\(A \cup (A \cap B) = A\)</span>, <span class="arithmatex">\(\quad A \cap (A \cup B) = A\)</span></td>
+</tr>
+<tr>
+<td>Complement</td>
+<td><span class="arithmatex">\(A \cup \overline{A} = U\)</span>, <span class="arithmatex">\(\quad A \cap \overline{A} = \varnothing\)</span></td>
+</tr>
+</tbody>
+</table>
+<p><em>Table 4.2. Set identities.</em></p>
+<p>There are three ways to prove a set identity.</p>
+<p><strong>1. Element-chasing.</strong> Show each side is a subset of the other, by taking an arbitrary element of one side and showing it lies in the other.</p>
+<div class="admonition example">
+<p class="admonition-title">Example 4.2: De Morgan's law by element-chasing</p>
+<p><strong>Theorem.</strong> <span class="arithmatex">\(\overline{A \cap B} = \overline{A} \cup \overline{B}\)</span>.</p>
+<p><strong>Proof.</strong> (<span class="arithmatex">\(\subseteq\)</span>) Let <span class="arithmatex">\(x \in \overline{A \cap B}\)</span>. Then <span class="arithmatex">\(x \notin A \cap B\)</span>, so it is not the case that <span class="arithmatex">\(x \in A\)</span> and <span class="arithmatex">\(x \in B\)</span>. By De Morgan's law of logic, <span class="arithmatex">\(x \notin A\)</span> or <span class="arithmatex">\(x \notin B\)</span>; that is, <span class="arithmatex">\(x \in \overline{A}\)</span> or <span class="arithmatex">\(x \in \overline{B}\)</span>, so <span class="arithmatex">\(x \in \overline{A} \cup \overline{B}\)</span>.</p>
+<p>(<span class="arithmatex">\(\supseteq\)</span>) Each step above is reversible: if <span class="arithmatex">\(x \in \overline{A} \cup \overline{B}\)</span> then <span class="arithmatex">\(x \notin A\)</span> or <span class="arithmatex">\(x \notin B\)</span>, so <span class="arithmatex">\(x \notin A \cap B\)</span>, so <span class="arithmatex">\(x \in \overline{A \cap B}\)</span>. <span class="arithmatex">\(\blacksquare\)</span></p>
+</div>
+<p><strong>2. Membership tables.</strong> Like a truth table: one row for each combination of "in" (1) and "out" (0) of the sets, and a column for each expression.</p>
+<div class="admonition example">
+<p class="admonition-title">Example 4.3: A distributive law by membership table</p>
+<p><strong>Problem.</strong> Prove <span class="arithmatex">\(A \cap (B \cup C) = (A \cap B) \cup (A \cap C)\)</span>.</p>
+<p><strong>Solution.</strong></p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;"><span class="arithmatex">\(A\)</span></th>
+<th style="text-align: center;"><span class="arithmatex">\(B\)</span></th>
+<th style="text-align: center;"><span class="arithmatex">\(C\)</span></th>
+<th style="text-align: center;"><span class="arithmatex">\(B \cup C\)</span></th>
+<th style="text-align: center;"><span class="arithmatex">\(A \cap (B \cup C)\)</span></th>
+<th style="text-align: center;"><span class="arithmatex">\(A \cap B\)</span></th>
+<th style="text-align: center;"><span class="arithmatex">\(A \cap C\)</span></th>
+<th style="text-align: center;"><span class="arithmatex">\((A \cap B) \cup (A \cap C)\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+</tr>
+</tbody>
+</table>
+<p>Columns 5 and 8 agree, so the sets are equal.</p>
+</div>
+<p><strong>3. Algebra with known identities</strong>, as with logical equivalences.</p>
+<div class="admonition example">
+<p class="admonition-title">Example 4.4: An identity by algebra</p>
+<p><strong>Problem.</strong> Show that <span class="arithmatex">\(\overline{A \cup (B \cap C)} = (\overline{C} \cup \overline{B}) \cap \overline{A}\)</span>.</p>
+<p><strong>Solution.</strong></p>
+<div class="arithmatex">\[
+\begin{aligned}
+\overline{A \cup (B \cap C)} &amp;= \overline{A} \cap \overline{B \cap C} &amp;&amp; \text{De Morgan} \\
+&amp;= \overline{A} \cap (\overline{B} \cup \overline{C}) &amp;&amp; \text{De Morgan} \\
+&amp;= (\overline{C} \cup \overline{B}) \cap \overline{A} &amp;&amp; \text{commutative, twice.}
+\end{aligned}
+\]</div>
+</div>
+<h2 id="44-cartesian-products">4.4 Cartesian products<a class="headerlink" href="#44-cartesian-products" title="Permanent link">&para;</a></h2>
+<p>Sets are unordered, but often order matters: the point <span class="arithmatex">\((2, 3)\)</span> is not the point <span class="arithmatex">\((3, 2)\)</span>. An <strong>ordered pair</strong> <span class="arithmatex">\((a, b)\)</span> has a first and a second component, and <span class="arithmatex">\((a, b) = (c, d)\)</span> exactly when <span class="arithmatex">\(a = c\)</span> and <span class="arithmatex">\(b = d\)</span>. More generally an <strong>ordered <span class="arithmatex">\(n\)</span>-tuple</strong> <span class="arithmatex">\((a_1, \dots, a_n)\)</span> has <span class="arithmatex">\(n\)</span> components in order.</p>
+<div class="admonition note">
+<p class="admonition-title">Definition: Cartesian product</p>
+<p>The <strong>Cartesian product</strong> of <span class="arithmatex">\(A\)</span> and <span class="arithmatex">\(B\)</span> is <span class="arithmatex">\(A \times B = \{(a, b) : a \in A, b \in B\}\)</span>. More generally, <span class="arithmatex">\(A_1 \times \dots \times A_n\)</span> is the set of <span class="arithmatex">\(n\)</span>-tuples <span class="arithmatex">\((a_1, \dots, a_n)\)</span> with <span class="arithmatex">\(a_i \in A_i\)</span>. We write <span class="arithmatex">\(A^n\)</span> for <span class="arithmatex">\(A \times A \times \dots \times A\)</span> (<span class="arithmatex">\(n\)</span> factors).</p>
+</div>
+<p>For <span class="arithmatex">\(A = \{a, b\}\)</span> and <span class="arithmatex">\(B = \{1, 2, 3\}\)</span>, <span class="arithmatex">\(A \times B = \{(a,1), (a,2), (a,3), (b,1), (b,2), (b,3)\}\)</span>. In general <span class="arithmatex">\(\lvert A \times B \rvert = \lvert A \rvert \cdot \lvert B \rvert\)</span>, and <span class="arithmatex">\(A \times B \ne B \times A\)</span> unless <span class="arithmatex">\(A = B\)</span> or one of them is empty. The plane is <span class="arithmatex">\(\mathbb{R}^2\)</span>; a row of a database table with columns from sets <span class="arithmatex">\(A_1, \dots, A_n\)</span> is an element of <span class="arithmatex">\(A_1 \times \dots \times A_n\)</span>; and the set of bit strings of length 8 is <span class="arithmatex">\(\{0, 1\}^8\)</span>, which has <span class="arithmatex">\(2^8 = 256\)</span> elements.</p>
+<h2 id="45-functions">4.5 Functions<a class="headerlink" href="#45-functions" title="Permanent link">&para;</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Definition: function</p>
+<p>A <strong>function</strong> <span class="arithmatex">\(f\)</span> from a set <span class="arithmatex">\(A\)</span> to a set <span class="arithmatex">\(B\)</span>, written <span class="arithmatex">\(f : A \to B\)</span>, assigns to <strong>each</strong> element <span class="arithmatex">\(a\)</span> of <span class="arithmatex">\(A\)</span> <strong>exactly one</strong> element <span class="arithmatex">\(f(a)\)</span> of <span class="arithmatex">\(B\)</span>. <span class="arithmatex">\(A\)</span> is the <strong>domain</strong> of <span class="arithmatex">\(f\)</span> and <span class="arithmatex">\(B\)</span> its <strong>codomain</strong>. If <span class="arithmatex">\(f(a) = b\)</span>, then <span class="arithmatex">\(b\)</span> is the <strong>image</strong> of <span class="arithmatex">\(a\)</span> and <span class="arithmatex">\(a\)</span> is a <strong>preimage</strong> of <span class="arithmatex">\(b\)</span>. The <strong>range</strong> (or image) of <span class="arithmatex">\(f\)</span> is the set of all images, <span class="arithmatex">\(f(A) = \{f(a) : a \in A\}\)</span>, which is a subset of <span class="arithmatex">\(B\)</span>.</p>
+</div>
+<p>The two conditions, "each" and "exactly one", are both essential. A rule that leaves some element of <span class="arithmatex">\(A\)</span> without an image, or gives some element two images, is not a function from <span class="arithmatex">\(A\)</span> to <span class="arithmatex">\(B\)</span>. Formally, a function is identified with its <strong>graph</strong>, the set of pairs <span class="arithmatex">\(\{(a, f(a)) : a \in A\} \subseteq A \times B\)</span>, in which every <span class="arithmatex">\(a \in A\)</span> appears as a first component exactly once.</p>
+<div class="admonition example">
+<p class="admonition-title">Example 4.5: Functions and non-functions</p>
+<p><strong>Problem.</strong> Which of these define functions from <span class="arithmatex">\(\mathbb{R}\)</span> to <span class="arithmatex">\(\mathbb{R}\)</span>? (a) <span class="arithmatex">\(f(x) = x^2\)</span>. (b) <span class="arithmatex">\(g(x) = 1/x\)</span>. (c) <span class="arithmatex">\(h(x) = \pm\sqrt{\lvert x \rvert}\)</span>. (d) <span class="arithmatex">\(k(x) = \lfloor x \rfloor\)</span>.</p>
+<p><strong>Solution.</strong> (a) Yes. Its range is <span class="arithmatex">\(\{y : y \ge 0\}\)</span>, smaller than the codomain <span class="arithmatex">\(\mathbb{R}\)</span>. (b) No: <span class="arithmatex">\(g(0)\)</span> is undefined. It is a function from <span class="arithmatex">\(\mathbb{R} - \{0\}\)</span> to <span class="arithmatex">\(\mathbb{R}\)</span>. (c) No: it gives each <span class="arithmatex">\(x \ne 0\)</span> two values. (d) Yes: the <strong>floor</strong> <span class="arithmatex">\(\lfloor x \rfloor\)</span> is the largest integer less than or equal to <span class="arithmatex">\(x\)</span>. So <span class="arithmatex">\(\lfloor 2.7 \rfloor = 2\)</span> and <span class="arithmatex">\(\lfloor -2.7 \rfloor = -3\)</span>.</p>
+</div>
+<p>The floor function and its partner, the <strong>ceiling</strong> <span class="arithmatex">\(\lceil x \rceil\)</span> (the smallest integer greater than or equal to <span class="arithmatex">\(x\)</span>, so <span class="arithmatex">\(\lceil 2.1 \rceil = 3\)</span>), appear constantly in computing. A file of <span class="arithmatex">\(n\)</span> bytes stored in blocks of 512 bytes needs <span class="arithmatex">\(\lceil n/512 \rceil\)</span> blocks.</p>
+<h3 id="images-and-preimages-of-sets">Images and preimages of sets<a class="headerlink" href="#images-and-preimages-of-sets" title="Permanent link">&para;</a></h3>
+<p>For <span class="arithmatex">\(S \subseteq A\)</span>, the <strong>image</strong> of <span class="arithmatex">\(S\)</span> is <span class="arithmatex">\(f(S) = \{f(s) : s \in S\}\)</span>. For <span class="arithmatex">\(T \subseteq B\)</span>, the <strong>preimage</strong> (or inverse image) of <span class="arithmatex">\(T\)</span> is <span class="arithmatex">\(f^{-1}(T) = \{a \in A : f(a) \in T\}\)</span>. The preimage is defined for every function, whether or not <span class="arithmatex">\(f\)</span> has an inverse. For <span class="arithmatex">\(f(x) = x^2\)</span> on <span class="arithmatex">\(\mathbb{Z}\)</span>, <span class="arithmatex">\(f(\{-2, 1, 2\}) = \{1, 4\}\)</span> and <span class="arithmatex">\(f^{-1}(\{4, 5\}) = \{-2, 2\}\)</span>.</p>
+<h2 id="46-one-to-one-and-onto">4.6 One-to-one and onto<a class="headerlink" href="#46-one-to-one-and-onto" title="Permanent link">&para;</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Definitions: injection, surjection, bijection</p>
+<p>Let <span class="arithmatex">\(f : A \to B\)</span>.</p>
+<ul>
+<li><span class="arithmatex">\(f\)</span> is <strong>one-to-one</strong> (or <strong>injective</strong>) if different elements have different images: <span class="arithmatex">\(\forall a\, \forall a'\, \bigl(f(a) = f(a') \to a = a'\bigr)\)</span>.</li>
+<li><span class="arithmatex">\(f\)</span> is <strong>onto</strong> (or <strong>surjective</strong>) if every element of <span class="arithmatex">\(B\)</span> is an image: <span class="arithmatex">\(\forall b \in B\; \exists a \in A\; f(a) = b\)</span>. That is, the range equals the codomain.</li>
+<li><span class="arithmatex">\(f\)</span> is a <strong>bijection</strong> (or one-to-one correspondence) if it is both one-to-one and onto.</li>
+</ul>
+</div>
+<p>Figure 4.2 shows the possibilities as arrow diagrams between small finite sets.</p>
+<figure class="fig fig-diagram">
+<img src="img/function-types.svg" alt="Four arrow diagrams from a set on the left to a set on the right. The first is one-to-one but not onto: an element on the right receives no arrow. The second is onto but not one-to-one: two arrows meet at one element. The third is a bijection: arrows pair the elements perfectly. The fourth is not a function: one element on the left has two arrows." loading="lazy" width="920" height="280">
+<figcaption><strong>Figure 4.2 Kinds of function.</strong> Four arrow diagrams from a set on the left to a set on the right. The first is one-to-one but not onto: an element on the right receives no arrow. The second is onto but not one-to-one: two arrows meet at one element. The third is a bijection: arrows pair the elements perfectly. The fourth is not a function: one element on the left has two arrows.</figcaption>
+</figure>
+<p>To prove <span class="arithmatex">\(f\)</span> is one-to-one, assume <span class="arithmatex">\(f(a) = f(a')\)</span> and deduce <span class="arithmatex">\(a = a'\)</span>. To prove <span class="arithmatex">\(f\)</span> is onto, take an arbitrary <span class="arithmatex">\(b \in B\)</span> and find an <span class="arithmatex">\(a\)</span> with <span class="arithmatex">\(f(a) = b\)</span>. To disprove either, give a counterexample.</p>
+<div class="admonition example">
+<p class="admonition-title">Example 4.6: Checking injectivity and surjectivity</p>
+<p><strong>Problem.</strong> Decide whether each function is one-to-one and whether it is onto. (a) <span class="arithmatex">\(f : \mathbb{Z} \to \mathbb{Z}\)</span>, <span class="arithmatex">\(f(n) = 2n + 3\)</span>. (b) <span class="arithmatex">\(g : \mathbb{R} \to \mathbb{R}\)</span>, <span class="arithmatex">\(g(x) = 2x + 3\)</span>. (c) <span class="arithmatex">\(h : \mathbb{Z} \to \mathbb{N}\)</span>, <span class="arithmatex">\(h(n) = n^2\)</span>.</p>
+<p><strong>Solution.</strong></p>
+<p>(a) <em>One-to-one:</em> if <span class="arithmatex">\(2n + 3 = 2m + 3\)</span> then <span class="arithmatex">\(2n = 2m\)</span>, so <span class="arithmatex">\(n = m\)</span>. <em>Not onto:</em> <span class="arithmatex">\(2n + 3\)</span> is always odd, so <span class="arithmatex">\(4\)</span> has no preimage.</p>
+<p>(b) <em>One-to-one:</em> the same argument. <em>Onto:</em> given <span class="arithmatex">\(y \in \mathbb{R}\)</span>, let <span class="arithmatex">\(x = (y - 3)/2\)</span>; then <span class="arithmatex">\(g(x) = y\)</span>. So <span class="arithmatex">\(g\)</span> is a bijection. The same formula as in (a) behaves differently because the domain and codomain differ.</p>
+<p>(c) <em>Not one-to-one:</em> <span class="arithmatex">\(h(-1) = h(1) = 1\)</span>. <em>Not onto:</em> <span class="arithmatex">\(2\)</span> is not a perfect square.</p>
+</div>
+<p>For <strong>finite</strong> sets of the same size, the two properties coincide.</p>
+<div class="admonition note">
+<p class="admonition-title">Theorem 4.2</p>
+<p>If <span class="arithmatex">\(A\)</span> and <span class="arithmatex">\(B\)</span> are finite sets with <span class="arithmatex">\(\lvert A \rvert = \lvert B \rvert\)</span>, then a function <span class="arithmatex">\(f : A \to B\)</span> is one-to-one if and only if it is onto.</p>
+</div>
+<p><strong>Proof.</strong> Let <span class="arithmatex">\(\lvert A \rvert = \lvert B \rvert = n\)</span>. If <span class="arithmatex">\(f\)</span> is one-to-one, the <span class="arithmatex">\(n\)</span> elements of <span class="arithmatex">\(A\)</span> have <span class="arithmatex">\(n\)</span> different images, so the range has <span class="arithmatex">\(n\)</span> elements; being a subset of <span class="arithmatex">\(B\)</span>, which has <span class="arithmatex">\(n\)</span> elements, the range is <span class="arithmatex">\(B\)</span>, and <span class="arithmatex">\(f\)</span> is onto. Conversely, if <span class="arithmatex">\(f\)</span> is onto, the range has <span class="arithmatex">\(n\)</span> elements; if two elements of <span class="arithmatex">\(A\)</span> shared an image, the <span class="arithmatex">\(n\)</span> elements of <span class="arithmatex">\(A\)</span> would have at most <span class="arithmatex">\(n - 1\)</span> images, a contradiction. So <span class="arithmatex">\(f\)</span> is one-to-one. <span class="arithmatex">\(\blacksquare\)</span></p>
+<h2 id="47-composition-and-inverses">4.7 Composition and inverses<a class="headerlink" href="#47-composition-and-inverses" title="Permanent link">&para;</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Definition: composition</p>
+<p>For <span class="arithmatex">\(g : A \to B\)</span> and <span class="arithmatex">\(f : B \to C\)</span>, the <strong>composition</strong> <span class="arithmatex">\(f \circ g : A \to C\)</span> is defined by <span class="arithmatex">\((f \circ g)(a) = f(g(a))\)</span>: apply <span class="arithmatex">\(g\)</span> first, then <span class="arithmatex">\(f\)</span>.</p>
+</div>
+<p>For <span class="arithmatex">\(f(x) = x^2\)</span> and <span class="arithmatex">\(g(x) = x + 1\)</span> on <span class="arithmatex">\(\mathbb{R}\)</span>, <span class="arithmatex">\((f \circ g)(x) = (x + 1)^2\)</span> while <span class="arithmatex">\((g \circ f)(x) = x^2 + 1\)</span>. Composition is not commutative, but it is associative: <span class="arithmatex">\(f \circ (g \circ h) = (f \circ g) \circ h\)</span>, because both send <span class="arithmatex">\(a\)</span> to <span class="arithmatex">\(f(g(h(a)))\)</span>.</p>
+<p>The <strong>identity function</strong> <span class="arithmatex">\(\iota_A : A \to A\)</span> is <span class="arithmatex">\(\iota_A(a) = a\)</span>.</p>
+<div class="admonition note">
+<p class="admonition-title">Definition: inverse function</p>
+<p>If <span class="arithmatex">\(f : A \to B\)</span> is a bijection, its <strong>inverse</strong> <span class="arithmatex">\(f^{-1} : B \to A\)</span> is the function that sends <span class="arithmatex">\(b\)</span> to the unique <span class="arithmatex">\(a\)</span> with <span class="arithmatex">\(f(a) = b\)</span>. Then <span class="arithmatex">\(f^{-1} \circ f = \iota_A\)</span> and <span class="arithmatex">\(f \circ f^{-1} = \iota_B\)</span>.</p>
+</div>
+<p>A function has an inverse exactly when it is a bijection: one-to-one ensures each <span class="arithmatex">\(b\)</span> has at most one preimage, so <span class="arithmatex">\(f^{-1}(b)\)</span> is well defined, and onto ensures it has at least one, so <span class="arithmatex">\(f^{-1}\)</span> is defined on all of <span class="arithmatex">\(B\)</span>. For <span class="arithmatex">\(g(x) = 2x + 3\)</span> on <span class="arithmatex">\(\mathbb{R}\)</span>, <span class="arithmatex">\(g^{-1}(y) = (y - 3)/2\)</span>, found by solving <span class="arithmatex">\(y = 2x + 3\)</span> for <span class="arithmatex">\(x\)</span>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Two meanings of the same symbol</p>
+<p><span class="arithmatex">\(f^{-1}(T)\)</span> for a <em>set</em> <span class="arithmatex">\(T\)</span> is the preimage, defined for every function. <span class="arithmatex">\(f^{-1}(b)\)</span> for an <em>element</em> <span class="arithmatex">\(b\)</span> means the inverse function, defined only when <span class="arithmatex">\(f\)</span> is a bijection. And <span class="arithmatex">\(f^{-1}(x)\)</span> never means <span class="arithmatex">\(1/f(x)\)</span>.</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title">Example 4.7: Compositions preserve injectivity</p>
+<p><strong>Theorem.</strong> If <span class="arithmatex">\(g : A \to B\)</span> and <span class="arithmatex">\(f : B \to C\)</span> are both one-to-one, then <span class="arithmatex">\(f \circ g\)</span> is one-to-one.</p>
+<p><strong>Proof.</strong> Suppose <span class="arithmatex">\((f \circ g)(a) = (f \circ g)(a')\)</span>, that is, <span class="arithmatex">\(f(g(a)) = f(g(a'))\)</span>. Since <span class="arithmatex">\(f\)</span> is one-to-one, <span class="arithmatex">\(g(a) = g(a')\)</span>. Since <span class="arithmatex">\(g\)</span> is one-to-one, <span class="arithmatex">\(a = a'\)</span>. <span class="arithmatex">\(\blacksquare\)</span></p>
+<p>The same holds for "onto" (Exercise 7), and so the composition of two bijections is a bijection.</p>
+</div>
+<h2 id="48-infinite-sets-and-countability">4.8 Infinite sets and countability<a class="headerlink" href="#48-infinite-sets-and-countability" title="Permanent link">&para;</a></h2>
+<p>How do we compare the sizes of infinite sets? Following Georg Cantor, we say two sets have the <strong>same cardinality</strong> if there is a bijection between them. For finite sets this agrees with counting. For infinite sets it gives surprises.</p>
+<div class="admonition note">
+<p class="admonition-title">Definition: countable</p>
+<p>A set is <strong>countably infinite</strong> if it has the same cardinality as <span class="arithmatex">\(\mathbb{Z}^{+} = \{1, 2, 3, \dots\}\)</span>; that is, if its elements can be listed as a sequence <span class="arithmatex">\(a_1, a_2, a_3, \dots\)</span> in which every element appears exactly once. A set is <strong>countable</strong> if it is finite or countably infinite, and <strong>uncountable</strong> otherwise.</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title">Example 4.8: The integers are countable</p>
+<p><strong>Problem.</strong> Show that <span class="arithmatex">\(\mathbb{Z}\)</span> is countable, although it seems "twice as big" as <span class="arithmatex">\(\mathbb{Z}^{+}\)</span>.</p>
+<p><strong>Solution.</strong> List the integers as <span class="arithmatex">\(0, 1, -1, 2, -2, 3, -3, \dots\)</span>. Every integer appears exactly once. As a formula, <span class="arithmatex">\(f(n) = n/2\)</span> for even <span class="arithmatex">\(n\)</span> and <span class="arithmatex">\(f(n) = -(n-1)/2\)</span> for odd <span class="arithmatex">\(n\)</span> is a bijection from <span class="arithmatex">\(\mathbb{Z}^{+}\)</span> to <span class="arithmatex">\(\mathbb{Z}\)</span>.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Theorem 4.3</p>
+<p>The set <span class="arithmatex">\(\mathbb{Q}^{+}\)</span> of positive rational numbers is countable.</p>
+</div>
+<p><strong>Proof.</strong> Arrange the fractions <span class="arithmatex">\(p/q\)</span> with <span class="arithmatex">\(p, q \in \mathbb{Z}^{+}\)</span> in an infinite grid, with <span class="arithmatex">\(p/q\)</span> in row <span class="arithmatex">\(q\)</span> and column <span class="arithmatex">\(p\)</span>. List them along the diagonals on which <span class="arithmatex">\(p + q\)</span> is constant: first <span class="arithmatex">\(p + q = 2\)</span> (<span class="arithmatex">\(1/1\)</span>), then <span class="arithmatex">\(p + q = 3\)</span> (<span class="arithmatex">\(2/1, 1/2\)</span>), then <span class="arithmatex">\(p + q = 4\)</span> (<span class="arithmatex">\(3/1, 2/2, 1/3\)</span>), and so on, skipping any fraction not in lowest terms (such as <span class="arithmatex">\(2/2\)</span>), since its value has already appeared. Each diagonal is finite, so every positive rational is reached after finitely many steps and appears exactly once:</p>
+<div class="arithmatex">\[
+1,\; 2,\; \tfrac12,\; 3,\; \tfrac13,\; 4,\; \tfrac32,\; \tfrac23,\; \tfrac14,\; 5,\; \dots
+\]</div>
+<p>So <span class="arithmatex">\(\mathbb{Q}^{+}\)</span> is countable. <span class="arithmatex">\(\blacksquare\)</span></p>
+<p>Not every infinite set is countable. Cantor's <strong>diagonal argument</strong> shows that the real numbers cannot be listed.</p>
+<div class="admonition note">
+<p class="admonition-title">Theorem 4.4 (Cantor)</p>
+<p>The set of real numbers in the interval <span class="arithmatex">\((0, 1)\)</span> is uncountable; hence <span class="arithmatex">\(\mathbb{R}\)</span> is uncountable.</p>
+</div>
+<p><strong>Proof.</strong> Suppose, for a contradiction, that the reals in <span class="arithmatex">\((0, 1)\)</span> can be listed as <span class="arithmatex">\(r_1, r_2, r_3, \dots\)</span>. Write each in decimal:</p>
+<div class="arithmatex">\[
+\begin{aligned}
+r_1 &amp;= 0.d_{11}\,d_{12}\,d_{13}\,d_{14}\dots \\
+r_2 &amp;= 0.d_{21}\,d_{22}\,d_{23}\,d_{24}\dots \\
+r_3 &amp;= 0.d_{31}\,d_{32}\,d_{33}\,d_{34}\dots \\
+&amp;\;\;\vdots
+\end{aligned}
+\]</div>
+<p>(For numbers with two decimal expansions, such as <span class="arithmatex">\(0.5000\dots = 0.4999\dots\)</span>, use the one ending in zeros.) Build a new number <span class="arithmatex">\(x = 0.x_1 x_2 x_3 \dots\)</span> by changing the diagonal digits: let <span class="arithmatex">\(x_i = 4\)</span> if <span class="arithmatex">\(d_{ii} \ne 4\)</span>, and <span class="arithmatex">\(x_i = 5\)</span> if <span class="arithmatex">\(d_{ii} = 4\)</span>. Then <span class="arithmatex">\(x\)</span> is in <span class="arithmatex">\((0, 1)\)</span>, and its expansion uses only the digits 4 and 5, so it is its only decimal expansion. But <span class="arithmatex">\(x\)</span> differs from <span class="arithmatex">\(r_i\)</span> in the <span class="arithmatex">\(i\)</span>-th digit, for every <span class="arithmatex">\(i\)</span>, so <span class="arithmatex">\(x\)</span> is not in the list. This contradicts the assumption that the list contained every real number in <span class="arithmatex">\((0, 1)\)</span>. <span class="arithmatex">\(\blacksquare\)</span></p>
+<p>The same diagonal idea proves that the power set of any set is strictly larger than the set, and, in Chapter 14, that some problems cannot be solved by any program. Since the set of all computer programs is countable (each program is a finite string over a finite alphabet) but the set of all functions from <span class="arithmatex">\(\mathbb{N}\)</span> to <span class="arithmatex">\(\{0, 1\}\)</span> is uncountable, most such functions cannot be computed by any program.</p>
+<h2 id="49-sequences-and-sums">4.9 Sequences and sums<a class="headerlink" href="#49-sequences-and-sums" title="Permanent link">&para;</a></h2>
+<p>A <strong>sequence</strong> is a function from a set of integers (usually <span class="arithmatex">\(\mathbb{N}\)</span> or <span class="arithmatex">\(\mathbb{Z}^{+}\)</span>) to some set; we write <span class="arithmatex">\(a_n\)</span> for the image of <span class="arithmatex">\(n\)</span>. Two families are especially important.</p>
+<ul>
+<li>An <strong>arithmetic progression</strong> <span class="arithmatex">\(a, a + d, a + 2d, \dots\)</span> has <span class="arithmatex">\(n\)</span>-th term <span class="arithmatex">\(a_n = a + nd\)</span> (starting from <span class="arithmatex">\(a_0 = a\)</span>).</li>
+<li>A <strong>geometric progression</strong> <span class="arithmatex">\(a, ar, ar^2, \dots\)</span> has <span class="arithmatex">\(a_n = ar^n\)</span>.</li>
+</ul>
+<p>The sum <span class="arithmatex">\(a_m + a_{m+1} + \dots + a_n\)</span> is written with <strong>summation notation</strong>:</p>
+<div class="arithmatex">\[
+\sum_{k=m}^{n} a_k.
+\]</div>
+<p>The letter <span class="arithmatex">\(k\)</span> is the <strong>index of summation</strong>; any letter will do. Two sums are needed again and again.</p>
+<div class="admonition note">
+<p class="admonition-title">Theorem 4.5 (two standard sums)</p>
+<p>For every positive integer <span class="arithmatex">\(n\)</span>,</p>
+<div class="arithmatex">\[
+\sum_{k=1}^{n} k = \frac{n(n+1)}{2}, \qquad\qquad \sum_{k=0}^{n} r^k = \frac{r^{n+1} - 1}{r - 1} \quad (r \ne 1).
+\]</div>
+</div>
+<p><strong>Proof.</strong> For the first, write the sum <span class="arithmatex">\(S\)</span> forwards and backwards and add:</p>
+<div class="arithmatex">\[
+\begin{aligned}
+S &amp;= 1 + 2 + \dots + n \\
+S &amp;= n + (n-1) + \dots + 1 \\
+2S &amp;= (n+1) + (n+1) + \dots + (n+1) = n(n+1).
+\end{aligned}
+\]</div>
+<p>For the second, let <span class="arithmatex">\(S = 1 + r + \dots + r^n\)</span>. Then <span class="arithmatex">\(rS = r + r^2 + \dots + r^{n+1}\)</span>, and subtracting, <span class="arithmatex">\(rS - S = r^{n+1} - 1\)</span>, so <span class="arithmatex">\(S = (r^{n+1} - 1)/(r - 1)\)</span>. <span class="arithmatex">\(\blacksquare\)</span></p>
+<p>For example, <span class="arithmatex">\(1 + 2 + 4 + \dots + 2^{n} = 2^{n+1} - 1\)</span>: a binary number with <span class="arithmatex">\(n + 1\)</span> ones is one less than the next power of 2. Chapter 6 proves formulas like these by induction.</p>
+<h2 id="410-summary">4.10 Summary<a class="headerlink" href="#410-summary" title="Permanent link">&para;</a></h2>
+<div class="admonition abstract">
+<p class="admonition-title">Summary</p>
+<ul>
+<li>A <strong>set</strong> is determined by its elements; <span class="arithmatex">\(A = B\)</span> is usually proved by showing <span class="arithmatex">\(A \subseteq B\)</span> and <span class="arithmatex">\(B \subseteq A\)</span>. Distinguish <span class="arithmatex">\(\in\)</span> from <span class="arithmatex">\(\subseteq\)</span>.</li>
+<li><span class="arithmatex">\(\lvert \mathcal{P}(A) \rvert = 2^{\lvert A \rvert}\)</span> and <span class="arithmatex">\(\lvert A \times B \rvert = \lvert A \rvert \cdot \lvert B \rvert\)</span>.</li>
+<li>Union, intersection, difference and complement correspond to <span class="arithmatex">\(\vee\)</span>, <span class="arithmatex">\(\wedge\)</span>, "and not" and <span class="arithmatex">\(\neg\)</span>, so each law of logic gives a set identity. Prove identities by element-chasing, membership tables or algebra.</li>
+<li>A <strong>function</strong> <span class="arithmatex">\(f : A \to B\)</span> gives each element of <span class="arithmatex">\(A\)</span> exactly one image in <span class="arithmatex">\(B\)</span>. It is <strong>one-to-one</strong> if distinct inputs have distinct images, <strong>onto</strong> if its range is <span class="arithmatex">\(B\)</span>, and a <strong>bijection</strong> if both. Exactly the bijections have inverses.</li>
+<li>Composition <span class="arithmatex">\(f \circ g\)</span> means "apply <span class="arithmatex">\(g\)</span>, then <span class="arithmatex">\(f\)</span>"; it is associative but not commutative.</li>
+<li><span class="arithmatex">\(\mathbb{Z}\)</span> and <span class="arithmatex">\(\mathbb{Q}\)</span> are <strong>countable</strong>; <span class="arithmatex">\(\mathbb{R}\)</span> is <strong>uncountable</strong>, by Cantor's diagonal argument.</li>
+<li><span class="arithmatex">\(\sum_{k=1}^{n} k = n(n+1)/2\)</span> and <span class="arithmatex">\(\sum_{k=0}^{n} r^k = (r^{n+1} - 1)/(r - 1)\)</span>.</li>
+</ul>
+</div>
+<h2 id="411-exercises">4.11 Exercises<a class="headerlink" href="#411-exercises" title="Permanent link">&para;</a></h2>
+<div class="admonition example">
+<p class="admonition-title">Exercise 1</p>
+<p>Let <span class="arithmatex">\(A = \{1, 2, \{1, 2\}\}\)</span>. True or false: (a) <span class="arithmatex">\(\{1, 2\} \in A\)</span>; (b) <span class="arithmatex">\(\{1, 2\} \subseteq A\)</span>; (c) <span class="arithmatex">\(\{\{1, 2\}\} \subseteq A\)</span>; (d) <span class="arithmatex">\(\varnothing \in A\)</span>; (e) <span class="arithmatex">\(\lvert A \rvert = 3\)</span>.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>(a) True. (b) True: 1 and 2 are elements of <span class="arithmatex">\(A\)</span>. (c) True: its only element, <span class="arithmatex">\(\{1, 2\}\)</span>, is in <span class="arithmatex">\(A\)</span>. (d) False: <span class="arithmatex">\(\varnothing\)</span> is a subset of <span class="arithmatex">\(A\)</span> but not an element. (e) True.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 2</p>
+<p>List <span class="arithmatex">\(\mathcal{P}(\{a, \varnothing\})\)</span>.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p><span class="arithmatex">\(\{\varnothing, \{a\}, \{\varnothing\}, \{a, \varnothing\}\}\)</span>, four elements, as Theorem 4.1 predicts.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 3</p>
+<p>Prove that <span class="arithmatex">\(A - B = A \cap \overline{B}\)</span>, and use it to show that <span class="arithmatex">\(A - (B \cup C) = (A - B) \cap (A - C)\)</span>.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p><span class="arithmatex">\(x \in A - B \iff x \in A \wedge x \notin B \iff x \in A \wedge x \in \overline{B} \iff x \in A \cap \overline{B}\)</span>. Then <span class="arithmatex">\(A - (B \cup C) = A \cap \overline{B \cup C} = A \cap \overline{B} \cap \overline{C} = (A \cap \overline{B}) \cap (A \cap \overline{C}) = (A - B) \cap (A - C)\)</span>, using De Morgan, and idempotence to duplicate <span class="arithmatex">\(A\)</span>.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 4</p>
+<p>Is it true that <span class="arithmatex">\(A \cup (B - C) = (A \cup B) - C\)</span> for all sets? Prove it or give a counterexample.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>False. Take <span class="arithmatex">\(A = C = \{1\}\)</span> and <span class="arithmatex">\(B = \varnothing\)</span>. Then <span class="arithmatex">\(A \cup (B - C) = \{1\}\)</span> but <span class="arithmatex">\((A \cup B) - C = \varnothing\)</span>.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 5</p>
+<p>For <span class="arithmatex">\(A = \{0, 1\}\)</span>, list <span class="arithmatex">\(A^3\)</span> and give <span class="arithmatex">\(\lvert A \times \mathcal{P}(A) \rvert\)</span>.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p><span class="arithmatex">\(A^3\)</span> consists of the eight triples <span class="arithmatex">\((0,0,0), (0,0,1), (0,1,0), (0,1,1), (1,0,0), (1,0,1), (1,1,0), (1,1,1)\)</span>. <span class="arithmatex">\(\lvert A \times \mathcal{P}(A) \rvert = 2 \cdot 4 = 8\)</span>.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 6</p>
+<p>Determine whether <span class="arithmatex">\(f : \mathbb{Z} \times \mathbb{Z} \to \mathbb{Z}\)</span>, <span class="arithmatex">\(f(m, n) = m + n\)</span>, is one-to-one and whether it is onto.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>Not one-to-one: <span class="arithmatex">\(f(1, 0) = f(0, 1) = 1\)</span>. Onto: for any <span class="arithmatex">\(k\)</span>, <span class="arithmatex">\(f(k, 0) = k\)</span>.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 7</p>
+<p>Prove that if <span class="arithmatex">\(g : A \to B\)</span> and <span class="arithmatex">\(f : B \to C\)</span> are onto, then <span class="arithmatex">\(f \circ g\)</span> is onto.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>Let <span class="arithmatex">\(c \in C\)</span>. Since <span class="arithmatex">\(f\)</span> is onto, <span class="arithmatex">\(c = f(b)\)</span> for some <span class="arithmatex">\(b \in B\)</span>. Since <span class="arithmatex">\(g\)</span> is onto, <span class="arithmatex">\(b = g(a)\)</span> for some <span class="arithmatex">\(a \in A\)</span>. Then <span class="arithmatex">\((f \circ g)(a) = f(g(a)) = f(b) = c\)</span>. <span class="arithmatex">\(\blacksquare\)</span></p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 8</p>
+<p>Find the inverse of <span class="arithmatex">\(f : \mathbb{R} \to \mathbb{R}\)</span>, <span class="arithmatex">\(f(x) = x^3 + 1\)</span>, and check that <span class="arithmatex">\(f^{-1}(f(x)) = x\)</span>.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>Solve <span class="arithmatex">\(y = x^3 + 1\)</span>: <span class="arithmatex">\(x = \sqrt[3]{y - 1}\)</span>, so <span class="arithmatex">\(f^{-1}(y) = \sqrt[3]{y - 1}\)</span>. Then <span class="arithmatex">\(f^{-1}(f(x)) = \sqrt[3]{x^3 + 1 - 1} = x\)</span>. (Every real number has exactly one real cube root, so <span class="arithmatex">\(f\)</span> is a bijection.)</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 9</p>
+<p>Show that the set of positive even integers is countably infinite.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p><span class="arithmatex">\(f : \mathbb{Z}^{+} \to \{2, 4, 6, \dots\}\)</span>, <span class="arithmatex">\(f(n) = 2n\)</span>, is a bijection: one-to-one because <span class="arithmatex">\(2n = 2m\)</span> implies <span class="arithmatex">\(n = m\)</span>, onto because every positive even number is <span class="arithmatex">\(2n\)</span> for some positive <span class="arithmatex">\(n\)</span>.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 10</p>
+<p>Evaluate <span class="arithmatex">\(\sum_{k=1}^{50} (2k - 1)\)</span> and <span class="arithmatex">\(\sum_{k=0}^{9} 3 \cdot 2^k\)</span>.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p><span class="arithmatex">\(\sum (2k - 1) = 2 \cdot \frac{50 \cdot 51}{2} - 50 = 2550 - 50 = 2500 = 50^2\)</span> (the sum of the first <span class="arithmatex">\(n\)</span> odd numbers is <span class="arithmatex">\(n^2\)</span>). <span class="arithmatex">\(\sum 3 \cdot 2^k = 3(2^{10} - 1) = 3 \cdot 1023 = 3069\)</span>.</p>
+</details>
+<h2 id="412-quiz">4.12 Quiz<a class="headerlink" href="#412-quiz" title="Permanent link">&para;</a></h2>
+<div class="pk-quiz" data-quiz="dd3a5e4c6aff">
+<p class="pk-quiz-title">Check your understanding of sets and functions</p>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;text&quot;,&quot;answer&quot;:[&quot;64&quot;]}">
+<p class="admonition-title">Exercise 1</p>
+<p class="pk-q-prompt">How many subsets does a set with 6 elements have?</p>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>64</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;yes&quot;,&quot;no&quot;],&quot;answer&quot;:&quot;no&quot;}">
+<p class="admonition-title">Exercise 2</p>
+<p class="pk-q-prompt">Is the empty set an element of every set?</p>
+<ol class="pk-q-opts" type="A"><li>yes</li><li>no</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>no</strong></p>
+<p class="pk-q-why">The empty set is a subset of every set, but an element only of sets that contain it.</p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;text&quot;,&quot;answer&quot;:[&quot;12&quot;]}">
+<p class="admonition-title">Exercise 3</p>
+<p class="pk-q-prompt">If |A| = 3 and |B| = 4, how many elements does A × B have?</p>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>12</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;one-to-one but not onto&quot;,&quot;onto but not one-to-one&quot;,&quot;a bijection&quot;,&quot;neither&quot;],&quot;answer&quot;:&quot;one-to-one but not onto&quot;}">
+<p class="admonition-title">Exercise 4</p>
+<p class="pk-q-prompt">f from the integers to the integers, f(n) = 2n + 3, is</p>
+<ol class="pk-q-opts" type="A"><li>one-to-one but not onto</li><li>onto but not one-to-one</li><li>a bijection</li><li>neither</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>one-to-one but not onto</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;one-to-one&quot;,&quot;onto&quot;,&quot;a bijection&quot;,&quot;defined on a finite set&quot;],&quot;answer&quot;:&quot;a bijection&quot;}">
+<p class="admonition-title">Exercise 5</p>
+<p class="pk-q-prompt">A function has an inverse function exactly when it is</p>
+<ol class="pk-q-opts" type="A"><li>one-to-one</li><li>onto</li><li>a bijection</li><li>defined on a finite set</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>a bijection</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;the integers&quot;,&quot;the rational numbers&quot;,&quot;the real numbers&quot;,&quot;the even positive integers&quot;],&quot;answer&quot;:&quot;the real numbers&quot;}">
+<p class="admonition-title">Exercise 6</p>
+<p class="pk-q-prompt">Which set is uncountable?</p>
+<ol class="pk-q-opts" type="A"><li>the integers</li><li>the rational numbers</li><li>the real numbers</li><li>the even positive integers</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>the real numbers</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;text&quot;,&quot;answer&quot;:[&quot;-3&quot;]}">
+<p class="admonition-title">Exercise 7</p>
+<p class="pk-q-prompt">What is the floor of -2.5?</p>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>-3</strong></p>
+</details>
+</div>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button type="button" class="md-top md-icon" data-md-component="top" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+Back to top
+</button>
+</main>
+<footer class="md-footer">
+<nav class="md-footer__inner md-grid" aria-label="Footer" >
+<a href="methods-of-proof.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: 3. Methods of Proof">
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</div>
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Previous
+</span>
+<div class="md-ellipsis">
+3. Methods of Proof
+</div>
+</div>
+</a>
+<a href="relations.html" class="md-footer__link md-footer__link--next" aria-label="Next: 5. Relations">
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Next
+</span>
+<div class="md-ellipsis">
+5. Relations
+</div>
+</div>
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+</div>
+</a>
+</nav>
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+The Open Book Project &middot;
+<a href="../../about.html">About this library</a> &middot;
+<a href="../../publish.html">Publish your book</a> &middot;
+© The authors of the books
+</div>
+Made with
+<a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+Material for MkDocs
+</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "navigation.prune", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "toc.follow", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+<script src="../../assets/mathjax.js"></script>
+<script src="../../assets/viz.js"></script>
+<script src="../../assets/remote.js"></script>
+<script src="../../assets/scans.js"></script>
+<script src="../../assets/reader.js"></script>
+<script src="../../assets/app.js"></script>
+<script src="../../assets/slides.js"></script>
+<script src="../../assets/speak.js"></script>
+<script src="../../assets/quiz.js"></script>
+<script>
+    /* offline reading: the service worker at the site root (its scope is the whole site) */
+    if ("serviceWorker" in navigator && window.isSecureContext) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register(new URL("../../sw.js", location.href).href).catch(function () {});
+      });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,1292 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="description" content="The Open Book Project: books on computer science, quantum computing, cyber security, science, the social sciences, university courses and languages, read page by page like an e-book, online or offline.">
+<meta name="author" content="The Open Book Project">
+<link rel="canonical" href="https://open-book-project.github.io/computing/data_science_python/python-essentials-for-data-work.html">
+<link rel="prev" href="the-data-science-workflow.html">
+<link rel="next" href="numerical-computing-with-numpy.html">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400;1,700&display=swap"></noscript>
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Open Book">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="application-name" content="Open Book"><script src="../../assets/library-data.js"></script><script>
+    (function () {
+      var X = window.XMLHttpRequest, open, gate = new Promise(function (r) { open = r; });
+      if (!X) return;
+      var open0 = X.prototype.open, send0 = X.prototype.send;
+      X.prototype.open = function (method, url) {
+        this.__pkIndex = /\/search\/search_index\.json(\?|#|$)/.test(String(url));
+        return open0.apply(this, arguments);
+      };
+      X.prototype.send = function () {
+        if (!this.__pkIndex) return send0.apply(this, arguments);
+        var xhr = this, args = arguments;
+        gate.then(function () { send0.apply(xhr, args); });
+      };
+      function wake() { open(); }
+      document.addEventListener("focusin", function (e) { if (e.target && e.target.closest && e.target.closest(".md-search")) wake(); });
+      document.addEventListener("click", function (e) { if (e.target && e.target.closest && e.target.closest('label[for="__search"], .md-search')) wake(); }, true);
+      document.addEventListener("keydown", function (e) {
+        var k = e.key;
+        if ((k === "/" || k === "s" || k === "f" || k === "S" || k === "F") && !(e.target && e.target.closest && e.target.closest("input, textarea, [contenteditable]"))) wake();
+      }, true);
+      if (/[?&]q=/.test(location.search)) wake();
+    })();
+  </script><script>
+    try {
+      if ((window.matchMedia && (matchMedia("(display-mode: standalone)").matches || matchMedia("(display-mode: fullscreen)").matches)) || navigator.standalone === true) {
+        document.documentElement.className += " bjp-standalone";
+      }
+    } catch (e) { /* not an installed app */ }
+    /* the books of a subject or of the whole library as covers or as a list (assets/app.js): the reader's choice */
+    try {
+      var bv = localStorage.getItem("bjp.view");
+      if (bv === "list" || (bv !== "grid" && /\/books\.html$/.test(location.pathname))) document.documentElement.className += " bjp-view-list";
+    } catch (e) { /* no storage: covers */ }
+  </script>
+<script>
+    /* a book opened from its cover on the shelf: the page stays blank, in the cover's colour, until the reader is up */
+    try {
+      var cv = sessionStorage.getItem("bjp.reader.cover");
+      if (cv && sessionStorage.getItem("bjp.reader.open") === "1") {
+        var c = JSON.parse(cv), de = document.documentElement;
+        de.className += " bjp-booting";
+        if (c && /^#[0-9a-f]{3,8}$/i.test(c.bg || "")) de.style.background = c.bg;
+        setTimeout(function () { de.classList.remove("bjp-booting"); de.style.background = ""; }, 3000);
+      }
+    } catch (e) { /* no session storage: the page simply opens as usual */ }
+  </script>
+<title>2. Python Essentials for Data Work - The Open Book Project</title>
+<link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+<link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+<link rel="stylesheet" href="../../assets/extra.css">
+<link rel="stylesheet" href="../../assets/reader.css">
+<link rel="stylesheet" href="../../assets/viz.css">
+<link rel="stylesheet" href="../../assets/app.css">
+<link rel="stylesheet" href="../../assets/theme.css">
+<link rel="stylesheet" href="../../assets/slides.css">
+<link rel="stylesheet" href="../../assets/remote.css">
+<link rel="stylesheet" href="../../assets/scans.css">
+<link rel="stylesheet" href="../../assets/speak.css">
+<link rel="stylesheet" href="../../assets/quiz.css">
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+<input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+<input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a href="#21-values-types-and-variables" class="md-skip">
+Skip to content
+</a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav class="md-header__inner md-grid" aria-label="Header">
+<a href="../../index.html" title="The Open Book Project" class="md-header__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+The Open Book Project
+</span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+2. Python Essentials for Data Work
+</span>
+</div>
+</div>
+</div><a href="../../index.html" class="bjp-libbtn" aria-label="Library: all books" title="Library: all books">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V5h4v15M8 20V9h4v11M14 20L12.6 6l3.8-.8 3 14.2M3 20h18"/></svg><span>Library</span>
+</a>
+<a href="../../subjects/index.html" class="pk-catbtn" aria-haspopup="true" aria-expanded="false" title="Browse the books by category">
+<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><circle cx="17" cy="7" r="3.6"/><path d="M7 13.4l3.9 6.8H3.1z"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg><span>Categories</span>
+</a>
+<form class="md-header__option" data-md-component="palette">
+<input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+<label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+</label>
+<input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+<label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+<label class="md-search__icon md-icon" for="__search">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</label>
+<nav class="md-search__options" aria-label="Search">
+<button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+Initializing search
+</div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--primary bjp-nav bjp-nav--book" aria-label="Navigation" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a href="../../index.html" title="The Open Book Project" class="md-nav__button md-logo" aria-label="The Open Book Project" data-md-component="logo">
+<img src="../../assets/icons/logo.svg" alt="logo">
+</a>
+The Open Book Project
+</label>
+<ul class="md-nav__list" data-md-scrollfix>
+<li class="md-nav__item bjp-nav-all">
+<a href="../../index.html" class="md-nav__link" aria-label="All books: back to the library">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+<span class="md-ellipsis">All books</span>
+</a>
+</li>
+<li class="md-nav__item bjp-nav-book" role="presentation"><span class="bjp-nav-head">Data Science with Python</span></li>
+<li class="md-nav__item">
+<a href="index.html" class="md-nav__link">
+<span class="md-ellipsis">
+Overview and preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="preface.html" class="md-nav__link">
+<span class="md-ellipsis">
+Preface
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="the-data-science-workflow.html" class="md-nav__link">
+<span class="md-ellipsis">
+1. The Data Science Workflow
+</span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+2. Python Essentials for Data Work
+</span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a href="python-essentials-for-data-work.html" class="md-nav__link md-nav__link--active">
+<span class="md-ellipsis">
+2. Python Essentials for Data Work
+</span>
+</a>
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#21-values-types-and-variables" class="md-nav__link">
+<span class="md-ellipsis">
+2.1 Values, types and variables
+</span>
+</a>
+<nav class="md-nav" aria-label="2.1 Values, types and variables">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#floating-point-numbers-are-approximations" class="md-nav__link">
+<span class="md-ellipsis">
+Floating-point numbers are approximations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#comparisons-and-logic" class="md-nav__link">
+<span class="md-ellipsis">
+Comparisons and logic
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#22-strings" class="md-nav__link">
+<span class="md-ellipsis">
+2.2 Strings
+</span>
+</a>
+<nav class="md-nav" aria-label="2.2 Strings">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#f-strings" class="md-nav__link">
+<span class="md-ellipsis">
+f-strings
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#23-lists-and-tuples" class="md-nav__link">
+<span class="md-ellipsis">
+2.3 Lists and tuples
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#24-dictionaries-and-sets" class="md-nav__link">
+<span class="md-ellipsis">
+2.4 Dictionaries and sets
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#25-control-flow" class="md-nav__link">
+<span class="md-ellipsis">
+2.5 Control flow
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#26-comprehensions" class="md-nav__link">
+<span class="md-ellipsis">
+2.6 Comprehensions
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#27-functions" class="md-nav__link">
+<span class="md-ellipsis">
+2.7 Functions
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#28-reading-records-from-text" class="md-nav__link">
+<span class="md-ellipsis">
+2.8 Reading records from text
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#29-modules-and-the-standard-library" class="md-nav__link">
+<span class="md-ellipsis">
+2.9 Modules and the standard library
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#210-a-worked-example-summarising-a-sales-log" class="md-nav__link">
+<span class="md-ellipsis">
+2.10 A worked example: summarising a sales log
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#211-summary" class="md-nav__link">
+<span class="md-ellipsis">
+2.11 Summary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#212-exercises" class="md-nav__link">
+<span class="md-ellipsis">
+2.12 Exercises
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#213-quiz" class="md-nav__link">
+<span class="md-ellipsis">
+2.13 Quiz
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="numerical-computing-with-numpy.html" class="md-nav__link">
+<span class="md-ellipsis">
+3. Numerical Computing with NumPy
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="pandas-fundamentals.html" class="md-nav__link">
+<span class="md-ellipsis">
+4. pandas Fundamentals: Series, DataFrames and Selection
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="cleaning-reshaping-grouping-and-joining.html" class="md-nav__link">
+<span class="md-ellipsis">
+5. Cleaning, Reshaping, Grouping and Joining
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="visualisation-and-exploratory-data-analysis.html" class="md-nav__link">
+<span class="md-ellipsis">
+6. Visualisation and Exploratory Data Analysis
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="probability-and-statistics.html" class="md-nav__link">
+<span class="md-ellipsis">
+7. Probability and Statistics for Data Science
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="regression.html" class="md-nav__link">
+<span class="md-ellipsis">
+8. Regression
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="classification.html" class="md-nav__link">
+<span class="md-ellipsis">
+9. Classification
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="model-evaluation-and-cross-validation.html" class="md-nav__link">
+<span class="md-ellipsis">
+10. Model Evaluation and Cross-Validation
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="clustering-and-dimensionality-reduction.html" class="md-nav__link">
+<span class="md-ellipsis">
+11. Clustering and Dimensionality Reduction
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="text-and-time-series-basics.html" class="md-nav__link">
+<span class="md-ellipsis">
+12. Text and Time Series Basics
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="ethics-privacy-and-reproducibility.html" class="md-nav__link">
+<span class="md-ellipsis">
+13. Ethics, Privacy and Reproducibility
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="an-end-to-end-project.html" class="md-nav__link">
+<span class="md-ellipsis">
+14. An End-to-End Project
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="glossary.html" class="md-nav__link">
+<span class="md-ellipsis">
+Glossary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="further-reading.html" class="md-nav__link">
+<span class="md-ellipsis">
+Further Reading
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+Table of contents
+</label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+<li class="md-nav__item">
+<a href="#21-values-types-and-variables" class="md-nav__link">
+<span class="md-ellipsis">
+2.1 Values, types and variables
+</span>
+</a>
+<nav class="md-nav" aria-label="2.1 Values, types and variables">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#floating-point-numbers-are-approximations" class="md-nav__link">
+<span class="md-ellipsis">
+Floating-point numbers are approximations
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#comparisons-and-logic" class="md-nav__link">
+<span class="md-ellipsis">
+Comparisons and logic
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#22-strings" class="md-nav__link">
+<span class="md-ellipsis">
+2.2 Strings
+</span>
+</a>
+<nav class="md-nav" aria-label="2.2 Strings">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a href="#f-strings" class="md-nav__link">
+<span class="md-ellipsis">
+f-strings
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a href="#23-lists-and-tuples" class="md-nav__link">
+<span class="md-ellipsis">
+2.3 Lists and tuples
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#24-dictionaries-and-sets" class="md-nav__link">
+<span class="md-ellipsis">
+2.4 Dictionaries and sets
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#25-control-flow" class="md-nav__link">
+<span class="md-ellipsis">
+2.5 Control flow
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#26-comprehensions" class="md-nav__link">
+<span class="md-ellipsis">
+2.6 Comprehensions
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#27-functions" class="md-nav__link">
+<span class="md-ellipsis">
+2.7 Functions
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#28-reading-records-from-text" class="md-nav__link">
+<span class="md-ellipsis">
+2.8 Reading records from text
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#29-modules-and-the-standard-library" class="md-nav__link">
+<span class="md-ellipsis">
+2.9 Modules and the standard library
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#210-a-worked-example-summarising-a-sales-log" class="md-nav__link">
+<span class="md-ellipsis">
+2.10 A worked example: summarising a sales log
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#211-summary" class="md-nav__link">
+<span class="md-ellipsis">
+2.11 Summary
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#212-exercises" class="md-nav__link">
+<span class="md-ellipsis">
+2.12 Exercises
+</span>
+</a>
+</li>
+<li class="md-nav__item">
+<a href="#213-quiz" class="md-nav__link">
+<span class="md-ellipsis">
+2.13 Quiz
+</span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="chapter-2-python-essentials-for-data-work">Chapter 2: Python Essentials for Data Work<a class="headerlink" href="#chapter-2-python-essentials-for-data-work" title="Permanent link">&para;</a></h1>
+<p><em>The parts of the language that data work uses every day</em></p>
+<div class="admonition note">
+<p class="admonition-title">Learning outcomes</p>
+<p>After this chapter you should be able to:</p>
+<ul>
+<li>use Python's basic types (numbers, strings, booleans, <code>None</code>) and know where floating-point arithmetic surprises;</li>
+<li>store data in lists, tuples, dictionaries and sets, and choose between them;</li>
+<li>index and slice sequences, including negative indexes;</li>
+<li>write loops, conditions and comprehensions that filter and transform records;</li>
+<li>define functions with default arguments and use them as sort keys;</li>
+<li>read a small CSV text into a list of records, converting types and handling bad values;</li>
+<li>use a few modules of the standard library that data work relies on.</li>
+</ul>
+</div>
+<p>This chapter is a working tour of Python for readers who have programmed a little, in Python or in another language. It does not try to cover the whole language. It covers what you need to read and write the code in the rest of the book, with examples drawn from data work: counting, filtering, summarising, and turning raw text into records. If Python is entirely new to you, read the chapter at the keyboard and type every example.</p>
+<h2 id="21-values-types-and-variables">2.1 Values, types and variables<a class="headerlink" href="#21-values-types-and-variables" title="Permanent link">&para;</a></h2>
+<p>Every value in Python has a <strong>type</strong>. The ones you will meet constantly are:</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Example values</th>
+<th>Used for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>int</code></td>
+<td><code>0</code>, <code>42</code>, <code>-7</code></td>
+<td>counts, indexes</td>
+</tr>
+<tr>
+<td><code>float</code></td>
+<td><code>3.14</code>, <code>-0.5</code>, <code>1e6</code></td>
+<td>measurements, averages</td>
+</tr>
+<tr>
+<td><code>str</code></td>
+<td><code>"Delhi"</code>, <code>'cups'</code></td>
+<td>text, labels, category names</td>
+</tr>
+<tr>
+<td><code>bool</code></td>
+<td><code>True</code>, <code>False</code></td>
+<td>the result of a comparison, a flag</td>
+</tr>
+<tr>
+<td><code>NoneType</code></td>
+<td><code>None</code></td>
+<td>"no value": missing or not yet known</td>
+</tr>
+</tbody>
+</table>
+<p><em>Table 2.1. Python's basic types.</em></p>
+<p>A <strong>variable</strong> is a name attached to a value with <code>=</code>. The name has no type of its own; it simply refers to whatever value was last assigned to it.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">cups</span> <span class="o">=</span> <span class="mi">112</span>                 <span class="c1"># an int</span>
+<span class="n">price</span> <span class="o">=</span> <span class="mf">12.5</span>               <span class="c1"># a float</span>
+<span class="n">city</span> <span class="o">=</span> <span class="s2">"Pune"</span>              <span class="c1"># a str</span>
+<span class="n">is_weekend</span> <span class="o">=</span> <span class="kc">False</span>         <span class="c1"># a bool</span>
+<span class="n">revenue</span> <span class="o">=</span> <span class="n">cups</span> <span class="o">*</span> <span class="n">price</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">cups</span><span class="p">),</span> <span class="nb">type</span><span class="p">(</span><span class="n">price</span><span class="p">),</span> <span class="nb">type</span><span class="p">(</span><span class="n">city</span><span class="p">),</span> <span class="nb">type</span><span class="p">(</span><span class="n">is_weekend</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"revenue:"</span><span class="p">,</span> <span class="n">revenue</span><span class="p">)</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>&lt;class 'int'&gt; &lt;class 'float'&gt; &lt;class 'str'&gt; &lt;class 'bool'&gt;
+revenue: 1400.0
+</code></pre></div>
+<p>Arithmetic uses <code>+</code>, <code>-</code>, <code>*</code> and <code>/</code>. Division with <code>/</code> always gives a float. Two more operators are handy for counting: <code>//</code> is floor division (the whole number of times one number goes into another) and <code>%</code> is the remainder. <code>**</code> raises to a power.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">minutes</span> <span class="o">=</span> <span class="mi">135</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">minutes</span> <span class="o">/</span> <span class="mi">60</span><span class="p">)</span>            <span class="c1"># true division</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">minutes</span> <span class="o">//</span> <span class="mi">60</span><span class="p">,</span> <span class="s2">"hours and"</span><span class="p">,</span> <span class="n">minutes</span> <span class="o">%</span> <span class="mi">60</span><span class="p">,</span> <span class="s2">"minutes"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="mi">2</span> <span class="o">**</span> <span class="mi">10</span><span class="p">)</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>2.25
+2 hours and 15 minutes
+1024
+</code></pre></div>
+<h3 id="floating-point-numbers-are-approximations">Floating-point numbers are approximations<a class="headerlink" href="#floating-point-numbers-are-approximations" title="Permanent link">&para;</a></h3>
+<p>A <code>float</code> stores a number in binary with about 15 to 17 significant decimal digits. Most decimal fractions, such as 0.1, have no exact binary form, so tiny rounding errors appear:</p>
+<div class="language-python highlight"><pre><span></span><code><span class="nb">print</span><span class="p">(</span><span class="mf">0.1</span> <span class="o">+</span> <span class="mf">0.2</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="mf">0.1</span> <span class="o">+</span> <span class="mf">0.2</span> <span class="o">==</span> <span class="mf">0.3</span><span class="p">)</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="mf">0.1</span> <span class="o">+</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">))</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>0.30000000000000004
+False
+True
+</code></pre></div>
+<div class="admonition warning">
+<p class="admonition-title">Caution: never test floats for exact equality</p>
+<p>Compare floats with a tolerance, using <code>math.isclose</code> (or <code>numpy.isclose</code> for arrays, Chapter 3). The errors are tiny and do not matter for data analysis, but an <code>==</code> test that should be <code>True</code> can come out <code>False</code>.</p>
+</div>
+<h3 id="comparisons-and-logic">Comparisons and logic<a class="headerlink" href="#comparisons-and-logic" title="Permanent link">&para;</a></h3>
+<p>Comparisons (<code>==</code>, <code>!=</code>, <code>&lt;</code>, <code>&lt;=</code>, <code>&gt;</code>, <code>&gt;=</code>) produce booleans, which combine with <code>and</code>, <code>or</code> and <code>not</code>. <code>None</code> is tested with <code>is None</code>, not <code>== None</code>.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">temperature</span> <span class="o">=</span> <span class="mf">38.4</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">temperature</span> <span class="o">&gt;</span> <span class="mf">37.5</span> <span class="ow">and</span> <span class="n">temperature</span> <span class="o">&lt;</span> <span class="mi">40</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="mf">37.5</span> <span class="o">&lt;</span> <span class="n">temperature</span> <span class="o">&lt;</span> <span class="mi">40</span><span class="p">)</span>       <span class="c1"># chained comparison, same meaning</span>
+<span class="n">reading</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">reading</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>True
+True
+True
+</code></pre></div>
+<h2 id="22-strings">2.2 Strings<a class="headerlink" href="#22-strings" title="Permanent link">&para;</a></h2>
+<p>Text is everywhere in data: names, categories, codes, dates before they are parsed, whole documents. A string is a sequence of characters in single or double quotes. Strings have methods, called with a dot, that return new strings (a string itself never changes).</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">raw</span> <span class="o">=</span> <span class="s2">"  New Delhi  "</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">raw</span><span class="o">.</span><span class="n">strip</span><span class="p">()))</span>          <span class="c1"># remove spaces at both ends</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">raw</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">raw</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">upper</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">raw</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">" "</span><span class="p">,</span> <span class="s2">"_"</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"a,b,,d"</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">","</span><span class="p">))</span>        <span class="c1"># split on commas</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"-"</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">"2024"</span><span class="p">,</span> <span class="s2">"03"</span><span class="p">,</span> <span class="s2">"15"</span><span class="p">]))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Delhi"</span> <span class="ow">in</span> <span class="s2">"New Delhi"</span><span class="p">)</span>     <span class="c1"># substring test</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>'New Delhi'
+new delhi
+NEW DELHI
+New_Delhi
+['a', 'b', '', 'd']
+2024-03-15
+True
+</code></pre></div>
+<p>Cleaning text columns is mostly a matter of these few methods: strip the spaces, fix the case, replace unwanted characters, split into parts. Chapter 5 applies them to whole columns at once with pandas.</p>
+<h3 id="f-strings">f-strings<a class="headerlink" href="#f-strings" title="Permanent link">&para;</a></h3>
+<p>An <strong>f-string</strong> (a string with <code>f</code> before the quote) puts the values of expressions into text. A format code after a colon controls how numbers appear: <code>.2f</code> gives two decimals, <code>,</code> adds thousands separators, <code>.1%</code> shows a fraction as a percentage, and a number before the dot sets a minimum width.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">mean_cups</span> <span class="o">=</span> <span class="mf">110.857142</span>
+<span class="n">share</span> <span class="o">=</span> <span class="mf">0.4231</span>
+<span class="n">total</span> <span class="o">=</span> <span class="mi">1234567</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Mean cups per weekday: </span><span class="si">{</span><span class="n">mean_cups</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Share of sales on weekends: </span><span class="si">{</span><span class="n">share</span><span class="si">:</span><span class="s2">.1%</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Total: </span><span class="si">{</span><span class="n">total</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"|</span><span class="si">{</span><span class="s1">'left'</span><span class="si">:</span><span class="s2">&lt;8</span><span class="si">}</span><span class="s2">|</span><span class="si">{</span><span class="s1">'right'</span><span class="si">:</span><span class="s2">&gt;8</span><span class="si">}</span><span class="s2">|</span><span class="si">{</span><span class="mf">3.14159</span><span class="si">:</span><span class="s2">&gt;8.2f</span><span class="si">}</span><span class="s2">|"</span><span class="p">)</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>Mean cups per weekday: 110.9
+Share of sales on weekends: 42.3%
+Total: 1,234,567
+|left    |   right|    3.14|
+</code></pre></div>
+<h2 id="23-lists-and-tuples">2.3 Lists and tuples<a class="headerlink" href="#23-lists-and-tuples" title="Permanent link">&para;</a></h2>
+<p>A <strong>list</strong> holds values in order, in square brackets. Lists can grow and shrink, and their elements can be changed. They are Python's general-purpose container for a sequence of data.</p>
+<p>Elements are numbered from <strong>0</strong>. A negative index counts from the end, so <code>-1</code> is the last element. A <strong>slice</strong> <code>a[start:stop]</code> takes the elements from <code>start</code> up to <em>but not including</em> <code>stop</code>; either end can be left out. Figure 2.1 shows both.</p>
+<p><img alt="A list of six temperatures with its indexes 0 to 5 above and the negative indexes -6 to -1 below. The slice temps[1:4] takes the elements at indexes 1, 2 and 3, stopping before index 4." src="img/list-indexing.svg" title="Figure 2.1 Indexing and slicing a list" width="620" height="230"></p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">temps</span> <span class="o">=</span> <span class="p">[</span><span class="mf">21.5</span><span class="p">,</span> <span class="mf">23.0</span><span class="p">,</span> <span class="mf">19.8</span><span class="p">,</span> <span class="mf">25.1</span><span class="p">,</span> <span class="mf">24.4</span><span class="p">,</span> <span class="mf">22.7</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">temps</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">temps</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>       <span class="c1"># first and last</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">temps</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">4</span><span class="p">])</span>                <span class="c1"># indexes 1, 2, 3</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">temps</span><span class="p">[:</span><span class="mi">2</span><span class="p">],</span> <span class="n">temps</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:])</span>     <span class="c1"># first two, last two</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">temps</span><span class="p">[::</span><span class="mi">2</span><span class="p">])</span>                <span class="c1"># every second element</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">temps</span><span class="p">),</span> <span class="nb">min</span><span class="p">(</span><span class="n">temps</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">temps</span><span class="p">),</span> <span class="nb">round</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">temps</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">temps</span><span class="p">),</span> <span class="mi">2</span><span class="p">))</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>21.5 22.7
+[23.0, 19.8, 25.1]
+[21.5, 23.0] [24.4, 22.7]
+[21.5, 19.8, 24.4]
+6 19.8 25.1 22.75
+</code></pre></div>
+<p>The half-open rule (<code>stop</code> is excluded) has a convenient consequence: <code>temps[:k]</code> and <code>temps[k:]</code> split the list into two parts with no overlap and nothing missing, and <code>temps[a:b]</code> has exactly <code>b - a</code> elements.</p>
+<p>Lists are changed in place by methods such as <code>append</code>, <code>extend</code>, <code>insert</code> and <code>sort</code>, and by assigning to an index.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">temps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">20.9</span><span class="p">)</span>
+<span class="n">temps</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="mf">19.9</span>            <span class="c1"># correct a reading</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">temps</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">temps</span><span class="p">))</span>       <span class="c1"># a new sorted list; temps is unchanged</span>
+<span class="n">temps</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>   <span class="c1"># sorts temps itself</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">temps</span><span class="p">)</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>[21.5, 23.0, 19.9, 25.1, 24.4, 22.7, 20.9]
+[19.9, 20.9, 21.5, 22.7, 23.0, 24.4, 25.1]
+[25.1, 24.4, 23.0, 22.7, 21.5, 20.9, 19.9]
+</code></pre></div>
+<div class="admonition warning">
+<p class="admonition-title">Caution: two names, one list</p>
+<p>Assignment does not copy a list. After <code>b = a</code>, both names refer to the <em>same</em> list, and <code>b.append(1)</code> changes <code>a</code> too. Use <code>b = a.copy()</code> (or <code>list(a)</code>) when you need an independent copy. The same is true of dictionaries, NumPy arrays and pandas tables, and it is a frequent source of puzzling bugs.</p>
+</div>
+<p>A <strong>tuple</strong> is like a list but cannot be changed after it is made. It is written with round brackets, and is the natural type for a fixed group of values that belong together, such as one record:</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">record</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"Mon"</span><span class="p">,</span> <span class="mi">112</span><span class="p">)</span>
+<span class="n">day</span><span class="p">,</span> <span class="n">cups</span> <span class="o">=</span> <span class="n">record</span>          <span class="c1"># unpacking</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">day</span><span class="p">,</span> <span class="n">cups</span><span class="p">)</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>Mon 112
+</code></pre></div>
+<h2 id="24-dictionaries-and-sets">2.4 Dictionaries and sets<a class="headerlink" href="#24-dictionaries-and-sets" title="Permanent link">&para;</a></h2>
+<p>A <strong>dictionary</strong> maps <strong>keys</strong> to <strong>values</strong>. It answers "what is the value for this key?" instantly, however large it is. Keys are usually strings or numbers; values can be anything.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">stock</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"tea"</span><span class="p">:</span> <span class="mi">40</span><span class="p">,</span> <span class="s2">"coffee"</span><span class="p">:</span> <span class="mi">25</span><span class="p">,</span> <span class="s2">"milk"</span><span class="p">:</span> <span class="mi">12</span><span class="p">}</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">stock</span><span class="p">[</span><span class="s2">"tea"</span><span class="p">])</span>
+<span class="n">stock</span><span class="p">[</span><span class="s2">"sugar"</span><span class="p">]</span> <span class="o">=</span> <span class="mi">30</span>                <span class="c1"># add a key</span>
+<span class="n">stock</span><span class="p">[</span><span class="s2">"milk"</span><span class="p">]</span> <span class="o">-=</span> <span class="mi">2</span>                 <span class="c1"># change a value</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">stock</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">stock</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"juice"</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>       <span class="c1"># a default when the key is missing</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"coffee"</span> <span class="ow">in</span> <span class="n">stock</span><span class="p">)</span>           <span class="c1"># tests the keys</span>
+<span class="k">for</span> <span class="n">item</span><span class="p">,</span> <span class="n">qty</span> <span class="ow">in</span> <span class="n">stock</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="k">if</span> <span class="n">qty</span> <span class="o">&lt;</span> <span class="mi">20</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"reorder"</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>40
+{'tea': 40, 'coffee': 25, 'milk': 10, 'sugar': 30}
+0
+True
+reorder milk
+</code></pre></div>
+<p>Reading a missing key with square brackets raises a <code>KeyError</code>; <code>get</code> with a default avoids it. A dictionary is the natural way to <strong>count</strong> things: go through the data, and add one to the count for each value.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">orders</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"tea"</span><span class="p">,</span> <span class="s2">"coffee"</span><span class="p">,</span> <span class="s2">"tea"</span><span class="p">,</span> <span class="s2">"tea"</span><span class="p">,</span> <span class="s2">"juice"</span><span class="p">,</span> <span class="s2">"coffee"</span><span class="p">,</span> <span class="s2">"tea"</span><span class="p">]</span>
+<span class="n">counts</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">orders</span><span class="p">:</span>
+    <span class="n">counts</span><span class="p">[</span><span class="n">item</span><span class="p">]</span> <span class="o">=</span> <span class="n">counts</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">counts</span><span class="p">)</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">Counter</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">Counter</span><span class="p">(</span><span class="n">orders</span><span class="p">)</span><span class="o">.</span><span class="n">most_common</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>{'tea': 4, 'coffee': 2, 'juice': 1}
+[('tea', 4), ('coffee', 2)]
+</code></pre></div>
+<p><code>collections.Counter</code> does the same counting in one line and adds useful methods such as <code>most_common</code>. pandas has the same idea for columns, <code>value_counts</code> (Chapter 4).</p>
+<p>A <strong>set</strong> is an unordered collection of distinct values. It removes duplicates and tests membership quickly, and it supports the operations of set theory.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">cities_a</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"Pune"</span><span class="p">,</span> <span class="s2">"Delhi"</span><span class="p">,</span> <span class="s2">"Chennai"</span><span class="p">,</span> <span class="s2">"Pune"</span><span class="p">}</span>
+<span class="n">cities_b</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"Delhi"</span><span class="p">,</span> <span class="s2">"Kolkata"</span><span class="p">}</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">cities_a</span><span class="p">))</span>            <span class="c1"># the duplicate is gone</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">cities_a</span> <span class="o">&amp;</span> <span class="n">cities_b</span><span class="p">)</span>         <span class="c1"># intersection</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">cities_a</span> <span class="o">|</span> <span class="n">cities_b</span><span class="p">))</span> <span class="c1"># union</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">cities_a</span> <span class="o">-</span> <span class="n">cities_b</span><span class="p">))</span> <span class="c1"># in a but not in b</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>['Chennai', 'Delhi', 'Pune']
+{'Delhi'}
+['Chennai', 'Delhi', 'Kolkata', 'Pune']
+['Chennai', 'Pune']
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Container</th>
+<th>Written</th>
+<th>Ordered</th>
+<th>Changeable</th>
+<th>Duplicates</th>
+<th>Typical use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>list</td>
+<td><code>[1, 2, 2]</code></td>
+<td>yes</td>
+<td>yes</td>
+<td>allowed</td>
+<td>a sequence of values or records</td>
+</tr>
+<tr>
+<td>tuple</td>
+<td><code>(1, 2, 2)</code></td>
+<td>yes</td>
+<td>no</td>
+<td>allowed</td>
+<td>one fixed record</td>
+</tr>
+<tr>
+<td>dict</td>
+<td><code>{"a": 1}</code></td>
+<td>yes (insertion order)</td>
+<td>yes</td>
+<td>keys unique</td>
+<td>lookup by key, counting</td>
+</tr>
+<tr>
+<td>set</td>
+<td><code>{1, 2}</code></td>
+<td>no</td>
+<td>yes</td>
+<td>no</td>
+<td>distinct values, membership</td>
+</tr>
+</tbody>
+</table>
+<p><em>Table 2.2. Python's four built-in containers compared.</em></p>
+<h2 id="25-control-flow">2.5 Control flow<a class="headerlink" href="#25-control-flow" title="Permanent link">&para;</a></h2>
+<p><code>if</code>, <code>elif</code> and <code>else</code> choose between blocks of code. The blocks are marked by <strong>indentation</strong> (four spaces by convention), not by brackets.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">grade</span><span class="p">(</span><span class="n">mark</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">mark</span> <span class="o">&gt;=</span> <span class="mi">75</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">"distinction"</span>
+    <span class="k">elif</span> <span class="n">mark</span> <span class="o">&gt;=</span> <span class="mi">40</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">"pass"</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">"fail"</span>
+
+<span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">82</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mf">39.5</span><span class="p">]:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">grade</span><span class="p">(</span><span class="n">m</span><span class="p">))</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>82 distinction
+40 pass
+39.5 fail
+</code></pre></div>
+<p>A <code>for</code> loop runs its block once for each element of a sequence. Three helpers make loops over data cleaner: <code>range(n)</code> gives the numbers 0 to n − 1, <code>enumerate</code> gives each element with its position, and <code>zip</code> walks through two or more sequences side by side.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">days</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"Mon"</span><span class="p">,</span> <span class="s2">"Tue"</span><span class="p">,</span> <span class="s2">"Wed"</span><span class="p">]</span>
+<span class="n">cups</span> <span class="o">=</span> <span class="p">[</span><span class="mi">112</span><span class="p">,</span> <span class="mi">98</span><span class="p">,</span> <span class="mi">105</span><span class="p">]</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">day</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">days</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">day</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">day</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">days</span><span class="p">,</span> <span class="n">cups</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">day</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">c</span><span class="si">}</span><span class="s2"> cups"</span><span class="p">)</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>1 Mon
+2 Tue
+3 Wed
+Mon: 112 cups
+Tue: 98 cups
+Wed: 105 cups
+</code></pre></div>
+<p>A <code>while</code> loop repeats as long as a condition holds. It is less common in data work, but useful when the number of repetitions is not known in advance:</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">balance</span><span class="p">,</span> <span class="n">years</span> <span class="o">=</span> <span class="mf">1000.0</span><span class="p">,</span> <span class="mi">0</span>
+<span class="k">while</span> <span class="n">balance</span> <span class="o">&lt;</span> <span class="mi">2000</span><span class="p">:</span>
+    <span class="n">balance</span> <span class="o">*=</span> <span class="mf">1.07</span>        <span class="c1"># grow by 7% a year</span>
+    <span class="n">years</span> <span class="o">+=</span> <span class="mi">1</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">years</span><span class="p">,</span> <span class="s2">"years to double, ending at"</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">balance</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>11 years to double, ending at 2104.85
+</code></pre></div>
+<h2 id="26-comprehensions">2.6 Comprehensions<a class="headerlink" href="#26-comprehensions" title="Permanent link">&para;</a></h2>
+<p>A <strong>list comprehension</strong> builds a new list from an old one in a single expression: <code>[expression for item in sequence if condition]</code>. It reads almost like the sentence "the expression for each item in the sequence, if the condition holds". It is the idiomatic way to transform and filter.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">temps_c</span> <span class="o">=</span> <span class="p">[</span><span class="mf">21.5</span><span class="p">,</span> <span class="mf">23.0</span><span class="p">,</span> <span class="mf">19.9</span><span class="p">,</span> <span class="mf">25.1</span><span class="p">,</span> <span class="mf">24.4</span><span class="p">,</span> <span class="mf">22.7</span><span class="p">]</span>
+<span class="n">temps_f</span> <span class="o">=</span> <span class="p">[</span><span class="nb">round</span><span class="p">(</span><span class="n">t</span> <span class="o">*</span> <span class="mi">9</span> <span class="o">/</span> <span class="mi">5</span> <span class="o">+</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">temps_c</span><span class="p">]</span>
+<span class="n">warm</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">temps_c</span> <span class="k">if</span> <span class="n">t</span> <span class="o">&gt;</span> <span class="mi">23</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">temps_f</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">warm</span><span class="p">)</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>[70.7, 73.4, 67.8, 77.2, 75.9, 72.9]
+[25.1, 24.4]
+</code></pre></div>
+<p>The same pattern makes dictionaries and sets:</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"asha"</span><span class="p">,</span> <span class="s2">"ravi"</span><span class="p">,</span> <span class="s2">"meena"</span><span class="p">]</span>
+<span class="n">lengths</span> <span class="o">=</span> <span class="p">{</span><span class="n">n</span><span class="o">.</span><span class="n">title</span><span class="p">():</span> <span class="nb">len</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">names</span><span class="p">}</span>
+<span class="n">initials</span> <span class="o">=</span> <span class="p">{</span><span class="n">n</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">names</span><span class="p">}</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">lengths</span><span class="p">,</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">initials</span><span class="p">))</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>{'Asha': 4, 'Ravi': 4, 'Meena': 5} ['a', 'm', 'r']
+</code></pre></div>
+<div class="admonition tip">
+<p class="admonition-title">Key idea</p>
+<p>Most data processing is a pipeline of <em>filter</em> (keep the rows that satisfy a condition), <em>transform</em> (compute a new value from each row) and <em>aggregate</em> (combine many values into one, such as a sum or a count). A comprehension does the first two; <code>sum</code>, <code>len</code>, <code>min</code>, <code>max</code> and friends do the third. pandas does all three on whole columns, which is why Chapter 4 feels familiar after this one.</p>
+</div>
+<h2 id="27-functions">2.7 Functions<a class="headerlink" href="#27-functions" title="Permanent link">&para;</a></h2>
+<p>A <strong>function</strong> packages a computation under a name so that it can be reused and tested. It takes <strong>arguments</strong>, and <code>return</code> sends back a result. A string just after the <code>def</code> line, the <strong>docstring</strong>, says what the function does.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">summarise</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">ndigits</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Return the count, mean and range of a list of numbers."""</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+    <span class="n">mean</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">values</span><span class="p">)</span> <span class="o">/</span> <span class="n">n</span>
+    <span class="k">return</span> <span class="n">n</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">mean</span><span class="p">,</span> <span class="n">ndigits</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">values</span><span class="p">)</span> <span class="o">-</span> <span class="nb">min</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+
+<span class="n">n</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">r</span> <span class="o">=</span> <span class="n">summarise</span><span class="p">([</span><span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="mi">42</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">summarise</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">ndigits</span><span class="o">=</span><span class="mi">4</span><span class="p">))</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>6 18.0 38
+(3, 1.6667, 1)
+</code></pre></div>
+<p><code>ndigits=2</code> is a <strong>default argument</strong>: it is used when the caller does not give one. Returning several values actually returns one tuple, which the caller can unpack.</p>
+<p>Functions are values too, so they can be passed to other functions. The commonest case in data work is a <strong>key function</strong> for sorting: <code>sorted</code> calls it on every element and sorts by the results. A short function can be written inline as a <code>lambda</code>.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">people</span> <span class="o">=</span> <span class="p">[(</span><span class="s2">"Asha"</span><span class="p">,</span> <span class="mi">31</span><span class="p">),</span> <span class="p">(</span><span class="s2">"Ravi"</span><span class="p">,</span> <span class="mi">25</span><span class="p">),</span> <span class="p">(</span><span class="s2">"Meena"</span><span class="p">,</span> <span class="mi">42</span><span class="p">)]</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">people</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>               <span class="c1"># by age</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">people</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">])[</span><span class="mi">0</span><span class="p">],</span> <span class="s2">"is oldest"</span><span class="p">)</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>[('Ravi', 25), ('Asha', 31), ('Meena', 42)]
+Meena is oldest
+</code></pre></div>
+<h2 id="28-reading-records-from-text">2.8 Reading records from text<a class="headerlink" href="#28-reading-records-from-text" title="Permanent link">&para;</a></h2>
+<p>Data most often arrives as <strong>CSV</strong> (comma-separated values): plain text with one record per line and fields separated by commas, usually with a header line naming the fields. pandas reads CSV in one line (Chapter 4), but seeing it done by hand shows what can go wrong.</p>
+<p>This book makes its data in code, so that every example runs without any files. <code>io.StringIO</code> wraps a string so that it behaves like an open file, which lets us use exactly the code we would use on a real file.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">csv</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">io</span>
+
+<span class="n">text</span> <span class="o">=</span> <span class="s2">"""date,item,qty,price</span>
+<span class="s2">2024-03-01,tea,3,12.5</span>
+<span class="s2">2024-03-01,coffee,1,20</span>
+<span class="s2">2024-03-02,tea,two,12.5</span>
+<span class="s2">2024-03-02,juice,2,</span>
+<span class="s2">2024-03-03,tea,4,12.5</span>
+<span class="s2">"""</span>
+
+<span class="n">rows</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">csv</span><span class="o">.</span><span class="n">DictReader</span><span class="p">(</span><span class="n">io</span><span class="o">.</span><span class="n">StringIO</span><span class="p">(</span><span class="n">text</span><span class="p">)))</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">rows</span><span class="p">),</span> <span class="s2">"rows"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">rows</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>5 rows
+{'date': '2024-03-01', 'item': 'tea', 'qty': '3', 'price': '12.5'}
+</code></pre></div>
+<p>Every field arrives as a <strong>string</strong>, even the numbers, and two rows have problems: a quantity written as a word, and a missing price. A loop with <code>try</code> and <code>except</code> converts what it can and sets the rest aside, instead of crashing on the first bad value.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">records</span><span class="p">,</span> <span class="n">rejected</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">records</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+            <span class="s2">"date"</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="s2">"date"</span><span class="p">],</span>
+            <span class="s2">"item"</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="s2">"item"</span><span class="p">],</span>
+            <span class="s2">"qty"</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">"qty"</span><span class="p">]),</span>
+            <span class="s2">"price"</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">"price"</span><span class="p">]),</span>
+        <span class="p">})</span>
+    <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+        <span class="n">rejected</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">row</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">err</span><span class="p">)))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">records</span><span class="p">),</span> <span class="s2">"good,"</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">rejected</span><span class="p">),</span> <span class="s2">"rejected"</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">row</span><span class="p">,</span> <span class="n">why</span> <span class="ow">in</span> <span class="n">rejected</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">"date"</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s2">"item"</span><span class="p">],</span> <span class="s2">"-&gt;"</span><span class="p">,</span> <span class="n">why</span><span class="p">)</span>
+
+<span class="n">revenue</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s2">"qty"</span><span class="p">]</span> <span class="o">*</span> <span class="n">r</span><span class="p">[</span><span class="s2">"price"</span><span class="p">]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">records</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"revenue from good rows: </span><span class="si">{</span><span class="n">revenue</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>3 good, 2 rejected
+2024-03-02 tea -&gt; invalid literal for int() with base 10: 'two'
+2024-03-02 juice -&gt; could not convert string to float: ''
+revenue from good rows: 107.50
+</code></pre></div>
+<p><code>int("two")</code> and <code>float("")</code> both raise a <code>ValueError</code>, which the <code>except</code> clause catches. Keeping the rejected rows, with the reason, is much better than silently dropping them: you can count them, report them, and perhaps fix them by hand (the "two" is obviously 2).</p>
+<div class="admonition info">
+<p class="admonition-title">Note: exceptions</p>
+<p>An <strong>exception</strong> is Python's way of signalling an error: <code>ValueError</code> for a bad value, <code>KeyError</code> for a missing dictionary key, <code>IndexError</code> for an index past the end of a list, <code>ZeroDivisionError</code>, <code>FileNotFoundError</code> and many more. <code>try ... except SomeError</code> runs the code and handles that error if it happens. Catch the specific error you expect; a bare <code>except:</code> also hides genuine bugs.</p>
+</div>
+<h2 id="29-modules-and-the-standard-library">2.9 Modules and the standard library<a class="headerlink" href="#29-modules-and-the-standard-library" title="Permanent link">&para;</a></h2>
+<p>A <strong>module</strong> is a file of Python code that you load with <code>import</code>. Python ships with a large <strong>standard library</strong> of modules. A few are used in data work all the time:</p>
+<div class="language-python highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">statistics</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">random</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">date</span><span class="p">,</span> <span class="n">timedelta</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+
+<span class="n">marks</span> <span class="o">=</span> <span class="p">[</span><span class="mi">62</span><span class="p">,</span> <span class="mi">75</span><span class="p">,</span> <span class="mi">58</span><span class="p">,</span> <span class="mi">91</span><span class="p">,</span> <span class="mi">75</span><span class="p">,</span> <span class="mi">68</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">statistics</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">marks</span><span class="p">),</span> <span class="n">statistics</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">marks</span><span class="p">),</span> <span class="n">statistics</span><span class="o">.</span><span class="n">mode</span><span class="p">(</span><span class="n">marks</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">statistics</span><span class="o">.</span><span class="n">stdev</span><span class="p">(</span><span class="n">marks</span><span class="p">),</span> <span class="mi">2</span><span class="p">))</span>
+
+<span class="n">rng</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>            <span class="c1"># a seeded generator: the same numbers every run</span>
+<span class="nb">print</span><span class="p">([</span><span class="n">rng</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)])</span>
+
+<span class="n">d</span> <span class="o">=</span> <span class="n">date</span><span class="p">(</span><span class="mi">2024</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">15</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">d</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">30</span><span class="p">),</span> <span class="n">d</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">"%A"</span><span class="p">))</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>1.4142135623730951 2.0 3.141592653589793
+71.5 71.5 75
+11.74
+[6, 1, 1, 6, 3]
+2024-04-14 Friday
+</code></pre></div>
+<p>Note the <strong>seed</strong> given to the random number generator. Random numbers in a program are <em>pseudo-random</em>: a fixed algorithm produces them from a starting value, the seed. Fixing the seed makes the "random" results the same every time the program runs, which is essential for checking and reproducing an analysis (Chapter 13). NumPy has its own, faster generator, introduced in Chapter 3, which the rest of the book uses.</p>
+<p>Libraries that do not come with Python, such as NumPy and pandas, are installed with <code>pip</code> (Section 1.5) and then imported in exactly the same way.</p>
+<h2 id="210-a-worked-example-summarising-a-sales-log">2.10 A worked example: summarising a sales log<a class="headerlink" href="#210-a-worked-example-summarising-a-sales-log" title="Permanent link">&para;</a></h2>
+<p>This example puts the chapter together. Given the cleaned <code>records</code> of Section 2.8, we want total quantity and revenue per item, sorted by revenue.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">totals</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">records</span><span class="p">:</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">totals</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s2">"item"</span><span class="p">],</span> <span class="p">{</span><span class="s2">"qty"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">"revenue"</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">})</span>
+    <span class="n">t</span><span class="p">[</span><span class="s2">"qty"</span><span class="p">]</span> <span class="o">+=</span> <span class="n">r</span><span class="p">[</span><span class="s2">"qty"</span><span class="p">]</span>
+    <span class="n">t</span><span class="p">[</span><span class="s2">"revenue"</span><span class="p">]</span> <span class="o">+=</span> <span class="n">r</span><span class="p">[</span><span class="s2">"qty"</span><span class="p">]</span> <span class="o">*</span> <span class="n">r</span><span class="p">[</span><span class="s2">"price"</span><span class="p">]</span>
+
+<span class="n">ranked</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">totals</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">kv</span><span class="p">:</span> <span class="n">kv</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="s2">"revenue"</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="s1">'item'</span><span class="si">:</span><span class="s2">&lt;8</span><span class="si">}{</span><span class="s1">'qty'</span><span class="si">:</span><span class="s2">&gt;5</span><span class="si">}{</span><span class="s1">'revenue'</span><span class="si">:</span><span class="s2">&gt;10</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">item</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">ranked</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">item</span><span class="si">:</span><span class="s2">&lt;8</span><span class="si">}{</span><span class="n">t</span><span class="p">[</span><span class="s1">'qty'</span><span class="p">]</span><span class="si">:</span><span class="s2">&gt;5</span><span class="si">}{</span><span class="n">t</span><span class="p">[</span><span class="s1">'revenue'</span><span class="p">]</span><span class="si">:</span><span class="s2">&gt;10.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>item      qty   revenue
+tea         7     87.50
+coffee      1     20.00
+</code></pre></div>
+<p><code>setdefault</code> returns the value for a key, first inserting the given default if the key is missing; it saves an <code>if</code> statement. The pattern here, <em>group by a key, then accumulate</em>, is exactly what pandas' <code>groupby</code> does (Chapter 5), in one line and much faster on large data.</p>
+<h2 id="211-summary">2.11 Summary<a class="headerlink" href="#211-summary" title="Permanent link">&para;</a></h2>
+<div class="admonition abstract">
+<p class="admonition-title">Summary</p>
+<ul>
+<li>The basic types are <code>int</code>, <code>float</code>, <code>str</code>, <code>bool</code> and <code>None</code>. Floats are approximate: compare them with a tolerance.</li>
+<li>Strings have methods (<code>strip</code>, <code>lower</code>, <code>split</code>, <code>replace</code>, <code>join</code>); f-strings format numbers for display.</li>
+<li>Lists are ordered and changeable; tuples are fixed records; dictionaries look up and count by key; sets hold distinct values.</li>
+<li>Indexes start at 0; negative indexes count from the end; a slice <code>a[i:j]</code> stops before <code>j</code>.</li>
+<li>Assignment never copies a container: use <code>.copy()</code> when you need an independent one.</li>
+<li>Comprehensions filter and transform; <code>sum</code>, <code>len</code>, <code>min</code> and <code>max</code> aggregate.</li>
+<li>Functions package computations; key functions control sorting.</li>
+<li>Raw text arrives as strings: convert types explicitly, catch <code>ValueError</code>, and keep a record of rejected rows.</li>
+<li>Seed random number generators so that results can be reproduced.</li>
+</ul>
+</div>
+<h2 id="212-exercises">2.12 Exercises<a class="headerlink" href="#212-exercises" title="Permanent link">&para;</a></h2>
+<div class="admonition example">
+<p class="admonition-title">Exercise 1</p>
+<p>Without running it, say what <code>[10, 20, 30, 40, 50][1:-1]</code> gives, and how many elements <code>a[3:7]</code> has when <code>a</code> has at least 7 elements.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p><code>[20, 30, 40]</code>: from index 1 up to but not including the last element. <code>a[3:7]</code> has <code>7 - 3 = 4</code> elements.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 2</p>
+<p>Write a comprehension that turns <code>["  Pune", "delhi ", "CHENNAI"]</code> into <code>["Pune", "Delhi", "Chennai"]</code>.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<div class="language-python highlight"><pre><span></span><code><span class="nb">print</span><span class="p">([</span><span class="n">c</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">title</span><span class="p">()</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">"  Pune"</span><span class="p">,</span> <span class="s2">"delhi "</span><span class="p">,</span> <span class="s2">"CHENNAI"</span><span class="p">]])</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>['Pune', 'Delhi', 'Chennai']
+</code></pre></div>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 3</p>
+<p>Count the words of the sentence <code>"the cat sat on the mat the end"</code> with a dictionary, and print the most common word and its count.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<div class="language-python highlight"><pre><span></span><code><span class="n">words</span> <span class="o">=</span> <span class="s2">"the cat sat on the mat the end"</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+<span class="n">counts</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">words</span><span class="p">:</span>
+    <span class="n">counts</span><span class="p">[</span><span class="n">w</span><span class="p">]</span> <span class="o">=</span> <span class="n">counts</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+<span class="n">best</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">counts</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">counts</span><span class="o">.</span><span class="n">get</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">best</span><span class="p">,</span> <span class="n">counts</span><span class="p">[</span><span class="n">best</span><span class="p">])</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>the 3
+</code></pre></div>
+<p><code>max(counts, key=counts.get)</code> goes through the keys and picks the one whose value is largest.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 4</p>
+<p>After <code>a = [1, 2, 3]</code>, <code>b = a</code>, <code>c = a.copy()</code> and <code>b.append(4)</code>, what are <code>a</code>, <code>b</code> and <code>c</code>?</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p><code>a</code> and <code>b</code> are both <code>[1, 2, 3, 4]</code>, because they are the same list; <code>c</code> is still <code>[1, 2, 3]</code>, because it is a separate copy made before the append.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 5</p>
+<p>Write a function <code>to_float(s)</code> that returns <code>float(s)</code> for a valid number and <code>None</code> for anything else (including an empty string). Apply it to <code>["3.5", "", "abc", "-2"]</code>.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<div class="language-python highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">to_float</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+<span class="nb">print</span><span class="p">([</span><span class="n">to_float</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">"3.5"</span><span class="p">,</span> <span class="s2">""</span><span class="p">,</span> <span class="s2">"abc"</span><span class="p">,</span> <span class="s2">"-2"</span><span class="p">]])</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>[3.5, None, None, -2.0]
+</code></pre></div>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 6</p>
+<p>Using <code>zip</code>, compute the total cost of a basket from <code>qty = [2, 1, 5]</code> and <code>price = [30.0, 45.5, 8.0]</code>.</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<div class="language-python highlight"><pre><span></span><code><span class="n">qty</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
+<span class="n">price</span> <span class="o">=</span> <span class="p">[</span><span class="mf">30.0</span><span class="p">,</span> <span class="mf">45.5</span><span class="p">,</span> <span class="mf">8.0</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">q</span> <span class="o">*</span> <span class="n">p</span> <span class="k">for</span> <span class="n">q</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">qty</span><span class="p">,</span> <span class="n">price</span><span class="p">)))</span>
+</code></pre></div>
+<div class="language-text highlight"><pre><span></span><code>145.5
+</code></pre></div>
+<p><span class="arithmatex">\(2 \times 30 + 1 \times 45.5 + 5 \times 8 = 145.5\)</span>.</p>
+</details>
+<div class="admonition example">
+<p class="admonition-title">Exercise 7</p>
+<p>Why does the book seed every random number generator it uses?</p>
+</div>
+<details class="note">
+<summary>Answer</summary>
+<p>So that the "random" numbers, and therefore every result that depends on them, are the same each time the code runs. This lets readers reproduce the outputs shown, and lets an analyst check that a change in the result comes from a change in the code or data, not from different random draws.</p>
+</details>
+<h2 id="213-quiz">2.13 Quiz<a class="headerlink" href="#213-quiz" title="Permanent link">&para;</a></h2>
+<div class="pk-quiz" data-quiz="229f9d234653">
+<p class="pk-quiz-title">Check your understanding of Chapter 2</p>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;text&quot;,&quot;answer&quot;:[&quot;3&quot;]}">
+<p class="admonition-title">Exercise 1</p>
+<p class="pk-q-prompt">What does 17 // 5 evaluate to?</p>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>3</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;text&quot;,&quot;answer&quot;:[&quot;2&quot;]}">
+<p class="admonition-title">Exercise 2</p>
+<p class="pk-q-prompt">What does 17 % 5 evaluate to?</p>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>2</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;list&quot;,&quot;tuple&quot;,&quot;dictionary&quot;,&quot;set&quot;],&quot;answer&quot;:&quot;dictionary&quot;}">
+<p class="admonition-title">Exercise 3</p>
+<p class="pk-q-prompt">Which container should you use to count how often each word appears?</p>
+<ol class="pk-q-opts" type="A"><li>list</li><li>tuple</li><li>dictionary</li><li>set</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>dictionary</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;6&quot;,&quot;-1&quot;,&quot;0&quot;,&quot;5 and -1 both&quot;],&quot;answer&quot;:&quot;5 and -1 both&quot;}">
+<p class="admonition-title">Exercise 4</p>
+<p class="pk-q-prompt">If temps has 6 elements, which index refers to the last one?</p>
+<ol class="pk-q-opts" type="A"><li>6</li><li>-1</li><li>0</li><li>5 and -1 both</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>5 and -1 both</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;int&quot;,&quot;float&quot;,&quot;str&quot;,&quot;it depends on the value&quot;],&quot;answer&quot;:&quot;str&quot;}">
+<p class="admonition-title">Exercise 5</p>
+<p class="pk-q-prompt">What is the type of every field read by csv.DictReader?</p>
+<ol class="pk-q-opts" type="A"><li>int</li><li>float</li><li>str</li><li>it depends on the value</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>str</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;a == b&quot;,&quot;math.isclose(a, b)&quot;,&quot;a is b&quot;,&quot;int(a) == int(b)&quot;],&quot;answer&quot;:&quot;math.isclose(a, b)&quot;}">
+<p class="admonition-title">Exercise 6</p>
+<p class="pk-q-prompt">Which is the right way to compare two floats a and b?</p>
+<ol class="pk-q-opts" type="A"><li>a == b</li><li>math.isclose(a, b)</li><li>a is b</li><li>int(a) == int(b)</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>math.isclose(a, b)</strong></p>
+</details>
+<div class="admonition example pk-q" data-q="{&quot;type&quot;:&quot;choice&quot;,&quot;options&quot;:[&quot;TypeError&quot;,&quot;KeyError&quot;,&quot;ValueError&quot;,&quot;IndexError&quot;],&quot;answer&quot;:&quot;ValueError&quot;}">
+<p class="admonition-title">Exercise 7</p>
+<p class="pk-q-prompt">Which error does int("two") raise?</p>
+<ol class="pk-q-opts" type="A"><li>TypeError</li><li>KeyError</li><li>ValueError</li><li>IndexError</li></ol>
+</div>
+<details class="note pk-q-ans">
+<summary>Answer</summary>
+<p><strong>ValueError</strong></p>
+</details>
+</div>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button type="button" class="md-top md-icon" data-md-component="top" hidden>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+Back to top
+</button>
+</main>
+<footer class="md-footer">
+<nav class="md-footer__inner md-grid" aria-label="Footer" >
+<a href="the-data-science-workflow.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: 1. The Data Science Workflow">
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+</div>
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Previous
+</span>
+<div class="md-ellipsis">
+1. The Data Science Workflow
+</div>
+</div>
+</a>
+<a href="numerical-computing-with-numpy.html" class="md-footer__link md-footer__link--next" aria-label="Next: 3. Numerical Computing with NumPy">
+<div class="md-footer__title">
+<span class="md-footer__direction">
+Next
+</span>
+<div class="md-ellipsis">
+3. Numerical Computing with NumPy
+</div>
+</div>
+<div class="md-footer__button md-icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+</div>
+</a>
+</nav>
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+The Open Book Project &middot;
+<a href="../../about.html">About this library</a> &middot;
+<a href="../../publish.html">Publish your book</a> &middot;
+© The authors of the books
+</div>
+Made with
+<a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+Material for MkDocs
+</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.indexes", "navigation.prune", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "toc.follow", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+<script src="../../assets/mathjax.js"></script>
+<script src="../../assets/viz.js"></script>
+<script src="../../assets/remote.js"></script>
+<script src="../../assets/scans.js"></script>
+<script src="../../assets/reader.js"></script>
+<script src="../../assets/app.js"></script>
+<script src="../../assets/slides.js"></script>
+<script src="../../assets/speak.js"></script>
+<script src="../../assets/quiz.js"></script>
+<script>
+    /* offline reading: the service worker at the site root (its scope is the whole site) */
+    if ("serviceWorker" in navigator && window.isSecureContext) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register(new URL("../../sw.js", location.href).href).catch(function () {});
+      });
+    }
+  </script>
+</body>
+</html>
